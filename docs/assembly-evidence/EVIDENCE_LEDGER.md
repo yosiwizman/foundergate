@@ -24,6 +24,9 @@
 | 2026-07-07 | B2 | A17–A19 needs-you/do-not-touch/failure-modes(10) | src/v8a1/dashboard/app.js | #17 | d2ad41503caa2b9044ca30a69f4aa9a41a6940d2 | FounderGate CTO + CI | DONE |
 | 2026-07-07 | B2 | A20–A23 Doctor/Panic(honest)/data-badges/cost(display-only) | src/v8a1/dashboard/ | #17 | d2ad41503caa2b9044ca30a69f4aa9a41a6940d2 | FounderGate CTO + CI | DONE |
 | 2026-07-07 | B2 | A24 Playwright smoke screenshots (every screen) | docs/assembly-evidence/B2/screenshots/*.png (3) | #17 | d2ad41503caa2b9044ca30a69f4aa9a41a6940d2 | FounderGate CTO (Playwright) | DONE |
+| 2026-07-07 | B12 UX repair | G2 attempt #1 defects fixed (layout/copy/styling of A11-A24 only) | docs/assembly-evidence/B2/bugs/g2-attempt-1.md (RESOLVED) | #18 | 170196f2f98e07322004b3b068b0963fce72cf62 | FounderGate CTO + CI (https://github.com/yosiwizman/foundergate/actions/runs/28898704211) | DONE |
+| 2026-07-07 | B12 UX repair | app-shell + friendly copy + calm Pause + above-the-fold (1366x768) | src/v8a1/dashboard/ (V8A1-VIEW-MODEL-SELFTEST PASS 13) | #18 | 170196f2f98e07322004b3b068b0963fce72cf62 | FounderGate CTO + CI | DONE |
+| 2026-07-07 | B12 UX repair | anti-repeat guards + refreshed screenshots + hand-burden | docs/assembly-evidence/B2/hand-burden.json + screenshots/*.png (4) | #18 | 170196f2f98e07322004b3b068b0963fce72cf62 | FounderGate CTO (Playwright) | DONE |
 
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their
