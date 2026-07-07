@@ -64,8 +64,8 @@ function isUnknown(v) {
 export function badge(value) {
   if (isUnknown(value)) return { text: value == null ? UNKNOWN : value, kind: "unknown", hint: "We can't see this yet." };
   if (value === "STALE") return { text: "STALE", kind: "stale", hint: "This evidence is old — treat it with care." };
-  if (value === "passing") return { text: "passing", kind: "ok" };
-  if (value === "failing") return { text: "failing", kind: "bad" };
+  if (value === "passing") return { text: "passing", kind: "ok", hint: "the robot tests passed — this doesn't mean the product is finished." };
+  if (value === "failing") return { text: "failing", kind: "bad", hint: "some robot tests did not pass." };
   return { text: String(value), kind: "info" };
 }
 
@@ -84,9 +84,48 @@ function pauseScope(model) {
   return `We asked the running work to pause and saved your evidence. It can pause these: ${tracked.join(", ")}.`;
 }
 
+// Plain-English companion for a raw state token (the token itself stays verbatim).
+function statePlain(state) {
+  switch (state) {
+    case "blocked": return "Waiting for your decision.";
+    case "active": return "Work is moving along.";
+    case "idle": return "Nothing is happening right now.";
+    case "paused": return "Work is paused.";
+    default: return "We can't see this yet.";
+  }
+}
+
+// Data chip copy: keep the class token verbatim, add a plain companion.
+function dataChip(dataClass) {
+  if (dataClass === "MOCK_ONLY") return "Demo mode — no real customer data (MOCK_ONLY)";
+  if (isUnknown(dataClass)) return "Data: we can't see this yet";
+  return `Data: ${dataClass}`;
+}
+
+// PR row copy: keep the token (#7) verbatim, add a plain companion.
+function prDisplay(pr) {
+  if (isUnknown(pr)) return "Developer work package (PR): we can't see this yet";
+  return `Developer work package ${pr} (PR)`;
+}
+
+// The five founder-approved plain-English translations that MUST appear in the
+// visible UI (anti-repeat required-string checks over the fixture view).
+export const REQUIRED_TRANSLATIONS = Object.freeze([
+  "Decision Needed",
+  "Waiting for your decision.",
+  "the robot tests passed — this doesn't mean the product is finished.",
+  "Developer work package #7 (PR)",
+  "Demo mode — no real customer data (MOCK_ONLY)",
+]);
+
 export function buildView(model) {
   const m = model || {};
   const questions = Array.isArray(m.answers) ? m.answers : [];
+  const gates = (m.gates || []).map((g) => ({
+    id: g.id, title: g.title, state: g.state, viewOnly: g.viewOnly === true,
+    description: g.description, approvable: false,
+  }));
+  const hasPendingDecision = gates.some((g) => ["PENDING", "OPEN"].includes(g.state));
 
   return {
     nav: SIDEBAR_NAV,
@@ -96,6 +135,7 @@ export function buildView(model) {
       projectName: m.connected && m.project && m.project.name ? m.project.name : UNKNOWN,
       releaseLabel: m.releaseLabel || UNKNOWN,
       dataClass: m.dataClass || UNKNOWN,
+      dataChip: dataChip(m.dataClass || UNKNOWN),
       // friendly, non-scary honesty banner
       stageBanner: "This is an early preview you can look at safely. Passing tests don't mean it's finished yet.",
     },
@@ -105,17 +145,28 @@ export function buildView(model) {
       : { id: UNKNOWN, name: "No project connected yet", needsAttention: false },
     statusCard: {
       title: "Where things stand",
-      state: m.state || UNKNOWN,
+      state: m.state || UNKNOWN, // token stays verbatim (Law 54)
+      statePlain: statePlain(m.state || UNKNOWN),
+      ciLabel: "Checks (CI)", // NEVER renamed toward "safety"
       ci: badge(m.ci),
+      prLabel: "Developer work package (PR)",
       pr: badge(m.pr),
+      prDisplay: prDisplay(m.pr),
       currentGate: m.currentGate || UNKNOWN,
+      currentGatePlain: "the one item waiting for you",
     },
     ciUnknown: isUnknown(m.ci),
     prUnknown: isUnknown(m.pr),
-    gates: (m.gates || []).map((g) => ({
-      id: g.id, title: g.title, state: g.state, viewOnly: g.viewOnly === true,
-      description: g.description, approvable: false,
-    })),
+    gates,
+    // (1) Gates card retitled for the founder: "Decision Needed" — still view-only (Law 55).
+    decision: {
+      title: hasPendingDecision ? "Decision Needed" : "Decisions",
+      subtitle: hasPendingDecision
+        ? "The system is waiting for you to review one item. Nothing will move forward until you decide."
+        : "Nothing needs your decision right now.",
+      viewOnlyNote: "In this version you review here; the decision itself is recorded outside this screen.",
+      items: gates,
+    },
     needsYou: {
       title: "What you can do now",
       text: questions[1] ? questions[1].a : UNKNOWN,
@@ -178,10 +229,17 @@ export function buildDoctor(model) {
   return {
     title: "Health check",
     version: "V8-A1",
+    versionPlain: "this early build",
     connected: !!(model && model.connected),
     filesPresent: `${present}/${checks.length}`,
     checks,
   };
+}
+
+// The visible strings of the CI ("Checks") row only — used by the banned-pairing
+// lint that forbids the word "safety" from ever appearing in the CI row.
+export function ciRowStrings(view) {
+  return [view.statusCard.ciLabel, view.statusCard.ci.text, view.statusCard.ci.hint].filter((x) => typeof x === "string");
 }
 
 // Collect every human-visible string the view renders — used by the friendly-copy
@@ -189,11 +247,12 @@ export function buildDoctor(model) {
 export function visibleStrings(view) {
   const out = [];
   const push = (...xs) => xs.forEach((x) => { if (typeof x === "string") out.push(x); });
-  push(view.nav.brand, view.header.greeting, view.header.stageBanner, view.header.projectName);
+  push(view.nav.brand, view.header.greeting, view.header.stageBanner, view.header.projectName, view.header.dataChip);
   view.nav.active.forEach((n) => push(n.label));
   view.nav.disabled.forEach((n) => push(n.label, n.stage));
   push(view.project.name);
-  push(view.statusCard.title, view.statusCard.state, view.statusCard.ci.text, view.statusCard.ci.hint, view.statusCard.pr.text, view.statusCard.pr.hint, view.statusCard.currentGate);
+  push(view.statusCard.title, view.statusCard.state, view.statusCard.statePlain, view.statusCard.ciLabel, view.statusCard.ci.text, view.statusCard.ci.hint, view.statusCard.prLabel, view.statusCard.pr.text, view.statusCard.prDisplay, view.statusCard.pr.hint, view.statusCard.currentGate, view.statusCard.currentGatePlain);
+  push(view.decision.title, view.decision.subtitle, view.decision.viewOnlyNote);
   view.gates.forEach((g) => push(g.title, g.state, g.description));
   push(view.needsYou.title, view.needsYou.text);
   push(view.doNotTouch.title, view.doNotTouch.subtitle);

@@ -36,6 +36,8 @@ Gates: **G1 APPROVED**, **G2 PASSED** (see `../FOUNDER_GATE_LEDGER.md`).
 - **Screenshots (A24):** `../B2/screenshots/{01-truth-dashboard,01b-above-the-fold-1366x768,02-pause-pressed,03-not-connected-unknown}.png`
 - **Hand-burden (Law 64):** `../B2/hand-burden.json`
 - **G2 attempt #1 bug + resolution:** `../B2/bugs/g2-attempt-1.md`
+- **True-stranger test (PASSED, 7/7 unaided):** `../B2/stranger-test-true-stranger.md`
+- **Stranger polish findings + copy-polish:** `../B2/bugs/stranger-polish-findings.md` (jargon companions added; decision-confidence affordance parked as a future item)
 - **Phase packets:** `../B1/B1-evidence-packet.md` · `../B2/B2-evidence-packet.md`
 - **Machine-capacity preflights:** `../B0/`, `../B1/`, `../B2/`, `../B12/`, `../B3/machine-capacity-profile.json`
 - **Full suite:** `npm test` → **ALL GREEN — 19/19**
@@ -58,15 +60,15 @@ Gates: **G1 APPROVED**, **G2 PASSED** (see `../FOUNDER_GATE_LEDGER.md`).
 | 12 | Cost guard displayed as policy/config only, labeled "runtime enforcement begins V8-B" | ✅ PASS | `view-model.selftest`; schema const `policy-display-only` |
 | 13 | Minimal Playwright smoke screenshots for every V8-A1 screen | ✅ PASS | `../B2/screenshots/` (4) |
 | 14 | No terminal copy/paste needed for status review (measured, count = 0) | ✅ PASS | `hand-burden.json` `terminal_copy_paste_count: 0` |
-| 15 | Stranger Test passed (7 questions, unaided, recorded) | ⚠️ PARTIAL | G2 record: **founder-performed**; a true non-developer stranger run is **deferred**, required before any outside-operator claim |
+| 15 | Stranger Test passed (7 questions, unaided, recorded) | ✅ PASS | **True non-developer stranger** passed all 7 unaided — `../B2/stranger-test-true-stranger.md`; outside-operator caveat satisfied for V8-A1 |
 | 16 | Founder Hand-Burden metrics recorded (Law 64 set) | ⚠️ PARTIAL | `hand-burden.json`: terminal_copy_paste_count, clicks_to_pause, clicks_to_see_current_status, above-fold, scroll budget recorded. `founder_prompts_per_run` / `typing_required_for_bug_report` / `read_aloud_works` = **not-in-scope for V8-A1** (bug report + read-aloud arrive later) |
 | 17 | Exact-SHA CI green on the final commit (SHA recorded) | ✅ PASS | final SHA `29913080d2a6a1031797d1e77edfcbfcbc672414` · `https://github.com/yosiwizman/foundergate/actions/runs/28899979558` |
 | 18 | Acceptance packet complete with every evidence link | ✅ PASS | this document |
 
-**Honest summary:** 16 of 18 items are full green. Two are honestly PARTIAL: #15 (Stranger Test was
-founder-performed, not a true outside stranger — a real stranger run is deferred and required before any
-outside-operator claim) and #16 (the V8-A1-relevant Hand-Burden metrics are recorded; the bug-report/read-aloud
-metrics are out of V8-A1 scope). Nothing is overclaimed. **This is roadmap/UI-witness progress, not product,
+**Honest summary:** 17 of 18 items are full green. #15 Stranger Test is now **full PASS** — a true non-developer
+stranger passed all 7 questions unaided (recorded post-B3). One item remains honestly PARTIAL: #16 (the
+V8-A1-relevant Hand-Burden metrics are recorded; the bug-report/read-aloud metrics are out of V8-A1 scope).
+Nothing is overclaimed. **This is roadmap/UI-witness progress, not product,
 pilot, commercial, or production proof.**
 
 ## What V8-A1 deliberately does NOT do

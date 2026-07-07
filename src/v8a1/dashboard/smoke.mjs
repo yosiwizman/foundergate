@@ -74,8 +74,23 @@ try {
     must(disabledStages.length >= 5 && disabledStages.every((d) => /^V8-[A-E]/.test(d.stage)), "disabled nav items missing stage labels");
 
     // banned-word scan over the RENDERED visible text
-    const bodyText = (await page.evaluate(() => document.body.innerText)).toLowerCase();
+    const rawText = await page.evaluate(() => document.body.innerText);
+    const bodyText = rawText.toLowerCase();
     for (const w of ["panic", "fatal", "abort"]) must(!new RegExp(`\\b${w}\\b`).test(bodyText), `banned word "${w}" visible on screen`);
+    // banned-pairing: the word "safety" must never appear in the CI row (scoped rule)
+    const ciRowText = await page.evaluate(() =>
+      ["#ci-label", "#ci-badge", "#ci-hint"].map((s) => (document.querySelector(s) || {}).textContent || "").join(" ")
+    );
+    must(!/\bsafety\b/i.test(ciRowText), `"safety" appeared in the CI row: ${ciRowText}`);
+    // required plain-English translations must appear on screen
+    const REQUIRED = [
+      "Decision Needed",
+      "Waiting for your decision.",
+      "the robot tests passed — this doesn't mean the product is finished.",
+      "Developer work package #7 (PR)",
+      "Demo mode — no real customer data (MOCK_ONLY)",
+    ];
+    for (const t of REQUIRED) must(rawText.includes(t), `required translation not visible on screen: "${t}"`);
 
     await page.screenshot({ path: join(OUT, "01-truth-dashboard.png"), fullPage: true });
     await page.screenshot({ path: join(OUT, "01b-above-the-fold-1366x768.png") }); // viewport only = the fold
