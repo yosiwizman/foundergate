@@ -33,3 +33,8 @@ cite the self-test result observed *here*, not in AKIOR.
 |------|-----------------|-------------|-------|
 | 2026-07-06 | `main` bootstrap | CLEAN | Matches were `.gitignore` exclusion rules + README policy text; no secrets/couplings. |
 | 2026-07-06 | `mission1-foundation-records` | CLEAN | Docs-only (foundation records). Scan matches were prose ("risk-classifier", "risk. The"); no secrets/couplings. |
+| 2026-07-06 | `extract-evidence-bus` (PR #2) | CLEAN | Component 1. `src/` free of AKIOR strings; "akior" only in ledger provenance. |
+| 2026-07-06 | `extract-prepush-checker` (PR #4) | CLEAN | Component 2. Initial pass caught "AKIOR H31" in 2 schema descriptions — genericized + re-verified green before commit. |
+| 2026-07-06 | `extract-proof-package` (PR #5) | CLEAN | Component 3. Hits were the scanner's own token patterns (`redact.mjs`) + checklist prose. AKIOR dataset deliberately NOT copied (replaced with generic sample). |
+| 2026-07-06 | `mission2-extraction-map` (PR #3) | CLEAN | Docs-only. One `:32148` match is intentional documentation of a string to genericize later. |
+| 2026-07-06 | `mission4-doctrine` | CLEAN | Doctrine import (7 product docs + index). Independent scan found no customer names, absolute paths, secrets, SHAs, or emails. |
