@@ -7,107 +7,100 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header id="shell-header">
-      <div class="hrow">
-        <h1 id="title">FounderGate — Truth Dashboard</h1>
-        <span id="connected" class="pill">…</span>
-      </div>
-      <div class="banner" id="stage-banner">V8-A1 Truth Dashboard MVP — read-only. This is not product proof.</div>
-      <div class="hrow meta">
-        <span>Project: <b id="project-name">…</b></span>
-        <span class="badge" id="release-badge">release …</span>
-        <span class="badge" id="dataclass-badge">data …</span>
-      </div>
-    </header>
-
-    <main>
-      <!-- A12 Projects screen -->
-      <section class="card" id="projects-screen">
-        <h2>Projects</h2>
-        <ul id="projects-list"></ul>
-      </section>
-
-      <!-- A13 Project Dashboard: the 8 priority questions in order -->
-      <section class="card hero" id="questions-card">
-        <h2>Your 8 questions</h2>
-        <ol id="questions-list"></ol>
-      </section>
-
-      <!-- A14 status / A16 CI-PR UNKNOWN -->
-      <section class="card" id="status-card">
-        <h2>Current status</h2>
-        <div class="statusgrid">
-          <div>State <span id="state-badge" class="badge"></span></div>
-          <div>CI <span id="ci-badge" class="badge"></span></div>
-          <div>PR <span id="pr-badge" class="badge"></span></div>
-          <div>Current gate <span id="current-gate"></span></div>
+    <div class="app">
+      <!-- Left sidebar app shell -->
+      <aside class="sidebar">
+        <div class="brand" id="brand">FounderGate</div>
+        <nav class="nav" id="nav-active"></nav>
+        <div class="nav-label">Coming later</div>
+        <nav class="nav disabled" id="nav-disabled"></nav>
+        <div class="sidebar-spacer"></div>
+        <!-- (c) small, calm, always-visible pause control -->
+        <div class="pause-dock">
+          <button id="pause-button" type="button" class="pause-btn">⏸ Pause &amp; get help</button>
+          <p id="pause-scope" class="pause-scope" hidden></p>
         </div>
-      </section>
+      </aside>
 
-      <div class="two-col">
-        <!-- A17 needs you -->
-        <section class="card" id="needs-you">
-          <h2>What you should do now</h2>
-          <p id="needs-you-text"></p>
-          <p class="source" id="needs-you-source"></p>
-        </section>
+      <!-- Main content -->
+      <main class="content">
+        <header class="welcome">
+          <div>
+            <h1 id="greeting">Welcome back</h1>
+            <p class="stage" id="stage-banner"></p>
+          </div>
+          <div class="welcome-meta">
+            <span class="chip" id="project-chip">…</span>
+            <span class="chip" id="release-chip">…</span>
+            <span class="chip" id="dataclass-chip">…</span>
+            <span class="chip" id="connected-chip">…</span>
+          </div>
+        </header>
 
-        <!-- A18 do not touch -->
-        <section class="card danger" id="do-not-touch">
-          <h2>⛔ What must not be touched</h2>
-          <ul id="do-not-touch-list"></ul>
-        </section>
-      </div>
+        <div class="grid">
+          <!-- Above the fold: questions (Q1–4 + more) and current status -->
+          <section class="card questions" id="questions-card">
+            <h2 id="questions-title">Your quick check-in</h2>
+            <ol class="qgrid" id="questions-list"></ol>
+          </section>
 
-      <!-- A15 view-only gates -->
-      <section class="card" id="gates-card">
-        <h2>Gates <span class="tag">view-only (Law 55)</span></h2>
-        <ul id="gates-list"></ul>
-      </section>
+          <section class="card status" id="status-card">
+            <h2 id="status-title">Where things stand</h2>
+            <div class="statuslist">
+              <div class="statusrow">State <span id="state-badge" class="badge"></span></div>
+              <div class="statusrow">Checks (CI) <span id="ci-badge" class="badge"></span> <span id="ci-hint" class="hint"></span></div>
+              <div class="statusrow">Pull request <span id="pr-badge" class="badge"></span> <span id="pr-hint" class="hint"></span></div>
+              <div class="statusrow">Current gate <span id="current-gate" class="soft"></span></div>
+            </div>
+          </section>
 
-      <!-- A16 evidence with FRESH/STALE -->
-      <section class="card" id="evidence-card">
-        <h2>Evidence</h2>
-        <ul id="evidence-list"></ul>
-      </section>
+          <section class="card" id="needs-you">
+            <h2 id="needs-you-title">What you can do now</h2>
+            <p id="needs-you-text"></p>
+            <p class="source" id="needs-you-source"></p>
+          </section>
 
-      <div class="two-col">
-        <!-- A20 doctor -->
-        <section class="card" id="doctor-card">
-          <h2>Doctor</h2>
-          <p>Version <b id="doctor-version"></b> · files present <b id="doctor-present"></b></p>
-          <ul id="doctor-checks"></ul>
-        </section>
+          <section class="card soft-warn" id="do-not-touch">
+            <h2 id="dnt-title">Please don't change these</h2>
+            <p class="hint" id="dnt-subtitle"></p>
+            <ul id="do-not-touch-list"></ul>
+          </section>
 
-        <!-- A23 cost guard display only -->
-        <section class="card" id="cost-card">
-          <h2>Cost guard</h2>
-          <p id="cost-label" class="tag"></p>
-          <p id="cost-detail"></p>
-        </section>
-      </div>
+          <section class="card" id="gates-card">
+            <h2>Gates <span class="tag">look only — nothing to approve here yet</span></h2>
+            <ul id="gates-list"></ul>
+          </section>
 
-      <!-- A21 honest-scope Panic Card -->
-      <section class="card panic" id="panic-card">
-        <h2>Panic / Stop</h2>
-        <button id="panic-button" type="button">Panic — halt &amp; preserve evidence</button>
-        <p id="panic-scope" class="panic-scope" hidden></p>
-      </section>
+          <section class="card" id="evidence-card">
+            <h2>Evidence</h2>
+            <ul id="evidence-list"></ul>
+          </section>
 
-      <!-- A22 data classification badges -->
-      <section class="card" id="dataclass-card">
-        <h2>Data classification</h2>
-        <p>Project class: <span id="dc-projectclass" class="badge"></span></p>
-        <p id="dc-policy"></p>
-      </section>
-    </main>
+          <section class="card" id="doctor-card">
+            <h2 id="doctor-title">Health check</h2>
+            <p>Version <b id="doctor-version"></b> · files found <b id="doctor-present"></b></p>
+            <ul class="checkgrid" id="doctor-checks"></ul>
+          </section>
 
-    <!-- A19 permanent Failure-Modes Reminder -->
-    <footer id="failure-modes">
-      <h2>NON-DEVELOPER FAILURE-MODES REMINDER</h2>
-      <ul id="failure-modes-list"></ul>
-    </footer>
+          <section class="card" id="cost-card">
+            <h2 id="cost-title">Spending</h2>
+            <p id="cost-friendly" class="hint"></p>
+            <p id="cost-detail" class="soft"></p>
+          </section>
 
+          <section class="card" id="dataclass-card">
+            <h2 id="dc-title">Data safety</h2>
+            <p>This project: <span id="dc-projectclass" class="badge"></span></p>
+            <p id="dc-note" class="hint"></p>
+          </section>
+
+          <section class="card remember" id="failure-modes">
+            <h2 id="fm-title">Good things to remember</h2>
+            <ul id="failure-modes-list"></ul>
+          </section>
+        </div>
+      </main>
+    </div>
     <script type="module" src="app.js"></script>
   </body>
 </html>

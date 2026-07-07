@@ -7,7 +7,8 @@
 | Date | Gate | Decision | Exact sentence / result recorded | Packet SHA |
 | ----- | ----- | ----- | ----- | ----- |
 | 2026-07-07 | G1 — start V8-A1 implementation | **APPROVED** | "I approve starting V8-A1 implementation per the approved V8-A1 lane packet." | B0 packet SHA `6273b3808f2af8bad3983cfde41bbc44772a9dcc` (PR #15) |
-| | G2 — UI witness / Stranger Test / Hand-Burden completion | | | |
+| 2026-07-07 | G2 — UI witness (attempt #1) | **FAILED (visual review)** | Founder-caught defects (verbatim): (1) layout is a long scroll wall — not friendly for a non-developer; (2) tone is developer-scary, not human; (3) the large red glowing "Panic" button is intimidating and mislabeled for a human user; (4) founder supplied a target layout direction: left sidebar app shell, welcome header, compact card grid, assistant-style polish. Stranger Test + Hand-Burden deferred to re-witness. See `docs/assembly-evidence/B2/bugs/g2-attempt-1.md`. | B2 SHA `d2ad41503caa2b9044ca30a69f4aa9a41a6940d2` (PR #17) |
+| | G2 — UI witness (re-witness after UX repair) | | | |
 | | G3 — V8-A1 approve/reject | | | |
 | | G4 — V8-A2 start approve/reject | | | |
 | | Any live/payment/provider/send/production/legal/IP/security/external-account gate | | | |

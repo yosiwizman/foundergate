@@ -1,0 +1,19 @@
+{
+  "machine_id": "harvest-terminal-macos-24gb",
+  "os": "macos",
+  "cpu_cores": 12,
+  "ram_gb": 24,
+  "disk_free_gb": 17,
+  "docker_available": true,
+  "playwright_available": true,
+  "node_available": true,
+  "git_available": true,
+  "github_cli_available": true,
+  "local_writer_slots": 3,
+  "cloud_writer_slots": 2,
+  "recommended_parallel_lanes": 3,
+  "heavy_build_lanes": 1,
+  "playwright_lanes": 2,
+  "safe_mode": false,
+  "reason": "Preflight for the B12 UX repair lane (post-G2-attempt-1). macOS, 12 cores, 24 GB RAM, ~17 GB free. recommended_parallel_lanes 3; this lane is a single UI layout/copy/styling lane (one file set), so 1 lane used; Playwright serialized for screenshots at 1366x768. safe_mode false. Docker forbidden in V8-A1. No new capability; layout/copy/styling of existing A11-A24 only."
+}
