@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0.0",
+  "adapter_id": "claude-code",
+  "worker_name": "Claude Code",
+  "status": "real",
+  "installed": true,
+  "description": "REAL, in-use worker. Claude Code runs an isolated writer lane inside its own git worktree, touches only files inside its declared file lease, commits once, pushes its own branch, and opens a draft PR requesting a Copilot review. It never merges (the Terminal-0 sheriff merges) and never activates application runtime or a forbidden provider. This descriptor documents the workflow already exercised by the foundergate/* isolated-writer lanes (H1-H7).",
+  "privileged_execution": false,
+  "activates_runtime": false,
+  "input_contract": {
+    "mission": "A single scoped mission statement handed to the lane as its task prompt (director/orchestrator message; never treated as founder consent).",
+    "lease_globs": [
+      "harness/adapters/interface/**",
+      "docs/harness/H7_WORKER_ADAPTER_INTERFACE.md"
+    ],
+    "branch": "foundergate/<lane-slug> assigned by the orchestrator; the lane stays on it and never switches.",
+    "base_ref": "origin/main",
+    "hard_exclusions": [
+      "no git push to a shared/protected branch beyond the lane's own",
+      "no git merge / no self-merge",
+      "no provider mutation (email/calendar/chat/browser/session)",
+      "no privileged / permission-mode-escape execution",
+      "no application runtime activation or marker flip",
+      "no package/lockfile/Docker/launchd/infra edits",
+      "no secrets/creds/OAuth handling"
+    ]
+  },
+  "allowed_tools": [
+    "Read",
+    "Edit",
+    "Write",
+    "Grep",
+    "Bash:offline",
+    "git:commit-local",
+    "git:push-own-branch",
+    "gh:pr-create-draft",
+    "gh:request-review"
+  ],
+  "forbidden_tools": [
+    "git:merge",
+    "git:push-protected",
+    "provider:send",
+    "provider:archive-delete-rsvp",
+    "permission-mode-escape",
+    "network:egress",
+    "package-or-lockfile-edit",
+    "docker-or-launchd-mutation"
+  ],
+  "expected_outputs": {
+    "artifacts": [
+      "harness/adapters/interface/worker-adapter.schema.json",
+      "harness/adapters/interface/validate.mjs",
+      "harness/adapters/interface/validate.selftest.mjs",
+      "harness/adapters/interface/examples/*.json",
+      "docs/harness/H7_WORKER_ADAPTER_INTERFACE.md"
+    ],
+    "commit_required": true,
+    "one_commit_per_task": true,
+    "commit_message_convention": "proof(...) or feat(...) subject line ending with the Co-Authored-By: Claude trailer"
+  },
+  "proof_packet": {
+    "required": true,
+    "kinds": [
+      "ci-safety",
+      "selftest",
+      "diff-summary"
+    ],
+    "must_include": [
+      "head_sha",
+      "branch",
+      "pr_number",
+      "ci_result",
+      "selftest_name"
+    ],
+    "docs_never_runtime": true
+  },
+  "progress_status": {
+    "reporting": "background-callback",
+    "states": [
+      "queued",
+      "running",
+      "proof",
+      "handoff",
+      "done",
+      "blocked"
+    ]
+  },
+  "failure_mode": {
+    "on_failure": "clear-failure-marker",
+    "returns_marker": true,
+    "partial_allowed": true,
+    "no_fake_completion": true
+  },
+  "gate_report": {
+    "surfaces_gate": true,
+    "gate_categories": [
+      "legal",
+      "not-a-real-category"
+    ],
+    "delivery": "pr-body",
+    "never_self_clears": false
+  },
+  "pr_handoff": {
+    "opens_pr": true,
+    "pr_state": "draft",
+    "merges": false,
+    "requests_review": [
+      "copilot-pull-request-reviewer[bot]"
+    ],
+    "body_convention": "PR body ends with the '🤖 Generated with Claude Code' trailer; a GATE REPORT block is included when a true founder gate appears."
+  },
+  "integration_evidence": [
+    "REAL: exercised by the foundergate/* isolated-writer lanes H1-H6 (draft PRs #193, #203, and the H1-H6 harness series).",
+    "REAL: workflow matches the isolated-writer contract in docs/contracts/AGENT_CONSTITUTION.md (file-lease + no-self-merge)."
+  ]
+}

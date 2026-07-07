@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0.0",
+  "adapter_id": "aider",
+  "worker_name": "Aider (planned)",
+  "status": "planned",
+  "installed": false,
+  "description": "PLANNED adapter — Aider is NOT installed and NOT wired into the harness. This descriptor is a design-only sketch of how an Aider worker WOULD present the same interface if it were ever admitted: run in its own worktree, edit only within a lease, commit locally, and hand off a branch for the sheriff to review. Nothing here installs, launches, or authorizes Aider. Admitting it later would still require its own argv/contract proof and the standard founder gates; this spec removes re-derivation, never verification.",
+  "privileged_execution": false,
+  "activates_runtime": false,
+  "input_contract": {
+    "mission": "PLANNED: a single scoped mission would be passed as Aider's task message.",
+    "lease_globs": [
+      "PLANNED: the lane's file-lease glob(s), enforced by the harness, not by Aider itself"
+    ],
+    "branch": "PLANNED: a harness-assigned foundergate/<slug> branch; the worker stays on it.",
+    "base_ref": "origin/main",
+    "hard_exclusions": [
+      "no git merge / no self-merge",
+      "no provider mutation",
+      "no privileged / permission-mode-escape execution",
+      "no application runtime activation",
+      "no package/lockfile/infra edits",
+      "no unattended network egress beyond its own model endpoint (which is itself a gate)"
+    ]
+  },
+  "allowed_tools": [
+    "Read",
+    "Edit",
+    "Bash:offline",
+    "git:commit-local",
+    "git:push-own-branch"
+  ],
+  "forbidden_tools": [
+    "git:merge",
+    "provider:send",
+    "permission-mode-escape",
+    "network:egress-unbounded",
+    "package-or-lockfile-edit"
+  ],
+  "expected_outputs": {
+    "artifacts": [
+      "PLANNED: files inside the assigned lease only"
+    ],
+    "commit_required": true,
+    "one_commit_per_task": true,
+    "commit_message_convention": "PLANNED: a proof(...) subject with the required Co-Authored-By trailer"
+  },
+  "proof_packet": {
+    "required": true,
+    "kinds": ["ci-safety", "diff-summary"],
+    "must_include": ["head_sha", "branch", "ci_result"],
+    "docs_never_runtime": true
+  },
+  "progress_status": {
+    "reporting": "polling",
+    "states": ["queued", "editing", "committed", "handoff", "blocked"]
+  },
+  "failure_mode": {
+    "on_failure": "clear-failure-marker",
+    "returns_marker": true,
+    "partial_allowed": true,
+    "no_fake_completion": true
+  },
+  "gate_report": {
+    "surfaces_gate": true,
+    "gate_categories": ["legal", "IP", "secrets", "external-account", "OAuth", "live-crossing"],
+    "delivery": "stdout-marker",
+    "never_self_clears": true
+  },
+  "pr_handoff": {
+    "opens_pr": true,
+    "pr_state": "draft",
+    "merges": false,
+    "requests_review": [],
+    "body_convention": "PLANNED: harness-standard PR-body trailer; a GATE REPORT block when a true founder gate appears."
+  },
+  "integration_evidence": [
+    "PLANNED / NOT-INSTALLED: Aider is not present in this environment and has no live harness wiring.",
+    "PLANNED: this descriptor is a design-only sketch; admitting Aider requires its own argv/contract proof + founder gates before status could ever become 'real'."
+  ]
+}
