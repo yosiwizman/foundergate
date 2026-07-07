@@ -34,7 +34,7 @@ The schema-first gate and cannot-invent-state test run in the `selftests` CI job
 SHA. **CI link + exact SHA are stamped below on merge** (living-evidence maintenance, per the B0 pattern):
 
 - Machine-capacity preflight: `docs/assembly-evidence/B1/machine-capacity-profile.json`
-- PR: `#B1PR` · exact merge SHA: `B1SHA` · CI: `B1CI`
+- PR: `#16` · exact merge SHA: `d6f06cfac79becf62f5556bd0014c13407b5fb0d` · CI: https://github.com/yosiwizman/foundergate/actions/runs/28890531536
 
 ## Scope honesty
 
