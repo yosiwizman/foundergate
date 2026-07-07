@@ -10,6 +10,13 @@ secrets/
 *secret*
 *credential*
 *token*
+
+# Test fixtures are DATA, never real secrets — the pre-commit secret SCAN (not
+# this filename glob) is the real guard. Un-ignore test fixtures so legitimately
+# named ones (e.g. secrets-absent.fixture.json, which proves a secret is ABSENT)
+# are tracked and reach CI.
+!**/fixtures/**
+!**/*.fixture.json
 .npmrc
 
 # --- Private store paths (source-system runtime state; never a dependency here) ---
