@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0.0",
+  "adapter_id": "openhands",
+  "worker_name": "OpenHands (planned)",
+  "status": "planned",
+  "installed": false,
+  "description": "PLANNED adapter — OpenHands is NOT installed and NOT wired into the harness. This descriptor is a design-only sketch of how an OpenHands worker WOULD present the same interface: sandboxed edit-and-run inside its own worktree and lease, local commit, and branch handoff for the Terminal-0 sheriff to review. OpenHands can drive a broader tool surface, so its forbidden_tools list is deliberately strict. Nothing here installs, launches, sandboxes, or authorizes OpenHands; a future admission would still require its own contract proof and the standard founder gates.",
+  "privileged_execution": false,
+  "activates_runtime": false,
+  "input_contract": {
+    "mission": "PLANNED: a single scoped mission would be delivered as the OpenHands agent task.",
+    "lease_globs": [
+      "PLANNED: the lane's file-lease glob(s), enforced by the harness outside the worker"
+    ],
+    "branch": "PLANNED: a harness-assigned foundergate/<slug> branch; no branch switching.",
+    "base_ref": "origin/main",
+    "hard_exclusions": [
+      "no git merge / no self-merge",
+      "no provider mutation (email/calendar/chat/browser/session/keychain)",
+      "no privileged / permission-mode-escape execution",
+      "no application runtime activation or marker flip",
+      "no package/lockfile/Docker/launchd/infra edits",
+      "no arbitrary shell egress or container escape",
+      "no secrets/creds/OAuth handling"
+    ]
+  },
+  "allowed_tools": [
+    "Read",
+    "Edit",
+    "Write",
+    "Bash:offline-sandboxed",
+    "git:commit-local",
+    "git:push-own-branch"
+  ],
+  "forbidden_tools": [
+    "git:merge",
+    "git:push-protected",
+    "provider:send",
+    "provider:archive-delete-rsvp",
+    "permission-mode-escape",
+    "network:egress-unbounded",
+    "container-escape",
+    "package-or-lockfile-edit",
+    "docker-or-launchd-mutation"
+  ],
+  "expected_outputs": {
+    "artifacts": [
+      "PLANNED: files inside the assigned lease only"
+    ],
+    "commit_required": true,
+    "one_commit_per_task": true,
+    "commit_message_convention": "PLANNED: a proof(...) subject with the required Co-Authored-By trailer"
+  },
+  "proof_packet": {
+    "required": true,
+    "kinds": ["ci-safety", "selftest", "test-output", "diff-summary"],
+    "must_include": ["head_sha", "branch", "pr_number", "ci_result", "test_name"],
+    "docs_never_runtime": true
+  },
+  "progress_status": {
+    "reporting": "background-callback",
+    "states": ["queued", "planning", "running", "proof", "handoff", "done", "blocked"]
+  },
+  "failure_mode": {
+    "on_failure": "escalate",
+    "returns_marker": true,
+    "partial_allowed": true,
+    "no_fake_completion": true
+  },
+  "gate_report": {
+    "surfaces_gate": true,
+    "gate_categories": ["legal", "IP", "public", "secrets", "external-account", "payment", "OAuth", "live-crossing", "device"],
+    "delivery": "verdict-json",
+    "never_self_clears": true
+  },
+  "pr_handoff": {
+    "opens_pr": true,
+    "pr_state": "draft",
+    "merges": false,
+    "requests_review": [],
+    "body_convention": "PLANNED: harness-standard PR-body trailer; a GATE REPORT block when a true founder gate appears."
+  },
+  "integration_evidence": [
+    "PLANNED / NOT-INSTALLED: OpenHands is not present in this environment and has no live harness wiring.",
+    "PLANNED: this descriptor is a design-only sketch; admitting OpenHands requires its own contract proof + strict sandbox review + founder gates before status could ever become 'real'."
+  ]
+}

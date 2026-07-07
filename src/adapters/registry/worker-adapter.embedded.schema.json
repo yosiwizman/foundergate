@@ -1,0 +1,314 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/adapters/registry/worker-adapter.embedded.schema.json",
+  "title": "Worker Adapter Descriptor (H35 local copy of the H7 shape)",
+  "description": "LOCAL COPY of the H7 worker-adapter descriptor schema, vendored into the H35 registry so the registry validator has ZERO cross-file dependency on harness/adapters/interface. Keep byte-identical in shape to the H7 authoritative schema; the H35 selftest re-checks conformance. Machine-readable contract that describes a generic autonomous WORKER (a coding/agent worker such as Claude Code, or a planned Aider / OpenHands worker) and the interface it presents to the FounderGate/CLDH harness. A descriptor is a SPEC, never runtime: it does not install, launch, activate, or authorize any worker. It only declares (1) what task shape the worker consumes, (2) which tools it may and may not use, (3) what outputs and proof it must produce, (4) how it reports progress and failure, (5) how it surfaces a true founder gate, and (6) how it hands off a PR. Every adapter is bound by the same hard exclusions the application constitution places on writer lanes: no self-merge, no privileged execution, no runtime activation (constitution §3-§5). status='real' vs status='planned' is a first-class, machine-checkable field so an unbuilt integration can never be presented as a live one (no fake state).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "adapter_id",
+    "worker_name",
+    "status",
+    "installed",
+    "description",
+    "privileged_execution",
+    "activates_runtime",
+    "input_contract",
+    "allowed_tools",
+    "forbidden_tools",
+    "expected_outputs",
+    "proof_packet",
+    "progress_status",
+    "failure_mode",
+    "gate_report",
+    "pr_handoff",
+    "integration_evidence"
+  ],
+  "properties": {
+    "schema_version": {
+      "description": "Semantic version of this descriptor schema the emitter targeted.",
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "adapter_id": {
+      "description": "Stable machine identifier for this adapter (kebab-case), e.g. 'claude-code', 'aider', 'openhands'.",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,63}$"
+    },
+    "worker_name": {
+      "description": "Human-readable name of the worker this adapter describes (e.g. 'Claude Code').",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "status": {
+      "description": "Whether this adapter describes a REAL, existing, in-use workflow or a PLANNED (not-yet-built) one. This is the anti-fake-state field: a 'planned' adapter must never be rendered as a live capability.",
+      "type": "string",
+      "enum": ["real", "planned"]
+    },
+    "installed": {
+      "description": "Is the underlying worker actually installed/available in this environment right now? Bound to `status` by the invariants below: real => installed true; planned => installed false. Never claim installed for a planned worker.",
+      "type": "boolean"
+    },
+    "description": {
+      "description": "One-paragraph human description of what the worker does and how it is (or would be) driven by the harness.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "privileged_execution": {
+      "description": "MUST be false for every adapter. The harness never grants a worker privileged/elevated execution; a descriptor that claims otherwise is rejected.",
+      "type": "boolean",
+      "const": false
+    },
+    "activates_runtime": {
+      "description": "MUST be false for every adapter. A worker adapter describes an interface; it never activates application runtime, arms a provider, or flips a live marker.",
+      "type": "boolean",
+      "const": false
+    },
+    "input_contract": {
+      "description": "The task shape the worker consumes: what a caller must hand it before it can start.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mission", "lease_globs", "branch", "base_ref", "hard_exclusions"],
+      "properties": {
+        "mission": {
+          "description": "How the single scoped task/mission statement is delivered to the worker.",
+          "type": "string",
+          "minLength": 1
+        },
+        "lease_globs": {
+          "description": "The file-lease glob(s) the worker is allowed to touch. At least one; the worker must touch nothing outside them.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "branch": {
+          "description": "How the working branch is named/assigned (the worker stays on it; never switches).",
+          "type": "string",
+          "minLength": 1
+        },
+        "base_ref": {
+          "description": "The base ref the branch is cut from (e.g. origin/main).",
+          "type": "string",
+          "minLength": 1
+        },
+        "hard_exclusions": {
+          "description": "The named hard exclusions handed to the worker (no self-merge, no provider mutation, no privileged execution, no runtime activation, no secrets, etc.).",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "allowed_tools": {
+      "description": "Tool identifiers the worker MAY use inside its lease (e.g. 'Read', 'Edit', 'Write', 'Bash:offline', 'Grep', 'git:commit-local'). Descriptive labels, not an execution grant.",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "forbidden_tools": {
+      "description": "Tool identifiers / actions the worker MUST NOT use (e.g. 'git:push', 'git:merge', 'provider:send', 'permission-mode-escape', 'network:egress', 'package/lockfile edit').",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "expected_outputs": {
+      "description": "What a completed task must produce.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifacts", "commit_required", "one_commit_per_task", "commit_message_convention"],
+      "properties": {
+        "artifacts": {
+          "description": "The concrete artifacts the worker is expected to leave (files/globs inside the lease).",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "commit_required": {
+          "description": "Whether the worker must commit its work (true for a writer worker).",
+          "type": "boolean"
+        },
+        "one_commit_per_task": {
+          "description": "Commit discipline: exactly one commit per scoped task.",
+          "type": "boolean"
+        },
+        "commit_message_convention": {
+          "description": "The required commit-message shape/template (e.g. a proof(...) prefix + Co-Authored-By trailer).",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "proof_packet": {
+      "description": "How the worker proves its work is real and safe — the checkable evidence bundle a reviewer consumes.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "kinds", "must_include", "docs_never_runtime"],
+      "properties": {
+        "required": {
+          "description": "Whether a proof packet is mandatory for a completed task.",
+          "type": "boolean"
+        },
+        "kinds": {
+          "description": "The kinds of proof the worker can emit.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": ["ci-safety", "selftest", "transcript", "screenshot-manifest", "diff-summary", "test-output", "none"]
+          }
+        },
+        "must_include": {
+          "description": "Fields every proof packet must carry so a verdict is machine-trustable (e.g. 'head_sha', 'branch', 'ci_result', 'test_name').",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "docs_never_runtime": {
+          "description": "MUST be true. A docs/spec artifact is never counted as runtime capability in the proof packet.",
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "progress_status": {
+      "description": "How the worker reports progress back to the orchestrator.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reporting", "states"],
+      "properties": {
+        "reporting": {
+          "description": "The progress-reporting mode.",
+          "type": "string",
+          "enum": ["background-callback", "polling", "synchronous", "none"]
+        },
+        "states": {
+          "description": "The ordered set of progress states the worker can be in (e.g. queued, running, proof, done, blocked).",
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "failure_mode": {
+      "description": "How the worker behaves and reports when it cannot complete the task.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["on_failure", "returns_marker", "partial_allowed", "no_fake_completion"],
+      "properties": {
+        "on_failure": {
+          "description": "What the worker does on failure.",
+          "type": "string",
+          "enum": ["clear-failure-marker", "escalate", "retry-bounded", "silent"]
+        },
+        "returns_marker": {
+          "description": "Whether the worker returns a deterministic failure/confirmation marker the orchestrator can parse.",
+          "type": "boolean"
+        },
+        "partial_allowed": {
+          "description": "Whether an honest PARTIAL (bounded fact + named gap) is an acceptable outcome.",
+          "type": "boolean"
+        },
+        "no_fake_completion": {
+          "description": "MUST be true. The worker never fabricates completion; an unsatisfiable lease returns a clear failure marker.",
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "gate_report": {
+      "description": "How the worker surfaces a true founder gate (a decision only the founder may make) without ever clearing it itself.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["surfaces_gate", "gate_categories", "delivery", "never_self_clears"],
+      "properties": {
+        "surfaces_gate": {
+          "description": "Whether the worker detects and reports a true founder gate.",
+          "type": "boolean"
+        },
+        "gate_categories": {
+          "description": "The founder-gate categories the worker recognizes (a superset is fine).",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": ["legal", "IP", "public", "secrets", "external-account", "payment", "OAuth", "live-crossing", "device", "mic"]
+          }
+        },
+        "delivery": {
+          "description": "Where the gate report is delivered.",
+          "type": "string",
+          "enum": ["pr-body", "stdout-marker", "verdict-json", "none"]
+        },
+        "never_self_clears": {
+          "description": "MUST be true. The worker reports a gate but never authorizes/clears it; only the founder can.",
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "pr_handoff": {
+      "description": "How the worker hands off a finished branch as a pull request. A worker NEVER merges — that is the Terminal-0 sheriff's job.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["opens_pr", "pr_state", "merges", "requests_review", "body_convention"],
+      "properties": {
+        "opens_pr": {
+          "description": "Whether the worker opens a PR at handoff.",
+          "type": "boolean"
+        },
+        "pr_state": {
+          "description": "The state the PR is opened in.",
+          "type": "string",
+          "enum": ["draft", "ready", "none"]
+        },
+        "merges": {
+          "description": "MUST be false for every adapter. A worker never self-merges; only the sheriff merges.",
+          "type": "boolean",
+          "const": false
+        },
+        "requests_review": {
+          "description": "Reviewers the worker requests at handoff (e.g. a Copilot bot). Empty array = requests none.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "body_convention": {
+          "description": "The required PR-body shape/trailer convention.",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "integration_evidence": {
+      "description": "Pointers that let a reviewer confirm status. For a REAL adapter: pointers to the actual workflow in use (branches, PRs, docs). For a PLANNED adapter: each entry must be clearly labeled as planned / not-installed so it is never mistaken for a live integration.",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  },
+  "allOf": [
+    {
+      "$comment": "Real-vs-planned invariant #1: a REAL adapter must be installed.",
+      "if": { "properties": { "status": { "const": "real" } } },
+      "then": { "properties": { "installed": { "const": true } } }
+    },
+    {
+      "$comment": "Real-vs-planned invariant #2: a PLANNED adapter must NOT be installed (anti-fake-state).",
+      "if": { "properties": { "status": { "const": "planned" } } },
+      "then": { "properties": { "installed": { "const": false } } }
+    }
+  ]
+}

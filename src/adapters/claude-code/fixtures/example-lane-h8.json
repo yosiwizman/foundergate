@@ -1,0 +1,55 @@
+{
+  "_label": "real",
+  "_note": "Example lane description for the Claude Code isolated-writer. Captured verbatim-in-substance so the adapter can be proven on a genuine lane shape, not a toy. No secrets, no PII, no live surface — a lane DESCRIPTION only.",
+  "lane_id": "h8-claude-code-adapter",
+  "project": "your-org/your-project",
+  "mission": "Wrap the existing CTO/night-run isolated-writer workflow as the first-class Claude Code worker adapter (around the existing workflow only; no new creds; no remote execution).",
+  "branch": "foundergate/h8-claude-code-adapter",
+  "execution_target": "local",
+  "requires_new_credential": false,
+  "flips_activation_marker": false,
+  "performs_provider_send": false,
+  "captures_microphone": false,
+  "started": true,
+  "blocked": false,
+  "strict_lease": [
+    "harness/adapters/claude-code/**",
+    "docs/harness/H8_CLAUDE_CODE_ADAPTER.md"
+  ],
+  "hard_exclusions": [
+    "no remote execution",
+    "no new credentials, secrets, or OAuth",
+    "no application runtime, executor, or marker mutation",
+    "no provider send, mic capture, or Phase R activation",
+    "no shared harness root file; additive-only new files",
+    "no self-merge; the sheriff merges one clean lane at a time"
+  ],
+  "pr": {
+    "number": null,
+    "url": null,
+    "draft": true
+  },
+  "founder_gate": {
+    "requires_founder_gate": false
+  },
+  "proof": {
+    "status": "unproven",
+    "requirements": [
+      "run the adapter on the sample lane offline -> normalized record + proof packet",
+      "the selftest passes",
+      "ci-safety PASS with FAIL:0"
+    ],
+    "tests": [
+      {
+        "name": "adapter-selftest",
+        "command": "node src/adapters/claude-code/claude-code-adapter.selftest.mjs",
+        "offline": true
+      },
+      {
+        "name": "adapter-cli-on-real-lane",
+        "command": "node src/adapters/claude-code/claude-code-adapter.mjs --fixture src/adapters/claude-code/fixtures/example-lane-h8.json",
+        "offline": true
+      }
+    ]
+  }
+}

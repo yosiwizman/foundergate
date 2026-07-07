@@ -1,0 +1,590 @@
+{
+  "schema_version": "1.0.0",
+  "registry_id": "worker-adapter-registry",
+  "generated_by": "foundergate/h35-worker-adapter-registry (isolated-writer, research/data-only)",
+  "research_only": true,
+  "no_install": true,
+  "no_credentials": true,
+  "no_network_fetch": true,
+  "lifecycle_legend": {
+    "research": "Surveyed from documented knowledge only. No descriptor is exercised, nothing is installed, and admitting this worker still requires its own contract proof + founder gates.",
+    "planned": "A design-only H7-shape descriptor is sketched (how the worker WOULD present the harness interface). Still not installed; installed:false is enforced.",
+    "installed": "The worker is actually present and in-use in THIS environment right now (status:real, installed:true), with live integration evidence."
+  },
+  "adapters": [
+    {
+      "adapter_id": "claude-code",
+      "worker_name": "Claude Code",
+      "vendor": "Anthropic",
+      "lifecycle": "installed",
+      "one_line": "Anthropic's official CLI coding agent; runs isolated writer lanes inside a git worktree, commits once, opens a draft PR, never merges.",
+      "homepage_reference": "Anthropic Claude Code CLI (docs.claude.com/claude-code)",
+      "license_note": "Proprietary (Anthropic commercial terms); model access via Anthropic API / subscription.",
+      "required_permissions": [
+        "filesystem:worktree-scoped read/write inside the assigned lease",
+        "shell:offline (bounded, no unbounded egress)",
+        "git:commit-local + push own foundergate/* branch",
+        "model-api:Anthropic (Claude) for the agent loop",
+        "gh:pr-create-draft + request-review"
+      ],
+      "founder_gates_before_install": [
+        "model-api-key",
+        "contract-proof"
+      ],
+      "install_blockers": [],
+      "descriptor": {
+        "schema_version": "1.0.0",
+        "adapter_id": "claude-code",
+        "worker_name": "Claude Code",
+        "status": "real",
+        "installed": true,
+        "description": "REAL, in-use worker (this registry entry mirrors the H7 claude-code.real descriptor). Claude Code runs an isolated writer lane inside its own git worktree, touches only files inside its declared file lease, commits once, pushes its own branch, and opens a draft PR requesting a Copilot review. It never merges (the Terminal-0 sheriff merges) and never activates application runtime or a forbidden provider.",
+        "privileged_execution": false,
+        "activates_runtime": false,
+        "input_contract": {
+          "mission": "A single scoped mission statement handed to the lane as its task prompt (director/orchestrator message; never treated as founder consent).",
+          "lease_globs": [
+            "harness/adapters/**",
+            "docs/harness/H*.md"
+          ],
+          "branch": "foundergate/<lane-slug> assigned by the orchestrator; the lane stays on it and never switches.",
+          "base_ref": "origin/main",
+          "hard_exclusions": [
+            "no git push to a shared/protected branch beyond the lane's own",
+            "no git merge / no self-merge",
+            "no provider mutation (email/calendar/chat/browser/session)",
+            "no privileged / permission-mode-escape execution",
+            "no application runtime activation or marker flip",
+            "no package/lockfile/Docker/launchd/infra edits",
+            "no secrets/creds/OAuth handling"
+          ]
+        },
+        "allowed_tools": [
+          "Read",
+          "Edit",
+          "Write",
+          "Grep",
+          "Bash:offline",
+          "git:commit-local",
+          "git:push-own-branch",
+          "gh:pr-create-draft",
+          "gh:request-review"
+        ],
+        "forbidden_tools": [
+          "git:merge",
+          "git:push-protected",
+          "provider:send",
+          "provider:archive-delete-rsvp",
+          "permission-mode-escape",
+          "network:egress",
+          "package-or-lockfile-edit",
+          "docker-or-launchd-mutation"
+        ],
+        "expected_outputs": {
+          "artifacts": [
+            "files inside the assigned lease only"
+          ],
+          "commit_required": true,
+          "one_commit_per_task": true,
+          "commit_message_convention": "proof(...) or feat(...) subject line ending with the Co-Authored-By: Claude trailer"
+        },
+        "proof_packet": {
+          "required": true,
+          "kinds": ["ci-safety", "selftest", "diff-summary"],
+          "must_include": ["head_sha", "branch", "pr_number", "ci_result", "selftest_name"],
+          "docs_never_runtime": true
+        },
+        "progress_status": {
+          "reporting": "background-callback",
+          "states": ["queued", "running", "proof", "handoff", "done", "blocked"]
+        },
+        "failure_mode": {
+          "on_failure": "clear-failure-marker",
+          "returns_marker": true,
+          "partial_allowed": true,
+          "no_fake_completion": true
+        },
+        "gate_report": {
+          "surfaces_gate": true,
+          "gate_categories": ["legal", "IP", "public", "secrets", "external-account", "payment", "OAuth", "live-crossing"],
+          "delivery": "pr-body",
+          "never_self_clears": true
+        },
+        "pr_handoff": {
+          "opens_pr": true,
+          "pr_state": "draft",
+          "merges": false,
+          "requests_review": ["copilot-pull-request-reviewer[bot]"],
+          "body_convention": "PR body ends with the Generated-with-Claude-Code trailer; a GATE REPORT block is included when a true founder gate appears."
+        },
+        "integration_evidence": [
+          "REAL: exercised by the foundergate/* isolated-writer lanes (the H-series harness).",
+          "REAL: workflow matches the isolated-writer contract in docs/contracts/AGENT_CONSTITUTION.md (file-lease + no-self-merge)."
+        ]
+      }
+    },
+    {
+      "adapter_id": "aider",
+      "worker_name": "Aider (planned)",
+      "vendor": "Aider AI / community (Paul Gauthier)",
+      "lifecycle": "planned",
+      "one_line": "Terminal pair-programming agent that edits a local git repo and auto-commits each change; model-agnostic via API keys.",
+      "homepage_reference": "aider.chat / github.com/Aider-AI/aider",
+      "license_note": "Apache-2.0 (verify current license before any install).",
+      "required_permissions": [
+        "filesystem:worktree-scoped read/write inside the assigned lease",
+        "shell:offline for edit-test loops",
+        "git:commit-local (Aider auto-commits)",
+        "model-api:external LLM key (OpenAI/Anthropic/etc.) selected at config time",
+        "network:egress to the chosen model endpoint"
+      ],
+      "founder_gates_before_install": [
+        "install-approval",
+        "model-api-key",
+        "network-egress-allowlist",
+        "license-review",
+        "contract-proof"
+      ],
+      "install_blockers": [
+        "PLANNED / NOT-INSTALLED: Aider is not present in this environment.",
+        "Requires an external model API key that the harness does not hold (credentials gate).",
+        "Needs a scoped network-egress allowlist for the model endpoint (egress gate)."
+      ],
+      "descriptor": {
+        "schema_version": "1.0.0",
+        "adapter_id": "aider",
+        "worker_name": "Aider (planned)",
+        "status": "planned",
+        "installed": false,
+        "description": "PLANNED adapter — Aider is NOT installed and NOT wired into the harness. Design-only sketch of how an Aider worker WOULD present the harness interface: it edits files inside a single worktree/lease and auto-commits, then hands the branch off for the Terminal-0 sheriff. Aider talks to an external model endpoint, so its egress and credentials gates are explicit. Nothing here installs, configures, keys, or authorizes Aider; admission would require its own contract proof and the standard founder gates.",
+        "privileged_execution": false,
+        "activates_runtime": false,
+        "input_contract": {
+          "mission": "PLANNED: a single scoped mission would be delivered as the Aider chat/task instruction.",
+          "lease_globs": [
+            "PLANNED: the lane's file-lease glob(s), enforced by the harness outside the worker"
+          ],
+          "branch": "PLANNED: a harness-assigned foundergate/<slug> branch; no branch switching.",
+          "base_ref": "origin/main",
+          "hard_exclusions": [
+            "no git merge / no self-merge",
+            "no provider mutation (email/calendar/chat/browser/session/keychain)",
+            "no privileged / permission-mode-escape execution",
+            "no application runtime activation or marker flip",
+            "no package/lockfile/Docker/launchd/infra edits",
+            "no unbounded network egress beyond the approved model endpoint",
+            "no secrets/creds/OAuth handling by the lane"
+          ]
+        },
+        "allowed_tools": [
+          "Read",
+          "Edit",
+          "Write",
+          "Bash:offline",
+          "git:commit-local",
+          "git:push-own-branch"
+        ],
+        "forbidden_tools": [
+          "git:merge",
+          "git:push-protected",
+          "provider:send",
+          "provider:archive-delete-rsvp",
+          "permission-mode-escape",
+          "network:egress-unbounded",
+          "package-or-lockfile-edit",
+          "docker-or-launchd-mutation"
+        ],
+        "expected_outputs": {
+          "artifacts": [
+            "PLANNED: files inside the assigned lease only"
+          ],
+          "commit_required": true,
+          "one_commit_per_task": false,
+          "commit_message_convention": "PLANNED: Aider auto-commits per edit; the harness would squash to one proof(...) commit with the Co-Authored-By trailer before handoff."
+        },
+        "proof_packet": {
+          "required": true,
+          "kinds": ["ci-safety", "test-output", "diff-summary"],
+          "must_include": ["head_sha", "branch", "pr_number", "ci_result"],
+          "docs_never_runtime": true
+        },
+        "progress_status": {
+          "reporting": "synchronous",
+          "states": ["queued", "editing", "testing", "handoff", "done", "blocked"]
+        },
+        "failure_mode": {
+          "on_failure": "clear-failure-marker",
+          "returns_marker": true,
+          "partial_allowed": true,
+          "no_fake_completion": true
+        },
+        "gate_report": {
+          "surfaces_gate": true,
+          "gate_categories": ["legal", "IP", "secrets", "external-account", "OAuth", "live-crossing"],
+          "delivery": "verdict-json",
+          "never_self_clears": true
+        },
+        "pr_handoff": {
+          "opens_pr": true,
+          "pr_state": "draft",
+          "merges": false,
+          "requests_review": [],
+          "body_convention": "PLANNED: harness-standard PR-body trailer; a GATE REPORT block when a true founder gate appears."
+        },
+        "integration_evidence": [
+          "PLANNED / NOT-INSTALLED: Aider is not present in this environment and has no live harness wiring.",
+          "PLANNED: design-only sketch; admitting Aider requires a model-api-key gate, a network-egress allowlist, license review, and its own contract proof before status could ever become 'real'."
+        ]
+      }
+    },
+    {
+      "adapter_id": "openhands",
+      "worker_name": "OpenHands (planned)",
+      "vendor": "All-Hands-AI / community (formerly OpenDevin)",
+      "lifecycle": "planned",
+      "one_line": "Sandboxed autonomous software agent that edits, runs code, and browses inside a container; broad tool surface.",
+      "homepage_reference": "github.com/All-Hands-AI/OpenHands",
+      "license_note": "MIT (verify current license before any install).",
+      "required_permissions": [
+        "filesystem:worktree-scoped read/write inside the assigned lease",
+        "container:isolated sandbox for code execution",
+        "shell:sandboxed edit-and-run",
+        "model-api:external LLM key",
+        "network:egress to the chosen model endpoint (and, if enabled, browsing — must be denied for the harness)"
+      ],
+      "founder_gates_before_install": [
+        "install-approval",
+        "container-isolation",
+        "sandbox-review",
+        "model-api-key",
+        "network-egress-allowlist",
+        "contract-proof"
+      ],
+      "install_blockers": [
+        "PLANNED / NOT-INSTALLED: OpenHands is not present in this environment.",
+        "Requires a container-isolated sandbox that has not been provisioned or reviewed (sandbox/container gate).",
+        "Broad tool surface (code-run + optional browsing) demands a strict forbidden-tools contract before admission."
+      ],
+      "descriptor": {
+        "schema_version": "1.0.0",
+        "adapter_id": "openhands",
+        "worker_name": "OpenHands (planned)",
+        "status": "planned",
+        "installed": false,
+        "description": "PLANNED adapter — OpenHands is NOT installed and NOT wired into the harness. Design-only sketch of how an OpenHands worker WOULD present the same interface: sandboxed edit-and-run inside its own worktree and lease, local commit, and branch handoff for the Terminal-0 sheriff. OpenHands can drive a broader tool surface, so its forbidden_tools list is deliberately strict. Nothing here installs, launches, sandboxes, or authorizes OpenHands; a future admission would still require its own contract proof and the standard founder gates.",
+        "privileged_execution": false,
+        "activates_runtime": false,
+        "input_contract": {
+          "mission": "PLANNED: a single scoped mission would be delivered as the OpenHands agent task.",
+          "lease_globs": [
+            "PLANNED: the lane's file-lease glob(s), enforced by the harness outside the worker"
+          ],
+          "branch": "PLANNED: a harness-assigned foundergate/<slug> branch; no branch switching.",
+          "base_ref": "origin/main",
+          "hard_exclusions": [
+            "no git merge / no self-merge",
+            "no provider mutation (email/calendar/chat/browser/session/keychain)",
+            "no privileged / permission-mode-escape execution",
+            "no application runtime activation or marker flip",
+            "no package/lockfile/Docker/launchd/infra edits",
+            "no arbitrary shell egress or container escape",
+            "no secrets/creds/OAuth handling"
+          ]
+        },
+        "allowed_tools": [
+          "Read",
+          "Edit",
+          "Write",
+          "Bash:offline-sandboxed",
+          "git:commit-local",
+          "git:push-own-branch"
+        ],
+        "forbidden_tools": [
+          "git:merge",
+          "git:push-protected",
+          "provider:send",
+          "provider:archive-delete-rsvp",
+          "permission-mode-escape",
+          "network:egress-unbounded",
+          "container-escape",
+          "package-or-lockfile-edit",
+          "docker-or-launchd-mutation"
+        ],
+        "expected_outputs": {
+          "artifacts": [
+            "PLANNED: files inside the assigned lease only"
+          ],
+          "commit_required": true,
+          "one_commit_per_task": true,
+          "commit_message_convention": "PLANNED: a proof(...) subject with the required Co-Authored-By trailer"
+        },
+        "proof_packet": {
+          "required": true,
+          "kinds": ["ci-safety", "selftest", "test-output", "diff-summary"],
+          "must_include": ["head_sha", "branch", "pr_number", "ci_result", "test_name"],
+          "docs_never_runtime": true
+        },
+        "progress_status": {
+          "reporting": "background-callback",
+          "states": ["queued", "planning", "running", "proof", "handoff", "done", "blocked"]
+        },
+        "failure_mode": {
+          "on_failure": "escalate",
+          "returns_marker": true,
+          "partial_allowed": true,
+          "no_fake_completion": true
+        },
+        "gate_report": {
+          "surfaces_gate": true,
+          "gate_categories": ["legal", "IP", "public", "secrets", "external-account", "payment", "OAuth", "live-crossing", "device"],
+          "delivery": "verdict-json",
+          "never_self_clears": true
+        },
+        "pr_handoff": {
+          "opens_pr": true,
+          "pr_state": "draft",
+          "merges": false,
+          "requests_review": [],
+          "body_convention": "PLANNED: harness-standard PR-body trailer; a GATE REPORT block when a true founder gate appears."
+        },
+        "integration_evidence": [
+          "PLANNED / NOT-INSTALLED: OpenHands is not present in this environment and has no live harness wiring.",
+          "PLANNED: this descriptor is a design-only sketch; admitting OpenHands requires its own contract proof + strict sandbox review + founder gates before status could ever become 'real'."
+        ]
+      }
+    },
+    {
+      "adapter_id": "swe-agent",
+      "worker_name": "SWE-agent (research)",
+      "vendor": "Princeton NLP (research project)",
+      "lifecycle": "research",
+      "one_line": "Research agent that resolves GitHub issues via an Agent-Computer Interface; benchmarked on SWE-bench.",
+      "homepage_reference": "github.com/princeton-nlp/SWE-agent",
+      "license_note": "MIT (verify current license before any install).",
+      "required_permissions": [
+        "filesystem:worktree-scoped read/write inside the assigned lease",
+        "container:isolated environment for the Agent-Computer Interface",
+        "shell:sandboxed for edit/build/test",
+        "model-api:external LLM key",
+        "network:egress to the chosen model endpoint"
+      ],
+      "founder_gates_before_install": [
+        "install-approval",
+        "container-isolation",
+        "sandbox-review",
+        "model-api-key",
+        "network-egress-allowlist",
+        "license-review",
+        "contract-proof"
+      ],
+      "install_blockers": [
+        "RESEARCH / NOT-INSTALLED: SWE-agent is surveyed only; no descriptor is exercised.",
+        "Research-oriented issue-resolution loop is not shaped to the harness's single-lease writer contract without adaptation.",
+        "Requires an isolated container + external model key that the harness does not provision (sandbox + credentials gates)."
+      ],
+      "descriptor": {
+        "schema_version": "1.0.0",
+        "adapter_id": "swe-agent",
+        "worker_name": "SWE-agent (research)",
+        "status": "planned",
+        "installed": false,
+        "description": "RESEARCH-only entry — SWE-agent is surveyed from documentation, NOT installed and NOT wired into the harness. This descriptor is a conservative sketch of how a SWE-agent worker WOULD have to be constrained to fit the harness's isolated single-lease writer contract (issue-in, scoped-diff-out, local commit, branch handoff). Its native loop targets whole GitHub issues, so a real admission would need heavy scoping plus a sandbox. Nothing here installs, configures, or authorizes SWE-agent.",
+        "privileged_execution": false,
+        "activates_runtime": false,
+        "input_contract": {
+          "mission": "RESEARCH: a single scoped mission would replace SWE-agent's native GitHub-issue input, narrowed to one lease.",
+          "lease_globs": [
+            "RESEARCH: the lane's file-lease glob(s), enforced by the harness outside the worker"
+          ],
+          "branch": "RESEARCH: a harness-assigned foundergate/<slug> branch; no branch switching.",
+          "base_ref": "origin/main",
+          "hard_exclusions": [
+            "no git merge / no self-merge",
+            "no provider mutation (email/calendar/chat/browser/session/keychain)",
+            "no privileged / permission-mode-escape execution",
+            "no application runtime activation or marker flip",
+            "no package/lockfile/Docker/launchd/infra edits",
+            "no arbitrary shell egress or container escape",
+            "no secrets/creds/OAuth handling",
+            "no whole-repo edits beyond the assigned lease"
+          ]
+        },
+        "allowed_tools": [
+          "Read",
+          "Edit",
+          "Write",
+          "Bash:offline-sandboxed",
+          "git:commit-local",
+          "git:push-own-branch"
+        ],
+        "forbidden_tools": [
+          "git:merge",
+          "git:push-protected",
+          "provider:send",
+          "provider:archive-delete-rsvp",
+          "permission-mode-escape",
+          "network:egress-unbounded",
+          "container-escape",
+          "package-or-lockfile-edit",
+          "docker-or-launchd-mutation",
+          "github:issue-close-or-comment"
+        ],
+        "expected_outputs": {
+          "artifacts": [
+            "RESEARCH: files inside the assigned lease only"
+          ],
+          "commit_required": true,
+          "one_commit_per_task": true,
+          "commit_message_convention": "RESEARCH: a proof(...) subject with the required Co-Authored-By trailer"
+        },
+        "proof_packet": {
+          "required": true,
+          "kinds": ["ci-safety", "test-output", "diff-summary"],
+          "must_include": ["head_sha", "branch", "ci_result", "test_name"],
+          "docs_never_runtime": true
+        },
+        "progress_status": {
+          "reporting": "polling",
+          "states": ["queued", "running", "proof", "handoff", "blocked"]
+        },
+        "failure_mode": {
+          "on_failure": "escalate",
+          "returns_marker": true,
+          "partial_allowed": true,
+          "no_fake_completion": true
+        },
+        "gate_report": {
+          "surfaces_gate": true,
+          "gate_categories": ["legal", "IP", "public", "secrets", "external-account", "live-crossing"],
+          "delivery": "verdict-json",
+          "never_self_clears": true
+        },
+        "pr_handoff": {
+          "opens_pr": true,
+          "pr_state": "draft",
+          "merges": false,
+          "requests_review": [],
+          "body_convention": "RESEARCH: harness-standard PR-body trailer; a GATE REPORT block when a true founder gate appears."
+        },
+        "integration_evidence": [
+          "RESEARCH / NOT-INSTALLED: SWE-agent is not present in this environment and has no live harness wiring.",
+          "RESEARCH: surveyed from its public documentation; admitting it requires heavy scoping to a single lease, a sandbox review, an external model key, license review, and its own contract proof before status could ever become 'real'."
+        ]
+      }
+    },
+    {
+      "adapter_id": "codex-style",
+      "worker_name": "Codex-style CLI agent (research)",
+      "vendor": "Generic (OpenAI Codex CLI family / compatible)",
+      "lifecycle": "research",
+      "one_line": "Generic terminal coding agent in the Codex CLI family: reads a repo, proposes a diff, applies edits under approval; model behind an external API.",
+      "homepage_reference": "OpenAI Codex CLI family (github.com/openai/codex) and API-compatible variants",
+      "license_note": "Varies by implementation (client often Apache-2.0/MIT; the model/API is a paid external service). Verify per build.",
+      "required_permissions": [
+        "filesystem:worktree-scoped read/write inside the assigned lease",
+        "shell:offline for apply/test",
+        "git:commit-local",
+        "model-api:external LLM key (paid API)",
+        "network:egress to the chosen model endpoint"
+      ],
+      "founder_gates_before_install": [
+        "install-approval",
+        "model-api-key",
+        "network-egress-allowlist",
+        "license-review",
+        "contract-proof"
+      ],
+      "install_blockers": [
+        "RESEARCH / NOT-INSTALLED: no Codex-style CLI agent is present in this environment; this is a generic family sketch, not a specific pinned tool.",
+        "Depends on a paid external model API and key that the harness does not hold (credentials gate).",
+        "Family covers multiple implementations; a specific one must be pinned and license-reviewed before admission."
+      ],
+      "descriptor": {
+        "schema_version": "1.0.0",
+        "adapter_id": "codex-style",
+        "worker_name": "Codex-style CLI agent (research)",
+        "status": "planned",
+        "installed": false,
+        "description": "RESEARCH-only entry — no Codex-style CLI agent is installed or wired into the harness. This is a GENERIC family sketch (OpenAI Codex CLI and API-compatible terminal agents) showing how such a worker WOULD be constrained to the harness's isolated single-lease writer contract: read repo, propose diff, apply under approval, local commit, branch handoff. A real admission would pin a specific implementation and clear the standard gates. Nothing here installs, keys, or authorizes any Codex-style tool.",
+        "privileged_execution": false,
+        "activates_runtime": false,
+        "input_contract": {
+          "mission": "RESEARCH: a single scoped mission would be delivered as the agent's task prompt.",
+          "lease_globs": [
+            "RESEARCH: the lane's file-lease glob(s), enforced by the harness outside the worker"
+          ],
+          "branch": "RESEARCH: a harness-assigned foundergate/<slug> branch; no branch switching.",
+          "base_ref": "origin/main",
+          "hard_exclusions": [
+            "no git merge / no self-merge",
+            "no provider mutation (email/calendar/chat/browser/session/keychain)",
+            "no privileged / permission-mode-escape execution",
+            "no application runtime activation or marker flip",
+            "no package/lockfile/Docker/launchd/infra edits",
+            "no unbounded network egress beyond the approved model endpoint",
+            "no secrets/creds/OAuth handling by the lane"
+          ]
+        },
+        "allowed_tools": [
+          "Read",
+          "Edit",
+          "Write",
+          "Bash:offline",
+          "git:commit-local",
+          "git:push-own-branch"
+        ],
+        "forbidden_tools": [
+          "git:merge",
+          "git:push-protected",
+          "provider:send",
+          "provider:archive-delete-rsvp",
+          "permission-mode-escape",
+          "network:egress-unbounded",
+          "package-or-lockfile-edit",
+          "docker-or-launchd-mutation"
+        ],
+        "expected_outputs": {
+          "artifacts": [
+            "RESEARCH: files inside the assigned lease only"
+          ],
+          "commit_required": true,
+          "one_commit_per_task": true,
+          "commit_message_convention": "RESEARCH: a proof(...) subject with the required Co-Authored-By trailer"
+        },
+        "proof_packet": {
+          "required": true,
+          "kinds": ["ci-safety", "diff-summary"],
+          "must_include": ["head_sha", "branch", "ci_result"],
+          "docs_never_runtime": true
+        },
+        "progress_status": {
+          "reporting": "synchronous",
+          "states": ["queued", "proposing", "applying", "handoff", "blocked"]
+        },
+        "failure_mode": {
+          "on_failure": "clear-failure-marker",
+          "returns_marker": true,
+          "partial_allowed": true,
+          "no_fake_completion": true
+        },
+        "gate_report": {
+          "surfaces_gate": true,
+          "gate_categories": ["legal", "IP", "secrets", "external-account", "OAuth", "live-crossing"],
+          "delivery": "stdout-marker",
+          "never_self_clears": true
+        },
+        "pr_handoff": {
+          "opens_pr": true,
+          "pr_state": "draft",
+          "merges": false,
+          "requests_review": [],
+          "body_convention": "RESEARCH: harness-standard PR-body trailer; a GATE REPORT block when a true founder gate appears."
+        },
+        "integration_evidence": [
+          "RESEARCH / NOT-INSTALLED: no Codex-style CLI agent is present in this environment and none has live harness wiring.",
+          "RESEARCH: generic family survey; admitting one requires pinning a specific implementation, a model-api-key gate, a network-egress allowlist, license review, and its own contract proof before status could ever become 'real'."
+        ]
+      }
+    }
+  ]
+}
