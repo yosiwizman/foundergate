@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0.0",
+  "event_type": "report_emitted",
+  "ts": "2026-07-04T02:00:03Z",
+  "checker_id": "foundergate-independent-prepush-checker",
+  "target_sha": "1111111111111111111111111111111111111111",
+  "detail": "FIXTURE-ONLY. Emitted a CLEAN report to stdout. No repo mutation occurred; report is a proposal, not an authorization.",
+  "mutation_free": true
+}

@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0.0",
+  "event_type": "checker_exploded",
+  "ts": "2026-07-04T02:00:00Z",
+  "checker_id": "foundergate-independent-prepush-checker",
+  "target_sha": "1111111111111111111111111111111111111111",
+  "detail": "FIXTURE-ONLY. Independent pre-push checker began a read-only review of a clean worktree.",
+  "mutation_free": true
+}

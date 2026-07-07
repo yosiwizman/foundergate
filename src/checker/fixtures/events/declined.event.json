@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0.0",
+  "event_type": "checker_declined",
+  "ts": "2026-07-04T02:05:00Z",
+  "checker_id": "foundergate-independent-prepush-checker",
+  "target_sha": "5555555555555555555555555555555555555555",
+  "detail": "FIXTURE-ONLY. Checker abstained: it authored the work under review, so it is not an independent reviewer of it. A separate checker must review."
+}

@@ -1,0 +1,239 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/checker/checker-report.schema.json",
+  "title": "FounderGate Independent Pre-Push Checker Report",
+  "description": "Machine-readable report emitted by the independent pre-push CHECKER when it reviews a CLEAN worktree just before a push. The Checker is mechanically READ-ONLY: it NEVER edits files, NEVER commits, NEVER pushes, and NEVER merges. Its report is a PROPOSAL for the founder / Terminal-0 sheriff, NOT an authorization and NOT a merge. A Checker cannot self-certify and cannot approve its own restriction: independent Advisor/Checker verification is always still required (self_certification is always false, independent_verification_required is always true). CHECKER SCAFFOLD ONLY — final checker claims require independent Checker + Advisor verification; a checker cannot self-certify; this checker never edits code.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "report_kind",
+    "checker_id",
+    "verdict",
+    "target",
+    "worktree_clean",
+    "baseline",
+    "findings",
+    "evidence_refs",
+    "read_only_assertion",
+    "no_edit_attestation",
+    "self_certification",
+    "independent_verification_required",
+    "checker_self_approval",
+    "doctrine"
+  ],
+  "properties": {
+    "schema_version": {
+      "description": "Semantic version of this report schema the emitter targeted.",
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "report_kind": {
+      "description": "Discriminator. Always the fixed string for a pre-push checker report.",
+      "const": "prepush-checker-report"
+    },
+    "checker_id": {
+      "description": "Stable identifier of the independent checker instance/lane that produced this report (e.g. a checker session id or lane name). MUST NOT be the same identity as the writer whose work is under review — a checker reviewing its own writer output is not independent.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "verdict": {
+      "description": "The single review outcome. CLEAN = worktree was clean and no blocking findings; a push is not objected to by the checker (still not an authorization). FINDINGS = advisory or blocking findings present. DIRTY_WORKTREE = the worktree was not clean, so a pre-push review cannot be certified. BLOCKED = the checker could not review (missing baseline, unreadable diff). ABSTAIN = the checker declines (out of competence / conflict of interest).",
+      "type": "string",
+      "enum": [
+        "CLEAN",
+        "FINDINGS",
+        "DIRTY_WORKTREE",
+        "BLOCKED",
+        "ABSTAIN"
+      ]
+    },
+    "target": {
+      "description": "What was reviewed: the branch and the exact head commit under review.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["branch", "head_sha"],
+      "properties": {
+        "branch": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "head_sha": {
+          "description": "Exact commit SHA the report binds to. 7-40 lowercase hex. A report with no head_sha binding is not machine-trustable.",
+          "type": "string",
+          "pattern": "^[0-9a-f]{7,40}$"
+        }
+      }
+    },
+    "worktree_clean": {
+      "description": "Was the worktree fully clean (no staged, unstaged, or untracked changes) at the moment of review? A pre-push checker can only certify CLEAN against a clean worktree; a dirty worktree means what would be pushed is not what was reviewed.",
+      "type": "boolean"
+    },
+    "baseline": {
+      "description": "What the review diff was computed against, so the report is reproducible.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "sha"],
+      "properties": {
+        "ref": {
+          "description": "Human-readable baseline ref (e.g. 'origin/main').",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "sha": {
+          "description": "Exact baseline commit SHA. 7-40 lowercase hex.",
+          "type": "string",
+          "pattern": "^[0-9a-f]{7,40}$"
+        }
+      }
+    },
+    "findings": {
+      "description": "Zero or more findings. Each finding is advisory unless its severity is 'blocker'. Even a 'blocker' finding is a PROPOSAL to the founder/sheriff, never a merge or a mutation.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "severity", "category", "message", "evidence_ref"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["info", "warning", "blocker"]
+          },
+          "category": {
+            "description": "Coarse bucket for the finding (e.g. lease, hard-exclusion, evidence, hygiene, staleness).",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "evidence_ref": {
+            "description": "Checkable pointer for this finding (SHA, path, test name, ci-safety marker line, log path).",
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "description": "The reviewed file the finding is about, or null when the finding is not file-scoped.",
+            "type": ["string", "null"],
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "evidence_refs": {
+      "description": "Pointers to the checkable evidence the report rests on: commit SHAs, git status/diff captures, test names, ci-safety marker lines, log paths. A docs-only ref must be labeled as a doc (it is never counted as runtime capability).",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "read_only_assertion": {
+      "description": "The Checker's mechanical read-only self-account: the number of writes/commits/pushes the Checker itself performed while producing this report. For a genuine checker ALL THREE MUST BE 0. A non-zero value means the artifact is not a checker report. This is a claim ABOUT THE CHECKER'S OWN BEHAVIOR; it still requires independent verification (a checker cannot self-certify).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["self_write_count", "self_commit_count", "self_push_count"],
+      "properties": {
+        "self_write_count": { "type": "integer", "const": 0 },
+        "self_commit_count": { "type": "integer", "const": 0 },
+        "self_push_count": { "type": "integer", "const": 0 }
+      }
+    },
+    "no_edit_attestation": {
+      "description": "The Checker's attestation that it edited nothing while reviewing. files_written_by_checker MUST be 0. 'method' names how the no-edit property was established (e.g. write-guarded module + post-run git-status delta equals pre-run). An attestation is proposed evidence, not proof: it does not certify itself.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asserted", "method", "files_written_by_checker"],
+      "properties": {
+        "asserted": { "type": "boolean", "const": true },
+        "method": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "files_written_by_checker": { "type": "integer", "const": 0 }
+      }
+    },
+    "self_certification": {
+      "description": "Always false. A checker NEVER certifies its own report as final truth; the report is a proposal that an independent Advisor/Checker and the founder must still verify.",
+      "const": false
+    },
+    "independent_verification_required": {
+      "description": "Always true. A checker's report cannot be greened on the checker's word alone — an independent Checker + Advisor verification is always still required.",
+      "const": true
+    },
+    "checker_self_approval": {
+      "description": "Always false. A checker cannot approve its own restriction (its own read-only mandate / no-edit boundary). Loosening a checker's constraints requires independent authority, never the checker itself.",
+      "const": false
+    },
+    "doctrine": {
+      "description": "The verbatim scaffold-doctrine string this report is bound by.",
+      "type": "string",
+      "minLength": 1
+    },
+    "reviewer_note": {
+      "description": "Optional free-text note from the checker.",
+      "type": "string",
+      "maxLength": 4000
+    }
+  },
+  "allOf": [
+    {
+      "$comment": "CLEAN is the only no-objection outcome: the worktree must have been clean, no finding may be a blocker, and the checker must have written/committed/pushed nothing. It is still NOT an authorization.",
+      "if": {
+        "properties": { "verdict": { "const": "CLEAN" } }
+      },
+      "then": {
+        "properties": {
+          "worktree_clean": { "const": true },
+          "no_edit_attestation": {
+            "properties": { "files_written_by_checker": { "const": 0 } }
+          },
+          "findings": {
+            "not": {
+              "contains": {
+                "properties": { "severity": { "const": "blocker" } },
+                "required": ["severity"]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "$comment": "DIRTY_WORKTREE is only coherent when the worktree was actually not clean.",
+      "if": {
+        "properties": { "verdict": { "const": "DIRTY_WORKTREE" } }
+      },
+      "then": {
+        "properties": {
+          "worktree_clean": { "const": false }
+        }
+      }
+    },
+    {
+      "$comment": "FINDINGS must actually carry at least one finding.",
+      "if": {
+        "properties": { "verdict": { "const": "FINDINGS" } }
+      },
+      "then": {
+        "properties": {
+          "findings": { "minItems": 1 }
+        }
+      }
+    }
+  ]
+}

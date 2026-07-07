@@ -1,0 +1,9 @@
+{
+  "branch": "foundergate/example-writer-lane",
+  "headSha": "4444444444444444444444444444444444444444",
+  "worktreeClean": false,
+  "baseline": { "ref": "origin/main", "sha": "2222222222222222222222222222222222222222" },
+  "changedFiles": [],
+  "findings": [],
+  "evidenceRefs": ["git status --porcelain => ' M harness/checker/example.mjs' (read-only, dirty)"]
+}

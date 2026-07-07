@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0.0",
+  "report_kind": "prepush-checker-report",
+  "checker_id": "foundergate-independent-prepush-checker",
+  "verdict": "FINDINGS",
+  "target": {
+    "branch": "foundergate/example-writer-lane",
+    "head_sha": "3333333333333333333333333333333333333333"
+  },
+  "worktree_clean": true,
+  "baseline": {
+    "ref": "origin/main",
+    "sha": "2222222222222222222222222222222222222222"
+  },
+  "findings": [
+    {
+      "id": "lease-01",
+      "severity": "blocker",
+      "category": "lease",
+      "message": "FIXTURE-ONLY. A changed file falls outside the declared lease glob; the writer must be reviewed before this is greened.",
+      "evidence_ref": "git diff --name-only 2222222...3333333 => path/outside/lease.mjs",
+      "path": "path/outside/lease.mjs"
+    },
+    {
+      "id": "hygiene-02",
+      "severity": "warning",
+      "category": "hygiene",
+      "message": "FIXTURE-ONLY. A trailing-whitespace-only hunk was observed; advisory, not blocking.",
+      "evidence_ref": "git diff 2222222...3333333 => harness/checker/example.mjs:12",
+      "path": "harness/checker/example.mjs"
+    }
+  ],
+  "evidence_refs": [
+    "git diff --name-only 2222222...3333333 (read-only)"
+  ],
+  "read_only_assertion": {
+    "self_write_count": 0,
+    "self_commit_count": 0,
+    "self_push_count": 0
+  },
+  "no_edit_attestation": {
+    "asserted": true,
+    "method": "read-only reviewer: no filesystem-write API imported; post-run git-status delta equals pre-run",
+    "files_written_by_checker": 0
+  },
+  "self_certification": false,
+  "independent_verification_required": true,
+  "checker_self_approval": false,
+  "doctrine": "CHECKER SCAFFOLD ONLY — final checker claims require independent Checker + Advisor verification; a checker cannot self-certify; this checker never edits code.",
+  "reviewer_note": "FIXTURE-ONLY. Findings are a PROPOSAL to the founder/sheriff; the checker does not itself block or fix anything."
+}

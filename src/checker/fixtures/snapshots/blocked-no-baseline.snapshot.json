@@ -1,0 +1,9 @@
+{
+  "branch": "foundergate/example-writer-lane",
+  "headSha": "6666666666666666666666666666666666666666",
+  "worktreeClean": true,
+  "baseline": null,
+  "changedFiles": [],
+  "findings": [],
+  "evidenceRefs": ["git rev-parse origin/main => (unresolved baseline) (read-only)"]
+}

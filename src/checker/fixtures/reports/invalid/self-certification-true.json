@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0.0",
+  "report_kind": "prepush-checker-report",
+  "checker_id": "foundergate-independent-prepush-checker",
+  "verdict": "CLEAN",
+  "target": {
+    "branch": "foundergate/example-writer-lane",
+    "head_sha": "1111111111111111111111111111111111111111"
+  },
+  "worktree_clean": true,
+  "baseline": {
+    "ref": "origin/main",
+    "sha": "2222222222222222222222222222222222222222"
+  },
+  "findings": [],
+  "evidence_refs": [
+    "git status --porcelain => clean (read-only)",
+    "git rev-parse HEAD => 1111111... (read-only)"
+  ],
+  "read_only_assertion": {
+    "self_write_count": 0,
+    "self_commit_count": 0,
+    "self_push_count": 0
+  },
+  "no_edit_attestation": {
+    "asserted": true,
+    "method": "read-only reviewer: no filesystem-write API imported; post-run git-status delta equals pre-run",
+    "files_written_by_checker": 0
+  },
+  "self_certification": true,
+  "independent_verification_required": true,
+  "checker_self_approval": false,
+  "doctrine": "CHECKER SCAFFOLD ONLY \u2014 final checker claims require independent Checker + Advisor verification; a checker cannot self-certify; this checker never edits code.",
+  "reviewer_note": "FIXTURE-ONLY. Clean worktree, no findings; checker does not object. This is not an authorization to push."
+}
