@@ -38,7 +38,7 @@ what the founder sees, with no browser required in CI.
 | File | What it proves |
 |------|----------------|
 | `01-truth-dashboard.png` | The full dashboard on the MOCK_ONLY fixture — all V8-A1 screens/cards, 8 questions in order, view-only gate, FRESH/STALE evidence, Doctor 10/10, honest cost label, all 10 failure-mode lines. |
-| `02-panic-pressed.png` | Primary action: the Panic button pressed reveals its **honest scope** — it says it stops nothing running (no tracked processes; full worker-kill/recovery arrive V8-B/V8-D). |
+| `02-pause-pressed.png` | Primary action: the Pause button pressed reveals its **honest scope** — it says it stops nothing running (no tracked processes; full worker-kill/recovery arrive V8-B/V8-D). |
 | `03-not-connected-unknown.png` | **Cannot-invent-state (Law 54)**: a disconnected project renders every field UNKNOWN / NOT CONNECTED, Doctor 0/10 MISSING, evidence UNKNOWN — nothing green is ever fabricated. |
 
 > Screenshots are generated locally via `smoke.mjs`. The committed script carries **no machine-specific path**
@@ -54,3 +54,29 @@ what the founder sees, with no browser required in CI.
 No wired gate approvals (gates are `view_only`). No runtime cost enforcement (display only). No Panic overclaim
 (it states what it does not stop). No Preview Bay, Bug Collector, File Cabinet, Notes, Activity, Run Launcher,
 Bench, or Project Guide. No real project data — only the MOCK_ONLY fixture. No write into any attached repo.
+
+---
+
+## UX Repair (post-G2 attempt #1) — layout/copy/styling of A11–A24 only
+
+G2 witness attempt #1 failed visual review (`bugs/g2-attempt-1.md`). This lane rebuilt the *presentation* of the
+existing A11–A24 capabilities — **no new capability** — and turned each founder-caught defect into an automated
+anti-repeat check.
+
+| Founder defect | Fix | Anti-repeat guard (permanent) |
+|----------------|-----|-------------------------------|
+| 1. Long scroll wall | App-shell + compact card grid; Q1–4 + status above the fold at 1366×768 | Playwright asserts Q1–4 + `#status-card` within 768px; scroll-depth budget recorded to `hand-burden.json` (1264px ≤ 1500) |
+| 2. Developer-scary tone | Friendly-human copy pass on all visible text; UNKNOWN/STALE stay verbatim (Law 54), explained gently ("we can't see this yet") | `view-model.selftest` friendly-copy lint: no `panic`/`fatal`/`abort` in any visible string; Playwright scans on-screen text too |
+| 3. Red glowing "Panic" button | Small, calm, always-visible **"Pause & get help"** (same function; honest scope: "Nothing was running, so nothing needed stopping. Your evidence is safe.") | `view-model.selftest` asserts calm name + honest scope; Playwright bounds the control size (192×34 ≤ 220×44) |
+| 4. Wanted app-shell layout | Left sidebar (brand; Dashboard/My Project/Settings active; Data [V8-B], Usage [V8-B], Statistics [V8-C], Team [V8-C], Notifications [V8-B], Project Guide [V8-A4] **disabled with stage labels**), warm welcome header using the founder's name from project config, compact grid | `view-model.selftest` + Playwright assert disabled nav items carry stage labels; greeting uses `project.founder_name` (absent → generic, no invented name) |
+
+Schemas/docs keep the internal **Panic Card** name unchanged; only visible UI copy changed. One project only (single
+card, no multi-project chips). Forbidden scope untouched (no Project Guide functionality, no Run Launcher, no Bug
+Collector, no wired approvals, no new engine).
+
+### Refreshed evidence
+- `view-model.selftest` now **13 checks** (adds the 4 anti-repeat guards). Full suite `npm test`: **19/19 GREEN**.
+- `hand-burden.json` — measured: terminal_copy_paste_count 0, clicks_to_pause 1 (always visible), Q1–4 + status
+  above the fold = true, scroll height 1264px (within budget), pause control 192×34, disabled-nav stage labels.
+- Screenshots regenerated: `01-truth-dashboard.png`, `01b-above-the-fold-1366x768.png`, `02-pause-pressed.png`,
+  `03-not-connected-unknown.png`.

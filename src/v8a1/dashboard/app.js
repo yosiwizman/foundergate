@@ -1,69 +1,90 @@
-// FounderGate V8-A1 — Truth Dashboard frontend (vanilla ES module).
+// FounderGate V8-A1 — Truth Dashboard frontend (vanilla ES module, app shell).
 //
-// Fetches the reader's honest model from /api/model and renders every V8-A1
-// screen using the SAME pure view-model the Node self-test proves. It renders
-// UNKNOWN / STALE verbatim and never fabricates state.
+// Fetches the reader's honest model and renders it with the SAME pure view-model
+// the Node self-test proves. UNKNOWN/STALE render verbatim (Law 54), explained
+// gently. Copy is warm and calm; the pause control is small and never scary.
 
 import { buildView } from "./view-model.mjs";
 
 const $ = (id) => document.getElementById(id);
-
 function badgeEl(b) {
-  const span = document.createElement("span");
-  span.className = `badge ${b.kind || "info"}`;
-  span.textContent = b.text;
-  return span;
+  const s = document.createElement("span");
+  s.className = `badge ${b.kind || "info"}`;
+  s.textContent = b.text;
+  return s;
 }
 
 function render(view) {
-  // Header (A11) + project meta (A12)
-  $("title").textContent = view.header.title;
-  const conn = $("connected");
-  conn.textContent = view.header.connected ? "CONNECTED" : "NOT CONNECTED";
-  conn.className = "pill " + (view.header.connected ? "on" : "off");
+  // Sidebar
+  $("brand").textContent = view.nav.brand;
+  const na = $("nav-active");
+  na.innerHTML = "";
+  view.nav.active.forEach((n, i) => {
+    const a = document.createElement("a");
+    a.className = "item" + (i === 0 ? " active" : "");
+    a.textContent = n.label;
+    a.setAttribute("data-nav", n.id);
+    na.appendChild(a);
+  });
+  const nd = $("nav-disabled");
+  nd.innerHTML = "";
+  view.nav.disabled.forEach((n) => {
+    const span = document.createElement("span");
+    span.className = "item";
+    span.setAttribute("data-nav-disabled", n.id);
+    span.innerHTML = `<span>${n.label}</span>`;
+    const stage = document.createElement("span");
+    stage.className = "stage";
+    stage.setAttribute("data-stage", "");
+    stage.textContent = n.stage;
+    span.appendChild(stage);
+    nd.appendChild(span);
+  });
+
+  // Welcome header
+  $("greeting").textContent = view.header.greeting;
   $("stage-banner").textContent = view.header.stageBanner;
-  $("project-name").textContent = view.header.projectName;
-  $("release-badge").textContent = "release: " + view.header.releaseLabel;
-  $("dataclass-badge").textContent = "data: " + view.header.dataClass;
+  $("project-chip").textContent = view.project.name + (view.project.needsAttention ? " · needs a look" : "");
+  $("release-chip").textContent = "release: " + view.header.releaseLabel;
+  $("dataclass-chip").textContent = "data: " + view.header.dataClass;
+  const cc = $("connected-chip");
+  cc.textContent = view.header.connected ? "connected" : "not connected";
+  cc.className = "chip " + (view.header.connected ? "on" : "off");
 
-  // A12 projects list
-  const pl = $("projects-list");
-  pl.innerHTML = "";
-  for (const p of view.projects) {
-    const li = document.createElement("li");
-    li.textContent = p.name + (p.attention ? "  — needs attention" : "");
-    pl.appendChild(li);
-  }
-
-  // A13/Law44 the 8 questions in order
+  // Questions (tight 2-col grid; each carries data-q for the fold check)
+  $("questions-title").textContent = view.questions.title;
   const ql = $("questions-list");
   ql.innerHTML = "";
-  for (const q of view.questions) {
+  for (const item of view.questions.items) {
     const li = document.createElement("li");
-    const qs = document.createElement("div");
-    qs.className = "q";
-    qs.textContent = q.q;
-    const as = document.createElement("div");
-    as.className = "a" + (q.unknown ? " unknown" : "");
-    as.textContent = q.a;
-    const src = document.createElement("div");
-    src.className = "source";
-    src.textContent = "source: " + q.source;
-    li.append(qs, as, src);
+    li.setAttribute("data-q", String(item.n));
+    const q = document.createElement("div");
+    q.className = "q";
+    q.innerHTML = `<span class="n">${item.n}.</span>${item.q}`;
+    const a = document.createElement("div");
+    a.className = "a" + (item.unknown ? " unknown" : "");
+    a.textContent = item.unknown ? `${item.a} — we can't see this yet` : item.a;
+    li.append(q, a);
     ql.appendChild(li);
   }
 
-  // A14 status + A16 CI/PR UNKNOWN
-  $("state-badge").replaceWith(Object.assign(badgeEl({ text: view.statusCard.state, kind: view.statusCard.state === "blocked" ? "bad" : "info" }), { id: "state-badge" }));
-  $("ci-badge").replaceWith(Object.assign(badgeEl(view.statusCard.ci), { id: "ci-badge" }));
-  $("pr-badge").replaceWith(Object.assign(badgeEl(view.statusCard.pr), { id: "pr-badge" }));
+  // Status card
+  $("status-title").textContent = view.statusCard.title;
+  $("state-badge").replaceWith(Object.assign(badgeEl({ text: view.statusCard.state, kind: view.statusCard.state === "blocked" ? "bad" : "info" }), { id: "state-badge", className: `badge ${view.statusCard.state === "blocked" ? "bad" : "info"}` }));
+  $("ci-badge").replaceWith(Object.assign(badgeEl(view.statusCard.ci), { id: "ci-badge", className: `badge ${view.statusCard.ci.kind}` }));
+  $("pr-badge").replaceWith(Object.assign(badgeEl(view.statusCard.pr), { id: "pr-badge", className: `badge ${view.statusCard.pr.kind}` }));
+  $("ci-hint").textContent = view.statusCard.ci.hint || "";
+  $("pr-hint").textContent = view.statusCard.pr.hint || "";
   $("current-gate").textContent = view.statusCard.currentGate;
 
-  // A17 needs you
-  $("needs-you-text").textContent = view.needsYou.text;
-  $("needs-you-source").textContent = "source: " + view.needsYou.source;
+  // Needs-you
+  $("needs-you-title").textContent = view.needsYou.title;
+  $("needs-you-text").textContent = view.needsYou.unknown ? `${view.needsYou.text} — we can't see this yet` : view.needsYou.text;
+  $("needs-you-source").textContent = "from: " + view.needsYou.source;
 
-  // A18 do not touch
+  // Do-not-touch
+  $("dnt-title").textContent = view.doNotTouch.title;
+  $("dnt-subtitle").textContent = view.doNotTouch.subtitle;
   const dl = $("do-not-touch-list");
   dl.innerHTML = "";
   for (const d of view.doNotTouch.items) {
@@ -71,63 +92,75 @@ function render(view) {
     li.innerHTML = `<b>${d.path}</b> — ${d.reason}`;
     dl.appendChild(li);
   }
+  if (view.doNotTouch.items.length === 0) dl.innerHTML = "<li class='hint'>Nothing to worry about right now.</li>";
 
-  // A15 gates view-only
+  // Gates (view-only)
   const gl = $("gates-list");
   gl.innerHTML = "";
   for (const g of view.gates) {
     const li = document.createElement("li");
-    li.innerHTML = `<b>${g.title}</b> — <span class="badge unknown">${g.state}</span> <span class="tag">view-only, no approve button</span>`;
+    li.innerHTML = `<b>${g.title}</b> `;
+    li.appendChild(badgeEl({ text: g.state, kind: "unknown" }));
+    const t = document.createElement("span");
+    t.className = "tag";
+    t.textContent = "look only";
+    li.appendChild(t);
     gl.appendChild(li);
   }
+  if (view.gates.length === 0) gl.innerHTML = "<li class='hint'>No gates to show yet.</li>";
 
-  // A16 evidence FRESH/STALE
+  // Evidence
   const el = $("evidence-list");
   el.innerHTML = "";
   for (const e of view.evidence) {
     const li = document.createElement("li");
-    li.innerHTML = `${e.path} `;
-    li.appendChild(badgeEl({ text: e.label, kind: e.label === "STALE" ? "stale" : "ok" }));
+    li.textContent = e.path + " ";
+    li.appendChild(badgeEl(e.badge));
     el.appendChild(li);
   }
-  if (view.evidence.length === 0) el.innerHTML = "<li class='source'>No evidence recorded (UNKNOWN).</li>";
+  if (view.evidence.length === 0) el.innerHTML = "<li class='hint'>No evidence yet — we can't see this yet.</li>";
 
-  // A20 doctor
+  // Health check (Doctor)
+  $("doctor-title").textContent = view.doctor.title;
   $("doctor-version").textContent = view.doctor.version;
   $("doctor-present").textContent = view.doctor.filesPresent;
   const dc = $("doctor-checks");
   dc.innerHTML = "";
   for (const c of view.doctor.checks) {
     const li = document.createElement("li");
-    li.innerHTML = `${c.name} `;
-    li.appendChild(badgeEl({ text: c.ok ? "present" : "MISSING", kind: c.ok ? "ok" : "unknown" }));
+    li.textContent = c.name + " ";
+    li.appendChild(badgeEl({ text: c.ok ? "found" : "not found", kind: c.ok ? "ok" : "unknown" }));
     dc.appendChild(li);
   }
 
-  // A23 cost display only
-  $("cost-label").textContent = view.cost.label;
+  // Spending
+  $("cost-title").textContent = view.cost.title;
+  $("cost-friendly").textContent = view.cost.friendly;
   $("cost-detail").textContent =
     view.cost.enforcement === "UNKNOWN"
-      ? "UNKNOWN"
-      : `limit: $${view.cost.monthly_limit_usd ?? "?"} / month · paid services blocked: ${view.cost.paid_services_blocked}`;
+      ? "We can't see a budget yet."
+      : `Shown limit: $${view.cost.monthly_limit_usd} / month · paid services blocked: ${view.cost.paid_services_blocked}`;
 
-  // A21 honest-scope Panic Card
-  const btn = $("panic-button");
-  const scope = $("panic-scope");
-  scope.textContent = view.panic.scope;
+  // Data safety
+  $("dc-title").textContent = view.dataBadges.title;
+  $("dc-projectclass").replaceWith(Object.assign(badgeEl({ text: view.dataBadges.projectClass, kind: "info" }), { id: "dc-projectclass", className: "badge info" }));
+  $("dc-note").textContent = view.dataBadges.note;
+
+  // Pause control (calm, always visible)
+  const btn = $("pause-button");
+  btn.textContent = "⏸ " + view.pause.button;
+  const scope = $("pause-scope");
+  scope.textContent = view.pause.scope;
   btn.addEventListener("click", () => {
     scope.hidden = false;
-    btn.textContent = "Panic pressed — see scope below";
+    btn.textContent = "✓ Paused — help is on the way";
   });
 
-  // A22 data classification badges
-  $("dc-projectclass").replaceWith(Object.assign(badgeEl({ text: view.dataBadges.projectClass, kind: "info" }), { id: "dc-projectclass" }));
-  $("dc-policy").textContent = `secret values hidden: ${view.dataBadges.hideSecretValues} · unknown files blocked: ${view.dataBadges.blockUnknownFiles}`;
-
-  // A19 permanent failure-modes reminder
+  // Good things to remember (failure modes, verbatim)
+  $("fm-title").textContent = view.failureModes.title;
   const fl = $("failure-modes-list");
   fl.innerHTML = "";
-  for (const line of view.failureModes) {
+  for (const line of view.failureModes.lines) {
     const li = document.createElement("li");
     li.textContent = line;
     fl.appendChild(li);
@@ -139,11 +172,9 @@ function render(view) {
 async function main() {
   try {
     const res = await fetch("/api/model");
-    const model = await res.json();
-    render(buildView(model));
+    render(buildView(await res.json()));
   } catch (e) {
-    document.body.innerHTML = `<pre style="padding:22px">Failed to load model: ${e && e.message}</pre>`;
+    document.body.innerHTML = `<pre style="padding:22px">Could not load: ${e && e.message}</pre>`;
   }
 }
-
 main();

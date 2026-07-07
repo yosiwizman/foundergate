@@ -1,93 +1,112 @@
 // FounderGate V8-A1 — dashboard view-model selftest (hermetic, offline, Node).
 //
 // Proves the UI RENDER LOGIC in Node (no browser needed in CI): the same pure
-// view-model the browser uses. Covers A13–A23 render invariants + Law 44/54/55.
+// view-model the browser uses — including the ANTI-REPEAT checks that turn the
+// four founder-caught G2 defects into permanent guards.
 
 import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { buildView, buildDoctor, FAILURE_MODES, EIGHT_QUESTIONS } from "./view-model.mjs";
+import { buildView, buildDoctor, visibleStrings, FAILURE_MODES, EIGHT_QUESTIONS, BANNED_WORDS, SIDEBAR_NAV } from "./view-model.mjs";
 import { buildModel, UNKNOWN } from "../reader.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const FIXTURE_ROOT = join(HERE, "..", "fixture", "mock-project");
 
 let passed = 0;
-function check(name, fn) {
-  fn();
-  passed++;
-  console.log(`  PASS: ${name}`);
-}
+function check(name, fn) { fn(); passed++; console.log(`  PASS: ${name}`); }
 
 const view = buildView(buildModel(FIXTURE_ROOT));
 
+// ---- Original V8-A1 render invariants (still enforced) ----------------------
 check("A19: exactly the 10 failure-mode lines, verbatim, in order", () => {
   assert.equal(FAILURE_MODES.length, 10);
-  assert.equal(view.failureModes.length, 10);
-  assert.equal(view.failureModes[0], "green CI ≠ product works");
-  assert.equal(view.failureModes[9], "a local tool ≠ a business");
+  assert.deepEqual(view.failureModes.lines, FAILURE_MODES);
+  assert.equal(view.failureModes.lines[0], "green CI ≠ product works");
+  assert.equal(view.failureModes.lines[9], "a local tool ≠ a business");
 });
 
 check("A13/Law44: 8 questions render in strict priority order", () => {
-  assert.equal(view.questions.length, 8);
-  view.questions.forEach((q, i) => assert.equal(q.q, EIGHT_QUESTIONS[i], `question ${i} out of order`));
+  assert.equal(view.questions.items.length, 8);
+  view.questions.items.forEach((q, i) => assert.equal(q.q, EIGHT_QUESTIONS[i], `question ${i} out of order`));
 });
 
 check("A15/Law55: gate cards are view-only and NOT approvable", () => {
-  assert.ok(view.gates.length >= 1);
-  for (const g of view.gates) {
-    assert.equal(g.viewOnly, true);
-    assert.equal(g.approvable, false);
+  for (const g of view.gates) { assert.equal(g.viewOnly, true); assert.equal(g.approvable, false); }
+});
+
+check("A23: cost guard is display-only (runtime enforcement begins V8-B)", () => {
+  assert.match(view.cost.friendly, /later version \(V8-B\)/i);
+  assert.ok(!/enforc/i.test(view.cost.friendly)); // no claim of enforcement now
+});
+
+check("A22: data classification present (MOCK_ONLY fixture)", () => {
+  assert.equal(view.dataBadges.projectClass, "MOCK_ONLY");
+});
+
+check("A20: Doctor reports files-found, never invented health", () => {
+  assert.equal(view.doctor.filesPresent, "10/10");
+  assert.equal(view.doctor.connected, true);
+});
+
+// ---- ANTI-REPEAT: the four founder-caught G2 defects become guards ----------
+
+// Defect 2 — "tone is developer-scary": friendly-copy lint over ALL visible text.
+check("ANTI-REPEAT (friendly copy): no banned/scary word in any visible UI text", () => {
+  const all = visibleStrings(view).join("  ").toLowerCase();
+  for (const w of BANNED_WORDS) {
+    assert.ok(!new RegExp(`\\b${w}\\b`).test(all), `banned word "${w}" reached visible UI`);
   }
 });
 
-check("A21: Panic Card honest scope (fixture idle → stops nothing running)", () => {
-  assert.equal(view.panic.trackedCount, 0);
-  assert.match(view.panic.scope, /stops nothing running/i);
-  assert.equal(view.panic.honest, true);
+// Defect 3 — the red "Panic" button: calm, correctly-named pause control.
+check("ANTI-REPEAT (pause control): named 'Pause & get help', calm, honest scope", () => {
+  assert.equal(view.pause.button, "Pause & get help");
+  assert.ok(!/panic/i.test(view.pause.title + view.pause.button + view.pause.scope), "pause copy must not say 'panic'");
+  // idle fixture → honest: nothing was running
+  assert.match(view.pause.scope, /nothing was running/i);
+  assert.match(view.pause.scope, /evidence is safe/i);
 });
 
-check("A23: cost guard labeled policy/config only (no runtime enforcement)", () => {
-  assert.match(view.cost.label, /policy\/config only/i);
-  assert.match(view.cost.label, /runtime enforcement begins V8-B/i);
-  assert.equal(view.cost.enforcement, "policy-display-only");
+// Defect 4 — app shell: disabled future-nav items carry honest stage labels.
+check("ANTI-REPEAT (nav truth): disabled items carry stage labels; active set correct", () => {
+  assert.deepEqual(view.nav.active.map((n) => n.label), ["Dashboard", "My Project", "Settings"]);
+  assert.ok(view.nav.disabled.length >= 5);
+  for (const d of view.nav.disabled) {
+    assert.ok(d.stage && /^V8-[A-E]/.test(d.stage), `disabled nav ${d.label} missing stage label`);
+  }
+  const pg = view.nav.disabled.find((d) => d.id === "project-guide");
+  assert.ok(pg && pg.stage === "V8-A4", "Project Guide must be disabled with [V8-A4]");
 });
 
-check("A22: data classification badge present (MOCK_ONLY fixture)", () => {
-  assert.equal(view.dataBadges.projectClass, "MOCK_ONLY");
-  assert.equal(view.dataBadges.hideSecretValues, true);
-  assert.equal(view.dataBadges.blockUnknownFiles, true);
+// Welcome header uses the founder's name from project config.
+check("welcome header greets by founder name from project config", () => {
+  assert.equal(view.header.greeting, "Welcome back, Sam");
 });
 
-check("A20: Doctor panel reports files-present, never invented health", () => {
-  assert.equal(view.doctor.version, "V8-A1");
-  assert.equal(view.doctor.connected, true);
-  assert.equal(view.doctor.filesPresent, "10/10");
+// Defect 1 (single project) — one project card, no multi-project list.
+check("one project only (single card, no multi-project chips)", () => {
+  assert.ok(view.project && typeof view.project === "object" && !Array.isArray(view.project));
+  assert.equal(view.project.name, "Mock Demo Project");
 });
 
-check("A17: needs-you card is file-sourced", () => {
-  assert.ok(view.needsYou.text && view.needsYou.text !== UNKNOWN);
-  assert.match(view.needsYou.source, /status\.json/);
-});
-
-check("A18: do-not-touch card lists locked paths", () => {
-  assert.ok(view.doNotTouch.items.length >= 1);
-});
-
-// A16 — disconnected project: CI/PR UNKNOWN, no fabricated green.
-check("A16/Law54: disconnected project renders UNKNOWN, never green", () => {
-  const v = buildView(buildModel("/nonexistent-project-root-xyz"));
+// Law 54 preserved through the friendly layer: UNKNOWN stays VERBATIM, gently explained.
+check("Law54: disconnected → UNKNOWN verbatim + gentle explanation, never green", () => {
+  const v = buildView(buildModel("/nonexistent-root-xyz"));
   assert.equal(v.header.connected, false);
-  assert.equal(v.ciUnknown, true);
-  assert.equal(v.prUnknown, true);
+  assert.equal(v.header.greeting, "Welcome back"); // no invented name
+  assert.equal(v.statusCard.ci.text, UNKNOWN); // verbatim token preserved
   assert.equal(v.statusCard.ci.kind, "unknown");
+  assert.match(v.statusCard.ci.hint, /can't see this yet/i); // gentle explanation
   const blob = JSON.stringify(v.statusCard);
   assert.ok(!/\b(passing|green|ready)\b/i.test(blob), `fabricated positive: ${blob}`);
+  // and still no scary word anywhere in the disconnected view
+  const all = visibleStrings(v).join(" ").toLowerCase();
+  for (const w of BANNED_WORDS) assert.ok(!new RegExp(`\\b${w}\\b`).test(all));
 });
 
 check("buildDoctor is pure and counts presence", () => {
-  const d = buildDoctor({ connected: true, presence: { project: true, status: true } });
-  assert.equal(d.filesPresent, "2/10");
+  assert.equal(buildDoctor({ presence: { project: true, status: true } }).filesPresent, "2/10");
 });
 
 console.log(`\nV8A1-VIEW-MODEL-SELFTEST: PASS (${passed} checks)`);

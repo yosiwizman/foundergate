@@ -2,6 +2,7 @@
   "schema_version": "1.0.0",
   "project_id": "mock-demo",
   "name": "Mock Demo Project",
+  "founder_name": "Sam",
   "repo": "your-org/mock-demo",
   "attached": true,
   "data_classification": "MOCK_ONLY",
