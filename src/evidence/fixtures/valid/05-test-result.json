@@ -1,0 +1,17 @@
+{
+  "id": "sample-test-result-1",
+  "ts": "2026-07-04T05:00:20Z",
+  "kind": "test_result",
+  "cage_id": "outer-cage.01",
+  "policy_hash": "a1b2c3d4e5f60718293a4b5c6d7e8f90",
+  "source": {
+    "type": "command_output",
+    "ref": "node harness/evidence/cage-evidence-ledger.selftest.mjs",
+    "detail": "exit 0"
+  },
+  "tests": [
+    { "name": "sourceless-rejected", "outcome": "pass" },
+    { "name": "append-only", "outcome": "pass", "detail": "prior lines preserved" },
+    { "name": "chain-tamper-detected", "outcome": "pass" }
+  ]
+}

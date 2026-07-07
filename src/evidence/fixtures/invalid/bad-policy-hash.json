@@ -1,0 +1,8 @@
+{
+  "id": "bad-policy-hash",
+  "ts": "2026-07-04T05:00:00Z",
+  "kind": "cage_opened",
+  "cage_id": "outer-cage.01",
+  "policy_hash": "not-a-hash",
+  "source": { "type": "cage_log", "ref": "cage://x" }
+}

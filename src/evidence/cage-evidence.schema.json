@@ -1,0 +1,222 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/evidence/cage-evidence.schema.json",
+  "title": "FounderGate Cage Evidence Ledger Event",
+  "description": "SCAFFOLD ONLY. An append-only cage-evidence event. A cage is an OUTER-CAGE trust boundary that DENIES egress, HOLDS actions, and serves MOCK responses instead of any live provider crossing. HARD DOCTRINE encoded here: caged/held is NOT live proof. This schema deliberately has NO live/provider source type and NO verdict value that asserts a live crossing. Every event MUST carry a SOURCE (a sourceless event is not evidence and is rejected). Final cage claims require independent Checker + Advisor verification and are NOT self-certified by this record.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "ts", "kind", "cage_id", "policy_hash", "source"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable, unique id for this event within a ledger.",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "ts": {
+      "type": "string",
+      "description": "ISO-8601 timestamp when the cage-evidence event was recorded.",
+      "format": "date-time",
+      "minLength": 10
+    },
+    "kind": {
+      "type": "string",
+      "description": "The class of cage-evidence this event records.",
+      "enum": [
+        "cage_opened",
+        "egress_denied",
+        "action_held",
+        "mock_served",
+        "test_result",
+        "checker_verdict",
+        "advisor_verdict",
+        "founder_decision",
+        "cage_closed"
+      ]
+    },
+    "cage_id": {
+      "type": "string",
+      "description": "Identifier of the cage instance that produced this evidence.",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "policy_hash": {
+      "type": "string",
+      "description": "Hex digest of the cage policy under which this evidence was produced. A hash, never a secret or the policy body.",
+      "pattern": "^[a-f0-9]{16,128}$"
+    },
+    "source": { "$ref": "#/$defs/source" },
+    "denied_egress": {
+      "type": "array",
+      "description": "Egress attempts the cage DENIED (never allowed out). Present chiefly on egress_denied events.",
+      "items": { "$ref": "#/$defs/deniedEgress" }
+    },
+    "held_actions": {
+      "type": "array",
+      "description": "Actions the cage HELD (not fired). Held is not fired; held is not live.",
+      "items": { "$ref": "#/$defs/heldAction" }
+    },
+    "mock_responses": {
+      "type": "array",
+      "description": "Mock responses served in place of any live call. A mock is UNVERIFIED by construction — it proves cage wiring, never a real-world outcome.",
+      "items": { "$ref": "#/$defs/mockResponse" }
+    },
+    "tests": {
+      "type": "array",
+      "description": "Test outcomes attached to this evidence event.",
+      "items": { "$ref": "#/$defs/testResult" }
+    },
+    "checker_verdict": {
+      "description": "Independent Checker verdict. null = not yet verified. No value asserts a live crossing.",
+      "type": ["string", "null"],
+      "enum": ["PASS", "FAIL", "BLOCKED", "HELD", "NOT_VERIFIED", null]
+    },
+    "advisor_verdict": {
+      "description": "Independent Advisor verdict. null = not yet reviewed. No value asserts a live crossing.",
+      "type": ["string", "null"],
+      "enum": ["PASS", "FAIL", "BLOCKED", "HOLD", "NOT_VERIFIED", null]
+    },
+    "founder_decision": {
+      "description": "Founder decision on the caged evidence. PENDING/null = no decision. APPROVE here approves the CAGED record only — it never authorizes a live crossing on its own.",
+      "type": ["string", "null"],
+      "enum": ["APPROVE", "REJECT", "HOLD", "PENDING", null]
+    },
+    "note": {
+      "type": "string",
+      "description": "Optional one-line human context. No secrets, no PII."
+    },
+    "seq": {
+      "type": "integer",
+      "description": "Zero-based position in the append-only chain. Set by the writer.",
+      "minimum": 0
+    },
+    "prev_chain_hash": {
+      "description": "Chain hash of the prior event, or null for the first event. Set by the writer.",
+      "type": ["string", "null"],
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "chain_hash": {
+      "type": "string",
+      "description": "sha256(prev_chain_hash + canonical(event-without-chain-fields)). Set by the writer; makes the ledger tamper-evident.",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "description": "Provenance of the event. HARD RULE: no cage-evidence event is evidence without one of these source types AND a non-empty ref. There is deliberately NO live/provider source type — cage evidence can never grade as live. Grades: cage_log/command_output/local_file are VERIFIABLE (a third party can re-check the artifact); checker/advisor/founder are ASSERTED (an independent party's word, traceable but not machine-verifiable); mock/planned are UNVERIFIED (labels a simulated or intended event honestly).",
+      "additionalProperties": false,
+      "required": ["type", "ref"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "cage_log",
+            "command_output",
+            "local_file",
+            "checker",
+            "advisor",
+            "founder",
+            "mock",
+            "planned"
+          ]
+        },
+        "ref": {
+          "type": "string",
+          "description": "Pointer to the source: a cage log line/id, the exact command run, a repo-relative file path, a checker/advisor verdict id, a founder note author, or a mock/plan marker. Must be non-empty so the claim can be traced.",
+          "minLength": 1
+        },
+        "detail": {
+          "type": "string",
+          "description": "Optional extra provenance detail (exit code, line range, verdict id, reviewer login)."
+        }
+      }
+    },
+    "deniedEgress": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "reason"],
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Opaque destination label the cage denied (host tag / channel tag). Never a secret or full credential.",
+          "minLength": 1
+        },
+        "protocol": {
+          "type": "string",
+          "description": "Optional transport tag (e.g. http, dns, smtp).",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "description": "Why the cage denied this egress.",
+          "minLength": 1
+        }
+      }
+    },
+    "heldAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action_class", "reason"],
+      "properties": {
+        "action_class": {
+          "type": "string",
+          "description": "Class of the held action (e.g. send, delete, rsvp, payment). Class only — never a payload.",
+          "minLength": 1
+        },
+        "target_tag": {
+          "type": "string",
+          "description": "Optional opaque target tag. Never a real identifier, address, or PII.",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "description": "Why the action was held rather than fired.",
+          "minLength": 1
+        }
+      }
+    },
+    "mockResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["for_action_class", "shape"],
+      "properties": {
+        "for_action_class": {
+          "type": "string",
+          "description": "Action class the mock stood in for.",
+          "minLength": 1
+        },
+        "shape": {
+          "type": "string",
+          "description": "Human tag describing the mock response shape (e.g. 'ok-stub', 'error-429'). Never a real provider payload.",
+          "minLength": 1
+        },
+        "content_hash": {
+          "type": "string",
+          "description": "Optional hex digest of the mock body. A hash, never the body.",
+          "pattern": "^[a-f0-9]{16,128}$"
+        }
+      }
+    },
+    "testResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "outcome"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Test name / id.",
+          "minLength": 1
+        },
+        "outcome": {
+          "type": "string",
+          "enum": ["pass", "fail", "skip"]
+        },
+        "detail": {
+          "type": "string",
+          "description": "Optional one-line detail (assertion, count)."
+        }
+      }
+    }
+  }
+}
