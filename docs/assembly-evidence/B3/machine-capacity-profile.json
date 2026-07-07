@@ -1,0 +1,19 @@
+{
+  "machine_id": "harvest-terminal-macos-24gb",
+  "os": "macos",
+  "cpu_cores": 12,
+  "ram_gb": 24,
+  "disk_free_gb": 17,
+  "docker_available": true,
+  "playwright_available": true,
+  "node_available": true,
+  "git_available": true,
+  "github_cli_available": true,
+  "local_writer_slots": 3,
+  "cloud_writer_slots": 2,
+  "recommended_parallel_lanes": 3,
+  "heavy_build_lanes": 1,
+  "playwright_lanes": 2,
+  "safe_mode": false,
+  "reason": "Preflight for bundle B3 (Final CI + Acceptance Packet). macOS, 12 cores, 24 GB RAM. This is a docs-only assembly lane (one packet document + CI verification); 1 lane used. safe_mode false. Docker forbidden in V8-A1. No code beyond CI fixes inside the Harmless Repair Loop."
+}
