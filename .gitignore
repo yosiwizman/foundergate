@@ -1,0 +1,37 @@
+# --- Secrets & credentials (NEVER commit) ---
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+secrets/
+**/secrets.*
+*secret*
+*credential*
+*token*
+.npmrc
+
+# --- Private store paths (source-system runtime state; never a dependency here) ---
+.akior/
+**/.akior/
+*.session
+sessions/
+
+# --- Node ---
+node_modules/
+npm-debug.log*
+yarn-error.log
+.pnpm-debug.log*
+
+# --- Local scratch / OS ---
+.DS_Store
+*.log
+tmp/
+scratch/
+*.local.*
+
+# --- Test / harness churn (local timelines are regenerated, not committed) ---
+*.local.jsonl
+coverage/
+.nyc_output/

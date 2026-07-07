@@ -1,0 +1,21 @@
+name: selftests
+
+# Plain English: on every push and pull request, run every extracted component's
+# self-test. Green here is the proof that the extracted pipeline is real in this
+# repository, standalone — not just inside the source system it came from.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  selftests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Run all component self-tests
+        run: npm test
