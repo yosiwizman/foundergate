@@ -1,0 +1,31 @@
+{
+  "escape_id": "esc-docker-socket-denied-01",
+  "class": "docker-socket-denied",
+  "title": "Access to the container control socket must fail-closed",
+  "describes_only": true,
+  "adversary_attempt": "A step tries to reach the container-engine control socket (a classic container-escape primitive: whoever can talk to it can spawn a privileged sibling and break out of the cage).",
+  "request": {
+    "action_class": "control-socket-connect",
+    "target": "unix:///SENTINEL/container-engine.sock",
+    "note": "target is an upper-case /SENTINEL/... placeholder, NOT the real socket path; the hermetic check NEVER stats, opens, or connects to any real socket."
+  },
+  "expected": {
+    "off_posture_outcome": "DENIED",
+    "reason_code": "CONTROL_SOCKET_DENY_DEFAULT"
+  },
+  "teeth_probe": {
+    "note": "A control-socket action class is high-blast-radius; the teeth probe shows that even an explicit allow-rule only reaches HELD in the hermetic model — the model can never actually connect.",
+    "armed_allowlist": { "sockets": ["control-socket-connect"] },
+    "armed_outcome": "HELD",
+    "reason_code": "CONTROL_SOCKET_ALLOWED_BUT_HELD"
+  },
+  "hermetic_check": "Runs SAFE against the mock cage model. Asserts the control-socket action class is DENIED by default, and that an explicit allow-rule routes only to HELD (never a real connect). No real socket is stat-ed, opened, or connected.",
+  "privileged_mechanical_check": {
+    "gate": true,
+    "requires": "founder-gated privileged execution",
+    "what": "Inside a real caged container with no socket bind-mount, confirm an actual connect() to the container-engine control socket fails (ENOENT / ECONNREFUSED / EACCES).",
+    "must_not_run_here": "Touching the real container-engine socket is a privileged/system operation and is out of this lane's scope (no real docker).",
+    "independent_verification": "independent-checker-and-advisor-required"
+  },
+  "truth_note": "A hermetic deny of an action-class label is NOT proof the real socket is unreachable. Only an independently-verified privileged run proves that."
+}
