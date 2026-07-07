@@ -47,7 +47,7 @@ what the founder sees, with no browser required in CI.
 ## Machine gate + CI at exact SHA
 
 - Machine-capacity preflight: `docs/assembly-evidence/B2/machine-capacity-profile.json`
-- PR: `#B2PR` · exact merge SHA: `B2SHA` · CI: `B2CI` (stamped on merge)
+- PR: `#17` · exact merge SHA: `d2ad41503caa2b9044ca30a69f4aa9a41a6940d2` · CI: https://github.com/yosiwizman/foundergate/actions/runs/28891028148 (stamped on merge)
 
 ## Scope honesty (what B2 did NOT do)
 
