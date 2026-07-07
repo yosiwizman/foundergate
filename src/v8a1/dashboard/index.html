@@ -48,9 +48,11 @@
             <h2 id="status-title">Where things stand</h2>
             <div class="statuslist">
               <div class="statusrow">State <span id="state-badge" class="badge"></span></div>
-              <div class="statusrow">Checks (CI) <span id="ci-badge" class="badge"></span> <span id="ci-hint" class="hint"></span></div>
-              <div class="statusrow">Pull request <span id="pr-badge" class="badge"></span> <span id="pr-hint" class="hint"></span></div>
-              <div class="statusrow">Current gate <span id="current-gate" class="soft"></span></div>
+              <div class="statusrow"><span id="state-plain" class="hint"></span></div>
+              <div class="statusrow"><span id="ci-label"></span> <span id="ci-badge" class="badge"></span></div>
+              <div class="statusrow"><span id="ci-hint" class="hint"></span></div>
+              <div class="statusrow"><span id="pr-display" class="soft"></span> <span id="pr-badge" class="badge"></span></div>
+              <div class="statusrow">Current gate <span id="current-gate" class="soft"></span> <span id="current-gate-plain" class="hint"></span></div>
             </div>
           </section>
 
@@ -66,9 +68,11 @@
             <ul id="do-not-touch-list"></ul>
           </section>
 
-          <section class="card" id="gates-card">
-            <h2>Gates <span class="tag">look only — nothing to approve here yet</span></h2>
+          <section class="card" id="decision-card">
+            <h2 id="decision-title">Decision Needed</h2>
+            <p class="hint" id="decision-subtitle"></p>
             <ul id="gates-list"></ul>
+            <p class="source" id="decision-viewonly"></p>
           </section>
 
           <section class="card" id="evidence-card">

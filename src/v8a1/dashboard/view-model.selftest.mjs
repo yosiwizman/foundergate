@@ -7,7 +7,7 @@
 import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { buildView, buildDoctor, visibleStrings, FAILURE_MODES, EIGHT_QUESTIONS, BANNED_WORDS, SIDEBAR_NAV } from "./view-model.mjs";
+import { buildView, buildDoctor, visibleStrings, ciRowStrings, FAILURE_MODES, EIGHT_QUESTIONS, BANNED_WORDS, SIDEBAR_NAV, REQUIRED_TRANSLATIONS } from "./view-model.mjs";
 import { buildModel, UNKNOWN } from "../reader.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -103,6 +103,39 @@ check("Law54: disconnected → UNKNOWN verbatim + gentle explanation, never gree
   // and still no scary word anywhere in the disconnected view
   const all = visibleStrings(v).join(" ").toLowerCase();
   for (const w of BANNED_WORDS) assert.ok(!new RegExp(`\\b${w}\\b`).test(all));
+});
+
+// ANTI-REPEAT (copy-polish): the five founder-approved translations MUST appear.
+check("ANTI-REPEAT (required translations): the 5 plain-English strings are present", () => {
+  const all = visibleStrings(view).join("\n");
+  for (const t of REQUIRED_TRANSLATIONS) {
+    assert.ok(all.includes(t), `missing required translation: "${t}"`);
+  }
+});
+
+// ANTI-REPEAT (banned pairing): "safety" may NEVER appear in the CI row.
+check("ANTI-REPEAT (CI row): 'safety' never appears; CI label stays 'Checks (CI)'", () => {
+  assert.equal(view.statusCard.ciLabel, "Checks (CI)");
+  const ciRow = ciRowStrings(view).join(" ").toLowerCase();
+  assert.ok(!/\bsafety\b/.test(ciRow), `"safety" leaked into the CI row: ${ciRow}`);
+  // and the CI token itself stays verbatim
+  assert.equal(view.statusCard.ci.text, "passing");
+});
+
+// Tokens kept verbatim (Law 54) while gaining plain companions.
+check("tokens verbatim + plain companions (blocked/#7/MOCK_ONLY)", () => {
+  assert.equal(view.statusCard.state, "blocked"); // verbatim
+  assert.equal(view.statusCard.statePlain, "Waiting for your decision.");
+  assert.equal(view.statusCard.prDisplay, "Developer work package #7 (PR)");
+  assert.ok(view.header.dataChip.includes("MOCK_ONLY")); // token kept
+  assert.match(view.header.dataChip, /Demo mode/);
+});
+
+check("Decision Needed card is view-only, with the honest review-here note", () => {
+  assert.equal(view.decision.title, "Decision Needed");
+  assert.match(view.decision.viewOnlyNote, /recorded outside this screen/i);
+  // no approvable gate
+  for (const g of view.decision.items) assert.equal(g.approvable, false);
 });
 
 check("buildDoctor is pure and counts presence", () => {

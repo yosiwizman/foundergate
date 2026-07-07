@@ -46,7 +46,7 @@ function render(view) {
   $("stage-banner").textContent = view.header.stageBanner;
   $("project-chip").textContent = view.project.name + (view.project.needsAttention ? " · needs a look" : "");
   $("release-chip").textContent = "release: " + view.header.releaseLabel;
-  $("dataclass-chip").textContent = "data: " + view.header.dataClass;
+  $("dataclass-chip").textContent = view.header.dataChip;
   const cc = $("connected-chip");
   cc.textContent = view.header.connected ? "connected" : "not connected";
   cc.className = "chip " + (view.header.connected ? "on" : "off");
@@ -68,14 +68,17 @@ function render(view) {
     ql.appendChild(li);
   }
 
-  // Status card
+  // Status card (tokens verbatim; plain companions added)
   $("status-title").textContent = view.statusCard.title;
   $("state-badge").replaceWith(Object.assign(badgeEl({ text: view.statusCard.state, kind: view.statusCard.state === "blocked" ? "bad" : "info" }), { id: "state-badge", className: `badge ${view.statusCard.state === "blocked" ? "bad" : "info"}` }));
+  $("state-plain").textContent = view.statusCard.statePlain;
+  $("ci-label").textContent = view.statusCard.ciLabel + ":";
   $("ci-badge").replaceWith(Object.assign(badgeEl(view.statusCard.ci), { id: "ci-badge", className: `badge ${view.statusCard.ci.kind}` }));
-  $("pr-badge").replaceWith(Object.assign(badgeEl(view.statusCard.pr), { id: "pr-badge", className: `badge ${view.statusCard.pr.kind}` }));
   $("ci-hint").textContent = view.statusCard.ci.hint || "";
-  $("pr-hint").textContent = view.statusCard.pr.hint || "";
+  $("pr-display").textContent = view.statusCard.prDisplay;
+  $("pr-badge").replaceWith(Object.assign(badgeEl(view.statusCard.pr), { id: "pr-badge", className: `badge ${view.statusCard.pr.kind}` }));
   $("current-gate").textContent = view.statusCard.currentGate;
+  $("current-gate-plain").textContent = view.statusCard.currentGatePlain;
 
   // Needs-you
   $("needs-you-title").textContent = view.needsYou.title;
@@ -94,20 +97,23 @@ function render(view) {
   }
   if (view.doNotTouch.items.length === 0) dl.innerHTML = "<li class='hint'>Nothing to worry about right now.</li>";
 
-  // Gates (view-only)
+  // Decision Needed card (view-only, Law 55 — no approve buttons)
+  $("decision-title").textContent = view.decision.title;
+  $("decision-subtitle").textContent = view.decision.subtitle;
+  $("decision-viewonly").textContent = view.decision.viewOnlyNote;
   const gl = $("gates-list");
   gl.innerHTML = "";
-  for (const g of view.gates) {
+  for (const g of view.decision.items) {
     const li = document.createElement("li");
     li.innerHTML = `<b>${g.title}</b> `;
     li.appendChild(badgeEl({ text: g.state, kind: "unknown" }));
     const t = document.createElement("span");
     t.className = "tag";
-    t.textContent = "look only";
+    t.textContent = "review only";
     li.appendChild(t);
     gl.appendChild(li);
   }
-  if (view.gates.length === 0) gl.innerHTML = "<li class='hint'>No gates to show yet.</li>";
+  if (view.decision.items.length === 0) gl.innerHTML = "<li class='hint'>Nothing needs your decision right now.</li>";
 
   // Evidence
   const el = $("evidence-list");
@@ -122,7 +128,7 @@ function render(view) {
 
   // Health check (Doctor)
   $("doctor-title").textContent = view.doctor.title;
-  $("doctor-version").textContent = view.doctor.version;
+  $("doctor-version").textContent = `${view.doctor.version} (${view.doctor.versionPlain})`;
   $("doctor-present").textContent = view.doctor.filesPresent;
   const dc = $("doctor-checks");
   dc.innerHTML = "";
