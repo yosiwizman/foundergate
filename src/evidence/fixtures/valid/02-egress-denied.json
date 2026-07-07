@@ -1,0 +1,15 @@
+{
+  "id": "sample-egress-deny-1",
+  "ts": "2026-07-04T05:00:05Z",
+  "kind": "egress_denied",
+  "cage_id": "outer-cage.01",
+  "policy_hash": "a1b2c3d4e5f60718293a4b5c6d7e8f90",
+  "source": {
+    "type": "cage_log",
+    "ref": "cage://outer-cage.01/egress/42"
+  },
+  "denied_egress": [
+    { "target": "host-tag:provider-a", "protocol": "http", "reason": "default-deny (not on allow-list)" },
+    { "target": "host-tag:resolver", "protocol": "dns", "reason": "default-deny" }
+  ]
+}

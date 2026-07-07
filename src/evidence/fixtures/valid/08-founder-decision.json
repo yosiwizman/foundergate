@@ -1,0 +1,13 @@
+{
+  "id": "sample-founder-1",
+  "ts": "2026-07-04T05:00:35Z",
+  "kind": "founder_decision",
+  "cage_id": "outer-cage.01",
+  "policy_hash": "a1b2c3d4e5f60718293a4b5c6d7e8f90",
+  "source": {
+    "type": "founder",
+    "ref": "founder://note/1"
+  },
+  "founder_decision": "PENDING",
+  "note": "founder unavailable; decision deferred; nothing authorized live"
+}

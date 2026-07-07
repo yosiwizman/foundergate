@@ -1,0 +1,8 @@
+{
+  "id": "bad-source-type",
+  "ts": "2026-07-04T05:00:00Z",
+  "kind": "mock_served",
+  "cage_id": "outer-cage.01",
+  "policy_hash": "a1b2c3d4e5f60718293a4b5c6d7e8f90",
+  "source": { "type": "live_provider", "ref": "https://example" }
+}

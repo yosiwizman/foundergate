@@ -1,0 +1,14 @@
+{
+  "id": "sample-checker-1",
+  "ts": "2026-07-04T05:00:25Z",
+  "kind": "checker_verdict",
+  "cage_id": "outer-cage.01",
+  "policy_hash": "a1b2c3d4e5f60718293a4b5c6d7e8f90",
+  "source": {
+    "type": "checker",
+    "ref": "checker://verdict/1",
+    "detail": "independent Checker session, read-only"
+  },
+  "checker_verdict": "PASS",
+  "note": "checker confirms cage denied egress + held all actions; not a live crossing"
+}
