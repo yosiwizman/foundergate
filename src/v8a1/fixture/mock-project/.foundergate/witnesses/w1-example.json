@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0.0",
+  "witness_id": "w1-example",
+  "kind": "screenshot",
+  "result": "PENDING",
+  "at": "2026-07-07T10:00:00Z",
+  "mock": true,
+  "note": "MOCK_ONLY fixture witness."
+}

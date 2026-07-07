@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0.0",
+  "locks": [
+    { "path": ".foundergate/", "reason": "Harness state — never hand-edit; the harness owns it.", "owner": "harness" },
+    { "path": "docs/PANIC_CARD.md", "reason": "Safety document — do not modify without a gate.", "owner": "founder" }
+  ],
+  "mock": true,
+  "note": "MOCK_ONLY fixture. 'What must not be touched' is derived from these locks."
+}

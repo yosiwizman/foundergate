@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0.0",
+  "project_id": "mock-demo",
+  "name": "Mock Demo Project",
+  "repo": "your-org/mock-demo",
+  "attached": true,
+  "data_classification": "MOCK_ONLY",
+  "release_label": "dev",
+  "mock": true,
+  "note": "MOCK_ONLY fixture. No real project data. For V8-A1 dashboard proof only."
+}

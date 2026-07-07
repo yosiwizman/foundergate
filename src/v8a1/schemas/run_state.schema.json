@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/v8a1/run_state.schema.json",
+  "title": "FounderGate .foundergate/run_state.json (V8-A1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "mode"],
+  "properties": {
+    "schema_version": { "type": "string", "minLength": 1 },
+    "mode": { "type": "string", "enum": ["idle", "running", "paused", "UNKNOWN"] },
+    "autonomous": { "type": "boolean" },
+    "tracked_processes": { "type": "array", "items": { "type": "string" } },
+    "mock": { "type": "boolean" },
+    "note": { "type": "string" }
+  }
+}

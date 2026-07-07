@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0.0",
+  "mode": "idle",
+  "autonomous": false,
+  "tracked_processes": [],
+  "mock": true,
+  "note": "MOCK_ONLY fixture. No tracked processes → Panic Card must say it stopped nothing running."
+}

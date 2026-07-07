@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/v8a1/release_label.schema.json",
+  "title": "FounderGate .foundergate/release_label.json (V8-A1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "label"],
+  "properties": {
+    "schema_version": { "type": "string", "minLength": 1 },
+    "label": { "type": "string", "enum": ["dev", "preview", "internal", "release", "UNKNOWN"] },
+    "stage": { "type": "string" },
+    "mock": { "type": "boolean" },
+    "note": { "type": "string" }
+  }
+}

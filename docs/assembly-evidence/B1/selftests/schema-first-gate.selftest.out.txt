@@ -1,0 +1,4 @@
+  PASS: schema-first gate PASSES on the real schemas + fixture
+  PASS: required-schema list is exactly the 10-item V8-A1 subset
+
+V8A1-SCHEMA-FIRST-GATE-SELFTEST: PASS (2 checks)

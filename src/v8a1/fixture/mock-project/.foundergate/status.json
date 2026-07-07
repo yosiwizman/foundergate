@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "project_id": "mock-demo",
+  "state": "blocked",
+  "headline": "Waiting on a founder gate before the next step.",
+  "current_gate": "G1 — example gate (view-only in V8-A1)",
+  "current_blocker": "A founder decision is required at the example gate.",
+  "branch": "feature/mock-lane",
+  "pr": "#7",
+  "ci": "passing",
+  "next_action": "Read the example gate card, then decide at the gate.",
+  "changed_since_last": "status.json updated; example gate opened.",
+  "updated_at": "2026-07-07T10:00:00Z",
+  "mock": true,
+  "note": "MOCK_ONLY fixture status."
+}

@@ -1,0 +1,7 @@
+  PASS: attach one repo (the fixture) works
+  PASS: re-attaching the SAME repo is idempotent
+  PASS: attaching a SECOND different repo is REJECTED
+  PASS: attaching a folder without .foundergate/ is REJECTED
+  PASS: attach is read-only (creates no files in the repo)
+
+V8A1-REGISTRY-SELFTEST: PASS (5 checks)

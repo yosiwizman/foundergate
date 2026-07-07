@@ -1,0 +1,9 @@
+  PASS: fixture model is connected and reads real files
+  PASS: all 8 priority questions present in strict order
+  PASS: do-not-touch derives from locks (2 items)
+  PASS: evidence freshness: one FRESH, one STALE
+  PASS: panic card honest scope: idle fixture stops nothing running
+  PASS: gates are view-only (Law 55)
+  PASS: empty project root → not connected, no invented state
+
+V8A1-READER-SELFTEST: PASS (7 checks)

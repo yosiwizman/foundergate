@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/v8a1/status.schema.json",
+  "title": "FounderGate .foundergate/status.json (V8-A1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "project_id", "state"],
+  "properties": {
+    "schema_version": { "type": "string", "minLength": 1 },
+    "project_id": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
+    "state": { "type": "string", "enum": ["active", "idle", "blocked", "paused", "UNKNOWN"] },
+    "headline": { "type": "string" },
+    "current_gate": { "type": "string" },
+    "current_blocker": { "type": "string" },
+    "branch": { "type": "string" },
+    "pr": { "type": "string" },
+    "ci": { "type": "string", "enum": ["passing", "failing", "pending", "UNKNOWN"] },
+    "next_action": { "type": "string" },
+    "changed_since_last": { "type": "string" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "mock": { "type": "boolean" },
+    "note": { "type": "string" }
+  }
+}

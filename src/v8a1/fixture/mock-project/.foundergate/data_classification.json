@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "default_class": "MOCK_ONLY",
+  "rules": [
+    { "match": ".foundergate/*.json", "class": "INTERNAL" },
+    { "match": "**/*secret*", "class": "SECRET" }
+  ],
+  "hide_secret_values": true,
+  "block_unknown_files": true,
+  "mock": true,
+  "note": "MOCK_ONLY fixture classification policy."
+}
