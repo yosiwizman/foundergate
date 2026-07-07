@@ -1,0 +1,19 @@
+{
+  "machine_id": "harvest-terminal-macos-24gb",
+  "os": "macos",
+  "cpu_cores": 12,
+  "ram_gb": 24,
+  "disk_free_gb": 17,
+  "docker_available": true,
+  "playwright_available": true,
+  "node_available": true,
+  "git_available": true,
+  "github_cli_available": true,
+  "local_writer_slots": 3,
+  "cloud_writer_slots": 2,
+  "recommended_parallel_lanes": 3,
+  "heavy_build_lanes": 1,
+  "playwright_lanes": 2,
+  "safe_mode": false,
+  "reason": "Preflight for bundle B12. macOS, 12 cores, 24 GB RAM, ~17 GB free. recommended_parallel_lanes = min(cpu/2=6, ram/8=3) = 3. heavy_build_lanes 1 (RAM<32). playwright_lanes 2 (RAM>=24, cores>=8), capped by port isolation; used serially for smoke screenshots. safe_mode false. Docker present but FORBIDDEN in V8-A1. Lane use for B12: B1 schema chain is largely serial (A4->A5->A6->A7); B2 renders one shell then DAG-parallel cards, Playwright serialized. Scheduler may never exceed these limits or override dependency safety, file locks, secrets policy, founder gates, or Roadmap V8.11."
+}
