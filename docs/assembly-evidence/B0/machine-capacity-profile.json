@@ -1,0 +1,19 @@
+{
+  "machine_id": "harvest-terminal-macos-24gb",
+  "os": "macos",
+  "cpu_cores": 12,
+  "ram_gb": 24,
+  "disk_free_gb": 17,
+  "docker_available": true,
+  "playwright_available": true,
+  "node_available": true,
+  "git_available": true,
+  "github_cli_available": true,
+  "local_writer_slots": 3,
+  "cloud_writer_slots": 2,
+  "recommended_parallel_lanes": 3,
+  "heavy_build_lanes": 1,
+  "playwright_lanes": 2,
+  "safe_mode": false,
+  "reason": "macOS, 12 cores, 24 GB RAM, ~17 GB disk free. recommended_parallel_lanes = min(cpu_cores/2 = 6, ram_gb/8 = 3), floor 1 = 3. heavy_build_lanes = 1 (ram_gb < 32). playwright_lanes = 2 (ram_gb >= 24 and cores >= 8), capped by port isolation. safe_mode = false (RAM comfortable; not a weak laptop). Docker present on host but FORBIDDEN in V8-A1 per Roadmap V8.11 / Manual Section 12. This bundle B0 is docs-only: it uses a single docs lane and 0 Playwright/heavy/Docker lanes. The scheduler may always choose fewer lanes; it may never exceed these limits or override dependency safety, file locks, secrets policy, founder gates, or Roadmap V8.11. Plain English: this machine can safely run 3 lanes; B0 needs only 1."
+}
