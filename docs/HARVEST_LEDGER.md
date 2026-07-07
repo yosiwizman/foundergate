@@ -23,7 +23,7 @@ cite the self-test result observed *here*, not in AKIOR.
 
 | # | Component | Source path | New path | Difficulty | Decoupling changes | Scan | Self-test (this repo) | Date |
 |---|-----------|-------------|----------|-----------|--------------------|------|-----------------------|------|
-| — | _(none extracted yet)_ | | | | | | | |
+| 1 | evidence bus | `akior-activepieces-engine/harness/events/` (`evidence-bus.mjs`, `event.schema.json`, `build-sample-timeline.mjs`, `evidence-bus.selftest.mjs`) | `src/events/` | LIGHT-DECOUPLE | (1) Schema `$id`/`title` genericized `akior.local`→`foundergate.local`, "AKIOR Evidence Bus Event"→"FounderGate Evidence Bus Event". (2) Path guard rewritten from a hardcoded `.akior`/AKIOR-store-name denylist into a **generic, configurable** protected-store guard (`DEFAULT_PROTECTED_SEGMENTS`/`DEFAULT_PROTECTED_NAME_PATTERNS`, overridable via opts) — no AKIOR reference, same safety behavior, still tested. (3) Sample timeline rewritten from AKIOR night-run narrative to a generic `your-org/your-project` example run (still covers all 14 event types + all 8 source types + honest grades). | CLEAN | **PASS — 17/17 checks** (`node src/events/evidence-bus.selftest.mjs`; also green via `npm test`) | 2026-07-06 |
 
 ## Scan log
 
