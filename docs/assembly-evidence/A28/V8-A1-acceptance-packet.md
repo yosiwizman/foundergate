@@ -20,7 +20,7 @@
 | B1 — Schema Foundation (A4–A10) | #16 | `d6f06cf` | green (schema-first machine gate at exact SHA) |
 | B2 — Truth Dashboard UI (A11–A24) | #17 | `d2ad415` | green |
 | B12 UX repair (post-G2 attempt #1) | #18 | `170196f` | green |
-| **Final commit (A27)** | this bundle B3 | `B3FINALSHA` | `B3FINALCI` |
+| **Final commit (A27)** | this bundle B3 | `29913080d2a6a1031797d1e77edfcbfcbc672414` | `https://github.com/yosiwizman/foundergate/actions/runs/28899979558` |
 
 Gates: **G1 APPROVED**, **G2 PASSED** (see `../FOUNDER_GATE_LEDGER.md`).
 
@@ -60,7 +60,7 @@ Gates: **G1 APPROVED**, **G2 PASSED** (see `../FOUNDER_GATE_LEDGER.md`).
 | 14 | No terminal copy/paste needed for status review (measured, count = 0) | ✅ PASS | `hand-burden.json` `terminal_copy_paste_count: 0` |
 | 15 | Stranger Test passed (7 questions, unaided, recorded) | ⚠️ PARTIAL | G2 record: **founder-performed**; a true non-developer stranger run is **deferred**, required before any outside-operator claim |
 | 16 | Founder Hand-Burden metrics recorded (Law 64 set) | ⚠️ PARTIAL | `hand-burden.json`: terminal_copy_paste_count, clicks_to_pause, clicks_to_see_current_status, above-fold, scroll budget recorded. `founder_prompts_per_run` / `typing_required_for_bug_report` / `read_aloud_works` = **not-in-scope for V8-A1** (bug report + read-aloud arrive later) |
-| 17 | Exact-SHA CI green on the final commit (SHA recorded) | ✅ PASS | final SHA `B3FINALSHA` · `B3FINALCI` |
+| 17 | Exact-SHA CI green on the final commit (SHA recorded) | ✅ PASS | final SHA `29913080d2a6a1031797d1e77edfcbfcbc672414` · `https://github.com/yosiwizman/foundergate/actions/runs/28899979558` |
 | 18 | Acceptance packet complete with every evidence link | ✅ PASS | this document |
 
 **Honest summary:** 16 of 18 items are full green. Two are honestly PARTIAL: #15 (Stranger Test was

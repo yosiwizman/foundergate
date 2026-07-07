@@ -7,7 +7,7 @@
 
 | Substep | What | Evidence |
 |---------|------|----------|
-| A27 | Exact-SHA CI green on the final commit | final SHA `B3FINALSHA` · CI `B3FINALCI` (stamped on merge) |
+| A27 | Exact-SHA CI green on the final commit | final SHA `29913080d2a6a1031797d1e77edfcbfcbc672414` · CI `https://github.com/yosiwizman/foundergate/actions/runs/28899979558` (stamped on merge) |
 | A28 | V8-A1 acceptance packet (DoD prefilled, every link) | `../A28/V8-A1-acceptance-packet.md` |
 
 ## Result
