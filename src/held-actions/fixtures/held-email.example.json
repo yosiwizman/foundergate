@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "action_id": "held-fixture-email-0001",
+  "channel": "email-gmail",
+  "intent": "would draft-and-send a reply to a thread — HELD instead, never sent",
+  "status": "held",
+  "sent": false,
+  "live": false,
+  "dispatchable": false,
+  "transport_call_count": 0,
+  "held_at": "2026-07-04T00:00:00.000Z",
+  "held_reason": "dry-run sink: action held, never sent (no live path exists here)",
+  "payload_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

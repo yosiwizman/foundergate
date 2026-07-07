@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/held-actions/held-action.schema.json",
+  "title": "FounderGate Held Action (dry-run outbox record)",
+  "description": "SCAFFOLD ONLY. Machine-readable record produced by the H41 held-action sink (harness/held-actions/). An action routed through the sink becomes HELD: it is recorded to a LOCAL harness fixtures file and NEVER sent, NEVER dispatched, NEVER crosses to a real provider, device, or network. HELD is NOT SENT and is NOT live proof. The const invariants below make an over-claim structurally impossible: a record whose status is anything but 'held', or whose sent/live/dispatchable is anything but false, or whose transport_call_count is anything but 0, is rejected by the validator. This schema is a spec artifact; it is never a runtime capability and confers no send authority. Final cage claims still require independent Checker + Advisor verification and are NOT self-certified.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "action_id",
+    "channel",
+    "intent",
+    "status",
+    "sent",
+    "live",
+    "dispatchable",
+    "transport_call_count",
+    "held_at",
+    "held_reason"
+  ],
+  "properties": {
+    "schema_version": {
+      "description": "Semantic version of this held-action schema the emitter targeted.",
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "action_id": {
+      "description": "Stable identifier for the intended action (caller-supplied or sink-generated). Descriptive only; carries no authority.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "channel": {
+      "description": "The channel the action WOULD have targeted had it ever been dispatched (e.g. 'email-gmail', 'whatsapp', 'calendar'). Purely a label recorded for the dry-run outbox; the sink never resolves or contacts it.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "intent": {
+      "description": "Human-readable description of what the action would have done. Never the raw payload/secret — a summary only.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "status": {
+      "description": "Always 'held'. The sink has exactly one terminal state; it can never mark an action sent.",
+      "const": "held"
+    },
+    "sent": {
+      "description": "Always false. Nothing routed through this sink is ever sent.",
+      "const": false
+    },
+    "live": {
+      "description": "Always false. The sink has no live path — no provider, no device, no network.",
+      "const": false
+    },
+    "dispatchable": {
+      "description": "Always false. A held record is not a dispatchable job and cannot be promoted to one by this sink.",
+      "const": false
+    },
+    "transport_call_count": {
+      "description": "Always 0. The number of times a real transport was invoked while producing this record. The sink never calls its (optional, injected) transport; any non-zero value is a cage breach and is rejected.",
+      "const": 0
+    },
+    "held_at": {
+      "description": "ISO-8601 timestamp of when the action was held.",
+      "type": "string",
+      "minLength": 1
+    },
+    "held_reason": {
+      "description": "Why the action was held. For this sink it is always a dry-run reason; there is no code path that turns it into a send.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "payload_digest": {
+      "description": "Optional SHA-256 hex digest of the would-be payload, so the record can reference content without ever storing the raw content/secret. Never the payload itself.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

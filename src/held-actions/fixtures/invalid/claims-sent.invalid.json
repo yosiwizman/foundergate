@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0.0",
+  "action_id": "over-claim-0003",
+  "channel": "email-gmail",
+  "intent": "a record dishonestly asserting it was sent — must be REJECTED",
+  "status": "sent",
+  "sent": true,
+  "live": true,
+  "dispatchable": true,
+  "transport_call_count": 1,
+  "held_at": "2026-07-04T00:00:00.000Z",
+  "held_reason": "this record lies: the schema const invariants reject sent/live/dispatchable/non-zero transport"
+}

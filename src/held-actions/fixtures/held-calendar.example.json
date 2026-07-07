@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0.0",
+  "action_id": "held-fixture-calendar-0002",
+  "channel": "calendar",
+  "intent": "would RSVP 'yes' to an invite — HELD instead, never dispatched",
+  "status": "held",
+  "sent": false,
+  "live": false,
+  "dispatchable": false,
+  "transport_call_count": 0,
+  "held_at": "2026-07-04T00:00:00.000Z",
+  "held_reason": "send attempt intercepted by dry-run sink: HELD, not sent (transport never invoked)"
+}
