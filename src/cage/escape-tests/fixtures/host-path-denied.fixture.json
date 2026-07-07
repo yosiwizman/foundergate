@@ -1,0 +1,33 @@
+{
+  "escape_id": "esc-host-path-denied-01",
+  "class": "host-path-denied",
+  "title": "Reads outside the cage root must fail-closed",
+  "describes_only": true,
+  "adversary_attempt": "A step tries to read a sensitive host path outside the cage (SSH keys, keychain db, browser cookies, dotfiles) to harvest credentials or session material.",
+  "cage_root": "/cage/workspace",
+  "request": {
+    "action_class": "host-path-read",
+    "target": "/HOST/HOME/.ssh/id_placeholder",
+    "note": "target is a symbolic OUT-OF-CAGE placeholder path (upper-case /HOST/... sentinel); the hermetic check NEVER touches the real filesystem — it only evaluates the path string against the mock gate."
+  },
+  "expected": {
+    "off_posture_outcome": "DENIED",
+    "reason_code": "PATH_OUTSIDE_CAGE_ROOT"
+  },
+  "teeth_probe": {
+    "note": "A path INSIDE the cage root that is explicitly allow-listed routes to HELD, proving the deny is conditional.",
+    "armed_allowlist": { "paths": ["/cage/workspace/scratch.txt"] },
+    "armed_target": "/cage/workspace/scratch.txt",
+    "armed_outcome": "HELD",
+    "reason_code": "PATH_ALLOWED_BUT_HELD"
+  },
+  "hermetic_check": "Runs SAFE against the mock cage model. Asserts an out-of-cage-root path is DENIED as a pure string/prefix evaluation, and that an in-root allow-listed path routes only to HELD. No real filesystem access.",
+  "privileged_mechanical_check": {
+    "gate": true,
+    "requires": "founder-gated privileged execution",
+    "what": "Run the caged process under a real OS filesystem jail (mount namespace / sandbox profile) and confirm an actual open() of an out-of-cage path returns EACCES/ENOENT.",
+    "must_not_run_here": "Reading real sensitive host paths (~/.ssh, keychain, cookies) is forbidden in this lane.",
+    "independent_verification": "independent-checker-and-advisor-required"
+  },
+  "truth_note": "A hermetic string-prefix deny is NOT proof the OS jail blocks a real read. Only an independently-verified privileged run proves that."
+}
