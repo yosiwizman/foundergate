@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/v8a1/evidence_entry.schema.json",
+  "title": "FounderGate .foundergate/evidence/<id>.json (V8-A1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["evidence_id", "path"],
+  "properties": {
+    "schema_version": { "type": "string", "minLength": 1 },
+    "evidence_id": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
+    "path": { "type": "string", "minLength": 1 },
+    "kind": { "type": "string", "enum": ["file", "screenshot", "ci", "pr", "command_output", "UNKNOWN"] },
+    "sha": { "type": "string" },
+    "fresh": { "type": "boolean", "description": "false or absent → the dashboard shows STALE." },
+    "mock": { "type": "boolean" },
+    "note": { "type": "string" }
+  }
+}

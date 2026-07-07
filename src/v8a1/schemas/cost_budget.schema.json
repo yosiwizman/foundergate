@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/v8a1/cost_budget.schema.json",
+  "title": "FounderGate .foundergate/cost_budget.json (V8-A1 — display/policy only)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "enforcement"],
+  "properties": {
+    "schema_version": { "type": "string", "minLength": 1 },
+    "enforcement": {
+      "type": "string",
+      "const": "policy-display-only",
+      "description": "V8-A1: cost guard is schema/config/display only. Runtime enforcement begins V8-B."
+    },
+    "enforcement_note": { "type": "string" },
+    "monthly_limit_usd": { "type": "number" },
+    "paid_services_blocked": { "type": "boolean" },
+    "same_failure_loop_policy": { "type": "string" },
+    "mock": { "type": "boolean" },
+    "note": { "type": "string" }
+  }
+}

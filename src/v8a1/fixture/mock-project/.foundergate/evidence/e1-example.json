@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_id": "e1-example",
+  "path": ".foundergate/status.json",
+  "kind": "file",
+  "sha": "mock000000000000000000000000000000000000",
+  "fresh": true,
+  "mock": true,
+  "note": "MOCK_ONLY fixture evidence pointer."
+}

@@ -1,0 +1,7 @@
+  PASS: missing status.json → state NOT CONNECTED (never invented)
+  PASS: CI unavailable → CI UNKNOWN (not green)
+  PASS: PR unavailable → PR UNKNOWN
+  PASS: stale evidence (fresh:false) → STALE
+  PASS: no absent source is ever answered with a green/ready value
+
+V8A1-CANNOT-INVENT-STATE-SELFTEST: PASS (5 checks)

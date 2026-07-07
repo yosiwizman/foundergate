@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/v8a1/witness_entry.schema.json",
+  "title": "FounderGate .foundergate/witnesses/<id>.json (V8-A1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["witness_id"],
+  "properties": {
+    "schema_version": { "type": "string", "minLength": 1 },
+    "witness_id": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
+    "kind": { "type": "string", "enum": ["ui", "human", "screenshot", "UNKNOWN"] },
+    "result": { "type": "string", "enum": ["PASS", "FAIL", "PENDING", "UNKNOWN"] },
+    "at": { "type": "string", "format": "date-time" },
+    "mock": { "type": "boolean" },
+    "note": { "type": "string" }
+  }
+}

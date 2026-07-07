@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/v8a1/project.schema.json",
+  "title": "FounderGate .foundergate/project.json (V8-A1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "project_id", "name"],
+  "properties": {
+    "schema_version": { "type": "string", "minLength": 1 },
+    "project_id": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
+    "name": { "type": "string", "minLength": 1 },
+    "repo": { "type": "string", "minLength": 1 },
+    "attached": { "type": "boolean" },
+    "data_classification": { "type": "string", "enum": ["MOCK_ONLY", "PUBLIC", "INTERNAL", "SECRET", "UNKNOWN"] },
+    "release_label": { "type": "string", "minLength": 1 },
+    "mock": { "type": "boolean" },
+    "note": { "type": "string" }
+  }
+}

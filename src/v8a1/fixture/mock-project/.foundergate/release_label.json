@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0.0",
+  "label": "dev",
+  "stage": "V8-A1 Truth Dashboard MVP",
+  "mock": true,
+  "note": "MOCK_ONLY fixture release label."
+}

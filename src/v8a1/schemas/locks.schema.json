@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/v8a1/locks.schema.json",
+  "title": "FounderGate .foundergate/locks.json (V8-A1 — what must not be touched)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "locks"],
+  "properties": {
+    "schema_version": { "type": "string", "minLength": 1 },
+    "locks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "reason"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "owner": { "type": "string" }
+        }
+      }
+    },
+    "mock": { "type": "boolean" },
+    "note": { "type": "string" }
+  }
+}

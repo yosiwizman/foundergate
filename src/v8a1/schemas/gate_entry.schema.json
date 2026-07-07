@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/v8a1/gate_entry.schema.json",
+  "title": "FounderGate .foundergate/gates/<id>.json (V8-A1 — view-only, Law 55)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["gate_id", "state", "view_only"],
+  "properties": {
+    "schema_version": { "type": "string", "minLength": 1 },
+    "gate_id": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
+    "title": { "type": "string" },
+    "state": { "type": "string", "enum": ["OPEN", "CLOSED", "PENDING", "REJECTED", "UNKNOWN"] },
+    "view_only": {
+      "type": "boolean",
+      "const": true,
+      "description": "Law 55: V8-A1 gate cards are informational only — never a wired approval."
+    },
+    "description": { "type": "string" },
+    "mock": { "type": "boolean" },
+    "note": { "type": "string" }
+  }
+}

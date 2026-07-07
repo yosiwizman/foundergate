@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_id": "e2-stale-example",
+  "path": ".foundergate/old-report.txt",
+  "kind": "file",
+  "sha": "mock111111111111111111111111111111111111",
+  "fresh": false,
+  "mock": true,
+  "note": "MOCK_ONLY fixture. fresh:false → the dashboard must show this evidence as STALE."
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/v8a1/data_classification.schema.json",
+  "title": "FounderGate .foundergate/data_classification.json (V8-A1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "default_class"],
+  "properties": {
+    "schema_version": { "type": "string", "minLength": 1 },
+    "default_class": { "type": "string", "enum": ["MOCK_ONLY", "PUBLIC", "INTERNAL", "SECRET", "UNKNOWN"] },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["match", "class"],
+        "properties": {
+          "match": { "type": "string", "minLength": 1 },
+          "class": { "type": "string", "enum": ["MOCK_ONLY", "PUBLIC", "INTERNAL", "SECRET", "UNKNOWN"] }
+        }
+      }
+    },
+    "hide_secret_values": { "type": "boolean" },
+    "block_unknown_files": { "type": "boolean" },
+    "mock": { "type": "boolean" },
+    "note": { "type": "string" }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "gate_id": "g1-example",
+  "title": "Example founder gate (view-only in V8-A1)",
+  "state": "PENDING",
+  "view_only": true,
+  "description": "This card is informational only. V8-A1 shows gate state; it has no approve button (Law 55).",
+  "mock": true,
+  "note": "MOCK_ONLY fixture gate."
+}

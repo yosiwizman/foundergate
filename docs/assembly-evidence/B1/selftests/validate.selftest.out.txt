@@ -1,0 +1,11 @@
+  PASS: all 10 required schemas exist and parse
+  PASS: every fixture .foundergate file validates
+  PASS: fixture folder entries validate (gate/witness/evidence)
+  PASS: missing required field is rejected
+  PASS: bad enum value is rejected
+  PASS: additional property is rejected
+  PASS: gate view_only:false is rejected (Law 55 const bites)
+  PASS: cost enforcement other than policy-display-only is rejected
+  PASS: bad date-time is rejected
+
+V8A1-VALIDATOR-SELFTEST: PASS (9 checks)
