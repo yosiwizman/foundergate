@@ -1,0 +1,15 @@
+{
+  "schema_version": "2.0.0",
+  "checker_id": "invalid/bad-schema-version",
+  "sample": { "episodes": 30, "labelled_defects": 10 },
+  "head_sha": "abcdef0",
+  "label": "illustrative",
+  "notes": "INVALID: schema_version '2.0.0' does not equal the required const '1.0.0'.",
+  "metrics": {
+    "false_positive_rate": 0.05,
+    "miss_rate": 0.0,
+    "loop_count": 1,
+    "review_latency": 10,
+    "verdict_stability": "deterministic"
+  }
+}

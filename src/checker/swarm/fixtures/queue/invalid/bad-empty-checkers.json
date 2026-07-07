@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "queue_id": "q-bad-empty",
+  "max_fanout": 2,
+  "max_loops": 2,
+  "default_disposition": "hold",
+  "describes_only": true,
+  "enforced": false,
+  "checkers": []
+}

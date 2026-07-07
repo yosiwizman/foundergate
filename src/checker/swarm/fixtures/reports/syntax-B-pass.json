@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "checker_id": "chk-syntax-B",
+  "target": "lane-B",
+  "dimension": "syntax",
+  "verdict": "PASS",
+  "loop": 1,
+  "evidence_ref": "fixtures/evidence/lane-B/syntax.log",
+  "describes_only": true
+}

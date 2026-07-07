@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "checker_id": "illustrative/noisy-but-safe",
+  "sample": { "episodes": 30, "labelled_defects": 9 },
+  "head_sha": "1111111",
+  "label": "illustrative",
+  "notes": "ILLUSTRATIVE. A checker that catches every real defect (miss_rate 0.0) but is chatty: ~3-in-10 of its findings are spurious (false_positive_rate 0.30) and its verdict shows rare re-run drift (mostly_stable). It PASSES — no veto — but lands in the yellow band and is flagged ELEVATED_FALSE_POSITIVE + VERDICT_DRIFT so the friction is visible without failing an otherwise safe reviewer.",
+  "metrics": {
+    "false_positive_rate": 0.30,
+    "miss_rate": 0.0,
+    "loop_count": 2,
+    "review_latency": 45,
+    "verdict_stability": "mostly_stable"
+  }
+}

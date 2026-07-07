@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "checker_id": "invalid/bad-sha",
+  "sample": { "episodes": 30, "labelled_defects": 10 },
+  "head_sha": "ABC",
+  "label": "illustrative",
+  "notes": "INVALID: head_sha 'ABC' is uppercase and shorter than 7 chars; must match ^[0-9a-f]{7,40}$.",
+  "metrics": {
+    "false_positive_rate": 0.05,
+    "miss_rate": 0.0,
+    "loop_count": 1,
+    "review_latency": 10,
+    "verdict_stability": "deterministic"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "checker_id": "illustrative/flapping-checker",
+  "sample": { "episodes": 22, "labelled_defects": 20 },
+  "head_sha": "3333333",
+  "label": "illustrative",
+  "notes": "ILLUSTRATIVE. A checker whose verdict FLIPS PASS/FAIL on re-run of the same input (verdict_stability flapping). Its rates are otherwise decent (one missed defect in 20 = 0.05, false_positive_rate 0.10), but a coin-flip verdict cannot be trusted or reproduced, so FLAPPING_VERDICT forces UNRELIABLE / red. The single miss is separately surfaced as an ANY_MISS warning.",
+  "metrics": {
+    "false_positive_rate": 0.10,
+    "miss_rate": 0.05,
+    "loop_count": 1,
+    "review_latency": 10,
+    "verdict_stability": "flapping"
+  }
+}

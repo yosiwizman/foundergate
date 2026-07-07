@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "checker_id": "illustrative/thrash-lowsample",
+  "sample": { "episodes": 5, "labelled_defects": 2 },
+  "head_sha": "5555555",
+  "label": "illustrative",
+  "notes": "ILLUSTRATIVE. A checker stuck in a rework loop: 6 review rounds per episode (loop_count 6) trips REVIEW_THRASH and forces UNRELIABLE / red even though its raw number is green (its rates are otherwise clean). Measured over only 5 episodes, so it also carries the LOW_SAMPLE warning: the score is provisional until more episodes accrue.",
+  "metrics": {
+    "false_positive_rate": 0.05,
+    "miss_rate": 0.0,
+    "loop_count": 6,
+    "review_latency": 8,
+    "verdict_stability": "deterministic"
+  }
+}

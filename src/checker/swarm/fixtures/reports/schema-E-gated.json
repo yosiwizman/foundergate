@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "checker_id": "chk-schema-E-gate",
+  "target": "lane-E",
+  "dimension": "schema",
+  "verdict": "GATED",
+  "loop": 1,
+  "evidence_ref": "fixtures/evidence/lane-E/schema-gate.log",
+  "describes_only": true
+}

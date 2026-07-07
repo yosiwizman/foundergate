@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "checker_id": "illustrative/missed-breach",
+  "sample": { "episodes": 25, "labelled_defects": 10 },
+  "head_sha": "2222222",
+  "label": "illustrative",
+  "notes": "ILLUSTRATIVE — the core anti-trust case. This checker looks excellent on the CHEAP metrics: near-zero spurious findings (0.03), single-pass (loop 0), fast (5s), deterministic. Its raw weighted number lands GREEN (87). But it missed 2 of 10 ground-truth labelled defects (miss_rate 0.20), so HIGH_MISS_RATE fires and forces the disposition to UNRELIABLE / effective band red. A high number can never buy back a checker that passes real breaches.",
+  "metrics": {
+    "false_positive_rate": 0.03,
+    "miss_rate": 0.20,
+    "loop_count": 0,
+    "review_latency": 5,
+    "verdict_stability": "deterministic"
+  }
+}

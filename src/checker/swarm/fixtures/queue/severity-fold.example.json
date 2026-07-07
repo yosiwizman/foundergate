@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "queue_id": "q-severity-fold",
+  "max_fanout": 3,
+  "max_loops": 2,
+  "default_disposition": "hold",
+  "describes_only": true,
+  "enforced": false,
+  "checkers": [
+    { "checker_id": "c1", "target": "lane-C", "dimension": "evidence", "report_ref": "evidence-C-hold.json" },
+    { "checker_id": "c2", "target": "lane-E", "dimension": "schema", "report_ref": "schema-E-gated.json" },
+    { "checker_id": "c3", "target": "lane-B", "dimension": "syntax", "report_ref": "syntax-B-pass.json" }
+  ]
+}

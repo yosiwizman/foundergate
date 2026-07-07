@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "checker_id": "invalid/extra-property",
+  "sample": { "episodes": 30, "labelled_defects": 10 },
+  "head_sha": "9999999",
+  "label": "illustrative",
+  "notes": "INVALID: metrics carries an undeclared 'coverage' key; additionalProperties is false.",
+  "metrics": {
+    "false_positive_rate": 0.05,
+    "miss_rate": 0.0,
+    "loop_count": 1,
+    "review_latency": 10,
+    "verdict_stability": "deterministic",
+    "coverage": 0.9
+  }
+}

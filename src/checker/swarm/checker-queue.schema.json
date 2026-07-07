@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/checker/swarm/checker-queue.schema.json",
+  "title": "FounderGate Checker Queue",
+  "description": "Declares a BOUNDED checker swarm: a fixed set of checker tasks, a hard fanout cap, and a hard loop cap. The coordinator that consumes this document may NEVER spawn an uncontrolled swarm — it dispatches at most max_fanout checkers per loop and runs at most max_loops (<=2) loops. This is a spec/schema surface only: it describes the shape of a swarm request. It does not spawn a process, open a socket, or contact any host. default_disposition is always 'hold' — nothing auto-passes; a deduped verdict is a report, not an authorization.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "queue_id",
+    "max_fanout",
+    "max_loops",
+    "default_disposition",
+    "describes_only",
+    "enforced",
+    "checkers"
+  ],
+  "properties": {
+    "schema_version": {
+      "description": "Semantic version of this queue schema the emitter targeted.",
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "queue_id": {
+      "description": "Stable identifier of this swarm request.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "max_fanout": {
+      "description": "Hard cap on how many checkers the coordinator may dispatch in a SINGLE loop. Must be >=1 and <=16. Total work is bounded by max_fanout * max_loops — there is no uncontrolled fanout.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 16
+    },
+    "max_loops": {
+      "description": "Hard cap on coordinator loops. The coordinator forbids more than 2 loops (no runaway re-check). Must be 1 or 2.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2
+    },
+    "default_disposition": {
+      "description": "Fail-closed default. Must be 'hold' — no checker outcome auto-authorizes anything; the aggregate is a report for a human/sheriff.",
+      "type": "string",
+      "const": "hold"
+    },
+    "describes_only": {
+      "description": "Honesty invariant. This queue DESCRIBES a swarm request; it never enforces. Must be true.",
+      "type": "boolean",
+      "const": true
+    },
+    "enforced": {
+      "description": "Honesty invariant. This spec is NOT a live enforcement surface. Must be false.",
+      "type": "boolean",
+      "const": false
+    },
+    "checkers": {
+      "description": "The checker tasks in this swarm. Each names a (target, dimension) and the fixture report it will consume. Bounded: at most 64 tasks may be declared, and the coordinator will still only dispatch max_fanout*max_loops of them.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["checker_id", "target", "dimension", "report_ref"],
+        "properties": {
+          "checker_id": {
+            "description": "Unique-within-queue id of this checker task. Uniqueness is additionally enforced by the coordinator.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[a-zA-Z0-9._:-]+$"
+          },
+          "target": {
+            "description": "What this checker inspects. Reports are deduped by (target, dimension).",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "dimension": {
+            "description": "The axis this checker inspects.",
+            "type": "string",
+            "enum": ["lease", "safety", "syntax", "evidence", "schema", "hygiene"]
+          },
+          "report_ref": {
+            "description": "Reference (basename) of the fixture checker-report this task consumes. Offline only — resolved against the fixtures/reports directory by the test harness.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[a-zA-Z0-9._-]+\\.json$"
+          }
+        }
+      }
+    }
+  }
+}

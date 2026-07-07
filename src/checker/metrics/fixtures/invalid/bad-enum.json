@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "checker_id": "invalid/bad-enum",
+  "sample": { "episodes": 30, "labelled_defects": 10 },
+  "head_sha": "7777777",
+  "label": "illustrative",
+  "notes": "INVALID: verdict_stability 'wobbly' is not in the enum [deterministic, mostly_stable, flapping].",
+  "metrics": {
+    "false_positive_rate": 0.05,
+    "miss_rate": 0.0,
+    "loop_count": 1,
+    "review_latency": 10,
+    "verdict_stability": "wobbly"
+  }
+}

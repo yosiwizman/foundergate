@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0.0",
+  "title": "FounderGate Checker Anti-Trust Veto Checklist",
+  "description": "A checker can look reliable by nailing the CHEAP metrics — fast reviews, few loops, low false-positive — while a disqualifying condition (it misses real defects, or its verdict flaps on re-run) hides underneath. Each veto below is HARD: if it triggers, the disposition is forced to UNRELIABLE and the effective band to red regardless of the numeric band. Each warning is SOFT: it flags friction/risk without failing the checker. The scorer (score.mjs) enforces these; this file is the human-auditable copy of the same rules, and the selftest asserts the id-sets match so this copy cannot silently drift.",
+  "vetoes": [
+    {
+      "id": "HIGH_MISS_RATE",
+      "when": "metrics.miss_rate >= 0.2",
+      "why": "A checker that passes one in five real, labelled defects as clean is worse than no checker — it manufactures false confidence. No aggregate can buy that back.",
+      "severity": "veto"
+    },
+    {
+      "id": "FLAPPING_VERDICT",
+      "when": "metrics.verdict_stability === 'flapping'",
+      "why": "A verdict that flips PASS/FAIL on re-run of the same input is not a verdict; it is a coin flip and cannot be trusted or reproduced.",
+      "severity": "veto"
+    },
+    {
+      "id": "ALARM_STORM",
+      "when": "metrics.false_positive_rate >= 0.5",
+      "why": "When more than half a checker's findings are spurious it trains every reviewer to ignore it, so its real catches get ignored too — it is crying wolf.",
+      "severity": "veto"
+    },
+    {
+      "id": "REVIEW_THRASH",
+      "when": "metrics.loop_count >= 5",
+      "why": "Five or more review rounds per episode means the checker is stuck in a rework loop rather than converging on a verdict.",
+      "severity": "veto"
+    }
+  ],
+  "warnings": [
+    {
+      "id": "ELEVATED_FALSE_POSITIVE",
+      "when": "metrics.false_positive_rate >= 0.25 && metrics.false_positive_rate < 0.5",
+      "why": "A quarter or more spurious findings is friction that erodes reviewer trust before it reaches the veto threshold.",
+      "severity": "warning"
+    },
+    {
+      "id": "ANY_MISS",
+      "when": "metrics.miss_rate > 0 && metrics.miss_rate < 0.2",
+      "why": "Even a single missed defect below the veto line is worth surfacing — a miss is never routine for a checker.",
+      "severity": "warning"
+    },
+    {
+      "id": "VERDICT_DRIFT",
+      "when": "metrics.verdict_stability === 'mostly_stable'",
+      "why": "Rare re-run drift is tolerable but should be watched; it can grow into flapping.",
+      "severity": "warning"
+    },
+    {
+      "id": "SLOW_REVIEW",
+      "when": "metrics.review_latency > 120",
+      "why": "A median review over two minutes delays every downstream lane waiting on the verdict.",
+      "severity": "warning"
+    },
+    {
+      "id": "MULTI_LOOP",
+      "when": "metrics.loop_count >= 3 && metrics.loop_count < 5",
+      "why": "Three or four loops per episode is elevated rework churn short of the thrash veto.",
+      "severity": "warning"
+    },
+    {
+      "id": "LOW_SAMPLE",
+      "when": "sample.episodes < 20",
+      "why": "A rate measured over fewer than 20 episodes is not yet statistically trustworthy; treat the score as provisional.",
+      "severity": "warning"
+    }
+  ]
+}

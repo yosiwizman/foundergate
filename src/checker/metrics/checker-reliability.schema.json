@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/checker/metrics/checker-reliability.schema.json",
+  "title": "FounderGate Checker Reliability Scorecard",
+  "description": "A machine-readable scorecard describing how RELIABLE a checker (an advisor/reviewer/auditor lane) is at its own job, measured over a labelled sample of review episodes. This is orthogonal to H11 (which scores the WRITER lane's process): H34 turns the QUESTION 'can we trust this reviewer?' into one number, a band, and an anti-trust VETO layer so a checker cannot look reliable by getting the cheap metrics right while missing real defects or flapping its verdict. Additive harness data only; never an application runtime capability, never a provider, never network. The scorer (score.mjs) is the source of truth for weights and sub-score curves; this schema only constrains shape.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "checker_id",
+    "sample",
+    "head_sha",
+    "label",
+    "metrics"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0",
+      "description": "Semver of the scorecard schema this object targets."
+    },
+    "checker_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The checker under measurement (e.g. an advisor-verdict producer, a Copilot review pass, a proof-verifier lane)."
+    },
+    "sample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["episodes", "labelled_defects"],
+      "properties": {
+        "episodes": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of review episodes the metrics were measured over. A tiny sample is flagged (see LOW_SAMPLE warning) because a rate over few episodes is not yet trustworthy."
+        },
+        "labelled_defects": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of episodes that carried a GROUND-TRUTH real defect the checker was supposed to catch. miss_rate is undefined if this is 0 (see the schema-independent scorer note)."
+        }
+      }
+    },
+    "head_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{7,40}$",
+      "description": "Exact commit the scorecard binds to (7-40 lowercase hex). No SHA => not machine-trustable."
+    },
+    "label": {
+      "type": "string",
+      "enum": ["real", "illustrative"],
+      "description": "'real' = metrics derived from a genuine measured checker sample with a checkable evidence_ref per episode. 'illustrative' = a shape/edge-case demo, never presented as a real measured reliability result. The H34 fixtures shipped in this repo are ALL 'illustrative' — no real checker sample has been measured yet (see the doc)."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Free-text provenance: how each raw metric was measured (which episodes, what the ground-truth labelling source was, how latency was clocked)."
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "false_positive_rate",
+        "miss_rate",
+        "loop_count",
+        "review_latency",
+        "verdict_stability"
+      ],
+      "properties": {
+        "false_positive_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Fraction (0..1) of the checker's raised findings/blocks that were SPURIOUS (flagged a clean lane, or a finding that no one accepted). A checker that cries wolf trains reviewers to ignore it. Lower is better."
+        },
+        "miss_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Fraction (0..1) of GROUND-TRUTH labelled defects the checker FAILED to catch (a real breach/bug it passed as clean). This is the gravest checker failure and is weighted and vetoed hardest. Lower is better."
+        },
+        "loop_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Mean review rounds the checker drove per episode before a stable verdict (rework churn the checker caused). Fewer is better; a pathological loop trips a veto."
+        },
+        "review_latency": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Median wall-clock SECONDS from review-request to the checker's verdict. Slower review delays every downstream lane. Lower is better."
+        },
+        "verdict_stability": {
+          "type": "string",
+          "enum": ["deterministic", "mostly_stable", "flapping"],
+          "description": "Does the checker give the SAME verdict on re-run of the same input? 'deterministic' = always identical; 'mostly_stable' = rare drift; 'flapping' = nondeterministic PASS/FAIL flips, which makes the verdict untrustable and trips a veto."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "checker_id": "invalid/missing-metric",
+  "sample": { "episodes": 30, "labelled_defects": 10 },
+  "head_sha": "6666666",
+  "label": "illustrative",
+  "notes": "INVALID: metrics.miss_rate is absent — the safety-critical metric may never be omitted.",
+  "metrics": {
+    "false_positive_rate": 0.05,
+    "loop_count": 1,
+    "review_latency": 10,
+    "verdict_stability": "deterministic"
+  }
+}

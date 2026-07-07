@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "queue_id": "q-duplicate-collapse",
+  "max_fanout": 3,
+  "max_loops": 2,
+  "default_disposition": "hold",
+  "describes_only": true,
+  "enforced": false,
+  "checkers": [
+    { "checker_id": "c1", "target": "lane-A", "dimension": "safety", "report_ref": "safety-A-pass.json" },
+    { "checker_id": "c2", "target": "lane-A", "dimension": "safety", "report_ref": "safety-A-pass-dup.json" },
+    { "checker_id": "c3", "target": "lane-B", "dimension": "syntax", "report_ref": "syntax-B-pass.json" }
+  ]
+}

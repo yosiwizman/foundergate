@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "checker_id": "illustrative/alarm-storm",
+  "sample": { "episodes": 35, "labelled_defects": 8 },
+  "head_sha": "4444444",
+  "label": "illustrative",
+  "notes": "ILLUSTRATIVE. A checker that cries wolf: more than half its findings are spurious (false_positive_rate 0.60), it drifts on re-run (mostly_stable), takes ~200s per review, and averages 4 rework loops. Even though it misses no real defect, ALARM_STORM forces UNRELIABLE / red — a reviewer that is wrong most of the time trains everyone to ignore it, including its true catches. Also carries VERDICT_DRIFT + SLOW_REVIEW + MULTI_LOOP warnings.",
+  "metrics": {
+    "false_positive_rate": 0.60,
+    "miss_rate": 0.0,
+    "loop_count": 4,
+    "review_latency": 200,
+    "verdict_stability": "mostly_stable"
+  }
+}

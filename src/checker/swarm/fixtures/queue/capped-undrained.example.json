@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "queue_id": "q-capped-undrained",
+  "max_fanout": 2,
+  "max_loops": 2,
+  "default_disposition": "hold",
+  "describes_only": true,
+  "enforced": false,
+  "checkers": [
+    { "checker_id": "c1", "target": "lane-A", "dimension": "lease", "report_ref": "lease-A-pass.json" },
+    { "checker_id": "c2", "target": "lane-A", "dimension": "safety", "report_ref": "safety-A-pass.json" },
+    { "checker_id": "c3", "target": "lane-B", "dimension": "syntax", "report_ref": "syntax-B-pass.json" },
+    { "checker_id": "c4", "target": "lane-D", "dimension": "hygiene", "report_ref": "hygiene-D-pass.json" },
+    { "checker_id": "c5", "target": "lane-E", "dimension": "schema", "report_ref": "schema-E-pass.json" }
+  ]
+}
