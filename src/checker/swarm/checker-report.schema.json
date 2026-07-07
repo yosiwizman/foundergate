@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/checker/swarm/checker-report.schema.json",
+  "title": "FounderGate Checker Report",
+  "description": "A single verdict emitted by ONE checker in a bounded checker swarm. A checker is a read-only reviewer that inspects one (target, dimension) and reports what it found. A report is evidence, never an authorization: it can never green a lane by itself — the swarm coordinator only dedupes and aggregates reports for a founder / Terminal-0 sheriff to act on. A single checker NEVER emits the coordinator-derived verdicts 'CONFLICT' or 'HELD'; those are produced only by aggregation across reports.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "checker_id",
+    "target",
+    "dimension",
+    "verdict",
+    "loop",
+    "evidence_ref",
+    "describes_only"
+  ],
+  "properties": {
+    "schema_version": {
+      "description": "Semantic version of this report schema the emitter targeted.",
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "checker_id": {
+      "description": "Stable identifier of the checker that produced this report. Unique within a queue.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120,
+      "pattern": "^[a-zA-Z0-9._:-]+$"
+    },
+    "target": {
+      "description": "What was checked (e.g. a lane id, a file glob, an artifact ref). Deduplication groups reports by (target, dimension).",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "dimension": {
+      "description": "The axis of the check (e.g. lease, safety, syntax, evidence). Two reports on the same (target, dimension) that disagree escalate to CONFLICT in aggregation.",
+      "type": "string",
+      "enum": ["lease", "safety", "syntax", "evidence", "schema", "hygiene"]
+    },
+    "verdict": {
+      "description": "The single outcome this one checker found. A raw checker may NOT emit 'CONFLICT' or 'HELD' — those are aggregation-only.",
+      "type": "string",
+      "enum": ["PASS", "FAIL", "HOLD", "GATED", "INSUFFICIENT"]
+    },
+    "loop": {
+      "description": "Which coordinator loop produced this report. The coordinator runs at most 2 loops, so a report may never claim a loop above 2.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2
+    },
+    "evidence_ref": {
+      "description": "Pointer to the machine evidence backing this verdict (a path, a log id, a fixture ref). Never inline secrets.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "describes_only": {
+      "description": "Honesty invariant. A checker report DESCRIBES a finding; it never enforces or authorizes. Must be true.",
+      "type": "boolean",
+      "const": true
+    }
+  }
+}

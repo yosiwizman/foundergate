@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "checker_id": "chk-schema-E",
+  "target": "lane-E",
+  "dimension": "schema",
+  "verdict": "PASS",
+  "loop": 1,
+  "evidence_ref": "fixtures/evidence/lane-E/schema.log",
+  "describes_only": true
+}

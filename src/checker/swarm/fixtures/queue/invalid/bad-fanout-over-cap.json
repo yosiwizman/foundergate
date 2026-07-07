@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "queue_id": "q-bad-fanout-over-cap",
+  "max_fanout": 99,
+  "max_loops": 2,
+  "default_disposition": "hold",
+  "describes_only": true,
+  "enforced": false,
+  "checkers": [
+    { "checker_id": "c1", "target": "lane-A", "dimension": "lease", "report_ref": "lease-A-pass.json" }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0.0",
+  "queue_id": "q-conflict-dedup",
+  "max_fanout": 2,
+  "max_loops": 2,
+  "default_disposition": "hold",
+  "describes_only": true,
+  "enforced": false,
+  "checkers": [
+    { "checker_id": "c1", "target": "lane-A", "dimension": "safety", "report_ref": "safety-A-pass.json" },
+    { "checker_id": "c2", "target": "lane-A", "dimension": "safety", "report_ref": "safety-A-fail.json" }
+  ]
+}

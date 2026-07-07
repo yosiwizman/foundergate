@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "checker_id": "chk-bad-describes",
+  "target": "lane-A",
+  "dimension": "lease",
+  "verdict": "PASS",
+  "loop": 1,
+  "evidence_ref": "fixtures/evidence/lane-A/bad-describes.log",
+  "describes_only": false
+}

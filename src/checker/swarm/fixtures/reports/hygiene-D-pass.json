@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "checker_id": "chk-hygiene-D",
+  "target": "lane-D",
+  "dimension": "hygiene",
+  "verdict": "PASS",
+  "loop": 2,
+  "evidence_ref": "fixtures/evidence/lane-D/hygiene.log",
+  "describes_only": true
+}

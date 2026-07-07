@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "checker_id": "illustrative/gold-advisor",
+  "sample": { "episodes": 40, "labelled_defects": 12 },
+  "head_sha": "0000000",
+  "label": "illustrative",
+  "notes": "ILLUSTRATIVE shape demo, not a measured real checker. Depicts the target profile: over 40 review episodes (12 carrying a ground-truth labelled defect) the checker missed none of them (miss_rate 0.0), raised almost no spurious findings (false_positive_rate 0.04), converged in a single pass (loop_count 0), returned in ~4s, and gave an identical verdict on re-run (deterministic). Scores in the green band with no veto and no warning.",
+  "metrics": {
+    "false_positive_rate": 0.04,
+    "miss_rate": 0.0,
+    "loop_count": 0,
+    "review_latency": 4,
+    "verdict_stability": "deterministic"
+  }
+}

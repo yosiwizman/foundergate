@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0.0",
+  "checker_id": "chk-bad-missing-target",
+  "dimension": "lease",
+  "verdict": "PASS",
+  "loop": 1,
+  "evidence_ref": "fixtures/evidence/lane-A/bad-missing.log",
+  "describes_only": true
+}

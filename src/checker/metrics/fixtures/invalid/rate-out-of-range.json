@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "checker_id": "invalid/rate-out-of-range",
+  "sample": { "episodes": 30, "labelled_defects": 10 },
+  "head_sha": "8888888",
+  "label": "illustrative",
+  "notes": "INVALID: miss_rate 1.5 exceeds the maximum of 1 — a rate must be in [0,1].",
+  "metrics": {
+    "false_positive_rate": 0.05,
+    "miss_rate": 1.5,
+    "loop_count": 1,
+    "review_latency": 10,
+    "verdict_stability": "deterministic"
+  }
+}
