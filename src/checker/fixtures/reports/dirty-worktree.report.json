@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0.0",
+  "report_kind": "prepush-checker-report",
+  "checker_id": "foundergate-independent-prepush-checker",
+  "verdict": "DIRTY_WORKTREE",
+  "target": {
+    "branch": "foundergate/example-writer-lane",
+    "head_sha": "4444444444444444444444444444444444444444"
+  },
+  "worktree_clean": false,
+  "baseline": {
+    "ref": "origin/main",
+    "sha": "2222222222222222222222222222222222222222"
+  },
+  "findings": [
+    {
+      "id": "dirty-01",
+      "severity": "blocker",
+      "category": "hygiene",
+      "message": "FIXTURE-ONLY. The worktree was not clean at review time; what would be pushed is not what was reviewed. Re-run the checker against a clean worktree.",
+      "evidence_ref": "git status --porcelain => ' M harness/checker/example.mjs' (read-only)",
+      "path": null
+    }
+  ],
+  "evidence_refs": [
+    "git status --porcelain => dirty (read-only)"
+  ],
+  "read_only_assertion": {
+    "self_write_count": 0,
+    "self_commit_count": 0,
+    "self_push_count": 0
+  },
+  "no_edit_attestation": {
+    "asserted": true,
+    "method": "read-only reviewer: no filesystem-write API imported; post-run git-status delta equals pre-run",
+    "files_written_by_checker": 0
+  },
+  "self_certification": false,
+  "independent_verification_required": true,
+  "checker_self_approval": false,
+  "doctrine": "CHECKER SCAFFOLD ONLY — final checker claims require independent Checker + Advisor verification; a checker cannot self-certify; this checker never edits code."
+}

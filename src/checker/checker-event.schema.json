@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/checker/checker-event.schema.json",
+  "title": "FounderGate Pre-Push Checker Event",
+  "description": "A single lifecycle event emitted by the independent pre-push CHECKER as it reviews a clean worktree. Events form an append-only, read-only trace (the checker never mutates the repo — it only narrates what it observed). Events are evidence, not authorization. CHECKER SCAFFOLD ONLY — a checker cannot self-certify and never edits code.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_type",
+    "ts",
+    "checker_id",
+    "target_sha",
+    "detail"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "event_type": {
+      "description": "Lifecycle stage. checker_started = review began; worktree_probed = clean/dirty status observed (read-only); baseline_resolved = diff baseline pinned; finding_emitted = one finding recorded; report_emitted = final report produced; checker_declined = the checker abstained/blocked (out of competence, conflict of interest, unreadable state).",
+      "type": "string",
+      "enum": [
+        "checker_started",
+        "worktree_probed",
+        "baseline_resolved",
+        "finding_emitted",
+        "report_emitted",
+        "checker_declined"
+      ]
+    },
+    "ts": {
+      "description": "ISO-8601 timestamp of the event.",
+      "type": "string",
+      "minLength": 1
+    },
+    "checker_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "target_sha": {
+      "description": "Head SHA under review at the time of the event. 7-40 lowercase hex.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{7,40}$"
+    },
+    "detail": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "mutation_free": {
+      "description": "Optional explicit self-account: this event caused zero repo mutation. When present it MUST be true — an event that mutated the repo is not a checker event.",
+      "const": true
+    }
+  }
+}

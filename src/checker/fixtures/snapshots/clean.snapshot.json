@@ -1,0 +1,13 @@
+{
+  "branch": "foundergate/example-writer-lane",
+  "headSha": "1111111111111111111111111111111111111111",
+  "worktreeClean": true,
+  "baseline": { "ref": "origin/main", "sha": "2222222222222222222222222222222222222222" },
+  "changedFiles": ["harness/checker/example.mjs"],
+  "findings": [],
+  "evidenceRefs": [
+    "git status --porcelain => clean (read-only)",
+    "git diff --name-only 2222222...1111111 => harness/checker/example.mjs (read-only)"
+  ],
+  "reviewerNote": "FIXTURE-ONLY hermetic snapshot: clean worktree, in-lease change, no findings."
+}
