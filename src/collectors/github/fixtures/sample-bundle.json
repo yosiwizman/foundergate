@@ -1,0 +1,132 @@
+{
+  "source": "fixture",
+  "repo": "owner/example-repo",
+  "collectedAt": "2026-07-04T00:00:00.000Z",
+  "_fixtureNote": "Synthetic, benign gh-JSON sample. Contains NO real secrets or PII. Redaction is proven separately in the selftest with runtime-constructed secret-shaped strings so no secret literal is ever committed.",
+  "prList": [
+    {
+      "number": 139,
+      "headRefName": "feature/example-lane",
+      "headRefOid": "7e1e068a372dcb2eb4f28da301c7ee844824bc35",
+      "mergeable": "UNKNOWN",
+      "isDraft": false,
+      "title": "Lane 7 — Voice Bucket H (logic-only)"
+    },
+    {
+      "number": 140,
+      "headRefName": "feature/redaction-check",
+      "headRefOid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mergeable": "MERGEABLE",
+      "isDraft": true,
+      "title": "Add redaction fixture coverage"
+    },
+    {
+      "number": 141,
+      "headRefName": "chore/docs-only",
+      "headRefOid": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "mergeable": "MERGEABLE",
+      "isDraft": false,
+      "title": "Docs-only cleanup"
+    }
+  ],
+  "perPr": {
+    "139": {
+      "checkRuns": {
+        "check_runs": [
+          {
+            "name": "example proof shard 1/3 (self-hosted)",
+            "status": "completed",
+            "conclusion": "success",
+            "head_sha": "7e1e068a372dcb2eb4f28da301c7ee844824bc35"
+          },
+          {
+            "name": "example proof shard 2/3 (self-hosted; ci-safety short-circuited)",
+            "status": "completed",
+            "conclusion": "failure",
+            "head_sha": "7e1e068a372dcb2eb4f28da301c7ee844824bc35"
+          },
+          {
+            "name": "Playwright UI (hosted)",
+            "status": "in_progress",
+            "conclusion": null,
+            "head_sha": "7e1e068a372dcb2eb4f28da301c7ee844824bc35"
+          }
+        ]
+      },
+      "reviews": [
+        {
+          "user": { "login": "copilot-pull-request-reviewer[bot]" },
+          "state": "COMMENTED",
+          "commit_id": "7e1e068a372dcb2eb4f28da301c7ee844824bc35",
+          "submitted_at": "2026-07-03T22:00:00Z"
+        },
+        {
+          "user": { "login": "example-user" },
+          "state": "COMMENTED",
+          "commit_id": "7e1e068a372dcb2eb4f28da301c7ee844824bc35",
+          "submitted_at": "2026-07-03T22:05:00Z"
+        }
+      ],
+      "files": [
+        { "filename": "docs/roadmap/EXAMPLE_QUEUE.md", "status": "modified", "additions": 2, "deletions": 2 },
+        { "filename": "scripts/_lib/example-lane.mjs", "status": "added", "additions": 40, "deletions": 0 }
+      ],
+      "reviewThreads": {
+        "nodes": [
+          { "isResolved": false, "isOutdated": false, "comments": { "nodes": [ { "author": { "login": "copilot-pull-request-reviewer" } } ] } },
+          { "isResolved": false, "isOutdated": false, "comments": { "nodes": [ { "author": { "login": "copilot-pull-request-reviewer" } } ] } },
+          { "isResolved": false, "isOutdated": true, "comments": { "nodes": [ { "author": { "login": "copilot-pull-request-reviewer" } } ] } },
+          { "isResolved": true, "isOutdated": false, "comments": { "nodes": [ { "author": { "login": "example-user" } } ] } }
+        ]
+      },
+      "prView": { "mergeable": "CONFLICTING", "mergeStateStatus": "DIRTY" }
+    },
+    "140": {
+      "checkRuns": {
+        "check_runs": [
+          {
+            "name": "ci-safety",
+            "status": "completed",
+            "conclusion": "success",
+            "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      },
+      "reviews": [
+        {
+          "user": { "login": "copilot-pull-request-reviewer[bot]" },
+          "state": "COMMENTED",
+          "commit_id": "0000000000000000000000000000000000000000",
+          "submitted_at": "2026-07-02T10:00:00Z"
+        }
+      ],
+      "files": [
+        { "filename": "harness/collectors/github/fixtures/sample-bundle.json", "status": "added", "additions": 120, "deletions": 0 }
+      ],
+      "reviewThreads": {
+        "nodes": [
+          { "isResolved": true, "isOutdated": false, "comments": { "nodes": [ { "author": { "login": "copilot-pull-request-reviewer" } } ] } }
+        ]
+      },
+      "prView": { "mergeable": "MERGEABLE", "mergeStateStatus": "CLEAN" }
+    },
+    "141": {
+      "checkRuns": {
+        "check_runs": [
+          {
+            "name": "ci-safety",
+            "status": "in_progress",
+            "conclusion": null,
+            "head_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          }
+        ]
+      },
+      "reviews": [],
+      "files": [
+        { "filename": "README.md", "status": "modified", "additions": 1, "deletions": 1 }
+      ],
+      "reviewThreads": null,
+      "prView": { "mergeable": "MERGEABLE", "mergeStateStatus": "BLOCKED" }
+    }
+  }
+}
