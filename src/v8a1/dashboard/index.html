@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FounderGate — Truth Dashboard (V8-A1)</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header id="shell-header">
+      <div class="hrow">
+        <h1 id="title">FounderGate — Truth Dashboard</h1>
+        <span id="connected" class="pill">…</span>
+      </div>
+      <div class="banner" id="stage-banner">V8-A1 Truth Dashboard MVP — read-only. This is not product proof.</div>
+      <div class="hrow meta">
+        <span>Project: <b id="project-name">…</b></span>
+        <span class="badge" id="release-badge">release …</span>
+        <span class="badge" id="dataclass-badge">data …</span>
+      </div>
+    </header>
+
+    <main>
+      <!-- A12 Projects screen -->
+      <section class="card" id="projects-screen">
+        <h2>Projects</h2>
+        <ul id="projects-list"></ul>
+      </section>
+
+      <!-- A13 Project Dashboard: the 8 priority questions in order -->
+      <section class="card hero" id="questions-card">
+        <h2>Your 8 questions</h2>
+        <ol id="questions-list"></ol>
+      </section>
+
+      <!-- A14 status / A16 CI-PR UNKNOWN -->
+      <section class="card" id="status-card">
+        <h2>Current status</h2>
+        <div class="statusgrid">
+          <div>State <span id="state-badge" class="badge"></span></div>
+          <div>CI <span id="ci-badge" class="badge"></span></div>
+          <div>PR <span id="pr-badge" class="badge"></span></div>
+          <div>Current gate <span id="current-gate"></span></div>
+        </div>
+      </section>
+
+      <div class="two-col">
+        <!-- A17 needs you -->
+        <section class="card" id="needs-you">
+          <h2>What you should do now</h2>
+          <p id="needs-you-text"></p>
+          <p class="source" id="needs-you-source"></p>
+        </section>
+
+        <!-- A18 do not touch -->
+        <section class="card danger" id="do-not-touch">
+          <h2>⛔ What must not be touched</h2>
+          <ul id="do-not-touch-list"></ul>
+        </section>
+      </div>
+
+      <!-- A15 view-only gates -->
+      <section class="card" id="gates-card">
+        <h2>Gates <span class="tag">view-only (Law 55)</span></h2>
+        <ul id="gates-list"></ul>
+      </section>
+
+      <!-- A16 evidence with FRESH/STALE -->
+      <section class="card" id="evidence-card">
+        <h2>Evidence</h2>
+        <ul id="evidence-list"></ul>
+      </section>
+
+      <div class="two-col">
+        <!-- A20 doctor -->
+        <section class="card" id="doctor-card">
+          <h2>Doctor</h2>
+          <p>Version <b id="doctor-version"></b> · files present <b id="doctor-present"></b></p>
+          <ul id="doctor-checks"></ul>
+        </section>
+
+        <!-- A23 cost guard display only -->
+        <section class="card" id="cost-card">
+          <h2>Cost guard</h2>
+          <p id="cost-label" class="tag"></p>
+          <p id="cost-detail"></p>
+        </section>
+      </div>
+
+      <!-- A21 honest-scope Panic Card -->
+      <section class="card panic" id="panic-card">
+        <h2>Panic / Stop</h2>
+        <button id="panic-button" type="button">Panic — halt &amp; preserve evidence</button>
+        <p id="panic-scope" class="panic-scope" hidden></p>
+      </section>
+
+      <!-- A22 data classification badges -->
+      <section class="card" id="dataclass-card">
+        <h2>Data classification</h2>
+        <p>Project class: <span id="dc-projectclass" class="badge"></span></p>
+        <p id="dc-policy"></p>
+      </section>
+    </main>
+
+    <!-- A19 permanent Failure-Modes Reminder -->
+    <footer id="failure-modes">
+      <h2>NON-DEVELOPER FAILURE-MODES REMINDER</h2>
+      <ul id="failure-modes-list"></ul>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
