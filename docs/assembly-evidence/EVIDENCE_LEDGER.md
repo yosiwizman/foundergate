@@ -29,6 +29,9 @@
 | 2026-07-07 | B12 UX repair | anti-repeat guards + refreshed screenshots + hand-burden | docs/assembly-evidence/B2/hand-burden.json + screenshots/*.png (4) | #18 | 170196f2f98e07322004b3b068b0963fce72cf62 | FounderGate CTO (Playwright) | DONE |
 | 2026-07-07 | B3 | A27 exact-SHA CI green on final commit | main CI at 2991308 SUCCESS (https://github.com/yosiwizman/foundergate/actions/runs/28899979558) | #19 | 29913080d2a6a1031797d1e77edfcbfcbc672414 | FounderGate CTO + CI | DONE |
 | 2026-07-07 | B3 | A28 V8-A1 acceptance packet (DoD 16/18 PASS, 2 honest PARTIAL) | docs/assembly-evidence/A28/V8-A1-acceptance-packet.md | #19 | 29913080d2a6a1031797d1e77edfcbfcbc672414 | FounderGate CTO | DONE |
+| 2026-07-07 | Copy-polish | True-stranger test PASSED (7/7 unaided) | docs/assembly-evidence/B2/stranger-test-true-stranger.md | #20 | acd2b0419ed7edb2f8526a41c5d669e7fbe905d5 | true stranger + FounderGate CTO | DONE |
+| 2026-07-07 | Copy-polish | Bounded visible-copy pass + 5 required-string anti-repeat guards | src/v8a1/dashboard/ (V8A1-VIEW-MODEL-SELFTEST PASS 17) | #20 | acd2b0419ed7edb2f8526a41c5d669e7fbe905d5 | FounderGate CTO + CI (https://github.com/yosiwizman/foundergate/actions/runs/28902439097) | DONE |
+| 2026-07-07 | Copy-polish | A28 DoD #15 Stranger Test -> PASS (17/18 full) | docs/assembly-evidence/A28/V8-A1-acceptance-packet.md | #20 | acd2b0419ed7edb2f8526a41c5d669e7fbe905d5 | FounderGate CTO | DONE |
 
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their
