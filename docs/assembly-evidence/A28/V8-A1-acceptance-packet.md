@@ -6,11 +6,54 @@
 >    the Definition of Done from that evidence, honestly.
 > 2. **Why it matters.** This is what gate **G3** asks you to approve or reject. You tick the boxes yourself,
 >    from the evidence — not from anyone's word.
-> 3. **What can go wrong.** Two items carry honest caveats (Stranger Test, Hand-Burden metric set). They are
+> 3. **What can go wrong.** One item carries an honest caveat (#16 Hand-Burden metric set). It is
 >    marked, not hidden — green CI is not product proof.
 > 4. **What you can test now.** `npm test` → 19/19 green. Open the screenshots in `../B2/screenshots/`, or run
 >    `node src/v8a1/dashboard/server.mjs` and look.
 > 5. **One next action.** At G3, record APPROVED or REJECTED (with the open list) in the Founder Gate Ledger.
+
+## FINAL STATE NOTE (dual-pin)
+
+**Product-final SHA:** `acd2b0419ed7edb2f8526a41c5d669e7fbe905d5` — the last commit that touches product code
+(`src/`). Its exact-SHA CI is green: run **28902439097** (`selftests`, conclusion `success`, bound to this exact
+SHA — see `verification/gh-run-28902439097.json`).
+
+**Evidence-tip SHA:** `EVIDENCETIP` — the tip of the docs/evidence trail after this G3 close-out. Every commit
+between the product-final SHA and the evidence-tip touches **only** `docs/assembly-evidence/` (no product code
+changed after the product-final commit). Proof: `verification/post-product-diff-stat.txt`:
+
+```
+# git diff --stat acd2b0419ed7edb2f8526a41c5d669e7fbe905d5..HEAD (pre-close tip 816533a)
+# All post-product-final commits must touch ONLY docs/assembly-evidence/
+
+ docs/assembly-evidence/A28/V8-A1-acceptance-packet.md | 4 ++--
+ docs/assembly-evidence/EVIDENCE_LEDGER.md             | 3 +++
+ docs/assembly-evidence/WHERE_AM_I.md                  | 2 +-
+ 3 files changed, 6 insertions(+), 3 deletions(-)
+
+# name-only non-docs check:
+(none — all under docs/assembly-evidence/)
+```
+
+**Read the pins this way:** the *product* is frozen at `acd2b04` (CI-green); everything after it is *evidence
+maintenance only*. Approving V8-A1 approves the product at `acd2b04`; the evidence-tip just carries this packet
+and the raw verification files.
+
+## Verification evidence (raw, CTO-executed, independently re-checkable)
+
+Saved under `verification/`:
+
+| Check | Raw file | Result |
+| ----- | ----- | ----- |
+| Repo privacy | `verification/gh-repo-view.json` | `PRIVATE` (isPrivate true) |
+| PR merge states #15–#20 | `verification/gh-pr-15..20.json` | all **MERGED** (SHAs match the build trail) |
+| Pinned CI run (commit binding + conclusion) | `verification/gh-run-28902439097.json` | run 28902439097 · headSha `acd2b04` · `success` |
+| Full self-test run | `verification/npm-test.txt` | `ALL GREEN: 19/19` |
+| Post-product diff (docs-only proof) | `verification/post-product-diff-stat.txt` | only `docs/assembly-evidence/` changed |
+
+*Honest note: these `gh`/`npm test` outputs were executed by the FounderGate CTO (not an independent party), but
+they are raw-captured and anyone can re-run the same commands to reproduce them. The independent read-only disk
+audit stands at the Advisor's report (audit taken at `816533a`).*
 
 ## Build record (PRs + exact SHAs)
 
@@ -77,6 +120,6 @@ Activity / Bench / Project Guide functionality · no real project data (MOCK_ONL
 repo · no live/provider/payment/send · no multi-project execution.
 
 ## One next action (founder, at G3)
-Read this packet against the Definition of Done. Tick each box from the evidence. Weigh the two PARTIAL items.
+Read this packet against the Definition of Done. Tick each box from the evidence. Weigh the one remaining PARTIAL item (#16 Hand-Burden metric set — bug-report/read-aloud metrics are out of V8-A1 scope).
 Record **APPROVED** or **REJECTED** (with the open list) and the packet SHA in the Founder Gate Ledger. No later
 stage starts automatically (Law 69).
