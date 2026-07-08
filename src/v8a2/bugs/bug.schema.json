@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/v8a2/bug.schema.json",
+  "title": "FounderGate .foundergate/bugs/<id>.json (V8-A2 Bug Collector evidence packet)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "view", "data_classification"],
+  "properties": {
+    "schema_version": { "type": "string", "minLength": 1 },
+    "id": { "type": "string", "pattern": "^bug-[a-z0-9-]+$" },
+    "view": { "type": "string", "minLength": 1 },
+    "note": { "type": "string" },
+    "area": { "type": "string" },
+    "voice_note": { "type": "boolean" },
+    "screenshot_captured": { "type": "boolean" },
+    "screenshot_ref": { "type": "string" },
+    "data_classification": { "type": "string", "enum": ["MOCK_ONLY", "PUBLIC", "INTERNAL", "SECRET", "UNKNOWN"] },
+    "environment_label": { "type": "string" },
+    "captured_marker": { "type": "string" },
+    "mock": { "type": "boolean" }
+  }
+}

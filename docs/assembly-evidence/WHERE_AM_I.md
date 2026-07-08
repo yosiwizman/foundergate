@@ -16,7 +16,7 @@
 | B4 | A30 | complete | **V8-A2 proposal landed; G4 APPROVED (start only) — V8-A1 workflow complete** | #22 | bd582d3 | docs/assembly-evidence/A30/ | docs/assembly-evidence/B4/machine-capacity-profile.json | none (V8-A2 impl = future gated build) | No | Yes (future V8-A2 is a separate gated contract) |
 | B5 (V8-A2 build contract) | — | complete | **V8-A2 lane packet/build contract landed; awaiting G1-A2** | #23 | 5048355 | docs/assembly-evidence/B5/ | docs/assembly-evidence/B5/machine-capacity-profile.json | **G1-A2** | **Yes — G1-A2 approve/reject** | At G1-A2 |
 | **P-A2-BUILD — V8-A2 Implementation to UI Witness** | Preview Bay (PA1–PA7) + Bug Collector (BC1–BC6) + acceptance (AC1–AC3) | — | Awaiting G1-A2 | — | — | docs/assembly-evidence/A2-*/ | docs/assembly-evidence/A2/machine-capacity-profile.json | **G2-A2** | No | Unknown |
-| ↳ Phase PA — Preview Bay (semi-sensitive: 1 builder + 1 checker) | PA1–PA7 | — | Awaiting G1-A2 | — | — | docs/assembly-evidence/A2-PA/ | docs/assembly-evidence/A2-PA/machine-capacity-profile.json | none — continues into BC | No | Unknown |
+| ↳ Phase PA — Preview Bay (checker-approved) | PA1-PA7 | complete | **Preview Bay landed; checker round-2 PASS; 23/23 CI** | #24 | 89c7c86 | docs/assembly-evidence/A2-PA/ | docs/assembly-evidence/A2-PA/machine-capacity-profile.json | continues into BC | No | Yes (into BC) |
 | ↳ Phase BC — Bug Collector (wide-safe capture lanes) | BC1–BC6 | — | Runs after PA machine gates | — | — | docs/assembly-evidence/A2-BC/ | docs/assembly-evidence/A2-BC/machine-capacity-profile.json | G2-A2 | No | Unknown |
 
 **Note:** `#15` / `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and exact merge SHA immediately after the sheriff

@@ -34,6 +34,9 @@
 | 2026-07-07 | Copy-polish | A28 DoD #15 Stranger Test -> PASS (17/18 full) | docs/assembly-evidence/A28/V8-A1-acceptance-packet.md | #20 | acd2b0419ed7edb2f8526a41c5d669e7fbe905d5 | FounderGate CTO | DONE |
 | 2026-07-08 | B4 | A30 V8-A2 proposal only (no code) | docs/lanes/V8-A2-proposal.md · docs/assembly-evidence/A30/V8-A2-proposal-evidence.md | #22 | bd582d3ea0f5e2e1e2cf8e4b207512aacc693546 | FounderGate CTO + CI | DONE |
 | 2026-07-08 | B5 | V8-A2 build contract + lane packet (no code) | docs/lanes/V8-A2-lane-packet.md (incl. SENSITIVITY RULING; PA/BC/AC DAG) | #23 | 5048355706b8734d11d1f81092706b5f40279fa7 | FounderGate CTO + CI | DONE |
+| 2026-07-08 | A2-PA | Preview Bay PA1-PA7 (allowlist-only, no-live, tracked-process) | src/v8a2/preview/ + server.mjs; PREVIEW-CONTROLLER(10)/SERVER(4)/NO-LIVE-PATH(7)/SCHEMA(4) | #24 | 89c7c8621d7e03554f40bb7413161c9544499e4d | Builder + INDEPENDENT CHECKER (round-2 PASS) + CI | DONE |
+| 2026-07-08 | A2-PA | Independent checker report (7 findings fixed) | docs/assembly-evidence/A2-PA/checker-report.md (+ -round2.md) | #24 | 89c7c8621d7e03554f40bb7413161c9544499e4d | Independent checker | DONE |
+| 2026-07-08 | A2-PA | Preview screenshots (idle/running/failure) | docs/assembly-evidence/A2-PA/screenshots/*.png | #24 | 89c7c8621d7e03554f40bb7413161c9544499e4d | Playwright | DONE |
 
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their
