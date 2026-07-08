@@ -37,6 +37,8 @@
 | 2026-07-08 | A2-PA | Preview Bay PA1-PA7 (allowlist-only, no-live, tracked-process) | src/v8a2/preview/ + server.mjs; PREVIEW-CONTROLLER(10)/SERVER(4)/NO-LIVE-PATH(7)/SCHEMA(4) | #24 | 89c7c8621d7e03554f40bb7413161c9544499e4d | Builder + INDEPENDENT CHECKER (round-2 PASS) + CI | DONE |
 | 2026-07-08 | A2-PA | Independent checker report (7 findings fixed) | docs/assembly-evidence/A2-PA/checker-report.md (+ -round2.md) | #24 | 89c7c8621d7e03554f40bb7413161c9544499e4d | Independent checker | DONE |
 | 2026-07-08 | A2-PA | Preview screenshots (idle/running/failure) | docs/assembly-evidence/A2-PA/screenshots/*.png | #24 | 89c7c8621d7e03554f40bb7413161c9544499e4d | Playwright | DONE |
+| 2026-07-08 | A2-BC | Bug Collector BC1-BC6 (capture→C3 classify→store) | src/v8a2/bugs/ (V8A2-BUG-COLLECTOR-SELFTEST PASS 6); capture-only, fail-closed | #25 | 270719db9f6f4a851810d067950c82e72cff063c | Builder + CI | DONE |
+| 2026-07-08 | A2-BC | Bug-captured screenshots | docs/assembly-evidence/A2-BC/screenshots/*.png | #25 | 270719db9f6f4a851810d067950c82e72cff063c | Playwright | DONE |
 
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their
