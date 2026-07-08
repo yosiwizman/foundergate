@@ -12,6 +12,45 @@
 >    `node src/v8a2/server.mjs` and click around.
 > 5. **One next action.** At G2-A2, witness the screens and record the result.
 
+## FINAL STATE NOTE (dual-pin)
+
+**Product-final SHA:** `dba8720f430ad80e8449cb3d79120035c97a91c2` — the last commit carrying V8-A2 product code
+(`src/`). Its exact-SHA CI is green: run **28961920072** (`selftests`, `success`, bound to this exact SHA — see
+`verification/gh-run-28961920072.json`).
+
+**Evidence-tip SHA:** `EVIDENCETIP` — tip of the docs/evidence trail after this V8-A2 close-out. Every commit
+between the product-final SHA and the evidence-tip touches **only** `docs/assembly-evidence/`. Proof
+(`verification/post-product-diff-stat.txt`):
+
+```
+# git diff --stat dba8720f430ad80e8449cb3d79120035c97a91c2..HEAD
+# All post-product-final commits must touch ONLY docs/assembly-evidence/
+
+ docs/assembly-evidence/A2/V8-A2-acceptance-packet.md | 4 ++--
+ docs/assembly-evidence/EVIDENCE_LEDGER.md            | 2 ++
+ docs/assembly-evidence/WHERE_AM_I.md                 | 2 +-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
+
+# name-only non-docs check:
+(none — all under docs/assembly-evidence/)
+```
+
+The *product* is frozen at `dba8720` (CI-green); everything after is evidence maintenance only.
+
+## Verification evidence (raw, CTO-executed, independently re-checkable)
+
+| Check | Raw file | Result |
+| ----- | ----- | ----- |
+| Repo privacy | `verification/gh-repo-view.json` | `PRIVATE` |
+| PR merge states #24–#26 | `verification/gh-pr-24..26.json` | all **MERGED** (SHAs match the build trail) |
+| Pinned CI run (commit binding + conclusion) | `verification/gh-run-28961920072.json` | run 28961920072 · headSha `dba8720` · `success` |
+| Full self-test run | `verification/npm-test.txt` | `ALL GREEN: 25/25` |
+| Post-product diff (docs-only proof) | `verification/post-product-diff-stat.txt` | only `docs/assembly-evidence/` changed |
+
+*Honest note: these `gh`/`npm test` outputs were executed by the FounderGate CTO (not an independent party) but
+are raw-captured and reproducible. The independent adversarial checker's process-control review stands at
+`../A2-PA/checker-report.md` (+ `-round2.md`).*
+
 ## Build record
 
 | Phase | PR | Merge SHA | Notes |
