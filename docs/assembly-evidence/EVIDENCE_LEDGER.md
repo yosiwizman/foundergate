@@ -39,6 +39,8 @@
 | 2026-07-08 | A2-PA | Preview screenshots (idle/running/failure) | docs/assembly-evidence/A2-PA/screenshots/*.png | #24 | 89c7c8621d7e03554f40bb7413161c9544499e4d | Playwright | DONE |
 | 2026-07-08 | A2-BC | Bug Collector BC1-BC6 (capture→C3 classify→store) | src/v8a2/bugs/ (V8A2-BUG-COLLECTOR-SELFTEST PASS 6); capture-only, fail-closed | #25 | 270719db9f6f4a851810d067950c82e72cff063c | Builder + CI | DONE |
 | 2026-07-08 | A2-BC | Bug-captured screenshots | docs/assembly-evidence/A2-BC/screenshots/*.png | #25 | 270719db9f6f4a851810d067950c82e72cff063c | Playwright | DONE |
+| 2026-07-08 | A2-AC | Cannot-invent-state for V8-A2 surfaces (Law 54) | src/v8a2/cannot-invent-state.selftest.mjs (PASS 5) | #26 | dba8720f430ad80e8449cb3d79120035c97a91c2 | Builder + CI | DONE |
+| 2026-07-08 | A2-AC | V8-A2 acceptance packet + exact-SHA CI | docs/assembly-evidence/A2/V8-A2-acceptance-packet.md; CI success at dba8720 (https://github.com/yosiwizman/foundergate/actions/runs/28961920072) | #26 | dba8720f430ad80e8449cb3d79120035c97a91c2 | FounderGate CTO + CI | DONE |
 
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their

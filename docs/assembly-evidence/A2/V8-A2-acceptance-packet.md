@@ -18,7 +18,7 @@
 |-------|----|-----------|-------|
 | A2-PA — Preview Bay (PA1–PA7) | #24 | `89c7c86` | **Independent checker: round-2 PASS** (7 findings fixed) |
 | A2-BC — Bug Collector (BC1–BC6) | #25 | `270719d` | wide-safe; capture-only |
-| A2-AC — acceptance (this) | this PR | `A2FINALSHA` | exact-SHA CI on merge |
+| A2-AC — acceptance (this) | this PR | `dba8720f430ad80e8449cb3d79120035c97a91c2` | exact-SHA CI on merge |
 
 Gate: **G1-A2 APPROVED** (see `../FOUNDER_GATE_LEDGER.md`).
 
@@ -37,7 +37,7 @@ Gate: **G1-A2 APPROVED** (see `../FOUNDER_GATE_LEDGER.md`).
 | Report Problem → screenshot+context → **data-classified packet** in `.foundergate/bugs` | ✅ | `bug-collector.selftest` (6) · smoke stores a packet · screenshot 02 (BC) |
 | Bug Collector **captures only** (no triage/fix/resolved) | ✅ | `bug-collector.selftest` asserts no triage/lane/fix/worker/resolved field |
 | Founder Hand-Burden: report needs **no terminal, no typed prose required** | ✅ | Report Problem is a UI button + optional note/voice; no terminal |
-| **Exact-SHA CI green** on the final commit | ✅ | `A2FINALSHA` · `A2FINALCI` (stamped on merge) |
+| **Exact-SHA CI green** on the final commit | ✅ | `dba8720f430ad80e8449cb3d79120035c97a91c2` · `https://github.com/yosiwizman/foundergate/actions/runs/28961920072` (stamped on merge) |
 
 ## Independent checker (sensitivity ruling)
 `../A2-PA/checker-report.md` (round 1 — 7 findings) + `../A2-PA/checker-report-round2.md` (round 2 — **PASS, all
