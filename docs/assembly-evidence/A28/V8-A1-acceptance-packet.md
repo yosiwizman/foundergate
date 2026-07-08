@@ -18,7 +18,7 @@
 (`src/`). Its exact-SHA CI is green: run **28902439097** (`selftests`, conclusion `success`, bound to this exact
 SHA — see `verification/gh-run-28902439097.json`).
 
-**Evidence-tip SHA:** `EVIDENCETIP` — the tip of the docs/evidence trail after this G3 close-out. Every commit
+**Evidence-tip SHA:** `a0fedef7b0f9383166abd4aa1fd0647d08ce54d5` — the tip of the docs/evidence trail after this G3 close-out. Every commit
 between the product-final SHA and the evidence-tip touches **only** `docs/assembly-evidence/` (no product code
 changed after the product-final commit). Proof: `verification/post-product-diff-stat.txt`:
 
