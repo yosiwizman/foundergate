@@ -1,0 +1,6 @@
+{
+  "machine_id": "harvest-terminal-macos-24gb", "os": "macos", "cpu_cores": 12, "ram_gb": 24, "disk_free_gb": 17,
+  "docker_available": true, "playwright_available": true, "node_available": true, "git_available": true, "github_cli_available": true,
+  "local_writer_slots": 3, "cloud_writer_slots": 2, "recommended_parallel_lanes": 3, "heavy_build_lanes": 1, "playwright_lanes": 2, "safe_mode": false,
+  "reason": "Preflight for bundle A3-PACKET (V8-A3 Build Contract + Lane Packet). Docs-only: one contract markdown + Where-Am-I rows. 1 lane. No code. Note: the FUTURE V8-A3 implementation is scoped by this packet's SENSITIVITY RULING to ONE primary builder + ONE independent adversarial checker for the secret-hiding/data-classification enforcement path; browse/preview UI lanes are wide-safe."
+}
