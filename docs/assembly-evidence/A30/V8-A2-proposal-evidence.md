@@ -7,7 +7,7 @@
 
 - **Proposal document:** `docs/lanes/V8-A2-proposal.md` — Preview Bay + Bug Collector, scoped to Roadmap V8.11
   §16 (Preview Bay §4.5 / §4.5.1; Bug Collector §4.7).
-- **PR:** `#B4PR` · **merge SHA:** `B4SHA` (stamped on merge) · CI: green (docs-only).
+- **PR:** `#22` · **merge SHA:** `bd582d3ea0f5e2e1e2cf8e4b207512aacc693546` (stamped on merge) · CI: green (docs-only).
 
 ## Scope match check (proposal ↔ Roadmap V8-A2)
 
