@@ -33,6 +33,7 @@
 | 2026-07-07 | Copy-polish | Bounded visible-copy pass + 5 required-string anti-repeat guards | src/v8a1/dashboard/ (V8A1-VIEW-MODEL-SELFTEST PASS 17) | #20 | acd2b0419ed7edb2f8526a41c5d669e7fbe905d5 | FounderGate CTO + CI (https://github.com/yosiwizman/foundergate/actions/runs/28902439097) | DONE |
 | 2026-07-07 | Copy-polish | A28 DoD #15 Stranger Test -> PASS (17/18 full) | docs/assembly-evidence/A28/V8-A1-acceptance-packet.md | #20 | acd2b0419ed7edb2f8526a41c5d669e7fbe905d5 | FounderGate CTO | DONE |
 | 2026-07-08 | B4 | A30 V8-A2 proposal only (no code) | docs/lanes/V8-A2-proposal.md · docs/assembly-evidence/A30/V8-A2-proposal-evidence.md | #22 | bd582d3ea0f5e2e1e2cf8e4b207512aacc693546 | FounderGate CTO + CI | DONE |
+| 2026-07-08 | B5 | V8-A2 build contract + lane packet (no code) | docs/lanes/V8-A2-lane-packet.md (incl. SENSITIVITY RULING; PA/BC/AC DAG) | #23 | 5048355706b8734d11d1f81092706b5f40279fa7 | FounderGate CTO + CI | DONE |
 
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their
