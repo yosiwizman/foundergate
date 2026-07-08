@@ -42,6 +42,7 @@
 | 2026-07-08 | A2-AC | Cannot-invent-state for V8-A2 surfaces (Law 54) | src/v8a2/cannot-invent-state.selftest.mjs (PASS 5) | #26 | dba8720f430ad80e8449cb3d79120035c97a91c2 | Builder + CI | DONE |
 | 2026-07-08 | A2-AC | V8-A2 acceptance packet + exact-SHA CI | docs/assembly-evidence/A2/V8-A2-acceptance-packet.md; CI success at dba8720 (https://github.com/yosiwizman/foundergate/actions/runs/28961920072) | #26 | dba8720f430ad80e8449cb3d79120035c97a91c2 | FounderGate CTO + CI | DONE |
 | 2026-07-08 | A2-CLOSE | V8-A2 CLOSED — G2-A2 PASSED; dual-pin + raw verification | docs/assembly-evidence/A2/V8-A2-acceptance-packet.md + verification/* | — | dba8720 | Founder (G2-A2) + FounderGate CTO | DONE |
+| 2026-07-08 | A3-PROPOSAL | V8-A3 File Cabinet proposal only (no code) | docs/lanes/V8-A3-proposal.md · docs/assembly-evidence/A3/V8-A3-proposal-evidence.md | #28 | 5e6d86716b5ad9ac305545cbd51af08e0558cb0b | FounderGate CTO + CI | DONE |
 
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their
