@@ -1,0 +1,10 @@
+# git diff --stat acd2b0419ed7edb2f8526a41c5d669e7fbe905d5..HEAD (pre-close tip 816533a)
+# All post-product-final commits must touch ONLY docs/assembly-evidence/
+
+ docs/assembly-evidence/A28/V8-A1-acceptance-packet.md | 4 ++--
+ docs/assembly-evidence/EVIDENCE_LEDGER.md             | 3 +++
+ docs/assembly-evidence/WHERE_AM_I.md                  | 2 +-
+ 3 files changed, 6 insertions(+), 3 deletions(-)
+
+# name-only non-docs check:
+(none — all under docs/assembly-evidence/)
