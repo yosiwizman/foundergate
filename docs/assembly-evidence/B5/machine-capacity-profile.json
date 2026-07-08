@@ -1,0 +1,19 @@
+{
+  "machine_id": "harvest-terminal-macos-24gb",
+  "os": "macos",
+  "cpu_cores": 12,
+  "ram_gb": 24,
+  "disk_free_gb": 17,
+  "docker_available": true,
+  "playwright_available": true,
+  "node_available": true,
+  "git_available": true,
+  "github_cli_available": true,
+  "local_writer_slots": 3,
+  "cloud_writer_slots": 2,
+  "recommended_parallel_lanes": 3,
+  "heavy_build_lanes": 1,
+  "playwright_lanes": 2,
+  "safe_mode": false,
+  "reason": "Preflight for bundle B5 (V8-A2 Build Contract + Lane Packet). Docs-only lane: one contract/lane-packet markdown + Where-Am-I rows. 1 lane used. safe_mode false. No V8-A2 code. Note: the FUTURE V8-A2 implementation is scoped by this packet's SENSITIVITY RULING to ONE primary builder + ONE independent checker for the Preview Bay (semi-sensitive tracked-process control); Bug Collector capture lanes are wide-safe."
+}
