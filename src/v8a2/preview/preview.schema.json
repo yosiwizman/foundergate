@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundergate.local/v8a2/preview.schema.json",
+  "title": "FounderGate .foundergate/preview.json (V8-A2 Preview Bay config)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "target", "app_dir", "environment", "sends", "payments"],
+  "properties": {
+    "schema_version": { "type": "string", "minLength": 1 },
+    "target": {
+      "type": "string",
+      "enum": ["static-preview"],
+      "description": "Allowlisted preview target id. V8-A2 supports only a safe repo-local static preview; arbitrary commands are never run."
+    },
+    "app_dir": { "type": "string", "minLength": 1, "description": "Project-relative dir the preview serves (read-only)." },
+    "environment": { "type": "string", "enum": ["preview", "staging", "live", "unknown"] },
+    "data": { "type": "string", "enum": ["test", "real", "mock", "unknown"] },
+    "sends": { "type": "string", "enum": ["off", "held", "live"] },
+    "payments": { "type": "string", "enum": ["mock", "test", "live"] },
+    "build": { "type": "string" },
+    "release_label": { "type": "string" },
+    "data_classification": { "type": "string", "enum": ["MOCK_ONLY", "PUBLIC", "INTERNAL", "SECRET", "UNKNOWN"] },
+    "mock": { "type": "boolean" },
+    "note": { "type": "string" }
+  }
+}

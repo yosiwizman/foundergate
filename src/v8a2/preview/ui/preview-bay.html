@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FounderGate — Preview Bay (V8-A2)</title>
+    <link rel="stylesheet" href="preview-bay.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">FounderGate</div>
+        <nav class="nav">
+          <a class="item">Dashboard</a>
+          <a class="item active">Preview Bay</a>
+          <a class="item">My Project</a>
+          <a class="item">Settings</a>
+        </nav>
+        <div class="sidebar-spacer"></div>
+        <div class="pause-dock">
+          <button id="pause-button" class="pause-btn" type="button">⏸ Pause &amp; get help</button>
+          <p id="pause-scope" class="pause-scope"></p>
+        </div>
+      </aside>
+
+      <main class="content">
+        <header class="welcome">
+          <div>
+            <h1>Preview Bay</h1>
+            <p class="stage">See your app run safely inside FounderGate. This is a preview — not live.</p>
+          </div>
+          <span id="status-chip" class="chip">…</span>
+        </header>
+
+        <!-- Always-on preview labels -->
+        <section class="labelbar" id="labelbar"></section>
+
+        <!-- Controls -->
+        <section class="controls">
+          <button data-action="start" class="btn primary">▶ Start App Preview</button>
+          <button data-action="stop" class="btn">■ Stop</button>
+          <button data-action="restart" class="btn">↻ Restart</button>
+          <button data-action="refresh" class="btn">⟳ Refresh</button>
+          <button data-action="clear-cache" class="btn">⌫ Clear Cache</button>
+          <button id="fullscreen" class="btn">⛶ Open Full Screen</button>
+          <button id="report" class="btn warn">⚑ Report Problem</button>
+        </section>
+
+        <!-- Embedded (sandboxed) preview OR honest empty/failure state -->
+        <section class="stage-area">
+          <div id="empty" class="empty">The preview is not running yet. Press <b>Start App Preview</b>.</div>
+          <div id="failure" class="failure" hidden></div>
+          <iframe id="preview-frame" title="App preview" hidden
+                  sandbox="allow-scripts allow-forms"
+                  referrerpolicy="no-referrer"></iframe>
+        </section>
+
+        <!-- Report Problem form (Bug Collector) -->
+        <section class="card report-form" id="report-form" hidden>
+          <h2>Report a problem</h2>
+          <p class="hint">A screenshot and where you are is captured automatically. Add a note or a voice note if you like.</p>
+          <textarea id="bug-note" rows="3" placeholder="What looked wrong? (optional)"></textarea>
+          <div class="report-actions">
+            <button id="bug-send" class="btn primary">Send report</button>
+            <button id="bug-cancel" class="btn">Cancel</button>
+          </div>
+          <p id="bug-result" class="hint"></p>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="preview-bay.js"></script>
+  </body>
+</html>

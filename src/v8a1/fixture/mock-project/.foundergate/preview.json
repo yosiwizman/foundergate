@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "target": "static-preview",
+  "app_dir": "app",
+  "environment": "preview",
+  "data": "mock",
+  "sends": "off",
+  "payments": "mock",
+  "build": "mock-0000000",
+  "release_label": "dev",
+  "data_classification": "MOCK_ONLY",
+  "mock": true,
+  "note": "MOCK_ONLY fixture preview config. Safe static preview of app/; sends OFF; payments mock; never live."
+}

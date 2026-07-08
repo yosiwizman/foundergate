@@ -1,0 +1,6 @@
+{
+  "machine_id": "harvest-terminal-macos-24gb", "os": "macos", "cpu_cores": 12, "ram_gb": 24, "disk_free_gb": 17,
+  "docker_available": true, "playwright_available": true, "node_available": true, "git_available": true, "github_cli_available": true,
+  "local_writer_slots": 3, "cloud_writer_slots": 2, "recommended_parallel_lanes": 3, "heavy_build_lanes": 1, "playwright_lanes": 2, "safe_mode": false,
+  "reason": "Preflight for P-A2-BUILD phase A2-BC. Per the SENSITIVITY RULING, Preview Bay (PA) uses ONE builder + ONE independent checker (process-control is semi-sensitive) — effective writer lanes = 1 on the PA surface; Bug Collector (BC) capture lanes are wide-safe. Docker forbidden. Process control is allowlist-only and fail-closed (no arbitrary commands, no live path)."
+}
