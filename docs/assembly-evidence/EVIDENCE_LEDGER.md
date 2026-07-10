@@ -56,6 +56,8 @@
 
 | 2026-07-10 | VA-PREP+WIDE | Record G4-A4/VA-START; Stranger Test kit (script + one-command launcher + observer capture sheet w/ anti-repeat law) + V8-B draft proposal + Archive Master v5 (no code, Law 69) | docs/lanes/stranger-test-script.md · docs/lanes/stranger-test-evidence-template.md · scripts/start-stranger-test.mjs · docs/lanes/V8-B-proposal.md · docs/ARCHIVE_MASTER.md · docs/assembly-evidence/{FOUNDER_GATE_LEDGER,STAGE_TRACKER}.md | #41 | c167641c719024a8c62f4675a06782a6650ba8b3 | FounderGate CTO + CI (https://github.com/yosiwizman/foundergate/actions/runs/29106493548) | DONE |
 
+| 2026-07-10 | VA-REPAIR | Stranger Run-1 UX fixes (wide-safe UI): D1 dashboard answer-first colour chips + D5 raised do-not-touch (PR #45) · D2 live preview controls + D3 mock-send refusal (PR #46) · D4 File Cabinet blocked-file findability (PR #47); + launcher throwaway-fixture fix (PR #44). Each locked by a committed anti-repeat check | src/v8a1/dashboard/ · src/v8a2/preview/ · src/v8a3/filecabinet/ui/ · scan-budget/no-dead-controls/mock-send-refusal/badge-visibility selftests · docs/assembly-evidence/VA-REPAIR/ | #45,#46,#47 | 9db6b43 | Builders (1 primary + 2 parallel) + CI | DONE |
+
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their
 literal placeholder tokens, which count as UNKNOWN.
