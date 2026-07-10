@@ -11,6 +11,11 @@
       h1 { margin: 0 0 6px; font-size: 22px; }
       .tag { display: inline-block; margin-top: 10px; font-size: 12px; color: #1f9d55; background: rgba(31,157,85,.12); padding: 3px 10px; border-radius: 999px; }
       p { color: #5b6473; }
+      .send-row { margin-top: 18px; }
+      .send-btn { font: inherit; font-size: 14px; padding: 9px 16px; border-radius: 9px; border: 1px solid #2b7de9;
+        background: #2b7de9; color: #fff; cursor: pointer; }
+      .send-note { margin: 12px 0 0; font-size: 13px; color: #b26a00; min-height: 16px; }
+      .send-note:empty { display: none; }
     </style>
   </head>
   <body>
@@ -19,6 +24,21 @@
       <p>This is a safe, static preview app served locally by FounderGate's Preview Bay.</p>
       <p>No network sends · no payments · mock data only.</p>
       <span class="tag">preview · sends off · mock data</span>
+
+      <!-- Mock "Send" so a tester can try an action that would send and see it
+           honestly refused. There is NO real send/network path here — clicking
+           only shows the plain-English refusal text below. -->
+      <div class="send-row">
+        <button id="mock-send" type="button" class="send-btn">Send message (practice)</button>
+      </div>
+      <p id="mock-send-note" class="send-note" aria-live="polite"></p>
     </main>
+    <script>
+      // Inline refusal only — no fetch, no XHR, no form action, no network.
+      document.getElementById("mock-send").addEventListener("click", function () {
+        document.getElementById("mock-send-note").textContent =
+          "This is a practice version — it never really sends anything.";
+      });
+    </script>
   </body>
 </html>
