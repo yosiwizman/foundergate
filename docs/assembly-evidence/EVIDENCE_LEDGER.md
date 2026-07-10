@@ -58,6 +58,8 @@
 
 | 2026-07-10 | VA-REPAIR | Stranger Run-1 UX fixes (wide-safe UI): D1 dashboard answer-first colour chips + D5 raised do-not-touch (PR #45) · D2 live preview controls + D3 mock-send refusal (PR #46) · D4 File Cabinet blocked-file findability (PR #47); + launcher throwaway-fixture fix (PR #44). Each locked by a committed anti-repeat check | src/v8a1/dashboard/ · src/v8a2/preview/ · src/v8a3/filecabinet/ui/ · scan-budget/no-dead-controls/mock-send-refusal/badge-visibility selftests · docs/assembly-evidence/VA-REPAIR/ | #45,#46,#47 | 9db6b43 | Builders (1 primary + 2 parallel) + CI | DONE |
 
+| 2026-07-10 | VA-LOCKS | Permanent controls closing two Run-1 incident classes: (1) branch protection on main requires the `selftests` check + enforce_admins=true — **the PR-#43 red-main incident is closed by this mechanical control, not by promise**; (2) fixture-pristine guard (content-hash manifest) locks the fixture-corruption class; launcher runs on a throwaway copy (PR #44). Run-2 kit refreshed. | docs/assembly-evidence/VA-LOCKS/ · src/v8a1/fixture-pristine.selftest.mjs · src/v8a1/fixture/fixture.manifest.json · docs/assembly-evidence/VA/stranger-test-run-2.md | #49 | 2ea6e351a3c5194d8a000076323f994f84455d7b | FounderGate CTO + CI (https://github.com/yosiwizman/foundergate/actions/runs/29116229293) | DONE |
+
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their
 literal placeholder tokens, which count as UNKNOWN.
