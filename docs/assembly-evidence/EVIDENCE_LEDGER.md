@@ -54,6 +54,8 @@
 
 | 2026-07-10 | A4-PG-BUILD | V8-A4 Project Guide: PG-CORE (answer core + injection boundary, checker round-2 PASS; HIGH hard-link leak fixed in shared enforcement) + PG-UI chat panel + acceptance | src/v8a4/guide/ · src/v8a3/filecabinet/{cabinet,tree,no-secret-leak.selftest}.mjs (nlink>1 fix) · docs/assembly-evidence/A4/ + A4-PG/ | #38 | a957b0141c9681f1ac073de7438236e0e8854225 | Builder + INDEPENDENT CHECKER (round-2 PASS) + CI (https://github.com/yosiwizman/foundergate/actions/runs/29104173885) | DONE |
 
+| 2026-07-10 | VA-PREP+WIDE | Record G4-A4/VA-START; Stranger Test kit (script + one-command launcher + observer capture sheet w/ anti-repeat law) + V8-B draft proposal + Archive Master v5 (no code, Law 69) | docs/lanes/stranger-test-script.md · docs/lanes/stranger-test-evidence-template.md · scripts/start-stranger-test.mjs · docs/lanes/V8-B-proposal.md · docs/ARCHIVE_MASTER.md · docs/assembly-evidence/{FOUNDER_GATE_LEDGER,STAGE_TRACKER}.md | #41 | c167641c719024a8c62f4675a06782a6650ba8b3 | FounderGate CTO + CI (https://github.com/yosiwizman/foundergate/actions/runs/29106493548) | DONE |
+
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their
 literal placeholder tokens, which count as UNKNOWN.
