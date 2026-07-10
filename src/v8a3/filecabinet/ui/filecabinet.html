@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FounderGate — File Cabinet (V8-A3)</title>
+    <link rel="stylesheet" href="filecabinet.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">FounderGate</div>
+        <nav class="nav">
+          <a class="item">Dashboard</a>
+          <a class="item">Preview Bay</a>
+          <a class="item active">File Cabinet</a>
+          <a class="item">Settings</a>
+        </nav>
+        <div class="sidebar-spacer"></div>
+        <div class="pause-dock"><button id="pause-button" class="pause-btn" type="button">⏸ Pause &amp; get help</button></div>
+      </aside>
+
+      <main class="content">
+        <header class="welcome">
+          <div>
+            <h1>File Cabinet</h1>
+            <p class="stage">Browse your project's files safely. Secrets stay hidden; files we don't recognise are blocked.</p>
+          </div>
+        </header>
+
+        <div class="cabinet">
+          <section class="tree card" id="tree" aria-label="Files by category"></section>
+          <section class="viewer card" id="viewer">
+            <div class="viewer-empty" id="viewer-empty">Pick a file on the left to preview it.</div>
+            <div class="viewer-head" id="viewer-head" hidden>
+              <div>
+                <b id="viewer-name"></b>
+                <span id="viewer-badge" class="badge"></span>
+              </div>
+              <div class="viewer-actions">
+                <button id="copy-btn" class="btn" hidden>Copy text</button>
+                <button id="download-btn" class="btn" hidden>Download</button>
+              </div>
+            </div>
+            <pre class="viewer-body" id="viewer-body" hidden></pre>
+            <div class="viewer-blocked" id="viewer-blocked" hidden></div>
+            <p id="action-result" class="hint"></p>
+          </section>
+        </div>
+      </main>
+    </div>
+    <script type="module" src="filecabinet.js"></script>
+  </body>
+</html>
