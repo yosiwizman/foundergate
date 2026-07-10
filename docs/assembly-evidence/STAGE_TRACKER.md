@@ -15,7 +15,7 @@
 | **V8-A1 — Truth Dashboard** | See your project's truth: 8 status questions, view-only gates, honest Panic/Pause, data badges | ✅ **COMPLETE / ACCEPTED** | `acd2b04` | G3 APPROVED |
 | **V8-A2 — Preview Bay + Bug Collector** | See the real app (honest labels, live refusals) and capture a bug as evidence — no terminal | ✅ **COMPLETE / ACCEPTED** | `dba8720` | G4-A2 ACCEPTED |
 | **V8-A3 — File Cabinet** | Safely browse/preview/copy/download files; a data-class badge on every file; secrets hidden, unknown blocked | ✅ **COMPLETE / ACCEPTED** | `e92f8b9` | G2-A3 PASSED · G4-A3 ACCEPTED |
-| **V8-A4 — Project Guide** | In-dashboard plain-English chat: explain status/files/gates from evidence, draft bug/notes — read-only, never acts | ⏳ **APPROVED TO START (proposal + build contract); awaiting G1-A4-IMPL** | — | G1-A4 APPROVED (start) |
+| **V8-A4 — Project Guide** | In-dashboard plain-English chat: explain status/files/gates from evidence, draft bug/notes — read-only, never acts | ⏳ **BUILT (checker round-2 PASS); awaiting G2-A4 witness** | `a957b01` | G1-A4-IMPL APPROVED |
 | **V8-A — Full acceptance** | The whole founder-facing product accepted together via the Stranger Test | ⛔ **NOT STARTED (fires only after V8-A4 closes)** | — | — |
 
 ## Gate ledger (stage-level, latest per stage)
@@ -27,7 +27,8 @@
 | G2-A3 — V8-A3 UI witness | PASSED | product-final `e92f8b9` |
 | G4-A3 — accept V8-A3 | ACCEPTED | product-final `e92f8b9` (CI 29097063338) |
 | G1-A4 — start V8-A4 (proposal) | APPROVED (start only) | proposal `docs/lanes/V8-A4-proposal.md` |
-| **G1-A4-IMPL — start V8-A4 build** | **PENDING** | build contract `docs/lanes/V8-A4-lane-packet.md` |
+| G1-A4-IMPL — start V8-A4 build | APPROVED | build contract PR #36 |
+| **G2-A4 — V8-A4 UI witness** | **PENDING** | product-final `a957b01` (CI 29104173885) |
 
 ## Contracts & plans on file
 - **V8-A4 build contract:** `docs/lanes/V8-A4-lane-packet.md` (SENSITIVITY RULING: injection boundary → 1 builder

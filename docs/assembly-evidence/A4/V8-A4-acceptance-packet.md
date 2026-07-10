@@ -22,8 +22,7 @@
 | PG-UI — in-dashboard chat panel | `src/v8a4/guide/server.mjs` + `ui/guide.{html,css,js}` | loopback :4500; warm plain English; drafts as copyable cards |
 | AC — acceptance | this packet + Law-54 + injection + no-leak proofs + smoke | exact-SHA CI recorded at close |
 
-Gate: **G1-A4-IMPL APPROVED** (see `../FOUNDER_GATE_LEDGER.md`). Product-final SHA + exact-SHA CI run are
-stamped into the Evidence Ledger and this packet at the close follow-up (post-merge, safe stamp helper).
+Gate: **G1-A4-IMPL APPROVED** (see `../FOUNDER_GATE_LEDGER.md`). Product-final `a957b01`; exact-SHA CI success (run 29104173885, https://github.com/yosiwizman/foundergate/actions/runs/29104173885).
 
 ## Acceptance criteria (contract ↔ evidence)
 
@@ -40,7 +39,7 @@ stamped into the Evidence Ledger and this packet at the close follow-up (post-me
 | **No live/provider/send/payment path; loopback only** | ✅ | `server.mjs` binds `127.0.0.1`; no outbound calls |
 | **Plain-English UI; drafts copyable; honest refusal** | ✅ | screenshots 01–04; UI language law |
 | **Playwright smoke per screen** | ✅ | `smoke.mjs` → 01 explain-cited · 02 protected-blocked · 03 injection-refused · 04 draft-card |
-| **Exact-SHA CI green** on the final commit | ✅ | stamped at close (Evidence Ledger row) |
+| **Exact-SHA CI green** on the final commit | ✅ | product-final `a957b01` · CI success (https://github.com/yosiwizman/foundergate/actions/runs/29104173885) |
 
 ## Independent checker (sensitivity ruling)
 `../A4-PG/checker-report.md` — **round 1: FAIL** (one confirmed HIGH: a safe-named **hard link** to a secret had
