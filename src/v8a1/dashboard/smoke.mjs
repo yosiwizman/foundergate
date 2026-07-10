@@ -52,7 +52,9 @@ try {
     const { page, close } = await open(browser, FIXTURE);
 
     const foldBottom = VIEWPORT.height;
-    const foldTargets = ['[data-q="1"]', '[data-q="2"]', '[data-q="3"]', '[data-q="4"]', "#status-card"];
+    // D1 + D5: Q1–4, current status, AND the raised "don't change these" card all
+    // sit above the fold at 1366x768 (extended to the new answer-first layout).
+    const foldTargets = ['[data-q="1"]', '[data-q="2"]', '[data-q="3"]', '[data-q="4"]', "#status-card", "#do-not-touch"];
     const aboveFold = {};
     for (const sel of foldTargets) {
       const box = await page.locator(sel).boundingBox();
@@ -60,6 +62,15 @@ try {
       aboveFold[sel] = ok;
       must(ok, `NOT above the fold at 1366x768: ${sel} (bottom=${box ? Math.round(box.y + box.height) : "none"})`);
     }
+
+    // D1: all 8 answers are distinct, colour-coded, at-a-glance chip elements.
+    const chipCount = await page.$$eval("[data-answer]", (els) => els.length);
+    must(chipCount === 8, `expected 8 answer chips (data-answer), got ${chipCount}`);
+    const toneClasses = await page.$$eval(".qchip", (els) => new Set(els.map((e) => e.className.replace("qchip", "").trim())).size);
+    must(toneClasses >= 3, `answer chips must use a spread of status colours, got ${toneClasses}`);
+    // D5: the protect card is visually distinct (its own raised class present)
+    const protectRaised = await page.$eval("#do-not-touch", (e) => e.classList.contains("protect")).catch(() => false);
+    must(protectRaised, "the 'don't change these' card must carry the raised .protect treatment");
 
     const scrollHeight = await page.evaluate(() => document.body.scrollHeight);
     must(scrollHeight <= SCROLL_BUDGET_PX, `scroll-depth over budget: ${scrollHeight}px > ${SCROLL_BUDGET_PX}px`);

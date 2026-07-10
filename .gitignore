@@ -47,3 +47,6 @@ scratch/
 *.local.jsonl
 coverage/
 .nyc_output/
+
+# agent worktrees (isolation) — never commit
+.claude/worktrees/
