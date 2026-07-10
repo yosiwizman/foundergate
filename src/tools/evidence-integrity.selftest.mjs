@@ -14,6 +14,7 @@
 import { readdirSync, statSync, readFileSync, existsSync } from "node:fs";
 import { join, dirname, extname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { execFileSync } from "node:child_process";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..", ".."); // src/tools -> repo root
@@ -74,6 +75,20 @@ for (const sub of ["src", "scripts"]) {
     if (BANNED.test(s)) problems.push(`banned write-before-truncate pattern in ${relative(REPO, p)}`);
   });
 }
+
+// 4: every *.selftest.mjs on disk under src/ must be git-TRACKED (not ignored) —
+// a gitignored selftest silently never runs in CI (the secrets-absent.fixture /
+// no-secret-leak.selftest class). Checked locally where git + the files exist.
+try {
+  const srcDir = join(REPO, "src");
+  const selftests = [];
+  if (existsSync(srcDir)) walk(srcDir, (p) => { if (p.endsWith(".selftest.mjs")) selftests.push(p); });
+  for (const p of selftests) {
+    let ignored = false;
+    try { execFileSync("git", ["check-ignore", "-q", p], { cwd: REPO }); ignored = true; } catch { ignored = false; }
+    if (ignored) problems.push(`gitignored selftest (would not run in CI): ${relative(REPO, p)}`);
+  }
+} catch { /* git unavailable — skip this check */ }
 
 // safe stamp helper must read before it writes.
 const helper = join(REPO, "scripts", "stamp.mjs");
