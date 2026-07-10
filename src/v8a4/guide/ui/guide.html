@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project Guide — FounderGate</title>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">FounderGate</div>
+      <nav class="nav">
+        <div class="item">Truth Dashboard</div>
+        <div class="item">Preview Bay</div>
+        <div class="item">File Cabinet</div>
+        <div class="item active">Project Guide</div>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="pause-dock"><button class="pause-btn" disabled>Pause (on the dashboard)</button></div>
+    </aside>
+
+    <main class="content">
+      <header class="welcome">
+        <h1>Project Guide</h1>
+        <p class="stage">A plain-English helper. It explains your project and drafts things for you.
+          It can only explain and draft — it never changes anything. Acting comes later.</p>
+      </header>
+
+      <section class="card">
+        <div class="chips" id="chips" aria-label="Things you can ask"></div>
+        <div class="chat" id="chat" data-ready="0" aria-live="polite"></div>
+        <form class="ask" id="ask">
+          <input id="q" autocomplete="off" placeholder="Ask about your project — e.g. “what's blocked?”" />
+          <button type="submit" id="send">Ask</button>
+        </form>
+        <p class="hint">Read-only. The Guide reads your project through the File Cabinet, so anything protected
+          stays hidden — it can’t show a secret even if you ask.</p>
+      </section>
+    </main>
+  </div>
+  <script src="guide.js"></script>
+</body>
+</html>

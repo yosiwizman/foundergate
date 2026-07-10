@@ -160,7 +160,16 @@ function gated(projectRoot, relPath, rules, action) {
       return { allowed: false, data_class: "SECRET", category: nameCls.category,
         reason: "This file points outside your project and is blocked for your safety." };
     }
-    if (!statSync(real).isFile()) return blocked(nameCls.data_class, nameCls.category, action);
+    const st = statSync(real);
+    if (!st.isFile()) return blocked(nameCls.data_class, nameCls.category, action);
+    // Hard links defeat name/realpath classification: a secret file hard-linked to a
+    // safe name (`ln secret.env readme.md`) has no distinct realpath, so it would be
+    // judged by the SAFE name. A regular file with nlink>1 cannot be safely
+    // identified — fail closed (blocked), same posture as an out-of-project symlink.
+    if (st.nlink > 1) {
+      return { allowed: false, data_class: "SECRET", category: nameCls.category,
+        reason: "This file has more than one name (a hard link), so its identity can't be verified — it's blocked for your safety." };
+    }
     // effective class = most restrictive of the requested NAME and the REAL target.
     const realCls = classifyFile(relative(root, real), rules);
     const effective = mostRestrictive(nameCls.data_class, realCls.data_class);

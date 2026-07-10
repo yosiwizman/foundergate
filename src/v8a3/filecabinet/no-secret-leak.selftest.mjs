@@ -6,7 +6,7 @@
 // that a safe file IS viewable. Fail-closed: a single leak fails the build.
 
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync, linkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { classifyFile, safePreview, safeCopy, safeDownload } from "./cabinet.mjs";
@@ -103,6 +103,19 @@ try {
     const r = safePreview(root, "analytics/pii/users.js", rules);
     assert.equal(r.allowed, false);
     assert.ok(!JSON.stringify(r).includes("123-45-6789"));
+  });
+
+  check("HARD LINK: a safe-named hard link to a secret is BLOCKED (nlink>1 fail-closed)", () => {
+    // `ln .env public.md` — the alias has a PUBLIC-SAFE name and NO distinct realpath,
+    // so name/realpath classification alone would leak. nlink>1 must fail closed.
+    let linked = true;
+    try { linkSync(join(root, ".env"), join(root, "public.md")); } catch { linked = false; }
+    if (!linked) return; // filesystem without hard-link support — skip
+    for (const fn of [safePreview, safeCopy, safeDownload]) {
+      const r = fn(root, "public.md", []);
+      assert.equal(r.allowed, false, `hard link to .env must be blocked by ${fn.name}`);
+      assert.ok(!JSON.stringify(r).includes(SECRET_VALUE), "hard-linked secret must not leak");
+    }
   });
 
   check("FINDING 4: a traversal path returns a blocked object (no throw)", () => {

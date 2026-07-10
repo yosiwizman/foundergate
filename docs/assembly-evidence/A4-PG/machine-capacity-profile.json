@@ -1,0 +1,6 @@
+{
+  "machine_id": "harvest-terminal-macos-24gb", "os": "macos", "cpu_cores": 12, "ram_gb": 24, "disk_free_gb": 16,
+  "docker_available": true, "playwright_available": true, "node_available": true, "git_available": true, "github_cli_available": true,
+  "local_writer_slots": 3, "cloud_writer_slots": 2, "recommended_parallel_lanes": 3, "heavy_build_lanes": 1, "playwright_lanes": 2, "safe_mode": false,
+  "reason": "Preflight for P-A4-BUILD. SENSITIVITY RULING: the Guide's context-ingestion + answer path (PG-CORE) is the prompt-injection boundary and runs ONE builder + ONE independent adversarial checker (a malicious file must not make the Guide leak blocked content, claim false state, or emit an action) — effective writer lanes = 1 on that surface; the chat-panel UI (PG-UI) is wide-safe. Read-only; loopback only; no live/provider/send/payment path. The Guide reads state via the V8-A1 reader and file content only through the checker-approved File Cabinet enforcement."
+}
