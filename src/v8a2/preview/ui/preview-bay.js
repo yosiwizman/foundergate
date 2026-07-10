@@ -52,11 +52,51 @@ async function api(path, method = "GET") {
 
 async function refreshStatus() { render(await api("/api/preview/status")); }
 
+// Show a short, plain-English line so every control gives visible feedback.
+function say(message) {
+  const el = $("action-feedback");
+  el.textContent = message;
+  document.body.dataset.feedback = message;
+}
+
+// Force the sandboxed preview iframe to reload from its loopback url. This is a
+// real, visible change and touches no live/send/network path — it only reloads
+// the same safe preview the server is already running.
+function reloadFrame() {
+  const f = $("preview-frame");
+  if (f.hidden) return false;
+  const url = f.getAttribute("src");
+  if (!url) return false;
+  f.setAttribute("src", "about:blank");
+  // re-point on the next tick so the browser actually re-fetches
+  requestAnimationFrame(() => f.setAttribute("src", url));
+  return true;
+}
+
+// Plain-English feedback for each control, so none looks clickable yet inert.
+function feedbackFor(action, state) {
+  const running = state.status === "running";
+  switch (action) {
+    case "start": return running ? "Your app preview is running." : "The preview did not start — see the message below.";
+    case "stop": return "Preview stopped. Nothing is running now.";
+    case "restart": return running ? "Restarted — your app preview is running again." : "Tried to restart — see the message below.";
+    case "refresh": return running ? "Reloaded the preview." : "Nothing to reload yet — press Start App Preview first.";
+    case "clear-cache": return running
+      ? "Cleared and reloaded the preview view. (The preview keeps no cache of its own.)"
+      : "Nothing to clear yet — press Start App Preview first.";
+    default: return "";
+  }
+}
+
 document.querySelectorAll(".controls .btn[data-action]").forEach((b) => {
   b.addEventListener("click", async () => {
     const action = b.dataset.action;
+    say("Working…");
     const state = await api(`/api/preview/${action}`, "POST");
     render(state);
+    // refresh/clear-cache/restart get a genuine, visible reload of the sandboxed view
+    if (action === "refresh" || action === "clear-cache") reloadFrame();
+    say(feedbackFor(action, state));
     document.body.dataset.lastAction = action;
   });
 });
