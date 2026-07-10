@@ -1,0 +1,2 @@
+MOCK_ONLY demo config. This file is classified SECRET by a project rule so the File Cabinet
+can demonstrate that it HIDES secret content — the founder sees a badge and a lock, never the contents.

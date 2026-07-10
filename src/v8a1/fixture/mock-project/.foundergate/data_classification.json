@@ -2,8 +2,18 @@
   "schema_version": "1.0.0",
   "default_class": "MOCK_ONLY",
   "rules": [
-    { "match": ".foundergate/*.json", "class": "INTERNAL" },
-    { "match": "**/*secret*", "class": "SECRET" }
+    {
+      "match": ".foundergate/*.json",
+      "class": "INTERNAL"
+    },
+    {
+      "match": "**/*secret*",
+      "class": "SECRET"
+    },
+    {
+      "match": "mock-config.txt",
+      "class": "SECRET"
+    }
   ],
   "hide_secret_values": true,
   "block_unknown_files": true,
