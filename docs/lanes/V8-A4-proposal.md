@@ -1,8 +1,9 @@
-# V8-A4 Proposal — Project Guide (PROPOSAL ONLY) — DRAFT · PENDING G2-A3
+# V8-A4 Proposal — Project Guide (PROPOSAL ONLY) — APPROVED TO START (G1-A4, 2026-07-10)
 
-> **STATUS: DRAFT — PENDING G2-A3.** This is a *draft* written during the V8-A3 witness window as legal wide
-> work. It is **not** a gate card and authorizes nothing. It becomes a live proposal / gate card only **after the
-> founder passes the G2-A3 witness** of the File Cabinet. Law 69 governs: V8-A3 is not yet closed.
+> **STATUS: APPROVED TO START (G1-A4, 2026-07-10).** G2-A3 passed and V8-A3 is CLOSED (G4-A3 ACCEPTED). The
+> founder recorded the combined G4-A3/G1-A4 approval, so this is now the **live, approved V8-A4 proposal**. It
+> authorizes the *proposal* only — **no V8-A4 code** starts here; the build contract (`V8-A4-lane-packet.md`) and
+> a future **G1-A4-IMPL** gate come next (Law 69).
 
 > **Plain English — read this first.**
 >
@@ -14,15 +15,15 @@
 > 3. **What can go wrong.** The big risk is **prompt injection**: a malicious file, log, or web page trying to
 >    trick the Guide into doing something. This surface is pre-ruled **SENSITIVE** (Law 57) and would be built by
 >    one builder + an independent adversarial checker, exactly like the File Cabinet's secret-hiding core.
-> 4. **What you can test now.** Nothing — a draft document.
-> 5. **One next action.** None until G2-A3 passes. Then this can become a real proposal.
+> 4. **What you can test now.** Nothing — a planning document; the build is a future gated bundle.
+> 5. **One next action.** Approve *starting to build* at **G1-A4-IMPL**, after reading the build contract (`docs/lanes/V8-A4-lane-packet.md`).
 
 ---
 
 ## Authority & status
 - **Authority:** Roadmap V8.11 **§4.4 (Project Guide)** + Laws 48/49/57 + §16 staged plan.
-- **Status:** **DRAFT, pending G2-A3.** Proposal only; no V8-A4 code; authorizes nothing (Law 69).
-- **Predecessors:** V8-A1/A2 complete & accepted; V8-A3 built (awaiting G2-A3 witness).
+- **Status:** **APPROVED TO START (G1-A4, 2026-07-10).** Proposal only; no V8-A4 code; the build is gated at G1-A4-IMPL (Law 69).
+- **Predecessors:** V8-A1/A2/A3 complete & accepted (V8-A3 closed at `e92f8b9`, G4-A3 ACCEPTED).
 
 ## What V8-A4 would deliver (in scope, §4.4) — READ-ONLY explain + draft only
 
