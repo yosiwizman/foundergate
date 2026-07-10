@@ -17,7 +17,13 @@ export function stamp(path, replacements = []) {
     throw new Error(`stamp: refusing to stamp an already-empty file: ${path}`);
   }
   let out = original;
-  for (const [from, to] of replacements) out = out.split(from).join(to);
+  for (const [from, to] of replacements) {
+    // refuse an empty/nullish replacement — an empty $VAR must never be stamped in.
+    if (to === undefined || to === null || String(to).length === 0) {
+      throw new Error(`stamp: refusing an empty replacement value for "${from}" in ${path}`);
+    }
+    out = out.split(from).join(to);
+  }
   if (out.length === 0) {
     throw new Error(`stamp: replacement would empty the file: ${path}`);
   }

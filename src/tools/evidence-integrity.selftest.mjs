@@ -56,6 +56,16 @@ if (existsSync(EVID)) {
         const m = re.exec(s);
         if (m) problems.push(`unstamped placeholder "${m[0]}" in ${rel}`);
       }
+      // (a) empty inline code `` — a failed/empty stamp (the empty-$VAR class): two
+      // ADJACENT backticks with nothing between, not part of a ``` fence (this is
+      // distinct from two separate code spans `x` `y`, which have a space between).
+      if (/(?<!`)``(?!`)/.test(s)) problems.push(`empty inline code (empty stamped value) in ${rel}`);
+      // (b) a stamped SHA value (backtick right after "SHA") must be 7–40 lowercase hex.
+      for (const m of s.matchAll(/SHA[:*=\s]{0,4}`([^`\n]+)`/g)) {
+        if (!/^[0-9a-f]{7,40}$/.test(m[1])) problems.push(`malformed stamped SHA "${m[1]}" in ${rel}`);
+      }
+      // (c) a stamped PR reference must be a NONZERO number (catch "#0", "#00").
+      for (const m of s.matchAll(/#0+\b/g)) problems.push(`zero/malformed PR reference "${m[0]}" in ${rel}`);
     }
   });
 }
