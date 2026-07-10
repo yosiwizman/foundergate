@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "id": "bug-92f74d1423",
+  "view": "preview-bay",
+  "note": "the button looks funny",
+  "area": "",
+  "voice_note": false,
+  "screenshot_captured": true,
+  "screenshot_ref": "bugs/bug-92f74d1423.png",
+  "data_classification": "MOCK_ONLY",
+  "environment_label": "preview",
+  "captured_marker": "captured",
+  "mock": true
+}
