@@ -1,0 +1,19 @@
+{
+  ".foundergate/MOCK_ONLY.md": "6a7c92ee9735597d0c2991ad4c2a6e07e84ed4c8d95414fb48b372576c45418f",
+  ".foundergate/cost_budget.json": "1d9bef3957a93e49b8c4fca482638d8bbee85f8ca8c12fe3353e24041a1de8d2",
+  ".foundergate/data_classification.json": "668ce41b0feca6dbbc06b1552d5e59e6ab1bf0d5165d8047c122a41662bb13c1",
+  ".foundergate/evidence/e1-example.json": "8341294a71afcebd06544706ade1dd2fae0b8af0be72ce4e0b9f3e37cc02e2ca",
+  ".foundergate/evidence/e2-stale-example.json": "689edd44bdde1102abfe83dc0bd67fda6d79a412d755672204dec680b88fef38",
+  ".foundergate/gates/g1-example.json": "e622646712cf538ca597f560a5b44be2993d9820819cf2fa685966d5820e608f",
+  ".foundergate/locks.json": "075e29594cc30a1b207b4ac966739309ffe7fcbfffd2cd543496006a1b76bfce",
+  ".foundergate/preview.json": "6eee81dd174c9c8b7769d2a506d93ca4ba6f8630e74b956f5af601adcea49226",
+  ".foundergate/project.json": "369d6fe681ac986b9f92697ed9b25220d455e65bd194f2a070fd182581c5fb3c",
+  ".foundergate/release_label.json": "72ff825aa9baa2f86e6defa4a459b3c53a7db57e5e0b7f5d9fb2b97cab39a311",
+  ".foundergate/run_state.json": "c7d4f054c6ed2ae3e9dd1fdbc92b53ded69605b159b664f6be33d6ee8f42045e",
+  ".foundergate/status.json": "239ca65abce0e7ebf4b13c328e2a7f6d7bbc49b8e2b6420a503f45cb9babdafa",
+  ".foundergate/witnesses/w1-example.json": "b89a34a5c86a497b5029f4f0310292c5a929d09e2c69735d230d8309ef09c3cc",
+  "app/index.html": "e5acc10bf36890142a09252288c4b13a0873e87b21804e7e583a44ca9b9da36f",
+  "docs/CURRENT_STATUS.md": "3e73291ca2e7610da55a15cacda5092fddea8df3863bf0a0540617ec8348a7d0",
+  "mock-config.txt": "a8c8e735552f15bcf1b7642a68c41fb270fee3747ea4fde5d471d6c7abf3145b",
+  "mystery.dat": "482557d9d871c29e74871a517b7318064d04be93ecfb8c54dba737a6d7627742"
+}
