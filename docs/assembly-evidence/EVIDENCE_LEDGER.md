@@ -50,6 +50,8 @@
 | 2026-07-10 | A3-AC | Law-54 + V8-A3 acceptance packet; exact-SHA CI green | docs/assembly-evidence/A3/V8-A3-acceptance-packet.md; CI success at e92f8b9 (https://github.com/yosiwizman/foundergate/actions/runs/29097063338) | #32 | e92f8b9c0df81950adb2dc9a99491674cfd4bc20 | FounderGate CTO + CI | DONE |
 | 2026-07-10 | A3-PARALLEL | 4 wide-safe lanes during G2-A3 window: guard hardening (SHA/PR/empty-stamp) + stamp-helper empty-refusal; V8-A4 draft proposal; Archive Master v4; V8-A3 advisor-audit prompt | src/tools/evidence-integrity.selftest.mjs · scripts/stamp.mjs · docs/lanes/V8-A4-proposal.md · docs/ARCHIVE_MASTER.md · docs/assembly-evidence/A3/advisor-audit-prompt.md | #33 | 823fa4b0c67266152c9d4da25fea353d2dac2802 | FounderGate CTO + CI (https://github.com/yosiwizman/foundergate/actions/runs/29098222302) | DONE |
 
+| 2026-07-10 | A4-PACKET+WIDE | Record G4-A3/G1-A4; V8-A4 build contract + wide-safe planning lanes (no code, Law 69): proposal promoted; lane packet (injection SENSITIVITY RULING); V8-A acceptance plan; STAGE_TRACKER disk twin | docs/lanes/V8-A4-lane-packet.md · docs/lanes/V8-A-acceptance-plan.md · docs/assembly-evidence/STAGE_TRACKER.md · docs/lanes/V8-A4-proposal.md · docs/assembly-evidence/FOUNDER_GATE_LEDGER.md · docs/assembly-evidence/WHERE_AM_I.md | #36 | b0e07618c349895c306fe0d752a5d7c15af902d2 | FounderGate CTO + CI (https://github.com/yosiwizman/foundergate/actions/runs/29101743679) | DONE |
+
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their
 literal placeholder tokens, which count as UNKNOWN.
