@@ -16,7 +16,7 @@
 | **V8-A2 — Preview Bay + Bug Collector** | See the real app (honest labels, live refusals) and capture a bug as evidence — no terminal | ✅ **COMPLETE / ACCEPTED** | `dba8720` | G4-A2 ACCEPTED |
 | **V8-A3 — File Cabinet** | Safely browse/preview/copy/download files; a data-class badge on every file; secrets hidden, unknown blocked | ✅ **COMPLETE / ACCEPTED (amended)** | `e92f8b9` → `a957b01` | G2-A3 PASSED · G4-A3 ACCEPTED · security amendment (hard-link fix) |
 | **V8-A4 — Project Guide** | In-dashboard plain-English chat: explain status/files/gates from evidence, draft bug/notes — read-only, never acts | ✅ **COMPLETE / ACCEPTED** | `a957b01` | G2-A4 PASSED · G4-A4 ACCEPTED |
-| **V8-A — Full acceptance** | The whole founder-facing product accepted together via the Stranger Test | 🧑‍🔬 **STRANGER TEST AUTHORIZED — awaiting a real-person run** | — | V8-A-ACCEPTANCE-START APPROVED |
+| **V8-A — Full acceptance** | The whole founder-facing product accepted together via the Stranger Test | ❌ **RUN 1 FAILED (Steps 1/2/4) — in UX repair (VA-REPAIR); re-run required** | — | STRANGER TEST RUN 1 FAILED |
 
 ## Gate ledger (stage-level, latest per stage)
 

@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
-  "mode": "idle",
+  "mode": "running",
   "autonomous": false,
-  "tracked_processes": [],
-  "mock": true,
-  "note": "MOCK_ONLY fixture. No tracked processes → Panic Card must say it stopped nothing running."
+  "tracked_processes": [
+    "preview server (pid 24890, http://127.0.0.1:64432)"
+  ]
 }
