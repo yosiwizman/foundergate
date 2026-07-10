@@ -29,7 +29,13 @@
         </header>
 
         <div class="cabinet">
-          <section class="tree card" id="tree" aria-label="Files by category"></section>
+          <div class="tree-panel">
+            <div class="tree-tools">
+              <button id="show-blocked-btn" class="filter-btn" type="button" aria-pressed="false">🔒 Show only protected &amp; blocked files</button>
+              <span class="tree-tools-hint">Protected files show a lock and a red mark.</span>
+            </div>
+            <section class="tree card" id="tree" aria-label="Files by category"></section>
+          </div>
           <section class="viewer card" id="viewer">
             <div class="viewer-empty" id="viewer-empty">Pick a file on the left to preview it.</div>
             <div class="viewer-head" id="viewer-head" hidden>

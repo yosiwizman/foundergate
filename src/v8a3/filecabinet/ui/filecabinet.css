@@ -1,6 +1,6 @@
 :root { --bg:#f5f6f8; --sidebar:#1f2530; --panel:#fff; --text:#232a33; --muted:#6b7480; --line:#e5e9ef;
-  --accent:#2b7de9; --ok:#1f9d55; --warn:#b26a00; --lock:#7a4bd6; }
-@media (prefers-color-scheme: dark){ :root{ --bg:#12151a; --panel:#1a1e25; --text:#e6e9ee; --line:#2a2f38; --muted:#94a0b0; } }
+  --accent:#2b7de9; --ok:#1f9d55; --warn:#b26a00; --lock:#7a4bd6; --blocked:#c0362c; }
+@media (prefers-color-scheme: dark){ :root{ --bg:#12151a; --panel:#1a1e25; --text:#e6e9ee; --line:#2a2f38; --muted:#94a0b0; --blocked:#ff6b5e; } }
 *{box-sizing:border-box} html,body{margin:0;height:100%} body{background:var(--bg);color:var(--text);
   font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
 .app{display:grid;grid-template-columns:216px 1fr;min-height:100vh}
@@ -20,19 +20,36 @@
 .cathead:first-child{margin-top:0}
 .cathead .caret{font-size:10px}
 .cathead .count{margin-left:auto;font-weight:600;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:0 7px;text-transform:none}
+/* Filter toolbar — one-click jump to protected/blocked files. */
+.tree-panel{display:flex;flex-direction:column}
+.tree-tools{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.filter-btn{font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:8px;border:1px solid var(--blocked);
+  background:rgba(192,54,44,.07);color:var(--blocked);cursor:pointer}
+.filter-btn:hover{background:rgba(192,54,44,.14)}
+.filter-btn[aria-pressed="true"]{background:var(--blocked);color:#fff}
+.tree-tools-hint{font-size:11.5px;color:var(--muted)}
 .filerow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;border-radius:8px;cursor:pointer}
 .filerow:hover{background:var(--bg)}
 .filerow.locked{cursor:not-allowed;opacity:.85}
+.fileleft{display:flex;align-items:center;gap:6px;min-width:0}
 .filename{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Blocked rows: a loud, distinct treatment (red rail + lock) — clearly NOT the
+   quiet safe rows, spottable without reading a word. */
+.row-lock{color:var(--blocked);font-size:12.5px;line-height:1;flex:0 0 auto}
+.filerow.blocked{background:rgba(192,54,44,.07);border-left:3px solid var(--blocked);padding-left:6px}
+.filerow.blocked:hover{background:rgba(192,54,44,.14)}
+.filerow.blocked .filename{font-weight:600;color:var(--blocked)}
 .badge{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:6px;background:var(--bg);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
 .badge.ok{color:var(--ok);border-color:rgba(31,157,85,.4)}
 .badge.warn{color:var(--warn);border-color:rgba(178,106,0,.4)}
 .badge.lock{color:var(--lock);border-color:rgba(122,75,214,.4)}
+/* Blocked badge overrides the safe/lock palette — dedicated red, bold, loud. */
+.badge.blocked{color:#fff;background:var(--blocked);border-color:var(--blocked);font-weight:700}
 .viewer{min-height:320px}
 .viewer-empty{color:var(--muted);padding:30px;text-align:center}
 .viewer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
 .viewer-actions{display:flex;gap:6px}
 .btn{font-size:12.5px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer}
 .viewer-body{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px;max-height:360px;overflow:auto;white-space:pre-wrap;font:12px/1.5 ui-monospace,Menlo,monospace}
-.viewer-blocked{background:rgba(122,75,214,.08);border:1px solid rgba(122,75,214,.3);border-radius:8px;padding:16px;color:var(--lock)}
+.viewer-blocked{background:rgba(192,54,44,.08);border:1px solid var(--blocked);border-radius:8px;padding:16px;color:var(--blocked)}
 .hint{font-size:12px;color:var(--muted)}
