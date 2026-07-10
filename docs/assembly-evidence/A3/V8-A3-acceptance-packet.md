@@ -10,7 +10,7 @@
 >    and found (then we fixed) two real leaks; a committed no-secret-leak proof now guards against it forever.
 > 4. **What you can test now.** `npm test` → 31/31 green. Open the screenshots, or run
 >    `node src/v8a3/filecabinet/server.mjs` and click around.
-> 5. **One next action.** At G2-A3, witness the File Cabinet and record the result.
+> 5. **Status.** ✅ **G2-A3 PASSED (2026-07-10) — V8-A3 CLOSED.** Raw-verified close recorded below.
 
 ## Build record
 
@@ -55,6 +55,18 @@ V8-A3 is a **read-only, classified viewer**. It does not edit/delete, does not o
 questions about files (Project Guide is V8-A4), and has **no live path**. Some harness files classify UNKNOWN and
 are honestly shown blocked (fail-safe: blocked until classified). Full suite: **ALL GREEN — 31/31**. Green CI is
 not product proof — that is why G2-A3 is a founder UI witness.
+
+## V8-A3 CLOSE — raw-verified (G2-A3 PASSED)
+
+**G2-A3 UI witness: PASSED (2026-07-10).** Witnessed at product-final `e92f8b9` via a live loopback server on 127.0.0.1:4400 — data-class badge on every file, plain-English categories, safe doc previewed (Copy/Download only), SECRET stayed hidden with no contents, UNKNOWN blocked, expand/collapse works, and no edit/delete/GitHub/approve affordances anywhere. Recorded in `../FOUNDER_GATE_LEDGER.md`.
+
+**Dual-pin (two independent anchors on the same artifact):**
+- **Product-final commit:** `e92f8b9` (`e92f8b9c0df81950adb2dc9a99491674cfd4bc20`).
+- **Exact-SHA CI:** selftests run **29097063338**, `conclusion: success`, `headSha e92f8b9…` — raw capture `verification/gh-run-29097063338.json`.
+
+**Raw verification captures (`verification/`):** `gh-run-29097063338.json` (green CI bound to the exact SHA) · `gh-pr-31.json` + `gh-pr-32.json` (the merges that produced `e92f8b9`) · `gh-repo-view.json` (repo still PRIVATE) · `post-product-diff-stat.txt` (every post-product-final commit touches only docs + wide-safe tooling; **`src/v8a3` product frozen at `e92f8b9`**) · `npm-test.txt` (full suite **ALL GREEN 31/31**).
+
+**Independent Terminal Advisor disk audit:** `advisor-audit-report.md` — **all six items PASS**; the one exec-limited UNKNOWN (could not run CI from the read-only seat) is satisfied by exact-SHA CI run 29097063338 at `e92f8b9`. Audit prompt: `advisor-audit-prompt.md`.
 
 ## One next action (founder, at G2-A3)
 Witness the File Cabinet: confirm every file has a badge, secrets show hidden, unknown files show blocked, and a
