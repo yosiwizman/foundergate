@@ -9,11 +9,21 @@
 
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
+import { cpSync, mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..");
+
+// The live session WRITES to the project it points at (the Preview Bay records a
+// tracked process in run_state.json; the Bug Collector saves bug files). So we
+// never point the servers at the committed fixture — we copy it to a throwaway
+// temp directory and run against that, leaving the repo fixture pristine.
+const FIXTURE = join(REPO, "src", "v8a1", "fixture", "mock-project");
+const SESSION_ROOT = mkdtempSync(join(tmpdir(), "fg-stranger-"));
+cpSync(FIXTURE, SESSION_ROOT, { recursive: true });
 
 // The four founder-facing apps, in the order the stranger visits them.
 const APPS = [
@@ -51,7 +61,9 @@ function startAll() {
   for (const app of APPS) {
     const child = spawn(process.execPath, [join(REPO, app.entry)], {
       cwd: REPO,
-      env: { ...process.env, ...app.env },
+      // FG_PROJECT_ROOT points every server at the throwaway copy, so the live
+      // session never mutates the committed fixture.
+      env: { ...process.env, ...app.env, FG_PROJECT_ROOT: SESSION_ROOT },
       stdio: ["ignore", "inherit", "inherit"],
     });
     child.on("exit", (code) => {
@@ -85,6 +97,7 @@ setTimeout(() => {
   console.log(line);
   console.log("  Give the stranger docs/lanes/stranger-test-script.md.");
   console.log("  Observer: capture notes in docs/lanes/stranger-test-evidence-template.md.");
-  console.log("  Everything is read-only on mock data. Press Ctrl-C to stop.");
+  console.log("  Running on a throwaway copy of the mock data — the repo fixture is never changed.");
+  console.log("  Press Ctrl-C to stop.");
   console.log(`${line}\n`);
 }, 1200);
