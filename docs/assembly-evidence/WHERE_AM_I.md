@@ -23,6 +23,7 @@
 | ↳ Phase FC-UI — browse/preview (wide-safe) | FC4-FC8 | complete | **File Cabinet UI landed; screenshots captured** | #32 | e92f8b9 | docs/assembly-evidence/A3-FC-UI/ | docs/assembly-evidence/A3-FC-UI/machine-capacity-profile.json | G2-A3 | No | At G2-A3 |
 | ↳ Phase PA — Preview Bay (checker-approved) | PA1-PA7 | complete | **Preview Bay landed; checker round-2 PASS; 23/23 CI** | #24 | 89c7c86 | docs/assembly-evidence/A2-PA/ | docs/assembly-evidence/A2-PA/machine-capacity-profile.json | continues into BC | No | Yes (into BC) |
 | ↳ Phase BC — Bug Collector (wide-safe) | BC1-BC6 | complete | **Bug Collector landed; 24/24 CI** | #25 | 270719d | docs/assembly-evidence/A2-BC/ | docs/assembly-evidence/A2-BC/machine-capacity-profile.json | G2-A2 | No | Yes (into AC) |
+| A3-PARALLEL (wide-safe, G2-A3 window) | Lane1 guard + Lane2 V8-A4 draft + Lane3 Archive v4 + Lane4 advisor-audit prompt | complete | **4 wide-safe lanes landed; 31/31 CI green; no stage-advancing code (Law 69); src/v8a3 frozen at e92f8b9** | #33 | 823fa4b | docs/lanes/V8-A4-proposal.md · docs/ARCHIVE_MASTER.md · docs/assembly-evidence/A3/advisor-audit-prompt.md | — | **G2-A3** | **No — holding for founder G2-A3 witness** | Wide work done; witness pending |
 
 **Note:** `#15` / `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and exact merge SHA immediately after the sheriff
 merge. B0 is docs-only; no code, no schema, no `src/` change was made.
