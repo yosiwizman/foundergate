@@ -52,6 +52,8 @@
 
 | 2026-07-10 | A4-PACKET+WIDE | Record G4-A3/G1-A4; V8-A4 build contract + wide-safe planning lanes (no code, Law 69): proposal promoted; lane packet (injection SENSITIVITY RULING); V8-A acceptance plan; STAGE_TRACKER disk twin | docs/lanes/V8-A4-lane-packet.md · docs/lanes/V8-A-acceptance-plan.md · docs/assembly-evidence/STAGE_TRACKER.md · docs/lanes/V8-A4-proposal.md · docs/assembly-evidence/FOUNDER_GATE_LEDGER.md · docs/assembly-evidence/WHERE_AM_I.md | #36 | b0e07618c349895c306fe0d752a5d7c15af902d2 | FounderGate CTO + CI (https://github.com/yosiwizman/foundergate/actions/runs/29101743679) | DONE |
 
+| 2026-07-10 | A4-PG-BUILD | V8-A4 Project Guide: PG-CORE (answer core + injection boundary, checker round-2 PASS; HIGH hard-link leak fixed in shared enforcement) + PG-UI chat panel + acceptance | src/v8a4/guide/ · src/v8a3/filecabinet/{cabinet,tree,no-secret-leak.selftest}.mjs (nlink>1 fix) · docs/assembly-evidence/A4/ + A4-PG/ | #38 | a957b0141c9681f1ac073de7438236e0e8854225 | Builder + INDEPENDENT CHECKER (round-2 PASS) + CI (https://github.com/yosiwizman/foundergate/actions/runs/29104173885) | DONE |
+
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their
 literal placeholder tokens, which count as UNKNOWN.
