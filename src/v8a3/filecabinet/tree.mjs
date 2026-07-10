@@ -35,8 +35,14 @@ export function buildTree(projectRoot, rules = loadRules(projectRoot)) {
       } else if (st.isDirectory()) {
         walk(abs);
       } else if (st.isFile()) {
-        const c = classifyFile(rel, rules);
-        files.push({ path: rel, category: c.category, data_class: c.data_class, access: c.access, symlink: false });
+        if (st.nlink > 1) {
+          // a hard-linked regular file cannot be safely classified by name (a secret
+          // could be hard-linked to a safe name) — list conservatively as SECRET.
+          files.push({ path: rel, category: "Sensitive / Hidden", data_class: "SECRET", access: access("SECRET"), hardlink: true });
+        } else {
+          const c = classifyFile(rel, rules);
+          files.push({ path: rel, category: c.category, data_class: c.data_class, access: c.access, symlink: false });
+        }
       }
     }
   })(projectRoot);
