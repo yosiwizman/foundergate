@@ -17,6 +17,11 @@ secrets/
 # are tracked and reach CI.
 !**/fixtures/**
 !**/*.fixture.json
+# Test SOURCE files are code, never real secrets — un-ignore them so a test named
+# e.g. no-secret-leak.selftest.mjs reaches CI (the pre-commit secret SCAN, not the
+# filename glob, is the real guard).
+!**/*.selftest.mjs
+!**/*.test.mjs
 .npmrc
 
 # --- Private store paths (source-system runtime state; never a dependency here) ---

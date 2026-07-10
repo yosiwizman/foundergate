@@ -1,0 +1,6 @@
+{
+  "machine_id": "harvest-terminal-macos-24gb", "os": "macos", "cpu_cores": 12, "ram_gb": 24, "disk_free_gb": 17,
+  "docker_available": true, "playwright_available": true, "node_available": true, "git_available": true, "github_cli_available": true,
+  "local_writer_slots": 3, "cloud_writer_slots": 2, "recommended_parallel_lanes": 3, "heavy_build_lanes": 1, "playwright_lanes": 2, "safe_mode": false,
+  "reason": "Preflight for P-A3-BUILD phase A3-FC-CLASS. SENSITIVITY RULING: the classification/access-enforcement path (FC-CLASS) runs ONE builder + ONE independent adversarial checker (misclassification leaks secrets) — effective writer lanes = 1 on that surface; browse/preview UI (FC-UI) is wide-safe. No live path; read-only file access; secrets never previewable/copyable/downloadable."
+}
