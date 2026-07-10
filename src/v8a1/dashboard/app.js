@@ -51,20 +51,34 @@ function render(view) {
   cc.textContent = view.header.connected ? "connected" : "not connected";
   cc.className = "chip " + (view.header.connected ? "on" : "off");
 
-  // Questions (tight 2-col grid; each carries data-q for the fold check)
+  // Questions (D1: answer-first cards — a colour-coded status chip you can read at
+  // a glance, the question as a small label, the full answer as secondary detail).
+  // Each card is a distinct labelled element (role/aria-label + data-answer) so the
+  // scan-budget guard can prove all 8 answers are individually scannable.
   $("questions-title").textContent = view.questions.title;
   const ql = $("questions-list");
   ql.innerHTML = "";
   for (const item of view.questions.items) {
     const li = document.createElement("li");
+    li.className = "qcard";
     li.setAttribute("data-q", String(item.n));
-    const q = document.createElement("div");
-    q.className = "q";
-    q.innerHTML = `<span class="n">${item.n}.</span>${item.q}`;
-    const a = document.createElement("div");
-    a.className = "a" + (item.unknown ? " unknown" : "");
-    a.textContent = item.unknown ? `${item.a} — we can't see this yet` : item.a;
-    li.append(q, a);
+    li.setAttribute("role", "group");
+    li.setAttribute("aria-label", `${item.q} ${item.chip.label}`);
+
+    const chip = document.createElement("div");
+    chip.className = `qchip ${item.chip.tone}`;
+    chip.setAttribute("data-answer", String(item.n)); // the at-a-glance answer element
+    chip.textContent = item.chip.label;
+
+    const label = document.createElement("div");
+    label.className = "qlabel";
+    label.innerHTML = `<span class="n">${item.n}</span>${item.q}`;
+
+    const detail = document.createElement("div");
+    detail.className = "qdetail" + (item.unknown ? " unknown" : "");
+    detail.textContent = item.unknown ? `${item.a} — we can't see this yet` : item.a;
+
+    li.append(chip, label, detail);
     ql.appendChild(li);
   }
 

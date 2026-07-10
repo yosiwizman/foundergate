@@ -2,10 +2,11 @@
   --bg: #f5f6f8; --sidebar: #1f2530; --sidebar-text: #cdd4df; --sidebar-active: #2b7de9;
   --panel: #ffffff; --panel2: #f1f3f6; --text: #232a33; --muted: #6b7480; --line: #e5e9ef;
   --accent: #2b7de9; --ok: #1f9d55; --bad: #d64545; --warn: #b26a00; --soft-warn: #f6e9cf;
+  --lock: #7a4bd6; --lock-tint: #f3eefc;
 }
 @media (prefers-color-scheme: dark) {
   :root { --bg:#12151a; --sidebar:#0d1015; --sidebar-text:#aeb6c2; --panel:#1a1e25; --panel2:#20252e;
-    --text:#e6e9ee; --muted:#94a0b0; --line:#2a2f38; --soft-warn:#3a2f16; }
+    --text:#e6e9ee; --muted:#94a0b0; --line:#2a2f38; --soft-warn:#3a2f16; --lock:#b79bf0; --lock-tint:#241a35; }
 }
 :root[data-theme="light"] { --bg:#f5f6f8; --panel:#fff; --text:#232a33; }
 :root[data-theme="dark"] { --bg:#12151a; --panel:#1a1e25; --text:#e6e9ee; }
@@ -52,13 +53,36 @@ body { background: var(--bg); color: var(--text);
 .card.remember { grid-column: 1 / -1; background: var(--panel2); }
 .card.soft-warn { background: var(--panel); border-color: rgba(178,106,0,.35); }
 
-/* Questions — tight two-column grid; Q1–4 sit in the top rows (above the fold) */
-.qgrid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
-.qgrid li { margin: 0; }
-.q { font-weight: 600; font-size: 12.5px; }
-.q .n { color: var(--muted); font-weight: 700; margin-right: 4px; }
-.a { font-size: 12.5px; color: var(--text); }
-.a.unknown { color: var(--warn); }
+/* D5 — the "don't change these" card is raised, distinctly coloured, and higher,
+   so a non-developer spots it at a glance. */
+.card.protect { border: 2px solid var(--lock); background: var(--lock-tint);
+  box-shadow: 0 3px 10px rgba(122,75,214,.18); }
+.card.protect h2 { display: flex; align-items: center; gap: 6px; color: var(--lock); font-size: 14.5px; }
+.card.protect .protect-icon { font-size: 15px; }
+.card.protect #do-not-touch-list b { color: var(--text); }
+
+/* D1 — Questions as answer-first, colour-coded cards. Each card leads with a
+   status chip you can read instantly; the question is a small label; the full
+   answer is secondary detail. */
+.qgrid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; }
+.qcard { margin: 0; padding: 8px 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel2);
+  border-left: 4px solid var(--muted); }
+.qcard .qchip { display: inline-block; font-weight: 700; font-size: 12.5px; padding: 2px 9px; border-radius: 999px; margin-bottom: 3px; }
+.qcard .qlabel { font-size: 11.5px; color: var(--muted); font-weight: 600; }
+.qcard .qlabel .n { display: inline-block; min-width: 15px; color: var(--muted); font-weight: 700; }
+.qcard .qdetail { font-size: 11.5px; color: var(--text); margin-top: 2px; }
+.qcard .qdetail.unknown { color: var(--warn); }
+/* chip + left-accent colour per tone */
+.qchip.attention { background: rgba(214,69,69,.15); color: var(--bad); }
+.qchip.caution { background: rgba(178,106,0,.16); color: var(--warn); }
+.qchip.ok { background: rgba(31,157,85,.16); color: var(--ok); }
+.qchip.info { background: rgba(43,125,233,.14); color: var(--accent); }
+.qchip.unknown { background: rgba(107,116,128,.16); color: var(--muted); }
+.qcard:has(.qchip.attention) { border-left-color: var(--bad); }
+.qcard:has(.qchip.caution) { border-left-color: var(--warn); }
+.qcard:has(.qchip.ok) { border-left-color: var(--ok); }
+.qcard:has(.qchip.info) { border-left-color: var(--accent); }
+.qcard:has(.qchip.unknown) { border-left-color: var(--muted); }
 .source { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
 
 .statuslist { display: flex; flex-direction: column; gap: 8px; }

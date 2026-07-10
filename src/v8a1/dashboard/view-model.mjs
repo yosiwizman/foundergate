@@ -127,6 +127,45 @@ export function buildView(model) {
   }));
   const hasPendingDecision = gates.some((g) => ["PENDING", "OPEN"].includes(g.state));
 
+  // D1 (scanability): a colour-coded, answer-at-a-glance chip for each of the 8
+  // questions, derived ONLY from real model fields (never invented — Law 54). The
+  // tone drives colour so a non-developer can read the whole check-in in seconds
+  // instead of reading eight prose sentences.
+  const dnt = m.doNotTouch || [];
+  const evid = m.evidence || [];
+  const staleN = evid.filter((e) => e.label === "STALE").length;
+  const qUnknown = (i) => (questions[i] ? isUnknown(questions[i].a) : true);
+  function questionChip(i) {
+    switch (i) {
+      case 0:
+        if (isUnknown(m.state)) return { tone: "unknown", label: "Unknown" };
+        return m.state === "blocked" ? { tone: "attention", label: "Waiting on you" }
+          : m.state === "active" ? { tone: "ok", label: "Running" }
+          : m.state === "paused" ? { tone: "info", label: "Paused" }
+          : { tone: "info", label: "Idle" };
+      case 1:
+        if (hasPendingDecision) return { tone: "attention", label: "Yes — 1 thing" };
+        return qUnknown(1) ? { tone: "unknown", label: "Unknown" } : { tone: "ok", label: "Nothing now" };
+      case 2:
+        return dnt.length ? { tone: "caution", label: `${dnt.length} protected` }
+          : (m.presence && m.presence.locks ? { tone: "ok", label: "All clear" } : { tone: "unknown", label: "Unknown" });
+      case 3:
+        if (m.state === "blocked") return { tone: "attention", label: "1 blocker" };
+        return qUnknown(3) ? { tone: "unknown", label: "Unknown" } : { tone: "ok", label: "Nothing" };
+      case 4:
+        return isUnknown(m.releaseLabel) ? { tone: "unknown", label: "Unknown" } : { tone: "info", label: String(m.releaseLabel) };
+      case 5:
+        return dnt.length ? { tone: "caution", label: `${dnt.length} items` } : { tone: "ok", label: "Nothing" };
+      case 6:
+        return qUnknown(6) ? { tone: "unknown", label: "Unknown" } : { tone: "info", label: "Updated" };
+      case 7:
+        if (!evid.length) return { tone: "unknown", label: "Unknown" };
+        return staleN ? { tone: "caution", label: `${evid.length}, ${staleN} stale` } : { tone: "info", label: `${evid.length} items` };
+      default:
+        return { tone: "info", label: "" };
+    }
+  }
+
   return {
     nav: SIDEBAR_NAV,
     header: {
@@ -180,7 +219,7 @@ export function buildView(model) {
     },
     questions: {
       title: "Your quick check-in",
-      items: questions.map((q, i) => ({ n: i + 1, q: q.q, a: q.a, source: q.source, unknown: isUnknown(q.a) })),
+      items: questions.map((q, i) => ({ n: i + 1, q: q.q, a: q.a, source: q.source, unknown: isUnknown(q.a), chip: questionChip(i) })),
     },
     failureModes: { title: "Good things to remember", lines: FAILURE_MODES },
     doctor: buildDoctor(m),
@@ -258,7 +297,7 @@ export function visibleStrings(view) {
   push(view.doNotTouch.title, view.doNotTouch.subtitle);
   view.doNotTouch.items.forEach((d) => push(d.path, d.reason));
   push(view.questions.title);
-  view.questions.items.forEach((q) => push(q.q, q.a));
+  view.questions.items.forEach((q) => push(q.q, q.a, q.chip && q.chip.label));
   push(view.failureModes.title, ...view.failureModes.lines);
   push(view.doctor.title, view.doctor.filesPresent);
   view.doctor.checks.forEach((c) => push(c.name));
