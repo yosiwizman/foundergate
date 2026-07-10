@@ -1,0 +1,11 @@
+# git diff --stat a957b0141c9681f1ac073de7438236e0e8854225..HEAD
+# post-product-final commits must touch ONLY docs/
+
+ docs/assembly-evidence/A4/V8-A4-acceptance-packet.md | 5 ++---
+ docs/assembly-evidence/EVIDENCE_LEDGER.md            | 2 ++
+ docs/assembly-evidence/STAGE_TRACKER.md              | 5 +++--
+ docs/assembly-evidence/WHERE_AM_I.md                 | 1 +
+ 4 files changed, 8 insertions(+), 5 deletions(-)
+
+# non-docs check:
+(none — all under docs/)
