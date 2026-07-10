@@ -17,7 +17,7 @@
 | Phase | PR | Merge SHA | Notes |
 |-------|----|-----------|-------|
 | A3-FC-CLASS — classification+access | #31 | `b549716` | **Independent checker round-2 PASS** (2 HIGH leaks found & fixed) |
-| A3-FC-UI + AC (this) | #32 | `` | browse/badges/preview + acceptance; exact-SHA CI https://github.com/yosiwizman/foundergate/actions/runs/29097063338 |
+| A3-FC-UI + AC (this) | #32 | `e92f8b9` | browse/badges/preview + acceptance; exact-SHA CI success |
 
 Gate: **G1-A3-IMPL APPROVED** (see `../FOUNDER_GATE_LEDGER.md`).
 
@@ -35,7 +35,7 @@ Gate: **G1-A3-IMPL APPROVED** (see `../FOUNDER_GATE_LEDGER.md`).
 | **No edit/delete**, no Open-in-GitHub, no Project-Guide answers | ✅ | none present in the UI/API (read-only) |
 | **No live/provider/send/payment path** | ✅ | read-only viewer; loopback server; no outbound API |
 | **Committed no-secret-leak proof** | ✅ | `src/v8a3/filecabinet/no-secret-leak.selftest.mjs` (runs in CI) |
-| **Exact-SHA CI green** on the final commit | ✅ | final `` · CI success (https://github.com/yosiwizman/foundergate/actions/runs/29097063338) |
+| **Exact-SHA CI green** on the final commit | ✅ | final `e92f8b9` · CI success (https://github.com/yosiwizman/foundergate/actions/runs/29097063338) |
 
 ## Independent checker (sensitivity ruling)
 `../A3-FC/checker-report.md` (round 1 — verdict FAIL, two confirmed HIGH content-leaks: a broken `**` glob left
