@@ -5,7 +5,8 @@
   "type": "module",
   "description": "Founder-operated AI development harness — gated, evidence-first autonomous runs.",
   "scripts": {
-    "test": "node scripts/run-selftests.mjs"
+    "test": "node scripts/run-selftests.mjs",
+    "stranger-test": "node scripts/start-stranger-test.mjs"
   },
   "engines": {
     "node": ">=20"
