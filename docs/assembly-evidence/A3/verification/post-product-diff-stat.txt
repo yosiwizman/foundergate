@@ -1,0 +1,15 @@
+# git diff --stat e92f8b9c0df81950adb2dc9a99491674cfd4bc20..HEAD
+# All post-product-final commits must touch ONLY docs/ (+ wide-safe tooling under src/tools & scripts).
+
+ docs/ARCHIVE_MASTER.md                             | 68 +++++++++++++++++++++
+ .../A3/V8-A3-acceptance-packet.md                  |  4 +-
+ docs/assembly-evidence/A3/advisor-audit-prompt.md  | 49 +++++++++++++++
+ docs/assembly-evidence/EVIDENCE_LEDGER.md          |  5 +-
+ docs/assembly-evidence/WHERE_AM_I.md               |  5 +-
+ docs/lanes/V8-A4-proposal.md                       | 69 ++++++++++++++++++++++
+ scripts/stamp.mjs                                  |  8 ++-
+ src/tools/evidence-integrity.selftest.mjs          | 10 ++++
+ 8 files changed, 212 insertions(+), 6 deletions(-)
+
+# name-only NON-docs check (src/v8a3 product must be untouched after product-final):
+(none — src/v8a3 product frozen at e92f8b9 ✓)

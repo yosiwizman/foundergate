@@ -64,6 +64,10 @@ the founder first; ambiguous language ("make it better") cannot become work dire
 - No live/provider/send/payment path; read-only.
 - Founder Hand-Burden: asking a question and getting a plain-English answer needs no terminal.
 
+## Founder design input — witness note (no action now)
+
+Recorded at G2-A3 PASS (2026-07-10). The founder wants the future Project Guide to be an **in-dashboard, plain-English advisor chat** — so a non-developer stranger never needs to copy/paste anything into an outside advisor. This stays within the V8-A4 boundary: **read-only explain** here; any **routing** of a structured request to a person or the CTO queue remains **V8-B**. It sharpens the V8-A4 goal (bring the advisor *into* the dashboard) without widening scope.
+
 ## One next action
 **None until G2-A3 passes.** After the founder witnesses the File Cabinet and V8-A3 is on track to close, this
 draft can be promoted to a real V8-A4 proposal and gate card.
