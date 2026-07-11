@@ -13,10 +13,9 @@ import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, extname } from "node:path";
 import { buildModel } from "../reader.mjs";
+import { defaultProjectRoot } from "../../tools/project-root.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const FIXTURE_ROOT = join(HERE, "..", "fixture", "mock-project");
-const PROJECT_ROOT = process.env.FG_PROJECT_ROOT || FIXTURE_ROOT;
 const PORT = Number(process.env.FG_PORT || 4173);
 
 const MIME = {
@@ -29,7 +28,8 @@ const MIME = {
 
 const SAFE_FILES = new Set(["index.html", "styles.css", "app.js", "view-model.mjs"]);
 
-export function createDashboardServer(projectRoot = PROJECT_ROOT) {
+export function createDashboardServer(projectRoot) {
+  if (!projectRoot) projectRoot = defaultProjectRoot(false); // never the committed fixture
   return createServer((req, res) => {
     const url = req.url.split("?")[0];
     if (url === "/api/model") {
@@ -58,9 +58,10 @@ export function createDashboardServer(projectRoot = PROJECT_ROOT) {
 const invokedDirectly =
   process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (invokedDirectly) {
-  const server = createDashboardServer();
+  const root = defaultProjectRoot(); // announces if it made a throwaway copy
+  const server = createDashboardServer(root);
   server.listen(PORT, () => {
     console.log(`FounderGate V8-A1 Truth Dashboard on http://localhost:${PORT}`);
-    console.log(`Reading (read-only): ${PROJECT_ROOT}`);
+    console.log(`Reading (read-only): ${root}`);
   });
 }

@@ -13,18 +13,18 @@ import { fileURLToPath } from "node:url";
 import { dirname, join, extname, resolve } from "node:path";
 import { buildTree, loadRules } from "./tree.mjs";
 import { safePreview, safeCopy, safeDownload } from "./cabinet.mjs";
+import { defaultProjectRoot } from "../../tools/project-root.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const UI = join(HERE, "ui");
-const FIXTURE = resolve(HERE, "..", "..", "v8a1", "fixture", "mock-project");
-const PROJECT_ROOT = process.env.FG_PROJECT_ROOT || FIXTURE;
 const PORT = Number(process.env.FG_A3_PORT || 4400);
 
 const MIME = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8" };
 const SAFE_FILES = new Set(["filecabinet.html", "filecabinet.js", "filecabinet.css"]);
 const jsonRes = (res, code, obj) => { res.writeHead(code, { "content-type": MIME[".json"] }); res.end(JSON.stringify(obj)); };
 
-export function createCabinetServer(projectRoot = PROJECT_ROOT) {
+export function createCabinetServer(projectRoot) {
+  if (!projectRoot) projectRoot = defaultProjectRoot(false); // read-only, but never the committed fixture by default
   const rules = loadRules(projectRoot);
   return createServer((req, res) => {
     const u = new URL(req.url, "http://127.0.0.1");
@@ -52,9 +52,10 @@ export function createCabinetServer(projectRoot = PROJECT_ROOT) {
 
 const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (invokedDirectly) {
-  const server = createCabinetServer();
+  const root = defaultProjectRoot(); // announces if it made a throwaway copy
+  const server = createCabinetServer(root);
   server.listen(PORT, "127.0.0.1", () => { // loopback only
     console.log(`FounderGate V8-A3 File Cabinet on http://127.0.0.1:${PORT}`);
-    console.log(`Attached project (read-only): ${PROJECT_ROOT}`);
+    console.log(`Attached project (read-only): ${root}`);
   });
 }

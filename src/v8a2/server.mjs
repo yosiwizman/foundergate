@@ -14,11 +14,10 @@ import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, extname, resolve } from "node:path";
 import { PreviewController } from "./preview/preview-controller.mjs";
+import { defaultProjectRoot } from "../tools/project-root.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const UI = join(HERE, "preview", "ui");
-const FIXTURE = resolve(HERE, "..", "v8a1", "fixture", "mock-project");
-const PROJECT_ROOT = process.env.FG_PROJECT_ROOT || FIXTURE;
 const PORT = Number(process.env.FG_A2_PORT || 4300);
 
 const MIME = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8" };
@@ -37,7 +36,8 @@ async function body(req, limit = 256 * 1024) {
   });
 }
 
-export function createA2Server(projectRoot = PROJECT_ROOT) {
+export function createA2Server(projectRoot) {
+  if (!projectRoot) projectRoot = defaultProjectRoot(false); // never write the committed fixture
   const controller = new PreviewController(projectRoot);
 
   return createServer(async (req, res) => {
@@ -91,11 +91,12 @@ function safeStatus(controller) {
 
 const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (invokedDirectly) {
-  const server = createA2Server();
+  const root = defaultProjectRoot(); // announces if it made a throwaway copy
+  const server = createA2Server(root);
   // Loopback ONLY — the process-control API must never be exposed off-machine
   // (independent-checker finding A). Same binding discipline as the preview server.
   server.listen(PORT, "127.0.0.1", () => {
     console.log(`FounderGate V8-A2 Preview Bay on http://127.0.0.1:${PORT}`);
-    console.log(`Attached project (read-only app): ${PROJECT_ROOT}`);
+    console.log(`Attached project: ${root}`);
   });
 }

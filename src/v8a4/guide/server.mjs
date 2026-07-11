@@ -12,11 +12,10 @@ import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, extname, resolve } from "node:path";
 import { answer, loadRules, CAPABILITIES } from "./guide.mjs";
+import { defaultProjectRoot } from "../../tools/project-root.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const UI = join(HERE, "ui");
-const FIXTURE = resolve(HERE, "..", "..", "v8a1", "fixture", "mock-project");
-const PROJECT_ROOT = process.env.FG_PROJECT_ROOT || FIXTURE;
 const PORT = Number(process.env.FG_A4_PORT || 4500);
 
 const MIME = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8" };
@@ -25,7 +24,8 @@ const jsonRes = (res, code, obj) => { res.writeHead(code, { "content-type": MIME
 
 const MAX_Q = 4000; // bound the input; the Guide is read-only, but keep bodies sane.
 
-export function createGuideServer(projectRoot = PROJECT_ROOT) {
+export function createGuideServer(projectRoot) {
+  if (!projectRoot) projectRoot = defaultProjectRoot(false); // read-only, but never the committed fixture by default
   const rules = loadRules(projectRoot);
   return createServer((req, res) => {
     const u = new URL(req.url, "http://127.0.0.1");
@@ -60,9 +60,10 @@ export function createGuideServer(projectRoot = PROJECT_ROOT) {
 
 const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (invokedDirectly) {
-  const server = createGuideServer();
+  const root = defaultProjectRoot(); // announces if it made a throwaway copy
+  const server = createGuideServer(root);
   server.listen(PORT, "127.0.0.1", () => { // loopback only
     console.log(`FounderGate V8-A4 Project Guide on http://127.0.0.1:${PORT}`);
-    console.log(`Attached project (read-only): ${PROJECT_ROOT}`);
+    console.log(`Attached project (read-only): ${root}`);
   });
 }
