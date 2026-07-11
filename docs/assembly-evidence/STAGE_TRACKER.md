@@ -5,7 +5,7 @@
 > product-final commit, and the last founder gate. `WHERE_AM_I.md` holds the live per-substep detail; this is the
 > stage-level summary.
 >
-> **As of:** 2026-07-10 · **Repo:** private · **Suite:** `npm test` → ALL GREEN (31/31) ·
+> **As of:** 2026-07-10 · **Repo:** private · **Suite:** `npm test` → ALL GREEN (see CI; count grows as the suite grows) ·
 > **Guard:** evidence-integrity PASS.
 
 ## V8-A stages

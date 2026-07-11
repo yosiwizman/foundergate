@@ -84,6 +84,17 @@ check("Safety chip is MODEL-DERIVED, no blanket 'everything safe' claim (Law 54)
   assert.match(safety.value, /demo|protections|protecting|can't see/i, `safety chip must be derived/scoped: "${safety.value}"`);
 });
 
+check("'Is It Safe?' card is MODEL-DERIVED, not a hardcoded blanket claim (Law 54)", () => {
+  // demo fixture: upbeat verdict + demo data line are appropriate...
+  assert.match(h.safe.lines[0], /demo \(no real customer data\)/i);
+  assert.match(h.safe.verdict, /safe to explore/i);
+  // ...but on NON-demo data the card must NOT claim "safe to explore" or "demo".
+  const nonDemo = buildView({ connected: true, dataClass: "CUSTOMER_PII", answers: [], gates: [], evidence: [], doNotTouch: [] }).home;
+  assert.ok(!/safe to explore/i.test(nonDemo.safe.verdict), `non-demo data must not claim 'safe to explore': "${nonDemo.safe.verdict}"`);
+  assert.ok(!/this is a demo/i.test(nonDemo.safe.lines[0]), `non-demo data must not claim 'demo': "${nonDemo.safe.lines[0]}"`);
+  assert.match(nonDemo.safe.lines[0], /CUSTOMER_PII/, "non-demo card must state the real data class");
+});
+
 check("restored A1 honesty companions are present and model-derived", () => {
   assert.match(h.honesty.checksNote, /doesn't mean the product is finished/i);
   assert.match(h.honesty.dataChip, /MOCK_ONLY/);

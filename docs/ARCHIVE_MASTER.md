@@ -5,7 +5,7 @@
 > founder-gate ledger through G4-A4. It is the "where did we get to" record; the living detail lives in the
 > ledgers it points to.
 >
-> **Version:** v5 · **As of:** 2026-07-10 · **Repo:** private · **Suite:** `npm test` → ALL GREEN (36/36) ·
+> **Version:** v5 · **As of:** 2026-07-10 · **Repo:** private · **Suite:** `npm test` → ALL GREEN (see CI; count grows as the suite grows) ·
 > **Guard:** evidence-integrity PASS.
 
 ## 1. Phase A — Harness extraction (customer AKIOR → product)
