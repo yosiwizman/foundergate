@@ -13,6 +13,8 @@
 // repository can produce.
 
 import { execFileSync } from "node:child_process";
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
 
 // A "lane-claim" line asserts a lane/deliverable is done. It names a lane token
 // (L0, J3, PG5, FC4, D2, AC1, R1, F2, VA-REPAIR-4 …) AND is either a list item / table
@@ -58,7 +60,42 @@ export function claimLines(text) {
     });
 }
 
-// Validate a whole report. Returns { valid, claims:[{n,line,pr,shas,resolved,reasons[]}] }.
+// THE WRITTEN-AUTHORITY LAW (Assembly Manual §28) applied to a completion report: the
+// disk-proof table carries an AUTHORITY column; every authority must resolve (path
+// exists + SHA resolves) or be honestly marked "AUTHORITY-UNRECORDED (historical)". An
+// unresolvable authority is INVALID exactly like a phantom SHA.
+export function authorityColumnCells(text) {
+  const lines = String(text).split(/\r?\n/);
+  const cells = []; let colIdx = -1;
+  for (const line of lines) {
+    if (!/^\s*\|/.test(line)) { colIdx = -1; continue; } // table ended
+    const parts = line.split("|");
+    if (colIdx === -1) { // looking for the header row that names an AUTHORITY column
+      const idx = parts.findIndex((c) => /authorit/i.test(c));
+      if (idx !== -1) colIdx = idx;
+      continue;
+    }
+    if (/^[\s|:-]+$/.test(line)) continue; // separator row
+    const cell = (parts[colIdx] || "").trim();
+    if (cell) cells.push(cell);
+  }
+  return cells;
+}
+
+export function validateAuthorityCells(text, cwd = process.cwd()) {
+  return authorityColumnCells(text).map((cell) => {
+    if (/AUTHORITY-UNRECORDED/i.test(cell)) return { cell, ok: true, historical: true, reasons: [] };
+    const p = cell.match(/`([^`]+?)`/);
+    const sha = cell.match(/@\s*`([0-9a-f]{7,40})`/);
+    const reasons = [];
+    if (!p) reasons.push("no authority path");
+    else if (!existsSync(resolve(cwd, p[1]))) reasons.push(`authority path does not resolve on disk: ${p[1]}`);
+    if (sha && !shaResolves(sha[1], cwd)) reasons.push(`authority SHA does not resolve: ${sha[1]}`);
+    return { cell, ok: reasons.length === 0, reasons };
+  });
+}
+
+// Validate a whole report. Returns { valid, claims:[...], authorities:[...] }.
 export function validateReport(text, cwd = process.cwd()) {
   const claims = claimLines(text).map(({ n, line }) => {
     const shas = extractShas(line);
@@ -70,10 +107,12 @@ export function validateReport(text, cwd = process.cwd()) {
     else if (!resolved.length) reasons.push(`SHA(s) do not resolve on disk: ${shas.join(", ")}`);
     return { n, line: line.trim(), pr, shas, resolved, ok: reasons.length === 0, reasons };
   });
-  // A report with lane-claim lines is valid only if EVERY claim carries provenance.
-  // A report with zero recognisable lane claims is valid (nothing is being asserted).
-  const valid = claims.every((c) => c.ok);
-  return { valid, claims };
+  // A report with lane-claim lines is valid only if EVERY claim carries provenance
+  // AND every declared AUTHORITY resolves (Written-Authority Law). A report with zero
+  // recognisable lane claims / authorities is valid (nothing is being asserted).
+  const authorities = validateAuthorityCells(text, cwd);
+  const valid = claims.every((c) => c.ok) && authorities.every((a) => a.ok);
+  return { valid, claims, authorities };
 }
 
 // CLI
@@ -84,7 +123,8 @@ if (invokedDirectly) {
   if (!path) { console.error("usage: node src/tools/report-provenance.mjs <report.md>"); process.exit(2); }
   const r = validateReport(readFileSync(path, "utf8"));
   if (r.valid) { console.log(`PROVENANCE OK — ${r.claims.length} lane claim(s), all cite a resolvable PR + SHA.`); process.exit(0); }
-  console.error("PROVENANCE INVALID — a bundle-completion report must cite a resolvable PR + SHA for every claimed lane:");
+  console.error("PROVENANCE INVALID — every claimed lane must cite a resolvable PR + SHA, and every AUTHORITY must resolve on disk:");
   for (const c of r.claims.filter((c) => !c.ok)) console.error(`  line ${c.n}: ${c.reasons.join("; ")}\n    > ${c.line}`);
+  for (const a of (r.authorities || []).filter((a) => !a.ok)) console.error(`  authority: ${a.reasons.join("; ")}\n    > ${a.cell}`);
   process.exit(1);
 }

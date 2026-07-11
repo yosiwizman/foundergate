@@ -55,4 +55,23 @@ check("a report with no lane claims is vacuously valid (nothing asserted)", () =
   assert.equal(validateReport("Just a note. Nothing claimed here.").valid, true);
 });
 
+// Written-Authority Law (Assembly Manual §28) — the completion table's AUTHORITY column.
+check("AUTHORITY column: a resolvable path + SHA is VALID", () => {
+  const report = `| Lane | Authority (path @ SHA) |\n| --- | --- |\n| L1 built — PR #1, SHA ${HEAD} | \`docs/ROADMAP.md\` @ \`${HEAD}\` |\n`;
+  const r = validateReport(report);
+  assert.equal(r.valid, true, `expected valid, got ${JSON.stringify(r.authorities)}`);
+});
+
+check("AUTHORITY column: a non-resolvable authority path is INVALID (phantom authority)", () => {
+  const report = `| Lane | Authority |\n| --- | --- |\n| J9 done — PR #2, SHA ${HEAD} | \`docs/nope/ghost-spec.md\` @ \`${HEAD}\` |\n`;
+  const r = validateReport(report);
+  assert.equal(r.valid, false, "an authority whose path does not resolve must be invalid");
+  assert.ok(r.authorities.some((a) => !a.ok && /does not resolve on disk/.test(a.reasons.join())), "must flag the missing authority path");
+});
+
+check("AUTHORITY 'AUTHORITY-UNRECORDED (historical)' marker is accepted (grandfathered)", () => {
+  const report = `| Lane | Authority |\n| --- | --- |\n| K3 done — PR #3, SHA ${HEAD} | AUTHORITY-UNRECORDED (historical) |\n`;
+  assert.equal(validateReport(report).valid, true);
+});
+
 console.log(`\nV8-PROVENANCE-LAW: PASS ${pass}`);

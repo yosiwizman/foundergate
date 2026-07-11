@@ -509,3 +509,28 @@ permanent requirements, both mechanically locked:
    (`scripts/start-stranger-test.mjs`) parses it against `docs/lanes/critical-path-manifest.json` and **refuses to
    start a stranger session** if any critical-path note is unwaived. Locked by
    `src/tools/critical-path-gate.selftest.mjs`.
+
+## 28. THE WRITTEN-AUTHORITY LAW — authority must resolve on disk before the work it governs (founder-mandated 2026-07-11, post-V8-A)
+
+**Every artifact that authorizes or specifies work must resolve on disk BEFORE the work it governs begins.** If a
+bundle's instructions reference an external artifact — founder mockups, specs, pasted contracts, advisor reports,
+dictated results — that artifact must **first be committed verbatim** under `docs/lanes/` or
+`docs/assembly-evidence/`, and its path (with a resolving SHA) cited in the bundle's **opening Evidence-Ledger
+row (the AUTHORITY field)**. Work started before its authority is committed is a **doctrine violation** — the same
+class as the phantom "VA-REPAIR-5" (work believed-specified that never landed on disk) and the FD design package
+(referenced but absent at audit time).
+
+**Mechanical enforcement (two guards; CI runs on full history — `.github/workflows/selftests.yml` `fetch-depth: 0`
+— so any cited SHA resolves):**
+1. **Evidence Ledger AUTHORITY field.** Every bundle row carries an `Authority (path @ SHA)` whose path exists on
+   disk and whose SHA resolves — or the honest marker `AUTHORITY-UNRECORDED (historical)` for a bundle whose
+   governing artifact was never committed (so the gap is visible forever, not papered over). Enforced by
+   `src/tools/evidence-integrity.selftest.mjs` (check 5) — CI-red on any unresolved authority.
+2. **Completion-report AUTHORITY column.** The disk-proof completion table gains an AUTHORITY column; a report
+   whose authority path/SHA does not resolve is **INVALID**, exactly like a phantom SHA. Enforced by
+   `src/tools/report-provenance.mjs` (`validateAuthorityCells`) + `report-provenance.selftest.mjs`.
+
+**Retroactive sweep (done at adoption):** every existing Evidence-Ledger row was audited; rows with a committed
+governing artifact now cite it (roadmap, lane packets, proposals, contracts, the design spec, stranger-run
+records, the Run-6 diagnosis), and rows whose authority was only a founder chat directive are marked
+`AUTHORITY-UNRECORDED (historical)`.
