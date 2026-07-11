@@ -55,7 +55,9 @@ export function claimLines(text) {
     .filter(({ line }) => {
       if (/^\s*#/.test(line)) return false;              // markdown headers scope, never claim
       if (!LANE_TOKEN.test(line)) return false;          // must name a lane token
-      const isListOrTable = /^\s*[-*|]/.test(line);      // list item or table row
+      // a REAL list bullet needs whitespace after the marker (`- x`), or a table row
+      // (`| … |`) — so a `**bold**` prose line is NOT mistaken for a bullet.
+      const isListOrTable = /^\s*([-*+]\s|\|)/.test(line);
       return isListOrTable || CLAIM_VERB.test(line);
     });
 }
