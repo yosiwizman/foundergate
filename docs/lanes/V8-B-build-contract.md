@@ -101,6 +101,15 @@ Each sensitive sub-system merges **only** when, for its path, all of the followi
   repo private, secret-clean; **no live/provider/send/payment path** present anywhere at the acceptance SHA.
 - **Founder Hand-Burden (Law 64):** starting/pausing a run, reading a queued item, or approving a wired gate needs
   **no terminal**.
+- **Soak requirement — `VB1` + `VB2` (Assembly Manual §29, HONEST-DURATION & SOAK-PROOF LAW):** the Run Launcher
+  (`VB1`) and the CTO queue (`VB2`) additionally require an **8–9-hour soak followed by a 24-hour soak** under load,
+  each producing a named `FOUNDERGATE HARNESS <N>-HOUR SOAK PASS` line with **real start/end timestamps (delta ≥ the
+  claimed hours), the exact SHA under test, monitoring evidence captured during the run, and a
+  failures/interventions log**. A soak claim whose timestamps do not span the duration is **INVALID** (mechanically
+  checked by `report-provenance` `validateSoakClaims`). **Duration up front (§29a):** the realistic range for the
+  combined VB1+VB2 program is **best 36–48h · realistic 4–7 days · defect-heavy 1–2 weeks** (absolute floor ≈ 33h of
+  soak alone); a "complete" return faster than that floor is a progress checkpoint, **not** the gate, and must say
+  what is still running (§29d). Authority: `docs/lanes/authority/akior-advisor-soak-guidance.md`.
 
 ## Substep DAG (for a future set of V8-B build bundles)
 Spine order per this contract: **Attached Projects Registry (persistent attach) → Run Launcher → CTO queue →
