@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FounderGate Mockup — 01 Dashboard (v2, founder design)</title>
+<link rel="stylesheet" href="fg.css">
+<style>
+.alive{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px;margin:18px 0 8px}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--green);box-shadow:0 0 10px 2px rgba(34,197,94,.45);flex:none}
+.alive b{color:var(--green);font-weight:800}
+.alive .wait{color:var(--amber);font-weight:800}
+.alive .demo-note{margin-left:auto;color:var(--dim);font-size:12.5px}
+.chips{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:14px 0 6px}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:flex;gap:11px;align-items:center;min-height:74px}
+.chip .ic{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex:none}
+.chip small{display:block;color:var(--dim);font-size:11.5px;font-weight:700;letter-spacing:.04em}
+.chip .v{font-weight:800;font-size:13.5px;line-height:1.25}
+.g .ic{background:rgba(34,197,94,.14)} .g .v{color:var(--green)}
+.a .ic{background:rgba(245,184,61,.14)} .a .v{color:var(--amber)}
+.b .ic{background:rgba(59,130,246,.14)} .b .v{color:var(--blue)}
+.n .ic{background:rgba(147,160,180,.12)} .n .v{color:var(--text)}
+.honesty{color:var(--dim);font-size:12.5px;margin:2px 2px 18px}
+.act{display:grid;grid-template-columns:1.05fr 1fr;gap:14px;margin-bottom:14px}
+.needs{border:2px solid var(--amber);box-shadow:0 0 0 1px rgba(245,184,61,.15)}
+.needs .plain{font-size:15px;margin-bottom:12px}
+.gatebox{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:12px}
+.gatebox b{display:block;margin-bottom:3px}
+.gatebox span{color:var(--muted);font-size:13px}
+.row{display:flex;gap:10px;align-items:center}
+.note{color:var(--dim);font-size:12.5px;margin-left:2px}
+.split{display:grid;grid-template-columns:1fr;gap:14px}
+.feed{display:flex;flex-direction:column}
+.feed .item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px;color:var(--muted)}
+.feed .item:last-child{border:0}
+.next .youline{color:var(--amber);font-weight:700}
+.quick{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:4px 0 4px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 12px;text-align:center}
+.tile .em{font-size:20px}
+.tile b{display:block;font-size:13.5px;margin-top:8px}
+.tile span{display:block;color:var(--dim);font-size:12px;margin-top:3px}
+.tile .vo{display:inline-block;margin-top:6px;font-size:10px;font-weight:800;color:var(--purple);background:rgba(167,139,250,.12);border-radius:99px;padding:1px 8px}
+</style></head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="brand">FounderGate</div>
+    <div class="nav on">🏠 Home</div>
+    <div class="nav">📦 My Project <span class="tag">V8-B</span></div>
+    <div class="nav">👁 Preview App</div>
+    <div class="nav">📁 Files</div>
+    <div class="nav">💬 Ask Guide</div>
+    <div class="nav">🚩 Decisions <span class="tag" style="color:var(--purple);border-color:rgba(167,139,250,.4)">view only</span></div>
+    <div class="nav">⚙️ Settings <span class="tag">V8-B</span></div>
+    <div class="robot">🤖<br>I'm here to help! Ask me anything about your project.<button>Ask Now</button></div>
+    <div class="demo">Demo Mode — no real data · safe to try</div>
+  </aside>
+  <main class="main">
+    <div class="head">
+      <div>
+        <div class="eyebrow">PROJECT</div>
+        <h1>Luna Café — order ahead</h1>
+        <div class="sub">A little website where people can order coffee and pastries ahead of time.</div>
+      </div>
+      <div class="right">
+        <button class="btn quiet">? Get Help</button>
+        <button class="btn primary">⏸ Pause &amp; get help</button>
+      </div>
+    </div>
+
+    <div class="alive">
+      <div class="dot"></div>
+      <div><b>Project healthy</b> — connected, all files in place. <span class="wait">Waiting on you:</span> one decision to read, then it keeps going.</div>
+      <div class="demo-note">Demo mode — no real customer data (MOCK_ONLY)</div>
+    </div>
+
+    <div class="chips">
+      <div class="chip g"><div class="ic">🟢</div><div><small>STATUS</small><div class="v">Healthy · waiting on you</div></div></div>
+      <div class="chip g"><div class="ic">✅</div><div><small>CHECKS</small><div class="v">All passing</div></div></div>
+      <div class="chip a"><div class="ic">🕐</div><div><small>DECISION</small><div class="v">Yes — 1 thing</div></div></div>
+      <div class="chip b"><div class="ic">🛡</div><div><small>SAFETY</small><div class="v">Demo — protections on</div></div></div>
+      <div class="chip n"><div class="ic">📄</div><div><small>EVIDENCE</small><div class="v">2 items · 1 stale</div></div></div>
+      <div class="chip n"><div class="ic">💲</div><div><small>SPENDING</small><div class="v">Up to $50/mo · display only</div></div></div>
+    </div>
+    <div class="honesty">the robot tests passed — this doesn't mean the product is finished.</div>
+
+    <div class="act">
+      <div class="card needs">
+        <h3>⭐ Waiting for You <span class="badge amber">Decision Needed</span></h3>
+        <div class="plain">You have <b>one thing to read</b>: the example founder gate. Nothing moves until you decide — reading it changes nothing.</div>
+        <div class="gatebox">
+          <b>Example founder gate <span style="color:var(--dim);font-weight:600">(view-only in V8-A1)</span></b>
+          <span>This card is informational only. V8-A1 shows gate state; it has no approve button (Law 55).</span>
+        </div>
+        <div class="row">
+          <button class="btn primary">Read the Decision</button>
+          <button class="btn">⏸ Pause instead</button>
+          <span class="note">💡 Nothing will happen until you decide.</span>
+        </div>
+      </div>
+      <div class="split">
+        <div class="card next">
+          <h3>🧭 What's Next</h3>
+          <div class="feed">
+            <div class="item youline">1 · You read the decision — the only thing that needs you.</div>
+            <div class="item">2 · After you decide, the project continues on its own.</div>
+            <div class="item">3 · Nothing else is scheduled to need you — when something is, it appears here.</div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>🕐 What Happened Recently</h3>
+          <div class="feed">
+            <div class="item">📝 Status changed: example gate opened.</div>
+            <div class="item">🚩 Decision pending: example founder gate (view-only).</div>
+            <div class="item">📄 Evidence: status.json <b style="color:var(--blue)">FRESH</b> · old-report.txt <b style="color:var(--amber)">STALE</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quick">
+      <div class="tile"><div class="em">👁</div><b>Try the App</b><span>Open the preview</span></div>
+      <div class="tile"><div class="em">🐞</div><b>Report a Problem</b><span>Tell us what's wrong</span></div>
+      <div class="tile"><div class="em">📁</div><b>Browse Files</b><span>See your project files</span></div>
+      <div class="tile"><div class="em">💬</div><b>Ask a Question</b><span>Get simple answers</span></div>
+      <div class="tile"><div class="em">✉️</div><b>Read the Decision</b><span>See what's waiting</span><span class="vo">view only</span></div>
+    </div>
+
+    <div class="foot">💙 You're in control. You can look around, ask questions, and decide what happens next. We're here to help!</div>
+    <div class="footnotes">
+      Good to know: green CI ≠ product works · merged ≠ usable · a screenshot ≠ disk proof · preview ≠ live · a demo ≠ production.<br>
+      Protected files (never hand-edit): <b>.foundergate/</b> — harness state · <b>docs/PANIC_CARD.md</b> — safety document. The full list lives in <b>Files</b>.
+    </div>
+  </main>
+</div>
+</body></html>

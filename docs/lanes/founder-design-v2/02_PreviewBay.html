@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FounderGate Mockup — 02 Preview Bay (founder design)</title>
+<link rel="stylesheet" href="fg.css">
+<style>
+.labels{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+.lab{font-size:12px;border:1px solid var(--line);background:var(--panel);border-radius:99px;padding:3px 10px;color:var(--muted)}
+.lab b{color:var(--text)}
+.lab.ok b{color:var(--green)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.frame{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+.cafe{background:#faf6f0;border-radius:10px;color:#2b2118;overflow:hidden}
+.cafe .bar{display:flex;align-items:center;gap:10px;padding:14px 22px;border-bottom:1px solid #e8ddcf;font-weight:800}
+.cafe .bar nav{margin-left:auto;display:flex;gap:18px;color:#8a7a63;font-weight:600;font-size:14px}
+.cafe .hero{text-align:center;padding:22px 20px 6px}
+.cafe .hero h2{font-size:24px}
+.cafe .hero p{color:#8a7a63;margin-top:4px}
+.menu{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:18px 26px}
+.mi{background:#fff;border:1px solid #eee3d3;border-radius:10px;overflow:hidden}
+.mi .ph{background:#f2e9dc;height:74px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.mi .tx{padding:11px 13px}
+.mi b{display:block;font-size:14.5px}
+.mi span{color:#8a7a63;font-size:12.5px;display:block;margin-top:2px}
+.mi .pr{color:#c2571f;font-weight:800;margin-top:6px;display:block}
+.sendrow{text-align:center;padding:6px 0 20px}
+.sendrow button{background:#c2571f;color:#fff;border:0;font-weight:800;font-size:14.5px;padding:11px 22px;border-radius:9px;cursor:pointer}
+.sendrow .refuse{color:#a3651f;font-size:13px;margin-top:9px}
+.report{margin-top:16px}
+.report textarea{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:9px;color:var(--text);padding:11px;font:inherit;min-height:64px;margin:8px 0}
+.report .hint{color:var(--dim);font-size:12.5px}
+.saved{color:var(--muted);font-size:13px;margin-top:8px}
+.runchip{margin-left:auto}
+</style></head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="brand">FounderGate</div>
+    <div class="nav">🏠 Home</div>
+    <div class="nav">📦 My Project <span class="tag">V8-B</span></div>
+    <div class="nav on">👁 Preview App</div>
+    <div class="nav">📁 Files</div>
+    <div class="nav">💬 Ask Guide</div>
+    <div class="nav">🚩 Decisions <span class="tag" style="color:var(--purple);border-color:rgba(167,139,250,.4)">view only</span></div>
+    <div class="nav">⚙️ Settings <span class="tag">V8-B</span></div>
+    <div class="robot">🤖<br>I'm here to help! Ask me anything about your project.<button>Ask Now</button></div>
+    <div class="demo">Demo Mode — no real data · safe to try</div>
+  </aside>
+  <main class="main">
+    <div class="head">
+      <div>
+        <div class="eyebrow">PREVIEW · NOT LIVE</div>
+        <h1>Preview App</h1>
+        <div class="sub">See your app run safely inside FounderGate. This is a practice copy — nothing real is sent.</div>
+      </div>
+      <div class="right"><span class="badge green runchip">● running</span><button class="btn primary">⏸ Pause &amp; get help</button></div>
+    </div>
+
+    <div class="labels">
+      <span class="lab">environment: <b>preview</b></span>
+      <span class="lab">data: <b>mock</b></span>
+      <span class="lab ok">sends: <b>off</b></span>
+      <span class="lab">payments: <b>mock</b></span>
+      <span class="lab">build: <b>mock-0000000</b></span>
+      <span class="lab">release: <b>dev</b></span>
+      <span class="lab">data class: <b>MOCK_ONLY</b></span>
+    </div>
+
+    <div class="controls">
+      <button class="btn primary">▶ Start App Preview</button>
+      <button class="btn">■ Stop</button>
+      <button class="btn">↻ Restart</button>
+      <button class="btn">⟳ Refresh</button>
+      <button class="btn">⤢ Open Full Screen</button>
+      <button class="btn" style="color:var(--amber);border-color:rgba(245,184,61,.4)">🚩 Report Problem</button>
+    </div>
+
+    <!-- DESIGN RULE: the embed grows with its content — the café's Send button
+         must be fully visible here with NO inner scrolling. -->
+    <div class="frame">
+      <div class="cafe">
+        <div class="bar">🌙 Luna Café <nav><span>Menu</span><span>Hours</span><span>Visit</span></nav></div>
+        <div class="hero"><h2>Order ahead, skip the line ☕</h2><p>Fresh coffee &amp; pastries from your neighbourhood café.</p></div>
+        <div class="menu">
+          <div class="mi"><div class="ph">☕</div><div class="tx"><b>Lavender Latte</b><span>Espresso, steamed milk, a hint of lavender.</span><span class="pr">$4.75</span></div></div>
+          <div class="mi"><div class="ph">🥐</div><div class="tx"><b>Butter Croissant</b><span>Baked fresh this morning, flaky and warm.</span><span class="pr">$3.25</span></div></div>
+          <div class="mi"><div class="ph">🍵</div><div class="tx"><b>Matcha Cloud</b><span>Stone-ground matcha with oat milk foam.</span><span class="pr">$5.00</span></div></div>
+        </div>
+        <div class="sendrow">
+          <button>Send order (practice)</button>
+          <div class="refuse">This is a practice version — it never really sends anything (no real order goes out).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card report">
+      <h3>🐞 Report a problem</h3>
+      <div class="hint">A screenshot and where you are is captured automatically. Add a note if you like.</div>
+      <textarea placeholder="e.g. the button looks funny"></textarea>
+      <div class="row" style="display:flex;gap:10px">
+        <button class="btn primary">Save report</button>
+        <button class="btn quiet">Cancel</button>
+      </div>
+      <div class="saved">Reports are saved as evidence in your project — nothing is sent anywhere.</div>
+    </div>
+  </main>
+</div>
+</body></html>
