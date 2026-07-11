@@ -70,6 +70,8 @@
 
 | 2026-07-10 | VA-FIXTURE-HARDEN | Committed-fixture writes made IMPOSSIBLE (not just caught): every server started without an explicit FG_PROJECT_ROOT now serves a throwaway temp COPY (src/tools/project-root.mjs), announced in one line; guard asserts no server default resolves inside the committed fixture | src/tools/project-root.mjs · src/tools/fixture-write-safety.selftest.mjs · src/v8a{1,2,3,4} servers | #61 | 8856d84297ddb51826aa7f62050fa613300a0be2 | Builder + CI (https://github.com/yosiwizman/foundergate/actions/runs/29137769277) | DONE |
 
+| 2026-07-11 | Run 4 + VA-REPAIR-4 | Stranger Run 4 ("Jimmy", 11) NOT PASSED (best yet, zero comprehension fails; visual-coherence findings); design-system consolidation: J0 shared tokens (src/ui/tokens.css) across all 4 apps, J1 running-state chip, J2 decision highlight, J4 File Cabinet calmed (red→purple lock; red=problem only), J5 Project label, J6 Guide warmth; VISUAL SELF-REVIEW recorded; Assembly Manual §24 (colour law) + §25 (design system) | src/ui/tokens.css · src/v8a{1,2,3,4} servers+UI · src/tools/design-consistency.selftest.mjs · docs/ASSEMBLY_MANUAL.md · docs/assembly-evidence/visual-review/ | #65,#66 | 640b70e294a59e5d5ba4679274a2ce19cbb41f2e | Builder + CI (https://github.com/yosiwizman/foundergate/actions/runs/29142446566) | DONE |
+
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their
 literal placeholder tokens, which count as UNKNOWN.
