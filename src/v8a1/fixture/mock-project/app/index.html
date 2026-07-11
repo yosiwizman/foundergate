@@ -82,6 +82,16 @@
         document.getElementById("mock-send-note").textContent =
           "This is a practice version — it never really sends anything (no real order goes out).";
       });
+      // L0 — report the café's natural content height to the Preview Bay so the embed
+      // GROWS with its content and the "Send order (practice)" button is never clipped.
+      // postMessage is intra-browser only (not a network send; sends stay off).
+      function fgPostHeight() {
+        try { parent.postMessage({ fgPreviewHeight: Math.ceil(document.documentElement.scrollHeight) }, "*"); } catch (e) {}
+      }
+      window.addEventListener("load", fgPostHeight);
+      window.addEventListener("resize", fgPostHeight);
+      if (window.ResizeObserver) new ResizeObserver(fgPostHeight).observe(document.body);
+      setTimeout(fgPostHeight, 50);
     </script>
   </body>
 </html>

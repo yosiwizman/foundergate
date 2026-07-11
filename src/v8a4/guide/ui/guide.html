@@ -1,52 +1,59 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Project Guide — FounderGate</title>
-  <link rel="stylesheet" href="tokens.css" />
-  <link rel="stylesheet" href="guide.css" />
-</head>
-<body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">FounderGate</div>
-      <nav class="nav">
-        <div class="item">Truth Dashboard</div>
-        <div class="item">Preview Bay</div>
-        <div class="item">File Cabinet</div>
-        <div class="item active">Project Guide</div>
-      </nav>
-      <div class="sidebar-spacer"></div>
-      <div class="pause-dock"><button class="pause-btn" disabled>Pause (on the dashboard)</button></div>
-    </aside>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- identity marker "Project Guide" kept for the launcher health check -->
+    <title>Project Guide — FounderGate</title>
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="guide.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="side">
+        <div class="brand">FounderGate</div>
+        <a class="nav" href="http://localhost:4173">🏠 Home</a>
+        <div class="nav">📦 My Project <span class="tag">V8-B</span></div>
+        <a class="nav" href="http://localhost:4300">👁 Preview App</a>
+        <a class="nav" href="http://localhost:4400">📁 Files</a>
+        <a class="nav on" href="#">💬 Ask Guide</a>
+        <a class="nav" href="http://localhost:4173#waiting">🚩 Decisions <span class="tag" style="color:var(--purple);border-color:rgba(167,139,250,.4)">view only</span></a>
+        <div class="nav">⚙️ Settings <span class="tag">V8-B</span></div>
+        <div class="robot">🤖<br>You're already talking to me here!</div>
+        <div class="demo">Demo Mode — no real data · safe to try</div>
+      </aside>
 
-    <main class="content">
-      <header class="welcome">
-        <h1>Project Guide</h1>
-        <p class="stage">A plain-English helper. It explains your project and drafts things for you.
-          It can only explain and draft — it never changes anything. Acting comes later.</p>
-      </header>
+      <main class="main">
+        <div class="head">
+          <div>
+            <div class="eyebrow">READ-ONLY HELPER</div>
+            <h1>Ask Guide</h1>
+            <div class="sub">A plain-English helper. It explains your project and drafts things for you — it never changes anything. Acting comes later.</div>
+          </div>
+          <div class="right">
+            <a class="btn primary" href="http://localhost:4173">⏸ Pause &amp; get help</a>
+          </div>
+        </div>
 
-      <section class="card">
-        <div class="chips" id="chips" aria-label="Things you can ask"></div>
+        <div class="chips2" id="chips" aria-label="Things you can ask"></div>
+
         <div class="chat" id="chat" data-ready="0" aria-live="polite">
           <div class="chat-welcome" id="chat-welcome">
-            <div class="robot" aria-hidden="true">🤖</div>
+            <div class="robot-em" aria-hidden="true">🤖</div>
             <p class="hi">Hi! I'm your Project Guide.</p>
             <p>Ask me anything in plain English — I'll answer clearly and show you where I got the answer. Tap a
               question above, or type your own. I can only explain and draft — I never change anything.</p>
           </div>
         </div>
+
         <form class="ask" id="ask">
-          <input id="q" autocomplete="off" placeholder="Ask about your project — e.g. “what's blocked?”" />
-          <button type="submit" id="send">Ask</button>
+          <input id="q" autocomplete="off" placeholder="Ask about your project — e.g. &ldquo;what's blocked?&rdquo;" />
+          <button type="submit" id="send" class="btn primary">Ask</button>
         </form>
-        <p class="hint">Read-only. The Guide reads your project through the File Cabinet, so anything protected
-          stays hidden — it can’t show a secret even if you ask.</p>
-      </section>
-    </main>
-  </div>
-  <script src="guide.js"></script>
-</body>
+        <p class="legal">Read-only. The Guide reads your project through the File Cabinet, so anything protected
+          stays hidden — it can't show a secret even if you ask.</p>
+      </main>
+    </div>
+    <script src="guide.js"></script>
+  </body>
 </html>

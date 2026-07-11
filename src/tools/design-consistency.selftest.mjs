@@ -30,8 +30,9 @@ console.log("== design-consistency guard (J0) ==");
 check("the shared design-token stylesheet exists with the palette + components", () => {
   assert.ok(existsSync(join(REPO, "src", "ui", "tokens.css")), "missing src/ui/tokens.css");
   const t = R("src/ui/tokens.css");
-  assert.match(t, /--bg:\s*#0f1216/, "tokens must define the shared dark --bg");
-  for (const comp of [".fg-card", ".fg-badge", ".fg-chip", ".fg-btn"]) assert.ok(t.includes(comp), `tokens must define ${comp}`);
+  assert.match(t, /--bg:\s*#0d1117/, "tokens must define the shared dark --bg (v2 founder palette)");
+  // v2 shared design language (founder fg.css) + legacy components both present.
+  for (const comp of [".shell", ".side", ".nav", ".card", ".btn", ".badge"]) assert.ok(t.includes(comp), `tokens must define v2 component ${comp}`);
 });
 
 check("every app HTML loads the shared tokens.css", () => {
@@ -50,7 +51,7 @@ check("every app server serves tokens.css (allowlisted + shared path)", () => {
 check("every app CSS uses the shared palette (visual kinship) — no divergent light theme", () => {
   for (const a of APPS) {
     const c = R(a.css);
-    for (const v of ["var(--bg)", "var(--panel)", "var(--accent)"]) assert.ok(c.includes(v), `${a.name} CSS must use ${v} (kinship)`);
+    for (const v of ["var(--panel)", "var(--line)", "var(--text)"]) assert.ok(c.includes(v), `${a.name} CSS must use ${v} (kinship)`);
     // no app may re-declare a divergent LIGHT background in its DEFAULT :root (that
     // caused the divergence). A theme-aware :root[data-theme="light"] variant is fine.
     assert.doesNotMatch(c, /:root\s*\{[^}]*--bg:\s*#(?:f5f6f8|fff\b)/i, `${a.name} must not set a light --bg in the default :root (inherit the shared dark tokens)`);

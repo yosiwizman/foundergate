@@ -1,49 +1,42 @@
-/* Palette + components come from the shared design system (tokens.css). Layout-only
-   here, so the Project Guide matches its siblings (VA-REPAIR-4 / J0 + J6). */
-.app{display:grid;grid-template-columns:244px 1fr;min-height:100vh}
-.sidebar{background:var(--sidebar);color:var(--sidebar-text);display:flex;flex-direction:column;padding:20px 14px;gap:4px;height:100vh;position:sticky;top:0}
-.brand{font-weight:800;color:#fff;font-size:18px;padding:6px 10px 18px}
-.nav{display:flex;flex-direction:column;gap:2px}.nav .item{padding:8px 10px;border-radius:8px;color:#cdd4df;font-size:13.5px;cursor:default}
-.nav .item.active{background:var(--accent);color:#fff}
-.sidebar-spacer{flex:1}.pause-dock{border-top:1px solid rgba(255,255,255,.08);padding-top:12px}
-.pause-btn{width:100%;font-size:12.5px;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#e7ebf1;text-align:left;cursor:not-allowed;opacity:.7}
-.content{padding:16px 20px 28px;max-width:860px}
-.welcome h1{font-size:19px;margin:0}.stage{margin:3px 0 12px;font-size:12.5px;color:var(--muted);max-width:640px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+/* FounderGate V8-A4 — Project Guide page layout (FD-IMPLEMENT, founder design v2).
+   Shared shell/side/nav/head/btn come from tokens.css; this file styles the chat.
+   Reskin only — zero behaviour change. Palette via var(--panel)/var(--line)/var(--text). */
 
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
-.chip{font-size:12.5px;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--text);cursor:pointer}
-.chip:hover{border-color:var(--accent);color:var(--accent)}
+/* suggested-question chips (JS renders button.chip into #chips) */
+.chips2 { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 16px; }
+#chips .chip { background: var(--panel); border: 1px solid var(--line); border-radius: 99px; padding: 7px 14px; font: inherit; font-size: 13px; color: var(--text); font-weight: 600; cursor: pointer; }
+#chips .chip:hover { border-color: var(--blue); }
 
-/* J6 — a warm welcome so the empty chat isn't dull; hidden once a reply arrives. */
-.chat{display:flex;flex-direction:column;gap:10px;min-height:200px;margin-bottom:12px}
-.chat-welcome{align-self:center;text-align:center;color:var(--muted);margin:auto;max-width:420px}
-.chat-welcome .robot{font-size:34px}
-.chat-welcome .hi{color:var(--text);font-weight:600;font-size:15px;margin:8px 0 4px}
-.chat[data-ready="1"] .chat-welcome{display:none}
-.msg{max-width:88%;padding:10px 13px;border-radius:12px;font-size:13.5px;white-space:pre-wrap;overflow-wrap:anywhere}
-.msg.me{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:4px}
-.msg.guide{align-self:flex-start;background:var(--bg);border:1px solid var(--line);border-bottom-left-radius:4px}
-.msg.guide.blocked{background:rgba(122,75,214,.08);border-color:rgba(122,75,214,.3)}
-.msg.guide.refusal{background:rgba(178,106,0,.08);border-color:rgba(178,106,0,.35)}
+/* chat panel + bubbles (JS renders .msg.me and .msg.guide) */
+.chat { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: flex; flex-direction: column; gap: 14px; min-height: 320px; }
+.chat-welcome { color: var(--muted); text-align: center; padding: 22px 10px; }
+.chat-welcome .robot-em { font-size: 30px; }
+.chat-welcome .hi { color: var(--text); font-weight: 800; font-size: 16px; margin: 6px 0 6px; }
+.msg { max-width: 78%; }
+.msg.me { align-self: flex-end; background: var(--blue); color: #fff; border-radius: 14px 14px 4px 14px; padding: 10px 15px; font-weight: 600; }
+.msg.guide { align-self: flex-start; background: var(--panel2); border: 1px solid var(--line); border-radius: 14px 14px 14px 4px; padding: 12px 16px; }
+.msg.guide.refusal { border-color: rgba(245,184,61,.4); }
+.msg.guide.blocked { border-color: var(--lock); }
+.msg .text { color: var(--text); }
+.msg .badge { margin-left: 8px; font-size: 10px; font-weight: 800; border-radius: 99px; padding: 1px 8px; }
+.msg .badge.ok { background: rgba(34,197,94,.13); color: var(--green); }
+.msg .badge.lock { background: rgba(167,139,250,.14); color: var(--purple); }
 
-.cite{margin-top:7px;font-size:11px;color:var(--muted)}
-.cite b{color:var(--text);font-weight:600}
-.badge{display:inline-block;font-size:10.5px;padding:1px 7px;border-radius:6px;background:var(--panel);border:1px solid var(--line);color:var(--muted);margin-left:6px}
-.badge.lock{color:var(--lock);border-color:rgba(122,75,214,.4)}
-.badge.ok{color:var(--ok);border-color:rgba(31,157,85,.4)}
+/* verbatim file excerpt — shown exactly, never executed */
+.quote { margin-top: 10px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.quote .qhead { padding: 6px 12px; font-size: 12px; color: var(--dim); border-bottom: 1px solid var(--line); }
+.quote pre { padding: 12px 14px; font: 13px/1.6 ui-monospace, Menlo, monospace; color: var(--muted); white-space: pre-wrap; }
 
-.quote{margin-top:8px;border:1px dashed var(--line);border-radius:8px;background:var(--panel)}
-.quote .qhead{font-size:11px;color:var(--muted);padding:6px 10px;border-bottom:1px dashed var(--line)}
-.quote pre{margin:0;padding:10px;max-height:220px;overflow:auto;font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+/* draft card — copyable, never sent (JS renders .draft > .dhead + pre) */
+.draft { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; margin-top: 10px; }
+.draft .dhead { display: flex; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--line); font-size: 12px; color: var(--dim); }
+.draft .dhead .copy { margin-left: auto; background: var(--panel); border: 1px solid var(--line); color: var(--text); border-radius: 7px; padding: 4px 10px; font-size: 12px; cursor: pointer; }
+.draft pre { padding: 12px 14px; font: 13px/1.7 ui-monospace, Menlo, monospace; color: var(--text); white-space: pre-wrap; }
 
-.draft{margin-top:8px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
-.draft .dhead{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted);padding:7px 10px;border-bottom:1px solid var(--line)}
-.draft pre{margin:0;padding:10px;font:12.5px/1.5 ui-monospace,Menlo,monospace;white-space:pre-wrap}
-.copy{font-size:11.5px;padding:4px 9px;border-radius:7px;border:1px solid var(--line);background:var(--bg);color:var(--text);cursor:pointer}
-.copy:hover{border-color:var(--accent);color:var(--accent)}
+/* citation / source line (honest sourcing) */
+.cite { margin-top: 8px; font-size: 12px; color: var(--dim); }
+.cite b { color: var(--muted); }
 
-.ask{display:flex;gap:8px}
-.ask input{flex:1;font-size:14px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--text)}
-.ask button{font-size:13.5px;padding:10px 16px;border-radius:10px;border:0;background:var(--accent);color:#fff;cursor:pointer}
-.hint{font-size:12px;color:var(--muted);margin:10px 0 0}
+.ask { display: flex; gap: 10px; margin-top: 14px; }
+.ask input { flex: 1; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; color: var(--text); padding: 12px 14px; font: inherit; }
+.legal { color: var(--dim); font-size: 12.5px; margin-top: 10px; }

@@ -164,8 +164,24 @@ $("show-blocked-btn").addEventListener("click", () => {
 });
 $("pause-button").addEventListener("click", () => { $("pause-button").textContent = "✓ Paused — help is on the way"; });
 
+// Do-not-touch banner — the FULL list, relocated from the dashboard. Built from the
+// server's read-only locks list (Law 54); DOM-built (no innerHTML) for safety.
+function renderDoNotTouch(list) {
+  const el = document.getElementById("dnt-list");
+  if (!el) return;
+  el.textContent = "";
+  if (!list || !list.length) { el.textContent = "none recorded — the harness will list protected files here."; return; }
+  list.forEach((d, i) => {
+    if (i) el.append(" · ");
+    const b = document.createElement("b"); b.textContent = d.path;
+    el.append(b, document.createTextNode(` — ${d.reason}`));
+  });
+  el.append(document.createTextNode(" They keep your project safe."));
+}
+
 (async () => {
   state.tree = await api("/api/cabinet/tree");
+  renderDoNotTouch(state.tree.doNotTouch);
   render();
   document.body.dataset.rendered = "true";
 })();

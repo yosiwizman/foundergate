@@ -212,15 +212,66 @@ export function buildView(model) {
     }
   }
   const sc0 = stateChip();
-  const stateIcon = { ok: "🟢", caution: "🟡", attention: "🔴", unknown: "⚪" }[sc0.tone] || "⚪";
+
+  // FD-IMPLEMENT (founder design): the ALIVE line + STATUS chip lead with HEALTH,
+  // not run_state. Law 54: the green light means health/connection (files-found +
+  // server-connected) — the diagnosis proved a green run-state is impossible on the
+  // fixture. If health fails, the dot goes red with honest wording; never invented.
+  const presenceVals = m.presence ? Object.values(m.presence) : [];
+  const presentCount = presenceVals.filter(Boolean).length;
+  const totalCount = presenceVals.length || 10;
+  const coreHealthy = !!(m.connected && m.presence && m.presence.project && m.presence.status);
+  const allPresent = !!(m.connected && totalCount > 0 && presentCount === totalCount);
+  const healthTone = !m.connected ? "attention" : (coreHealthy ? "ok" : "attention");
+  const healthWord = !m.connected ? "Not connected" : (coreHealthy ? "Healthy" : "Check files");
+  const alive = {
+    healthy: coreHealthy, allPresent, tone: healthTone, dot: healthTone,
+    text: !m.connected ? "Not connected to a project yet — I can't see this project."
+      : allPresent ? "Project healthy — connected, all files in place."
+      : coreHealthy ? `Project connected — ${presentCount} of ${totalCount} project files found.`
+      : "Some core project files are missing — I can't fully read this project yet.",
+    waitLabel: hasPendingDecision ? "Waiting on you:" : null,
+    waitCont: hasPendingDecision ? "one decision to read, then it keeps going." : "nothing needs you right now.",
+    demoNote: dataChip(m.dataClass || UNKNOWN),
+  };
+  const stateIcon = { ok: "🟢", caution: "🟡", attention: "🔴", unknown: "⚪" }[healthTone] || "⚪";
   const statusStrip = [
-    { key: "state", name: "Status", icon: stateIcon, answer: "state", value: sc0.value, tone: sc0.tone },
+    // STATUS chip = health + state combined. Green when HEALTHY (not when run_state
+    // is active); the state stays honest in the text (e.g. "· waiting on you").
+    { key: "state", name: "Status", icon: stateIcon, answer: "state",
+      value: m.connected ? `${healthWord} · ${sc0.value.toLowerCase()}` : healthWord, tone: healthTone },
     { key: "checks", name: "Checks", icon: "✅", answer: 0, value: badge(m.ci).text === "passing" ? "All passing" : badge(m.ci).text, tone: m.ci === "passing" ? "ok" : "unknown", note: badge(m.ci).hint },
-    { key: "decision", name: "Decision", icon: "🕐", answer: 1, value: chip(1).label, tone: chip(1).tone },
+    // A waiting decision is ATTENTION (amber), never a red PROBLEM (colour law).
+    { key: "decision", name: "Decision", icon: "🕐", answer: 1, value: chip(1).label, tone: hasPendingDecision ? "caution" : chip(1).tone },
     { key: "safety", name: "Safety", icon: "🛡️", answer: 2, value: safetyChip, tone: "info" },
-    { key: "evidence", name: "Evidence", icon: "📄", answer: 7, value: chip(7).label, tone: chip(7).tone },
-    { key: "spending", name: "Spending", icon: "💲", answer: 4, value: (m.cost && m.cost !== UNKNOWN) ? `up to $${m.cost.monthly_limit_usd}/mo` : UNKNOWN, tone: "caution" },
+    // EVIDENCE is a neutral count (staleness stated in the text) — as drawn.
+    { key: "evidence", name: "Evidence", icon: "📄", answer: 7, value: evid.length ? (staleN ? `${evid.length} items · ${staleN} stale` : `${evid.length} items`) : UNKNOWN, tone: "unknown" },
+    // SPENDING carries the relocated "display only" disclosure inline (old accordion).
+    { key: "spending", name: "Spending", icon: "💲", answer: 4, value: (m.cost && m.cost !== UNKNOWN) ? `Up to $${m.cost.monthly_limit_usd}/mo · display only` : UNKNOWN, tone: "unknown" },
   ];
+
+  // What's Next — derived ONLY from pending gates + next_action. Honest absence
+  // wording; NO schedules or invented times (Law 54).
+  const whatsNext = hasPendingDecision
+    ? [ { n: 1, you: true, text: "You read the decision — the only thing that needs you." },
+        { n: 2, you: false, text: "After you decide, the project continues on its own." },
+        { n: 3, you: false, text: "Nothing else is scheduled to need you — when something is, it appears here." } ]
+    : [ { n: 1, you: false, text: "Nothing needs you right now." },
+        { n: 2, you: false, text: "When something needs a decision, it appears here." } ];
+
+  // Footnotes strip (small, dim, always visible) — the relocated Layer-3 content now
+  // that the accordions are DELETED: the "good to know" failure-mode reminders, a
+  // one-line do-not-touch summary (full list in the File Cabinet), and the four A1
+  // honesty translations that aren't already on the honesty line / waiting badge.
+  const gtk = [FAILURE_MODES[0], FAILURE_MODES[1], FAILURE_MODES[7], FAILURE_MODES[3], FAILURE_MODES[8]];
+  const dntTop = (m.doNotTouch || []).slice(0, 2).map((d) => `${d.path} — ${d.reason}`);
+  const footnotes = {
+    goodToKnow: gtk,
+    protected: (m.doNotTouch && m.doNotTouch.length)
+      ? `Protected files (never hand-edit): ${dntTop.join(" · ")}. The full list lives in Files.`
+      : "Protected files: none recorded. The full list lives in Files.",
+    record: `For the record: ${dataChip(m.dataClass || UNKNOWN)} · ${statePlain(m.state || UNKNOWN)} · ${prDisplay(m.pr)}`,
+  };
   // Honest companions restored from the A1 copy-polish translations (relocated into
   // the friendly layout, never deleted — anti-repeat law). All model-derived.
   const honesty = {
@@ -258,6 +309,9 @@ export function buildView(model) {
     statusLabel: "Project Status",
     stateToken: m.state || UNKNOWN,
     statePretty: m.state === "active" ? "Running (Preview)" : (statePlain(m.state || UNKNOWN)),
+    alive,
+    whatsNext,
+    footnotes,
     statusStrip,
     waiting: {
       title: hasPendingDecision ? "Waiting for You" : "Nothing Waiting",
@@ -444,6 +498,10 @@ export function visibleStrings(view) {
     push(h.hi, h.subtitle, h.summary, h.statusLabel, h.statePretty, h.footer, h.demo, h.robot.line, h.robot.button);
     if (h.identity) push(h.identity.name, h.identity.description, h.identity.summary);
     push(h.nextNote);
+    // FD: alive line, What's Next, footnotes strip (all always-visible copy).
+    if (h.alive) push(h.alive.text, h.alive.waitLabel, h.alive.waitCont, h.alive.demoNote);
+    if (h.whatsNext) h.whatsNext.forEach((w) => push(w.text));
+    if (h.footnotes) push(...(h.footnotes.goodToKnow || []), h.footnotes.protected, h.footnotes.record);
     h.statusStrip.forEach((c) => push(c.name, c.value));
     push(h.waiting.title, h.waiting.lead, h.waiting.gateTitle, h.waiting.gateDesc, h.waiting.buttonLabel, h.waiting.note);
     h.activity.forEach((a) => push(a.text));

@@ -24,6 +24,17 @@ const MIME = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=u
 const SAFE_FILES = new Set(["filecabinet.html", "filecabinet.js", "filecabinet.css", "tokens.css"]);
 const jsonRes = (res, code, obj) => { res.writeHead(code, { "content-type": MIME[".json"] }); res.end(JSON.stringify(obj)); };
 
+// Read-only do-not-touch list (relocated from the dashboard; the FULL list lives here).
+// Reads .foundergate/locks.json only — never writes, never decides file access.
+function readDoNotTouch(projectRoot) {
+  try {
+    const p = join(projectRoot, ".foundergate", "locks.json");
+    if (!existsSync(p)) return [];
+    const j = JSON.parse(readFileSync(p, "utf8"));
+    return Array.isArray(j.locks) ? j.locks.map((l) => ({ path: l.path, reason: l.reason })) : [];
+  } catch { return []; }
+}
+
 export function createCabinetServer(projectRoot) {
   if (!projectRoot) projectRoot = defaultProjectRoot(false); // read-only, but never the committed fixture by default
   const rules = loadRules(projectRoot);
@@ -31,7 +42,7 @@ export function createCabinetServer(projectRoot) {
     const u = new URL(req.url, "http://127.0.0.1");
     const path = u.pathname;
 
-    if (path === "/api/cabinet/tree") return jsonRes(res, 200, buildTree(projectRoot, rules));
+    if (path === "/api/cabinet/tree") return jsonRes(res, 200, { ...buildTree(projectRoot, rules), doNotTouch: readDoNotTouch(projectRoot) });
 
     if (path === "/api/cabinet/file") {
       const rel = u.searchParams.get("path") || "";

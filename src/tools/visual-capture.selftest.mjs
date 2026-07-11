@@ -38,11 +38,21 @@ check("(1) VIEWPORT TRUTH — asserts reported innerWidth/innerHeight == request
   assert.ok(/viewport mismatch/i.test(SRC), "must fail loudly on a viewport mismatch");
 });
 
-check("(2) IN-EMBED CAPTURE — opens the café url at the embed height and measures the Send", () => {
+check("(2) IN-EMBED CAPTURE — reads the live grown frame and asserts the café Send is not clipped", () => {
   assert.ok(/api\/preview\/status/.test(SRC), "must read the embed (café) url from the preview status api");
-  assert.ok(/EMBED_H/.test(SRC) && /#preview-frame/.test(SRC), "must derive the embed's fixed height from the real CSS (#preview-frame)");
+  assert.ok(/#preview-frame/.test(SRC) && /getBoundingClientRect/.test(SRC), "must read the LIVE preview frame height");
   assert.ok(/#mock-send/.test(SRC), "must locate the café primary action (Send) inside the embed");
-  assert.ok(/withinFrame/.test(SRC) && /CLIPPED/.test(SRC), "must assert the Send is within the frame and fail on a clip");
+  assert.ok(/embed\.frameH >= send\.bottom/.test(SRC) && /CLIPPED/.test(SRC), "must assert the grown frame is tall enough to show Send and fail on a clip (L0)");
+});
+
+check("(L0) the preview embed has NO fixed pixel height — it grows with content", () => {
+  const css = readFileSync(join(REPO, "src", "v8a2", "preview", "ui", "preview-bay.css"), "utf8");
+  const rule = (css.match(/#preview-frame\s*\{([^}]*)\}/) || [])[1] || "";
+  assert.ok(rule, "#preview-frame rule must exist");
+  assert.doesNotMatch(rule, /(^|[^-])height:\s*\d+px/, "the embed must NOT set a fixed height (min-height only) — it grows to content");
+  assert.match(rule, /min-height/, "the embed should carry a min-height floor");
+  const js = readFileSync(join(REPO, "src", "v8a2", "preview", "ui", "preview-bay.js"), "utf8");
+  assert.match(js, /fgPreviewHeight/, "preview-bay.js must size the embed from the café's posted height (grows with content)");
 });
 
 check("captures against a THROWAWAY fixture copy (never the committed fixture)", () => {

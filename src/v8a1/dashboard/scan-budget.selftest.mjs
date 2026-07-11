@@ -54,16 +54,30 @@ check("the fixture check-in is scannable (a mix of tones, not one grey wall)", (
   assert.ok(items.some((i) => i.chip.tone === "attention"), "a blocked/waiting fixture must surface an attention chip");
 });
 
-check("render wires the machine-checkable markers (role, aria-label, data-answer, chip)", () => {
-  for (const marker of ['setAttribute("role", "group")', 'setAttribute("aria-label"', 'data-answer', 'qchip ${c.tone}']) {
+// RELOCATED (FD-IMPLEMENT): the founder design condenses the eight prose answers into
+// SIX colour-coded status chips + an alive line. The scan-at-a-glance guarantee moves
+// onto those chips. OLD: 8 qchip cards with role/aria-label/data-answer + .qchip.<tone>
+// CSS. NEW: the render marks each of the 6 status chips (role/aria-label/data-answer)
+// and colours them by tone via TONE_CLASS; the CSS carries a distinct colour per tone.
+check("render wires machine-checkable markers on the scannable status chips", () => {
+  for (const marker of ['setAttribute("role", "group")', 'setAttribute("aria-label"', 'data-answer', 'TONE_CLASS[c.tone]']) {
     assert.ok(APPJS.includes(marker), `app.js must render marker: ${marker}`);
   }
 });
 
-check("each tone has a distinct colour treatment (chip + left accent)", () => {
-  for (const tone of TONES) {
-    assert.ok(CSS.includes(`.qchip.${tone}`), `styles.css missing colour for tone .qchip.${tone}`);
+check("each chip tone has a distinct colour treatment in the CSS (green/amber/blue/neutral/red)", () => {
+  for (const cls of [".g .ic", ".a .ic", ".b .ic", ".n .ic", ".r .ic"]) {
+    assert.ok(CSS.includes(cls), `styles.css missing chip colour ${cls}`);
   }
+});
+
+check("the ALIVE line + What's Next + footnotes are present in the render (relocated Layer-3)", () => {
+  for (const id of ['"alive-text"', '"alive-dot"', '"whatsnext"', '"fn-good"', '"fn-protected"', '"fn-record"']) {
+    assert.ok(APPJS.includes(id), `app.js must populate ${id}`);
+  }
+  // NO accordions: the dashboard must not reintroduce <details> disclosure.
+  const html = readFileSync(join(HERE, "index.html"), "utf8");
+  assert.ok(!/<details/i.test(html), "the dashboard must have NO accordions (<details> deleted)");
 });
 
 console.log(`\nV8A1-SCAN-BUDGET-SELFTEST: PASS ${pass}`);

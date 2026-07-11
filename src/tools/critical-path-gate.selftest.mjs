@@ -39,10 +39,13 @@ check("EVERY parked note references a real manifest stepKey (no orphan notes)", 
   for (const n of parked.notes) assert.ok(keys.has(n.stepKey), `parked note "${n.id}" has unknown stepKey "${n.stepKey}"`);
 });
 
-check("the gate FIRES on the current product (L0 parked on step 2 blocks a session)", () => {
+check("the live register is CLEAR (L0 resolved in FD-IMPLEMENT) — no critical-path blocker now", () => {
+  // L0 was the live blocker; FD-IMPLEMENT fixed it (the embed grows with content), so
+  // the register is clear and the launcher may start a session again.
   const blockers = criticalPathBlockers(manifest, parked);
-  assert.ok(blockers.length >= 1, "expected the live L0 parked note to block a stranger session");
-  assert.ok(blockers.some((b) => b.id === "L0-preview-send-clipped"), "L0 must be among the blockers");
+  assert.equal(blockers.length, 0, `expected a clear register, got blockers: ${blockers.map((b) => b.id).join(", ")}`);
+  // the resolution is recorded, not silently dropped.
+  assert.ok(Array.isArray(parked.resolved) && parked.resolved.some((r) => r.id === "L0-preview-send-clipped"), "L0 resolution must be recorded in parked-notes.resolved");
 });
 
 check("a WAIVED note does not block; a note on a NON-critical step does not block", () => {

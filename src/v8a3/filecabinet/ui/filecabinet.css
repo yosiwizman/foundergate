@@ -1,77 +1,68 @@
-/* Palette + components come from the shared design system (tokens.css). Layout-only
-   here, so the File Cabinet matches its siblings (VA-REPAIR-4 / J0). Protected/blocked
-   files use the CALM LOCK treatment (purple), never a red danger-wall — red is
-   reserved for a genuine problem (J4). */
-.app{display:grid;grid-template-columns:244px 1fr;min-height:100vh}
-.sidebar{background:var(--sidebar);color:var(--sidebar-text);display:flex;flex-direction:column;padding:20px 14px;gap:4px;height:100vh;position:sticky;top:0}
-.brand{font-weight:800;color:#fff;font-size:18px;padding:6px 10px 18px}
-.nav{display:flex;flex-direction:column;gap:2px}.nav .item{padding:8px 10px;border-radius:8px;color:#cdd4df;font-size:13.5px;cursor:default}
-.nav .item.active{background:var(--accent);color:#fff}
-.sidebar-spacer{flex:1}.pause-dock{border-top:1px solid rgba(255,255,255,.08);padding-top:12px}
-.pause-btn{width:100%;font-size:12.5px;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#e7ebf1;text-align:left;cursor:pointer}
-.content{padding:16px 20px 28px;max-width:1040px}
-.welcome h1{font-size:19px;margin:0}.stage{margin:3px 0 12px;font-size:12px;color:var(--muted)}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
-/* L3 — toolbar: view toggle · sort · search · blocked filter */
-.cabinet-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:8px}
-.view-toggle{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.vt-btn{font:inherit;font-size:12.5px;padding:8px 12px;border:0;background:var(--panel);color:var(--muted);cursor:pointer}
-.vt-btn.active{background:var(--accent);color:#fff}
-.ctl{font-size:12.5px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
-.ctl select{font:inherit;font-size:12.5px;padding:7px 8px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--text)}
-.search-box{flex:1;min-width:160px;font:inherit;font-size:13px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--text)}
+/* FounderGate V8-A3 — File Cabinet page layout (FD-IMPLEMENT, founder design v2).
+   Shared shell/side/nav/head/btn/badge come from tokens.css; this file is page layout.
+   Protected/blocked files use the CALM purple lock (var(--lock)) — never red (colour
+   law). Palette via var(--panel)/var(--line)/var(--text). */
 
-/* L3 — view layouts. LIST: balanced tree + preview. READING (gallery): the preview
-   pane DOMINATES with large readable text; the file list is a compact side strip. */
-.cabinet{display:grid;gap:12px;align-items:start}
-.cabinet.view-list{grid-template-columns:1.15fr 1.25fr}
-.cabinet.view-gallery{grid-template-columns:300px 1fr}
-.cabinet.view-gallery .tree{max-height:78vh;overflow:auto}
-.cabinet.view-gallery .viewer{min-height:560px}
-.cabinet.view-gallery .viewer-body{max-height:none;min-height:520px;font-size:14.5px;line-height:1.65;padding:18px}
-@media (max-width:820px){ .cabinet.view-list,.cabinet.view-gallery{grid-template-columns:1fr} }
-.catgroup.flat{display:flex;flex-direction:column;gap:1px}
+.robot-link { display: block; margin-top: 10px; background: var(--blue); color: #fff; font-weight: 700; padding: 9px; border-radius: 8px; font-size: 13px; text-decoration: none; }
 
+/* do-not-touch banner (relocated from the dashboard) — calm purple, not alarming */
+.protect { border: 1px solid rgba(167,139,250,.45); background: rgba(167,139,250,.07); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 14px; font-size: 13.5px; }
+.protect b { color: var(--purple); }
+.protect #dnt-list { color: var(--muted); }
+.protect #dnt-list b { color: var(--text); font-weight: 700; }
+
+/* toolbar: view toggle · sort · search · filter */
+.toolbar { display: flex; gap: 10px; align-items: center; margin: 6px 0 14px; flex-wrap: wrap; }
+.seg { display: flex; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
+.seg button { background: var(--panel); border: 0; color: var(--muted); font-weight: 700; font-size: 13px; padding: 8px 14px; cursor: pointer; }
+.seg button.on { background: var(--blue); color: #fff; }
+.sortlabel { color: var(--dim); font-size: 13px; }
+#sort-select { background: var(--panel); border: 1px solid var(--line); border-radius: 9px; color: var(--text); padding: 8px 12px; font: inherit; font-size: 13.5px; }
+.search { flex: 1; min-width: 220px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; color: var(--text); padding: 8px 12px; font: inherit; font-size: 13.5px; }
+.filterbtn { border: 1px solid rgba(167,139,250,.5); color: var(--purple); background: transparent; border-radius: 9px; font-weight: 700; font-size: 13px; padding: 8px 14px; cursor: pointer; }
+.filterbtn[aria-pressed="true"] { background: var(--lock); color: #fff; }
+
+/* cabinet grid — LIST: compact list + reader; READING (gallery): reader dominates */
+.cabinet { display: grid; gap: 14px; align-items: start; }
+.cabinet.view-list { grid-template-columns: 300px 1fr; }
+.cabinet.view-gallery { grid-template-columns: 260px 1fr; }
+.cabinet.view-gallery .tree { max-height: 80vh; overflow: auto; }
+.cabinet.view-gallery .viewer-body { max-height: none; min-height: 520px; font-size: 15px; line-height: 1.8; padding: 22px 26px; }
+@media (max-width: 860px) { .cabinet.view-list, .cabinet.view-gallery { grid-template-columns: 1fr; } }
+
+.tree { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 8px; max-height: 560px; overflow: auto; }
+.cathead { display: flex; align-items: center; gap: 6px; width: 100%; font-size: 11px; font-weight: 800; color: var(--dim); text-transform: uppercase; letter-spacing: .06em; margin: 10px 4px 4px; background: none; border: 0; cursor: pointer; padding: 4px; text-align: left; }
+.cathead:first-child { margin-top: 4px; }
+.cathead .caret { font-size: 10px; }
+.cathead .count { margin-left: auto; font-weight: 700; color: var(--muted); }
+
+.filerow { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+.filerow:hover { background: var(--panel2); }
+.filerow.locked { cursor: default; }
+.fileleft { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.filename { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* (d) dim the shared path prefix, keep the distinctive tail bright */
-.path-prefix{color:var(--muted);opacity:.75}
-.path-tail{color:var(--text);font-weight:600}
-.filerow.blocked .path-tail{color:var(--lock)}
-.cathead{display:flex;align-items:center;gap:6px;width:100%;font-size:12px;font-weight:700;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.05em;margin:12px 0 4px;background:none;border:0;cursor:pointer;padding:2px 4px;text-align:left}
-.cathead:first-child{margin-top:0}
-.cathead .caret{font-size:10px}
-.cathead .count{margin-left:auto;font-weight:600;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:0 7px;text-transform:none}
-/* Filter toolbar — one-click jump to protected/blocked files. */
-.tree-panel{display:flex;flex-direction:column}
-.tree-tools{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px}
-.filter-btn{font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:8px;border:1px solid var(--lock);
-  background:var(--lock-tint);color:var(--lock);cursor:pointer}
-.filter-btn:hover{background:rgba(183,155,240,.20)}
-.filter-btn[aria-pressed="true"]{background:var(--lock);color:#fff}
-.tree-tools-hint{font-size:11.5px;color:var(--muted)}
-.filerow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;border-radius:8px;cursor:pointer}
-.filerow:hover{background:var(--bg)}
-.filerow.locked{cursor:not-allowed;opacity:.85}
-.fileleft{display:flex;align-items:center;gap:6px;min-width:0}
-.filename{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-/* Blocked rows: a CALM, distinct lock treatment (purple rail + lock glyph) —
-   clearly not the quiet safe rows, spottable without reading a word, but not scary
-   (J4: red is reserved for a genuine problem). */
-.row-lock{color:var(--lock);font-size:12.5px;line-height:1;flex:0 0 auto}
-.filerow.blocked{background:var(--lock-tint);border-left:3px solid var(--lock);padding-left:6px}
-.filerow.blocked:hover{background:rgba(183,155,240,.20)}
-.filerow.blocked .filename{font-weight:600;color:var(--lock)}
-.badge{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:6px;background:var(--bg);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
-.badge.ok{color:var(--ok);border-color:rgba(31,157,85,.4)}
-.badge.warn{color:var(--warn);border-color:rgba(178,106,0,.4)}
-.badge.lock{color:var(--lock);border-color:rgba(122,75,214,.4)}
-/* Blocked badge: the calm lock treatment (purple), bold enough to spot at a glance. */
-.badge.blocked{color:#fff;background:var(--lock);border-color:var(--lock);font-weight:700}
-.viewer{min-height:320px}
-.viewer-empty{color:var(--muted);padding:30px;text-align:center}
-.viewer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
-.viewer-actions{display:flex;gap:6px}
-.btn{font-size:12.5px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer}
-.viewer-body{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px;max-height:360px;overflow:auto;white-space:pre-wrap;font:12px/1.5 ui-monospace,Menlo,monospace}
-.viewer-blocked{background:var(--lock-tint);border:1px solid var(--lock);border-radius:8px;padding:16px;color:var(--lock)}
-.hint{font-size:12px;color:var(--muted)}
+.path-prefix { color: var(--muted); }
+.path-tail { color: var(--text); font-weight: 600; }
+
+/* calm purple lock for protected/blocked rows — NOT red (colour law) */
+.row-lock { color: var(--lock); font-size: 12.5px; line-height: 1; flex: 0 0 auto; }
+.filerow.blocked { background: rgba(167,139,250,.07); border-left: 3px solid var(--lock); padding-left: 7px; }
+.filerow.blocked .path-tail { color: var(--lock); }
+.filerow.blocked:hover { background: rgba(167,139,250,.14); }
+
+.badge { margin-left: auto; font-size: 10px; font-weight: 800; border-radius: 99px; padding: 1px 8px; white-space: nowrap; background: rgba(147,160,180,.12); color: var(--muted); }
+.badge.ok { background: rgba(34,197,94,.13); color: var(--green); }
+.badge.warn { background: rgba(245,184,61,.14); color: var(--amber); }
+.badge.lock { background: rgba(167,139,250,.14); color: var(--purple); }
+.badge.blocked { background: var(--lock); color: #fff; }
+
+/* reader — the reading pane dominates; a document opens big and readable */
+.viewer { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; min-height: 560px; }
+.viewer-empty { color: var(--muted); padding: 30px; text-align: center; }
+.viewer-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.viewer-head b { font-size: 16px; font-weight: 800; }
+.viewer-actions { margin-left: auto; display: flex; gap: 8px; }
+.viewer-body { background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; max-height: 420px; overflow: auto; white-space: pre-wrap; font: 13.5px/1.7 ui-monospace, Menlo, monospace; color: var(--text); }
+.viewer-blocked { background: rgba(167,139,250,.07); border: 1px solid var(--lock); border-radius: 10px; padding: 16px; color: var(--lock); }
+.hint { font-size: 12px; color: var(--muted); }

@@ -84,21 +84,48 @@ check("status chips within the 5–9 metric ceiling, each colour-coded", () => {
   assert.ok(tones.size >= 3, `status chips need a spread of colours, got ${[...tones]}`);
 });
 
-check("J1: first chip is the running-STATE chip, model-derived with traffic-light tones", () => {
+// J1 RELOCATED (FD-IMPLEMENT): the STATUS chip + ALIVE line now lead with HEALTH,
+// not run_state — the Run-6 diagnosis proved a green run-state is impossible on the
+// fixture. Law 54: green = health/connection (files-found + connected); the state
+// stays honest in the chip TEXT and in the amber DECISION chip. OLD assertion: STATUS
+// tone == state traffic-light. NEW assertion: STATUS tone == health, value carries the
+// state; the alive line derives from health, never run_state.
+const PRES_ALL = { project:true, status:true, locks:true, run_state:true, data_classification:true, cost_budget:true, release_label:true, gates:true, witnesses:true, evidence:true };
+check("J1 (FD): STATUS chip is HEALTH-forward — green when healthy even while blocked; state in text", () => {
   const first = h.statusStrip[0];
   assert.equal(first.key, "state");
   assert.equal(first.name, "Status");
-  // the demo fixture is 'blocked' → amber "Waiting on you"
-  assert.equal(first.tone, "caution");
-  assert.match(first.value, /waiting on you/i);
-  // tone mapping per state (never invented — from m.state)
-  const cases = { active: "ok", blocked: "caution", paused: "caution", idle: "unknown", stopped: "attention", error: "attention" };
-  for (const [st, tone] of Object.entries(cases)) {
-    const chip = buildView({ connected: true, state: st, dataClass: "MOCK_ONLY" }).home.statusStrip[0];
-    assert.equal(chip.tone, tone, `state "${st}" must map to tone ${tone}, got ${chip.tone}`);
-  }
-  // unknown/absent state → grey, never invented
-  assert.equal(buildView({ connected: true }).home.statusStrip[0].tone, "unknown");
+  // fixture is connected + 10/10 files present -> healthy -> GREEN, even though blocked.
+  assert.equal(first.tone, "ok");
+  assert.match(first.value, /healthy/i);
+  assert.match(first.value, /waiting on you/i); // the state stays honest in the text
+  // health is derived from connection/files, NOT run_state:
+  //  active run_state but missing core files must NOT fake a green STATUS (Law 54).
+  const activeUnhealthy = buildView({ connected: true, state: "active", presence: { project: false, status: false } }).home.statusStrip[0];
+  assert.equal(activeUnhealthy.tone, "attention", "active run_state must not fake green when files are missing");
+  //  blocked WITH all files present is still green (health-forward).
+  const blockedHealthy = buildView({ connected: true, state: "blocked", presence: PRES_ALL, dataClass: "MOCK_ONLY" }).home.statusStrip[0];
+  assert.equal(blockedHealthy.tone, "ok");
+  //  disconnected -> not green, honest.
+  assert.equal(buildView({ connected: false }).home.statusStrip[0].tone, "attention");
+});
+
+check("J1b (FD): the ALIVE line derives from health/connection, never run_state", () => {
+  const healthy = buildView({ connected: true, state: "blocked", presence: PRES_ALL, dataClass: "MOCK_ONLY" }).home.alive;
+  assert.equal(healthy.tone, "ok");
+  assert.match(healthy.text, /healthy|all files in place/i);
+  const missing = buildView({ connected: true, state: "active", presence: { project: false, status: false } }).home.alive;
+  assert.equal(missing.tone, "attention"); // active run-state, but unhealthy -> red dot, honest
+  assert.match(missing.text, /missing|can't fully read/i);
+  const disc = buildView({ connected: false }).home.alive;
+  assert.equal(disc.tone, "attention");
+  assert.match(disc.text, /not connected/i);
+});
+
+check("the amber DECISION chip still carries the honest 'waiting' signal (not lost from STATUS)", () => {
+  const dec = h.statusStrip.find((c) => c.key === "decision");
+  assert.equal(dec.tone, "caution", "a pending decision must read as amber attention");
+  assert.match(dec.value, /1 thing/i);
 });
 
 check("safety never labels the Checks chip (scoped honesty rule)", () => {
