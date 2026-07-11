@@ -92,8 +92,8 @@ check("one-click show-blocked filter control exists and is wired", () => {
   assert.match(js, /getElementById\(["']show-blocked-btn["']\)|\$\(["']show-blocked-btn["']\)/,
     "the filter button must be referenced in the JS");
   assert.match(js, /show-blocked-btn["']\)\.addEventListener/, "the filter button must be wired with a click handler");
-  assert.match(js, /applyBlockedFilter\s*\(/, "an applyBlockedFilter routine must drive the filter");
-  assert.match(js, /filter-blocked/, "the JS must toggle the filter-blocked state");
+  assert.match(js, /passesBlocked\s*\(/, "a passesBlocked routine must drive the blocked filter");
+  assert.match(js, /blockedOnly/, "the JS must track the blocked-only filter state");
 });
 
 // UI language law — warm, plain English; never these scary words in the UI layer.

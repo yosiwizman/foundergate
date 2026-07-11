@@ -29,13 +29,27 @@
           </div>
         </header>
 
-        <div class="cabinet">
+        <div class="cabinet-toolbar">
+          <div class="view-toggle" role="group" aria-label="View">
+            <button id="view-list-btn" class="vt-btn active" type="button" aria-pressed="true">☰ List</button>
+            <button id="view-gallery-btn" class="vt-btn" type="button" aria-pressed="false">📖 Reading</button>
+          </div>
+          <label class="ctl">Sort
+            <select id="sort-select" aria-label="Sort files by">
+              <option value="category">Category</option>
+              <option value="name">Name</option>
+              <option value="class">Protection</option>
+              <option value="changed">Recently changed</option>
+            </select>
+          </label>
+          <input id="search-box" class="search-box" type="search" placeholder="Search file names…" aria-label="Search file names" />
+          <button id="show-blocked-btn" class="filter-btn" type="button" aria-pressed="false">🔒 Only protected &amp; blocked</button>
+        </div>
+        <p class="tree-tools-hint">Protected files show a lock and a purple mark. Everything here is read-only — nothing you do changes your files.</p>
+
+        <div class="cabinet view-list" id="cabinet">
           <div class="tree-panel">
-            <div class="tree-tools">
-              <button id="show-blocked-btn" class="filter-btn" type="button" aria-pressed="false">🔒 Show only protected &amp; blocked files</button>
-              <span class="tree-tools-hint">Protected files show a lock and a purple mark.</span>
-            </div>
-            <section class="tree card" id="tree" aria-label="Files by category"></section>
+            <section class="tree card" id="tree" aria-label="Files"></section>
           </div>
           <section class="viewer card" id="viewer">
             <div class="viewer-empty" id="viewer-empty">Pick a file on the left to preview it.</div>

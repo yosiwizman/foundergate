@@ -61,6 +61,12 @@ the active build contract authorizes work (69).
 Each stage: schema-first, builder + independent adversarial checker, committed adversarial proofs, exact-SHA CI,
 UI witness, accept gate — the same rhythm as V8-A.
 
+## Deferred stranger ideas (V8-B+, out of V8-A scope)
+- **Add files by dropping/pasting a folder into the File Cabinet** (Run-5 stranger "Luran"). This is a WRITE/import
+  path — squarely out of V8-A's read-only scope. Recorded here for a future V8-B+ contract, where any import would
+  be gated, classified on ingest, and never bypass the File Cabinet enforcement. (V8-A's File Cabinet stays
+  read-only: no upload, no paste-a-folder, no rearrange-on-disk.)
+
 ## One next action
 **None until the Stranger Test passes and V8-A is accepted.** Then this draft can be promoted to a real V8-B
 proposal and gate card.
