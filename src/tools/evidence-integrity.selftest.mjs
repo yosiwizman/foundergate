@@ -100,6 +100,34 @@ try {
   }
 } catch { /* git unavailable — skip this check */ }
 
+// 5: THE WRITTEN-AUTHORITY LAW (Assembly Manual §28). Every bundle row in the
+// Evidence Ledger must carry an AUTHORITY whose path exists on disk and whose SHA
+// resolves — or be honestly marked "AUTHORITY-UNRECORDED (historical)". A row whose
+// authority artifact never landed on disk is a doctrine violation (work governed by
+// an artifact that doesn't resolve). CI-red otherwise. (full-history checkout makes
+// old SHAs resolvable — see .github/workflows/selftests.yml fetch-depth: 0.)
+const LEDGER = join(EVID, "EVIDENCE_LEDGER.md");
+function shaResolves(sha) {
+  try { execFileSync("git", ["cat-file", "-e", `${sha}^{commit}`], { cwd: REPO, stdio: "ignore" }); return true; }
+  catch { try { execFileSync("git", ["cat-file", "-e", sha], { cwd: REPO, stdio: "ignore" }); return true; } catch { return false; } }
+}
+if (existsSync(LEDGER)) {
+  const lines = readFileSync(LEDGER, "utf8").split("\n");
+  const header = lines.find((l) => l.startsWith("| Date |"));
+  if (!header || !/Authority/i.test(header)) problems.push("Evidence Ledger header is missing the AUTHORITY column (Written-Authority Law §28)");
+  for (const l of lines) {
+    if (!/^\| \d{4}-\d{2}-\d{2} /.test(l)) continue; // data rows only
+    const cells = l.split("|"); const authority = (cells[cells.length - 2] || "").trim();
+    if (!authority) { problems.push(`ledger row has no AUTHORITY cell: ${l.slice(0, 60)}…`); continue; }
+    if (/AUTHORITY-UNRECORDED/i.test(authority)) continue; // honestly grandfathered
+    const pathM = authority.match(/`([^`]+?)`/);
+    if (!pathM) { problems.push(`AUTHORITY has no path: "${authority}"`); continue; }
+    if (!existsSync(join(REPO, pathM[1]))) problems.push(`AUTHORITY path does not resolve on disk: ${pathM[1]}`);
+    const shaM = authority.match(/@\s*`([0-9a-f]{7,40})`/);
+    if (shaM && !shaResolves(shaM[1])) problems.push(`AUTHORITY SHA does not resolve: ${shaM[1]}`);
+  }
+}
+
 // safe stamp helper must read before it writes.
 const helper = join(REPO, "scripts", "stamp.mjs");
 if (!existsSync(helper)) {
