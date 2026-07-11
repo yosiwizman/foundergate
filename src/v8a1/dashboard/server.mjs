@@ -11,11 +11,12 @@
 import { createServer } from "node:http";
 import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { dirname, join, extname } from "node:path";
+import { dirname, join, extname, resolve } from "node:path";
 import { buildModel } from "../reader.mjs";
 import { defaultProjectRoot } from "../../tools/project-root.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
+const TOKENS = resolve(HERE, "..", "..", "ui", "tokens.css"); // shared design system
 const PORT = Number(process.env.FG_PORT || 4173);
 
 const MIME = {
@@ -26,7 +27,7 @@ const MIME = {
   ".json": "application/json; charset=utf-8",
 };
 
-const SAFE_FILES = new Set(["index.html", "styles.css", "app.js", "view-model.mjs"]);
+const SAFE_FILES = new Set(["index.html", "styles.css", "app.js", "view-model.mjs", "tokens.css"]);
 
 export function createDashboardServer(projectRoot) {
   if (!projectRoot) projectRoot = defaultProjectRoot(false); // never the committed fixture
@@ -44,7 +45,7 @@ export function createDashboardServer(projectRoot) {
       res.end("not found");
       return;
     }
-    const file = join(HERE, name);
+    const file = name === "tokens.css" ? TOKENS : join(HERE, name);
     if (!existsSync(file)) {
       res.writeHead(404, { "content-type": "text/plain" });
       res.end("not found");

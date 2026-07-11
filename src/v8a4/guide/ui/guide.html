@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Project Guide — FounderGate</title>
+  <link rel="stylesheet" href="tokens.css" />
   <link rel="stylesheet" href="guide.css" />
 </head>
 <body>
@@ -29,7 +30,14 @@
 
       <section class="card">
         <div class="chips" id="chips" aria-label="Things you can ask"></div>
-        <div class="chat" id="chat" data-ready="0" aria-live="polite"></div>
+        <div class="chat" id="chat" data-ready="0" aria-live="polite">
+          <div class="chat-welcome" id="chat-welcome">
+            <div class="robot" aria-hidden="true">🤖</div>
+            <p class="hi">Hi! I'm your Project Guide.</p>
+            <p>Ask me anything in plain English — I'll answer clearly and show you where I got the answer. Tap a
+              question above, or type your own. I can only explain and draft — I never change anything.</p>
+          </div>
+        </div>
         <form class="ask" id="ask">
           <input id="q" autocomplete="off" placeholder="Ask about your project — e.g. “what's blocked?”" />
           <button type="submit" id="send">Ask</button>

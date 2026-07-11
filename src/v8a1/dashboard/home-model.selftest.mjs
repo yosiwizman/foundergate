@@ -78,10 +78,27 @@ check("no dead controls: every quick tile links (or is view-only) and every nav 
   for (const n of h.nav) assert.ok((n.href && n.href.length) || (n.stage && n.stage.length), `nav "${n.label}" is a dead control`);
 });
 
-check("5 status chips, each a colour-coded scannable answer", () => {
-  assert.equal(h.statusStrip.length, 5);
+check("status chips within the 5–9 metric ceiling, each colour-coded", () => {
+  assert.ok(h.statusStrip.length >= 5 && h.statusStrip.length <= 9, `status chips should be 5–9, got ${h.statusStrip.length}`);
   const tones = new Set(h.statusStrip.map((c) => c.tone));
   assert.ok(tones.size >= 3, `status chips need a spread of colours, got ${[...tones]}`);
+});
+
+check("J1: first chip is the running-STATE chip, model-derived with traffic-light tones", () => {
+  const first = h.statusStrip[0];
+  assert.equal(first.key, "state");
+  assert.equal(first.name, "Status");
+  // the demo fixture is 'blocked' → amber "Waiting on you"
+  assert.equal(first.tone, "caution");
+  assert.match(first.value, /waiting on you/i);
+  // tone mapping per state (never invented — from m.state)
+  const cases = { active: "ok", blocked: "caution", paused: "caution", idle: "unknown", stopped: "attention", error: "attention" };
+  for (const [st, tone] of Object.entries(cases)) {
+    const chip = buildView({ connected: true, state: st, dataClass: "MOCK_ONLY" }).home.statusStrip[0];
+    assert.equal(chip.tone, tone, `state "${st}" must map to tone ${tone}, got ${chip.tone}`);
+  }
+  // unknown/absent state → grey, never invented
+  assert.equal(buildView({ connected: true }).home.statusStrip[0].tone, "unknown");
 });
 
 check("safety never labels the Checks chip (scoped honesty rule)", () => {

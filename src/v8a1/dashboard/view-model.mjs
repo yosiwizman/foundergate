@@ -195,7 +195,26 @@ export function buildView(model) {
   // protections on for MOCK_ONLY), or say we can't see it.
   const safetyChip = m.dataClass === "MOCK_ONLY" ? "Demo — protections on"
     : (isUnknown(m.dataClass) ? "We can't see this yet" : `Protecting: ${m.dataClass}`);
+  // J1 (Run-4: "how do I know if the project is running?") — a running-STATE chip
+  // with traffic-light semantics, model-derived (Law 54): green=running, amber=
+  // waiting-on-you/paused, red=stopped/problem, grey=unknown.
+  function stateChip() {
+    const st = m.state;
+    if (isUnknown(st)) return { value: "Unknown", tone: "unknown" };
+    switch (st) {
+      case "active": return { value: "Running", tone: "ok" };
+      case "blocked": return { value: "Waiting on you", tone: "caution" };
+      case "paused": return { value: "Paused", tone: "caution" };
+      case "idle": return { value: "Idle", tone: "unknown" };
+      case "stopped": return { value: "Stopped", tone: "attention" };
+      case "error": case "failed": return { value: "Problem", tone: "attention" };
+      default: return { value: String(st), tone: "unknown" };
+    }
+  }
+  const sc0 = stateChip();
+  const stateIcon = { ok: "🟢", caution: "🟡", attention: "🔴", unknown: "⚪" }[sc0.tone] || "⚪";
   const statusStrip = [
+    { key: "state", name: "Status", icon: stateIcon, answer: "state", value: sc0.value, tone: sc0.tone },
     { key: "checks", name: "Checks", icon: "✅", answer: 0, value: badge(m.ci).text === "passing" ? "All passing" : badge(m.ci).text, tone: m.ci === "passing" ? "ok" : "unknown", note: badge(m.ci).hint },
     { key: "decision", name: "Decision", icon: "🕐", answer: 1, value: chip(1).label, tone: chip(1).tone },
     { key: "safety", name: "Safety", icon: "🛡️", answer: 2, value: safetyChip, tone: "info" },

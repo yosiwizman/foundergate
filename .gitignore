@@ -22,6 +22,10 @@ secrets/
 # filename glob, is the real guard).
 !**/*.selftest.mjs
 !**/*.test.mjs
+# The shared design-token STYLESHEET is UI code, not a secret token — un-ignore it
+# so it reaches CI (the `*token*` glob above is for secret token files only; the
+# pre-commit secret SCAN is the real guard).
+!**/tokens.css
 .npmrc
 
 # --- Private store paths (source-system runtime state; never a dependency here) ---

@@ -454,3 +454,27 @@ guards + this human-style look are a filter, not a guarantee; the **founder witn
 **Mechanical enforcement:** where mechanical, the suite fails if the visual-review verdict is absent or stale for
 founder-facing UI — `src/tools/visual-review.selftest.mjs` (in CI) requires `VISUAL_REVIEW.md` to exist, cover all
 four screens at both viewports with a verdict line each, and reference on-disk screenshots.
+
+## 24. UI LANGUAGE LAW — colour (founder-mandated 2026-07-10, Run-4)
+
+**Scary colour fields are banned the same way scary words are.** A stranger ("Jimmy", 11) said the File Cabinet
+looked "very red, very scary… like I'm gonna destroy something" — the routine *protected / blocked / hidden*
+states were painted in danger-red. Rule:
+
+- **Red is reserved for a genuine PROBLEM** — a real failure, a broken check, or a live danger. Never for a normal,
+  expected, protected/hidden state.
+- Routine *protected / blocked / hidden* uses the **calm LOCK treatment** (neutral + a quiet purple + a lock glyph):
+  distinct and spottable at a glance, but not alarming.
+- **Green = good · amber = attention/needs-you · red = PROBLEM · purple = protected · grey = unknown.** These
+  semantic colours are shared across all apps via the design tokens (`src/ui/tokens.css`).
+
+Mechanically enforced for the File Cabinet by `src/v8a3/filecabinet/badge-visibility.selftest.mjs` (routine blocked
+rows must use the calm lock colour, never a red danger hex or `var(--bad)`), and the shared design language by
+`src/tools/design-consistency.selftest.mjs`.
+
+## 25. Design system (founder-mandated 2026-07-10, Run-4)
+
+All four founder-facing apps (Truth Dashboard, Preview Bay, File Cabinet, Project Guide) load and use ONE shared
+design-token stylesheet — `src/ui/tokens.css` (palette, type scale, spacing rhythm, and card/badge/chip/button
+components). Per-app CSS is layout-only. New founder-facing surfaces must load the shared tokens and use its
+components — enforced by `src/tools/design-consistency.selftest.mjs`.

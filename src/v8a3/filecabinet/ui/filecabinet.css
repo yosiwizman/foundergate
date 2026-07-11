@@ -1,11 +1,10 @@
-:root { --bg:#f5f6f8; --sidebar:#1f2530; --panel:#fff; --text:#232a33; --muted:#6b7480; --line:#e5e9ef;
-  --accent:#2b7de9; --ok:#1f9d55; --warn:#b26a00; --lock:#7a4bd6; --blocked:#c0362c; }
-@media (prefers-color-scheme: dark){ :root{ --bg:#12151a; --panel:#1a1e25; --text:#e6e9ee; --line:#2a2f38; --muted:#94a0b0; --blocked:#ff6b5e; } }
-*{box-sizing:border-box} html,body{margin:0;height:100%} body{background:var(--bg);color:var(--text);
-  font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-.app{display:grid;grid-template-columns:216px 1fr;min-height:100vh}
-.sidebar{background:var(--sidebar);color:#cdd4df;display:flex;flex-direction:column;padding:16px 12px;gap:4px;height:100vh;position:sticky;top:0}
-.brand{font-weight:700;color:#fff;font-size:16px;padding:6px 10px 14px}
+/* Palette + components come from the shared design system (tokens.css). Layout-only
+   here, so the File Cabinet matches its siblings (VA-REPAIR-4 / J0). Protected/blocked
+   files use the CALM LOCK treatment (purple), never a red danger-wall — red is
+   reserved for a genuine problem (J4). */
+.app{display:grid;grid-template-columns:244px 1fr;min-height:100vh}
+.sidebar{background:var(--sidebar);color:var(--sidebar-text);display:flex;flex-direction:column;padding:20px 14px;gap:4px;height:100vh;position:sticky;top:0}
+.brand{font-weight:800;color:#fff;font-size:18px;padding:6px 10px 18px}
 .nav{display:flex;flex-direction:column;gap:2px}.nav .item{padding:8px 10px;border-radius:8px;color:#cdd4df;font-size:13.5px;cursor:default}
 .nav .item.active{background:var(--accent);color:#fff}
 .sidebar-spacer{flex:1}.pause-dock{border-top:1px solid rgba(255,255,255,.08);padding-top:12px}
@@ -23,33 +22,34 @@
 /* Filter toolbar — one-click jump to protected/blocked files. */
 .tree-panel{display:flex;flex-direction:column}
 .tree-tools{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px}
-.filter-btn{font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:8px;border:1px solid var(--blocked);
-  background:rgba(192,54,44,.07);color:var(--blocked);cursor:pointer}
-.filter-btn:hover{background:rgba(192,54,44,.14)}
-.filter-btn[aria-pressed="true"]{background:var(--blocked);color:#fff}
+.filter-btn{font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:8px;border:1px solid var(--lock);
+  background:var(--lock-tint);color:var(--lock);cursor:pointer}
+.filter-btn:hover{background:rgba(183,155,240,.20)}
+.filter-btn[aria-pressed="true"]{background:var(--lock);color:#fff}
 .tree-tools-hint{font-size:11.5px;color:var(--muted)}
 .filerow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;border-radius:8px;cursor:pointer}
 .filerow:hover{background:var(--bg)}
 .filerow.locked{cursor:not-allowed;opacity:.85}
 .fileleft{display:flex;align-items:center;gap:6px;min-width:0}
 .filename{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-/* Blocked rows: a loud, distinct treatment (red rail + lock) — clearly NOT the
-   quiet safe rows, spottable without reading a word. */
-.row-lock{color:var(--blocked);font-size:12.5px;line-height:1;flex:0 0 auto}
-.filerow.blocked{background:rgba(192,54,44,.07);border-left:3px solid var(--blocked);padding-left:6px}
-.filerow.blocked:hover{background:rgba(192,54,44,.14)}
-.filerow.blocked .filename{font-weight:600;color:var(--blocked)}
+/* Blocked rows: a CALM, distinct lock treatment (purple rail + lock glyph) —
+   clearly not the quiet safe rows, spottable without reading a word, but not scary
+   (J4: red is reserved for a genuine problem). */
+.row-lock{color:var(--lock);font-size:12.5px;line-height:1;flex:0 0 auto}
+.filerow.blocked{background:var(--lock-tint);border-left:3px solid var(--lock);padding-left:6px}
+.filerow.blocked:hover{background:rgba(183,155,240,.20)}
+.filerow.blocked .filename{font-weight:600;color:var(--lock)}
 .badge{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:6px;background:var(--bg);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
 .badge.ok{color:var(--ok);border-color:rgba(31,157,85,.4)}
 .badge.warn{color:var(--warn);border-color:rgba(178,106,0,.4)}
 .badge.lock{color:var(--lock);border-color:rgba(122,75,214,.4)}
-/* Blocked badge overrides the safe/lock palette — dedicated red, bold, loud. */
-.badge.blocked{color:#fff;background:var(--blocked);border-color:var(--blocked);font-weight:700}
+/* Blocked badge: the calm lock treatment (purple), bold enough to spot at a glance. */
+.badge.blocked{color:#fff;background:var(--lock);border-color:var(--lock);font-weight:700}
 .viewer{min-height:320px}
 .viewer-empty{color:var(--muted);padding:30px;text-align:center}
 .viewer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
 .viewer-actions{display:flex;gap:6px}
 .btn{font-size:12.5px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer}
 .viewer-body{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px;max-height:360px;overflow:auto;white-space:pre-wrap;font:12px/1.5 ui-monospace,Menlo,monospace}
-.viewer-blocked{background:rgba(192,54,44,.08);border:1px solid var(--blocked);border-radius:8px;padding:16px;color:var(--blocked)}
+.viewer-blocked{background:var(--lock-tint);border:1px solid var(--lock);border-radius:8px;padding:16px;color:var(--lock)}
 .hint{font-size:12px;color:var(--muted)}
