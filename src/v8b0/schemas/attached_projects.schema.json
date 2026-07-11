@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://foundergate/schemas/attached_projects.schema.json",
+  "title": "FounderGate V8-B VB0 — Attached Projects Registry (persistent attach)",
+  "description": "FounderGate's own persistent registry of attached projects. Records only paths + metadata — never any project's file content, and never a secret. Cross-project isolation is enforced in code (attached-projects.mjs): never auto-attach; the founder chooses the active project; no project's SECRET/blocked content or state bleeds into another; UNKNOWN when a project can't be read (Law 54).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "projects", "active_id"],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "root", "name"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^p[0-9a-f]{16}$" },
+          "root": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "attached_at": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "active_id": {
+      "description": "The founder-chosen active project id, or null. NEVER auto-selected.",
+      "type": ["string", "null"]
+    }
+  }
+}
