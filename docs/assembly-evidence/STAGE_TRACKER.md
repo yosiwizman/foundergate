@@ -16,7 +16,7 @@
 | **V8-A2 — Preview Bay + Bug Collector** | See the real app (honest labels, live refusals) and capture a bug as evidence — no terminal | ✅ **COMPLETE / ACCEPTED** | `dba8720` | G4-A2 ACCEPTED |
 | **V8-A3 — File Cabinet** | Safely browse/preview/copy/download files; a data-class badge on every file; secrets hidden, unknown blocked | ✅ **COMPLETE / ACCEPTED (amended)** | `e92f8b9` → `a957b01` | G2-A3 PASSED · G4-A3 ACCEPTED · security amendment (hard-link fix) |
 | **V8-A4 — Project Guide** | In-dashboard plain-English chat: explain status/files/gates from evidence, draft bug/notes — read-only, never acts | ✅ **COMPLETE / ACCEPTED** | `a957b01` | G2-A4 PASSED · G4-A4 ACCEPTED |
-| **V8-A — Full acceptance** | The whole founder-facing product accepted together via the Stranger Test | 🛠️ **RUN 3 FAILED (name regression + density + skeletal demo) → VA-REPAIR-3 (research-grounded redesign + realistic fixture); Run 4 required** | — | RUN 3 failed; VA-REPAIR-3 in progress |
+| **V8-A — Full acceptance** | The whole founder-facing product accepted together via the Stranger Test | 🛠️ **RUN 3 FAILED → VA-REPAIR-3 done (identity-first 3-layer redesign + Luna Café demo, guard-locked); awaiting G-VA-REWITNESS-3 + Run 4** | — | VA-REPAIR-3 complete; Run 4 required |
 
 ## Gate ledger (stage-level, latest per stage)
 
