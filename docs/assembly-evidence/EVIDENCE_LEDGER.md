@@ -68,6 +68,8 @@
 
 | 2026-07-10 | Run 3 + VA-REPAIR-3 | Stranger Run 3 (adult, "Dana") FAILED (name regression + density + skeletal demo); research-grounded fix (Apple HIG / 5-second rule / three-layer disclosure / 8pt grid): R1 identity-first (project name), R2 three-layer decompression (≤6 above fold), R3 realistic Luna Café demo; fixture re-blessed (intentional) | src/v8a1/dashboard/* · src/v8a1/fixture/mock-project/* · src/v8a1/schemas/project.schema.json · src/v8a2/preview/mock-send-refusal.selftest.mjs · docs/assembly-evidence/VA-REPAIR-3/ | #58,#59 | 3cb2dd812a69a3f1b839786785081a6e3de0da96 | Builder + CI (https://github.com/yosiwizman/foundergate/actions/runs/29137394759) | DONE |
 
+| 2026-07-10 | VA-FIXTURE-HARDEN | Committed-fixture writes made IMPOSSIBLE (not just caught): every server started without an explicit FG_PROJECT_ROOT now serves a throwaway temp COPY (src/tools/project-root.mjs), announced in one line; guard asserts no server default resolves inside the committed fixture | src/tools/project-root.mjs · src/tools/fixture-write-safety.selftest.mjs · src/v8a{1,2,3,4} servers | #61 | 8856d84297ddb51826aa7f62050fa613300a0be2 | Builder + CI (https://github.com/yosiwizman/foundergate/actions/runs/29137769277) | DONE |
+
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their
 literal placeholder tokens, which count as UNKNOWN.
