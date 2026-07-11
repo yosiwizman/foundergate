@@ -30,7 +30,7 @@
 | G1-A4-IMPL — start V8-A4 build | APPROVED | build contract PR #36 |
 | G2-A4 — V8-A4 UI witness | PASSED | product-final `a957b01` (CI 29104173885) |
 | G4-A4 — accept V8-A4 | ACCEPTED | product-final `a957b01` (CI 29104173885) |
-| **V8-A ACCEPTANCE — whole product** | **PENDING** | fires after the Stranger Test run |
+| **V8-A ACCEPTANCE — whole product** | **ACCEPTED (2026-07-11)** | Run 7 PASSED (7/7 unaided); product-final `85a59f9`; seven-run evidence chain |
 
 | Run 6 — Stranger Test | ABORTED (pre-flight) | founder finding; machine-accountability defect recorded (PR #70) |
 | VA-HARNESS-TRUTH | LANDED | true-viewport + in-embed + mechanical critical-path gate + Provenance/Harness-Truth laws (PR #71 `0414887`) |

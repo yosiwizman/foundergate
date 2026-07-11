@@ -13,7 +13,7 @@ The founder's four mockups + shared tokens + implementation contract are committ
 ## Disk-proof completion table (line citations corrected)
 | Lane | What landed | PR | SHA (`git cat-file` = commit) | Guards relocated/added (file:line) |
 |---|---|---|---|---|
-| Harness fix 1 — true-viewport | Renders at true 1366×768/1440×900, deviceScaleFactor pinned; **fails if reported ≠ requested** | #71 | `0414887` (merged) | `src/tools/visual-capture.selftest.mjs:30-35` |
+| Harness fix 1 — true-viewport | Renders at true 1366×768/1440×900, deviceScaleFactor pinned; **fails if reported ≠ requested** | #71 | `0414887` (merged) | `src/tools/visual-capture.selftest.mjs:31-39` (dSF pin 31-33 + viewport-truth 35-39) |
 | Harness fix 2 — in-embed capture | Measures the café Send **inside** the sandboxed iframe; fails on a clip | #71 | `0414887` (merged) | `src/tools/visual-capture.selftest.mjs:41-46` |
 | Harness fix 3 — mechanical gate | Launcher refuses a session on an unwaived critical-path note | #71 | `0414887` (merged) | `src/tools/critical-path-gate.selftest.mjs:42-49` |
 | Dashboard v2 (+ accordion delete + guard reloc) | Alive line (health, not run_state), 6 chips, Pause-instead, What's Next, footnotes; no `<details>` | #73 | `85a59f9` (merged) | honesty-superset→`src/v8a1/dashboard/smoke.mjs:82`; do-not-touch→`smoke.mjs:87`; scan-budget→`src/v8a1/dashboard/scan-budget.selftest.mjs:62,78`; J1→`src/v8a1/dashboard/home-model.selftest.mjs:94` |
