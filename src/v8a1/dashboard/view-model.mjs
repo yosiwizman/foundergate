@@ -242,16 +242,22 @@ export function buildView(model) {
     },
     activity: activity.slice(0, 6),
     tiles,
-    safe: {
-      title: "Is It Safe?",
-      lines: [
-        "This is a demo (no real customer data)",
-        "No messages are really sent",
-        "No payments are made",
-        "Secret files are hidden",
-      ],
-      verdict: "Yes, it's safe to explore!",
-    },
+    // "Is It Safe?" — MODEL-DERIVED (Law 54). The first line tracks the real data
+    // class; the next three are true V8-A architectural invariants (a read-only
+    // product with no live/send/payment path and File-Cabinet secret hiding); the
+    // upbeat verdict is only made for demo (MOCK_ONLY) data, otherwise scoped.
+    safe: (() => {
+      const demoData = m.dataClass === "MOCK_ONLY";
+      const dataLine = demoData ? "This is a demo (no real customer data)"
+        : (isUnknown(m.dataClass) ? "Data type: we can't see this yet" : `Data class: ${m.dataClass}`);
+      return {
+        title: "Is It Safe?",
+        lines: [dataLine, "No messages are really sent", "No payments are made", "Secret files are hidden"],
+        verdict: demoData ? "Yes, it's safe to explore!"
+          : "It's read-only — it can't send, pay, or reveal secrets.",
+        demoData,
+      };
+    })(),
     pauseCard: {
       title: "Can I Pause It?",
       lead: "Yes — you can pause work and get help with one click.",
