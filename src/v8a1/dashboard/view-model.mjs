@@ -190,13 +190,27 @@ export function buildView(model) {
   for (const e of evid) activity.push({ icon: "📄", text: `Evidence (${e.label}): ${e.path}` });
   // 5 status chips (the mockup's strip) — each a distinct scannable answer.
   const chip = (i) => questions[i] ? questionChip(i) : { tone: "unknown", label: "Unknown" };
+  // Safety chip — MODEL-DERIVED, honestly scoped (Law 54). No blanket "everything
+  // safe": we only state what the real data-classification supports (demo data +
+  // protections on for MOCK_ONLY), or say we can't see it.
+  const safetyChip = m.dataClass === "MOCK_ONLY" ? "Demo — protections on"
+    : (isUnknown(m.dataClass) ? "We can't see this yet" : `Protecting: ${m.dataClass}`);
   const statusStrip = [
-    { key: "checks", name: "Checks", icon: "✅", answer: 0, value: badge(m.ci).text === "passing" ? "All passing" : badge(m.ci).text, tone: m.ci === "passing" ? "ok" : "unknown" },
+    { key: "checks", name: "Checks", icon: "✅", answer: 0, value: badge(m.ci).text === "passing" ? "All passing" : badge(m.ci).text, tone: m.ci === "passing" ? "ok" : "unknown", note: badge(m.ci).hint },
     { key: "decision", name: "Decision", icon: "🕐", answer: 1, value: chip(1).label, tone: chip(1).tone },
-    { key: "safety", name: "Safety", icon: "🛡️", answer: 2, value: "Everything safe", tone: "info" },
+    { key: "safety", name: "Safety", icon: "🛡️", answer: 2, value: safetyChip, tone: "info" },
     { key: "evidence", name: "Evidence", icon: "📄", answer: 7, value: chip(7).label, tone: chip(7).tone },
     { key: "spending", name: "Spending", icon: "💲", answer: 4, value: (m.cost && m.cost !== UNKNOWN) ? `up to $${m.cost.monthly_limit_usd}/mo` : UNKNOWN, tone: "caution" },
   ];
+  // Honest companions restored from the A1 copy-polish translations (relocated into
+  // the friendly layout, never deleted — anti-repeat law). All model-derived.
+  const honesty = {
+    checksNote: badge(m.ci).hint || "",                 // "the robot tests passed — this doesn't mean the product is finished."
+    dataChip: dataChip(m.dataClass || UNKNOWN),          // "Demo mode — no real customer data (MOCK_ONLY)"
+    decisionLabel: hasPendingDecision ? "Decision Needed" : "Decisions",
+    decisionState: statePlain(m.state || UNKNOWN),       // "Waiting for your decision."
+    prDisplay: prDisplay(m.pr),                          // "Developer work package #7 (PR)"
+  };
   // F2 — big, hard-to-miss cost card (display-only).
   const costBig = (m.cost && m.cost !== UNKNOWN) ? `$${m.cost.monthly_limit_usd}` : UNKNOWN;
   // Quick tiles — each LINKS to a real page or is view-only; the 5th is view-only
@@ -255,6 +269,7 @@ export function buildView(model) {
     footer: "💙 You're in control. You can look around, ask questions, and decide what happens next. We're here to help!",
     robot: { line: "I'm here to help! Ask me anything about your project.", button: "Ask Now", href: A4 },
     demo: "Demo Mode — No real data · Safe to try",
+    honesty,
     // Friendly sidebar — each item LINKS to a real page or is disabled with an
     // honest stage label (no dead controls). "Decisions" is view-only (Law 55).
     nav: [
@@ -401,6 +416,7 @@ export function visibleStrings(view) {
     push(h.pauseCard.title, h.pauseCard.lead, h.pauseCard.button, h.pauseCard.note);
     push(h.costCard.title, h.costCard.lead, h.costCard.big, h.costCard.per, h.costCard.disclaimer, h.costCard.note);
     h.nav.forEach((n) => push(n.label, n.stage));
+    if (h.honesty) push(h.honesty.checksNote, h.honesty.dataChip, h.honesty.decisionLabel, h.honesty.decisionState, h.honesty.prDisplay);
   }
   push(view.nav.brand, view.header.greeting, view.header.stageBanner, view.header.projectName, view.header.dataChip);
   view.nav.active.forEach((n) => push(n.label));

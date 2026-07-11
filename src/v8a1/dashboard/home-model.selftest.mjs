@@ -77,6 +77,21 @@ check("safety never labels the Checks chip (scoped honesty rule)", () => {
   assert.ok(!/safety/i.test(checks.name + " " + checks.value), "the Checks chip must not be relabelled 'safety'");
 });
 
+check("Safety chip is MODEL-DERIVED, no blanket 'everything safe' claim (Law 54)", () => {
+  const safety = h.statusStrip.find((c) => c.key === "safety");
+  assert.ok(!/everything safe|all safe|totally safe|100% safe/i.test(safety.value), `safety chip must not make a blanket claim: "${safety.value}"`);
+  // it must be scoped to what the real data-classification supports, or say UNKNOWN
+  assert.match(safety.value, /demo|protections|protecting|can't see/i, `safety chip must be derived/scoped: "${safety.value}"`);
+});
+
+check("restored A1 honesty companions are present and model-derived", () => {
+  assert.match(h.honesty.checksNote, /doesn't mean the product is finished/i);
+  assert.match(h.honesty.dataChip, /MOCK_ONLY/);
+  assert.equal(h.honesty.decisionLabel, "Decision Needed");
+  assert.match(h.honesty.decisionState, /waiting for your decision/i);
+  assert.match(h.honesty.prDisplay, /Developer work package .*\(PR\)/);
+});
+
 check("activity feed carries no invented timestamps (Law 54)", () => {
   for (const a of h.activity) assert.ok(!/\b\d+\s*(second|minute|hour|day)s?\s*ago\b/i.test(a.text), `invented time in: ${a.text}`);
 });
