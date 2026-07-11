@@ -104,36 +104,42 @@ try {
       console.log(`  captured ${sc.shot}-${tag} (true ${tag})`);
     }
 
-    // IN-EMBED CAPTURE — open the café's OWN url at the embed's fixed height and MEASURE
-    // whether the primary action (Send) is inside the frame. This is the machine looking
-    // inside the sandboxed iframe the parent-page shot can never see.
+    // IN-EMBED CAPTURE (L0) — the embed GROWS with its content. Read the LIVE preview
+    // frame height, then measure the café's Send position at that width, and assert the
+    // frame is tall enough to show Send (no clip). This is the machine looking inside
+    // the sandboxed iframe the parent-page shot can never see.
     const driver = await browser.newPage({ viewport: { width: vp.w, height: vp.h }, deviceScaleFactor: 1 });
     await driver.goto(`http://127.0.0.1:4300/`, { waitUntil: "networkidle" });
     await driver.click('.btn[data-action="start"]');
     await driver.waitForSelector('#preview-frame:not([hidden])', { timeout: 6000 });
-    const cafeUrl = await driver.evaluate(async () => (await (await fetch("/api/preview/status")).json()).url);
+    await driver.waitForTimeout(700); // let the café post its height and the frame grow
+    const embed = await driver.evaluate(async () => {
+      const f = document.getElementById("preview-frame");
+      const r = f.getBoundingClientRect();
+      const url = (await (await fetch("/api/preview/status")).json()).url;
+      return { url, frameH: Math.round(r.height), frameW: Math.round(r.width) };
+    });
     await driver.close();
 
-    if (cafeUrl) {
-      const embedW = vp.w - 244 - 40; // content column minus sidebar + padding (approx embed width)
-      const frame = await browser.newPage({ viewport: { width: embedW, height: EMBED_H }, deviceScaleFactor: 1 });
-      await frame.goto(cafeUrl, { waitUntil: "networkidle" });
+    if (embed && embed.url) {
+      const frame = await browser.newPage({ viewport: { width: embed.frameW, height: Math.max(embed.frameH, EMBED_H) }, deviceScaleFactor: 1 });
+      await frame.goto(embed.url, { waitUntil: "networkidle" });
       await frame.waitForTimeout(200);
       await frame.screenshot({ path: join(OUT, `preview-embed-${tag}-full.png`) });
-      // measure the primary action button against the fixed embed height
-      const send = await frame.evaluate((H) => {
+      const send = await frame.evaluate(() => {
         const el = document.querySelector("#mock-send")
           || [...document.querySelectorAll("button,input[type=submit],a")].find((e) => /send|order|place|checkout|pay/i.test(e.textContent || e.value || ""));
         if (!el) return { found: false };
         const r = el.getBoundingClientRect();
-        return { found: true, bottom: Math.round(r.bottom), top: Math.round(r.top), withinFrame: r.bottom <= H && r.top >= 0, H };
-      }, EMBED_H);
-      must(send.found, `${tag}: could not find the café primary action (Send) to measure against the embed`);
-      if (send.found) {
-        must(send.withinFrame, `${tag}: café "Send" is CLIPPED by the ${EMBED_H}px embed (button bottom=${send.bottom}px > ${EMBED_H}px) — a stranger cannot reach step 2 at a glance`);
-      }
+        return { found: true, bottom: Math.round(r.bottom) };
+      });
       await frame.close();
-      console.log(`  in-embed: café Send ${send.found ? (send.withinFrame ? "VISIBLE" : `CLIPPED (bottom ${send.bottom}px > ${EMBED_H}px)`) : "NOT FOUND"} at ${tag}`);
+      must(send.found, `${tag}: could not find the café primary action (Send) to measure`);
+      if (send.found) {
+        // L0: the grown embed frame must be at least as tall as the café's Send bottom.
+        must(embed.frameH >= send.bottom - 2, `${tag}: café "Send" is CLIPPED — embed frame ${embed.frameH}px < Send bottom ${send.bottom}px (L0 regression: the embed did not grow)`);
+      }
+      console.log(`  in-embed L0: frame ${embed.frameH}px vs café Send bottom ${send.found ? send.bottom : "?"}px -> ${send.found && embed.frameH >= send.bottom - 2 ? "VISIBLE" : "CLIPPED"} at ${tag}`);
     }
   }
 } finally {

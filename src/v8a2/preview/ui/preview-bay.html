@@ -3,55 +3,55 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- identity marker "Preview Bay" kept for the launcher health check -->
     <title>FounderGate — Preview Bay (V8-A2)</title>
     <link rel="stylesheet" href="tokens.css" />
     <link rel="stylesheet" href="preview-bay.css" />
   </head>
   <body>
-    <div class="app">
-      <aside class="sidebar">
+    <div class="shell">
+      <aside class="side">
         <div class="brand">FounderGate</div>
-        <nav class="nav">
-          <a class="item">Dashboard</a>
-          <a class="item active">Preview Bay</a>
-          <a class="item">My Project</a>
-          <a class="item">Settings</a>
-        </nav>
-        <div class="sidebar-spacer"></div>
-        <div class="pause-dock">
-          <button id="pause-button" class="pause-btn" type="button">⏸ Pause &amp; get help</button>
-          <p id="pause-scope" class="pause-scope"></p>
-        </div>
+        <a class="nav" href="http://localhost:4173">🏠 Home</a>
+        <div class="nav">📦 My Project <span class="tag">V8-B</span></div>
+        <a class="nav on" href="#">👁 Preview App</a>
+        <a class="nav" href="http://localhost:4400">📁 Files</a>
+        <a class="nav" href="http://localhost:4500">💬 Ask Guide</a>
+        <a class="nav" href="http://localhost:4173#waiting">🚩 Decisions <span class="tag" style="color:var(--purple);border-color:rgba(167,139,250,.4)">view only</span></a>
+        <div class="nav">⚙️ Settings <span class="tag">V8-B</span></div>
+        <div class="robot">🤖<br>I'm here to help! Ask me anything about your project.<button id="ask-now" type="button">Ask Now</button></div>
+        <div class="demo">Demo Mode — no real data · safe to try</div>
       </aside>
 
-      <main class="content">
-        <header class="welcome">
+      <main class="main">
+        <div class="head">
           <div>
-            <h1>Preview Bay</h1>
-            <p class="stage">See your app run safely inside FounderGate. This is a preview — not live.</p>
+            <div class="eyebrow">PREVIEW · NOT LIVE</div>
+            <h1>Preview App</h1>
+            <div class="sub">See your app run safely inside FounderGate. This is a practice copy — nothing real is sent.</div>
           </div>
-          <span id="status-chip" class="chip">…</span>
-        </header>
+          <div class="right">
+            <span id="status-chip" class="chip">…</span>
+            <button class="btn primary" id="pause-button" type="button">⏸ Pause &amp; get help</button>
+          </div>
+        </div>
 
-        <!-- Always-on preview labels -->
-        <section class="labelbar" id="labelbar"></section>
+        <section class="labels" id="labelbar"></section>
 
-        <!-- Controls -->
         <section class="controls">
           <button data-action="start" class="btn primary">▶ Start App Preview</button>
           <button data-action="stop" class="btn">■ Stop</button>
           <button data-action="restart" class="btn">↻ Restart</button>
           <button data-action="refresh" class="btn">⟳ Refresh</button>
-          <button data-action="clear-cache" class="btn">⌫ Clear Cache</button>
-          <button id="fullscreen" class="btn">⛶ Open Full Screen</button>
-          <button id="report" class="btn warn">⚑ Report Problem</button>
+          <button id="fullscreen" class="btn">⤢ Open Full Screen</button>
+          <button id="report" class="btn" style="color:var(--amber);border-color:rgba(245,184,61,.4)">🚩 Report Problem</button>
         </section>
 
-        <!-- Plain-English feedback so no control ever looks clickable yet does nothing -->
         <p id="action-feedback" class="action-feedback" aria-live="polite"></p>
 
-        <!-- Embedded (sandboxed) preview OR honest empty/failure state -->
-        <section class="stage-area">
+        <!-- L0: the embed GROWS with its content (no fixed frame) so the café's
+             "Send order (practice)" is fully visible with no inner scrolling. -->
+        <section class="frame">
           <div id="empty" class="empty">The preview is not running yet. Press <b>Start App Preview</b>.</div>
           <div id="failure" class="failure" hidden></div>
           <iframe id="preview-frame" title="App preview" hidden
@@ -59,16 +59,16 @@
                   referrerpolicy="no-referrer"></iframe>
         </section>
 
-        <!-- Report Problem form (Bug Collector) -->
-        <section class="card report-form" id="report-form" hidden>
-          <h2>Report a problem</h2>
-          <p class="hint">A screenshot and where you are is captured automatically. Add a note or a voice note if you like.</p>
-          <textarea id="bug-note" rows="3" placeholder="What looked wrong? (optional)"></textarea>
-          <div class="report-actions">
-            <button id="bug-send" class="btn primary">Send report</button>
-            <button id="bug-cancel" class="btn">Cancel</button>
+        <section class="card report" id="report-form">
+          <h3>🐞 Report a problem</h3>
+          <div class="hint">A screenshot and where you are is captured automatically. Add a note if you like.</div>
+          <textarea id="bug-note" rows="3" placeholder="e.g. the button looks funny"></textarea>
+          <div class="row" style="display:flex;gap:10px">
+            <button id="bug-send" class="btn primary">Save report</button>
+            <button id="bug-cancel" class="btn quiet">Cancel</button>
           </div>
           <p id="bug-result" class="hint"></p>
+          <div class="saved">Reports are saved as evidence in your project — nothing is sent anywhere.</div>
         </section>
       </main>
     </div>

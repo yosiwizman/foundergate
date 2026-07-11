@@ -3,67 +3,75 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- identity marker "File Cabinet" kept for the launcher health check -->
     <title>FounderGate — File Cabinet (V8-A3)</title>
     <link rel="stylesheet" href="tokens.css" />
     <link rel="stylesheet" href="filecabinet.css" />
   </head>
   <body>
-    <div class="app">
-      <aside class="sidebar">
+    <div class="shell">
+      <aside class="side">
         <div class="brand">FounderGate</div>
-        <nav class="nav">
-          <a class="item">Dashboard</a>
-          <a class="item">Preview Bay</a>
-          <a class="item active">File Cabinet</a>
-          <a class="item">Settings</a>
-        </nav>
-        <div class="sidebar-spacer"></div>
-        <div class="pause-dock"><button id="pause-button" class="pause-btn" type="button">⏸ Pause &amp; get help</button></div>
+        <a class="nav" href="http://localhost:4173">🏠 Home</a>
+        <div class="nav">📦 My Project <span class="tag">V8-B</span></div>
+        <a class="nav" href="http://localhost:4300">👁 Preview App</a>
+        <a class="nav on" href="#">📁 Files</a>
+        <a class="nav" href="http://localhost:4500">💬 Ask Guide</a>
+        <a class="nav" href="http://localhost:4173#waiting">🚩 Decisions <span class="tag" style="color:var(--purple);border-color:rgba(167,139,250,.4)">view only</span></a>
+        <div class="nav">⚙️ Settings <span class="tag">V8-B</span></div>
+        <div class="robot">🤖<br>I'm here to help! Ask me anything about your project.<a class="robot-link" href="http://localhost:4500">Ask Now</a></div>
+        <div class="demo">Demo Mode — no real data · safe to try</div>
       </aside>
 
-      <main class="content">
-        <header class="welcome">
+      <main class="main">
+        <div class="head">
           <div>
-            <h1>File Cabinet</h1>
-            <p class="stage">Browse your project's files safely. Secrets stay hidden; files we don't recognise are blocked.</p>
+            <div class="eyebrow">READ-ONLY</div>
+            <h1>Files</h1>
+            <div class="sub">Browse your project's files safely. Secrets stay hidden; files we don't recognise are blocked. Nothing you do here changes your files.</div>
           </div>
-        </header>
-
-        <div class="cabinet-toolbar">
-          <div class="view-toggle" role="group" aria-label="View">
-            <button id="view-list-btn" class="vt-btn active" type="button" aria-pressed="true">☰ List</button>
-            <button id="view-gallery-btn" class="vt-btn" type="button" aria-pressed="false">📖 Reading</button>
+          <div class="right">
+            <button class="btn primary" id="pause-button" type="button">⏸ Pause &amp; get help</button>
           </div>
-          <label class="ctl">Sort
-            <select id="sort-select" aria-label="Sort files by">
-              <option value="category">Category</option>
-              <option value="name">Name</option>
-              <option value="class">Protection</option>
-              <option value="changed">Recently changed</option>
-            </select>
-          </label>
-          <input id="search-box" class="search-box" type="search" placeholder="Search file names…" aria-label="Search file names" />
-          <button id="show-blocked-btn" class="filter-btn" type="button" aria-pressed="false">🔒 Only protected &amp; blocked</button>
         </div>
-        <p class="tree-tools-hint">Protected files show a lock and a purple mark. Everything here is read-only — nothing you do changes your files.</p>
+
+        <!-- Do-not-touch banner — the FULL list, relocated from the dashboard (Law 54:
+             populated from the project's locks). Calm purple, not alarming. -->
+        <div class="protect" id="dnt-banner">🔒 <b>Please don't change these outside FounderGate:</b> <span id="dnt-list"></span></div>
+
+        <div class="toolbar">
+          <div class="seg" role="group" aria-label="View">
+            <button id="view-list-btn" class="on" type="button" aria-pressed="true">☰ List</button>
+            <button id="view-gallery-btn" type="button" aria-pressed="false">📖 Reading</button>
+          </div>
+          <span class="sortlabel">Sort</span>
+          <select id="sort-select" aria-label="Sort files by">
+            <option value="category">Category</option>
+            <option value="name">Name</option>
+            <option value="class">Safety label</option>
+            <option value="changed">Recently changed</option>
+          </select>
+          <input id="search-box" class="search" type="search" placeholder="Search file names…" aria-label="Search file names" />
+          <button id="show-blocked-btn" class="filterbtn" type="button" aria-pressed="false">🔒 Only protected &amp; blocked</button>
+        </div>
 
         <div class="cabinet view-list" id="cabinet">
           <div class="tree-panel">
-            <section class="tree card" id="tree" aria-label="Files"></section>
+            <section class="tree list" id="tree" aria-label="Files"></section>
           </div>
-          <section class="viewer card" id="viewer">
-            <div class="viewer-empty" id="viewer-empty">Pick a file on the left to preview it.</div>
-            <div class="viewer-head" id="viewer-head" hidden>
+          <section class="viewer reader" id="viewer">
+            <div class="viewer-empty" id="viewer-empty">Pick a file on the left to read it.</div>
+            <div class="viewer-head rhead" id="viewer-head" hidden>
               <div>
                 <b id="viewer-name"></b>
                 <span id="viewer-badge" class="badge"></span>
               </div>
-              <div class="viewer-actions">
+              <div class="actions viewer-actions">
                 <button id="copy-btn" class="btn" hidden>Copy text</button>
                 <button id="download-btn" class="btn" hidden>Download</button>
               </div>
             </div>
-            <pre class="viewer-body" id="viewer-body" hidden></pre>
+            <pre class="viewer-body doc" id="viewer-body" hidden></pre>
             <div class="viewer-blocked" id="viewer-blocked" hidden></div>
             <p id="action-result" class="hint"></p>
           </section>

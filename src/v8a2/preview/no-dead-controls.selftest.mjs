@@ -72,12 +72,18 @@ check("every inert (disabled) button carries a visible label", () => {
   }
 });
 
-check("the three previously-inert controls are present and wired", () => {
-  for (const action of ["restart", "refresh", "clear-cache"]) {
+// FD-IMPLEMENT: the founder control row keeps Restart + Refresh as real, wired
+// controls; Clear Cache was REMOVED from the design (removing a control also satisfies
+// the "no dead control" anti-repeat — there is nothing inert left to click).
+check("the previously-inert controls that remain are present and wired", () => {
+  for (const action of ["restart", "refresh"]) {
     const b = all.find((x) => x.action === action);
     assert.ok(b, `missing control data-action="${action}"`);
     assert.ok(!b.disabled && isWired(b), `control "${action}" is not a wired, working control`);
   }
+  // Clear Cache must not reappear as a DEAD control; if present it must be wired.
+  const cc = all.find((x) => x.action === "clear-cache");
+  if (cc) assert.ok(!cc.disabled && isWired(cc), "clear-cache, if present, must be wired");
 });
 
 check("clicking a control shows visible plain-English feedback (D2)", () => {

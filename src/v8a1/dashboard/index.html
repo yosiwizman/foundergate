@@ -3,141 +3,84 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- identity marker "Truth Dashboard" kept for the launcher health check -->
     <title>FounderGate — Truth Dashboard (V8-A1)</title>
     <link rel="stylesheet" href="tokens.css" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body id="top">
-    <div class="app">
-      <!-- Sidebar -->
-      <aside class="sidebar">
-        <div class="brand" id="brand">FounderGate</div>
-        <nav class="nav" id="home-nav"></nav>
-        <div class="sidebar-spacer"></div>
-        <div class="robot-card">
-          <div class="robot-emoji">🤖</div>
-          <p class="robot-line" id="robot-line"></p>
-          <a class="robot-btn" id="robot-btn" href="#">Ask Now</a>
-        </div>
-        <div class="demo-pill" id="demo-pill"></div>
+    <div class="shell">
+      <aside class="side">
+        <div class="brand">FounderGate</div>
+        <a class="nav on" id="nav-home" href="#top">🏠 Home</a>
+        <div class="nav">📦 My Project <span class="tag">V8-B</span></div>
+        <a class="nav" id="nav-preview" href="http://localhost:4300">👁 Preview App</a>
+        <a class="nav" id="nav-files" href="http://localhost:4400">📁 Files</a>
+        <a class="nav" id="nav-guide" href="http://localhost:4500">💬 Ask Guide</a>
+        <a class="nav" id="nav-decisions" href="#waiting">🚩 Decisions <span class="tag" style="color:var(--purple);border-color:rgba(167,139,250,.4)">view only</span></a>
+        <div class="nav">⚙️ Settings <span class="tag">V8-B</span></div>
+        <div class="robot">🤖<br><span id="robot-line">I'm here to help! Ask me anything about your project.</span><button id="robot-btn">Ask Now</button></div>
+        <div class="demo" id="demo-pill">Demo Mode — no real data · safe to try</div>
       </aside>
 
-      <main class="content">
-        <!-- Top bar: IDENTITY (what is this) + actions -->
-        <header class="topbar">
-          <div class="identity" id="identity">
-            <div class="proj-label" id="proj-label">Project</div>
-            <h1 class="proj-name" id="proj-name">—</h1>
-            <p class="proj-desc" id="proj-desc"></p>
-            <p class="proj-summary" id="proj-summary"></p>
-            <p class="header-honesty" id="header-honesty"></p>
+      <main class="main">
+        <div class="head">
+          <div>
+            <div class="eyebrow">PROJECT</div>
+            <h1 id="proj-name">—</h1>
+            <div class="sub" id="proj-sub"></div>
           </div>
-          <div class="topbar-actions">
-            <a class="btn-ghost" id="get-help" href="#">❓ Get Help</a>
-            <button class="btn-pause" id="pause-button" type="button">⏸ Pause &amp; get help</button>
+          <div class="right">
+            <a class="btn quiet" id="get-help" href="#">? Get Help</a>
+            <button class="btn primary" id="pause-button" type="button">⏸ Pause &amp; get help</button>
           </div>
-        </header>
+        </div>
+
+        <!-- ALIVE LINE — green dot = health/connection (Law 54), NOT run_state -->
+        <div class="alive">
+          <div class="dot" id="alive-dot"></div>
+          <div><b id="alive-text">—</b> <span class="wait" id="alive-wait"></span> <span id="alive-waitcont"></span></div>
+          <div class="demo-note" id="alive-demo"></div>
+        </div>
+
+        <div class="chips" id="chips"></div>
+        <div class="honesty" id="honesty"></div>
+
+        <div class="act">
+          <div class="card needs" id="waiting">
+            <h3><span id="waiting-title">⭐ Waiting for You</span> <span class="badge amber" id="decision-tag">Decision Needed</span></h3>
+            <div class="plain" id="waiting-plain"></div>
+            <div class="gatebox">
+              <b id="gate-title">—</b>
+              <span id="gate-desc"></span>
+            </div>
+            <div class="row">
+              <button class="btn primary" id="read-decision" type="button">Read the Decision</button>
+              <button class="btn" id="pause-instead" type="button">⏸ Pause instead</button>
+              <span class="note" id="waiting-note"></span>
+            </div>
+          </div>
+          <div class="split">
+            <div class="card next">
+              <h3>🧭 What's Next</h3>
+              <div class="feed" id="whatsnext"></div>
+            </div>
+            <div class="card">
+              <h3>🕐 What Happened Recently</h3>
+              <div class="feed" id="recent"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quick" id="tiles"></div>
+
+        <div class="foot" id="foot"></div>
+        <div class="footnotes">
+          <span id="fn-good"></span><br>
+          <span id="fn-protected"></span><br>
+          <span id="fn-record"></span>
+        </div>
         <p id="pause-scope" class="pause-scope" hidden></p>
-
-        <!-- ===================== LAYER 1 — the only thing above the fold ===================== -->
-        <section class="layer1" id="layer1">
-          <div class="chips-row" id="status-chips"></div>
-          <p class="strip-note" id="ci-honesty"></p>
-          <div class="next-action" id="next-action">
-            <a class="btn-primary" id="read-decision" href="#waiting">Read the Decision</a>
-            <span class="next-note" id="next-note"></span>
-          </div>
-        </section>
-
-        <!-- ===================== LAYER 2 — one scroll: context ===================== -->
-        <div class="layer2" id="layer2">
-          <div class="mainrow">
-            <section class="card waiting" id="waiting">
-              <h2><span id="waiting-title">⭐ Waiting for You</span> <span class="tag" id="decision-needed-tag"></span></h2>
-              <p class="decision-state" id="decision-state"></p>
-              <p class="lead" id="waiting-lead"></p>
-              <div class="gate-box">
-                <div class="gate-art" aria-hidden="true">🚧</div>
-                <div>
-                  <div class="gate-title" id="gate-title"></div>
-                  <p class="gate-desc" id="gate-desc"></p>
-                </div>
-              </div>
-              <p class="note" id="waiting-note"></p>
-            </section>
-
-            <section class="card activity">
-              <h2 id="activity-title">🕐 What Happened Recently</h2>
-              <ul class="feed" id="activity-feed"></ul>
-              <p class="dev-detail" id="pr-detail"></p>
-            </section>
-          </div>
-
-          <section class="card">
-            <h2 class="tiles-title">Quick Things You Can Do</h2>
-            <div class="tiles" id="tiles"></div>
-          </section>
-        </div>
-
-        <!-- ===================== LAYER 3 — collapsed by default: detail ===================== -->
-        <div class="layer3">
-          <details class="disclose">
-            <summary>🛡 Is it safe? &amp; what it costs</summary>
-            <div class="disclose-body bottomrow">
-              <section class="card safe-card">
-                <h2 id="safe-title">🛡 Is It Safe?</h2>
-                <ul class="checklist" id="safe-lines"></ul>
-                <p class="verdict" id="safe-verdict"></p>
-              </section>
-              <section class="card pause-card">
-                <h2 id="pausecard-title">⏸ Can I Pause It?</h2>
-                <p id="pausecard-lead"></p>
-                <button class="btn-pause wide" id="pause-button-2" type="button">⏸ Pause &amp; get help</button>
-                <p class="info-note" id="pausecard-note"></p>
-              </section>
-              <section class="card cost-card" id="cost-card">
-                <h2 id="cost-title">💲 How Much Does It Cost?</h2>
-                <p id="cost-lead"></p>
-                <div class="cost-big" id="cost-big">—</div>
-                <div class="cost-per" id="cost-per"></div>
-                <div class="cost-badge" id="cost-disclaimer"></div>
-                <p class="hint" id="cost-note"></p>
-              </section>
-            </div>
-          </details>
-
-          <details class="disclose">
-            <summary>🔒 Files to leave alone &amp; where the evidence is</summary>
-            <div class="disclose-body">
-              <section class="card protect" id="do-not-touch">
-                <h2><span class="protect-icon" aria-hidden="true">🔒</span> <span id="dnt-title">Please Don't Change These (Important!)</span></h2>
-                <p class="hint" id="dnt-subtitle"></p>
-                <ul id="do-not-touch-list"></ul>
-              </section>
-              <section class="card" id="evidence-card">
-                <h2>Evidence</h2>
-                <ul id="evidence-list"></ul>
-              </section>
-            </div>
-          </details>
-
-          <details class="disclose">
-            <summary>🩺 Health check &amp; good things to remember</summary>
-            <div class="disclose-body bottomrow2">
-              <section class="card" id="doctor-card">
-                <h2 id="doctor-title">Health check</h2>
-                <p>Version <b id="doctor-version"></b> · files found <b id="doctor-present"></b></p>
-                <ul class="checkgrid" id="doctor-checks"></ul>
-              </section>
-              <section class="card remember" id="failure-modes">
-                <h2 id="fm-title">Good things to remember</h2>
-                <ul id="failure-modes-list"></ul>
-              </section>
-            </div>
-          </details>
-        </div>
-
-        <p class="home-footer" id="home-footer"></p>
       </main>
     </div>
     <script type="module" src="app.js"></script>

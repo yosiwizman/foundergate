@@ -8,6 +8,18 @@
 const $ = (id) => document.getElementById(id);
 const LABEL_KEYS = ["environment", "data", "sends", "payments", "build", "release_label", "data_classification", "proof_recording"];
 
+// L0 — the embed GROWS with its content. The sandboxed café posts its natural height;
+// we size the iframe to it (clamped) so "Send order (practice)" is never clipped and
+// the founder never has to scroll inside the frame. Payload-shape validated + clamped.
+const MIN_EMBED = 360, MAX_EMBED = 2400;
+window.addEventListener("message", (ev) => {
+  const h = ev.data && ev.data.fgPreviewHeight;
+  if (typeof h === "number" && isFinite(h) && h > 0) {
+    const f = $("preview-frame");
+    if (f) f.style.height = Math.max(MIN_EMBED, Math.min(MAX_EMBED, Math.ceil(h))) + "px";
+  }
+});
+
 function renderLabels(labels) {
   const bar = $("labelbar");
   bar.innerHTML = "";
@@ -101,6 +113,9 @@ document.querySelectorAll(".controls .btn[data-action]").forEach((b) => {
   });
 });
 
+const askNow = $("ask-now");
+if (askNow) askNow.addEventListener("click", () => { window.location.href = "http://localhost:4500"; });
+
 $("fullscreen").addEventListener("click", () => {
   const f = $("preview-frame");
   if (!f.hidden && f.requestFullscreen) f.requestFullscreen().catch(() => {});
@@ -115,9 +130,10 @@ $("pause-button").addEventListener("click", async () => {
   $("pause-button").textContent = "✓ Paused — help is on the way";
 });
 
-// Report Problem (Bug Collector)
-$("report").addEventListener("click", () => { $("report-form").hidden = false; });
-$("bug-cancel").addEventListener("click", () => { $("report-form").hidden = true; });
+// Report Problem (Bug Collector) — the form is always visible (founder design); the
+// toolbar button jumps focus to it, Cancel clears the note. Reports SAVE (not send).
+$("report").addEventListener("click", () => { $("bug-note").focus(); });
+$("bug-cancel").addEventListener("click", () => { $("bug-note").value = ""; $("bug-result").textContent = ""; });
 $("bug-send").addEventListener("click", async () => {
   const note = $("bug-note").value;
   const res = await fetch("/api/bug/report", {
