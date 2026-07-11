@@ -9,6 +9,7 @@
     "schema_version": { "type": "string", "minLength": 1 },
     "project_id": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
     "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1, "description": "Optional. One-line plain-English description of what the project is (shown in the dashboard identity region)." },
     "founder_name": { "type": "string", "minLength": 1, "description": "Optional. Display-only, for the welcome header. Absent → a generic warm greeting (no invented name)." },
     "repo": { "type": "string", "minLength": 1 },
     "attached": { "type": "boolean" },

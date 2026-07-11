@@ -8,7 +8,7 @@
   </head>
   <body id="top">
     <div class="app">
-      <!-- Friendly sidebar -->
+      <!-- Sidebar -->
       <aside class="sidebar">
         <div class="brand" id="brand">FounderGate</div>
         <nav class="nav" id="home-nav"></nav>
@@ -21,13 +21,13 @@
         <div class="demo-pill" id="demo-pill"></div>
       </aside>
 
-      <!-- Main content -->
       <main class="content">
-        <!-- Top bar -->
+        <!-- Top bar: IDENTITY (what is this) + actions -->
         <header class="topbar">
-          <div>
-            <h1 id="hi">Hi there! 👋</h1>
-            <p class="subtitle" id="subtitle"></p>
+          <div class="identity" id="identity">
+            <h1 class="proj-name" id="proj-name">—</h1>
+            <p class="proj-desc" id="proj-desc"></p>
+            <p class="proj-summary" id="proj-summary"></p>
             <p class="header-honesty" id="header-honesty"></p>
           </div>
           <div class="topbar-actions">
@@ -37,79 +37,105 @@
         </header>
         <p id="pause-scope" class="pause-scope" hidden></p>
 
-        <!-- F1: plain-language project summary -->
-        <section class="summary-card" id="summary-card"></section>
-
-        <!-- Status strip -->
-        <section class="card status-strip">
-          <div class="strip-head"><b id="status-label">Project Status</b> <span class="state-pretty" id="state-pretty"></span></div>
+        <!-- ===================== LAYER 1 — the only thing above the fold ===================== -->
+        <section class="layer1" id="layer1">
           <div class="chips-row" id="status-chips"></div>
           <p class="strip-note" id="ci-honesty"></p>
+          <div class="next-action" id="next-action">
+            <a class="btn-primary" id="read-decision" href="#waiting">Read the Decision</a>
+            <span class="next-note" id="next-note"></span>
+          </div>
+          <div class="scroll-cue" id="scroll-cue">More below ↓</div>
         </section>
 
-        <!-- Main row -->
-        <div class="mainrow">
-          <section class="card waiting" id="waiting">
-            <h2><span id="waiting-title">⭐ Waiting for You</span> <span class="tag" id="decision-needed-tag"></span></h2>
-            <p class="decision-state" id="decision-state"></p>
-            <p class="lead" id="waiting-lead"></p>
-            <div class="gate-box">
-              <div class="gate-art" aria-hidden="true">🚧</div>
-              <div>
-                <div class="gate-title" id="gate-title"></div>
-                <p class="gate-desc" id="gate-desc"></p>
-                <a class="btn-primary" id="read-decision" href="#waiting">Read the Decision</a>
+        <!-- ===================== LAYER 2 — one scroll: context ===================== -->
+        <div class="layer2" id="layer2">
+          <div class="mainrow">
+            <section class="card waiting" id="waiting">
+              <h2><span id="waiting-title">⭐ Waiting for You</span> <span class="tag" id="decision-needed-tag"></span></h2>
+              <p class="decision-state" id="decision-state"></p>
+              <p class="lead" id="waiting-lead"></p>
+              <div class="gate-box">
+                <div class="gate-art" aria-hidden="true">🚧</div>
+                <div>
+                  <div class="gate-title" id="gate-title"></div>
+                  <p class="gate-desc" id="gate-desc"></p>
+                </div>
               </div>
+              <p class="note" id="waiting-note"></p>
+            </section>
+
+            <section class="card activity">
+              <h2 id="activity-title">🕐 What Happened Recently</h2>
+              <ul class="feed" id="activity-feed"></ul>
+              <p class="dev-detail" id="pr-detail"></p>
+            </section>
+          </div>
+
+          <section class="card">
+            <h2 class="tiles-title">Quick Things You Can Do</h2>
+            <div class="tiles" id="tiles"></div>
+          </section>
+        </div>
+
+        <!-- ===================== LAYER 3 — collapsed by default: detail ===================== -->
+        <div class="layer3">
+          <details class="disclose">
+            <summary>🛡 Is it safe? &amp; what it costs</summary>
+            <div class="disclose-body bottomrow">
+              <section class="card safe-card">
+                <h2 id="safe-title">🛡 Is It Safe?</h2>
+                <ul class="checklist" id="safe-lines"></ul>
+                <p class="verdict" id="safe-verdict"></p>
+              </section>
+              <section class="card pause-card">
+                <h2 id="pausecard-title">⏸ Can I Pause It?</h2>
+                <p id="pausecard-lead"></p>
+                <button class="btn-pause wide" id="pause-button-2" type="button">⏸ Pause &amp; get help</button>
+                <p class="info-note" id="pausecard-note"></p>
+              </section>
+              <section class="card cost-card" id="cost-card">
+                <h2 id="cost-title">💲 How Much Does It Cost?</h2>
+                <p id="cost-lead"></p>
+                <div class="cost-big" id="cost-big">—</div>
+                <div class="cost-per" id="cost-per"></div>
+                <div class="cost-badge" id="cost-disclaimer"></div>
+                <p class="hint" id="cost-note"></p>
+              </section>
             </div>
-            <p class="note" id="waiting-note"></p>
-          </section>
+          </details>
 
-          <section class="card activity">
-            <h2 id="activity-title">🕐 What Happened Recently</h2>
-            <ul class="feed" id="activity-feed"></ul>
-            <p class="dev-detail" id="pr-detail"></p>
-          </section>
+          <details class="disclose">
+            <summary>🔒 Files to leave alone &amp; where the evidence is</summary>
+            <div class="disclose-body">
+              <section class="card protect" id="do-not-touch">
+                <h2><span class="protect-icon" aria-hidden="true">🔒</span> <span id="dnt-title">Please Don't Change These (Important!)</span></h2>
+                <p class="hint" id="dnt-subtitle"></p>
+                <ul id="do-not-touch-list"></ul>
+              </section>
+              <section class="card" id="evidence-card">
+                <h2>Evidence</h2>
+                <ul id="evidence-list"></ul>
+              </section>
+            </div>
+          </details>
+
+          <details class="disclose">
+            <summary>🩺 Health check &amp; good things to remember</summary>
+            <div class="disclose-body bottomrow2">
+              <section class="card" id="doctor-card">
+                <h2 id="doctor-title">Health check</h2>
+                <p>Version <b id="doctor-version"></b> · files found <b id="doctor-present"></b></p>
+                <ul class="checkgrid" id="doctor-checks"></ul>
+              </section>
+              <section class="card remember" id="failure-modes">
+                <h2 id="fm-title">Good things to remember</h2>
+                <ul id="failure-modes-list"></ul>
+              </section>
+            </div>
+          </details>
         </div>
 
-        <!-- Quick tiles -->
-        <section class="card">
-          <h2 class="tiles-title">Quick Things You Can Do</h2>
-          <div class="tiles" id="tiles"></div>
-        </section>
-
-        <!-- Don't change these -->
-        <section class="card protect" id="do-not-touch">
-          <h2><span class="protect-icon" aria-hidden="true">🔒</span> <span id="dnt-title">Please Don't Change These (Important!)</span></h2>
-          <p class="hint" id="dnt-subtitle"></p>
-          <ul id="do-not-touch-list"></ul>
-        </section>
-
-        <!-- Bottom three cards -->
-        <div class="bottomrow">
-          <section class="card safe-card">
-            <h2 id="safe-title">🛡 Is It Safe?</h2>
-            <ul class="checklist" id="safe-lines"></ul>
-            <p class="verdict" id="safe-verdict"></p>
-          </section>
-
-          <section class="card pause-card">
-            <h2 id="pausecard-title">⏸ Can I Pause It?</h2>
-            <p id="pausecard-lead"></p>
-            <button class="btn-pause wide" id="pause-button-2" type="button">⏸ Pause &amp; get help</button>
-            <p class="info-note" id="pausecard-note"></p>
-          </section>
-
-          <section class="card cost-card" id="cost-card">
-            <h2 id="cost-title">💲 How Much Does It Cost?</h2>
-            <p id="cost-lead"></p>
-            <div class="cost-big" id="cost-big">—</div>
-            <div class="cost-per" id="cost-per"></div>
-            <div class="cost-badge" id="cost-disclaimer"></div>
-            <p class="hint" id="cost-note"></p>
-          </section>
-        </div>
-
-        <!-- Footer -->
         <p class="home-footer" id="home-footer"></p>
       </main>
     </div>

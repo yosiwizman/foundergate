@@ -3,29 +3,16 @@
   "terminal_copy_paste_count": 0,
   "clicks_to_see_current_status": 0,
   "clicks_to_pause": 1,
-  "pause_control_always_visible": true,
-  "above_the_fold": {
-    "plain_summary": true,
-    "status_strip": true
-  },
-  "answers_scannable": 8,
+  "project_name_in_header": "Luna Café — order ahead",
+  "answers_total": 8,
+  "answers_above_fold": 6,
+  "fold_budget": 6,
+  "layer2_below_fold": true,
   "cost_figure_px": 44,
   "decision_view_only": true,
   "pause_control_px": {
-    "w": 147,
-    "h": 35
+    "w": 162,
+    "h": 44
   },
-  "disabled_nav_stage_labels": [
-    {
-      "link": false,
-      "disabled": true,
-      "stage": "V8-B"
-    },
-    {
-      "link": false,
-      "disabled": true,
-      "stage": "V8-B"
-    }
-  ],
   "banned_words_visible": false
 }

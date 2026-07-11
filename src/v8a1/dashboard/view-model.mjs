@@ -226,6 +226,15 @@ export function buildView(model) {
   const home = {
     hi: founderName ? `Hi ${founderName}! 👋` : "Hi there! 👋",
     subtitle: "Here's what's happening with your project today.",
+    // R1 (identity-first): the top-left "golden triangle" answers "what is this and
+    // what should I do" — project NAME + one-line description + the plain summary,
+    // all model-derived (Law 54). This closes the Run-3 regression (missing name).
+    identity: {
+      name: (m.connected && m.project && m.project.name) ? m.project.name : (m.connected ? "Your project" : "No project connected yet"),
+      description: (m.connected && m.project && m.project.description) ? m.project.description : "",
+      summary: f1Summary,
+    },
+    nextNote: hasPendingDecision ? "Nothing will happen until you decide." : "You're all caught up — nothing needs you right now.",
     summary: f1Summary,
     statusLabel: "Project Status",
     stateToken: m.state || UNKNOWN,
@@ -414,6 +423,8 @@ export function visibleStrings(view) {
   if (view.home) {
     const h = view.home;
     push(h.hi, h.subtitle, h.summary, h.statusLabel, h.statePretty, h.footer, h.demo, h.robot.line, h.robot.button);
+    if (h.identity) push(h.identity.name, h.identity.description, h.identity.summary);
+    push(h.nextNote);
     h.statusStrip.forEach((c) => push(c.name, c.value));
     push(h.waiting.title, h.waiting.lead, h.waiting.gateTitle, h.waiting.gateDesc, h.waiting.buttonLabel, h.waiting.note);
     h.activity.forEach((a) => push(a.text));
