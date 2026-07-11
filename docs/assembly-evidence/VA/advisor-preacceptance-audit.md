@@ -1,5 +1,14 @@
 # INDEPENDENT PRE-ACCEPTANCE DISK/GIT AUDIT — FounderGate V8-A gate
-Repo: `/Users/yosiwizman/Projects/foundergate` · main @ `689eb44` (Merge PR #55) · Auditor: independent, read-only · Date: 2026-07-10
+
+> **Provenance (for the record).** This audit was performed by a **READ-ONLY subagent dispatched by the CTO** — it
+> is *independent from the CTO builder role* but is **NOT** the founder's separate Terminal Advisor lane. It ran
+> disk/git inspection only (no product execution, no writes, no commits). The CTO committed the report and made
+> **one meaning-preserving escaping edit** (the placeholder-pattern list in Item 6, so the report itself does not
+> trip the evidence-integrity guard — already annotated inline). The audit stands as supporting evidence; the
+> **V8-A acceptance gate will cite the stranger-run evidence (`stranger-test-run-*.md`) as the PRIMARY acceptance
+> basis**, with this audit as a corroborating disk-level check.
+
+Repo: `/Users/yosiwizman/Projects/foundergate` · main @ `689eb44` (Merge PR #55) · Auditor: independent read-only subagent (CTO-dispatched) · Date: 2026-07-10
 
 Method note: verified from disk + git only. `npm test` was NOT executed (would run product code) — live self-test/CI green status is therefore UNKNOWN and treated as such. `gh` is installed and authenticated (account `yosiwizman`); read-only `gh api` was used for live branch protection.
 

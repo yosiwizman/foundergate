@@ -64,6 +64,8 @@
 
 | 2026-07-10 | VA-HONESTY-RESTORE | Relocate the 5 A1 copy-polish honesty translations into the friendly layout (green-CI companion near Checks chip; MOCK_ONLY demo line; Decision-Needed + waiting-for-your-decision; PR line) — required-strings smoke now a SUPERSET, never deleted; Safety chip model-derived (no blanket 'everything safe', Law 54) | src/v8a1/dashboard/{view-model,app,index,styles,smoke}.mjs · home-model.selftest.mjs | #54 | e9a8afe6fcfdd30bc2f4f58cc879f42c0df4785d | Builder + CI (https://github.com/yosiwizman/foundergate/actions/runs/29134179533) | DONE |
 
+| 2026-07-10 | VA-PREACCEPT-AUDIT | Independent pre-acceptance disk/git audit (6/6 PASS; V8-A correctly PENDING) + fix of its 2 non-blocking findings (safe-card model-derived; stale test-count). **Provenance: performed by a READ-ONLY subagent dispatched by the CTO — independent of the CTO builder role but NOT the founder’s separate Terminal Advisor lane; CTO made one meaning-preserving escaping edit (annotated inline). Corroborating evidence only — the stranger-run evidence is the PRIMARY V8-A acceptance basis.** | docs/assembly-evidence/VA/advisor-preacceptance-audit.md · src/v8a1/dashboard/{view-model,home-model.selftest}.mjs | #56 | f077d2d | Independent read-only subagent + FounderGate CTO + CI | DONE |
+
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their
 literal placeholder tokens, which count as UNKNOWN.
