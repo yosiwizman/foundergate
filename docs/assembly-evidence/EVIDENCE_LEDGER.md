@@ -60,6 +60,8 @@
 
 | 2026-07-10 | VA-LOCKS | Permanent controls closing two Run-1 incident classes: (1) branch protection on main requires the `selftests` check + enforce_admins=true — **the PR-#43 red-main incident is closed by this mechanical control, not by promise**; (2) fixture-pristine guard (content-hash manifest) locks the fixture-corruption class; launcher runs on a throwaway copy (PR #44). Run-2 kit refreshed. | docs/assembly-evidence/VA-LOCKS/ · src/v8a1/fixture-pristine.selftest.mjs · src/v8a1/fixture/fixture.manifest.json · docs/assembly-evidence/VA/stranger-test-run-2.md | #49 | 2ea6e351a3c5194d8a000076323f994f84455d7b | FounderGate CTO + CI (https://github.com/yosiwizman/foundergate/actions/runs/29116229293) | DONE |
 
+| 2026-07-10 | VA-REPAIR-2 | Friendly dashboard redesign (Run-2 findings, wide-safe UI): F1 plain project summary · F2 big display-only $50/mo card · F3 decision plain summary; legal corrections (honest pause; view-only decision, Law 55); friendly single page adapted to dark theme, all copy Law-54 templates over real fields | src/v8a1/dashboard/{index.html,styles.css,app.js,view-model.mjs} · home-model.selftest.mjs (new) · scan-budget/smoke adapted · docs/assembly-evidence/VA-REPAIR-2/ | #52 | 99f5b2c4024a8a7e535a40687760c8d757b5a9eb | Builder + CI (https://github.com/yosiwizman/foundergate/actions/runs/29133169632) | DONE |
+
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their
 literal placeholder tokens, which count as UNKNOWN.
