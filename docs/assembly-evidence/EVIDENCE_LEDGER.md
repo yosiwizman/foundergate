@@ -76,6 +76,8 @@
 
 | 2026-07-11 | V8-B-CONTRACT-DRAFT | V8-B build contract merged as a DRAFT (PENDING V8-A ACCEPTANCE; authorizes nothing, Law 69). Sheriff-verified: exactly one new file; DRAFT marking, Law 69, staged G1-B-VB1..VB5 gates, verbatim per-path sensitivity ruling, V8-A forbidden list, adversarial-proof acceptance pattern all present. GAP reported (not fixed, founder-owned): the Attached Projects Registry / persistent-attach (roadmap V8-B) is NOT a named DAG substep | docs/lanes/V8-B-build-contract.md | #72 | 2c13bc9c846b8a1f7c205781161dca5c42f3d82f | FounderGate CTO (Harvest Terminal, merge sheriff) + CI | DONE |
 
+| 2026-07-11 | FD-IMPLEMENT | Founder design package v2 implemented pixel-faithful across all four apps + L0 fixed (Preview embed grows with content); accordions deleted with guard relocations; **founder WITNESSED 2026-07-11 (deviations accepted) & MERGED**. Design package committed at docs/lanes/founder-design-v2/ so the spec reference resolves on disk | src/ui/tokens.css · src/v8a{1,2,3,4}/* · docs/lanes/founder-design-v2/ · docs/assembly-evidence/visual-review/VISUAL_REVIEW.md · docs/assembly-evidence/FD/fd-acceptance.md | #73 | 85a59f9d4a054bdbb5bf69cb5d6d4d013ea794ae | Founder witness + FounderGate CTO + CI | DONE |
+
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their
 literal placeholder tokens, which count as UNKNOWN.

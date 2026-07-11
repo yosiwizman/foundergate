@@ -34,7 +34,7 @@
 
 | Run 6 — Stranger Test | ABORTED (pre-flight) | founder finding; machine-accountability defect recorded (PR #70) |
 | VA-HARNESS-TRUTH | LANDED | true-viewport + in-embed + mechanical critical-path gate + Provenance/Harness-Truth laws (PR #71 `0414887`) |
-| FD-IMPLEMENT — founder design v2 | BUILT · PENDING FOUNDER WITNESS | 4 apps pixel-faithful + L0 fixed (PR #73); not merged; visual self-review recorded |
+| FD-IMPLEMENT — founder design v2 | WITNESSED & MERGED | 4 apps pixel-faithful + L0 fixed (PR #73 `85a59f9`); founder-accepted 2026-07-11; visual self-review recorded |
 | V8-B build contract | MERGED (DRAFT · PENDING V8-A ACCEPTANCE) | PR #72 `2c13bc9`; attach-registry DAG gap reported (founder-owned) |
 
 ## Contracts & plans on file

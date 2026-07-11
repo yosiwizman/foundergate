@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FounderGate Mockup — 03 File Cabinet (founder design)</title>
+<link rel="stylesheet" href="fg.css">
+<style>
+.toolbar{display:flex;gap:10px;align-items:center;margin:6px 0 14px;flex-wrap:wrap}
+.seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{background:var(--panel);border:0;color:var(--muted);font-weight:700;font-size:13px;padding:8px 14px;cursor:pointer}
+.seg button.on{background:var(--blue);color:#fff}
+select,.search{background:var(--panel);border:1px solid var(--line);border-radius:9px;color:var(--text);padding:8px 12px;font:inherit;font-size:13.5px}
+.search{flex:1;min-width:220px}
+.filterbtn{border:1px solid rgba(167,139,250,.5);color:var(--purple);background:transparent;border-radius:9px;font-weight:700;font-size:13px;padding:8px 14px}
+.protect{border:1px solid rgba(167,139,250,.45);background:rgba(167,139,250,.07);border-radius:var(--radius);padding:12px 16px;margin-bottom:14px;font-size:13.5px}
+.protect b{color:var(--purple)}
+.protect span{color:var(--muted)}
+.cab{display:grid;grid-template-columns:300px 1fr;gap:14px;align-items:start}
+.list{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:8px;max-height:560px;overflow:auto}
+.grp{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--dim);padding:10px 10px 4px}
+.f{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;font-size:13px;cursor:pointer}
+.f:hover{background:var(--panel2)}
+.f.sel{background:var(--panel2);outline:1px solid var(--line)}
+.f .pre{color:var(--dim)}
+.f .name{color:var(--text);font-weight:600}
+.f .b{margin-left:auto;font-size:10px;font-weight:800;border-radius:99px;padding:1px 8px;white-space:nowrap}
+.b.safe{background:rgba(34,197,94,.13);color:var(--green)}
+.b.proj{background:rgba(147,160,180,.12);color:var(--muted)}
+.b.lock{background:rgba(167,139,250,.14);color:var(--purple)}
+.reader{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;min-height:560px}
+.reader .rhead{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.reader .rhead h3{font-size:16px;font-weight:800}
+.reader .rhead .b{font-size:10.5px;font-weight:800;border-radius:99px;padding:2px 9px}
+.reader .actions{margin-left:auto;display:flex;gap:8px}
+.doc{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:22px 26px;font-size:15px;line-height:1.8;color:var(--text)}
+.doc h4{font-size:18px;margin-bottom:10px}
+.doc p{color:var(--muted);margin-bottom:10px}
+</style></head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="brand">FounderGate</div>
+    <div class="nav">🏠 Home</div>
+    <div class="nav">📦 My Project <span class="tag">V8-B</span></div>
+    <div class="nav">👁 Preview App</div>
+    <div class="nav on">📁 Files</div>
+    <div class="nav">💬 Ask Guide</div>
+    <div class="nav">🚩 Decisions <span class="tag" style="color:var(--purple);border-color:rgba(167,139,250,.4)">view only</span></div>
+    <div class="nav">⚙️ Settings <span class="tag">V8-B</span></div>
+    <div class="robot">🤖<br>I'm here to help! Ask me anything about your project.<button>Ask Now</button></div>
+    <div class="demo">Demo Mode — no real data · safe to try</div>
+  </aside>
+  <main class="main">
+    <div class="head">
+      <div>
+        <div class="eyebrow">READ-ONLY</div>
+        <h1>Files</h1>
+        <div class="sub">Browse your project's files safely. Secrets stay hidden; files we don't recognise are blocked. Nothing you do here changes your files.</div>
+      </div>
+      <div class="right"><button class="btn primary">⏸ Pause &amp; get help</button></div>
+    </div>
+
+    <div class="protect">🔒 <b>Please don't change these outside FounderGate:</b> <span><b>.foundergate/</b> — harness state (the harness owns it) · <b>docs/PANIC_CARD.md</b> — safety document. They keep your project safe.</span></div>
+
+    <div class="toolbar">
+      <div class="seg"><button class="on">☰ List</button><button>📖 Reading</button></div>
+      <span style="color:var(--dim);font-size:13px">Sort</span>
+      <select><option>Recently changed</option><option>Name</option><option>Category</option><option>Safety label</option></select>
+      <input class="search" placeholder="Search file names…">
+      <button class="filterbtn">🔒 Only protected &amp; blocked</button>
+    </div>
+
+    <div class="cab">
+      <div class="list">
+        <div class="grp">FOUNDER DOCUMENTS</div>
+        <div class="f sel"><span>📄</span><span class="pre">docs/</span><span class="name">CURRENT_STATUS.md</span><span class="b safe">SAFE · read</span></div>
+        <div class="f"><span>📄</span><span class="pre">docs/</span><span class="name">README.md</span><span class="b safe">SAFE · read</span></div>
+        <div class="grp">APP SOURCE</div>
+        <div class="f"><span>📄</span><span class="pre">app/</span><span class="name">index.html</span><span class="b proj">project file</span></div>
+        <div class="grp">EVIDENCE</div>
+        <div class="f"><span>📄</span><span class="pre">.foundergate/evidence/</span><span class="name">e1-example.json</span><span class="b proj">project file</span></div>
+        <div class="f"><span>📄</span><span class="pre">.foundergate/witnesses/</span><span class="name">w1-example.json</span><span class="b proj">project file</span></div>
+        <div class="grp">PROTECTED &amp; NOT SORTED YET</div>
+        <div class="f"><span>🔒</span><span class="pre"></span><span class="name">mock-config.txt</span><span class="b lock">SECRET · hidden</span></div>
+        <div class="f"><span>🔒</span><span class="pre">.foundergate/</span><span class="name">status.json</span><span class="b lock">not sorted yet</span></div>
+        <div class="f"><span>🔒</span><span class="pre">.foundergate/</span><span class="name">cost_budget.json</span><span class="b lock">not sorted yet</span></div>
+        <div class="f"><span>🔒</span><span class="pre"></span><span class="name">mystery.dat</span><span class="b lock">not sorted yet</span></div>
+      </div>
+
+      <div class="reader">
+        <div class="rhead">
+          <h3>docs/CURRENT_STATUS.md</h3>
+          <span class="b badge green">PUBLIC_SAFE · safe to read</span>
+          <div class="actions"><button class="btn">Copy text</button><button class="btn">Download</button></div>
+        </div>
+        <div class="doc">
+          <h4># Current Status (mock)</h4>
+          <p>This is a MOCK_ONLY founder document. It is safe to read, copy, and download in the File Cabinet.</p>
+          <p>The reading pane is the point of this design: a document opens <b style="color:var(--text)">big and readable</b>, like a real page — not a small side window.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>
