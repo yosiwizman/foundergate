@@ -5,40 +5,26 @@
   "clicks_to_pause": 1,
   "pause_control_always_visible": true,
   "above_the_fold": {
-    "questions_1_to_4": true,
-    "current_status": true
+    "plain_summary": true,
+    "status_strip": true
   },
-  "page_scroll_height_px": 1441,
-  "scroll_budget_px": 1500,
-  "scroll_within_budget": true,
+  "answers_scannable": 8,
+  "cost_figure_px": 44,
+  "decision_view_only": true,
   "pause_control_px": {
-    "w": 192,
-    "h": 34
+    "w": 147,
+    "h": 35
   },
   "disabled_nav_stage_labels": [
     {
-      "id": "data",
+      "link": false,
+      "disabled": true,
       "stage": "V8-B"
     },
     {
-      "id": "usage",
+      "link": false,
+      "disabled": true,
       "stage": "V8-B"
-    },
-    {
-      "id": "statistics",
-      "stage": "V8-C"
-    },
-    {
-      "id": "team",
-      "stage": "V8-C"
-    },
-    {
-      "id": "notifications",
-      "stage": "V8-B"
-    },
-    {
-      "id": "project-guide",
-      "stage": "V8-A4"
     }
   ],
   "banned_words_visible": false

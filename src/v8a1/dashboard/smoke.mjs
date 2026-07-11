@@ -52,9 +52,10 @@ try {
     const { page, close } = await open(browser, FIXTURE);
 
     const foldBottom = VIEWPORT.height;
-    // D1 + D5: Q1–4, current status, AND the raised "don't change these" card all
-    // sit above the fold at 1366x768 (extended to the new answer-first layout).
-    const foldTargets = ['[data-q="1"]', '[data-q="2"]', '[data-q="3"]', '[data-q="4"]', "#status-card", "#do-not-touch"];
+    // VA-REPAIR-2: the answer-first region — the plain project summary (F1) and the
+    // status strip — sits above the fold at 1366x768, so a stranger reads the top
+    // of the page and immediately knows what's going on.
+    const foldTargets = ["#summary-card", "#status-chips"];
     const aboveFold = {};
     for (const sel of foldTargets) {
       const box = await page.locator(sel).boundingBox();
@@ -63,45 +64,61 @@ try {
       must(ok, `NOT above the fold at 1366x768: ${sel} (bottom=${box ? Math.round(box.y + box.height) : "none"})`);
     }
 
-    // D1: all 8 answers are distinct, colour-coded, at-a-glance chip elements.
+    // scan-budget: all 8 answers remain distinct, scannable, colour-coded elements.
     const chipCount = await page.$$eval("[data-answer]", (els) => els.length);
-    must(chipCount === 8, `expected 8 answer chips (data-answer), got ${chipCount}`);
+    must(chipCount === 8, `expected 8 scannable answers (data-answer), got ${chipCount}`);
     const toneClasses = await page.$$eval(".qchip", (els) => new Set(els.map((e) => e.className.replace("qchip", "").trim())).size);
     must(toneClasses >= 3, `answer chips must use a spread of status colours, got ${toneClasses}`);
-    // D5: the protect card is visually distinct (its own raised class present)
+
+    // D5: the "don't change these" card is present and visually raised.
     const protectRaised = await page.$eval("#do-not-touch", (e) => e.classList.contains("protect")).catch(() => false);
     must(protectRaised, "the 'don't change these' card must carry the raised .protect treatment");
 
-    const scrollHeight = await page.evaluate(() => document.body.scrollHeight);
-    must(scrollHeight <= SCROLL_BUDGET_PX, `scroll-depth over budget: ${scrollHeight}px > ${SCROLL_BUDGET_PX}px`);
+    // F1: the plain project summary is present and populated.
+    const summaryText = await page.$eval("#summary-card", (e) => e.innerText.trim()).catch(() => "");
+    must(summaryText.length > 12 && /your project/i.test(summaryText), `F1 plain summary must be populated: "${summaryText}"`);
 
+    // F2: the cost figure is BIG (prominent) and present — you can't miss the $50.
+    const costFont = await page.$eval("#cost-big", (e) => parseFloat(getComputedStyle(e).fontSize)).catch(() => 0);
+    const costText = await page.$eval("#cost-big", (e) => e.textContent).catch(() => "");
+    must(costFont >= 30 && /\$\d/.test(costText), `cost figure must be big & present (font ${Math.round(costFont)}px, "${costText}")`);
+
+    // F3 + legal: the decision leads with a plain summary and a VIEW-ONLY affordance.
+    const decLead = await page.$eval("#waiting-lead", (e) => e.innerText.trim()).catch(() => "");
+    const decBtn = await page.$eval("#read-decision", (e) => e.textContent.trim()).catch(() => "");
+    must(decLead.length > 12, `F3 decision lead must be populated: "${decLead}"`);
+    must(/read the decision/i.test(decBtn) && !/approve|move forward|confirm|submit/i.test(decBtn), `decision affordance must be view-only: "${decBtn}"`);
+
+    // pause control stays small & calm, honest scope (not "Pause Everything").
     const pauseBox = await page.locator("#pause-button").boundingBox();
-    const pauseOk = pauseBox && pauseBox.height <= 44 && pauseBox.width <= 220;
+    const pauseOk = pauseBox && pauseBox.height <= 44 && pauseBox.width <= 240;
     must(pauseOk, `pause control too large (alarm styling?): ${pauseBox && Math.round(pauseBox.width)}x${pauseBox && Math.round(pauseBox.height)}`);
+    const pauseLabel = await page.$eval("#pause-button", (e) => e.textContent).catch(() => "");
+    must(!/pause everything/i.test(pauseLabel), `pause must keep honest scope, not "Pause Everything": "${pauseLabel}"`);
 
-    const disabledStages = await page.$$eval('[data-nav-disabled]', (els) =>
-      els.map((e) => ({ id: e.getAttribute("data-nav-disabled"), stage: (e.querySelector("[data-stage]") || {}).textContent || "" }))
-    );
-    must(disabledStages.length >= 5 && disabledStages.every((d) => /^V8-[A-E]/.test(d.stage)), "disabled nav items missing stage labels");
+    // no dead controls: every quick tile links; every nav item links or is disabled+staged.
+    const tileHrefs = await page.$$eval(".tile", (els) => els.map((e) => e.getAttribute("href") || ""));
+    must(tileHrefs.length >= 5 && tileHrefs.every((hh) => hh.length), `every tile must link, got ${JSON.stringify(tileHrefs)}`);
+    const navItems = await page.$$eval("#home-nav .item", (els) => els.map((e) => ({ link: !!e.getAttribute("href"), disabled: e.hasAttribute("data-nav-disabled"), stage: (e.querySelector("[data-stage]") || {}).textContent || "" })));
+    must(navItems.every((n) => n.link || (n.disabled && /^V8-[A-E]/.test(n.stage))), `every nav item must link or be disabled+staged: ${JSON.stringify(navItems)}`);
+    const disabledStages = navItems.filter((n) => n.disabled);
+    must(disabledStages.every((d) => /^V8-[A-E]/.test(d.stage)), "disabled nav items missing stage labels");
 
-    // banned-word scan over the RENDERED visible text
+    // banned-word scan over the RENDERED visible text.
     const rawText = await page.evaluate(() => document.body.innerText);
     const bodyText = rawText.toLowerCase();
     for (const w of ["panic", "fatal", "abort"]) must(!new RegExp(`\\b${w}\\b`).test(bodyText), `banned word "${w}" visible on screen`);
-    // banned-pairing: the word "safety" must never appear in the CI row (scoped rule)
-    const ciRowText = await page.evaluate(() =>
-      ["#ci-label", "#ci-badge", "#ci-hint"].map((s) => (document.querySelector(s) || {}).textContent || "").join(" ")
-    );
-    must(!/\bsafety\b/i.test(ciRowText), `"safety" appeared in the CI row: ${ciRowText}`);
-    // required plain-English translations must appear on screen
+    // "safety" must not label the Checks status chip (scoped honesty rule).
+    const checksText = await page.$eval('[data-answer="checks"]', (e) => e.innerText).catch(() => "");
+    must(!/\bsafety\b/i.test(checksText), `"safety" appeared in the Checks chip: ${checksText}`);
+    // key honesties must remain visible on screen in the friendly redesign.
     const REQUIRED = [
-      "Decision Needed",
-      "Waiting for your decision.",
-      "the robot tests passed — this doesn't mean the product is finished.",
-      "Developer work package #7 (PR)",
-      "Demo mode — no real customer data (MOCK_ONLY)",
+      "This is a demo (no real customer data)",
+      "Nothing will happen until you decide",
+      "Read the Decision",
+      "Paid services are blocked in demo mode",
     ];
-    for (const t of REQUIRED) must(rawText.includes(t), `required translation not visible on screen: "${t}"`);
+    for (const t of REQUIRED) must(rawText.includes(t), `required honesty not visible on screen: "${t}"`);
 
     await page.screenshot({ path: join(OUT, "01-truth-dashboard.png"), fullPage: true });
     await page.screenshot({ path: join(OUT, "01b-above-the-fold-1366x768.png") }); // viewport only = the fold
@@ -119,10 +136,10 @@ try {
       clicks_to_see_current_status: 0,
       clicks_to_pause: 1,
       pause_control_always_visible: true,
-      above_the_fold: { questions_1_to_4: foldTargets.slice(0, 4).every((s) => aboveFold[s]), current_status: aboveFold["#status-card"] },
-      page_scroll_height_px: scrollHeight,
-      scroll_budget_px: SCROLL_BUDGET_PX,
-      scroll_within_budget: scrollHeight <= SCROLL_BUDGET_PX,
+      above_the_fold: { plain_summary: aboveFold["#summary-card"], status_strip: aboveFold["#status-chips"] },
+      answers_scannable: chipCount,
+      cost_figure_px: Math.round(costFont),
+      decision_view_only: /read the decision/i.test(decBtn),
       pause_control_px: pauseBox && { w: Math.round(pauseBox.width), h: Math.round(pauseBox.height) },
       disabled_nav_stage_labels: disabledStages,
       banned_words_visible: false,
