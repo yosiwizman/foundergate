@@ -1,17 +1,15 @@
 {
   "schema_version": "1.0.0",
-  "description": "Machine-readable register of parked/disclosed visual-review defects. Every note that the review 'parks' (does not fix) MUST be recorded here with its `stepKey` (see docs/lanes/critical-path-manifest.json). If its step is critical and it is not waived, the stranger-test launcher REFUSES to start a session (criticalPathBlockers). A parked note is no longer just prose in VISUAL_REVIEW.md — it is enforced.",
-  "notes": [
+  "description": "Machine-readable register of parked/disclosed visual-review defects. Every note that the review 'parks' (does not fix) MUST be recorded here with its `stepKey` (see docs/lanes/critical-path-manifest.json). If its step is critical and it is not waived, the stranger-test launcher REFUSES to start a session (criticalPathBlockers). A parked note is no longer just prose in VISUAL_REVIEW.md — it is enforced. L0-preview-send-clipped was RESOLVED in FD-IMPLEMENT (the embed now grows with content; the café Send is fully visible at both viewports) — so it is no longer a parked defect and the register is clear.",
+  "notes": [],
+  "resolved": [
     {
       "id": "L0-preview-send-clipped",
       "screen": "Preview Bay",
       "stepKey": "preview",
-      "summary": "The café 'Send order (practice)' button (#mock-send) sits below the fixed 420px preview embed frame; reachable only by scrolling inside the frame or Open Full Screen. Step 2 (try to Send -> see honest refusal) is not reachable at a glance.",
-      "severity": "critical-path",
-      "waived": false,
-      "waiver_reason": null,
-      "evidence": "docs/assembly-evidence/VA/run-6-abort-diagnosis.md",
-      "recorded": "2026-07-11"
+      "summary": "The café 'Send order (practice)' was clipped by a fixed 420px embed frame. FIXED in FD-IMPLEMENT: the embed grows to the café's content height (postMessage), so Send is fully visible with no inner scroll at 1366x768 and 1440x900. Verified by src/tools/visual-capture.mjs (frame 625px >= Send bottom 521px).",
+      "resolved_in": "FD-IMPLEMENT (PR #73)",
+      "resolved": "2026-07-11"
     }
   ]
 }
