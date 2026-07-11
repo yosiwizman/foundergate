@@ -9,13 +9,32 @@
 
 import { spawn } from "node:child_process";
 import { createServer, get as httpGet } from "node:http";
-import { cpSync, mkdtempSync } from "node:fs";
+import { cpSync, mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..");
+
+// ---- MECHANICAL "no parked defect on the critical path" gate --------------
+// Anti-repeat for the Run-6 abort: a defect (L0 — café Send below the embed
+// frame) was PARKED on step 2 of the stranger script, yet the session was
+// allowed to start. This gate parses the parked-notes register against the
+// critical-path manifest and REFUSES to start a session on any match. Pure
+// data — no human memory involved. (Exported + proven by
+// src/tools/critical-path-gate.selftest.mjs.)
+export const MANIFEST_PATH = join(REPO, "docs", "lanes", "critical-path-manifest.json");
+export const PARKED_NOTES_PATH = join(REPO, "docs", "assembly-evidence", "visual-review", "parked-notes.json");
+
+export function loadJson(path) { return JSON.parse(readFileSync(path, "utf8")); }
+
+// Return every parked note that lands on a CRITICAL step and is not waived.
+// A non-empty result MUST refuse a stranger session.
+export function criticalPathBlockers(manifest, parked) {
+  const criticalKeys = new Set((manifest.steps || []).filter((s) => s.critical).map((s) => s.stepKey));
+  return (parked.notes || []).filter((n) => n.waived !== true && criticalKeys.has(n.stepKey));
+}
 
 // The four founder-facing apps, in the order the stranger visits them. `expect` is
 // a marker that MUST appear in that app's own "/" page — the health check uses it to
@@ -73,6 +92,21 @@ function stopAll() {
 }
 
 async function main() {
+  const line = "─".repeat(56);
+
+  // GATE: no parked defect on the stranger script's critical path. Mechanical —
+  // refuse to start a session if any critical-path parked note is unwaived.
+  const blockers = criticalPathBlockers(loadJson(MANIFEST_PATH), loadJson(PARKED_NOTES_PATH));
+  if (blockers.length) {
+    console.error(`\n${line}`);
+    console.error("  ⛔  SESSION BLOCKED — a parked defect sits on the stranger script's critical path.");
+    console.error("     A stranger cannot be asked to run a step that is known-broken. Fix it (or");
+    console.error("     explicitly waive the note in parked-notes.json) before starting a session:");
+    for (const b of blockers) console.error(`   • [${b.stepKey}] ${b.id}: ${b.summary}`);
+    console.error(`${line}\n`);
+    process.exit(1);
+  }
+
   // never point servers at the committed fixture — copy it to a throwaway temp dir.
   const FIXTURE = join(REPO, "src", "v8a1", "fixture", "mock-project");
   const SESSION_ROOT = mkdtempSync(join(tmpdir(), "fg-stranger-"));
@@ -92,7 +126,6 @@ async function main() {
   startAll(SESSION_ROOT);
 
   // wait for each app to bind AND to serve its OWN page (retry up to ~10s).
-  const line = "─".repeat(56);
   const deadline = Date.now() + 10000;
   const status = {};
   while (Date.now() < deadline) {

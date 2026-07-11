@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "description": "The stranger-test script's critical path. Each step a stranger MUST complete unaided for V8-A acceptance. A parked defect whose `stepKey` matches a step with `critical: true` (and is not waived) MUST refuse a stranger session — enforced mechanically by scripts/start-stranger-test.mjs (criticalPathBlockers) and locked by src/tools/critical-path-gate.selftest.mjs. Anti-repeat for the Run-6 abort: L0 (café Send below the embed frame) was parked ON step 2 and the session was allowed to start.",
+  "source_script": "docs/lanes/stranger-test-script.md",
+  "steps": [
+    { "n": 1, "stepKey": "dashboard", "screen": "Truth Dashboard", "critical": true, "action": "Read the 8 answers / see project state at a glance" },
+    { "n": 2, "stepKey": "preview", "screen": "Preview Bay", "critical": true, "action": "Try an action that would Send an order and see it honestly refused" },
+    { "n": 3, "stepKey": "bug", "screen": "Preview Bay (Bug Collector)", "critical": true, "action": "Report a problem; see it saved as evidence" },
+    { "n": 4, "stepKey": "filecabinet", "screen": "File Cabinet", "critical": true, "action": "Find blocked/unknown files; confirm a secret stays hidden" },
+    { "n": 5, "stepKey": "guide", "screen": "Project Guide", "critical": true, "action": "Ask a question; get a plain-English answer with a cited source" },
+    { "n": 6, "stepKey": "decision", "screen": "Truth Dashboard", "critical": true, "action": "Find what is waiting / read the decision (view only)" },
+    { "n": 7, "stepKey": "pause", "screen": "Truth Dashboard", "critical": true, "action": "Pause & get help; see do-not-touch files" }
+  ]
+}

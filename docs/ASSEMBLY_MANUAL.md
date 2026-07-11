@@ -478,3 +478,34 @@ All four founder-facing apps (Truth Dashboard, Preview Bay, File Cabinet, Projec
 design-token stylesheet — `src/ui/tokens.css` (palette, type scale, spacing rhythm, and card/badge/chip/button
 components). Per-app CSS is layout-only. New founder-facing surfaces must load the shared tokens and use its
 components — enforced by `src/tools/design-consistency.selftest.mjs`.
+
+## 26. THE PROVENANCE LAW — no phantom bundles (founder-mandated 2026-07-11, Run-6 abort)
+
+A bundle-completion report is **INVALID** unless **every claimed lane cites a PR and a SHA that RESOLVE ON DISK**
+(`git cat-file`). A claim with no resolvable commit is a phantom, not a deliverable. The founder's advisor will
+**reject** any completion report that lacks a resolvable PR + SHA for every lane. This is the permanent lock
+against the class that caused the Run-6 abort: a "VA-REPAIR-5" bundle was believed-reviewed but had **never been
+built** — no branch, no PR, no commit; only L3 existed. Never report a lane as done without a merged PR + SHA.
+Enforced by the validator `src/tools/report-provenance.mjs` (run it on any report: `node
+src/tools/report-provenance.mjs <report.md>`) and locked by `src/tools/report-provenance.selftest.mjs`.
+
+## 27. HARNESS-TRUTH LAW — the review must see what the founder sees (founder-mandated 2026-07-11, Run-6 abort)
+
+The Visual Self-Review (§23) failed twice because the harness did not reproduce the founder's screen. Two
+permanent requirements, both mechanically locked:
+
+1. **Viewport truth.** Review screenshots are captured at a **true** 1366×768 and 1440×900 with
+   `deviceScaleFactor` pinned to 1; the harness **fails** if the page's reported `innerWidth/innerHeight` does not
+   equal the requested size. Hand-captured screenshots at an unverified viewport are not a valid review. Use
+   `src/tools/visual-capture.mjs`; contract locked by `src/tools/visual-capture.selftest.mjs`.
+2. **In-embed capture.** Any review or embed guard must look **inside** a sandboxed `<iframe>` — capture the
+   embedded app's own url at the embed's fixed height and **measure** whether the primary control (e.g. the café
+   "Send") is within the frame. A `fullPage` shot of the parent never expands an iframe's internal scroll; clipped
+   content that a stranger cannot reach must **fail** the machine, not hide from it.
+
+3. **Mechanical critical-path gate.** "No parked defect on the stranger script's critical path" is no longer a
+   human promise. Every parked/disclosed review defect is registered in
+   `docs/assembly-evidence/visual-review/parked-notes.json` with a `stepKey`; the launcher
+   (`scripts/start-stranger-test.mjs`) parses it against `docs/lanes/critical-path-manifest.json` and **refuses to
+   start a stranger session** if any critical-path note is unwaived. Locked by
+   `src/tools/critical-path-gate.selftest.mjs`.
