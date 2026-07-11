@@ -1,0 +1,58 @@
+// FounderGate — PROVENANCE LAW guard (Assembly Manual §26).
+//
+// Proves the bundle-completion-report provenance validator: a claimed lane with no
+// resolvable PR + SHA is INVALID; a claim citing a real, on-disk SHA is VALID. This is
+// the permanent lock against the phantom-"VA-REPAIR-5" class (a bundle believed-reviewed
+// that was never built — no branch, no PR, no commit).
+
+import assert from "node:assert";
+import { execFileSync } from "node:child_process";
+import { validateReport, extractShas, shaResolves } from "./report-provenance.mjs";
+
+let pass = 0;
+const check = (name, fn) => { fn(); console.log(`  PASS: ${name}`); pass++; };
+
+console.log("== bundle-report provenance law ==");
+
+// HEAD always resolves (present even in a shallow CI checkout); an all-zero SHA never does.
+const HEAD = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+const ZERO = "0000000000000000000000000000000000000000";
+// A valid-LOOKING but non-resolvable 40-hex SHA (not decimal, not a repeated char, so
+// it survives extractShas and exercises the "does not resolve" path).
+const BADSHA = "deadbeefcafe1234deadbeefcafe1234deadbeef";
+
+check("a real HEAD SHA resolves; an all-zero SHA does not", () => {
+  assert.ok(shaResolves(HEAD), "HEAD must resolve");
+  assert.ok(!shaResolves(ZERO), "all-zero SHA must not resolve");
+});
+
+check("extractShas ignores decimals and repeated-char look-alikes", () => {
+  assert.deepEqual(extractShas("see #7 and 2026 and abc1234"), ["abc1234"]);
+  assert.equal(extractShas("0000000 1111111").length, 0, "repeated-char shas are not real citations");
+});
+
+check("a phantom lane claim (no PR, no SHA) is INVALID — the VA-REPAIR-5 class", () => {
+  const report = "## VA-REPAIR-5 complete\n- L4 What's-Next panel built and reviewed\n- L1 active signal shipped\n";
+  const r = validateReport(report);
+  assert.equal(r.valid, false, "a lane claim with no PR/SHA must be invalid");
+  assert.ok(r.claims.some((c) => !c.ok && /no SHA cited|no PR/.test(c.reasons.join())), "must flag the missing provenance");
+});
+
+check("a lane claim citing a real PR + resolvable SHA is VALID", () => {
+  const report = `## VA-REPAIR-4 complete\n- J1 running-state chip built — PR #65, SHA ${HEAD}\n`;
+  const r = validateReport(report);
+  assert.equal(r.valid, true, `expected valid, got: ${JSON.stringify(r.claims)}`);
+});
+
+check("a lane claim citing a NON-resolvable SHA is INVALID (even with a PR)", () => {
+  const report = `## bundle\n- L9 mystery lane done — PR #999, SHA ${BADSHA}\n`;
+  const r = validateReport(report);
+  assert.equal(r.valid, false, "an unresolvable SHA must be invalid");
+  assert.ok(r.claims.some((c) => /do not resolve/.test(c.reasons.join())), "must flag the unresolvable SHA");
+});
+
+check("a report with no lane claims is vacuously valid (nothing asserted)", () => {
+  assert.equal(validateReport("Just a note. Nothing claimed here.").valid, true);
+});
+
+console.log(`\nV8-PROVENANCE-LAW: PASS ${pass}`);
