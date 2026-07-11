@@ -52,6 +52,12 @@ function render(view) {
   $("hi").textContent = h.hi;
   $("subtitle").textContent = h.subtitle;
   $("get-help").href = h.robot.href;
+  // Restored honest companions (A1 copy-polish translations, relocated) — model-derived.
+  $("header-honesty").textContent = h.honesty.dataChip;            // Demo mode — no real customer data (MOCK_ONLY)
+  $("ci-honesty").textContent = h.honesty.checksNote;             // the robot tests passed — this doesn't mean the product is finished.
+  $("decision-needed-tag").textContent = h.honesty.decisionLabel; // Decision Needed
+  $("decision-state").textContent = h.honesty.decisionState;      // Waiting for your decision.
+  $("pr-detail").textContent = h.honesty.prDisplay;               // Developer work package #7 (PR)
 
   // F1 — plain project summary (a distinct scannable answer)
   const sc = $("summary-card"); sc.innerHTML = "";

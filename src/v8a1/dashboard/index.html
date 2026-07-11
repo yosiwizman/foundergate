@@ -28,6 +28,7 @@
           <div>
             <h1 id="hi">Hi there! 👋</h1>
             <p class="subtitle" id="subtitle"></p>
+            <p class="header-honesty" id="header-honesty"></p>
           </div>
           <div class="topbar-actions">
             <a class="btn-ghost" id="get-help" href="#">❓ Get Help</a>
@@ -43,12 +44,14 @@
         <section class="card status-strip">
           <div class="strip-head"><b id="status-label">Project Status</b> <span class="state-pretty" id="state-pretty"></span></div>
           <div class="chips-row" id="status-chips"></div>
+          <p class="strip-note" id="ci-honesty"></p>
         </section>
 
         <!-- Main row -->
         <div class="mainrow">
           <section class="card waiting" id="waiting">
-            <h2 id="waiting-title">⭐ Waiting for You</h2>
+            <h2><span id="waiting-title">⭐ Waiting for You</span> <span class="tag" id="decision-needed-tag"></span></h2>
+            <p class="decision-state" id="decision-state"></p>
             <p class="lead" id="waiting-lead"></p>
             <div class="gate-box">
               <div class="gate-art" aria-hidden="true">🚧</div>
@@ -64,6 +67,7 @@
           <section class="card activity">
             <h2 id="activity-title">🕐 What Happened Recently</h2>
             <ul class="feed" id="activity-feed"></ul>
+            <p class="dev-detail" id="pr-detail"></p>
           </section>
         </div>
 

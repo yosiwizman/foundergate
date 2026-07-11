@@ -111,14 +111,26 @@ try {
     // "safety" must not label the Checks status chip (scoped honesty rule).
     const checksText = await page.$eval('[data-answer="checks"]', (e) => e.innerText).catch(() => "");
     must(!/\bsafety\b/i.test(checksText), `"safety" appeared in the Checks chip: ${checksText}`);
-    // key honesties must remain visible on screen in the friendly redesign.
+    // Required honesties visible on screen — a SUPERSET of the original five A1
+    // copy-polish translations (relocated into the friendly layout, NEVER deleted —
+    // anti-repeat law) PLUS the new friendly-redesign honesties.
     const REQUIRED = [
+      // original A1 copy-polish translations (relocated, still visible)
+      "Decision Needed",
+      "Waiting for your decision.",
+      "the robot tests passed — this doesn't mean the product is finished.",
+      "Developer work package #7 (PR)",
+      "Demo mode — no real customer data (MOCK_ONLY)",
+      // new friendly-redesign honesties
       "This is a demo (no real customer data)",
       "Nothing will happen until you decide",
       "Read the Decision",
       "Paid services are blocked in demo mode",
     ];
     for (const t of REQUIRED) must(rawText.includes(t), `required honesty not visible on screen: "${t}"`);
+    // the green-CI companion must sit near the Checks chip (honest CI meaning).
+    const ciNote = await page.$eval("#ci-honesty", (e) => e.textContent).catch(() => "");
+    must(/doesn't mean the product is finished/i.test(ciNote), `green-CI honesty must be near the Checks chip: "${ciNote}"`);
 
     await page.screenshot({ path: join(OUT, "01-truth-dashboard.png"), fullPage: true });
     await page.screenshot({ path: join(OUT, "01b-above-the-fold-1366x768.png") }); // viewport only = the fold
