@@ -534,3 +534,28 @@ class as the phantom "VA-REPAIR-5" (work believed-specified that never landed on
 governing artifact now cite it (roadmap, lane packets, proposals, contracts, the design spec, stranger-run
 records, the Run-6 diagnosis), and rows whose authority was only a founder chat directive are marked
 `AUTHORITY-UNRECORDED (historical)`.
+
+## 29. THE HONEST-DURATION & SOAK-PROOF LAW (founder-mandated 2026-07-11, before any V8-B build)
+
+**Authority:** the AKIOR project advisor's soak guidance — `docs/lanes/authority/akior-advisor-soak-guidance.md`
+(committed verbatim first, per §28). Adopted before any V8-B build so a long-running program cannot be honestly
+"completed" faster than it can physically run.
+
+1. **Duration up front.** Every gate card and bundle plan that includes a long-running component (soak, stress,
+   endurance, multi-day autonomous run) must state a realistic **duration range up front** — best / realistic /
+   defect-heavy. A claimed completion **faster than the stated floor is suspect by default** and must be treated as
+   a progress checkpoint, not a gate.
+2. **Soak claims need evidence.** Any soak / stress / endurance claim is valid **only** with all of: a **named PASS
+   line**, **real start/end timestamps**, the **exact SHA under test**, **monitoring evidence captured during the
+   run**, and a **log of failures and interventions**. A soak claim whose timestamps do not span the claimed
+   duration is **INVALID — exactly like a phantom SHA.**
+3. **Mechanical guard.** `report-provenance` validation is extended: a report containing a `… SOAK PASS` line must
+   carry parseable start/end timestamps whose **delta ≥ the claimed duration**, else the report is INVALID
+   (`validateSoakClaims`; locked by `report-provenance.selftest.mjs`).
+4. **Early returns are honest.** An early return must **say what is still running** and must **never claim the final
+   gate**. Autonomous ≠ uninterrupted: rate limits, CI delays, browser failures, session termination, or a real
+   safety gate may pause a run — recover automatically where allowed; involve the founder only for a genuinely
+   irreversible or privacy-sensitive gate.
+
+**Applied to V8-B:** the `VB1` (Run Launcher) and `VB2` (CTO queue) acceptance criteria carry a soak requirement
+(an 8–9-hour soak followed by a 24-hour soak, each with the §29 evidence above) — see the V8-B build contract.

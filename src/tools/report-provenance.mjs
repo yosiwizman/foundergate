@@ -95,7 +95,33 @@ export function validateAuthorityCells(text, cwd = process.cwd()) {
   });
 }
 
-// Validate a whole report. Returns { valid, claims:[...], authorities:[...] }.
+// THE HONEST-DURATION & SOAK-PROOF LAW (Assembly Manual §29): a report containing a
+// "… SOAK PASS" line must carry parseable start/end timestamps whose delta ≥ the
+// claimed duration — else INVALID, exactly like a phantom SHA. (A soak that physically
+// cannot have run for the claimed time is not a pass.)
+const TS_RE = /\b(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(?::\d{2})?(?:Z|[+-]\d{2}:?\d{2})?)\b/g;
+export function validateSoakClaims(text) {
+  const lines = String(text).split(/\r?\n/);
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    const m = /(\d+)\s*-?\s*hour[^\n]*soak\s+pass/i.exec(lines[i]);
+    if (!m) continue;
+    const claimedHours = parseInt(m[1], 10);
+    // start/end timestamps may sit on the PASS line or in the soak block just below it.
+    const block = lines.slice(i, i + 12).join("\n");
+    const stamps = [...block.matchAll(TS_RE)].map((x) => Date.parse(x[1].replace(" ", "T"))).filter((n) => !Number.isNaN(n));
+    const reasons = [];
+    if (stamps.length < 2) reasons.push(`SOAK PASS lacks two parseable start/end timestamps`);
+    else {
+      const spanH = (Math.max(...stamps) - Math.min(...stamps)) / 3600000;
+      if (spanH + 1e-6 < claimedHours) reasons.push(`SOAK PASS claims ${claimedHours}h but start/end span only ${spanH.toFixed(2)}h`);
+    }
+    out.push({ line: lines[i].trim(), claimedHours, ok: reasons.length === 0, reasons });
+  }
+  return out;
+}
+
+// Validate a whole report. Returns { valid, claims:[...], authorities:[...], soaks:[...] }.
 export function validateReport(text, cwd = process.cwd()) {
   const claims = claimLines(text).map(({ n, line }) => {
     const shas = extractShas(line);
@@ -111,8 +137,9 @@ export function validateReport(text, cwd = process.cwd()) {
   // AND every declared AUTHORITY resolves (Written-Authority Law). A report with zero
   // recognisable lane claims / authorities is valid (nothing is being asserted).
   const authorities = validateAuthorityCells(text, cwd);
-  const valid = claims.every((c) => c.ok) && authorities.every((a) => a.ok);
-  return { valid, claims, authorities };
+  const soaks = validateSoakClaims(text);
+  const valid = claims.every((c) => c.ok) && authorities.every((a) => a.ok) && soaks.every((s) => s.ok);
+  return { valid, claims, authorities, soaks };
 }
 
 // CLI
@@ -126,5 +153,6 @@ if (invokedDirectly) {
   console.error("PROVENANCE INVALID — every claimed lane must cite a resolvable PR + SHA, and every AUTHORITY must resolve on disk:");
   for (const c of r.claims.filter((c) => !c.ok)) console.error(`  line ${c.n}: ${c.reasons.join("; ")}\n    > ${c.line}`);
   for (const a of (r.authorities || []).filter((a) => !a.ok)) console.error(`  authority: ${a.reasons.join("; ")}\n    > ${a.cell}`);
+  for (const s of (r.soaks || []).filter((s) => !s.ok)) console.error(`  soak: ${s.reasons.join("; ")}\n    > ${s.line}`);
   process.exit(1);
 }

@@ -74,4 +74,28 @@ check("AUTHORITY 'AUTHORITY-UNRECORDED (historical)' marker is accepted (grandfa
   assert.equal(validateReport(report).valid, true);
 });
 
+// Honest-Duration & Soak-Proof Law (Assembly Manual §29).
+check("SOAK PASS with start/end timestamps spanning >= the claimed duration is VALID", () => {
+  const report = "FOUNDERGATE HARNESS 8-HOUR SOAK PASS\nstart: 2026-07-11T00:00:00Z\nend: 2026-07-11T09:00:00Z\n";
+  const r = validateReport(report);
+  assert.equal(r.valid, true, `expected valid, got ${JSON.stringify(r.soaks)}`);
+});
+
+check("SOAK PASS whose timestamps span LESS than the claimed duration is INVALID (phantom soak)", () => {
+  const report = "FOUNDERGATE HARNESS 8-HOUR SOAK PASS\nstart: 2026-07-11T00:00:00Z\nend: 2026-07-11T03:00:00Z\n";
+  const r = validateReport(report);
+  assert.equal(r.valid, false, "a soak whose window is shorter than the claim must be invalid");
+  assert.ok(r.soaks.some((s) => !s.ok && /span only/.test(s.reasons.join())), "must flag the too-short span");
+});
+
+check("SOAK PASS with NO timestamps is INVALID", () => {
+  const r = validateReport("FOUNDERGATE HARNESS 24-HOUR SOAK PASS — all green\n");
+  assert.equal(r.valid, false);
+  assert.ok(r.soaks.some((s) => !s.ok && /two parseable/.test(s.reasons.join())));
+});
+
+check("a report with no SOAK PASS line is unaffected (vacuously valid)", () => {
+  assert.equal(validateReport("No soak here. Just notes.").valid, true);
+});
+
 console.log(`\nV8-PROVENANCE-LAW: PASS ${pass}`);
