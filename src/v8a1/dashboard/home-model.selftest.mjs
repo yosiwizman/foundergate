@@ -27,6 +27,18 @@ const ACT_WORDS = /\b(approve|approving|confirm|accept|move forward|proceed|cont
 
 console.log("== V8-A1 home-model (F1/F2/F3 + legal) selftest ==");
 
+check("R1: identity is MODEL-DERIVED — project name + description + summary (regression lock)", () => {
+  // the Run-3 regression was a missing project name; it must come from project.json.
+  assert.ok(typeof h.identity.name === "string" && h.identity.name.length > 0, "identity.name must be populated");
+  assert.equal(h.identity.name, "Luna Café — order ahead"); // the real fixture project name
+  assert.ok(h.identity.description.length > 0, "identity.description must be populated from project.json");
+  assert.equal(h.identity.summary, h.summary); // the F1 plain summary
+  friendly(h.identity.name + " " + h.identity.description + " " + h.identity.summary);
+  // a disconnected project must not invent a name
+  const disc = buildView({ connected: false }).home;
+  assert.match(disc.identity.name, /no project connected/i);
+});
+
 check("F1: plain project summary is present, populated, and friendly", () => {
   assert.ok(typeof h.summary === "string" && h.summary.length > 12, "F1 summary must be a real sentence");
   assert.match(h.summary, /your project/i);

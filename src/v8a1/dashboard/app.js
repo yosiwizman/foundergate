@@ -1,39 +1,25 @@
-// FounderGate V8-A1 — Truth Dashboard frontend (VA-REPAIR-2 friendly redesign).
+// FounderGate V8-A1 — Truth Dashboard frontend (VA-REPAIR-3: identity-first,
+// three-layer progressive disclosure).
 //
-// One friendly single page. Every friendly sentence is a TEMPLATE over the reader's
-// honest model (Law 54) — nothing is invented, no fake timestamps. The decision
-// affordance is VIEW-ONLY (Law 55): "Read the Decision", never "approve"/"move
-// forward". The pause control keeps honest scope wording. Navigation LINKS to the
-// other apps (Preview Bay, File Cabinet, Guide) — it never embeds them.
+// Design authority: Apple HIG (clarity/deference/depth), 5-second rule, ≤5–9
+// metrics, summary→context→detail layering, F-pattern priority, semantic status
+// colour, 8pt grid, 44px targets. LAYER 1 (above the fold) answers "what is this /
+// what should I do" at a glance; LAYER 2 is context; LAYER 3 is collapsed detail.
+// Every friendly sentence is a template over the reader's honest model (Law 54);
+// the decision affordance is view-only (Law 55); pause keeps honest scope.
 
 import { buildView } from "./view-model.mjs";
 
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
-
-// A scannable "answer" element: distinct, role/aria-labelled, data-answer marked —
-// this is what the scan-budget guard proves the stranger can read at a glance.
-function markAnswer(node, key, label) {
-  node.setAttribute("data-answer", key);
-  node.setAttribute("role", "group");
-  node.setAttribute("aria-label", label);
-  return node;
-}
-
-function wireDisabled(node, stage) {
-  node.classList.add("disabled");
-  node.setAttribute("aria-disabled", "true");
-  const s = el("span", "stage", stage);
-  s.setAttribute("data-stage", "");
-  node.appendChild(s);
-  node.setAttribute("data-nav-disabled", "1");
-}
+function markAnswer(node, key, label) { node.setAttribute("data-answer", key); node.setAttribute("role", "group"); node.setAttribute("aria-label", label); return node; }
+function wireDisabled(node, stage) { node.classList.add("disabled"); node.setAttribute("aria-disabled", "true"); const s = el("span", "stage", stage); s.setAttribute("data-stage", ""); node.appendChild(s); node.setAttribute("data-nav-disabled", "1"); }
 
 function render(view) {
   const h = view.home;
   $("brand").textContent = view.nav.brand;
 
-  // Sidebar nav — each item links to a real page or is disabled + stage-labelled.
+  // Sidebar
   const nav = $("home-nav"); nav.innerHTML = "";
   for (const n of h.nav) {
     const item = n.href ? el("a", "item" + (n.active ? " active" : "")) : el("span", "item");
@@ -48,25 +34,15 @@ function render(view) {
   const rb = $("robot-btn"); rb.textContent = h.robot.button; rb.href = h.robot.href;
   $("demo-pill").textContent = h.demo;
 
-  // Top bar
-  $("hi").textContent = h.hi;
-  $("subtitle").textContent = h.subtitle;
+  // R1 — IDENTITY (name + description + summary). The name is a scannable answer.
+  markAnswer($("identity"), "identity", `Project: ${h.identity.name}`);
+  $("proj-name").textContent = h.identity.name;
+  $("proj-desc").textContent = h.identity.description;
+  $("proj-summary").textContent = h.identity.summary;
+  $("header-honesty").textContent = h.honesty.dataChip;
   $("get-help").href = h.robot.href;
-  // Restored honest companions (A1 copy-polish translations, relocated) — model-derived.
-  $("header-honesty").textContent = h.honesty.dataChip;            // Demo mode — no real customer data (MOCK_ONLY)
-  $("ci-honesty").textContent = h.honesty.checksNote;             // the robot tests passed — this doesn't mean the product is finished.
-  $("decision-needed-tag").textContent = h.honesty.decisionLabel; // Decision Needed
-  $("decision-state").textContent = h.honesty.decisionState;      // Waiting for your decision.
-  $("pr-detail").textContent = h.honesty.prDisplay;               // Developer work package #7 (PR)
 
-  // F1 — plain project summary (a distinct scannable answer)
-  const sc = $("summary-card"); sc.innerHTML = "";
-  const sline = el("p", "summary-line", h.summary);
-  sc.appendChild(markAnswer(sline, "what-is-it", `What is this project: ${h.summary}`));
-
-  // Status strip — the 5 named chips, each a colour-coded scannable answer
-  $("status-label").textContent = h.statusLabel;
-  $("state-pretty").textContent = "· " + h.statePretty;
+  // LAYER 1 — status chips (semantic colour) + single next action
   const chips = $("status-chips"); chips.innerHTML = "";
   for (const c of h.statusStrip) {
     const chip = el("div", "statchip");
@@ -77,54 +53,41 @@ function render(view) {
     chip.appendChild(body);
     chips.appendChild(chip);
   }
+  $("ci-honesty").textContent = h.honesty.checksNote;
+  $("read-decision").textContent = h.waiting.buttonLabel;
+  $("next-note").textContent = h.nextNote;
 
-  // Waiting-for-You (F3: plain lead first; view-only button)
+  // LAYER 2 — Waiting detail (F3), activity, tiles
   $("waiting-title").textContent = (h.waiting.hasPending ? "⭐ " : "") + h.waiting.title;
+  $("decision-needed-tag").textContent = h.honesty.decisionLabel;
+  $("decision-state").textContent = h.honesty.decisionState;
   $("waiting-lead").textContent = h.waiting.lead;
   $("gate-title").textContent = h.waiting.gateTitle || "—";
   $("gate-desc").textContent = h.waiting.gateDesc;
-  $("read-decision").textContent = h.waiting.buttonLabel;
   $("waiting-note").textContent = h.waiting.note;
 
-  // Activity feed (real events, no invented times) — a scannable answer
   markAnswer($("activity-title"), "recent", "What happened recently");
   const feed = $("activity-feed"); feed.innerHTML = "";
   if (h.activity.length === 0) feed.appendChild(el("li", "hint", "Nothing recorded yet."));
-  for (const a of h.activity) {
-    const li = el("li");
-    li.append(el("span", "feed-ico", a.icon), el("span", "feed-text", a.text));
-    feed.appendChild(li);
-  }
+  for (const a of h.activity) { const li = el("li"); li.append(el("span", "feed-ico", a.icon), el("span", "feed-text", a.text)); feed.appendChild(li); }
+  $("pr-detail").textContent = h.honesty.prDisplay;
 
-  // Quick tiles — every tile links (or is view-only); none is a dead control
   const tiles = $("tiles"); tiles.innerHTML = "";
   for (const t of h.tiles) {
-    const a = el("a", "tile" + (t.viewOnly ? " viewonly" : ""));
-    a.href = t.href;
+    const a = el("a", "tile" + (t.viewOnly ? " viewonly" : "")); a.href = t.href;
     a.append(el("div", "tile-ico", t.icon), el("div", "tile-title", t.title), el("div", "tile-sub", t.sub));
     if (t.viewOnly) a.append(el("span", "tag", "view only"));
     tiles.appendChild(a);
   }
 
-  // Don't change these (raised, distinct) — a scannable answer
-  markAnswer($("do-not-touch"), "dont-touch", "Files you must not change");
-  $("dnt-title").textContent = view.doNotTouch.title.includes("Important") ? view.doNotTouch.title : "Please Don't Change These (Important!)";
-  $("dnt-subtitle").textContent = view.doNotTouch.subtitle;
-  const dl = $("do-not-touch-list"); dl.innerHTML = "";
-  for (const d of view.doNotTouch.items) { const li = el("li"); li.innerHTML = `<b>${d.path}</b> — ${d.reason}`; dl.appendChild(li); }
-  if (view.doNotTouch.items.length === 0) dl.appendChild(el("li", "hint", "Nothing to worry about right now."));
-
-  // Bottom cards
+  // LAYER 3 (collapsed) — safe / pause / cost, do-not-touch, evidence, health, remember
   $("safe-title").textContent = "🛡 " + h.safe.title;
   const sl = $("safe-lines"); sl.innerHTML = "";
   for (const line of h.safe.lines) { const li = el("li"); li.append(el("span", "tick", "✓"), el("span", null, line)); sl.appendChild(li); }
   $("safe-verdict").textContent = h.safe.verdict;
-
   $("pausecard-title").textContent = h.pauseCard.title.startsWith("⏸") ? h.pauseCard.title : "⏸ " + h.pauseCard.title;
   $("pausecard-lead").textContent = h.pauseCard.lead;
   $("pausecard-note").textContent = h.pauseCard.note;
-
-  // F2 — big, hard-to-miss cost card (display-only)
   $("cost-title").textContent = "💲 " + h.costCard.title.replace(/^💲\s*/, "");
   $("cost-lead").textContent = h.costCard.lead;
   $("cost-big").textContent = h.costCard.big === "UNKNOWN" ? "—" : h.costCard.big;
@@ -132,14 +95,33 @@ function render(view) {
   $("cost-disclaimer").textContent = h.costCard.disclaimer;
   $("cost-note").textContent = h.costCard.note;
 
+  markAnswer($("do-not-touch"), "dont-touch", "Files you must not change");
+  $("dnt-title").textContent = "Please Don't Change These (Important!)";
+  $("dnt-subtitle").textContent = view.doNotTouch.subtitle;
+  const dl = $("do-not-touch-list"); dl.innerHTML = "";
+  for (const d of view.doNotTouch.items) { const li = el("li"); li.innerHTML = `<b>${d.path}</b> — ${d.reason}`; dl.appendChild(li); }
+  if (view.doNotTouch.items.length === 0) dl.appendChild(el("li", "hint", "Nothing to worry about right now."));
+
+  const evl = $("evidence-list"); evl.innerHTML = "";
+  for (const e of view.evidence) { const li = el("li"); li.textContent = e.path + " "; const b = el("span", `badge ${e.badge.kind || "info"}`, e.badge.text); li.appendChild(b); evl.appendChild(li); }
+  if (view.evidence.length === 0) evl.appendChild(el("li", "hint", "No evidence yet — we can't see this yet."));
+
+  $("doctor-title").textContent = view.doctor.title;
+  $("doctor-version").textContent = `${view.doctor.version} (${view.doctor.versionPlain})`;
+  $("doctor-present").textContent = view.doctor.filesPresent;
+  const dc = $("doctor-checks"); dc.innerHTML = "";
+  for (const c of view.doctor.checks) { const li = el("li"); li.textContent = c.name + " "; li.appendChild(el("span", `badge ${c.ok ? "ok" : "unknown"}`, c.ok ? "found" : "not found")); dc.appendChild(li); }
+
+  $("fm-title").textContent = view.failureModes.title;
+  const fl = $("failure-modes-list"); fl.innerHTML = "";
+  for (const line of view.failureModes.lines) fl.appendChild(el("li", null, line));
+
   $("home-footer").textContent = h.footer;
 
-  // Pause controls (both buttons): honest, calm; reveal scope on click
-  const scope = $("pause-scope");
-  scope.textContent = h.pauseCard.note;
+  // Pause controls (both): honest, calm; reveal scope on click
+  const scope = $("pause-scope"); scope.textContent = h.pauseCard.note;
   for (const id of ["pause-button", "pause-button-2"]) {
-    const btn = $(id);
-    if (!btn) continue;
+    const btn = $(id); if (!btn) continue;
     btn.textContent = "⏸ " + view.pause.button;
     btn.addEventListener("click", () => { scope.hidden = false; btn.textContent = "✓ Paused — help is on the way"; });
   }

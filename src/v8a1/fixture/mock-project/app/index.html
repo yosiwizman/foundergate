@@ -3,41 +3,84 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Mock Demo App (preview)</title>
+    <title>Luna Café — order ahead (preview)</title>
     <style>
+      :root { --ink:#2a2320; --muted:#8a7d72; --line:#ece4da; --brand:#b4622d; --cream:#fbf6ef; }
+      * { box-sizing: border-box; }
       body { font: 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0;
-        display: grid; place-items: center; min-height: 100vh; background: #eef2f7; color: #1a2230; }
-      .card { background: #fff; padding: 28px 34px; border-radius: 14px; box-shadow: 0 4px 24px rgba(20,40,80,.1); text-align: center; }
-      h1 { margin: 0 0 6px; font-size: 22px; }
-      .tag { display: inline-block; margin-top: 10px; font-size: 12px; color: #1f9d55; background: rgba(31,157,85,.12); padding: 3px 10px; border-radius: 999px; }
-      p { color: #5b6473; }
-      .send-row { margin-top: 18px; }
-      .send-btn { font: inherit; font-size: 14px; padding: 9px 16px; border-radius: 9px; border: 1px solid #2b7de9;
-        background: #2b7de9; color: #fff; cursor: pointer; }
-      .send-note { margin: 12px 0 0; font-size: 13px; color: #b26a00; min-height: 16px; }
-      .send-note:empty { display: none; }
+        background: var(--cream); color: var(--ink); }
+      header { display: flex; align-items: center; justify-content: space-between; padding: 16px 28px;
+        border-bottom: 1px solid var(--line); background: #fff; }
+      .logo { font-weight: 800; font-size: 20px; letter-spacing: .01em; }
+      .logo .moon { color: var(--brand); }
+      nav a { color: var(--muted); text-decoration: none; margin-left: 20px; font-size: 14px; }
+      nav a:hover { color: var(--ink); }
+      .hero { text-align: center; padding: 40px 20px 24px; }
+      .hero h1 { font-size: 30px; margin: 0 0 6px; }
+      .hero p { color: var(--muted); margin: 0; }
+      .menu { max-width: 860px; margin: 8px auto 0; padding: 12px 20px 40px;
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+      @media (max-width: 720px) { .menu { grid-template-columns: 1fr; } }
+      .item { background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+      .item .pic { height: 120px; display: grid; place-items: center; font-size: 44px;
+        background: linear-gradient(135deg, #f6ece0, #efe0cf); }
+      .item .body { padding: 14px 16px; }
+      .item h3 { margin: 0 0 4px; font-size: 17px; }
+      .item .desc { color: var(--muted); font-size: 13.5px; margin: 0 0 10px; min-height: 34px; }
+      .item .price { font-weight: 700; color: var(--brand); }
+      .order { text-align: center; padding: 0 20px 48px; }
+      .order-btn { font: inherit; font-size: 15px; font-weight: 600; padding: 12px 26px; border-radius: 12px;
+        border: 0; background: var(--brand); color: #fff; cursor: pointer; }
+      .order-note { margin: 14px 0 0; font-size: 14px; color: #9a6a1f; min-height: 18px; }
+      .order-note:empty { display: none; }
+      footer { text-align: center; color: var(--muted); font-size: 12.5px; padding: 20px; border-top: 1px solid var(--line); }
     </style>
   </head>
   <body>
-    <main class="card">
-      <h1>Mock Demo App</h1>
-      <p>This is a safe, static preview app served locally by FounderGate's Preview Bay.</p>
-      <p>No network sends · no payments · mock data only.</p>
-      <span class="tag">preview · sends off · mock data</span>
+    <header>
+      <div class="logo"><span class="moon">☾</span> Luna Café</div>
+      <nav>
+        <a href="#menu">Menu</a>
+        <a href="#hours">Hours</a>
+        <a href="#visit">Visit</a>
+      </nav>
+    </header>
 
-      <!-- Mock "Send" so a tester can try an action that would send and see it
-           honestly refused. There is NO real send/network path here — clicking
-           only shows the plain-English refusal text below. -->
-      <div class="send-row">
-        <button id="mock-send" type="button" class="send-btn">Send message (practice)</button>
+    <section class="hero">
+      <h1>Order ahead, skip the line ☕</h1>
+      <p>Fresh coffee &amp; pastries from your neighbourhood café.</p>
+    </section>
+
+    <section class="menu" id="menu">
+      <div class="item">
+        <div class="pic">☕</div>
+        <div class="body"><h3>Lavender Latte</h3><p class="desc">Espresso, steamed milk, a hint of lavender.</p><span class="price">$4.75</span></div>
       </div>
-      <p id="mock-send-note" class="send-note" aria-live="polite"></p>
-    </main>
+      <div class="item">
+        <div class="pic">🥐</div>
+        <div class="body"><h3>Butter Croissant</h3><p class="desc">Baked fresh this morning, flaky and warm.</p><span class="price">$3.25</span></div>
+      </div>
+      <div class="item">
+        <div class="pic">🍵</div>
+        <div class="body"><h3>Matcha Cloud</h3><p class="desc">Stone-ground matcha with oat milk foam.</p><span class="price">$5.00</span></div>
+      </div>
+    </section>
+
+    <section class="order">
+      <!-- Practice "Send order" so a tester can try an action that would send an
+           order and see it honestly refused. There is NO real send/network path
+           here — clicking only shows the plain-English refusal text below. -->
+      <button id="mock-send" type="button" class="order-btn">Send order (practice)</button>
+      <p id="mock-send-note" class="order-note" aria-live="polite"></p>
+    </section>
+
+    <footer>Luna Café · preview · sends off · mock data only</footer>
+
     <script>
       // Inline refusal only — no fetch, no XHR, no form action, no network.
       document.getElementById("mock-send").addEventListener("click", function () {
         document.getElementById("mock-send-note").textContent =
-          "This is a practice version — it never really sends anything.";
+          "This is a practice version — it never really sends anything (no real order goes out).";
       });
     </script>
   </body>

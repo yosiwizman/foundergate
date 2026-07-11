@@ -87,7 +87,7 @@ check("welcome header greets by founder name from project config", () => {
 // Defect 1 (single project) — one project card, no multi-project list.
 check("one project only (single card, no multi-project chips)", () => {
   assert.ok(view.project && typeof view.project === "object" && !Array.isArray(view.project));
-  assert.equal(view.project.name, "Mock Demo Project");
+  assert.equal(view.project.name, "Luna Café — order ahead");
 });
 
 // Law 54 preserved through the friendly layer: UNKNOWN stays VERBATIM, gently explained.

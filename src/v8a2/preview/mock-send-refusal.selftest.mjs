@@ -55,4 +55,16 @@ check("mock app language stays warm (no panic/fatal/abort)", () => {
   }
 });
 
+// R3 (VA-REPAIR-3): the mock app must read as a BELIEVABLE small product, not a
+// skeletal placeholder ("It doesn't look like a real app because it looked like a
+// broken app."). Static check that it renders like a real café one-pager.
+check("R3: mock app is a believable product (Luna Café one-pager)", () => {
+  assert.match(html, /Luna Café/i, "mock app must be the named Luna Café product");
+  const prices = html.match(/\$\d+\.\d{2}/g) || [];
+  assert.ok(prices.length >= 3, `menu must show at least 3 priced items, found ${prices.length}`);
+  const items = html.match(/class="item"/g) || [];
+  assert.ok(items.length >= 3, `expected >=3 menu item cards, found ${items.length}`);
+  assert.match(html, /<nav\b/i, "mock app should have a nav (reads as a real site)");
+});
+
 console.log(`\nV8A2-MOCK-SEND-REFUSAL-GUARD: PASS (${passed} checks)`);

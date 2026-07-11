@@ -1,12 +1,13 @@
 {
   "schema_version": "1.0.0",
-  "project_id": "mock-demo",
-  "name": "Mock Demo Project",
+  "project_id": "luna-cafe",
+  "name": "Luna Café — order ahead",
+  "description": "A little website where people can order coffee and pastries ahead of time.",
   "founder_name": "Sam",
-  "repo": "your-org/mock-demo",
+  "repo": "luna-cafe/order-ahead",
   "attached": true,
   "data_classification": "MOCK_ONLY",
   "release_label": "dev",
   "mock": true,
-  "note": "MOCK_ONLY fixture. No real project data. For V8-A1 dashboard proof only."
+  "note": "MOCK_ONLY fixture — a believable small demo project (Luna Café). No real customer data. For V8-A dashboard/preview/files/guide proof only."
 }
