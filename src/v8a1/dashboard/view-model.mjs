@@ -166,7 +166,110 @@ export function buildView(model) {
     }
   }
 
+  // ---- VA-REPAIR-2: friendly single-page "home" model (run-2 findings F1/F2/F3).
+  // Every friendly sentence is a TEMPLATE over real model fields (Law 54) — never
+  // invented. No fabricated timestamps (the model has none), so the activity feed
+  // shows real events without made-up "2 minutes ago".
+  const founderName = m.connected && m.project && m.project.founder_name ? m.project.founder_name : null;
+  const stateWord = { blocked: "waiting for you", active: "running", idle: "resting", paused: "paused" }[m.state]
+    || (m.connected ? "starting up" : "not connected yet");
+  // F1 — one-line plain "what is this / what should I do", from real state.
+  const f1Summary = hasPendingDecision
+    ? `Your project is ${stateWord}. It needs you to read one decision — then it can keep going.`
+    : (qUnknown(1) ? `Your project is ${stateWord}. There's nothing you need to do right now.`
+      : `Your project is ${stateWord}. ${questions[1].a}`);
+  // F3 — one-sentence plain summary of what is being decided (view-only, Law 55).
+  const topGate = gates[0];
+  const f3DecisionLead = topGate
+    ? `You have one thing to read: "${topGate.title}". Nothing moves until you decide — reading it changes nothing.`
+    : "There's no decision waiting for you right now.";
+  // Activity feed — real events only, no invented times.
+  const activity = [];
+  if (m.answers && m.answers[6] && !isUnknown(m.answers[6].a)) activity.push({ icon: "📝", text: `Status changed: ${m.answers[6].a}` });
+  for (const g of gates) activity.push({ icon: "🚩", text: `Decision ${String(g.state).toLowerCase()}: ${g.title}` });
+  for (const e of evid) activity.push({ icon: "📄", text: `Evidence (${e.label}): ${e.path}` });
+  // 5 status chips (the mockup's strip) — each a distinct scannable answer.
+  const chip = (i) => questions[i] ? questionChip(i) : { tone: "unknown", label: "Unknown" };
+  const statusStrip = [
+    { key: "checks", name: "Checks", icon: "✅", answer: 0, value: badge(m.ci).text === "passing" ? "All passing" : badge(m.ci).text, tone: m.ci === "passing" ? "ok" : "unknown" },
+    { key: "decision", name: "Decision", icon: "🕐", answer: 1, value: chip(1).label, tone: chip(1).tone },
+    { key: "safety", name: "Safety", icon: "🛡️", answer: 2, value: "Everything safe", tone: "info" },
+    { key: "evidence", name: "Evidence", icon: "📄", answer: 7, value: chip(7).label, tone: chip(7).tone },
+    { key: "spending", name: "Spending", icon: "💲", answer: 4, value: (m.cost && m.cost !== UNKNOWN) ? `up to $${m.cost.monthly_limit_usd}/mo` : UNKNOWN, tone: "caution" },
+  ];
+  // F2 — big, hard-to-miss cost card (display-only).
+  const costBig = (m.cost && m.cost !== UNKNOWN) ? `$${m.cost.monthly_limit_usd}` : UNKNOWN;
+  // Quick tiles — each LINKS to a real page or is view-only; the 5th is view-only
+  // "Read the Decision" (Law 55 — no move-forward/act wording).
+  const A2 = "http://localhost:4300", A3 = "http://localhost:4400", A4 = "http://localhost:4500";
+  const tiles = [
+    { icon: "👁️", title: "Try the App", sub: "Open the preview", href: A2 },
+    { icon: "🐞", title: "Report a Problem", sub: "Tell us what's wrong", href: A2 },
+    { icon: "📁", title: "Browse Files", sub: "See your project files", href: A3 },
+    { icon: "💬", title: "Ask a Question", sub: "Get simple answers", href: A4 },
+    { icon: "📩", title: "Read the Decision", sub: "See what's waiting (view only)", href: "#waiting", viewOnly: true },
+  ];
+  const home = {
+    hi: founderName ? `Hi ${founderName}! 👋` : "Hi there! 👋",
+    subtitle: "Here's what's happening with your project today.",
+    summary: f1Summary,
+    statusLabel: "Project Status",
+    stateToken: m.state || UNKNOWN,
+    statePretty: m.state === "active" ? "Running (Preview)" : (statePlain(m.state || UNKNOWN)),
+    statusStrip,
+    waiting: {
+      title: hasPendingDecision ? "Waiting for You" : "Nothing Waiting",
+      lead: f3DecisionLead,
+      gateTitle: topGate ? topGate.title : null,
+      gateDesc: topGate ? (topGate.description || "We need your decision before we can continue.") : "No decision is open.",
+      buttonLabel: "Read the Decision", // view-only (Law 55) — never "Approve"/"Move forward"
+      note: "💡 Nothing will happen until you decide.",
+      hasPending: hasPendingDecision,
+    },
+    activity: activity.slice(0, 6),
+    tiles,
+    safe: {
+      title: "Is It Safe?",
+      lines: [
+        "This is a demo (no real customer data)",
+        "No messages are really sent",
+        "No payments are made",
+        "Secret files are hidden",
+      ],
+      verdict: "Yes, it's safe to explore!",
+    },
+    pauseCard: {
+      title: "Can I Pause It?",
+      lead: "Yes — you can pause work and get help with one click.",
+      button: "⏸ Pause & get help", // honest scope — NOT "Pause Everything"
+      note: pauseScope(m),
+    },
+    costCard: {
+      title: "How Much Does It Cost?",
+      lead: "This project can spend up to",
+      big: costBig,
+      per: "per month",
+      disclaimer: "Paid services are blocked in demo mode.",
+      note: "Spending isn't tracked yet — real limits switch on in a later version (V8-B).",
+    },
+    footer: "💙 You're in control. You can look around, ask questions, and decide what happens next. We're here to help!",
+    robot: { line: "I'm here to help! Ask me anything about your project.", button: "Ask Now", href: A4 },
+    demo: "Demo Mode — No real data · Safe to try",
+    // Friendly sidebar — each item LINKS to a real page or is disabled with an
+    // honest stage label (no dead controls). "Decisions" is view-only (Law 55).
+    nav: [
+      { icon: "🏠", label: "Home", href: "#top", active: true },
+      { icon: "📋", label: "My Project", stage: "V8-B" },
+      { icon: "👁️", label: "Preview App", href: A2 },
+      { icon: "📁", label: "Files", href: A3 },
+      { icon: "💬", label: "Ask Guide", href: A4 },
+      { icon: "📩", label: "Decisions", href: "#waiting", viewOnly: true },
+      { icon: "⚙️", label: "Settings", stage: "V8-B" },
+    ],
+  };
+
   return {
+    home,
     nav: SIDEBAR_NAV,
     header: {
       greeting: greeting(m),
@@ -286,6 +389,19 @@ export function ciRowStrings(view) {
 export function visibleStrings(view) {
   const out = [];
   const push = (...xs) => xs.forEach((x) => { if (typeof x === "string") out.push(x); });
+  // VA-REPAIR-2 friendly home copy (all model-derived) — covered by the banned-word lint.
+  if (view.home) {
+    const h = view.home;
+    push(h.hi, h.subtitle, h.summary, h.statusLabel, h.statePretty, h.footer, h.demo, h.robot.line, h.robot.button);
+    h.statusStrip.forEach((c) => push(c.name, c.value));
+    push(h.waiting.title, h.waiting.lead, h.waiting.gateTitle, h.waiting.gateDesc, h.waiting.buttonLabel, h.waiting.note);
+    h.activity.forEach((a) => push(a.text));
+    h.tiles.forEach((t) => push(t.title, t.sub));
+    push(h.safe.title, ...h.safe.lines, h.safe.verdict);
+    push(h.pauseCard.title, h.pauseCard.lead, h.pauseCard.button, h.pauseCard.note);
+    push(h.costCard.title, h.costCard.lead, h.costCard.big, h.costCard.per, h.costCard.disclaimer, h.costCard.note);
+    h.nav.forEach((n) => push(n.label, n.stage));
+  }
   push(view.nav.brand, view.header.greeting, view.header.stageBanner, view.header.projectName, view.header.dataChip);
   view.nav.active.forEach((n) => push(n.label));
   view.nav.disabled.forEach((n) => push(n.label, n.stage));

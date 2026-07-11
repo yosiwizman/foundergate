@@ -55,7 +55,7 @@ check("the fixture check-in is scannable (a mix of tones, not one grey wall)", (
 });
 
 check("render wires the machine-checkable markers (role, aria-label, data-answer, chip)", () => {
-  for (const marker of ['setAttribute("role", "group")', 'setAttribute("aria-label"', 'data-answer', 'qchip ${item.chip.tone}', 'data-q']) {
+  for (const marker of ['setAttribute("role", "group")', 'setAttribute("aria-label"', 'data-answer', 'qchip ${c.tone}']) {
     assert.ok(APPJS.includes(marker), `app.js must render marker: ${marker}`);
   }
 });

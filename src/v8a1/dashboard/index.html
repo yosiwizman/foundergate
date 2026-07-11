@@ -6,104 +6,107 @@
     <title>FounderGate — Truth Dashboard (V8-A1)</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body id="top">
     <div class="app">
-      <!-- Left sidebar app shell -->
+      <!-- Friendly sidebar -->
       <aside class="sidebar">
         <div class="brand" id="brand">FounderGate</div>
-        <nav class="nav" id="nav-active"></nav>
-        <div class="nav-label">Coming later</div>
-        <nav class="nav disabled" id="nav-disabled"></nav>
+        <nav class="nav" id="home-nav"></nav>
         <div class="sidebar-spacer"></div>
-        <!-- (c) small, calm, always-visible pause control -->
-        <div class="pause-dock">
-          <button id="pause-button" type="button" class="pause-btn">⏸ Pause &amp; get help</button>
-          <p id="pause-scope" class="pause-scope" hidden></p>
+        <div class="robot-card">
+          <div class="robot-emoji">🤖</div>
+          <p class="robot-line" id="robot-line"></p>
+          <a class="robot-btn" id="robot-btn" href="#">Ask Now</a>
         </div>
+        <div class="demo-pill" id="demo-pill"></div>
       </aside>
 
       <!-- Main content -->
       <main class="content">
-        <header class="welcome">
+        <!-- Top bar -->
+        <header class="topbar">
           <div>
-            <h1 id="greeting">Welcome back</h1>
-            <p class="stage" id="stage-banner"></p>
+            <h1 id="hi">Hi there! 👋</h1>
+            <p class="subtitle" id="subtitle"></p>
           </div>
-          <div class="welcome-meta">
-            <span class="chip" id="project-chip">…</span>
-            <span class="chip" id="release-chip">…</span>
-            <span class="chip" id="dataclass-chip">…</span>
-            <span class="chip" id="connected-chip">…</span>
+          <div class="topbar-actions">
+            <a class="btn-ghost" id="get-help" href="#">❓ Get Help</a>
+            <button class="btn-pause" id="pause-button" type="button">⏸ Pause &amp; get help</button>
           </div>
         </header>
+        <p id="pause-scope" class="pause-scope" hidden></p>
 
-        <div class="grid">
-          <!-- Above the fold: questions (Q1–4 + more) and current status -->
-          <section class="card questions" id="questions-card">
-            <h2 id="questions-title">Your quick check-in</h2>
-            <ol class="qgrid" id="questions-list"></ol>
-          </section>
+        <!-- F1: plain-language project summary -->
+        <section class="summary-card" id="summary-card"></section>
 
-          <section class="card status" id="status-card">
-            <h2 id="status-title">Where things stand</h2>
-            <div class="statuslist">
-              <div class="statusrow">State <span id="state-badge" class="badge"></span></div>
-              <div class="statusrow"><span id="state-plain" class="hint"></span></div>
-              <div class="statusrow"><span id="ci-label"></span> <span id="ci-badge" class="badge"></span></div>
-              <div class="statusrow"><span id="ci-hint" class="hint"></span></div>
-              <div class="statusrow"><span id="pr-display" class="soft"></span> <span id="pr-badge" class="badge"></span></div>
-              <div class="statusrow">Current gate <span id="current-gate" class="soft"></span> <span id="current-gate-plain" class="hint"></span></div>
+        <!-- Status strip -->
+        <section class="card status-strip">
+          <div class="strip-head"><b id="status-label">Project Status</b> <span class="state-pretty" id="state-pretty"></span></div>
+          <div class="chips-row" id="status-chips"></div>
+        </section>
+
+        <!-- Main row -->
+        <div class="mainrow">
+          <section class="card waiting" id="waiting">
+            <h2 id="waiting-title">⭐ Waiting for You</h2>
+            <p class="lead" id="waiting-lead"></p>
+            <div class="gate-box">
+              <div class="gate-art" aria-hidden="true">🚧</div>
+              <div>
+                <div class="gate-title" id="gate-title"></div>
+                <p class="gate-desc" id="gate-desc"></p>
+                <a class="btn-primary" id="read-decision" href="#waiting">Read the Decision</a>
+              </div>
             </div>
+            <p class="note" id="waiting-note"></p>
           </section>
 
-          <!-- D5: raised, distinct, higher — a stranger should spot "don't touch" instantly -->
-          <section class="card protect" id="do-not-touch">
-            <h2><span class="protect-icon" aria-hidden="true">🔒</span> <span id="dnt-title">Please don't change these</span></h2>
-            <p class="hint" id="dnt-subtitle"></p>
-            <ul id="do-not-touch-list"></ul>
-          </section>
-
-          <section class="card" id="needs-you">
-            <h2 id="needs-you-title">What you can do now</h2>
-            <p id="needs-you-text"></p>
-            <p class="source" id="needs-you-source"></p>
-          </section>
-
-          <section class="card" id="decision-card">
-            <h2 id="decision-title">Decision Needed</h2>
-            <p class="hint" id="decision-subtitle"></p>
-            <ul id="gates-list"></ul>
-            <p class="source" id="decision-viewonly"></p>
-          </section>
-
-          <section class="card" id="evidence-card">
-            <h2>Evidence</h2>
-            <ul id="evidence-list"></ul>
-          </section>
-
-          <section class="card" id="doctor-card">
-            <h2 id="doctor-title">Health check</h2>
-            <p>Version <b id="doctor-version"></b> · files found <b id="doctor-present"></b></p>
-            <ul class="checkgrid" id="doctor-checks"></ul>
-          </section>
-
-          <section class="card" id="cost-card">
-            <h2 id="cost-title">Spending</h2>
-            <p id="cost-friendly" class="hint"></p>
-            <p id="cost-detail" class="soft"></p>
-          </section>
-
-          <section class="card" id="dataclass-card">
-            <h2 id="dc-title">Data safety</h2>
-            <p>This project: <span id="dc-projectclass" class="badge"></span></p>
-            <p id="dc-note" class="hint"></p>
-          </section>
-
-          <section class="card remember" id="failure-modes">
-            <h2 id="fm-title">Good things to remember</h2>
-            <ul id="failure-modes-list"></ul>
+          <section class="card activity">
+            <h2 id="activity-title">🕐 What Happened Recently</h2>
+            <ul class="feed" id="activity-feed"></ul>
           </section>
         </div>
+
+        <!-- Quick tiles -->
+        <section class="card">
+          <h2 class="tiles-title">Quick Things You Can Do</h2>
+          <div class="tiles" id="tiles"></div>
+        </section>
+
+        <!-- Don't change these -->
+        <section class="card protect" id="do-not-touch">
+          <h2><span class="protect-icon" aria-hidden="true">🔒</span> <span id="dnt-title">Please Don't Change These (Important!)</span></h2>
+          <p class="hint" id="dnt-subtitle"></p>
+          <ul id="do-not-touch-list"></ul>
+        </section>
+
+        <!-- Bottom three cards -->
+        <div class="bottomrow">
+          <section class="card safe-card">
+            <h2 id="safe-title">🛡 Is It Safe?</h2>
+            <ul class="checklist" id="safe-lines"></ul>
+            <p class="verdict" id="safe-verdict"></p>
+          </section>
+
+          <section class="card pause-card">
+            <h2 id="pausecard-title">⏸ Can I Pause It?</h2>
+            <p id="pausecard-lead"></p>
+            <button class="btn-pause wide" id="pause-button-2" type="button">⏸ Pause &amp; get help</button>
+            <p class="info-note" id="pausecard-note"></p>
+          </section>
+
+          <section class="card cost-card" id="cost-card">
+            <h2 id="cost-title">💲 How Much Does It Cost?</h2>
+            <p id="cost-lead"></p>
+            <div class="cost-big" id="cost-big">—</div>
+            <div class="cost-per" id="cost-per"></div>
+            <div class="cost-badge" id="cost-disclaimer"></div>
+            <p class="hint" id="cost-note"></p>
+          </section>
+        </div>
+
+        <!-- Footer -->
+        <p class="home-footer" id="home-footer"></p>
       </main>
     </div>
     <script type="module" src="app.js"></script>
