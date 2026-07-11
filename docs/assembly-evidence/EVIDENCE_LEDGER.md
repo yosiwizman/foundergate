@@ -62,6 +62,8 @@
 
 | 2026-07-10 | VA-REPAIR-2 | Friendly dashboard redesign (Run-2 findings, wide-safe UI): F1 plain project summary · F2 big display-only $50/mo card · F3 decision plain summary; legal corrections (honest pause; view-only decision, Law 55); friendly single page adapted to dark theme, all copy Law-54 templates over real fields | src/v8a1/dashboard/{index.html,styles.css,app.js,view-model.mjs} · home-model.selftest.mjs (new) · scan-budget/smoke adapted · docs/assembly-evidence/VA-REPAIR-2/ | #52 | 99f5b2c4024a8a7e535a40687760c8d757b5a9eb | Builder + CI (https://github.com/yosiwizman/foundergate/actions/runs/29133169632) | DONE |
 
+| 2026-07-10 | VA-HONESTY-RESTORE | Relocate the 5 A1 copy-polish honesty translations into the friendly layout (green-CI companion near Checks chip; MOCK_ONLY demo line; Decision-Needed + waiting-for-your-decision; PR line) — required-strings smoke now a SUPERSET, never deleted; Safety chip model-derived (no blanket 'everything safe', Law 54) | src/v8a1/dashboard/{view-model,app,index,styles,smoke}.mjs · home-model.selftest.mjs | #54 | e9a8afe6fcfdd30bc2f4f58cc879f42c0df4785d | Builder + CI (https://github.com/yosiwizman/foundergate/actions/runs/29134179533) | DONE |
+
 **Legend:** `#15` and `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and the exact merge commit SHA immediately
 after the sheriff merge (living-ledger maintenance, not a second bundle PR). Until stamped they read as their
 literal placeholder tokens, which count as UNKNOWN.
