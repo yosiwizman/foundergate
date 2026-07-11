@@ -1,26 +1,30 @@
-# VISUAL SELF-REVIEW — verdict (first review under THE VISUAL SELF-REVIEW LAW)
+# VISUAL SELF-REVIEW — verdict (THE VISUAL SELF-REVIEW LAW, Assembly Manual §23)
 
-> **Bundle:** VA-VISUAL-LAW · **Date:** 2026-07-10 · **Reviewer:** FounderGate CTO (looked at each image and reasoned
-> as a first-time human would). **Scope:** all four founder-facing screens at **1366×768** and **1440×900**, full-page
-> and above-the-fold. Screenshots in this folder (`<screen>-<viewport>-{full,fold}.png`).
+> **Bundle:** VA-REPAIR-4 (design-system consolidation) · **Date:** 2026-07-11 · **Reviewer:** FounderGate CTO
+> (looked at each image and reasoned as a first-time human would). **Scope:** all four founder-facing screens at
+> **1366×768** and **1440×900**, full-page and above-the-fold. Screenshots in this folder.
 >
 > **Honest scope note (from the law):** this review *reduces, not eliminates,* human catches. The founder witness
 > gate remains the final filter.
 
-## One-line verdict per screen
+## One-line verdict per screen (after VA-REPAIR-4 — one shared dark design language)
 
 | Screen | 1366×768 | 1440×900 | Verdict |
 |--------|----------|----------|---------|
-| **Truth Dashboard** | clean | clean | **PASS** — the tall-viewport VOID is fixed: Layer 1 (identity + 5 chips + "Read the Decision") sits above the fold, Layer 2 flows immediately after with even spacing, no dead space; reads as a real product. |
-| **Preview Bay** | good | good | **PASS (note)** — the embedded **Luna Café** app reads as a believable site (logo, menu, prices). *Minor, parked:* the café is embedded in a fixed-height frame, so the practice **"Send order"** button is below the frame's visible area — reachable by scrolling the embed or via **Open Full Screen**. Not broken; disclosed. |
-| **File Cabinet** | clean | clean | **PASS** — clear categories; PUBLIC_SAFE (green "safe to read") vs SECRET/UNKNOWN (red "protected / not sorted") badges with lock glyphs; one-click "show protected & blocked" filter; empty preview panel shows the expected "Pick a file…" prompt. No voids/overlaps. |
-| **Project Guide** | functional | functional | **PASS (note)** — chat works (prompt chips, input, honest read-only note). *Minor, parked:* before the first question the chat area looks **sparse** (empty space between chips and input). Functional and fills on first answer; a friendly placeholder line would improve it. V8-A4 is accepted — not fixed in this bundle; disclosed. |
+| **Truth Dashboard** | clean | clean | **PASS** — the new **running-state chip** ("🟡 Waiting on you") leads the strip (answers "is it running?"); the **PROJECT** label sits above the name; the needs-you card has an **amber trim**. Identity + 6 chips + one action above the fold, no void. |
+| **Preview Bay** | clean | clean | **PASS** — now the **same dark design** as the dashboard (was "a little bit off"): shared sidebar, chips, buttons, panels. Controls read as one product. |
+| **File Cabinet** | clean | clean | **PASS** — dark and **CALM**: the "very red, very scary" danger-wall is gone; protected/blocked files use the quiet **purple lock** treatment (still distinct at a glance), green "safe to read" for safe files, one-click filter. Red is no longer used for routine states. |
+| **Project Guide** | clean | clean | **PASS** — dark and **warm** (was "very dull"): a friendly 🤖 welcome fills the once-empty chat; chips, input, and shell match the siblings; every honesty behaviour unchanged. |
 
-## Defect fixed in this bundle
-**Dashboard tall-viewport void** — `.layer1` had `min-height: calc(100vh - 210px)` (plus a scroll cue), which stretched Layer 1 to fill the screen and left a large empty gap before Layer 2 on tall viewports. The smoke's old "Layer 2 must start BELOW the fold" rule *rewarded* that void. **Fixed:** removed the artificial min-height/spacer/scroll-cue; Layer 1 takes natural height and Layer 2 flows right after. **Guard corrected (not deleted):** (a) all Layer-1 elements fully above the fold; (b) Layer 1 presents ≤6 role-labelled answers, all above the fold; (c) NEW anti-void — no vertical gap >120px between consecutive sections; and all geometry now runs at **both** 1366×768 and 1440×900.
+## What changed in this bundle (Run-4 findings)
+- **J0** shared design tokens (`src/ui/tokens.css`) — all four apps load + use it; per-app CSS is layout-only.
+- **J1** running-STATE chip (traffic-light, model-derived) · **J2** amber highlight on the needs-you card ·
+  **J5** "Project:" label · **J4** File Cabinet calmed (red → purple lock; red = problem only) · **J6** Guide
+  warmed to the shared design.
 
-## Parked / disclosed (not blockers for Run 4)
-1. Preview Bay embed: café "Send order" below the frame fold (Open Full Screen works).
-2. Project Guide: sparse empty chat before first question.
+## Parked / disclosed (not blockers)
+- Preview Bay: the embedded café "Send order" still sits below the embed's frame (Open Full Screen shows it) —
+  unchanged from the prior review; a fixed-height embed, disclosed again.
 
-Both are minor and do not read as "broken." Neither blocks the Run-4 stranger session; surfaced here per the law's disclosure requirement for the founder to weigh.
+No screen reads as "broken," "off," "dull," or "scary." The four apps now read as **one coherent product** — the
+central Run-4 finding. Surfaced for the founder to weigh at G-VA-REWITNESS-4.

@@ -18,10 +18,11 @@ import { defaultProjectRoot } from "../tools/project-root.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const UI = join(HERE, "preview", "ui");
+const TOKENS = resolve(HERE, "..", "ui", "tokens.css"); // shared design system
 const PORT = Number(process.env.FG_A2_PORT || 4300);
 
 const MIME = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8" };
-const SAFE_FILES = new Set(["preview-bay.html", "preview-bay.js", "preview-bay.css"]);
+const SAFE_FILES = new Set(["preview-bay.html", "preview-bay.js", "preview-bay.css", "tokens.css"]);
 
 function json(res, code, obj) {
   res.writeHead(code, { "content-type": MIME[".json"] });
@@ -77,7 +78,7 @@ export function createA2Server(projectRoot) {
     // ---- Static UI ---------------------------------------------------------
     const name = url === "/" ? "preview-bay.html" : url.replace(/^\//, "");
     if (!SAFE_FILES.has(name)) { res.writeHead(404); return res.end("not found"); }
-    const file = join(UI, name);
+    const file = name === "tokens.css" ? TOKENS : join(UI, name);
     if (!existsSync(file)) { res.writeHead(404); return res.end("not found"); }
     res.writeHead(200, { "content-type": MIME[extname(name)] || "text/plain" });
     res.end(readFileSync(file));

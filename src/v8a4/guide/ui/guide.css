@@ -1,11 +1,8 @@
-:root { --bg:#f5f6f8; --sidebar:#1f2530; --panel:#fff; --text:#232a33; --muted:#6b7480; --line:#e5e9ef;
-  --accent:#2b7de9; --ok:#1f9d55; --warn:#b26a00; --lock:#7a4bd6; }
-@media (prefers-color-scheme: dark){ :root{ --bg:#12151a; --panel:#1a1e25; --text:#e6e9ee; --line:#2a2f38; --muted:#94a0b0; } }
-*{box-sizing:border-box} html,body{margin:0;height:100%} body{background:var(--bg);color:var(--text);
-  font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-.app{display:grid;grid-template-columns:216px 1fr;min-height:100vh}
-.sidebar{background:var(--sidebar);color:#cdd4df;display:flex;flex-direction:column;padding:16px 12px;gap:4px;height:100vh;position:sticky;top:0}
-.brand{font-weight:700;color:#fff;font-size:16px;padding:6px 10px 14px}
+/* Palette + components come from the shared design system (tokens.css). Layout-only
+   here, so the Project Guide matches its siblings (VA-REPAIR-4 / J0 + J6). */
+.app{display:grid;grid-template-columns:244px 1fr;min-height:100vh}
+.sidebar{background:var(--sidebar);color:var(--sidebar-text);display:flex;flex-direction:column;padding:20px 14px;gap:4px;height:100vh;position:sticky;top:0}
+.brand{font-weight:800;color:#fff;font-size:18px;padding:6px 10px 18px}
 .nav{display:flex;flex-direction:column;gap:2px}.nav .item{padding:8px 10px;border-radius:8px;color:#cdd4df;font-size:13.5px;cursor:default}
 .nav .item.active{background:var(--accent);color:#fff}
 .sidebar-spacer{flex:1}.pause-dock{border-top:1px solid rgba(255,255,255,.08);padding-top:12px}
@@ -18,7 +15,12 @@
 .chip{font-size:12.5px;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--text);cursor:pointer}
 .chip:hover{border-color:var(--accent);color:var(--accent)}
 
-.chat{display:flex;flex-direction:column;gap:10px;min-height:120px;margin-bottom:12px}
+/* J6 — a warm welcome so the empty chat isn't dull; hidden once a reply arrives. */
+.chat{display:flex;flex-direction:column;gap:10px;min-height:200px;margin-bottom:12px}
+.chat-welcome{align-self:center;text-align:center;color:var(--muted);margin:auto;max-width:420px}
+.chat-welcome .robot{font-size:34px}
+.chat-welcome .hi{color:var(--text);font-weight:600;font-size:15px;margin:8px 0 4px}
+.chat[data-ready="1"] .chat-welcome{display:none}
 .msg{max-width:88%;padding:10px 13px;border-radius:12px;font-size:13.5px;white-space:pre-wrap;overflow-wrap:anywhere}
 .msg.me{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:4px}
 .msg.guide{align-self:flex-start;background:var(--bg);border:1px solid var(--line);border-bottom-left-radius:4px}

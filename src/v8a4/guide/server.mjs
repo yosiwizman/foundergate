@@ -16,10 +16,11 @@ import { defaultProjectRoot } from "../../tools/project-root.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const UI = join(HERE, "ui");
+const TOKENS = resolve(HERE, "..", "..", "ui", "tokens.css"); // shared design system
 const PORT = Number(process.env.FG_A4_PORT || 4500);
 
 const MIME = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8" };
-const SAFE_FILES = new Set(["guide.html", "guide.js", "guide.css"]);
+const SAFE_FILES = new Set(["guide.html", "guide.js", "guide.css", "tokens.css"]);
 const jsonRes = (res, code, obj) => { res.writeHead(code, { "content-type": MIME[".json"] }); res.end(JSON.stringify(obj)); };
 
 const MAX_Q = 4000; // bound the input; the Guide is read-only, but keep bodies sane.
@@ -51,7 +52,7 @@ export function createGuideServer(projectRoot) {
 
     const name = path === "/" ? "guide.html" : path.replace(/^\//, "");
     if (!SAFE_FILES.has(name)) { res.writeHead(404); return res.end("not found"); }
-    const file = join(UI, name);
+    const file = name === "tokens.css" ? TOKENS : join(UI, name);
     if (!existsSync(file)) { res.writeHead(404); return res.end("not found"); }
     res.writeHead(200, { "content-type": MIME[extname(name)] || "text/plain" });
     res.end(readFileSync(file));

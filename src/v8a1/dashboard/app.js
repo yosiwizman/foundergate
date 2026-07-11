@@ -58,6 +58,8 @@ function render(view) {
   $("next-note").textContent = h.nextNote;
 
   // LAYER 2 — Waiting detail (F3), activity, tiles
+  // J2 (Run-4): the card needing the founder carries an amber highlight/trim.
+  $("waiting").classList.toggle("needs-you", !!h.waiting.hasPending);
   $("waiting-title").textContent = (h.waiting.hasPending ? "⭐ " : "") + h.waiting.title;
   $("decision-needed-tag").textContent = h.honesty.decisionLabel;
   $("decision-state").textContent = h.honesty.decisionState;

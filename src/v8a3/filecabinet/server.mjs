@@ -17,10 +17,11 @@ import { defaultProjectRoot } from "../../tools/project-root.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const UI = join(HERE, "ui");
+const TOKENS = resolve(HERE, "..", "..", "ui", "tokens.css"); // shared design system
 const PORT = Number(process.env.FG_A3_PORT || 4400);
 
 const MIME = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8" };
-const SAFE_FILES = new Set(["filecabinet.html", "filecabinet.js", "filecabinet.css"]);
+const SAFE_FILES = new Set(["filecabinet.html", "filecabinet.js", "filecabinet.css", "tokens.css"]);
 const jsonRes = (res, code, obj) => { res.writeHead(code, { "content-type": MIME[".json"] }); res.end(JSON.stringify(obj)); };
 
 export function createCabinetServer(projectRoot) {
@@ -43,7 +44,7 @@ export function createCabinetServer(projectRoot) {
 
     const name = path === "/" ? "filecabinet.html" : path.replace(/^\//, "");
     if (!SAFE_FILES.has(name)) { res.writeHead(404); return res.end("not found"); }
-    const file = join(UI, name);
+    const file = name === "tokens.css" ? TOKENS : join(UI, name);
     if (!existsSync(file)) { res.writeHead(404); return res.end("not found"); }
     res.writeHead(200, { "content-type": MIME[extname(name)] || "text/plain" });
     res.end(readFileSync(file));

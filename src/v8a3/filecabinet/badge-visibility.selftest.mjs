@@ -44,19 +44,33 @@ check("blocked classes are flagged blocked:true (distinct from safe)", () => {
   }
 });
 
-// (a) A dedicated, DISTINCT CSS treatment for blocked rows + badges, separate from
-//     the safe (ok/warn/plain) palette. The blocked colour must not be the safe one.
-check("blocked rows/badges have a dedicated distinct CSS class", () => {
-  assert.match(css, /--blocked\s*:/, "a dedicated --blocked colour token must exist");
+// (a) A dedicated, DISTINCT treatment for blocked rows + badges, separate from the
+//     safe palette — using the CALM LOCK colour (purple), so blocked files are
+//     spottable at a glance without being alarming.
+check("blocked rows/badges have a dedicated, distinct, CALM lock treatment", () => {
   assert.match(css, /\.filerow\.blocked\s*\{/, ".filerow.blocked treatment must exist");
   assert.match(css, /\.badge\.blocked\s*\{/, ".badge.blocked treatment must exist");
-  // The blocked badge must use the blocked colour, not the safe green/amber ones.
   const badgeBlocked = css.match(/\.badge\.blocked\s*\{([^}]*)\}/);
   assert.ok(badgeBlocked, ".badge.blocked rule must be present");
-  assert.match(badgeBlocked[1], /var\(--blocked\)/, ".badge.blocked must use var(--blocked)");
-  assert.doesNotMatch(badgeBlocked[1], /var\(--ok\)/, ".badge.blocked must not reuse the safe (ok) colour");
+  assert.match(badgeBlocked[1], /var\(--lock\)/, ".badge.blocked must use the calm lock colour");
+  assert.doesNotMatch(badgeBlocked[1], /var\(--ok\)|var\(--accent\)/, ".badge.blocked must not reuse a safe colour");
   const rowBlocked = css.match(/\.filerow\.blocked\s*\{([^}]*)\}/);
-  assert.match(rowBlocked[1], /var\(--blocked\)/, ".filerow.blocked must use var(--blocked)");
+  assert.match(rowBlocked[1], /var\(--lock\)/, ".filerow.blocked must use the calm lock colour");
+});
+
+// (a2) J4 (Run-4: "very red, very scary… I'm gonna destroy something") — routine
+//      blocked/protected rows must be CALM: NO red danger treatment. Red is reserved
+//      for a genuine problem only.
+check("J4: routine blocked rows are CALM — no red danger colour (red = problem only)", () => {
+  assert.doesNotMatch(css, /--blocked\s*:/, "the old red --blocked danger token must be gone (use the calm --lock)");
+  const redHex = /#(?:c0362c|ff6b5e|d64545|e06a6a)\b/i;
+  const redVar = /var\(--bad\)/;
+  for (const label of ["filerow.blocked", "badge.blocked", "filter-btn", "viewer-blocked", "row-lock"]) {
+    const m = css.match(new RegExp(`\\.${label.replace(".", "\\.")}\\s*\\{([^}]*)\\}`));
+    if (!m) continue;
+    assert.doesNotMatch(m[1], redHex, `.${label} must not use a red danger hex (calm lock only)`);
+    assert.doesNotMatch(m[1], redVar, `.${label} must not use var(--bad) (red = genuine problem only)`);
+  }
 });
 
 // (b) An icon/glyph lock marker is applied to blocked rows (and blocked badges).
