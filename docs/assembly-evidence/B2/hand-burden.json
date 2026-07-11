@@ -4,10 +4,12 @@
   "clicks_to_see_current_status": 0,
   "clicks_to_pause": 1,
   "project_name_in_header": "Luna Café — order ahead",
-  "answers_total": 8,
-  "answers_above_fold": 6,
+  "geometry_checked_at": [
+    "1366x768",
+    "1440x900"
+  ],
   "fold_budget": 6,
-  "layer2_below_fold": true,
+  "anti_void_max_gap_px": 120,
   "cost_figure_px": 44,
   "decision_view_only": true,
   "pause_control_px": {

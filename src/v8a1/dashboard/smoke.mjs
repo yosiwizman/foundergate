@@ -49,23 +49,50 @@ let handBurden = {};
 try {
   {
     const { page, close } = await open(browser, FIXTURE);
-    const fold = VIEWPORT.height;
 
     // R1 — the project NAME (from project.json) renders in the identity header.
     const modelName = buildView(buildModel(FIXTURE)).home.identity.name;
     const shownName = (await page.$eval("#proj-name", (e) => e.textContent.trim()).catch(() => ""));
     must(shownName.length > 0 && shownName === modelName, `project name must render in the header: model="${modelName}" shown="${shownName}"`);
-    const nameAbove = await page.$eval("#proj-name", (e) => e.getBoundingClientRect().top).catch(() => 9999);
-    must(nameAbove < fold, `project name must be above the fold (top=${Math.round(nameAbove)})`);
 
-    // R2 — ONLY Layer 1 above the fold: ≤6 role-labelled answers above 768; Layer 2 below.
-    const answers = await page.$$eval("[data-answer]", (els) => els.map((e) => ({ top: e.getBoundingClientRect().top, role: e.getAttribute("role") })));
-    must(answers.length === 8, `expected 8 scannable answers (data-answer), got ${answers.length}`);
-    const aboveFold = answers.filter((a) => a.top < fold);
-    must(aboveFold.length <= 6, `Layer 1 fold budget exceeded: ${aboveFold.length} answers above the fold (max 6)`);
-    must(aboveFold.every((a) => a.role === "group"), "every above-the-fold answer must be role-labelled");
-    const layer2Top = await page.$eval("#layer2", (e) => e.getBoundingClientRect().top).catch(() => 0);
-    must(layer2Top >= fold, `Layer 2 must start BELOW the fold (top=${Math.round(layer2Top)}, fold=${fold})`);
+    // Geometry checks run at BOTH the standard (1366x768) and a TALL (1440x900)
+    // viewport, so tall-screen voids are caught forever (VA-VISUAL-LAW).
+    async function geometry(vp) {
+      await page.setViewportSize(vp);
+      await page.waitForTimeout(120);
+      const fold = vp.height;
+      const tag = `${vp.width}x${vp.height}`;
+
+      // (a) all Layer-1 elements FULLY VISIBLE above the fold.
+      for (const sel of ["#identity", "#status-chips", "#next-action"]) {
+        const box = await page.$eval(sel, (e) => { const r = e.getBoundingClientRect(); return { top: r.top, bottom: r.bottom }; }).catch(() => null);
+        must(box && box.bottom <= fold + 1, `Layer 1 element ${sel} must be fully above the fold at ${tag} (bottom=${box ? Math.round(box.bottom) : "none"})`);
+      }
+      // (b) fold budget: Layer 1 presents ≤6 role-labelled answers, ALL above the
+      //     fold. (With the void removed, Layer 2 now flows up and may peek above
+      //     the fold — that's good UX, not cramming; the budget applies to Layer 1's
+      //     answer set, i.e. identity + the ≤5 status chips.)
+      const all = await page.$$eval("[data-answer]", (els) => els.length);
+      must(all === 8, `expected 8 scannable answers total, got ${all} at ${tag}`);
+      const layer1 = await page.$$eval("#identity[data-answer], #layer1 [data-answer]", (els) => els.map((e) => ({ bottom: e.getBoundingClientRect().bottom, role: e.getAttribute("role") })));
+      must(layer1.length <= 6, `Layer 1 fold budget exceeded: ${layer1.length} answers (max 6) at ${tag}`);
+      must(layer1.every((a) => a.bottom <= fold + 1), `every Layer-1 answer must be fully above the fold at ${tag}`);
+      must(layer1.every((a) => a.role === "group"), `every Layer-1 answer must be role-labelled at ${tag}`);
+      // (c) ANTI-VOID: no vertical gap > 120px between consecutive rendered sections
+      //     (the min-height void rewarded by the old "Layer 2 below the fold" rule).
+      const gaps = await page.$$eval(".topbar, #layer1, .mainrow, #layer2 > .card, .layer3 > details", (els) => {
+        const rects = els.map((e) => e.getBoundingClientRect()).filter((r) => r.height > 0).sort((a, b) => a.top - b.top);
+        const out = [];
+        for (let i = 1; i < rects.length; i++) out.push(Math.round(rects[i].top - rects[i - 1].bottom));
+        return out;
+      });
+      const worst = Math.max(0, ...gaps);
+      must(worst <= 120, `dead-space VOID at ${tag}: a ${worst}px gap between sections (max ~120px). gaps=${JSON.stringify(gaps)}`);
+    }
+    await geometry({ width: 1366, height: 768 });
+    await geometry({ width: 1440, height: 900 });
+    await page.setViewportSize(VIEWPORT); // back to standard for the remaining checks + shots
+
     const toneClasses = await page.$$eval(".qchip", (els) => new Set(els.map((e) => e.className.replace("qchip", "").trim())).size);
     must(toneClasses >= 3, `status chips must use a spread of colours, got ${toneClasses}`);
 
@@ -133,8 +160,7 @@ try {
       viewport: `${VIEWPORT.width}x${VIEWPORT.height}`,
       terminal_copy_paste_count: 0, clicks_to_see_current_status: 0, clicks_to_pause: 1,
       project_name_in_header: shownName,
-      answers_total: answers.length, answers_above_fold: aboveFold.length, fold_budget: 6,
-      layer2_below_fold: layer2Top >= fold,
+      geometry_checked_at: ["1366x768", "1440x900"], fold_budget: 6, anti_void_max_gap_px: 120,
       cost_figure_px: Math.round(costFont), decision_view_only: /read the decision/i.test(decBtn),
       pause_control_px: pauseBox && { w: Math.round(pauseBox.width), h: Math.round(pauseBox.height) },
       banned_words_visible: false,

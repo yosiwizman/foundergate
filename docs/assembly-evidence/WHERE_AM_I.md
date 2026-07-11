@@ -36,3 +36,13 @@
 
 **Note:** `#15` / `6273b3808f2af8bad3983cfde41bbc44772a9dcc` are stamped with the real PR number and exact merge SHA immediately after the sheriff
 merge. B0 is docs-only; no code, no schema, no `src/` change was made.
+
+## Standing rules (permanent)
+- **THE VISUAL SELF-REVIEW LAW** (Assembly Manual §23, founder-mandated 2026-07-10): before **any** founder witness
+  gate, stranger session, or gallery handoff, the CTO must (1) screenshot every founder-facing screen full-page +
+  above-the-fold at **1366×768 and 1440×900**, (2) actually **look** and reason as a first-time human (voids,
+  overlaps, truncation, contrast, "looks broken"), not just confirm elements exist, (3) fix in-scope or
+  park-and-disclose, and (4) record the review (screenshots + one-line verdict per screen) in
+  `docs/assembly-evidence/visual-review/VISUAL_REVIEW.md`. **A witness card without this recorded review is INVALID.**
+  Honest scope: this reduces, not eliminates, human catches — the founder witness gate is the final filter.
+  Mechanically enforced by `src/tools/visual-review.selftest.mjs`.
