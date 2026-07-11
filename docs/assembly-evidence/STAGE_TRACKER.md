@@ -32,6 +32,11 @@
 | G4-A4 — accept V8-A4 | ACCEPTED | product-final `a957b01` (CI 29104173885) |
 | **V8-A ACCEPTANCE — whole product** | **PENDING** | fires after the Stranger Test run |
 
+| Run 6 — Stranger Test | ABORTED (pre-flight) | founder finding; machine-accountability defect recorded (PR #70) |
+| VA-HARNESS-TRUTH | LANDED | true-viewport + in-embed + mechanical critical-path gate + Provenance/Harness-Truth laws (PR #71 `0414887`) |
+| FD-IMPLEMENT — founder design v2 | BUILT · PENDING FOUNDER WITNESS | 4 apps pixel-faithful + L0 fixed (PR #73); not merged; visual self-review recorded |
+| V8-B build contract | MERGED (DRAFT · PENDING V8-A ACCEPTANCE) | PR #72 `2c13bc9`; attach-registry DAG gap reported (founder-owned) |
+
 ## Contracts & plans on file
 - **V8-A4 build contract:** `docs/lanes/V8-A4-lane-packet.md` (SENSITIVITY RULING: injection boundary → 1 builder
   + 1 adversarial checker; PG-CORE/PG-UI/AC DAG).
