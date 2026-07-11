@@ -8,10 +8,10 @@ PR + SHA are stamped into these rows and the Evidence-Ledger row after this PR m
 ## Disk-proof completion table (with AUTHORITY column)
 | Lane | What landed | Evidence (file) | Authority (path @ SHA) |
 |---|---|---|---|
-| Schema-first (Law 53) | Registry config schema (paths + metadata only; never content) | `src/v8b0/schemas/attached_projects.schema.json` | `docs/lanes/V8-B-build-contract.md` @ `b442734` |
-| Registry module | Persistent attach registry: attach/detach/setActive/activeRoot/list; crypto identity keyed on a symlink- + case-canonicalized path; realpath-based `withinProject`; load-time id↔root verification | `src/v8b0/attached-projects.mjs` | `docs/lanes/V8-B-build-contract.md` @ `b442734` |
-| Isolation proofs (committed CI) | 26 checks across 4 self-tests: no-auto-attach, no-cross-project-bleed (collision, secret-never-persisted, leaf/intermediate symlink, `..`, case aliasing, nesting), honest-UNKNOWN, core+persistence+schema | `src/v8b0/{attached-projects,no-auto-attach,no-cross-project-bleed,honest-unknown}.selftest.mjs` | `docs/lanes/V8-B-build-contract.md` @ `b442734` |
-| Independent adversarial checker | Builder-independent read-only checker, 3 rounds: R1 found 1 HIGH + 2 MED + 1 LOW; R2 confirmed 2 closed + 2 still-open; R3 ALL FINDINGS CLOSED (mergeable). Reports committed verbatim | `docs/assembly-evidence/VB0/checker-report.md` + `-round2.md` + `-round3.md` | `docs/lanes/V8-B-build-contract.md` @ `b442734` |
+| Schema-first (Law 53) |(PR #84, SHA `041c80d`) — Registry config schema (paths + metadata only; never content) | `src/v8b0/schemas/attached_projects.schema.json` | `docs/lanes/V8-B-build-contract.md` @ `b442734` |
+| Registry module |(PR #84, SHA `041c80d`) — Persistent attach registry: attach/detach/setActive/activeRoot/list; crypto identity keyed on a symlink- + case-canonicalized path; realpath-based `withinProject`; load-time id↔root verification | `src/v8b0/attached-projects.mjs` | `docs/lanes/V8-B-build-contract.md` @ `b442734` |
+| Isolation proofs (committed CI) |(PR #84, SHA `041c80d`) — 26 checks across 4 self-tests: no-auto-attach, no-cross-project-bleed (collision, secret-never-persisted, leaf/intermediate symlink, `..`, case aliasing, nesting), honest-UNKNOWN, core+persistence+schema | `src/v8b0/{attached-projects,no-auto-attach,no-cross-project-bleed,honest-unknown}.selftest.mjs` | `docs/lanes/V8-B-build-contract.md` @ `b442734` |
+| Independent adversarial checker |(PR #84, SHA `041c80d`) — Builder-independent read-only checker, 3 rounds: R1 found 1 HIGH + 2 MED + 1 LOW; R2 confirmed 2 closed + 2 still-open; R3 ALL FINDINGS CLOSED (mergeable). Reports committed verbatim | `docs/assembly-evidence/VB0/checker-report.md` + `-round2.md` + `-round3.md` | `docs/lanes/V8-B-build-contract.md` @ `b442734` |
 
 ## Boundary — verified enforced
 - **Never auto-attach:** missing/corrupt registry loads empty; `attach()` is the only add path; `activeRoot()` is UNKNOWN until the founder `setActive()`s; corruption/forgery never auto-activates.
@@ -20,7 +20,7 @@ PR + SHA are stamped into these rows and the Evidence-Ledger row after this PR m
 - **Law-54 honest UNKNOWN:** no active / unknown id / detached / unreadable `.foundergate` → UNKNOWN, never another project, never a guess.
 
 ## Notes
-- **No founder-facing surface** in VB0 (headless foundation) → no Visual Self-Review applies; the project-switcher UI is a wide-safe shell that follows.
+- **No founder-facing surface** in this headless foundation → no Visual Self-Review applies; the project-switcher UI is a wide-safe shell that follows.
 - **Read-only foundation:** no executor, no runs, no live/provider/send/payment path.
 - **Pending before acceptance:** the Terminal Advisor pre-signature audit, to be committed verbatim at
   `docs/assembly-evidence/VB0/advisor-pre-signature-audit.md` (founder's separate read-only lane).
