@@ -425,3 +425,32 @@ Record the decision in the Founder Gate Ledger with date and packet SHA. Nothing
 ---
 
 **Assembly Manual V1.2 is a companion to Roadmap V8.11. If this manual conflicts with Roadmap V8.11, Roadmap V8.11 wins. The FounderGate CTO (Harvest Terminal — the seat Roadmap V8.11 calls "Terminal-0" for this repo) runs autonomous bundles gate-to-gate; B1 continues into B2 without founder relay when machine gates pass.**
+
+---
+
+## 23. THE VISUAL SELF-REVIEW LAW (permanent; founder-mandated 2026-07-10)
+
+**Why this exists:** three of four consecutive founder interventions during the V8-A stranger-test cycle were
+*visual* defects the machine already had the tools to catch (a stale-tab/port-identity mix-up; a tall-viewport
+dead-space void) — with Playwright and screenshots already in hand. Confirming that checklist elements *exist* is
+not the same as *looking* at the screen.
+
+**The law.** Before ANY founder witness gate, stranger session, or gallery handoff, the CTO must:
+
+1. **Capture** full-page AND above-the-fold screenshots of **every** founder-facing screen at **both** standard
+   (**1366×768**) and tall (**1440×900**) viewports.
+2. **Actually LOOK** at each image and reason about it as a first-time human would — voids, overlaps, truncation,
+   misalignment, unreadable contrast, anything that would make a stranger say "this looks broken" — **not merely
+   confirm that checklist elements exist.**
+3. **Fix** in-scope defects found, **or park and disclose** them.
+4. **Record** the review as evidence — the screenshots **plus a one-line verdict per screen** — in the relevant
+   bundle's evidence folder (canonical: `docs/assembly-evidence/visual-review/`, file `VISUAL_REVIEW.md`).
+
+**A witness card presented without this recorded review is INVALID and must be rejected by the founder.**
+
+**Honest scope note (part of the law):** this review *reduces, not eliminates,* human catches. Automated geometry
+guards + this human-style look are a filter, not a guarantee; the **founder witness gate remains the final filter**.
+
+**Mechanical enforcement:** where mechanical, the suite fails if the visual-review verdict is absent or stale for
+founder-facing UI — `src/tools/visual-review.selftest.mjs` (in CI) requires `VISUAL_REVIEW.md` to exist, cover all
+four screens at both viewports with a verdict line each, and reference on-disk screenshots.
