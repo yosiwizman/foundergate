@@ -56,6 +56,13 @@
 .badge.warn { background: rgba(245,184,61,.14); color: var(--amber); }
 .badge.lock { background: rgba(167,139,250,.14); color: var(--purple); }
 .badge.blocked { background: var(--lock); color: #fff; }
+/* M2 (Run-7): SECRET gets its own CALM teal hue so it's distinct from the purple
+   UNKNOWN/blocked lock at a glance. Still calm — red stays reserved for problems. */
+.badge.secret { background: rgba(70,179,186,.16); color: var(--secret); }
+.badge.secret.blocked { background: var(--secret); color: #fff; }
+.filerow[data-class="SECRET"] .row-lock { color: var(--secret); }
+.filerow[data-class="SECRET"].blocked { background: rgba(70,179,186,.07); border-left-color: var(--secret); }
+.filerow[data-class="SECRET"].blocked .path-tail { color: var(--secret); }
 
 /* reader — the reading pane dominates; a document opens big and readable */
 .viewer { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; min-height: 560px; }

@@ -171,7 +171,7 @@ export function buildView(model) {
   // invented. No fabricated timestamps (the model has none), so the activity feed
   // shows real events without made-up "2 minutes ago".
   const founderName = m.connected && m.project && m.project.founder_name ? m.project.founder_name : null;
-  const stateWord = { blocked: "waiting for you", active: "running", idle: "resting", paused: "paused" }[m.state]
+  const stateWord = { blocked: "on hold", active: "running", idle: "resting", paused: "on hold" }[m.state]
     || (m.connected ? "starting up" : "not connected yet");
   // F1 — one-line plain "what is this / what should I do", from real state.
   const f1Summary = hasPendingDecision
@@ -203,8 +203,8 @@ export function buildView(model) {
     if (isUnknown(st)) return { value: "Unknown", tone: "unknown" };
     switch (st) {
       case "active": return { value: "Running", tone: "ok" };
-      case "blocked": return { value: "Waiting on you", tone: "caution" };
-      case "paused": return { value: "Paused", tone: "caution" };
+      case "blocked": return { value: "On Hold", tone: "caution" };
+      case "paused": return { value: "On Hold", tone: "caution" };
       case "idle": return { value: "Idle", tone: "unknown" };
       case "stopped": return { value: "Stopped", tone: "attention" };
       case "error": case "failed": return { value: "Problem", tone: "attention" };

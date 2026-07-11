@@ -36,3 +36,14 @@
 
 No screen reads as "broken," "off," "dull," or "scary." The four apps are one coherent product in the founder's v2
 design language. Surfaced for the founder witness gate.
+
+## Addendum — M1 / M2 refinements (Run-7 notes), true 1366×768 + 1440×900
+
+Before/after full-page stills committed: `before-m1m2/` (pre) vs `dashboard-*-full.png` + `filecabinet-*-full.png` (post).
+
+| Refinement | Screen | Before | After | Matches intent? |
+|---|---|---|---|---|
+| **M1** "stuck" → "On Hold" | Truth Dashboard | STATUS chip read *"Healthy · waiting on you"* | STATUS chip reads **"Healthy · on hold"** (green); the *"Waiting on you: one decision to read"* call-to-action stays in the alive line | **YES** — the held state now reads as deliberate, not stuck (Mike: "it doesn't look stuck if it's working"). Honesty/friendly-copy guards green. |
+| **M2** distinct SECRET vs UNKNOWN | File Cabinet | SECRET and UNKNOWN badges both purple | **SECRET** badge + row rail are **teal** (`--secret`); **UNKNOWN** keeps **purple** (`--lock`) — two calm, distinct hues; **red still reserved for problems** | **YES** — SECRET has its own colour tag; UNKNOWN sticks out separately (Mike's two notes). Calm-colour + badge-visibility guards updated and green. |
+
+Both verdicts at both viewports: **matches intent — yes.** No red for routine states. Founder to witness on the next card.

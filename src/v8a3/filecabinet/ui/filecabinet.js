@@ -20,7 +20,7 @@ const CLASS_INFO = {
   PRIVATE_FOUNDER_DATA: { plain: "your private notes", kind: "", blocked: false, rank: 2 },
   DO_NOT_EXPORT: { plain: "view only — don't export", kind: "warn", blocked: false, rank: 3 },
   PRODUCTION_DATA: { plain: "needs a gate", kind: "lock", blocked: true, rank: 4 },
-  SECRET: { plain: "protected — hidden", kind: "lock", blocked: true, rank: 5 },
+  SECRET: { plain: "protected — hidden", kind: "secret", blocked: true, rank: 5 },
   UNKNOWN: { plain: "not sorted yet", kind: "lock", blocked: true, rank: 6 },
 };
 const LOCK_GLYPH = "🔒";

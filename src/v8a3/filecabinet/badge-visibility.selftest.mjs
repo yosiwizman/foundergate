@@ -103,4 +103,19 @@ check("UI copy avoids the forbidden scary words", () => {
   }
 });
 
+check("M2 (Run-7): SECRET is a DISTINCT calm colour from the UNKNOWN purple lock, neither red", () => {
+  assert.match(js, /SECRET:\s*\{[^}]*kind:\s*["']secret["']/, "SECRET must map to its own badge kind 'secret'");
+  assert.match(js, /UNKNOWN:\s*\{[^}]*kind:\s*["']lock["']/, "UNKNOWN must keep the purple lock kind");
+  const sec = css.match(/\.badge\.secret\s*\{([^}]*)\}/);
+  assert.ok(sec, ".badge.secret must be styled");
+  assert.match(sec[1], /var\(--secret\)/, "SECRET badge must use its own var(--secret) hue");
+  assert.doesNotMatch(sec[1], /var\(--lock\)|var\(--purple\)/, "SECRET must NOT reuse the UNKNOWN purple");
+  assert.doesNotMatch(sec[1], /var\(--bad\)|#e06a6a|#ef4444/i, "SECRET must stay calm — never red (red = problem only)");
+  const tokens = readFileSync(join(HERE, "..", "..", "ui", "tokens.css"), "utf8");
+  const decl = tokens.match(/--secret:\s*(#[0-9a-fA-F]{6})/);
+  assert.ok(decl, "tokens.css must define --secret");
+  const h = decl[1].slice(1); const r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
+  assert.ok(!(r > 150 && r > g + 50 && r > b + 50), `--secret ${decl[1]} looks red; SECRET must stay calm (red = problem only)`);
+});
+
 console.log(`\nV8A3-BADGE-VISIBILITY-SELFTEST: PASS (${passed} checks)`);
