@@ -1,9 +1,9 @@
-# V8-B Build Contract — Making It Real (BUILD CONTRACT) — DRAFT · PENDING V8-A ACCEPTANCE
+# V8-B Build Contract — Making It Real (BUILD CONTRACT) — LIVE · V8-A ACCEPTED 2026-07-11
 
-> **STATUS: DRAFT — PENDING V8-A ACCEPTANCE.** This is a *draft* build contract written while the V8-A Stranger
-> Test is still to be run. It is **not** a gate card and **authorizes nothing** (Law 69). It becomes a live build
-> contract only **after the Stranger Test passes and V8-A is accepted**, and then only at each sub-system's own
-> `G1-B-*` implementation-start gate. No V8-B code may begin under this document.
+> **STATUS: LIVE — V8-A ACCEPTED 2026-07-11.** V8-A whole-product acceptance passed (Stranger Test Run 7 PASSED;
+> product-final `85a59f9`), so this build contract is now LIVE. It still **authorizes nothing by itself** (Law 69):
+> work begins only when the founder records a sub-system's own `G1-B-*` implementation-start gate sentence — and
+> **every `G1-B-*` gate remains UNFIRED**. No V8-B code has begun under this document.
 
 > **Plain English — read this first.**
 >
@@ -18,9 +18,11 @@
 >    misuses a session token*, *skips a rollback*, or *exceeds the budget*. Each is pre-ruled SENSITIVE below and
 >    gets one builder + one independent adversarial checker whose whole job is to make exactly those failures
 >    happen; the report is committed as evidence and re-reviewed after fixes.
-> 4. **What you can test now.** Nothing — a draft document. There is no V8-B code and this authorizes none.
-> 5. **One next action.** None until the Stranger Test passes and V8-A is accepted. Then, per sub-system, the
->    founder records the `G1-B-*` sentence and only that sub-system's build may start (Law 69).
+> 4. **What you can test now.** Nothing yet — the contract is LIVE (V8-A accepted), but every `G1-B-*` gate is
+>    unfired, so no V8-B code exists.
+> 5. **One next action.** Per sub-system, the founder records the matching `G1-B-*` sentence; only then does that
+>    sub-system's build start (Law 69). The first is `G1-B-VB1` (Run Launcher), with `VB0` (Attached Projects
+>    Registry) as its foundation.
 
 ---
 
@@ -101,15 +103,22 @@ Each sensitive sub-system merges **only** when, for its path, all of the followi
   **no terminal**.
 
 ## Substep DAG (for a future set of V8-B build bundles)
-Spine order per this contract: **Run Launcher → CTO queue → Gate/Witness Engine wiring → cost enforcement → Guide
-routing.** Safety dependency overriding the spine: **no executor action, queue-driven action, or routed request
+Spine order per this contract: **Attached Projects Registry (persistent attach) → Run Launcher → CTO queue →
+Gate/Witness Engine wiring → cost enforcement → Guide routing.** Safety dependency overriding the spine: **no executor action, queue-driven action, or routed request
 may actually execute until the Wired Gate/Witness Engine (VB3) is landed and proven** — earlier sub-systems may
 build their scaffolding and evidence, but their *act* edge depends on VB3. Each `VBn` phase is SENSITIVE: one
 builder + one independent adversarial checker.
 
+- **`VB0` Attached Projects Registry (persistent attach)** (BOUNDARY: cross-project isolation) — persist the attach
+  configuration and maintain a registry of attached projects (roadmap V8-B: attach-with-persistent-config),
+  superseding V8-A1's single in-memory attach. Boundary rules, enforced: **never auto-attach**; the founder chooses
+  the active project; **no project's SECRET/blocked content or state ever bleeds into another** (the File Cabinet /
+  Guide data-class boundaries apply per project); Law-54 honest UNKNOWN when a project can't be read. This is the
+  **foundation** the rest of V8-B runs on — VB1 operates against the founder-selected attached project.
 - **`VB1` Run Launcher + executor** (SENSITIVE: executor · rollback · session-token) — start/stop/pause/resume a
   safe run; every action rollback-able and evidence-leaving; least-privilege, revocable session tokens. The
-  executor's *act* edge is **gated on `VB3`**; launcher scaffolding + rollback/token proofs may land first.
+  executor's *act* edge is **gated on `VB3`**; launcher scaffolding + rollback/token proofs may land first —
+  depends `VB0` (runs against the attached project).
 - **`VB2` CTO queue** (SENSITIVE routing boundary) — Guide drafts become **founder-visible queued items**, never
   auto-actions; queue items carry data class and never contain SECRET/blocked content — depends `VB1` (needs the
   run/executor model to queue against). Queued items **act** only once `VB3` wires approvals.
@@ -134,6 +143,7 @@ is accepted** (Law 69). No sub-system auto-follows the previous one; the founder
 
 | Gate | Authorizes starting… | Prefilled start sentence (finalized at the gate) |
 | --- | --- | --- |
+| **`G1-B-VB0`** | Attached Projects Registry (persistent attach) | *"I approve starting V8-B Attached Projects Registry (persistent attach) per this contract."* |
 | **`G1-B-VB1`** | Run Launcher + executor | *"I approve starting V8-B Run Launcher + executor per this contract."* |
 | **`G1-B-VB2`** | CTO queue | *"I approve starting V8-B CTO queue per this contract."* |
 | **`G1-B-VB3`** | Gate/Witness Engine wiring | *"I approve starting V8-B Gate/Witness Engine wiring per this contract."* |

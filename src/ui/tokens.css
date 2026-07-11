@@ -18,6 +18,9 @@
   --bg: #0d1117; --panel: #161c26; --panel2: #1b2230; --line: #2a3344;
   --text: #e6ebf2; --muted: #93a0b4; --dim: #6b7789;
   --blue: #3b82f6; --green: #22c55e; --amber: #f5b83d; --purple: #a78bfa; --red: #ef4444;
+  /* M2 (Run-7): SECRET gets its own CALM hue (teal), distinct from the UNKNOWN purple
+     lock — so a stranger tells them apart at a glance. Red stays for problems only. */
+  --secret: #46b3ba;
   --radius: 12px;
 
   /* legacy aliases (pre-v2 surfaces keep rendering; new apps use the names above) */

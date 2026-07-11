@@ -98,7 +98,7 @@ check("J1 (FD): STATUS chip is HEALTH-forward — green when healthy even while 
   // fixture is connected + 10/10 files present -> healthy -> GREEN, even though blocked.
   assert.equal(first.tone, "ok");
   assert.match(first.value, /healthy/i);
-  assert.match(first.value, /waiting on you/i); // the state stays honest in the text
+  assert.match(first.value, /on hold/i); // M1: the held state reads "On Hold", not "stuck"
   // health is derived from connection/files, NOT run_state:
   //  active run_state but missing core files must NOT fake a green STATUS (Law 54).
   const activeUnhealthy = buildView({ connected: true, state: "active", presence: { project: false, status: false } }).home.statusStrip[0];
