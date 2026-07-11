@@ -31,17 +31,19 @@ export function buildTree(projectRoot, rules = loadRules(projectRoot)) {
       if (st.isSymbolicLink()) {
         // conservative: a symlink is listed as SECRET (never under-stated); the
         // real access decision (which re-classifies by realpath) still runs on use.
-        files.push({ path: rel, category: "Sensitive / Hidden", data_class: "SECRET", access: access("SECRET"), symlink: true });
+        files.push({ path: rel, category: "Sensitive / Hidden", data_class: "SECRET", access: access("SECRET"), symlink: true, mtime: st.mtimeMs });
       } else if (st.isDirectory()) {
         walk(abs);
       } else if (st.isFile()) {
         if (st.nlink > 1) {
           // a hard-linked regular file cannot be safely classified by name (a secret
           // could be hard-linked to a safe name) — list conservatively as SECRET.
-          files.push({ path: rel, category: "Sensitive / Hidden", data_class: "SECRET", access: access("SECRET"), hardlink: true });
+          files.push({ path: rel, category: "Sensitive / Hidden", data_class: "SECRET", access: access("SECRET"), hardlink: true, mtime: st.mtimeMs });
         } else {
           const c = classifyFile(rel, rules);
-          files.push({ path: rel, category: c.category, data_class: c.data_class, access: c.access, symlink: false });
+          // mtime is read-only listing METADATA for the "recently changed" sort — it
+          // is not used for access; access is decided by cabinet.mjs on open.
+          files.push({ path: rel, category: c.category, data_class: c.data_class, access: c.access, symlink: false, mtime: st.mtimeMs });
         }
       }
     }
