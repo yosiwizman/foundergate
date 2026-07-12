@@ -9,6 +9,12 @@ on:
     branches: [main]
   pull_request:
 
+# AKIOR-HARVEST #9: coalesce redundant runs on the same ref so rapid pushes don't
+# saturate the runner (the CI-serialization limit the AKIOR stress program quantified).
+concurrency:
+  group: selftests-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   selftests:
     runs-on: ubuntu-latest
