@@ -54,3 +54,9 @@ coverage/
 
 # agent worktrees (isolation) — never commit
 .claude/worktrees/
+
+# AKIOR-HARVEST #9: secret-shaped scratch files must never be swept in by a reflexive
+# `git add -A` (the AKIOR B4 near-miss: a *.copy file dodged gitignore and nearly
+# committed a secret). Keep these OUT of the index.
+*.copy
+cycle-*

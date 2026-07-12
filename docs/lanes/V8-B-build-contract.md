@@ -106,10 +106,28 @@ Each sensitive sub-system merges **only** when, for its path, all of the followi
   each producing a named `FOUNDERGATE HARNESS <N>-HOUR SOAK PASS` line with **real start/end timestamps (delta ≥ the
   claimed hours), the exact SHA under test, monitoring evidence captured during the run, and a
   failures/interventions log**. A soak claim whose timestamps do not span the duration is **INVALID** (mechanically
-  checked by `report-provenance` `validateSoakClaims`). **Duration up front (§29a):** the realistic range for the
+  checked by `report-provenance` `validateSoakClaims`), and is produced by the committed rolling accumulator
+  `src/tools/reliability-soak.mjs` (AKIOR-HARVEST #5) — which emits a `<N>-HOUR SOAK PASS` line ONLY when the run
+  genuinely spans the claim and meets the SLO. **Duration up front (§29a):** the realistic range for the
   combined VB1+VB2 program is **best 36–48h · realistic 4–7 days · defect-heavy 1–2 weeks** (absolute floor ≈ 33h of
   soak alone); a "complete" return faster than that floor is a progress checkpoint, **not** the gate, and must say
   what is still running (§29d). Authority: `docs/lanes/authority/akior-advisor-soak-guidance.md`.
+
+## Adopted harness patterns (AKIOR-HARVEST — pattern authority)
+The sensitive V8-B surfaces below adopt PROVEN patterns surveyed from AKIOR
+(`docs/lanes/authority/akior-harness-harvest-report.md`). These are cited as **pattern authority** — the CODE is
+built under each sub-system's own gate, **not now** — except the reliability soak accumulator (#5), adopted now as
+a wide-safe tool. VB1 is thus born on these patterns.
+
+| Pattern (AKIOR #) | Adopted where | Status |
+| --- | --- | --- |
+| Reliability soak accumulator (#5) | §29 `VB1`/`VB2` soak evidence — the rolling tool that emits a valid `<N>-HOUR SOAK PASS` only when the run spans the claim + meets the SLO | **ADOPTED NOW** — `src/tools/reliability-soak.mjs` (+ selftest) |
+| Rate-limiter / interruption auto-recovery (#1) | `VB1` executor + any external-service drive: min-interval + daily cap + exponential back-off + lock-and-pause (never retry-storm) | pattern authority (built under VB1) |
+| Session-token mint/use/revoke + boot-id `--preflight` (#2) | `VB1` session-token path: short-lived, boot-bound, revocable; a live-service cross-check before any live write (delta over FG's mechanical critical-path gate) | pattern authority (built under VB1) |
+| Rollback-snapshot drill + fail-closed rollback (#3) | `VB1` rollback path: backup-before-write + manifest-driven fail-closed rollback (no manifest / incomplete / error → zero writes) | pattern authority (built under VB1) |
+| Single-sanctioned-executor + write-intent containment (#4) | `VB1`/`VB3` executor: every mutation routes through one gated writer; a central write-intent guard blocks all other write-doors | pattern authority (built under VB1/VB3) |
+| Cross-process atomic-store lock (#8) | `VB1` backup + mutate + undo-capture held under one lock so the undo descriptor can't go stale | pattern authority (built under VB1) |
+| Front-UI fail-closed witness detectors (#7) | V8-B UI witness (`G2-B-*`): anti-substitution + false-success + net-zero-closeout detectors, fail-closed on absent evidence — a delta over the Visual Self-Review Law | pattern authority (built under each UI witness) |
 
 ## Substep DAG (for a future set of V8-B build bundles)
 Spine order per this contract: **Attached Projects Registry (persistent attach) → Run Launcher → CTO queue →
