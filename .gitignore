@@ -26,6 +26,11 @@ secrets/
 # so it reaches CI (the `*token*` glob above is for secret token files only; the
 # pre-commit secret SCAN is the real guard).
 !**/tokens.css
+# The VB1 session-token MODULE is executor SOURCE code (mint/use/revoke of short-lived
+# session capabilities), not a secret token file — un-ignore it so it reaches CI (the
+# `*token*` glob above is for secret token files only; the pre-commit secret SCAN is the
+# real guard). Its selftest is already covered by the `*.selftest.mjs` rule above.
+!src/v8b1/session-token.mjs
 .npmrc
 
 # --- Private store paths (source-system runtime state; never a dependency here) ---
