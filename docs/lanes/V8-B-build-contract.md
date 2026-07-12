@@ -124,6 +124,10 @@ builder + one independent adversarial checker.
   the active project; **no project's SECRET/blocked content or state ever bleeds into another** (the File Cabinet /
   Guide data-class boundaries apply per project); Law-54 honest UNKNOWN when a project can't be read. This is the
   **foundation** the rest of V8-B runs on — VB1 operates against the founder-selected attached project.
+  **VB0 known residuals (non-blocking, visible forever — recorded at G3-B-VB0 acceptance 2026-07-12):** (a) VB0
+  ships **no hardlink-bleed proof** — hardlink content isolation is the File Cabinet's `nlink>1` guard's job, not
+  VB0's (VB0 reads no project content); (b) the project id is a **64-bit SHA-256 truncation** — collision-resistant
+  in practice, recorded as a known residual.
 - **`VB1` Run Launcher + executor** (SENSITIVE: executor · rollback · session-token) — start/stop/pause/resume a
   safe run; every action rollback-able and evidence-leaving; least-privilege, revocable session tokens. The
   executor's *act* edge is **gated on `VB3`**; launcher scaffolding + rollback/token proofs may land first —
