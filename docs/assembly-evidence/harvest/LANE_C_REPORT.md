@@ -11,7 +11,7 @@
 ## What this lane did
 - Read-only surveyed AKIOR's soak/reliability MONITORING tooling and soak DEFECT history (harness/, evidence/,
   docs/status/, scripts/_lib/, tests/stress/, control-service/, ci-runner/).
-- Committed a copy-only PATTERN-AUTHORITY doc capturing 9 monitoring patterns (P1–P9) and 6 defect lessons
+- Committed a copy-only PATTERN-AUTHORITY doc capturing nine monitoring patterns and six defect lessons
   (D1–D6), each with an AKIOR source-path provenance line.
 - Implemented ONE wide-safe, zero-dependency MONITORING helper (`src/tools/soak-monitor.mjs`) — a pure
   resource-trend + liveness accumulator that watches windows and reports leak/degradation/staleness BREACHES and
@@ -27,12 +27,12 @@ import `reliability-soak.mjs`, `soak-run.mjs`, or `src/v8b1/**`.
 
 | Deliverable | PR | Head SHA | Authority (path @ SHA) |
 | --- | --- | --- | --- |
-| Copy-only soak-monitoring pattern-authority doc committed | #__PR__ | `__HEADSHA__` | `docs/lanes/authority/akior-harness-harvest-report.md` @ `ed7aec9785e6b1ef68c60f2a4c2756e9c0fe6128` |
-| Pure zero-dep soak-monitor helper added, selftest green | #__PR__ | `__HEADSHA__` | `docs/lanes/authority/akior-soak-monitoring-harvest.md` @ `__HEADSHA__` |
-| Full self-test suite re-run and GREEN after this lane | #__PR__ | `__HEADSHA__` | `docs/lanes/authority/akior-soak-monitoring-harvest.md` @ `__HEADSHA__` |
+| Copy-only soak-monitoring pattern-authority doc committed | #95 | `9937b0613e8c26d19912b0202c3220a6a13b1128` | `docs/lanes/authority/akior-harness-harvest-report.md` @ `ed7aec9785e6b1ef68c60f2a4c2756e9c0fe6128` |
+| Pure zero-dep soak-monitor helper added, selftest green | #95 | `9937b0613e8c26d19912b0202c3220a6a13b1128` | `docs/lanes/authority/akior-soak-monitoring-harvest.md` @ `9937b0613e8c26d19912b0202c3220a6a13b1128` |
+| Full self-test suite re-run and GREEN after this lane | #95 | `9937b0613e8c26d19912b0202c3220a6a13b1128` | `docs/lanes/authority/akior-soak-monitoring-harvest.md` @ `9937b0613e8c26d19912b0202c3220a6a13b1128` |
 
 ## Files created
-- `docs/lanes/authority/akior-soak-monitoring-harvest.md` — pattern authority (P1–P9 monitoring, D1–D6 defect lessons).
+- `docs/lanes/authority/akior-soak-monitoring-harvest.md` — pattern authority (nine monitoring patterns + six defect lessons).
 - `src/tools/soak-monitor.mjs` — pure resource-trend + liveness observability accumulator (fires nothing).
 - `src/tools/soak-monitor.selftest.mjs` — 32-check proof (each leak/degradation/staleness assert genuinely fires).
 - `docs/assembly-evidence/harvest/LANE_C_REPORT.md` — this report.
