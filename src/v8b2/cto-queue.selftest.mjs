@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import {
   emptyQueue, addItem, listItems, getItem, validateItem,
   SCHEMA_VERSION, STATUS, KIND, DATA_CLASS, FORBIDDEN_DATA_CLASS, UNKNOWN, QueueError,
+  ALLOWED_ITEM_KEYS, MAX_LEN,
 } from "./cto-queue.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -113,6 +114,37 @@ check("returned items are frozen — a caller cannot mutate the queue through th
   assert.throws(() => { it.status = "done"; }, TypeError);
   // the stored item is unchanged
   assert.equal(getItem(q, it.id).status, "queued");
+});
+
+check("LOW-2: validateItem rejects an item carrying an unknown own-key (matches additionalProperties:false)", () => {
+  const withExtra = validateItem(goodItem({ __act: "execute", evil: 1 }));
+  assert.equal(withExtra.valid, false);
+  assert.ok(withExtra.errors.some((e) => e.includes("unknown key")), "must name the unknown key");
+  // and addItem refuses it too
+  assert.throws(() => addItem(emptyQueue(), goodItem({ nested: { a: 1 } })), QueueError);
+  // the allowed set is exactly the eight schema keys
+  assert.deepEqual(
+    [...ALLOWED_ITEM_KEYS].sort(),
+    ["created_at", "data_class", "id", "kind", "requested_by", "status", "summary", "title"],
+  );
+});
+
+check("LOW-3: validateItem rejects over-long string fields (maxLength caps)", () => {
+  assert.equal(validateItem(goodItem({ summary: "x".repeat(MAX_LEN.summary + 1) })).valid, false);
+  assert.equal(validateItem(goodItem({ title: "x".repeat(MAX_LEN.title + 1) })).valid, false);
+  assert.equal(validateItem(goodItem({ requested_by: "x".repeat(MAX_LEN.requested_by + 1) })).valid, false);
+  // a field exactly at the cap is still valid
+  assert.equal(validateItem(goodItem({ summary: "x".repeat(MAX_LEN.summary) })).valid, true);
+});
+
+check("LOW-3: schema maxLength matches the code caps (no code/schema divergence)", () => {
+  const schema = JSON.parse(readFileSync(join(HERE, "schemas", "cto_queue.schema.json"), "utf8"));
+  const p = schema.properties.items.items.properties;
+  assert.equal(p.summary.maxLength, MAX_LEN.summary);
+  assert.equal(p.title.maxLength, MAX_LEN.title);
+  assert.equal(p.requested_by.maxLength, MAX_LEN.requested_by);
+  assert.equal(p.id.maxLength, MAX_LEN.id);
+  assert.equal(p.created_at.maxLength, MAX_LEN.created_at);
 });
 
 check("the queue conforms to its committed JSON schema", () => {

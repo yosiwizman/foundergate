@@ -38,6 +38,29 @@ export const FORBIDDEN_DATA_CLASS = Object.freeze(["SECRET", "BLOCKED", "UNKNOWN
 const ID_RE = /^q[0-9a-f]{12}$/;
 const ISO_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/;
 
+// The exact own-key set a queue item may carry — mirrors the committed schema's
+// `additionalProperties:false` (LOW-2). An item with any other own-key is invalid; this
+// keeps code and schema from diverging and refuses stowaway keys at ingress.
+export const ALLOWED_ITEM_KEYS = Object.freeze([
+  "id", "title", "kind", "status", "created_at", "summary", "requested_by", "data_class",
+]);
+
+// Length caps on string fields — mirrors `maxLength` in the committed schema (LOW-3).
+// Inert data, but caps the memory/DoS surface a hand-crafted item could present.
+export const MAX_LEN = Object.freeze({
+  id: 32, title: 200, created_at: 32, summary: 2000, requested_by: 120,
+});
+
+// The founder-safe display token substituted for a data_class that is not a permitted
+// class — used by the read-only shell to REDACT rather than print SECRET/blocked/unknown
+// content, re-asserting the ingress boundary at display (LOW-1).
+export const REDACTED = "[REDACTED — non-displayable data class]";
+
+// Is this item's data_class one the display surface may show in the clear?
+export function isDisplayableClass(dataClass) {
+  return DATA_CLASS.includes(dataClass);
+}
+
 export class QueueError extends Error {
   constructor(message) { super(message); this.name = "QueueError"; }
 }
@@ -54,11 +77,19 @@ export function validateItem(item) {
   if (item === null || typeof item !== "object" || Array.isArray(item)) {
     return { valid: false, errors: ["item must be a plain object"] };
   }
+  // LOW-2: reject unknown own-keys so code matches the schema's additionalProperties:false.
+  for (const k of Object.keys(item)) {
+    if (!ALLOWED_ITEM_KEYS.includes(k)) errors.push(`unknown key not allowed: ${k}`);
+  }
   if (typeof item.id !== "string" || !ID_RE.test(item.id)) {
     errors.push("id must match ^q[0-9a-f]{12}$");
+  } else if (item.id.length > MAX_LEN.id) {
+    errors.push(`id exceeds maxLength ${MAX_LEN.id}`);
   }
   if (typeof item.title !== "string" || item.title.trim() === "") {
     errors.push("title must be a non-empty string");
+  } else if (item.title.length > MAX_LEN.title) {
+    errors.push(`title exceeds maxLength ${MAX_LEN.title}`);
   }
   if (!KIND.includes(item.kind)) {
     errors.push(`kind must be one of ${KIND.join("/")}`);
@@ -69,12 +100,18 @@ export function validateItem(item) {
   // created_at is DATA the caller supplies — an ISO-8601 Zulu string, never a clock read.
   if (typeof item.created_at !== "string" || !ISO_RE.test(item.created_at)) {
     errors.push("created_at must be a caller-supplied ISO-8601 Zulu string (not a clock read)");
+  } else if (item.created_at.length > MAX_LEN.created_at) {
+    errors.push(`created_at exceeds maxLength ${MAX_LEN.created_at}`);
   }
   if (typeof item.summary !== "string" || item.summary.trim() === "") {
     errors.push("summary must be a non-empty plain-English string");
+  } else if (item.summary.length > MAX_LEN.summary) {
+    errors.push(`summary exceeds maxLength ${MAX_LEN.summary}`);
   }
   if (typeof item.requested_by !== "string" || item.requested_by.trim() === "") {
     errors.push("requested_by must be a non-empty string");
+  } else if (item.requested_by.length > MAX_LEN.requested_by) {
+    errors.push(`requested_by exceeds maxLength ${MAX_LEN.requested_by}`);
   }
   // Data-class boundary: SECRET / BLOCKED / UNKNOWN-blocked content may NEVER be queued.
   if (FORBIDDEN_DATA_CLASS.includes(item.data_class)) {

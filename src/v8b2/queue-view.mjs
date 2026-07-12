@@ -10,7 +10,7 @@
 // scary/ambiguous affordances, and no action-looking buttons that are not wired (none
 // are wired — VB3 does not exist under this scaffold).
 
-import { listItems, STATUS, UNKNOWN } from "./cto-queue.mjs";
+import { listItems, isDisplayableClass, REDACTED, STATUS, UNKNOWN } from "./cto-queue.mjs";
 
 // Plain-English label per status — read-only presentation, no behaviour.
 const STATUS_LABEL = Object.freeze({
@@ -24,9 +24,28 @@ function labelFor(status) {
   return STATUS_LABEL[status] || STATUS_LABEL[UNKNOWN];
 }
 
+// LOW-1 (defense-in-depth): re-assert the data-class boundary AT DISPLAY. Ingress
+// already refuses SECRET/blocked classes, but a caller could hand-craft a queue that
+// bypasses addItem. So before displaying, any item whose data_class is not a permitted
+// display class has its human CONTENT redacted — the shell never prints SECRET/blocked
+// content in the clear. Pure: returns a new object, mutates nothing.
+function displaySafe(it) {
+  if (isDisplayableClass(it.data_class)) return it;
+  return {
+    id: it.id,
+    kind: it.kind,
+    status: it.status,
+    created_at: it.created_at,
+    title: REDACTED,
+    summary: REDACTED,
+    requested_by: REDACTED,
+    data_class: REDACTED,
+  };
+}
+
 // renderQueueText(queue) -> string. Pure: same queue in, same text out; input untouched.
 export function renderQueueText(queue) {
-  const items = listItems(queue);
+  const items = listItems(queue).map(displaySafe);
   const lines = [];
   lines.push("CTO QUEUE (read-only view — displays routed items; takes no action)");
   lines.push(`Items: ${items.length}`);
@@ -59,7 +78,7 @@ function escapeHtml(s) {
 // renderQueueHtml(queue) -> string of HTML. Pure display. No <script>, no form, no
 // action/handler/button — nothing an interaction could ride. Just escaped text.
 export function renderQueueHtml(queue) {
-  const items = listItems(queue);
+  const items = listItems(queue).map(displaySafe);
   const rows = items.map((it) => (
     `    <li class="fg-cto-item" data-status="${escapeHtml(it.status)}">` +
     `<span class="fg-status">${escapeHtml(it.status)}</span> ` +

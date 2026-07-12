@@ -10,7 +10,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as queueModel from "./cto-queue.mjs";
 import * as queueView from "./queue-view.mjs";
-import { emptyQueue, addItem } from "./cto-queue.mjs";
+import { emptyQueue, addItem, REDACTED } from "./cto-queue.mjs";
 import { renderQueueText, renderQueueHtml } from "./queue-view.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -37,7 +37,7 @@ console.log("== VB2 CTO queue — NO ACT EDGE / read-only proof ==");
 check("data-model exports contain NO executor / act / approve / run function", () => {
   const names = Object.keys(queueModel).filter((k) => typeof queueModel[k] === "function");
   // allowed function exports are exactly the pure accessors + the error class
-  const allowed = new Set(["emptyQueue", "addItem", "listItems", "getItem", "validateItem", "QueueError"]);
+  const allowed = new Set(["emptyQueue", "addItem", "listItems", "getItem", "validateItem", "QueueError", "isDisplayableClass"]);
   for (const n of names) {
     assert.ok(allowed.has(n), `unexpected exported function on data model: ${n}`);
     assert.ok(!ACT_WORDS.test(n), `data-model export ${n} reads like an act edge`);
@@ -125,6 +125,33 @@ check("HTML output escapes item content (display only — content can't become m
   assert.ok(html.includes("&lt;b&gt;x&lt;/b&gt;"));
   assert.ok(html.includes("&amp;"));
   assert.ok(!html.includes("<b>x</b>"));
+});
+
+check("LOW-1: a HAND-CRAFTED queue with a SECRET-classed item renders REDACTED, never in the clear", () => {
+  // bypass addItem entirely — a caller hand-crafts a queue with forbidden content.
+  const hostile = {
+    schema_version: "1.0.0",
+    items: [{
+      id: "q000000000009", title: "launch codes", kind: "note", status: "queued",
+      created_at: "2026-07-12T00:00:00Z", summary: "top-secret payload text",
+      requested_by: "insider", data_class: "SECRET",
+    }],
+  };
+  const text = renderQueueText(hostile);
+  const html = renderQueueHtml(hostile);
+  // the secret CONTENT never appears in either rendering
+  for (const secret of ["launch codes", "top-secret payload text", "insider"]) {
+    assert.ok(!text.includes(secret), `text leaked: ${secret}`);
+    assert.ok(!html.includes(secret), `html leaked: ${secret}`);
+  }
+  // the class label "SECRET" is not printed in the clear either
+  assert.ok(!text.includes("data class: SECRET"));
+  assert.ok(!html.includes("SECRET"));
+  // and the redaction marker is shown instead (REDACTED has no HTML-special chars)
+  assert.ok(text.includes(REDACTED));
+  assert.ok(html.includes(REDACTED));
+  // a permitted class still displays normally (redaction is targeted, not blanket)
+  assert.ok(renderQueueText(seededQueue()).includes("Route Guide draft"));
 });
 
 function seededQueue() {

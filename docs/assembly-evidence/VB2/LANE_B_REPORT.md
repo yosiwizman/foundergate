@@ -42,7 +42,25 @@ anything queued depends on VB3 (Gate/Witness Engine wiring), which is not presen
 ## Test result
 
 `npm test` (from the worktree): **ALL GREEN — 57/57 self-tests passed** (55 pre-existing
-+ 2 new VB2 suites: `cto-queue` 12 checks, `no-act-edge` 9 checks) on Node v24.
++ 2 new VB2 suites: `cto-queue` 15 checks, `no-act-edge` 10 checks after hardening) on
+Node v24.
+
+## Independent adversarial checker — verdict & findings disposition
+
+**Verdict: CLEAN** (full report committed verbatim at
+`docs/assembly-evidence/VB2/checker-report.md`). All five non-executing safety claims
+held; five LOW hardening notes only.
+
+| Finding | Disposition | Proof |
+|---------|-------------|-------|
+| **LOW-1** — renderers did not re-validate `data_class`; a hand-crafted queue could render SECRET in the clear | **CLOSED** — `queue-view.mjs` `displaySafe()` redacts the human content of any item whose `data_class` is not a permitted display class; boundary re-asserted at display. | `no-act-edge.selftest.mjs`: hand-crafted SECRET item renders `[REDACTED …]`, content never in the clear. |
+| **LOW-2** — `validateItem` did not enforce `additionalProperties:false` (code/schema divergence) | **CLOSED** — `validateItem` now rejects any unknown own-key against `ALLOWED_ITEM_KEYS`. | `cto-queue.selftest.mjs`: item with extra key → `valid:false`. |
+| **LOW-3** — no length caps (only `minLength:1`) | **CLOSED** — `maxLength` caps added in both `validateItem` (`MAX_LEN`) and `cto_queue.schema.json`; code caps == schema caps. | `cto-queue.selftest.mjs`: over-long field → `valid:false`; schema/code caps match. |
+| **LOW-4** — `ISO_RE` is shape-only (`9999-99-99T…` passes) | **NOTED** (informational) — still caller-supplied DATA, never a clock read; numeric epoch correctly rejected. No code change required. | — |
+| **LOW-5** — `validateItem` then `normaliseItem` each read props (a caller's side-effecting getter runs up to twice) | **NOTED** (informational) — a caller's own side effect, not a VB2 act edge; VB2 remains non-executing. No code change required. | — |
+
+Test count after hardening: **ALL GREEN — 57/57** self-tests (VB2 suites: `cto-queue`
+15 checks, `no-act-edge` 10 checks), Node v24.
 
 ## Boundary confirmation
 
