@@ -1,76 +1,90 @@
-// FounderGate V8-B VB1 — EXECUTOR containment proof. Encodes the checker's attack list:
-// act without a wired approval, act beyond the approval, act with no evidence/backup, act
-// with a reused/revoked token, act on a non-rollback-able action — all REFUSED, and the
-// mutate() side effect NEVER runs on a refusal.
+// FounderGate V8-B VB1 — EXECUTOR containment proof. The act edge is AUTHENTICATED: in
+// VB1 (no verifier) NO approval can execute; a forged plain approval is REFUSED; only a
+// verifier-signed approval bound to this work+action runs mutate(). Encodes the checker
+// round-1 attack list — HIGH-1 inverted into a guard.
 
 import assert from "node:assert/strict";
-import { emptyStore, mint, revoke } from "./session-token.mjs";
-import { act, actEdgeWired, REFUSE } from "./executor.mjs";
-import { backupStores } from "./rollback.mjs";
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { emptyStore, mint, revoke } from "./session-token.mjs";
+import { act, actEdgeWired, verifyApproval, signApproval, VB3_VERIFIER, REFUSE } from "./executor.mjs";
+import { backupStores } from "./rollback.mjs";
 
 let pass = 0;
 const check = (name, fn) => { fn(); pass++; console.log(`  PASS: ${name}`); };
-const T0 = Date.parse("2026-07-12T00:00:00Z");
+const T0 = Date.now(); // real time so the minted token is live when act() uses Date.now()
+const TEST_VERIFIER = { secret: "test-vb3-secret-key" }; // stands in for a wired VB3
 
 function fixture() {
   const store = emptyStore();
-  const tok = mint(store, { bootId: "b1", scope: ["run.start"], ttlMs: 60000, now: T0 });
-  const bdir = join(mkdtempSync(join(tmpdir(), "vb1-ex-")), "backup");
-  const backup = backupStores([join(bdir, "..", "run_state.json")], bdir);
+  const tok = mint(store, { bootId: "b1", scope: ["run.start"], ttlMs: 3600000, now: T0 });
+  const d = mkdtempSync(join(tmpdir(), "vb1-ex-"));
+  const backup = backupStores([join(d, "run_state.json")], join(d, "backup"), { root: d });
   let ran = 0; const mutate = () => { ran++; return "mutated"; };
-  const wired = { wired: true, work: "run.start#1", rollbackable: true, recorded_by: "founder" };
-  return { store, tok, backup, mutate, wired, ran: () => ran };
+  return { store, tok, backup, mutate, ran: () => ran };
 }
+const base = (f, over = {}) => ({ tokenStore: f.store, tokenId: f.tok.id, bootId: "b1", action: "run.start", work: "run.start#1", backup: f.backup, mutate: f.mutate, verifier: TEST_VERIFIER, ...over });
 
 console.log("== VB1 executor containment ==");
 
-check("act with NO token is refused (NO_TOKEN); mutate never runs", () => {
-  const f = fixture();
-  const r = act({ tokenStore: f.store, tokenId: "", bootId: "b1", action: "run.start", work: "run.start#1", approval: f.wired, backup: f.backup, mutate: f.mutate }, { now: T0 + 1 });
-  assert.equal(r.ok, false); assert.equal(r.reason, REFUSE.NO_TOKEN); assert.equal(f.ran(), 0);
+check("VB1 has NO verifier -> the act edge is machine-UNWIRED (VB3_VERIFIER null, actEdgeWired false)", () => {
+  assert.equal(VB3_VERIFIER, null);
+  assert.equal(actEdgeWired(), false);
 });
 
-check("act with a REVOKED token is refused (TOKEN_INVALID); mutate never runs", () => {
-  const f = fixture(); revoke(f.store, f.tok.id);
-  const r = act({ tokenStore: f.store, tokenId: f.tok.id, bootId: "b1", action: "run.start", work: "run.start#1", approval: f.wired, backup: f.backup, mutate: f.mutate }, { now: T0 + 1 });
-  assert.equal(r.reason, REFUSE.TOKEN_INVALID); assert.equal(r.detail, "REVOKED"); assert.equal(f.ran(), 0);
+check("HIGH-1 CLOSED: a FORGED plain approval cannot execute in VB1 (no verifier); mutate never runs", () => {
+  const f = fixture();
+  const forgeds = [
+    { wired: true, work: "run.start#1", action: "run.start", rollbackable: true, recorded_by: "ATTACKER" },
+    { sig: "deadbeef", work: "run.start#1", action: "run.start", rollbackable: true },
+  ];
+  for (const approval of forgeds) {
+    // default verifier (VB1 = null): even with a token, a forged approval is refused
+    const r = act({ tokenStore: f.store, tokenId: f.tok.id, bootId: "b1", action: "run.start", work: "run.start#1", approval, backup: f.backup, mutate: f.mutate });
+    assert.equal(r.reason, REFUSE.NO_WIRED_APPROVAL, "a forged approval must be refused (act edge gated on VB3)");
+  }
+  assert.equal(f.ran(), 0, "no forged approval may run mutate()");
 });
 
-check("ACT EDGE: valid token but NO wired approval is refused (NO_WIRED_APPROVAL) — VB1 cannot execute", () => {
+check("NO_ACTION: a missing action is refused up front", () => {
   const f = fixture();
-  const r = act({ tokenStore: f.store, tokenId: f.tok.id, bootId: "b1", action: "run.start", work: "run.start#1", approval: null, backup: f.backup, mutate: f.mutate }, { now: T0 + 1 });
-  assert.equal(r.reason, REFUSE.NO_WIRED_APPROVAL); assert.equal(f.ran(), 0);
-  assert.equal(actEdgeWired(null), false, "the act edge must read as UNWIRED in VB1");
+  assert.equal(act(base(f, { action: "" })).reason, REFUSE.NO_ACTION);
 });
 
-check("act BEYOND the approval (wired for other work) is refused (APPROVAL_MISMATCH)", () => {
+check("no token / REVOKED token refused; mutate never runs (even with a valid signed approval)", () => {
   const f = fixture();
-  const otherWired = { wired: true, work: "run.delete#9", rollbackable: true };
-  const r = act({ tokenStore: f.store, tokenId: f.tok.id, bootId: "b1", action: "run.start", work: "run.start#1", approval: otherWired, backup: f.backup, mutate: f.mutate }, { now: T0 + 1 });
-  assert.equal(r.reason, REFUSE.APPROVAL_MISMATCH); assert.equal(f.ran(), 0);
+  const signed = signApproval(TEST_VERIFIER, { work: "run.start#1", action: "run.start", nonce: "n1" });
+  assert.equal(act(base(f, { tokenId: "", approval: signed })).reason, REFUSE.NO_TOKEN);
+  revoke(f.store, f.tok.id);
+  assert.equal(act(base(f, { approval: signed })).reason, REFUSE.TOKEN_INVALID);
+  assert.equal(f.ran(), 0);
 });
 
-check("act with NO backup evidence is refused (NO_BACKUP)", () => {
+check("act BEYOND the approval (signed for other work) is refused (APPROVAL_MISMATCH)", () => {
   const f = fixture();
-  const r = act({ tokenStore: f.store, tokenId: f.tok.id, bootId: "b1", action: "run.start", work: "run.start#1", approval: f.wired, backup: null, mutate: f.mutate }, { now: T0 + 1 });
-  assert.equal(r.reason, REFUSE.NO_BACKUP); assert.equal(f.ran(), 0);
+  const other = signApproval(TEST_VERIFIER, { work: "run.delete#9", action: "run.start", nonce: "n2" });
+  assert.equal(act(base(f, { approval: other })).reason, REFUSE.APPROVAL_MISMATCH);
+  assert.equal(f.ran(), 0);
 });
 
-check("act on a NON-rollback-able action is refused (NOT_ROLLBACKABLE)", () => {
+check("NO_BACKUP and NOT_ROLLBACKABLE are refused", () => {
   const f = fixture();
-  const nonRb = { wired: true, work: "run.start#1", rollbackable: false };
-  const r = act({ tokenStore: f.store, tokenId: f.tok.id, bootId: "b1", action: "run.start", work: "run.start#1", approval: nonRb, backup: f.backup, mutate: f.mutate }, { now: T0 + 1 });
-  assert.equal(r.reason, REFUSE.NOT_ROLLBACKABLE); assert.equal(f.ran(), 0);
+  const signed = signApproval(TEST_VERIFIER, { work: "run.start#1", action: "run.start", nonce: "n3" });
+  assert.equal(act(base(f, { approval: signed, backup: null })).reason, REFUSE.NO_BACKUP);
+  const nonRb = signApproval(TEST_VERIFIER, { work: "run.start#1", action: "run.start", nonce: "n4", rollbackable: false });
+  assert.equal(act(base(f, { approval: nonRb })).reason, REFUSE.NOT_ROLLBACKABLE);
+  assert.equal(f.ran(), 0);
 });
 
-check("ONLY a fully-wired, in-scope, backed-up, rollback-able act executes (and leaves evidence)", () => {
+check("ONLY a verifier-signed, in-scope, backed-up, rollback-able act executes + leaves evidence", () => {
   const f = fixture();
-  const r = act({ tokenStore: f.store, tokenId: f.tok.id, bootId: "b1", action: "run.start", work: "run.start#1", approval: f.wired, backup: f.backup, mutate: f.mutate }, { now: T0 + 1 });
+  const signed = signApproval(TEST_VERIFIER, { work: "run.start#1", action: "run.start", nonce: "n5", recorded_by: "founder" });
+  const r = act(base(f, { approval: signed }));
   assert.equal(r.ok, true); assert.equal(f.ran(), 1);
-  assert.ok(r.evidence && r.evidence.work === "run.start#1" && r.evidence.backup_at, "a successful act must leave evidence");
+  assert.ok(r.evidence && r.evidence.work === "run.start#1" && r.evidence.backup_at);
+  // a tampered sig (change the action) fails verification
+  assert.equal(verifyApproval({ ...signed, action: "run.delete" }, TEST_VERIFIER), false);
 });
 
 console.log(`\nV8B1-EXECUTOR: PASS (${pass} checks)`);
