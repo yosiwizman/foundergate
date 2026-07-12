@@ -16,8 +16,8 @@ below carries a PR reference and a repository-resolvable SHA (Provenance Law, §
 
 | Claim (deliverable) | PR | SHA (resolvable base) | Authority (build-contract era this follows) |
 | --- | --- | --- | --- |
-| LANE D drafted the V8-C Blueprints-era proposal `docs/lanes/V8-C-proposal.md` (DRAFT · PENDING V8-B) — delivered on branch lane-v8c-proposal | PR #PENDING | `321888e7022ad0760d7dc7b151a6eb0e6a8e4560` | `docs/lanes/V8-B-build-contract.md` @ `81ee00848f271e94401ea4049de2c1c2611ab0a3` |
-| LANE D authored this companion report `docs/assembly-evidence/v8c/LANE_D_REPORT.md` with a provenance-checked claims table — delivered | PR #PENDING | `321888e7022ad0760d7dc7b151a6eb0e6a8e4560` | `docs/lanes/V8-B-build-contract.md` @ `81ee00848f271e94401ea4049de2c1c2611ab0a3` |
+| LANE D drafted the V8-C Blueprints-era proposal `docs/lanes/V8-C-proposal.md` (DRAFT · PENDING V8-B) — delivered on branch lane-v8c-proposal | PR #93 | `321888e7022ad0760d7dc7b151a6eb0e6a8e4560` | `docs/lanes/V8-B-build-contract.md` @ `81ee00848f271e94401ea4049de2c1c2611ab0a3` |
+| LANE D authored this companion report `docs/assembly-evidence/v8c/LANE_D_REPORT.md` with a provenance-checked claims table — delivered | PR #93 | `321888e7022ad0760d7dc7b151a6eb0e6a8e4560` | `docs/lanes/V8-B-build-contract.md` @ `81ee00848f271e94401ea4049de2c1c2611ab0a3` |
 
 The base SHA `321888e7022ad0760d7dc7b151a6eb0e6a8e4560` is the `main` commit this branch was created from; it
 resolves in the repository (`git cat-file -e`). The authority blob SHA `81ee00848f271e94401ea4049de2c1c2611ab0a3`
