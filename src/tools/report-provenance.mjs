@@ -55,10 +55,12 @@ export function claimLines(text) {
     .filter(({ line }) => {
       if (/^\s*#/.test(line)) return false;              // markdown headers scope, never claim
       if (!LANE_TOKEN.test(line)) return false;          // must name a lane token
-      // a REAL list bullet needs whitespace after the marker (`- x`), or a table row
-      // (`| … |`) — so a `**bold**` prose line is NOT mistaken for a bullet.
-      const isListOrTable = /^\s*([-*+]\s|\|)/.test(line);
-      return isListOrTable || CLAIM_VERB.test(line);
+      // A lane CLAIM lives in a list item (`- x`, whitespace after the marker) or a
+      // table row (`| … |`). Free narrative PROSE that merely mentions a lane token +
+      // a verb (e.g. "the code is built later") is NOT a claim — completion claims are
+      // always enumerated as list/table rows (that is how the phantom-VA-REPAIR-5 case
+      // is caught). This precision removes the prose false-positive class.
+      return /^\s*([-*+]\s|\|)/.test(line);
     });
 }
 
