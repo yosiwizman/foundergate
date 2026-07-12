@@ -559,3 +559,8 @@ records, the Run-6 diagnosis), and rows whose authority was only a founder chat 
 
 **Applied to V8-B:** the `VB1` (Run Launcher) and `VB2` (CTO queue) acceptance criteria carry a soak requirement
 (an 8–9-hour soak followed by a 24-hour soak, each with the §29 evidence above) — see the V8-B build contract.
+
+## 30. Wide read-only auditor fan-out (AKIOR-HARVEST #10)
+
+Scale the independent-checker doctrine to N blind, read-only auditors in parallel, then synthesize — never a second
+writer. Practice, cost/cap notes, and real stress data are recorded in `docs/status/HARNESS_STRESS_LOG.md`.

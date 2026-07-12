@@ -150,6 +150,14 @@ builder + one independent adversarial checker.
   safe run; every action rollback-able and evidence-leaving; least-privilege, revocable session tokens. The
   executor's *act* edge is **gated on `VB3`**; launcher scaffolding + rollback/token proofs may land first —
   depends `VB0` (runs against the attached project).
+  **VB1 known residuals (non-blocking, tracked into VB3 — recorded at the round-2 independent-checker clean,
+  `docs/assembly-evidence/VB1/checker-report-round2.md`):** (1) **LOW-2** — the single-sanctioned-writer property
+  is conventional, not mechanically enforced; the central write-intent guard (AKIOR #4) lands with the VB3 executor.
+  (2) **NEW-1** — `act()`'s `verifier` is a caller-substitutable capability argument (inert in VB1 since
+  `VB3_VERIFIER = null`); VB3 must bind the verifier as a module-private capability, not a defaultable parameter.
+  (3) **NEW-2** — the rollback commit phase operates on the raw manifest path (a symlink-TOCTOU reachable only via a
+  *tampered* manifest **and** a concurrent writer that ignores the #8 lock); VB3 hardens with O_NOFOLLOW /
+  re-canonicalize-before-write. None of the three is exploitable in VB1 — nothing executes for real until VB3 wires.
 - **`VB2` CTO queue** (SENSITIVE routing boundary) — Guide drafts become **founder-visible queued items**, never
   auto-actions; queue items carry data class and never contain SECRET/blocked content — depends `VB1` (needs the
   run/executor model to queue against). Queued items **act** only once `VB3` wires approvals.
