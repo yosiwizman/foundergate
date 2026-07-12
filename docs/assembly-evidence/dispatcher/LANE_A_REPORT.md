@@ -21,6 +21,21 @@ SHAs are full 40-character hex, per the report-provenance rule against short or 
 | A routing table maps each work class to exactly one destination, one-way | `docs/lanes/dispatcher-proposal.md` | `docs/lanes/authority/separation-of-duties.md` @ `7098261b4a019adad4e3c304a4d3be9a89c47097` |
 | The separation-of-duties principle is captured verbatim as a committed authority | `docs/lanes/authority/separation-of-duties.md` | `docs/lanes/authority/separation-of-duties.md` @ `7098261b4a019adad4e3c304a4d3be9a89c47097` |
 | The phantom lesson (from Assembly Manual and the harness stress log) is captured verbatim | `docs/lanes/authority/separation-of-duties.md` | `docs/lanes/authority/separation-of-duties.md` @ `7098261b4a019adad4e3c304a4d3be9a89c47097` |
+| The round-1 adversarial checker report is committed verbatim as evidence | `docs/assembly-evidence/dispatcher/checker-report.md` | `docs/assembly-evidence/dispatcher/checker-report.md` @ `4a03eb8a847c84cc8f2c5b635e560d6781e4e2be` |
+| The five rules were upgraded from prose to mechanical requirements, closing the seven checker gaps | `docs/lanes/dispatcher-proposal.md` | `docs/assembly-evidence/dispatcher/checker-report.md` @ `4a03eb8a847c84cc8f2c5b635e560d6781e4e2be` |
+
+## Round-1 adversarial check (docs-only response)
+
+An independent checker returned §28 authority integrity **CLEAN** but the DRAFT design **NOT-CLEAN**:
+the five rules were prose assertions with no enforcement mechanism (seven gaps, findings one through
+five must-fix-before-authorization). Per the DRAFT posture, the response was to make the rules
+mechanical and record the gaps — not to abandon them. The revised proposal now: requires a verifiable
+caller identity and disjoint role credentials on input; accepts a returning result only if attested by
+the routed-to role's identity; binds the founder signature to a bundle path @ SHA plus a one-time
+nonce and forbids forwarding or replay; names a build-lane validator/CI guard for checker-not-builder;
+routes dispatcher-self-modification to the founder via a bootstrap path; and requires an immutable
+routing log with low-confidence items held for the founder. Runtime attestation is recorded as future
+build-lane hardening. All findings are dispositioned in the proposal's open-gaps section.
 
 ## What this lane did NOT touch
 
