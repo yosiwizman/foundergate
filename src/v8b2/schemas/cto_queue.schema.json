@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://foundergate/schemas/cto_queue.schema.json",
+  "title": "FounderGate V8-B VB2 — CTO queue (data model, non-executing)",
+  "description": "The founder-visible CTO queue: a list of routed work items. A queued item is a RECORD, never an auto-action; its act edge depends on VB3 (Gate/Witness Engine wiring), which is not present in this scaffold. created_at is caller-supplied DATA (an ISO-8601 Zulu string), never a clock read. A queue item's data class may never be SECRET or a blocked class — SECRET/blocked content must never enter the queue (build contract forbidden-scope).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "items"],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "kind", "status", "created_at", "summary", "requested_by", "data_class"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^q[0-9a-f]{12}$", "maxLength": 32 },
+          "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "kind": { "type": "string", "enum": ["run_draft", "guide_draft", "review", "note"] },
+          "status": { "type": "string", "enum": ["queued", "blocked", "done", "UNKNOWN"] },
+          "created_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,3})?Z$", "maxLength": 32 },
+          "summary": { "type": "string", "minLength": 1, "maxLength": 2000 },
+          "requested_by": { "type": "string", "minLength": 1, "maxLength": 120 },
+          "data_class": { "type": "string", "enum": ["PUBLIC", "INTERNAL"] }
+        }
+      }
+    }
+  }
+}
