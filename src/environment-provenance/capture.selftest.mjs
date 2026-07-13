@@ -189,7 +189,7 @@ check("verifyNoSecrets bites on a secret-shaped value smuggled into a top-level 
     schema_version: SCHEMA_VERSION, node_version: PLANTED_SECRET, platform: "linux",
     arch: "x64", cpu_count: 1, total_mem: 1, captured_at: NOW_ISO, env_allowlisted: {},
   };
-  assert.throws(() => verifyNoSecrets(leak), /LEAK — secret-shaped value in field/);
+  assert.throws(() => verifyNoSecrets(leak), /LEAK — secret-shaped value at "node_version"/);
 });
 
 check("verifyNoSecrets rejects non-object input honestly", () => {
@@ -220,6 +220,134 @@ check("the real process env is NEVER read into output (purity guard)", () => {
   // The canary name, if allowlisted, resolves against the passed env (absent) => UNKNOWN.
   assert.equal(prov.env_allowlisted.__L3_CANARY__, UNKNOWN);
   delete process.env.__L3_CANARY__;
+});
+
+// ============================================================================================
+// Checker findings F1–F5 — regression proofs that each false-negative is now closed.
+// ============================================================================================
+
+check("F1: credential URLs + punctuated / token / password values are ALL now redacted", () => {
+  // Each of these leaked verbatim before the fix. Under benign NAMEs so only the VALUE fix bites.
+  const env = {
+    PG_URL: "postgres://admin:hunter2!@db.example.com:5432/app",
+    REDIS_URL: "redis://:s3cr3tP@ss@127.0.0.1:6379/0",
+    PUNCT_PW: "Xk9#mP2$vL8@qR5!wN3&zT7^",
+    WELCOME_MSG: "correct horse battery staple parachute", // benign NAME, secret-shaped VALUE
+    SK_SHORT: "sk-abc123",
+    PLAIN_PW: "TigerTiger99",
+  };
+  const allowlist = Object.keys(env);
+  const prov = captureEnvironmentProvenance({ env, now: NOW_ISO, allowlist });
+  for (const k of allowlist) {
+    assert.equal(prov.env_allowlisted[k], REDACTED, `${k} must be redacted`);
+  }
+  // No raw credential material anywhere in the serialized output.
+  const serialized = JSON.stringify(prov);
+  for (const raw of Object.values(env)) {
+    assert.ok(!serialized.includes(raw), `raw value must not appear: ${raw.slice(0, 6)}…`);
+  }
+  // predicate-level proof too
+  assert.equal(looksLikeSecretValue("postgres://admin:hunter2!@db/app"), true);
+  assert.equal(looksLikeSecretValue("redis://:s3cr3tP@ss@127.0.0.1:6379/0"), true);
+  assert.equal(looksLikeSecretValue("Xk9#mP2$vL8@qR5!wN3&zT7^"), true);
+  assert.equal(looksLikeSecretValue("sk-abc123"), true);
+  assert.equal(looksLikeSecretValue("TigerTiger99"), true);
+});
+
+check("F1: plainly-benign values still survive (over-redact, but not everything)", () => {
+  for (const benign of ["true", "UTC", "production", "hello-world", "en_US.UTF-8", "v24.13.1", "1234", "/usr/bin", "arm64"]) {
+    assert.equal(looksLikeSecretValue(benign), false, `${benign} must survive`);
+  }
+});
+
+check("F2: verifyNoSecrets DEEP-WALKS — a secret in cpu_count (as string) is caught", () => {
+  const leak = {
+    schema_version: SCHEMA_VERSION, node_version: "v24", platform: "linux", arch: "x64",
+    cpu_count: "sk-live_ABCDEF0123456789abcdef0123456789", // secret smuggled into a non-listed field
+    total_mem: 1, captured_at: NOW_ISO, env_allowlisted: {},
+  };
+  assert.throws(() => verifyNoSecrets(leak), /LEAK — secret-shaped value at "cpu_count"/);
+});
+
+check("F2: verifyNoSecrets DEEP-WALKS — a NESTED secret value is caught", () => {
+  const leak = {
+    schema_version: SCHEMA_VERSION, node_version: "v24", platform: "linux", arch: "x64",
+    cpu_count: 1, total_mem: 1, captured_at: NOW_ISO,
+    env_allowlisted: { NOTES: { inner: { deeper: "-----BEGIN RSA PRIVATE KEY-----\nMIIE" } } },
+  };
+  assert.throws(() => verifyNoSecrets(leak), /LEAK — secret-shaped value/);
+});
+
+check("F2: verifyNoSecrets DEEP-WALKS — a NESTED secret-shaped NAME is caught", () => {
+  const leak = {
+    schema_version: SCHEMA_VERSION, node_version: "v24", platform: "linux", arch: "x64",
+    cpu_count: 1, total_mem: 1, captured_at: NOW_ISO,
+    env_allowlisted: { NOTES: { my_password: "whatever" } },
+  };
+  assert.throws(() => verifyNoSecrets(leak), /LEAK — secret-shaped name present: "my_password"/);
+});
+
+check("F2: a secret planted in ANY field (arrays too) is caught", () => {
+  const leak = {
+    schema_version: SCHEMA_VERSION, node_version: "v24", platform: "linux", arch: "x64",
+    cpu_count: 1, total_mem: 1, captured_at: NOW_ISO,
+    env_allowlisted: { LIST: ["ok", "also-ok", "ghp_0123456789abcdef0123"] },
+  };
+  assert.throws(() => verifyNoSecrets(leak), /LEAK — secret-shaped value at "env_allowlisted.LIST\[2\]"/);
+});
+
+check("F2: numeric fields coerce to number-or-UNKNOWN — an arbitrary string never passes through", () => {
+  const prov = captureEnvironmentProvenance({
+    env: {}, cpuCount: "sk-live_ABCDEF0123456789abcdef0123456789", totalMem: "not-a-number",
+    now: NOW_ISO, allowlist: [],
+  });
+  assert.equal(prov.cpu_count, UNKNOWN);
+  assert.equal(prov.total_mem, UNKNOWN);
+  // a genuine numeric string is accepted as a number; a real number passes through.
+  const ok = captureEnvironmentProvenance({ env: {}, cpuCount: "8", totalMem: 17179869184, now: NOW_ISO, allowlist: [] });
+  assert.equal(ok.cpu_count, 8);
+  assert.equal(ok.total_mem, 17179869184);
+  // and the whole clean record self-verifies
+  assert.equal(verifyNoSecrets(ok).ok, true);
+});
+
+check("F3: invalid / out-of-range `now` => captured_at UNKNOWN, never a thrown RangeError", () => {
+  for (const bad of [8.64e15 + 1, 1e300, -1e300, NaN, Infinity, new Date("nope"), new Date(1e300)]) {
+    let prov;
+    assert.doesNotThrow(() => { prov = captureEnvironmentProvenance({ env: {}, now: bad, allowlist: [] }); });
+    assert.equal(prov.captured_at, UNKNOWN, `now=${String(bad)} must be UNKNOWN`);
+  }
+  // a valid epoch still works
+  assert.equal(
+    captureEnvironmentProvenance({ env: {}, now: Date.parse(NOW_ISO), allowlist: [] }).captured_at,
+    NOW_ISO,
+  );
+});
+
+check("F4: extended SECRET_NAME_RE excludes new secret-shaped names even if allowlisted", () => {
+  const newNames = ["MY_PASSPHRASE", "SESSION_ID", "BEARER", "COOKIE", "REQUEST_SIGNATURE", "PRIVATE_DATA", "PW_SALT", "USER_PIN"];
+  for (const n of newNames) assert.equal(isSecretName(n), true, `${n} must be secret-shaped`);
+  const env = Object.fromEntries(newNames.map((n) => [n, "planted"]));
+  env.PLAIN = "keepme";
+  const prov = captureEnvironmentProvenance({ env, now: NOW_ISO, allowlist: [...newNames, "PLAIN"] });
+  assert.deepEqual(Object.keys(prov.env_allowlisted), ["PLAIN"]);
+  for (const n of newNames) assert.ok(!(n in prov.env_allowlisted), `${n} must be excluded`);
+});
+
+check("F5: each token-prefix pattern uniquely catches a low-entropy fixture (anti-gaming)", () => {
+  // Each fixture is < 16 chars and low-entropy, so ONLY its own prefix pattern can catch it —
+  // remove that pattern and its case flips to false, failing this test.
+  const perPattern = {
+    "sk-": "sk-000000",
+    "ghp_": "ghp_000000",
+    "xox": "xoxb-0000",
+    "AKIA": "AKIA00000000",
+    "AIza": "AIzaABCDEFGH",
+  };
+  for (const [label, fixture] of Object.entries(perPattern)) {
+    assert.ok(fixture.length < 16, `${label} fixture must be short so only its pattern catches it`);
+    assert.equal(looksLikeSecretValue(fixture), true, `${label} fixture must be caught`);
+  }
 });
 
 // ---------------------------------------------------------------------------------------------

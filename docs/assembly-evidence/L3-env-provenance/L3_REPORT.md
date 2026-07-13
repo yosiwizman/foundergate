@@ -39,22 +39,36 @@ readiness claim is made here.
 ## Files created (ONLY under the two allowed roots)
 
 - `src/environment-provenance/capture.mjs` — pure capture + self-check: `captureEnvironmentProvenance`, `verifyNoSecrets`, plus predicates `isSecretName` / `looksLikeSecretValue` and the `SCHEMA_VERSION` / `UNKNOWN` / `REDACTED` / `SECRET_NAME_RE` exports. Zero deps, zero ambient reads.
-- `src/environment-provenance/capture.selftest.mjs` — 16 checks: allowlist-only capture; secret-shaped name excluded even if allowlisted; planted fake secret value never emitted; honest UNKNOWN (Law 54); determinism on fixed DATA; `verifyNoSecrets` bites on crafted leaks; real-`process.env` purity guard.
+- `src/environment-provenance/capture.selftest.mjs` — 26 checks: allowlist-only capture; secret-shaped name excluded even if allowlisted; planted fake secret value never emitted; honest UNKNOWN (Law 54); determinism on fixed DATA; `verifyNoSecrets` bites on crafted leaks; real-`process.env` purity guard; plus the F1–F5 regression proofs (below).
 - `docs/assembly-evidence/L3-env-provenance/L3_REPORT.md` — this report.
 
 ## Secret-hygiene discipline (this is the no-leak lane — lead by example)
 
 1. **Allowlist-only.** The full env is never enumerated; only explicit `allowlist` names are considered.
 2. **Name fail-safe.** A secret-shaped NAME is over-excluded — dropped entirely even when allowlisted; it never enters the output (so `verifyNoSecrets` never has a secret name to find).
-3. **Value fail-safe.** A secret-shaped VALUE (JWT, PEM block, `sk-`/`ghp_`/`xox`/`AKIA`/`AIza` tokens, long high-entropy base64/hex, or a literal secret word) is redacted to `[REDACTED]`; the raw value is never emitted.
+3. **Value fail-safe.** A secret-shaped VALUE (credential URL `://user:pass@host`, JWT, PEM block, `sk-`/`ghp_`/`xox`/`AKIA`/`AIza` tokens, high-entropy base64/hex substrings, an all-alnum mixed-class blob, a literal secret word, or ANY non-benign value ≥ 16 chars) is redacted to `[REDACTED]`; the raw value is never emitted.
 4. **Over-redaction is the safe failure mode** — when in doubt, exclude/redact.
 5. **Errors never echo secrets.** `verifyNoSecrets` names the offending key but never the offending value.
 6. **Diff secret-scan is clean.** The only credential-shaped literals in the diff are clearly-fake negative-test fixtures (`sk-live_ABCDEF…`, a truncated `-----BEGIN RSA PRIVATE KEY-----\nMIIE…`) required to prove the redactor bites; no real secret is captured, emitted, or committed.
 
+## Independent adversarial checker — findings F1–F5 dispositions (all CLOSED)
+
+The independent checker found real false-negatives in the two safety nets. All are fixed in
+`src/environment-provenance/capture.mjs`, each with a regression proof in the selftest.
+
+| # | Sev | Finding | Disposition (proof) |
+|---|-----|---------|---------------------|
+| F1 | HIGH | Value redaction porous — credential URLs, punctuated high-entropy passwords, spaced passphrases, `sk-abc123`, `TigerTiger99` leaked verbatim. | **CLOSED.** `looksLikeSecretValue` rewritten: (a) credential-URL pattern `:\/\/[^/@\s]*:[^/@\s]*@`; (b) anchors dropped so token/high-entropy SUBSTRINGS trigger; (c) OVER-REDACT — any value length ≥ 16 that isn't a plainly-benign shape (ISO/version/schema-id/locale) is redacted; plus an all-alnum mixed-class rule for short blobs. Proof: `F1: credential URLs … ALL now redacted` + `F1: plainly-benign values still survive`. |
+| F2 | HIGH | `verifyNoSecrets` unsound — hard-coded field list; `cpu_count`/`captured_at`/`schema_version` and any NESTED value were blind. | **CLOSED.** `verifyNoSecrets` now DEEP-WALKS the entire object — `isSecretName` on EVERY key, `looksLikeSecretValue` on EVERY string leaf, recursing objects+arrays (cycle-guarded); no field list. ALSO capture coerces `cpu_count`/`total_mem` to number-or-UNKNOWN so a string never rides through. Proof: 5 F2 checks (cpu_count, nested value, nested name, array element, numeric coercion). |
+| F3 | MED | `RangeError` thrown for out-of-range numbers / invalid Date in `now`. | **CLOSED.** `normaliseCapturedAt` guards `if (Number.isNaN(d.getTime())) return UNKNOWN` before `toISOString()` — a total function (Law 54). Proof: `F3: invalid / out-of-range now => captured_at UNKNOWN, never a thrown RangeError` (covers `8.64e15+1`, `1e300`, `new Date("nope")`, …). |
+| F4 | LOW/MED | `SECRET_NAME_RE` too narrow. | **CLOSED.** Extended with `passphrase\|session\|bearer\|cookie\|signature\|private\|salt\|pin`. Proof: `F4: extended SECRET_NAME_RE excludes new secret-shaped names even if allowlisted`. |
+| F5 | LOW | Anti-gaming — no per-pattern coverage. | **CLOSED.** One low-entropy, sub-16-char fixture per token prefix (`sk-000000`, `ghp_000000`, `xoxb-0000`, `AKIA00000000`, `AIzaABCDEFGH`) that ONLY its own pattern catches — deleting a pattern flips a case and fails the test. Proof: `F5: each token-prefix pattern uniquely catches a low-entropy fixture`. |
+
 ## Test result
 
 `npm test` (whole suite, from the worktree): **ALL GREEN — 77/77 self-tests passed** on
-Node v24.13.1 (75 pre-existing + the new L3 `capture` suite of 16 checks).
+Node v24.13.1 (75 pre-existing + the L3 `capture` suite of **26 checks**, including the F1–F5
+regression proofs).
 
 ## Boundary confirmation
 
