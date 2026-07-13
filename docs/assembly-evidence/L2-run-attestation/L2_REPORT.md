@@ -81,7 +81,7 @@ Any content change moves the head hash, so a full rewrite then fails **`broken-a
 - `src/run-attestation/attestation.mjs` — the chain: `openRun` / `appendEvent` / `sealRun` / `verifyAttestation` /
   `isSoakEligible`.
 - `src/run-attestation/index.mjs` — public entry point.
-- `src/run-attestation/attestation.selftest.mjs` — 16-check self-test (OS-temp dirs).
+- `src/run-attestation/attestation.selftest.mjs` — 22-check self-test (OS-temp dirs).
 - `docs/assembly-evidence/L2-run-attestation/L2_REPORT.md` — this report.
 
 ## 6. Guard note (SHWL)
