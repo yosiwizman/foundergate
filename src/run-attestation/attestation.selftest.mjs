@@ -16,7 +16,7 @@ import {
   openRun, appendEvent, recordMonitoringWindow, recordFailure, resolveFailure,
   sealRun, verifyAttestation, isSoakEligible, loadRun, logPath, ENTRY_TYPE,
 } from "./index.mjs";
-import { hashEntry } from "./canonical.mjs";
+import { hashEntry, GENESIS_HASH } from "./canonical.mjs";
 
 // ---- tiny harness (matches repo style; independent of src/shwl) -----------------------------------
 const roots = [];
@@ -59,6 +59,21 @@ function genuineNineHourRun() {
   appendEvent(log, { at: new Date(START_MS + 2 * HOUR).toISOString(), payload: { note: "healthy" } });
   sealRun(log, { end_at: new Date(START_MS + 9 * HOUR).toISOString(), at: new Date(START_MS + 9 * HOUR).toISOString() });
   return log;
+}
+
+const headHash = (log) => log.entries[log.entries.length - 1].entry_hash;
+
+// Simulate a same-user attacker who controls the WHOLE file: recompute seq/id/previous_hash/entry_hash
+// for every entry from the public GENESIS_HASH, so the rewritten chain is internally content-consistent.
+function forgeChain(entries) {
+  let prev = GENESIS_HASH;
+  return entries.map((e, i) => {
+    const rebuilt = { ...e, seq: i, id: `entry-${i}`, previous_hash: prev };
+    delete rebuilt.entry_hash;
+    rebuilt.entry_hash = hashEntry(rebuilt);
+    prev = rebuilt.entry_hash;
+    return rebuilt;
+  });
 }
 
 // ---------------------------------------------------------------------------------------------------
@@ -197,6 +212,76 @@ check("ON-DISK tamper (a hand-edited line) is detected by re-walking the chain",
   const r = isSoakEligible(dir, { claimSeconds: 1 });
   assert.equal(r.status, "UNKNOWN");
   assert.equal(r.eligible, false);
+});
+
+// ---- F1: full-chain-rewrite residual + external anchor --------------------------------------------
+check("F1 DISCLOSED RESIDUAL: a full-chain rewrite (2h forged to 9h) passes as intact WITHOUT an anchor", () => {
+  // Genuine short run: 2 hours, sealed.
+  const log = openRun({ run: baseRun(), at: START });
+  sealRun(log, { end_at: new Date(START_MS + 2 * HOUR).toISOString(), at: new Date(START_MS + 2 * HOUR).toISOString() });
+  // Attacker controls the whole file: rewrite end_at to 9h and rebuild every hash from GENESIS_HASH.
+  const tampered = structuredClone(log.entries);
+  tampered[tampered.length - 1].payload.end_at = new Date(START_MS + 9 * HOUR).toISOString();
+  const forged = forgeChain(tampered);
+  // This is the ACCEPTED residual (same class as SHWL events.log under same-user tampering): content-
+  // addressed verification alone CANNOT distinguish a full rewrite from a genuine record.
+  assert.equal(verifyAttestation(forged), "intact");
+  const r = isSoakEligible(forged, { claimSeconds: 9 * 3600 });
+  assert.equal(r.eligible, true, "without an external anchor the forgery is not detectable — disclosed residual");
+});
+
+check("F1 FIX (b): a correct external anchor verifies intact; any content change => broken-anchor (never intact)", () => {
+  const genuine = genuineNineHourRun();
+  const anchor = headHash(genuine); // caller records this out-of-band (e.g. in the L1 freeze manifest)
+  assert.equal(verifyAttestation(genuine, { expectedHeadHash: anchor }), "intact");
+  // Attacker full-rewrites (changes a monitoring ref) — content-addressed check still says intact...
+  const tampered = structuredClone(genuine.entries);
+  tampered[1].payload.ref = "mon://window/EVIL";
+  const forged = forgeChain(tampered);
+  assert.equal(verifyAttestation(forged), "intact");
+  // ...but the external anchor the attacker does not control catches it, fail-closed.
+  assert.equal(verifyAttestation(forged, { expectedHeadHash: anchor }), "broken-anchor");
+  const r = isSoakEligible(forged, { claimSeconds: 9 * 3600, expectedHeadHash: anchor });
+  assert.equal(r.status, "UNKNOWN");
+  assert.equal(r.eligible, false);
+  assert.equal(r.verdict, "broken-anchor");
+});
+
+check("genesis_salt gives run-distinguishability: identical DATA, different salt => different head hash", () => {
+  const a = openRun({ run: baseRun({ genesis_salt: "salt-A" }), at: START });
+  const b = openRun({ run: baseRun({ genesis_salt: "salt-B" }), at: START });
+  assert.notEqual(headHash(a), headHash(b));
+  assert.equal(verifyAttestation(a), "intact");
+  assert.equal(verifyAttestation(b), "intact");
+});
+
+// ---- LOW-1: intact chain with unparseable timestamp => UNKNOWN, never throw ------------------------
+check("LOW-1: content-intact chain with an un-parseable end_at => UNKNOWN (no throw, never eligible)", () => {
+  const log = genuineNineHourRun();
+  const tampered = structuredClone(log.entries);
+  tampered[tampered.length - 1].payload.end_at = "not-a-real-timestamp"; // garbage that still hashes fine
+  const forged = forgeChain(tampered);
+  assert.equal(verifyAttestation(forged), "intact"); // content-addressed check passes
+  const r = isSoakEligible(forged, { claimSeconds: 1 }); // must NOT throw
+  assert.equal(r.status, "UNKNOWN");
+  assert.equal(r.eligible, false);
+});
+
+// ---- LOW-2: verify forbids anything after a seal, and a second seal --------------------------------
+check("LOW-2: an entry AFTER a RUN_SEAL is broken (even with valid re-hashed linkage)", () => {
+  const log = genuineNineHourRun();
+  const extra = { v: 1, type: ENTRY_TYPE.EVENT, at: new Date(START_MS + 10 * HOUR).toISOString(), payload: { note: "after seal" } };
+  const forged = forgeChain([...structuredClone(log.entries), extra]);
+  assert.match(verifyAttestation(forged), /^broken-at-/);
+});
+
+check("LOW-2: a SECOND RUN_SEAL is broken (double-seal rejected)", () => {
+  const log = openRun({ run: baseRun(), at: START });
+  appendEvent(log, { at: new Date(START_MS + 1 * HOUR).toISOString(), payload: { note: "x" } });
+  sealRun(log, { end_at: new Date(START_MS + 9 * HOUR).toISOString(), at: new Date(START_MS + 9 * HOUR).toISOString() });
+  const secondSeal = { v: 1, type: ENTRY_TYPE.RUN_SEAL, at: new Date(START_MS + 9 * HOUR).toISOString(), payload: { end_at: new Date(START_MS + 9 * HOUR).toISOString() } };
+  const forged = forgeChain([...structuredClone(log.entries), secondSeal]);
+  assert.match(verifyAttestation(forged), /^broken-at-/);
 });
 
 // ---- report-provenance invariant: NEVER emit a SOAK PASS line -------------------------------------

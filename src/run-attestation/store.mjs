@@ -3,8 +3,14 @@
 // Authority: docs/ASSEMBLY_MANUAL.md @ a2c4a10adc88d7de760cd8f4f0c0595458f5c6c6 §26 (append-only evidence).
 //
 // One line per entry, in the order it was appended. This module ONLY appends and reads — it never edits
-// or deletes an existing line. Tampering ON DISK (a hand-edited line, a removed line, two swapped lines)
-// is intentionally NOT prevented here; it is *detected* by verifyAttestation() re-walking the hash chain.
+// or deletes an existing line. PARTIAL tampering ON DISK (a hand-edited line, an added/removed line, two
+// swapped lines, a single-entry re-hash) is *detected* by verifyAttestation() re-walking the hash chain.
+//
+// RESIDUAL (disclosed): a same-user attacker who controls the ENTIRE file can rebuild the whole chain
+// from the public GENESIS_HASH and pass as "intact" — the same accepted residual as the SHWL append-only
+// events.log (authority §1 scope / §5 honest limitation / §11 single-user boundary). The external-anchor option on
+// verifyAttestation({expectedHeadHash}) is what a §29 caller uses to defeat that forgery. See
+// attestation.mjs for the full threat-model note.
 //
 // These are pure record operations (evidence writing, not a harness-controlled heavy op), so per the
 // SHWL build brief they need no lease guard. Nothing here shells out, touches ~/.cldh, or reads the clock.

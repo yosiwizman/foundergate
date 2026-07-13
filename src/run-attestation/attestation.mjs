@@ -106,6 +106,13 @@ export function openRun({ dir = null, run, at }) {
     start_at: run.start_at,
     monitoring_window_refs: Array.isArray(run.monitoring_window_refs) ? run.monitoring_window_refs : [],
     failures_log_ref: run.failures_log_ref ?? null,
+    // Optional per-run high-entropy salt (DATA the caller supplies). Defense-in-depth: it makes two runs
+    // with otherwise-identical DATA produce distinct chains, so a head hash identifies ONE run. It does
+    // NOT defeat a full-chain rewrite (the attacker controls it too) — that is what expectedHeadHash is
+    // for. Included in the hash only when provided, to keep backward-compatible hashes when absent.
+    ...(run.genesis_salt !== undefined && run.genesis_salt !== null
+      ? { genesis_salt: String(run.genesis_salt) }
+      : {}),
   };
 
   const genesis = makeEntry({ seq: 0, type: ENTRY_TYPE.RUN_OPEN, at, payload, previous_hash: GENESIS_HASH });
@@ -157,13 +164,29 @@ export function sealRun(log, { end_at, at }) {
 
 // ---------------------------------------------------------------------------------------------------
 // verification — Law 54: an unverifiable chain is NEVER reported intact.
-// Returns "intact" or "broken-at-<id>". Accepts a log handle, a raw entries array, or a dir path (loads).
-// ---------------------------------------------------------------------------------------------------
-export function verifyAttestation(logOrEntriesOrDir) {
+// Returns "intact" | "broken-at-<id>" | "broken-anchor". Accepts a log handle, a raw entries array, or
+// a dir path (loads from disk).
+//
+// THREAT MODEL — read this. The chain is CONTENT-ADDRESSED: `entry_hash` = H(substance), links via
+// `previous_hash`. This detects any PARTIAL tamper — a single edited/added/removed/reordered line, or a
+// single-entry re-hash — because a downstream `previous_hash` (or the seq/index) then fails to match.
+// It does NOT, by itself, stop a same-user attacker who controls the ENTIRE log file: they can edit any
+// field and REBUILD the whole chain from the PUBLIC `GENESIS_HASH` constant, recomputing every
+// `entry_hash`, and the rewritten chain re-verifies as "intact". This is the SAME accepted residual as
+// the SHWL append-only `events.log` under same-user filesystem tampering (authority §1 scope / §5 honest
+// limitation / §11 single-interactive-user boundary): a cooperative integrity control over the audit
+// record, NOT a cryptographic guarantee against a hostile local user. To DEFEAT the full-rewrite forgery, a §29 soak caller records the sealed head `entry_hash`
+// somewhere the attacker does not control (e.g. inside the L1 freeze manifest, or a separately committed
+// record) and passes it here as `expectedHeadHash` — the external anchor the attacker cannot forge.
+//
+//   verifyAttestation(log)                        -> content-addressed check only (residual applies)
+//   verifyAttestation(log, { expectedHeadHash })  -> ALSO pins the head; mismatch => "broken-anchor"
+export function verifyAttestation(logOrEntriesOrDir, { expectedHeadHash = null } = {}) {
   const entries = normalizeEntries(logOrEntriesOrDir);
   if (!Array.isArray(entries) || entries.length === 0) return "broken-at-empty";
 
   let prev = GENESIS_HASH;
+  let sealSeen = false;
   for (let i = 0; i < entries.length; i++) {
     const e = entries[i];
     const idFor = idAt(entries, i);
@@ -173,12 +196,22 @@ export function verifyAttestation(logOrEntriesOrDir) {
     if (e.seq !== i) return `broken-at-${idFor}`;                       // deletion/reorder shifts positions
     if (i === 0 && e.type !== ENTRY_TYPE.RUN_OPEN) return `broken-at-${idFor}`;
     if (i > 0 && e.type === ENTRY_TYPE.RUN_OPEN) return `broken-at-${idFor}`;
+    if (sealSeen) return `broken-at-${idFor}`;                          // nothing may follow a RUN_SEAL
     if (e.previous_hash !== prev) return `broken-at-${idFor}`;          // linkage break
     if (typeof e.entry_hash !== "string") return `broken-at-${idFor}`;
     if (hashEntry(e) !== e.entry_hash) return `broken-at-${idFor}`;     // byte-level edit
 
+    if (e.type === ENTRY_TYPE.RUN_SEAL) sealSeen = true;                // first seal closes the chain
     prev = e.entry_hash;
   }
+
+  // External anchor (optional): the head entry's hash MUST equal a value the attacker does not control.
+  // This is what defeats the full-chain-rewrite forgery. Absent => today's content-addressed behavior.
+  if (expectedHeadHash != null) {
+    const headHash = entries[entries.length - 1].entry_hash;
+    if (headHash !== expectedHeadHash) return "broken-anchor"; // HASH_MISMATCH — never "intact"
+  }
+
   return "intact";
 }
 
@@ -193,12 +226,13 @@ function idAt(entries, i) {
 // SOAK PASS line). §29: eligible ONLY if end_at-start_at >= claimSeconds AND no unresolved failures.
 // Unverifiable => UNKNOWN, never eligible (Law 54).
 // ---------------------------------------------------------------------------------------------------
-export function isSoakEligible(logOrEntriesOrDir, { claimSeconds } = {}) {
+export function isSoakEligible(logOrEntriesOrDir, { claimSeconds, expectedHeadHash = null } = {}) {
   if (!(typeof claimSeconds === "number" && Number.isFinite(claimSeconds) && claimSeconds >= 0)) {
     throw new TypeError("isSoakEligible: { claimSeconds } must be a finite, non-negative number of seconds");
   }
   const entries = normalizeEntries(logOrEntriesOrDir);
-  const verdict = verifyAttestation(entries);
+  // Pass the optional external anchor through — a mismatch is UNKNOWN, never eligible.
+  const verdict = verifyAttestation(entries, { expectedHeadHash });
   if (verdict !== "intact") {
     // Cannot trust the record → we do not know the true span/failures → UNKNOWN, never eligible.
     return { eligible: false, status: "UNKNOWN", reason: `chain not verifiable (${verdict})`, verdict };
@@ -210,8 +244,15 @@ export function isSoakEligible(logOrEntriesOrDir, { claimSeconds } = {}) {
     return { eligible: false, status: "NOT_ELIGIBLE", reason: "run is not sealed (no end_at recorded)", verdict };
   }
 
-  const startMs = toEpochMs(open.payload.start_at);
-  const endMs = toEpochMs(sealEntry.payload.end_at);
+  // LOW-1: even on a content-intact chain, a timestamp field may be un-parseable DATA (e.g. a full-chain
+  // rewrite that put garbage in end_at). We must NOT throw — an un-computable span is UNKNOWN (Law 54).
+  let startMs, endMs;
+  try {
+    startMs = toEpochMs(open.payload.start_at);
+    endMs = toEpochMs(sealEntry.payload.end_at);
+  } catch (err) {
+    return { eligible: false, status: "UNKNOWN", reason: `timestamp DATA not parseable (${err.message})`, verdict };
+  }
   const spanSeconds = (endMs - startMs) / 1000;
 
   const unresolved = unresolvedFailures(entries);
