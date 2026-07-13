@@ -8,8 +8,9 @@ import { join } from "node:path";
 import { launchSoak } from "./launcher.mjs";
 import { simulateActiveOwnerLease } from "./akior-adoption.mjs";
 import { guardHeavyOp } from "./guard.mjs";
+import { deriveDecision } from "./state-machine.mjs";
 import { mechanicalDeadProof, founderAuthorizedRecovery } from "./recovery.mjs";
-import { readLease, leasePath, eventsText, rawLeaseText } from "./lease-store.mjs";
+import { readLease, readHeartbeat, leasePath, eventsText, rawLeaseText } from "./lease-store.mjs";
 import { lockHeld, lockDirPath } from "./lock.mjs";
 import { capabilityLeaks } from "./capability.mjs";
 import { EFFECTIVE, RECOVERY_REASON } from "./constants.mjs";
@@ -64,12 +65,31 @@ t.check("ORPHANED lock-dir (lock present, never a lease) => RECOVERY_REQUIRED, n
   assert.equal(dp.unlocked, false, "no provable owner identity -> fail-closed");
 });
 
-t.check("EXPIRY ALONE does not unlock; STALE ALONE does not unlock", () => {
+// OBS-1: isolated fixtures — STALE-alone (TTL not passed) and EXPIRY-alone (heartbeat fresh)
+// are each exercised independently so neither guarantee can be masked by the other.
+t.check("STALE HEARTBEAT ALONE (TTL NOT passed) => RECOVERY_REQUIRED, does not unlock", () => {
   const root = mkRoot("adv");
-  simulateActiveOwnerLease(root, { owner_project: "akior", identity: fixedIdentity({ boot_id: BOOT }), heartbeat_interval_s: 30, lease_ttl_s: 60, now: T0 });
-  // way past both TTL and heartbeat window
-  const r = guardHeavyOp({ root, op: "build", requester: null, currentBootId: BOOT, now: T0 + 10 * 60 * 1000, isAlive: ALIVE });
+  // small heartbeat interval, LARGE ttl -> only staleness can fire
+  simulateActiveOwnerLease(root, { owner_project: "akior", identity: fixedIdentity({ boot_id: BOOT }), heartbeat_interval_s: 30, lease_ttl_s: 24 * 60 * 60, now: T0 });
+  const now = T0 + 200 * 1000; // > 3*30s past the beat, but far below the 24h TTL
+  const r = guardHeavyOp({ root, op: "build", requester: null, currentBootId: BOOT, now, isAlive: ALIVE });
   assert.equal(r.allowed, false);
+  assert.equal(r.effective, EFFECTIVE.RECOVERY_REQUIRED);
+  const d = deriveDecision({ lockPresent: true, lease: readLease(root), heartbeat: readHeartbeat(root), currentBootId: BOOT, now, isAlive: ALIVE });
+  assert.equal(d.recoveryReason, RECOVERY_REASON.STALE_HEARTBEAT, "isolated: stale, not expired");
+  assert.equal(lockHeld(root), true, "still locked; nothing auto-unlocked");
+});
+
+t.check("EXPIRY ALONE (heartbeat FRESH) => RECOVERY_REQUIRED, does not unlock", () => {
+  const root = mkRoot("adv");
+  // LARGE heartbeat interval, small ttl -> only expiry can fire (beat stays fresh)
+  simulateActiveOwnerLease(root, { owner_project: "akior", identity: fixedIdentity({ boot_id: BOOT }), heartbeat_interval_s: 3600, lease_ttl_s: 60, now: T0 });
+  const now = T0 + 120 * 1000; // past the 60s TTL, but not stale (interval 3600s)
+  const r = guardHeavyOp({ root, op: "build", requester: null, currentBootId: BOOT, now, isAlive: ALIVE });
+  assert.equal(r.allowed, false);
+  assert.equal(r.effective, EFFECTIVE.RECOVERY_REQUIRED);
+  const d = deriveDecision({ lockPresent: true, lease: readLease(root), heartbeat: readHeartbeat(root), currentBootId: BOOT, now, isAlive: ALIVE });
+  assert.equal(d.recoveryReason, RECOVERY_REASON.EXPIRED, "isolated: expired, not stale");
   assert.equal(lockHeld(root), true, "still locked; nothing auto-unlocked");
 });
 

@@ -120,6 +120,19 @@ Evidence: `docs/assembly-evidence/shwl-build/BUILD_REPORT.md` (this file).
 
 ---
 
+## Independent checker findings — CLOSED
+
+The independent adversarial checker returned **CLEAN** (all 14 matrix rows mutation-verified,
+capability no-leak proven, no `~/.cldh` / AKIOR writes) with two LOW observations, both closed
+in this lane before merge:
+
+| Obs | Finding | Fix | Evidence |
+|---|---|---|---|
+| OBS-2 | A deleted/missing owner-only attestation file let `isQuietHostEligible` default back to `true` — a de-facto QUIET_HOST restoration via file removal (weakened §5.1 "never auto-restores"). | Eligibility is now **reconstructed from the authoritative append-only `events.log`**: a run with an OVERRIDE / `QUIET_HOST_PERMANENTLY_DISQUALIFIED` record is NOT eligible even if the attestation file is absent or tampered to "eligible" (events.log wins). If the attestation file is missing/unreadable AND events.log cannot be read, it fails **CLOSED** (NOT eligible), never eligible-by-default. | `attestation.mjs` (`eventsDisqualify`, `loadAttestation`); `attestation.selftest.mjs` OBS-2 (a)/(b)/(c) |
+| OBS-1 | The adversarial "EXPIRY ALONE / STALE ALONE" check used one shared fixture. | Split into two **isolated** fixtures: stale-alone (TTL not passed → RECOVERY_REQUIRED, `STALE_HEARTBEAT`) and expiry-alone (heartbeat fresh → RECOVERY_REQUIRED, `EXPIRED`). | `adversarial.selftest.mjs` |
+
+`npm test` after the fixes: **76/76 GREEN**; §8.1 matrix **14/14 GREEN**.
+
 ## DRAFT acceptance card — facts only (builder does NOT accept)
 
 > This section is a **draft of facts** for the independent checker and the founder gate. The

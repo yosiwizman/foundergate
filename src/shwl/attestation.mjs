@@ -13,32 +13,88 @@
 // The eligibility flag cannot live on lease.json (schema is additionalProperties:false), so
 // it lives in a per-run attestation file under the owner-only root. There is DELIBERATELY no
 // restore/re-enable function in this module — quiet-host standing is never auto-restored.
+//
+// OBS-2 hardening: the attestation FILE is a convenience cache, NOT the authority. The
+// authority is the append-only events.log. Deleting/tampering the attestation file must NOT
+// restore eligibility: eligibility is RECONSTRUCTED from events.log, which wins. If neither
+// the attestation file nor events.log can be read, we fail CLOSED (NOT eligible), never
+// eligible-by-default.
 
 import { mkdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { ATTESTATION_DIR, EVENT } from "./constants.mjs";
-import { atomicWriteJSON, appendEvent, ensureRoot } from "./lease-store.mjs";
+import { atomicWriteJSON, appendEvent, ensureRoot, eventsPath } from "./lease-store.mjs";
 
 const attDir = (root) => join(root, ATTESTATION_DIR);
 const attFile = (root, run_id) => join(attDir(root), `${encodeURIComponent(run_id)}.json`);
 
-// Load (or default) a run's attestation. Default: eligible, never-downgraded.
+// Consult the AUTHORITATIVE append-only events.log for a permanent disqualification of a run.
+// Returns { readable, disqualified }. An ABSENT log is readable-with-no-disqualification (a
+// truly fresh system); a log that EXISTS but throws on read is UNREADABLE (fail-closed input).
+function eventsDisqualify(root, run_id) {
+  const p = eventsPath(root);
+  if (!existsSync(p)) return { readable: true, disqualified: false };
+  let text;
+  try { text = readFileSync(p, "utf8"); } catch { return { readable: false, disqualified: false }; }
+  for (const line of text.split("\n")) {
+    if (!line) continue;
+    let e;
+    try { e = JSON.parse(line); } catch { continue; } // tolerate a malformed line
+    if (e && e.kind === EVENT.OVERRIDE && e.run_id === run_id &&
+        (e.consequence === "QUIET_HOST_PERMANENTLY_DISQUALIFIED" || e.never_auto_restored === true)) {
+      return { readable: true, disqualified: true };
+    }
+  }
+  return { readable: true, disqualified: false };
+}
+
+// Load (or reconstruct) a run's attestation. events.log is the authority (§5.1 "never auto-
+// restores"): a disqualification recorded there wins even if the attestation file is deleted
+// or tampered to "eligible". Fail-closed when nothing authoritative can be read.
 export function loadAttestation(root, run_id) {
   const f = attFile(root, run_id);
-  if (!existsSync(f)) {
+  const ev = eventsDisqualify(root, run_id);
+  const fileExists = existsSync(f);
+
+  // events.log proves a permanent disqualification -> NOT eligible, regardless of the file.
+  if (ev.disqualified) {
+    let base = null;
+    if (fileExists) { try { base = JSON.parse(readFileSync(f, "utf8")); } catch { base = null; } }
     return {
       run_id,
-      quiet_host_eligible: true,
-      never_auto_restored: true, // invariant flag: once false, no code path re-enables it
-      disqualified_at: null,
-      disqualified_reason: null,
-      override_intervals: [],
+      ...(base || {}),
+      quiet_host_eligible: false, // events.log wins over any file value
+      never_auto_restored: true,
+      disqualified_at: (base && base.disqualified_at) || null,
+      disqualified_reason: (base && base.disqualified_reason) || "RECONSTRUCTED_FROM_EVENTS_LOG",
+      override_intervals: (base && Array.isArray(base.override_intervals)) ? base.override_intervals : [],
     };
   }
-  try { return JSON.parse(readFileSync(f, "utf8")); } catch {
-    // A corrupt attestation is fail-closed: treat as INELIGIBLE (never silently re-grant).
-    return { run_id, quiet_host_eligible: false, never_auto_restored: true, disqualified_at: null, disqualified_reason: "CORRUPT_ATTESTATION", override_intervals: [] };
+
+  if (fileExists) {
+    try {
+      const parsed = JSON.parse(readFileSync(f, "utf8"));
+      return parsed;
+    } catch {
+      // A corrupt attestation is fail-closed: treat as INELIGIBLE (never silently re-grant).
+      return { run_id, quiet_host_eligible: false, never_auto_restored: true, disqualified_at: null, disqualified_reason: "CORRUPT_ATTESTATION", override_intervals: [] };
+    }
   }
+
+  // Attestation file MISSING and events.log has no disqualification.
+  if (!ev.readable) {
+    // ...and events.log is UNREADABLE -> fail CLOSED, never eligible-by-default.
+    return { run_id, quiet_host_eligible: false, never_auto_restored: true, disqualified_at: null, disqualified_reason: "FAIL_CLOSED_NO_AUTHORITATIVE_RECORD", override_intervals: [] };
+  }
+  // Genuinely fresh run: no file, events.log readable with no disqualification -> eligible.
+  return {
+    run_id,
+    quiet_host_eligible: true,
+    never_auto_restored: true, // invariant flag: once false, no code path re-enables it
+    disqualified_at: null,
+    disqualified_reason: null,
+    override_intervals: [],
+  };
 }
 
 function saveAttestation(root, att) {
