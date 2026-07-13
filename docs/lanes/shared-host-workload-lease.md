@@ -1,6 +1,6 @@
 # SHARED HOST WORKLOAD LEASE — Authority Packet
 
-`STATUS: DRAFT · PENDING FOUNDER APPROVAL` · authored by the FounderGate **Advisor** (design only; no build authorized) · project-independent CLDH doctrine
+`STATUS: DRAFT — PENDING INDEPENDENT CHECK AND FOUNDER APPROVAL` · authored by the FounderGate **Advisor** (design only; no build authorized; the author lane makes no readiness claim) · project-independent CLDH doctrine
 
 > **What this is, in one sentence.** A shared, machine-level coordination mechanism that stops a non-technical founder (or any harness) from **accidentally** starting heavy local work while a qualifying endurance soak owns the Mac — so a multi-hour soak's evidence is never corrupted by a build, test, browser, or a second soak started by mistake.
 >
@@ -17,11 +17,11 @@ This packet contains the nine required deliverables:
 8. the **adversarial checker plan** (§8)
 9. the **exact execution order** (§9)
 
-Plus: the cross-project **test matrix** (§8.1), a statement on the **current AKIOR run** (§10), **unresolved risks** (§11), and the **HELD execution prompt** (§12).
+Plus: the cross-project **test matrix** (§8.1), a statement on the **current AKIOR run** (§10), **unresolved risks** (§11), the **authority gate** (§12), and the **HELD execution prompt** (§13).
 
-The design deliberately reuses patterns FounderGate has already proven and adversarially hardened, so this is assembly of known-good parts, not invention:
+The design deliberately reuses **tested and independently checker-reviewed VB1 patterns or components whose final acceptance and qualifying soak remain HELD** — their maturity is not overstated (VB1 has not completed §29 or founder acceptance), so this is assembly of reviewed parts, not invention:
 - **Atomic O_EXCL / lock-directory** exclusivity — from VB1 `src/v8b1/atomic-store.mjs` (AKIOR #8).
-- **Unforgeable capability token** (`lease_capability_id`) — the VB1 session-token pattern (short-lived, boot-bound, capability-gated; AKIOR #2).
+- **High-entropy cooperative capability** (`lease_capability_id`) — the VB1 session-token pattern (short-lived, boot-bound, capability-gated; AKIOR #2). It is a safety-coordination mechanism, **not a security boundary**; a hostile or non-cooperating process may ignore or bypass it.
 - **Fail-closed recovery** (a bad state does zero unlocks) — the VB1 rollback discipline (AKIOR #3).
 - **Append-only evidence + exact-SHA provenance** — Assembly Manual §26.
 - **Honest UNKNOWN** — Law 54: when liveness can't be proven, refuse; never guess "probably dead."
@@ -47,8 +47,10 @@ The design deliberately reuses patterns FounderGate has already proven and adver
 
 - Not repository-local (a repo can be deleted, re-cloned, or switched between branches).
 - Not an auto-cleared temp dir (`/tmp`, `$TMPDIR`) — those vanish on reboot/cleanup exactly when recovery reasoning matters most.
-- **Permissions:** directory `0700`, all files `0600`, owned by the single interactive user. This prevents *accidental* modification by unrelated tools; it is not a defense against a hostile same-user process (see §11).
+- **Permissions:** directory `0700`, all files `0600`, owned by the single interactive user. This prevents *accidental* modification by unrelated tools; it is not a defense against a hostile same-user process (see §11). File permissions alone are **not** the capability-inheritance mechanism — see §4.5.
 - **Atomicity:** every state change is (a) guarded by the lock-directory and (b) written via **write-temp-then-`rename`** (atomic replacement) with an `fsync`. No in-place overwrite of `lease.json` is ever the acquisition act.
+
+**Normative scope boundary — single interactive user (this version).** This version coordinates harness workloads for **one interactive operating-system user**, via the per-user path `~/.cldh/host-workload-lease/`. A workload running under **another operating-system account is explicitly outside this version's protection** — the lease neither sees nor blocks it. This is **not** whole-machine coverage: **true multi-user, whole-machine enforcement would require a privileged system-level service and is a separate future authority decision**, out of scope here. Do not describe this version as machine-wide.
 
 ---
 
@@ -146,7 +148,7 @@ Zero-dependency, JSON-Schema-style. Timestamps are DATA (ISO-8601 strings), neve
 ```
 
 **Field notes.**
-- `lease_capability_id` is an **unforgeable, unguessable** token (≥ 256 bits of entropy). Only the owner soak and its declared subprocesses hold it. A challenger cannot present it, so "same project" alone can never masquerade as "same run." Subprocesses each get an entry in `declared_subprocess_capabilities`.
+- `lease_capability_id` is a **high-entropy, run-specific cooperative capability** (≥ 256 bits of entropy). It is a **safety coordination mechanism, not a security boundary**: a **hostile or non-cooperating process may ignore or bypass it.** Among *cooperating* harness processes it is what distinguishes the exact owning run — only the owner soak and its declared subprocesses hold it, so a cooperating "same project" build cannot present itself as "same run." Subprocesses each get an entry in `declared_subprocess_capabilities`. Custody rules are normative in §4.5.
 - `owner_host_id` — stable hardware identity (e.g. macOS hardware UUID; Linux machine-id). `owner_boot_id` — the current boot's identity (macOS `kern.boottime`-derived; Linux `/proc/sys/kernel/random/boot_id`). A cross-platform accessor abstracts these (§11 risk).
 - `owner_process_start_marker` — the owner process's start time / boot-relative start, so PID **reuse** is detectable: a live PID whose start-marker differs from the record is **not** the owner.
 - `expires_at`/`lease_ttl_s` are **advisory** — used only to *raise* `RECOVERY_REQUIRED`, never to unlock.
@@ -182,7 +184,7 @@ When a reader derives `RECOVERY_REQUIRED` (stale heartbeat, expiry, boot mismatc
   - `owner_boot_id` ≠ current boot id → the owner from a prior boot **cannot** be running → strong death evidence; still recorded as recovery (never silently trusted); **or**
   - same boot, but no live process matches `owner_pid` **and** `owner_process_start_marker` → owner dead.
   Record `recovery.resolved_by = MECHANICAL_DEAD_PROOF` with the proof string and an `event_id`, then transition to `NO_LEASE`.
-- **(b) Explicit founder-authorized recovery.** The founder is shown the §6 recovery warning and explicitly authorizes force-recovery. Record `recovery.resolved_by = FOUNDER_OVERRIDE`, an append-only event, and only then `NO_LEASE`.
+- **(b) Explicit founder-authorized recovery.** The founder is shown the §6 recovery warning and explicitly authorizes force-recovery. Record `recovery.resolved_by = FOUNDER_OVERRIDE`, an append-only event, and only then `NO_LEASE`. If any qualifying run is (or may be) affected, the override consequence in §5.1 applies.
 
 If the *original owner* is merely slow (same boot, process still alive, start-marker matches), it may resume heartbeating and the derived state returns to `ACTIVE` — recovery applies to **dead** owners only.
 
@@ -190,6 +192,17 @@ If the *original owner* is merely slow (same boot, process still alive, start-ma
 - Release compares `lease_id` **before** removing the lock-dir / archiving the lease. An old or unrelated process whose `lease_id` doesn't match **must refuse to delete** — it can never remove a successor's lease.
 - Heartbeat updates likewise compare `lease_id` and never re-establish ownership.
 - Every acquire, promote, heartbeat-gap, recovery, override, and release appends one immutable line to `events.log`.
+
+### 4.5 Capability custody and authorized-subprocess inheritance (normative)
+The `lease_capability_id` and any `declared_subprocess_capabilities` are handled as follows. These are **requirements**, not suggestions:
+- capability material lives inside an **owner-only directory** with restrictive permissions; any capability file is **owner-readable only**;
+- the capability **never** appears in command-line arguments, logs, git-tracked files, evidence documents, or general environment dumps;
+- authorized subprocesses receive the capability via a **controlled inherited file descriptor, a broker handle, or an equivalently scoped mechanism** — never by broadcasting the value;
+- **ordinary same-project builds do not inherit the soak capability** — inheritance is explicit and scoped to the declared subprocesses of the exact run;
+- capability **access ends when the run ends**;
+- **capability leakage or mismatch causes refusal, not a fallback authorization.**
+
+**A `0600` file permission alone is NOT sufficient inheritance protection** — it bounds *who may read the file*, not *how the value reaches a subprocess*; the controlled-inheritance mechanism above is the requirement. Consistent with §3, this is a *cooperative* safety property, not a defense against a hostile same-user process (§11).
 
 ---
 
@@ -213,7 +226,17 @@ Classified as heavy (non-exhaustive; the guard's allow-list is closed — unknow
 
 Explicitly **not** gated (allowed during a soak): Advisor chat, reading/writing documentation and plans, lightweight git metadata (status/log/branch), and this kind of authority design.
 
-**Honest limitation.** A manual command typed outside the harness bypasses this guard by construction. That is a *known, disclosed* gap, not a defect to hand-wave: the §8/§10 continuous monitor is the complementary detection control, and any manual heavy work during a soak **downgrades** that run's quiet-host claim.
+**Honest limitation.** A manual command typed outside the harness bypasses this guard by construction. That is a *known, disclosed* gap, not a defect to hand-wave: the §8/§10 continuous monitor is the complementary detection control, and any manual heavy work during a soak **permanently downgrades** that run's quiet-host claim (§5.1).
+
+### 5.1 Manual override while a qualifying soak is ACTIVE — normative consequence
+If the founder explicitly overrides the guard to run heavy work **while an active qualifying soak owns the host**, the override is not a neutral "proceed." It **permanently** changes that run's standing:
+- it **immediately and permanently removes that run's `QUIET_HOST` eligibility** — the run can no longer qualify as a quiet-host baseline;
+- it writes an **append-only override event** to `events.log`;
+- the override **interval is entered into the soak-run attestation**;
+- the **downgraded classification is preserved for the remainder of the run** — the run does not "recover" quiet-host standing later;
+- `QUIET_HOST` is **never automatically restored**.
+
+An override is therefore **not merely "warned and logged" — it disqualifies the quiet-host claim.**
 
 ---
 
@@ -225,8 +248,8 @@ Explicitly **not** gated (allowed during a soak): Advisor chat, reading/writing 
 **Recovery required (owner gone / stale / prior boot):**
 > "The endurance test that owned this Mac isn't sending heartbeats, and I can't yet prove its process ended cleanly. To avoid corrupting a run, heavy work stays paused until I either mechanically confirm the old test is gone or you explicitly authorize recovery. **Nothing was unlocked automatically.**"
 
-**Founder override (explicit force-recovery):**
-> "You asked me to force-recover the host lease. **Warning:** if that previous endurance run were somehow still writing, this could corrupt its evidence. I've recorded this override in the permanent event log. Heavy work is now permitted."
+**Founder override (explicit force / run-anyway):**
+> "You asked me to override the host lease and run heavy work anyway. **Warning:** if a qualifying endurance run is (or may still be) active, this override **permanently disqualifies that run's quiet-host claim** — it can no longer count as a clean quiet-host baseline, and quiet-host standing is **never** automatically restored. If a previous run were somehow still writing, this could also corrupt its evidence. I've written an append-only override event to the permanent log and entered the override interval into the run's attestation. Heavy work is now permitted, with that run permanently downgraded."
 
 **Preflight refused acquisition (host not quiet for a new soak):**
 > "I couldn't start the endurance test because this Mac isn't quiet yet — other heavy work is running. I released the reservation and recorded why. Nothing was started."
@@ -244,7 +267,7 @@ Binding on AKIOR, FounderGate, and future CLDH-harnessed projects:
 3. **Shared guard library, single source.** Every project's heavy entry points call the same guard implementation (one library, not per-project reimplementations). Divergent copies are prohibited.
 4. **Fail-closed everywhere.** No project may treat expiry/staleness as auto-unlock, or delete a lease it doesn't own, or downgrade the guard to a warning.
 5. **Append-only evidence.** All state changes are logged to the shared `events.log`; no project truncates or rewrites it.
-6. **Honest scope.** Every adopting project documents the cooperative-only limitation (§5) and pairs the lease with the continuous monitor (§8/§10).
+6. **Honest scope.** Every adopting project documents the cooperative-only limitation (§5) and the single-interactive-user boundary (§1), and pairs the lease with the continuous monitor (§8/§10).
 7. **Versioned schema.** `schema_version` is bumped compatibly; a project reading an unknown newer version treats the lease as **held** (`RECOVERY_REQUIRED`), never as absent.
 
 ---
@@ -257,13 +280,15 @@ An **independent** checker (not the builder) attempts to defeat every guarantee.
 - win a **double-acquire** race (two acquirers → exactly one winner; loser refuses/recovers);
 - unlock via **expiry alone** (must stay `RECOVERY_REQUIRED`);
 - unlock via **stale heartbeat alone** (must stay `RECOVERY_REQUIRED`);
-- **forge** a `lease_capability_id` / present a same-project different-`run_id` (must refuse);
+- present a **guessed/forged or same-project different-`run_id` capability** (a *cooperating* guard must refuse a non-matching capability — noting this is cooperative correctness, not a claim to stop a hostile process);
 - **PID-reuse** spoof (live PID, wrong start-marker → not the owner);
 - **prior-boot** lease silently trusted (must enter recovery, not trust or ignore);
 - **old-owner deletes successor** lease (lease_id mismatch → refuse to delete);
 - **tamper/delete** `lease.json` under a live lock-dir (must read as held-and-broken → refuse);
 - **subprocess without capability** acts under the lease (must refuse);
-- **founder override** path executes without explicit authorization or without an append-only event (must be impossible);
+- **manual override during an ACTIVE qualifying soak** that does not permanently disqualify the quiet-host claim, or that auto-restores it (must be impossible — §5.1);
+- **founder recovery** path executes without explicit authorization or without an append-only event (must be impossible);
+- **capability leakage** (capability appears in argv/logs/git/evidence/env, or a same-project build inherits it) — must not happen (§4.5);
 - **preflight race**: inject a heavy op between preflight and launch (must be excluded by the continuously-held lock);
 - **comprehension**: a non-developer reads each refusal/recovery/override message and correctly states what happened and what they may still do.
 
@@ -284,14 +309,15 @@ The checker runs as an independent agent under exact-SHA CI; its verbatim report
 | 9 | PID reuse (live PID, wrong start-marker) | does **not** authorize |
 | 10 | Prior-boot lease | enter **recovery**, not silent trust |
 | 11 | Old owner tries to delete successor's lease | **refuse to delete** |
-| 12 | Manual override | **explicit + warned + logged** only |
+| 12 | Manual override during an ACTIVE qualifying soak | **explicit + append-only event + entered into attestation; permanently removes QUIET_HOST eligibility (never auto-restored)** |
 | 13 | Plain-English refusal message | **understandable to a non-developer** |
+| 14 | Same-project build inherits the soak capability | **must not inherit; capability never leaks (argv/logs/git/env)** |
 
 ---
 
 ## 9. Exact implementation order (post-AKIOR-soak; HELD)
 
-Roles: **one primary builder**, **one independent checker**, **Terminal-0 as sole merge sheriff**, exact-SHA CI, committed evidence. **No founder involvement until a true review/signature gate.**
+Roles: **one primary builder**, **one independent checker**, **Terminal-0 as sole merge sheriff**, exact-SHA CI, committed evidence. **No founder involvement until a true review/signature gate.** The role separation is normative — see §12.
 
 - **A. Approve this authority** (founder gate). ← *nothing below runs until this + the AKIOR soak completing.*
 - **B.** Build the shared lease library (state machine, schema, atomic acquire/heartbeat/release, recovery, guard API).
@@ -325,42 +351,48 @@ Stated explicitly and honestly:
 1. **Cooperative-only boundary.** Manual / non-harness commands bypass the lease by construction; only the monitor catches them post-hoc. *This is the defining scope limit, not a bug — but it must never be overstated as security.*
 2. **Host/boot identity portability.** `owner_host_id` / `owner_boot_id` / `owner_process_start_marker` need a reliable cross-platform accessor (macOS `kern.boottime` + hardware UUID; Linux `boot_id` + machine-id). The abstraction is a build-time correctness risk; wrong sourcing → false recovery or false trust. Checker item.
 3. **Clock skew.** Heartbeat/expiry use wall-clock; an NTP jump could prematurely age a heartbeat. **Safe-side:** it only ever raises `RECOVERY_REQUIRED` (refuse), never unlocks — so skew degrades to over-caution, acceptable.
-4. **Single-interactive-user assumption.** A per-user `~/.cldh/` means a soak under user A does not block heavy work under user B on the same Mac. Documented limitation; the target environment is a single-user founder Mac.
-5. **Capability storage.** The owner must expose `lease_capability_id` to its own subprocesses (via `0600` file / inherited env) without leaking it. A leak lets a same-user process impersonate the owner — tolerable under the *safety-not-security* scope, but the storage path is a checker item.
+4. **Single-interactive-user boundary.** **Now a normative boundary — see §1** (one interactive OS user; other OS accounts explicitly outside this version's protection; whole-machine, multi-user enforcement is a separate future privileged-service authority). The target environment is a single-user founder Mac; this is a scope statement, not merely a residual risk.
+5. **Capability custody.** **Now normative — see §4.5** (owner-only storage; never in argv/logs/git/evidence/env; controlled inherited-fd/broker delivery; same-project builds do not inherit; access ends with the run; leakage/mismatch → refusal). `0600` alone is **not** sufficient inheritance protection. Residual: under the *safety-not-security* scope a determined same-user process could still read a leaked value — a checker item, not a claimed security guarantee.
 6. **Orphaned lock-dir after a hard crash.** `lease.lockdir` persists across a crash; recovery must treat an orphan lock-dir as `RECOVERY_REQUIRED` (not "stuck forever" and not auto-clear). Covered by §2/§4.3; needs an explicit test.
-7. **Founder-override ergonomics.** Override is powerful and aimed at a non-technical user; risk of habitual over-use. Mitigation: strong plain-English warning + mandatory append-only event + (recommended) requiring the founder to restate intent. Design-level; revisit at the review gate.
+7. **Founder-override ergonomics.** Override is powerful and aimed at a non-technical user; risk of habitual over-use. Its *consequence* is now normative (§5.1: permanent `QUIET_HOST` disqualification + append-only event + attestation entry). Mitigation: strong plain-English warning + mandatory append-only event + (recommended) requiring the founder to restate intent. Design-level; revisit at the review gate.
 
 None of these blocks *approving the authority*; each is a tracked build-lane / checker obligation.
 
 ---
 
-## 12. Advisor verdict
+## 12. Authority gate — author, independent checker, founder (mandatory)
 
-- **Design verdict:** the corrected doctrine is **sound and coherent**. All ten mandated corrections are folded in: renamed/scoped SHWL; exact-run (capability) ownership; fail-closed `RECOVERY_REQUIRED` with no silent unlock; boot + PID-reuse defense; atomic lock-dir acquire / lease_id-checked release / ownership-preserving heartbeat; the preflight race closed by a continuously-held lock; a single shared guard on all heavy entry points that refuses (not warns); lease-prevention + monitor-detection as complementary controls; the cross-project test matrix; and an honest statement on the current AKIOR run.
-- **Unresolved risks:** the seven in §11 — chiefly the *cooperative-only* scope (accepted and disclosed) and the *host/boot identity portability* (a build-time correctness item for the checker). All tracked; none blocking.
-- **Authority-ready?** **Yes — authority-ready for founder approval as a DRAFT.** It is ready to become the authority that *gates the build*; the build itself stays **HELD** behind (a) the current AKIOR soak completing and (b) founder approval of this authority. The §11 risks are checker obligations during build, not reasons to withhold approval.
+This authority becomes effective only through a strict, separated gate. **No lane self-certifies.**
+
+- **Author is not checker; checker is not founder.**
+- **The author lane** drafts and revises this document and **makes no readiness, approval, or acceptance claim of any kind** — it may report only that the requested changes were made.
+- **A separate, independent, read-only checker** reviews the **exact amended SHA**, verifies each requirement with line evidence (PASS / FAIL / PARTIAL), and **edits nothing**. Any FAIL/PARTIAL returns to the author as a further commit; the checker re-reviews the **new exact SHA**; the loop continues until **CLEAN**.
+- **The founder signs only the independently-checked SHA.**
+- **Execution remains HELD** until the founder's signature **and** the AKIOR evidence sealing — the §13 prompt stays HELD until both.
+
+Only after that signature does execution order §9 (B→J) begin, under one primary builder + one independent checker + Terminal-0 as sole merge sheriff.
 
 ---
 
 ## 13. HELD execution prompt (do not release yet)
 
-> **HELD — DO NOT RELEASE UNTIL THE CURRENT AKIOR SOAK COMPLETES AND THE FOUNDER APPROVES THIS AUTHORITY.**
+> **HELD — DO NOT RELEASE UNTIL THE CURRENT AKIOR SOAK COMPLETES AND THE FOUNDER SIGNS THE INDEPENDENTLY-CHECKED AUTHORITY.**
 >
 > *(Draft of the Harvest Terminal / CTO execution prompt, staged for later release verbatim.)*
 >
 > ---
 > **HARVEST TERMINAL — BUILD THE SHARED HOST WORKLOAD LEASE**
 >
-> Authority: `docs/lanes/shared-host-workload-lease.md` @ `<APPROVED-SHA>` (founder-approved). Preconditions confirmed: the prior AKIOR soak has completed and its evidence is sealed; the founder has approved this authority. The V8-A forbidden list and all standing laws remain in force. Keep foundergate PRIVATE; READ-ONLY toward the AKIOR repo (copy-only, never write/commit/mutate there); never touch the radioactive harness-rebuild repo.
+> Authority: `docs/lanes/shared-host-workload-lease.md` @ `<SIGNED-CHECKED-SHA>` (independently checked, then founder-signed). Preconditions confirmed: the prior AKIOR soak has completed and its evidence is sealed; the founder has signed the independently-checked authority. The V8-A forbidden list and all standing laws remain in force. Keep foundergate PRIVATE; READ-ONLY toward the AKIOR repo (copy-only, never write/commit/mutate there); never touch the radioactive harness-rebuild repo.
 >
 > Build, in the exact order B→J of the authority §9, under one primary builder + one INDEPENDENT adversarial checker, Terminal-0 as sole merge sheriff, exact-SHA CI, committed evidence, merge-commits-only, secret-scan every commit:
-> 1. **B — shared lease library** at the per-user path `~/.cldh/host-workload-lease/` (never repo-local): the §2 state machine, the §3 schema, atomic lock-dir acquire + `fsync`/rename writes, ownership-preserving heartbeat, lease_id-checked release, §4.3 fail-closed recovery, and a single closed-allow-list guard API. Reuse the proven VB1 `atomic-store` O_EXCL lock and the session-token capability pattern; do not reinvent them.
+> 1. **B — shared lease library** at the per-user path `~/.cldh/host-workload-lease/` (never repo-local): the §2 state machine, the §3 schema, atomic lock-dir acquire + `fsync`/rename writes, ownership-preserving heartbeat, lease_id-checked release, §4.3 fail-closed recovery, §4.5 capability custody, and a single closed-allow-list guard API. Reuse the tested, independently checker-reviewed (acceptance + qualifying soak still HELD) VB1 `atomic-store` O_EXCL lock and session-token capability pattern; do not reinvent them.
 > 2. **C/D — AKIOR integration** (soak launcher: acquire→preflight→activate→heartbeat→release; then every §5 heavy entry point calls the guard and REFUSES, not warns).
 > 3. **E/F — FounderGate integration** (soak launcher, then every §5 heavy entry point).
-> 4. **G/H — independent cross-project adversarial checker** per §8: run the full §8.1 test matrix (all 13 rows GREEN, committed), plus the forge/PID-reuse/prior-boot/old-owner-delete/tamper/override/preflight-race attacks and the non-developer comprehension check on every §6 message. Commit the checker's verbatim report; re-review until CLEAN; **close every finding before merge**.
-> 5. Address the §11 risks as build-lane obligations (host/boot-id cross-platform accessor; capability storage; orphaned lock-dir test; override ergonomics).
+> 4. **G/H — independent cross-project adversarial checker** per §8: run the full §8.1 test matrix (all 14 rows GREEN, committed), plus the guessed-capability/PID-reuse/prior-boot/old-owner-delete/tamper/override-disqualification/capability-leak/preflight-race attacks and the non-developer comprehension check on every §6 message. Commit the checker's verbatim report; re-review until CLEAN; **close every finding before merge**.
+> 5. Address the §11 risks as build-lane obligations (host/boot-id cross-platform accessor; capability custody §4.5; orphaned lock-dir test; override ergonomics).
 > 6. **STOP at a review gate** and present the acceptance card. Do **not** run the clean AKIOR quiet-host rerun (step I) or any FounderGate qualifying soak (step J) until the lease library is accepted. Nothing executes a real soak until the guard is proven.
 >
-> Deliver: the committed library + integrations + the checker report (all findings CLOSED) + the GREEN §8.1 matrix + an Evidence-Ledger stamp (AUTHORITY column citing this doc @ approved SHA), then the acceptance card for the review/signature gate. Do not accept your own work; the checker is independent and the founder signs the gate.
+> Deliver: the committed library + integrations + the checker report (all findings CLOSED) + the GREEN §8.1 matrix + an Evidence-Ledger stamp (AUTHORITY column citing this doc @ signed-checked SHA), then the acceptance card for the review/signature gate. Do not accept your own work; the checker is independent and the founder signs the gate.
 > ---
 > **(END HELD PROMPT)**
