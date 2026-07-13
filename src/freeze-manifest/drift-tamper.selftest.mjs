@@ -4,7 +4,7 @@
 // the manifest itself, MUST be reported. Nothing here may pass silently (§29 gate).
 
 import assert from "node:assert/strict";
-import { rmSync } from "node:fs";
+import { rmSync, chmodSync, symlinkSync, statSync } from "node:fs";
 import { join } from "node:path";
 import {
   buildFreezeManifest,
@@ -128,6 +128,105 @@ t.check("verify is read-only: it does not mutate the tree (re-verify still ok)",
   const { root, manifest } = seedAndFreeze();
   assert.equal(verifyFreezeManifest(manifest, { root }).ok, true);
   assert.equal(verifyFreezeManifest(manifest, { root }).ok, true);
+});
+
+// ---- Checker advisory A1 — mode fingerprint (chmod on frozen bytes -> MODIFIED) ----
+t.check("A1 — flipping the exec bit (chmod +x) on unchanged bytes is detected as MODIFIED", () => {
+  const { root, manifest } = seedAndFreeze();
+  const abs = join(root, "a.txt");
+  const cur = statSync(abs).mode & 0o777;
+  chmodSync(abs, cur | 0o111); // add exec bits; bytes untouched
+  const res = verifyFreezeManifest(manifest, { root });
+  assert.equal(res.ok, false);
+  assert.deepEqual(res.drift, [{ path: "a.txt", reason: DRIFT.MODIFIED }]);
+});
+
+t.check("A1 — same bytes AND same mode -> no drift (mode is part of the fingerprint, not noise)", () => {
+  const { root, manifest } = seedAndFreeze();
+  const abs = join(root, "a.txt");
+  const cur = statSync(abs).mode & 0o777;
+  chmodSync(abs, cur); // no-op re-chmod
+  assert.equal(verifyFreezeManifest(manifest, { root }).ok, true);
+});
+
+// ---- Checker advisory A2 — a non-regular path added after freeze is a code-injection vector ----
+t.check("A2 — a symlink added under the frozen root is detected as UNEXPECTED (nonRegular)", () => {
+  const { root, manifest } = seedAndFreeze();
+  symlinkSync("/etc/hostname", join(root, "evil.mjs")); // external target smuggled in
+  const res = verifyFreezeManifest(manifest, { root });
+  assert.equal(res.ok, false);
+  assert.equal(res.drift.length, 1);
+  assert.deepEqual(res.drift[0], { path: "evil.mjs", reason: DRIFT.UNEXPECTED, nonRegular: true });
+});
+
+t.check("A2 — replacing a frozen regular file with a symlink is MISSING (not silently ok)", () => {
+  const { root, manifest } = seedAndFreeze();
+  rmSync(join(root, "b.txt"));
+  symlinkSync("/etc/hostname", join(root, "b.txt")); // same path, now a symlink
+  const res = verifyFreezeManifest(manifest, { root });
+  assert.equal(res.ok, false);
+  // b.txt is no longer a regular file -> MISSING; the symlink appearance -> UNEXPECTED.
+  assert.deepEqual(res.drift, [
+    { path: "b.txt", reason: DRIFT.MISSING },
+    { path: "b.txt", reason: DRIFT.UNEXPECTED, nonRegular: true },
+  ]);
+});
+
+// ---- Checker advisory A3 — external verify-time anchor (expectedManifestHash) ----
+t.check("A3 — matching expectedManifestHash verifies ok on a clean tree", () => {
+  const { root, manifest } = seedAndFreeze();
+  const res = verifyFreezeManifest(manifest, { root, expectedManifestHash: manifest.manifest_hash });
+  assert.equal(res.ok, true);
+  assert.deepEqual(res.drift, []);
+});
+
+t.check("A3 — a self-consistent WHOLESALE re-freeze of a tampered tree is caught by the anchor", () => {
+  const anchorSha = seedAndFreeze().manifest.manifest_hash; // the honest hash, recorded out-of-band
+  // Attacker rebuilds a DIFFERENT tree and produces a self-consistent manifest for it.
+  const evil = mkRoot();
+  put(evil, "a.txt", "alpha\n");
+  put(evil, "b.txt", "bravo\n");
+  put(evil, "nested/c.txt", "PWNED\n"); // tampered content
+  const evilManifest = buildFreezeManifest({ root: evil, paths: enumerateFiles(evil), gitSha: FAKE_SHA, now: T0 });
+  // Content-addressed check alone would pass (the evil manifest matches the evil tree)...
+  assert.equal(verifyFreezeManifest(evilManifest, { root: evil }).ok, true);
+  // ...but the external anchor refuses it, fail-closed.
+  const res = verifyFreezeManifest(evilManifest, { root: evil, expectedManifestHash: anchorSha });
+  assert.equal(res.ok, false);
+  assert.equal(res.manifest_tampered, true);
+  assert.equal(res.hash_mismatch, true);
+  assert.deepEqual(res.drift, []);
+});
+
+t.check("A3 — a non-string / wrong-type anchor is refused (never coerced to ok)", () => {
+  const { root, manifest } = seedAndFreeze();
+  const res = verifyFreezeManifest(manifest, { root, expectedManifestHash: 12345 });
+  assert.equal(res.ok, false);
+  assert.equal(res.hash_mismatch, true);
+});
+
+// ---- Checker advisory A4 — per-entry structural validation is pinned (can't silently rot) ----
+t.check("A4 — a malformed entry (bad bytes / sha256 / path / mode) -> manifest_tampered", () => {
+  const { root, manifest } = seedAndFreeze();
+  const malformations = [
+    (m) => { m.entries[0].bytes = -1; },            // negative bytes
+    (m) => { m.entries[0].bytes = 1.5; },           // non-integer bytes
+    (m) => { m.entries[0].bytes = "6"; },           // wrong-type bytes
+    (m) => { m.entries[0].sha256 = "abc"; },        // wrong-shape sha256
+    (m) => { m.entries[0].sha256 = 42; },           // wrong-type sha256
+    (m) => { m.entries[0].path = ""; },             // empty path
+    (m) => { m.entries[0].mode = -1; },             // out-of-range mode
+    (m) => { m.entries[0].mode = 0o1000; },         // mode above 0o777
+    (m) => { m.entries[0].mode = "755"; },          // wrong-type mode
+    (m) => { delete m.entries[0].mode; },           // missing mode field
+  ];
+  for (const mutate of malformations) {
+    const bad = structuredClone(manifest);
+    mutate(bad);
+    const res = verifyFreezeManifest(bad, { root });
+    assert.equal(res.ok, false, "malformed entry must not verify ok");
+    assert.equal(res.manifest_tampered, true, "malformed entry -> manifest_tampered");
+  }
 });
 
 t.done("FREEZE-MANIFEST-DRIFT-TAMPER-SELFTEST");

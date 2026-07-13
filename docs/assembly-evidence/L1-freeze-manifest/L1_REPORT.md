@@ -39,25 +39,42 @@ its own text (packet §"Reused patterns"): §26 at line 26, §29 at line 28, Law
 ## Files created (ONLY these; nothing else touched)
 
 - `src/freeze-manifest/freeze-manifest.mjs` — core: `buildFreezeManifest`,
-  `verifyFreezeManifest`, `computeManifestHash`, `enumerateFiles`, plus `SCHEMA_VERSION`,
-  `UNKNOWN`, `DRIFT`, `FreezeManifestError`. Zero-dependency Node v24 ESM; pure hashing/verify.
+  `verifyFreezeManifest`, `computeManifestHash`, `enumerateTree`, `enumerateFiles`, plus
+  `SCHEMA_VERSION`, `UNKNOWN`, `DRIFT`, `FreezeManifestError`. Zero-dependency Node v24 ESM;
+  pure hashing/verify.
 - `src/freeze-manifest/_fmkit.mjs` — shared self-test helpers (OS-temp trees only; not a
   `.selftest.mjs`, so the runner never executes it directly).
 - `src/freeze-manifest/build-verify.selftest.mjs` — build+verify round-trip, deterministic
-  sort, determinism (same tree → same hash; hash independent of timestamp), honest UNKNOWN,
-  fail-closed build refusal. (11 checks.)
-- `src/freeze-manifest/drift-tamper.selftest.mjs` — MODIFIED / MISSING / ADDED drift
-  (including same-length edit and combined drift), manifest_hash tamper detection, internally
-  consistent forgery caught on disk, fail-closed on malformed/unknown-schema manifest,
-  read-only verify. (11 checks.)
+  sort, determinism (same tree → same hash; hash independent of timestamp), per-entry
+  sha256+bytes+mode, honest UNKNOWN, fail-closed build refusal (unreadable AND non-regular
+  listed path). (12 checks.)
+- `src/freeze-manifest/drift-tamper.selftest.mjs` — MODIFIED / MISSING / ADDED / UNEXPECTED
+  drift (including same-length edit, exec-bit flip, symlink injection, and combined drift),
+  manifest_hash tamper detection, internally consistent forgery caught on disk, external
+  `expectedManifestHash` anchor, fail-closed on malformed/unknown-schema manifest and on a
+  malformed entry, read-only verify. (19 checks.)
 - `docs/assembly-evidence/L1-freeze-manifest/L1_REPORT.md` — this report.
 
 ## Test result
 
 `npm test` from the worktree (the repo's `scripts/run-selftests.mjs` runner, Node v24.13.1):
-**ALL GREEN — 78/78 self-tests passed** (76 pre-existing + 2 new L1 suites:
-`build-verify` 11 checks, `drift-tamper` 11 checks = 22 new checks). Self-tests use OS-temp
+**ALL GREEN — 78/78 self-tests passed** (76 pre-existing + 2 L1 suites:
+`build-verify` 12 checks, `drift-tamper` 19 checks = 31 L1 checks). Self-tests use OS-temp
 directories only and never touch any real repo path, home dir, or lease.
+
+## Independent adversarial checker — verdict & advisory dispositions
+
+**Verdict: CLEAN** on the core integrity guarantee (no undetected byte-drift, no
+verifying-but-lying manifest, all mutation-pinned). The checker raised four LOW advisories;
+because this manifest gates every future §29 soak, all four were CLOSED to strengthen
+"catch ANY drift".
+
+| Advisory | Disposition | Proof |
+|----------|-------------|-------|
+| **A2** — a symlink / non-regular file ADDED after freeze was invisible (enumeration emitted only `isFile()` regulars). | **CLOSED** — new `enumerateTree` classifies every entry via `lstat` and returns `{files, nonRegular}`; verify reports any symlink/fifo/socket/device under the frozen root as drift reason **`UNEXPECTED`** (`nonRegular:true`), and a symlink-to-directory is flagged, not traversed. A frozen regular replaced by a symlink is also MISSING. | `drift-tamper.selftest.mjs` A2 checks: injected symlink → UNEXPECTED; regular→symlink swap → MISSING + UNEXPECTED. |
+| **A3** — a self-consistent wholesale re-freeze of a tampered tree could verify `ok:true`. | **CLOSED** — `verifyFreezeManifest(manifest, {root, expectedManifestHash})`: when the external anchor is supplied and does not equal the recomputed hash → fail-closed (`manifest_tampered:true`, `hash_mismatch:true`), INSIDE the fail-closed path. Optional (absent = content-addressed); soak callers MUST pass it. | `drift-tamper.selftest.mjs` A3 checks: match → ok; tampered re-freeze caught by anchor; wrong-type anchor refused. |
+| **A1** — an exec-bit flip on frozen bytes was undetected. | **CLOSED** — each entry records `st.mode & 0o777`; `mode` is in `canonicalString` (part of `manifest_hash`) and diffed at verify, so a `chmod +x` on unchanged bytes → **MODIFIED**. Determinism holds (same bytes+mode → same hash). | `drift-tamper.selftest.mjs` A1 checks: chmod +x → MODIFIED; no-op chmod → no drift. |
+| **A4** — per-entry structural validation was unpinned (could silently rot). | **CLOSED** — a malformed entry (negative/non-integer/wrong-type `bytes`, bad `sha256` shape/type, empty `path`, out-of-range/wrong-type/missing `mode`) → `manifest_tampered:true`. | `drift-tamper.selftest.mjs` A4 check: 10 malformations, each → tampered. |
 
 ## Scope & isolation attestation
 
@@ -69,15 +86,17 @@ directories only and never touch any real repo path, home dir, or lease.
 
 ## Design notes carried in code (for the checker)
 
-- `manifest_hash` deliberately covers `schema_version + git_sha + sorted entries` and
-  **excludes `created_at`** — re-freezing identical code at a different time yields the same
-  fingerprint (a useful code-binding property). `created_at` is provenance metadata; tamper
-  with it does not affect the code-state binding. Verify still refuses any tamper with the
-  hashed fields, and any real file that no longer matches its frozen sha256 is MODIFIED drift
-  regardless of an internally consistent re-hash (see the "forgery caught on disk" test).
-- `enumerateFiles` is the single source of truth for "what files this tree contains" — used
-  to help callers build (`paths: enumerateFiles(root)`) and by verify to detect ADDED files.
-  It skips `.git` by default, follows no symlinks (`lstat`), and fingerprints regular files
-  only, so drift semantics are symmetric between build and verify.
+- `manifest_hash` deliberately covers `schema_version + git_sha + sorted entries`
+  (`path + sha256 + bytes + mode`) and **excludes `created_at`** — re-freezing identical code
+  at a different time yields the same fingerprint (a useful code-binding property).
+  `created_at` is provenance metadata; tamper with it does not affect the code-state binding.
+  Verify refuses any tamper with the hashed fields, and any real file that no longer matches
+  its frozen sha256/mode is MODIFIED drift regardless of an internally consistent re-hash (the
+  "forgery caught on disk" test). For a wholesale self-consistent re-freeze, callers pass the
+  external `expectedManifestHash` anchor (A3) — soak callers MUST.
+- `enumerateTree` is the single source of truth for "what does this tree contain" — regular
+  files (to build/diff) AND non-regular entries (to flag as UNEXPECTED). It skips `.git` by
+  default and follows no symlinks (`lstat`). `enumerateFiles` is the thin regular-files wrapper
+  callers pass to build. Drift semantics are symmetric between build and verify.
 
 *No readiness claim is made. An independent adversarial checker and the sheriff follow.*

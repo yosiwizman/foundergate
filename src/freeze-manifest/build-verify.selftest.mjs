@@ -1,6 +1,8 @@
 // FREEZE MANIFEST self-test â€” build + verify round-trip, determinism, and honest-UNKNOWN.
 
 import assert from "node:assert/strict";
+import { symlinkSync } from "node:fs";
+import { join } from "node:path";
 import {
   buildFreezeManifest,
   verifyFreezeManifest,
@@ -21,7 +23,7 @@ function seedTree(root) {
   put(root, "nested/deep/d.bin", Buffer.from([0, 1, 2, 3, 255]));
 }
 
-t.check("build produces a well-formed manifest with per-file sha256 + bytes", () => {
+t.check("build produces a well-formed manifest with per-file sha256 + bytes + mode", () => {
   const root = mkRoot();
   seedTree(root);
   const m = buildFreezeManifest({ root, paths: enumerateFiles(root), gitSha: FAKE_SHA, now: T0 });
@@ -33,6 +35,7 @@ t.check("build produces a well-formed manifest with per-file sha256 + bytes", ()
   for (const e of m.entries) {
     assert.match(e.sha256, /^[0-9a-f]{64}$/, "each entry has a full sha256");
     assert.ok(Number.isInteger(e.bytes) && e.bytes >= 0, "each entry has a byte count");
+    assert.ok(Number.isInteger(e.mode) && e.mode >= 0 && e.mode <= 0o777, "each entry pins its mode bits");
   }
   assert.match(m.manifest_hash, /^[0-9a-f]{64}$/);
 });
@@ -107,6 +110,16 @@ t.check("FAIL-CLOSED: build refuses (throws) when a listed path is unreadable â€
   seedTree(root);
   assert.throws(
     () => buildFreezeManifest({ root, paths: ["a.txt", "does-not-exist.txt"], gitSha: FAKE_SHA, now: T0 }),
+    FreezeManifestError
+  );
+});
+
+t.check("FAIL-CLOSED: build refuses to freeze a NON-REGULAR listed path (symlink) as if regular", () => {
+  const root = mkRoot();
+  seedTree(root);
+  symlinkSync("/etc/hostname", join(root, "link.mjs"));
+  assert.throws(
+    () => buildFreezeManifest({ root, paths: ["a.txt", "link.mjs"], gitSha: FAKE_SHA, now: T0 }),
     FreezeManifestError
   );
 });
