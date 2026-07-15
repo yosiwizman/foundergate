@@ -133,23 +133,39 @@ destination) pair absent from the allow set is **denied**, and any pair on the d
 if it also appears to be allowed — **deny wins**. Low-confidence or unmapped pairs fall to **UNROUTED /
 held for the founder**, never to a best-guess route.
 
-### HR-4 — Key-custody dependency (named; not granted here)
+### HR-4 — Key-Custody Authority: existence + provable disjointness (hard build precondition)
 
 The envelope signing keys of HR-1 and the founder gate key of CF-4 **depend on a key-custody
-authority** — named here as a **dependency**, not established here. This document **does not grant
-custody** of any key and creates no signer. Mechanically:
+authority** — the **Key-Custody Authority (KCA)**. This document **does not grant custody** of any
+key, creates no signer, and fires no gate; it states, as **binding text**, the conditions the KCA
+**must** satisfy **before any dispatcher build lane is authorized**. Mechanically:
 
-- The routing authority's signing key, each role's attestation key (CF-2), and the founder gate key are
-  **issued, held, rotated, and revoked by the key-custody authority** (referred to here as the
-  **Key-Custody Authority**, KCA). This draft **names it as a prerequisite dependency**: a dispatcher
-  build lane **must not proceed** until the KCA exists and can vouch for these keys.
+- **KCA MUST exist and be §28-cited before build.** The routing authority's signing key, each role's
+  attestation key (CF-2), and the founder gate key are **issued, held, rotated, and revoked by the
+  KCA**. A dispatcher build lane **must not be authorized** until the KCA exists **and** its
+  authorization artifact is **committed and §28-cited** here by `path @ SHA` — a **full 40-character**
+  git object SHA, resolvable in-worktree. Until that citation resolves, this precondition is **unmet**
+  and no build lane may proceed. *(This draft states the requirement; it does not itself supply or
+  self-satisfy the citation — that is a later, checked act.)*
+- **KCA MUST be provably DISJOINT from every role it attests.** **No entity may simultaneously be the
+  KCA and any of CTO (build) / Advisor (audit) / dispatcher / founder.** The KCA identity is
+  **disjoint** from all four, and this disjointness **must be provable** — verifiable from committed
+  evidence, not asserted. A KCA that **coincides with any role it attests** is rejected as a
+  self-custody seam: it would let that role vouch for its own signing key, which **collapses HR-1's
+  forgery resistance** and destroys the **separation-of-duties basis** (a signer certifying its own
+  authority is the fox certifying the henhouse). This is a **hard build precondition**: a build lane
+  whose KCA is not provably disjoint from CTO, Advisor, dispatcher, and founder is **out of spec and
+  must not ship**.
+- **The KCA's own separation-of-duties and its `key → role` attestations MUST be verifiable/auditable.**
+  The KCA is itself subject to separation of duties: its custody acts (issue, rotate, revoke) and each
+  binding it attests (`key → role`) must be **independently verifiable and auditable** from committed
+  record — the disjointness above and every attestation must be **checkable after the fact**, not taken
+  on trust.
 - **No agent may mint its own signing key.** A key is trusted **only if** the KCA attests to the binding
   `key → role`. An envelope signed by a key the KCA does not vouch for is **rejected** exactly like an
-  unsigned envelope (HR-1).
-- **This authority does not itself grant custody.** It records the dependency and the interface (issue,
-  rotate, revoke, attest); the KCA's own authorization is a **separate, out-of-scope artifact**. Stating
-  the dependency here prevents the seam where the dispatcher would otherwise be its own key issuer —
-  which would collapse HR-1's forgery resistance.
+  unsigned envelope (HR-1). This rule is **necessary but not sufficient**: without the provable
+  disjointness above, a KCA that is also a role could still attest its own key and pass this check while
+  defeating its purpose.
 
 ### HR-5 — Hardware-backed step-up on the founder gate
 
@@ -195,7 +211,7 @@ Mechanically:
 
 | Finding (round-1 checker) | Proposal disposition (carried) | This draft's mechanical strengthening |
 |---|---|---|
-| **F1** — caller identity at input (CRITICAL) | closed-in-design (Rule 2 / CF-2) | HR-1 out-of-band signed envelope + HR-4 KCA-attested key bind who may route |
+| **F1** — caller identity at input (CRITICAL) | closed-in-design (Rule 2 / CF-2) | HR-1 out-of-band signed envelope + HR-4 KCA-attested key bind who may route; **HR-4 now states IN-doc a hard build precondition: the KCA must exist, be §28-cited (`path @ SHA`), and be provably DISJOINT from CTO / Advisor / dispatcher / founder** — no self-custody seam |
 | **F2** — result provenance (CRITICAL) | closed-in-design (Rule 3 / CF-3) | HR-3 DENY matrix blocks CTO↔Advisor even under mis-classification |
 | **F3** — signature forward/replay (CRITICAL) | closed-in-design (Rule 4 / CF-4) | HR-2 nonce + freshness generalized to every envelope; HR-5 hardware step-up on gates |
 | **F4** — mechanized sensitivity (HIGH) | build-lane requirement (Rule 5 / CF-5) | unchanged: named CI guard, checker ≠ builder, green ≠ sufficient |
@@ -213,8 +229,10 @@ built, and it makes **no readiness claim**.
 
 - It does **not** authorize writing any dispatcher code, key-custody code, ledger code, or CI guard. Any
   build is a separate, gated lane under one builder plus one independent adversarial checker.
-- It does **not** grant custody of any key, create any signer, or stand up the Key-Custody Authority; it
-  names the KCA as a **dependency** only (HR-4).
+- It does **not** grant custody of any key, create any signer, or stand up the Key-Custody Authority. It
+  names the KCA as a **dependency** and, in HR-4, states as **binding text** the hard build preconditions
+  the KCA must satisfy — existence, a §28 `path @ SHA` citation, and **provable disjointness** from CTO /
+  Advisor / dispatcher / founder — without itself supplying, satisfying, or firing a gate on any of them.
 - It does **not** change any role's current mandate. The founder remains the sole gate signer; CTO and
   Advisor remain disjoint; the dispatcher only routes.
 - It does **not** touch product code (`src/**`), soak lanes, the shared host workload lease, the
