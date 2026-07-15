@@ -371,6 +371,7 @@ export function makeEvidence(evidenceDir, { iso = () => new Date().toISOString()
   const driverLog = join(evidenceDir, "driver.log");
   const interventions = join(evidenceDir, "intervention-log.jsonl");
   const monitorRec = join(evidenceDir, "monitor-record.jsonl");
+  let interventionLogOpened = false;   // idempotency: the sentinel is written at most once
   const log = (msg) => {
     const line = `[${iso()}] ${msg}`;
     // eslint-disable-next-line no-console
@@ -382,7 +383,27 @@ export function makeEvidence(evidenceDir, { iso = () => new Date().toISOString()
     log,
     write(name, obj) { writeFileSync(join(evidenceDir, name), JSON.stringify(obj, null, 2) + "\n"); },
     writeText(name, text) { writeFileSync(join(evidenceDir, name), text + "\n"); },
-    // §29 element 5: every intervention/anomaly, timestamped.
+    // §29 element 5: OPEN the interventions log at run start with exactly one honest sentinel line.
+    // WHY (SD-1): the verdict emitter names intervention-log.jsonl unconditionally, but the file used
+    // to be created only on the first intervention() append — so a ZERO-intervention run produced no
+    // file (or, if hand-added, a 0-byte file the evidence-integrity guard rejects). Opening the log
+    // with a sentinel makes a zero-intervention run yield a NON-EMPTY, manifest-consistent file. The
+    // sentinel is NOT an intervention: it carries `type:"log-opened"` and never a `kind`, so a
+    // sentinel-only file unambiguously means ZERO interventions; real interventions append AFTER it.
+    // Idempotent (writes at most once) and append-only (never truncates/displaces a real record).
+    openInterventionLog(run_id = null) {
+      if (interventionLogOpened) return;
+      interventionLogOpened = true;
+      const sentinel = {
+        type: "log-opened",
+        note: "interventions log opened at run start; zero interventions unless lines follow",
+        ts: iso(),
+        run_id,
+      };
+      appendFileSync(interventions, JSON.stringify(sentinel) + "\n");
+      log(`intervention-log opened (sentinel) — run ${run_id ?? "UNKNOWN"}`);
+    },
+    // §29 element 5: every intervention/anomaly, timestamped. Appends after the sentinel (if opened).
     intervention(kind, detail) {
       const rec = { at: iso(), kind, detail };
       appendFileSync(interventions, JSON.stringify(rec) + "\n");
@@ -591,6 +612,9 @@ export async function runSoakDriver(rawOptions, deps = {}) {
     handle = guard.handle;
     const { lease_id, run_id } = handle;
     runStartIso = iso();
+    // SD-1: open the §29 interventions log at run start (sentinel line) so a zero-intervention run
+    // still produces a non-empty, manifest-consistent intervention-log.jsonl. Real interventions append after.
+    ev.openInterventionLog(run_id);
     ev.write("lease-acquired.json", {
       at: runStartIso, lease_id, run_id, owner_project: "foundergate", purpose: options.leasePurpose,
       host_id: options.hostId, boot_id: identity.boot_id, owner_pid: selfPid,
