@@ -1,0 +1,13 @@
+{
+  "at": "2026-07-15T03:10:42.890Z",
+  "required": true,
+  "held": true,
+  "holders": [
+    {
+      "pid": 58651,
+      "cmd": "caffeinate -dimsu node src/tools/soak-driver.mjs --sha 490440d2a18910fe02f412d588ccddce132522e6 --claim 8 --interval 900 --ttl 36000 --evidence docs/assembly-ev",
+      "via": "descendant"
+    }
+  ],
+  "checked_pids": 639
+}

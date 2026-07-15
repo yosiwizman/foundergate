@@ -1,0 +1,15 @@
+{
+  "sealed_at": "2026-07-15T11:11:01.688Z",
+  "expectedHeadHash": "e264fa281d3e07db180f33a3922b5e386ecc351d15337fe8b6e13b708059d220",
+  "expected_head_sha_git": "490440d2a18910fe02f412d588ccddce132522e6",
+  "chain_verdict": "intact",
+  "soak_eligibility": {
+    "eligible": true,
+    "status": "ELIGIBLE",
+    "reason": "span meets claim and no unresolved failures",
+    "spanSeconds": 28818.727,
+    "claimSeconds": 28800,
+    "unresolvedFailures": [],
+    "verdict": "intact"
+  }
+}
