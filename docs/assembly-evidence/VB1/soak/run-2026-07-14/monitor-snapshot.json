@@ -1,0 +1,162 @@
+{
+  "run_id": "run_5f335ff2-6b6e-4521-a851-58661cc6d713",
+  "run_started_at": "2026-07-14T15:13:48.715Z",
+  "quiet_host_downgraded": true,
+  "episodes": [
+    {
+      "kind": "MISSING_HEARTBEAT",
+      "from": "2026-07-14T16:33:34.457Z",
+      "to": "2026-07-14T16:33:34.457Z",
+      "reason": "STALE_HEARTBEAT",
+      "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+    },
+    {
+      "kind": "MISSING_HEARTBEAT",
+      "from": "2026-07-14T16:51:18.929Z",
+      "to": "2026-07-14T16:51:18.929Z",
+      "reason": "STALE_HEARTBEAT",
+      "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+    },
+    {
+      "kind": "MISSING_HEARTBEAT",
+      "from": "2026-07-14T17:30:17.448Z",
+      "to": "2026-07-14T17:30:17.448Z",
+      "reason": "STALE_HEARTBEAT",
+      "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+    },
+    {
+      "kind": "MISSING_HEARTBEAT",
+      "from": "2026-07-14T17:46:38.095Z",
+      "to": "2026-07-14T17:46:38.095Z",
+      "reason": "STALE_HEARTBEAT",
+      "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+    },
+    {
+      "kind": "MISSING_HEARTBEAT",
+      "from": "2026-07-14T18:06:04.677Z",
+      "to": "2026-07-14T18:06:04.677Z",
+      "reason": "STALE_HEARTBEAT",
+      "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+    },
+    {
+      "kind": "MISSING_HEARTBEAT",
+      "from": "2026-07-14T18:18:41.796Z",
+      "to": "2026-07-14T18:18:41.796Z",
+      "reason": "STALE_HEARTBEAT",
+      "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+    },
+    {
+      "kind": "MISSING_HEARTBEAT",
+      "from": "2026-07-14T18:35:33.649Z",
+      "to": "2026-07-14T18:35:33.649Z",
+      "reason": "STALE_HEARTBEAT",
+      "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+    },
+    {
+      "kind": "MISSING_HEARTBEAT",
+      "from": "2026-07-14T18:53:30.703Z",
+      "to": "2026-07-14T18:53:30.703Z",
+      "reason": "STALE_HEARTBEAT",
+      "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+    },
+    {
+      "kind": "MISSING_HEARTBEAT",
+      "from": "2026-07-14T19:09:40.613Z",
+      "to": "2026-07-14T19:09:40.613Z",
+      "reason": "STALE_HEARTBEAT",
+      "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+    },
+    {
+      "kind": "MISSING_HEARTBEAT",
+      "from": "2026-07-14T19:19:37.689Z",
+      "to": "2026-07-14T19:19:37.689Z",
+      "reason": "STALE_HEARTBEAT",
+      "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+    }
+  ],
+  "quiet_host_eligible_final": false,
+  "attestation": {
+    "run_id": "run_5f335ff2-6b6e-4521-a851-58661cc6d713",
+    "quiet_host_eligible": false,
+    "never_auto_restored": true,
+    "disqualified_at": "2026-07-14T16:33:34.457Z",
+    "disqualified_reason": "QUIET_HOST_MONITOR:MISSING_HEARTBEAT",
+    "override_intervals": [
+      {
+        "kind": "MISSING_HEARTBEAT",
+        "from": "2026-07-14T16:33:34.457Z",
+        "to": "2026-07-14T16:33:34.457Z",
+        "reason": "STALE_HEARTBEAT",
+        "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+      },
+      {
+        "kind": "MISSING_HEARTBEAT",
+        "from": "2026-07-14T16:51:18.929Z",
+        "to": "2026-07-14T16:51:18.929Z",
+        "reason": "STALE_HEARTBEAT",
+        "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+      },
+      {
+        "kind": "MISSING_HEARTBEAT",
+        "from": "2026-07-14T17:30:17.448Z",
+        "to": "2026-07-14T17:30:17.448Z",
+        "reason": "STALE_HEARTBEAT",
+        "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+      },
+      {
+        "kind": "MISSING_HEARTBEAT",
+        "from": "2026-07-14T17:46:38.095Z",
+        "to": "2026-07-14T17:46:38.095Z",
+        "reason": "STALE_HEARTBEAT",
+        "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+      },
+      {
+        "kind": "MISSING_HEARTBEAT",
+        "from": "2026-07-14T18:06:04.677Z",
+        "to": "2026-07-14T18:06:04.677Z",
+        "reason": "STALE_HEARTBEAT",
+        "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+      },
+      {
+        "kind": "MISSING_HEARTBEAT",
+        "from": "2026-07-14T18:18:41.796Z",
+        "to": "2026-07-14T18:18:41.796Z",
+        "reason": "STALE_HEARTBEAT",
+        "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+      },
+      {
+        "kind": "MISSING_HEARTBEAT",
+        "from": "2026-07-14T18:35:33.649Z",
+        "to": "2026-07-14T18:35:33.649Z",
+        "reason": "STALE_HEARTBEAT",
+        "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+      },
+      {
+        "kind": "MISSING_HEARTBEAT",
+        "from": "2026-07-14T18:53:30.703Z",
+        "to": "2026-07-14T18:53:30.703Z",
+        "reason": "STALE_HEARTBEAT",
+        "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+      },
+      {
+        "kind": "MISSING_HEARTBEAT",
+        "from": "2026-07-14T19:09:40.613Z",
+        "to": "2026-07-14T19:09:40.613Z",
+        "reason": "STALE_HEARTBEAT",
+        "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+      },
+      {
+        "kind": "MISSING_HEARTBEAT",
+        "from": "2026-07-14T19:19:37.689Z",
+        "to": "2026-07-14T19:19:37.689Z",
+        "reason": "STALE_HEARTBEAT",
+        "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+      }
+    ]
+  },
+  "monitor_rule": {
+    "violation_foreign_heavy": "foreign (non-tree) process matching build/test/CI/container/browser-automation/compiler/second-soak signature at >=20% CPU (any CPU for a second soak)",
+    "violation_saturation": "1-min loadavg >= 8 (ncpu) for 3 consecutive 60s samples",
+    "observation_only": "ordinary interactive app CPU (recorded in monitor-record.jsonl, does not downgrade)"
+  }
+}

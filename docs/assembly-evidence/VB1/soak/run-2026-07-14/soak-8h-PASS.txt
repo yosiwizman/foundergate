@@ -1,0 +1,7 @@
+FOUNDERGATE HARNESS 8-HOUR SOAK PASS
+start: 2026-07-14T15:13:57.829Z
+end: 2026-07-14T23:21:49.984Z
+span: 8.13h (claim 8h)
+availability: 100.000% (SLO 99.00%)
+samples: 28 (ok 28 / fail 0)
+SHA under test: c22b86a2f70847490961595b383c0ee358aaaa33

@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0.0",
+  "lease_id": "lease_6fbcd4607c5c4b7786464041978b68e9",
+  "status": "RELEASED",
+  "owner_project": "foundergate",
+  "owner_host_id": "qual-host-m1",
+  "owner_boot_id": "boot_darwin_1784033727",
+  "owner_pid": 64108,
+  "owner_process_start_marker": "start_9d1726861dac8cca0f3623185e2864b0",
+  "run_id": "run_5f335ff2-6b6e-4521-a851-58661cc6d713",
+  "lease_capability_id": "[REDACTED — §4.5 capability never enters evidence]",
+  "declared_subprocess_capabilities": [],
+  "acquired_at": "2026-07-14T15:13:48.634Z",
+  "activated_at": "2026-07-14T15:13:48.634Z",
+  "heartbeat_at": "2026-07-14T15:13:48.634Z",
+  "heartbeat_interval_s": 60,
+  "lease_ttl_s": 36000,
+  "expires_at": "2026-07-15T01:13:48.634Z",
+  "released_at": "2026-07-14T23:21:50.065Z",
+  "release_reason": "SOAK_NOT_PASSED",
+  "recovery": null
+}
