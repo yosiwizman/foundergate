@@ -11,7 +11,7 @@
 // No caffeinate process is ever spawned (its presence is SIMULATED as `ps` DATA rows).
 
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync, existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { mkdtempSync, rmSync, existsSync, mkdirSync, writeFileSync, readFileSync, statSync } from "node:fs";
 import { tmpdir, homedir } from "node:os";
 import { join } from "node:path";
 
@@ -320,6 +320,63 @@ check("computeVerdict emits all five §29 elements for BOTH a PASS and a NOT-PAS
     assert.match(txt, /monitoring evidence:/, `(4) monitoring evidence ref for ${label}`);
     assert.match(txt, /failures & interventions log:/, `(5) failures/interventions ref for ${label}`);
   }
+});
+
+// =================================================================================================
+// SD-1 — the interventions log OPENS at run start with one sentinel line, so a ZERO-intervention run
+// still yields a non-empty, manifest-consistent intervention-log.jsonl (evidence-integrity guard
+// rejects 0-byte evidence). Found by independent verification of the run-2 PASS bundle.
+// =================================================================================================
+const INTERV = (dir) => join(dir, "intervention-log.jsonl");
+
+check("SD-1: openInterventionLog writes a NON-EMPTY sentinel-only log at run start (zero interventions); satisfies the guard's 0-byte gate", () => {
+  const dir = mkRoot("ev-sd1");
+  const ev = makeEvidence(dir);
+  ev.openInterventionLog("run_abc123");
+  // (a) exists + non-empty — EXACTLY the evidence-integrity guard's rejection criterion (st.size === 0).
+  assert.ok(existsSync(INTERV(dir)), "intervention-log.jsonl must exist after openInterventionLog");
+  assert.ok(statSync(INTERV(dir)).size > 0, "must be NON-EMPTY — the guard rejects any 0-byte evidence file");
+  // (b) sentinel-only => zero interventions: exactly one line; type=log-opened; carries run_id; NO `kind`.
+  const recs = readFileSync(INTERV(dir), "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
+  assert.equal(recs.length, 1, "sentinel-only file = exactly one JSONL line");
+  assert.equal(recs[0].type, "log-opened", "sentinel carries type=log-opened");
+  assert.equal(recs[0].run_id, "run_abc123", "sentinel carries the real run_id");
+  assert.ok(typeof recs[0].ts === "string" && recs[0].ts.length > 0, "sentinel carries a real ISO timestamp");
+  assert.ok(!("kind" in recs[0]), "sentinel must NOT carry a `kind` — it is NOT an intervention");
+  assert.equal(recs.filter((r) => "kind" in r).length, 0, "sentinel-only => ZERO interventions (counted by `kind`)");
+});
+
+check("SD-1: a real intervention appends AFTER the sentinel and is counted; the sentinel is never displaced or counted", () => {
+  const dir = mkRoot("ev-sd1b");
+  const ev = makeEvidence(dir);
+  ev.openInterventionLog("run_xyz");
+  ev.intervention("QUIET_HOST_VIOLATION_STATE", { effective: "DEGRADED" });
+  const recs = readFileSync(INTERV(dir), "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
+  assert.equal(recs.length, 2, "sentinel + one intervention = two lines (append-only; nothing displaced)");
+  assert.equal(recs[0].type, "log-opened", "sentinel stays FIRST — a real record cannot mask/displace it");
+  assert.equal(recs[1].kind, "QUIET_HOST_VIOLATION_STATE", "the real intervention appends AFTER the sentinel");
+  assert.equal(recs.filter((r) => "kind" in r).length, 1, "exactly ONE intervention counted (the sentinel is not counted)");
+});
+
+check("SD-1: openInterventionLog is idempotent — repeat calls never write a second sentinel (no 0-byte, no duplicate)", () => {
+  const dir = mkRoot("ev-sd1c");
+  const ev = makeEvidence(dir);
+  ev.openInterventionLog("run_1");
+  ev.openInterventionLog("run_1");     // no-op
+  ev.openInterventionLog("run_2");     // still a no-op — the log is opened exactly once
+  const recs = readFileSync(INTERV(dir), "utf8").split("\n").filter(Boolean);
+  assert.equal(recs.length, 1, "at most one sentinel is ever written");
+});
+
+check("SD-1: refusal/early paths never emit a sentinel but are still NON-EMPTY (a real intervention keeps the log > 0 bytes)", () => {
+  // Mirrors the acquireGuardedLease refusal path: intervention() is called WITHOUT openInterventionLog.
+  const dir = mkRoot("ev-sd1d");
+  const ev = makeEvidence(dir);
+  ev.intervention("CAFFEINATE_NOT_HELD", { holders: [] });
+  assert.ok(statSync(INTERV(dir)).size > 0, "a refused run's log is non-empty via its refusal intervention (guard passes)");
+  const recs = readFileSync(INTERV(dir), "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
+  assert.equal(recs.length, 1, "refusal log = the one refusal record (no sentinel, since the run never started)");
+  assert.equal(recs[0].kind, "CAFFEINATE_NOT_HELD", "the refusal is honestly recorded as a real intervention");
 });
 
 cleanup();
