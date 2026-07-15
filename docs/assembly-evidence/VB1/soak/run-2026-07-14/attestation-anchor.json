@@ -1,0 +1,16 @@
+{
+  "sealed_at": "2026-07-14T23:21:49.986Z",
+  "expectedHeadHash": "55b23ad054a7fda33d91b811f08566e7f6059fc429c3a5341cf28875a50a079d",
+  "note": "This is run-attestation's external anchor: the sha256 entry_hash of the SEALED head. It is NOT the git SHA. The git SHA anchor (c22b86a2...) is recorded in freeze-manifest.json and as the EXTERNAL_ANCHOR entry in the chain.",
+  "expected_head_sha_git": "c22b86a2f70847490961595b383c0ee358aaaa33",
+  "chain_verdict": "intact",
+  "soak_eligibility": {
+    "eligible": true,
+    "status": "ELIGIBLE",
+    "reason": "span meets claim and no unresolved failures",
+    "spanSeconds": 29281.271,
+    "claimSeconds": 28800,
+    "unresolvedFailures": [],
+    "verdict": "intact"
+  }
+}

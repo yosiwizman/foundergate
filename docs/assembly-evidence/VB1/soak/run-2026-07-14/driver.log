@@ -1,0 +1,48 @@
+[2026-07-14T15:13:48.541Z] VB1 qualifying soak driver starting — pid 64108, host qual-host-m1, sha c22b86a2f70847490961595b383c0ee358aaaa33
+[2026-07-14T15:13:48.588Z] HARD GATE ok — HEAD c22b86a2f70847490961595b383c0ee358aaaa33, frozen scope clean
+[2026-07-14T15:13:48.615Z] L3 provenance captured (no secrets)
+[2026-07-14T15:13:48.632Z] L1 freeze manifest built — manifest_hash 934514696ffbf1313b212521b74fd5056caef09265fdca44448537b07741d4d0, 336 files, anchor c22b86a2f70847490961595b383c0ee358aaaa33
+[2026-07-14T15:13:48.633Z] L4 preflight (lease guard): quiet — decision MAY_ACQUIRE
+[2026-07-14T15:13:48.715Z] STEP 3/4 OK — lease acquired lease_6fbcd4607c5c4b7786464041978b68e9, run run_5f335ff2-6b6e-4521-a851-58661cc6d713; preflight quiet (loadavg 1.32, no foreign heavy work)
+[2026-07-14T15:13:48.716Z] L2 attestation opened — binds manifest_hash + lease_id + start_at + git anchor c22b86a2f70847490961595b383c0ee358aaaa33
+[2026-07-14T15:13:48.716Z] launching soak-run.mjs — claim 8h, interval 900s, probe "npm test"
+[2026-07-14T16:33:34.479Z] INTERVENTION QUIET_HOST_VIOLATION_STATE: {"effective":"RECOVERY_REQUIRED","detection":{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T16:33:34.457Z","to":"2026-07-14T16:33:34.457Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"}}
+[2026-07-14T16:51:18.947Z] INTERVENTION QUIET_HOST_VIOLATION_STATE: {"effective":"RECOVERY_REQUIRED","detection":{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T16:51:18.929Z","to":"2026-07-14T16:51:18.929Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"}}
+[2026-07-14T17:30:17.471Z] INTERVENTION QUIET_HOST_VIOLATION_STATE: {"effective":"RECOVERY_REQUIRED","detection":{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T17:30:17.448Z","to":"2026-07-14T17:30:17.448Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"}}
+[2026-07-14T17:46:38.113Z] INTERVENTION QUIET_HOST_VIOLATION_STATE: {"effective":"RECOVERY_REQUIRED","detection":{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T17:46:38.095Z","to":"2026-07-14T17:46:38.095Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"}}
+[2026-07-14T18:06:04.696Z] INTERVENTION QUIET_HOST_VIOLATION_STATE: {"effective":"RECOVERY_REQUIRED","detection":{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T18:06:04.677Z","to":"2026-07-14T18:06:04.677Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"}}
+[2026-07-14T18:18:41.815Z] INTERVENTION QUIET_HOST_VIOLATION_STATE: {"effective":"RECOVERY_REQUIRED","detection":{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T18:18:41.796Z","to":"2026-07-14T18:18:41.796Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"}}
+[2026-07-14T18:35:33.670Z] INTERVENTION QUIET_HOST_VIOLATION_STATE: {"effective":"RECOVERY_REQUIRED","detection":{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T18:35:33.649Z","to":"2026-07-14T18:35:33.649Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"}}
+[2026-07-14T18:53:30.720Z] INTERVENTION QUIET_HOST_VIOLATION_STATE: {"effective":"RECOVERY_REQUIRED","detection":{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T18:53:30.703Z","to":"2026-07-14T18:53:30.703Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"}}
+[2026-07-14T19:09:40.630Z] INTERVENTION QUIET_HOST_VIOLATION_STATE: {"effective":"RECOVERY_REQUIRED","detection":{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T19:09:40.613Z","to":"2026-07-14T19:09:40.613Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"}}
+[2026-07-14T19:19:37.706Z] INTERVENTION QUIET_HOST_VIOLATION_STATE: {"effective":"RECOVERY_REQUIRED","detection":{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T19:19:37.689Z","to":"2026-07-14T19:19:37.689Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"}}
+[2026-07-14T23:21:49.986Z] soak-run.mjs exited with code 0
+[2026-07-14T23:21:50.063Z] L1 freeze re-verified at end — NO DRIFT (manifest_hash unchanged, 336 files)
+[2026-07-14T23:21:50.064Z] VERDICT:
+FOUNDERGATE HARNESS 8-HOUR SOAK — NOT-PASSED
+
+start: 2026-07-14T15:13:57.829Z
+end: 2026-07-14T23:21:49.984Z
+actual span: 8.131h (claimed span 8h)
+SHA under test: c22b86a2f70847490961595b383c0ee358aaaa33
+availability: 100.000% (SLO 99.00%) over 28 samples (ok 28 / fail 0)
+QUIET_HOST eligibility: LOST — permanently downgraded (§5.1)
+frozen-code integrity: NO DRIFT (manifest re-verified at end)
+lease: lease_6fbcd4607c5c4b7786464041978b68e9
+run: run_5f335ff2-6b6e-4521-a851-58661cc6d713
+host: qual-host-m1
+
+NOT-PASSED — true reasons:
+  1. QUIET_HOST eligibility LOST (§5.1, permanent, never restored): [{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T16:33:34.457Z","to":"2026-07-14T16:33:34.457Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"},{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T16:51:18.929Z","to":"2026-07-14T16:51:18.929Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"},{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T17:30:17.448Z","to":"2026-07-14T17:30:17.448Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"},{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T17:46:38.095Z","to":"2026-07-14T17:46:38.095Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"},{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T18:06:04.677Z","to":"2026-07-14T18:06:04.677Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"},{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T18:18:41.796Z","to":"2026-07-14T18:18:41.796Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"},{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T18:35:33.649Z","to":"2026-07-14T18:35:33.649Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"},{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T18:53:30.703Z","to":"2026-07-14T18:53:30.703Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"},{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T19:09:40.613Z","to":"2026-07-14T19:09:40.613Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"},{"kind":"MISSING_HEARTBEAT","from":"2026-07-14T19:19:37.689Z","to":"2026-07-14T19:19:37.689Z","reason":"STALE_HEARTBEAT","detail":"the owner's heartbeat is stale — recovery required, NOT auto-unlocked"}]
+
+--- accumulator output (verbatim, authoritative) ---
+FOUNDERGATE HARNESS 8-HOUR SOAK PASS
+start: 2026-07-14T15:13:57.829Z
+end: 2026-07-14T23:21:49.984Z
+span: 8.13h (claim 8h)
+availability: 100.000% (SLO 99.00%)
+samples: 28 (ok 28 / fail 0)
+SHA under test: c22b86a2f70847490961595b383c0ee358aaaa33
+[2026-07-14T23:21:50.065Z] L2 sealed — chain intact, eligibility ELIGIBLE, head 55b23ad054a7fda33d91b811f08566e7f6059fc429c3a5341cf28875a50a079d
+[2026-07-14T23:21:50.081Z] lease release: {"ok":true,"released_at":"2026-07-14T23:21:50.065Z"}
+[2026-07-14T23:21:50.082Z] DONE — verdict NOT-PASSED
