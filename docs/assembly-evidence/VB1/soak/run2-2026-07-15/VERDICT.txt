@@ -1,0 +1,26 @@
+FOUNDERGATE HARNESS 8-HOUR SOAK PASS
+
+start: 2026-07-15T03:10:52.436Z
+end: 2026-07-15T11:11:01.685Z
+actual span: 8.003h (claimed span 8h)
+SHA under test: 490440d2a18910fe02f412d588ccddce132522e6
+availability: 100.000% (SLO 99.00%) over 33 samples (ok 33 / fail 0)
+monitoring evidence: monitor-record.jsonl, monitor-snapshot.json
+failures & interventions log: intervention-log.jsonl
+QUIET_HOST eligibility: INTACT for the whole run
+caffeinate power assertion: HELD (descendant)
+frozen-code integrity: NO DRIFT (manifest re-verified at end)
+lease: lease_bdf58ae76c3240038341ae8f387bfbc8
+run: run_335866bb-8ce7-4311-ad41-4c10ca84df63
+host: qual-host-m1
+
+AND-gate held: availability SLO AND QUIET_HOST eligibility AND frozen-code integrity all TRUE.
+
+--- accumulator output (verbatim, authoritative) ---
+FOUNDERGATE HARNESS 8-HOUR SOAK PASS
+start: 2026-07-15T03:10:52.436Z
+end: 2026-07-15T11:11:01.685Z
+span: 8.00h (claim 8h)
+availability: 100.000% (SLO 99.00%)
+samples: 33 (ok 33 / fail 0)
+SHA under test: 490440d2a18910fe02f412d588ccddce132522e6

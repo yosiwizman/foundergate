@@ -1,0 +1,44 @@
+[soak] claim 8h, interval 900s, state docs/assembly-evidence/VB1/soak/run2-2026-07-15/soak-8h.json, sha 490440d2a18910fe02f412d588ccddce132522e6
+[soak] this is a REAL wall-clock run — it will not "complete" faster than 8h (§29).
+[soak] 2026-07-15T03:10:52.437Z span 0.000h/8h · avail 100.00% · samples 1
+[soak] 2026-07-15T03:26:01.993Z span 0.253h/8h · avail 100.00% · samples 2
+[soak] 2026-07-15T03:41:01.973Z span 0.503h/8h · avail 100.00% · samples 3
+[soak] 2026-07-15T03:56:01.909Z span 0.753h/8h · avail 100.00% · samples 4
+[soak] 2026-07-15T04:11:01.780Z span 1.003h/8h · avail 100.00% · samples 5
+[soak] 2026-07-15T04:26:01.785Z span 1.253h/8h · avail 100.00% · samples 6
+[soak] 2026-07-15T04:41:01.782Z span 1.503h/8h · avail 100.00% · samples 7
+[soak] 2026-07-15T04:56:01.709Z span 1.753h/8h · avail 100.00% · samples 8
+[soak] 2026-07-15T05:11:01.810Z span 2.003h/8h · avail 100.00% · samples 9
+[soak] 2026-07-15T05:26:01.821Z span 2.253h/8h · avail 100.00% · samples 10
+[soak] 2026-07-15T05:41:01.800Z span 2.503h/8h · avail 100.00% · samples 11
+[soak] 2026-07-15T05:56:01.779Z span 2.753h/8h · avail 100.00% · samples 12
+[soak] 2026-07-15T06:11:01.820Z span 3.003h/8h · avail 100.00% · samples 13
+[soak] 2026-07-15T06:26:01.779Z span 3.253h/8h · avail 100.00% · samples 14
+[soak] 2026-07-15T06:41:01.811Z span 3.503h/8h · avail 100.00% · samples 15
+[soak] 2026-07-15T06:56:01.803Z span 3.753h/8h · avail 100.00% · samples 16
+[soak] 2026-07-15T07:11:01.768Z span 4.003h/8h · avail 100.00% · samples 17
+[soak] 2026-07-15T07:26:01.719Z span 4.253h/8h · avail 100.00% · samples 18
+[soak] 2026-07-15T07:41:01.677Z span 4.503h/8h · avail 100.00% · samples 19
+[soak] 2026-07-15T07:56:01.665Z span 4.753h/8h · avail 100.00% · samples 20
+[soak] 2026-07-15T08:11:01.641Z span 5.003h/8h · avail 100.00% · samples 21
+[soak] 2026-07-15T08:26:01.685Z span 5.253h/8h · avail 100.00% · samples 22
+[soak] 2026-07-15T08:41:01.759Z span 5.503h/8h · avail 100.00% · samples 23
+[soak] 2026-07-15T08:56:01.726Z span 5.753h/8h · avail 100.00% · samples 24
+[soak] 2026-07-15T09:11:01.706Z span 6.003h/8h · avail 100.00% · samples 25
+[soak] 2026-07-15T09:26:01.793Z span 6.253h/8h · avail 100.00% · samples 26
+[soak] 2026-07-15T09:41:01.746Z span 6.503h/8h · avail 100.00% · samples 27
+[soak] 2026-07-15T09:56:01.697Z span 6.753h/8h · avail 100.00% · samples 28
+[soak] 2026-07-15T10:11:01.741Z span 7.003h/8h · avail 100.00% · samples 29
+[soak] 2026-07-15T10:26:01.657Z span 7.253h/8h · avail 100.00% · samples 30
+[soak] 2026-07-15T10:41:01.731Z span 7.503h/8h · avail 100.00% · samples 31
+[soak] 2026-07-15T10:56:01.623Z span 7.753h/8h · avail 100.00% · samples 32
+[soak] 2026-07-15T11:11:01.685Z span 8.003h/8h · avail 100.00% · samples 33
+
+FOUNDERGATE HARNESS 8-HOUR SOAK PASS
+start: 2026-07-15T03:10:52.436Z
+end: 2026-07-15T11:11:01.685Z
+span: 8.00h (claim 8h)
+availability: 100.000% (SLO 99.00%)
+samples: 33 (ok 33 / fail 0)
+SHA under test: 490440d2a18910fe02f412d588ccddce132522e6
+[soak] PASS written to docs/assembly-evidence/VB1/soak/run2-2026-07-15/soak-8h-PASS.txt

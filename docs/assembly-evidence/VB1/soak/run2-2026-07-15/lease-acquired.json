@@ -1,0 +1,18 @@
+{
+  "at": "2026-07-15T03:10:42.961Z",
+  "lease_id": "lease_bdf58ae76c3240038341ae8f387bfbc8",
+  "run_id": "run_335866bb-8ce7-4311-ad41-4c10ca84df63",
+  "owner_project": "foundergate",
+  "purpose": "VB1 8-9h qualifying soak run 2",
+  "host_id": "qual-host-m1",
+  "boot_id": "boot_darwin_1784033727",
+  "owner_pid": 58648,
+  "heartbeat_interval_s": 60,
+  "lease_ttl_s": 36000,
+  "preflight": {
+    "quiet": true,
+    "loadavg_1m": 1.35546875,
+    "ncpu": 8,
+    "foreign_heavy": []
+  }
+}

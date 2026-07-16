@@ -1,0 +1,21 @@
+{
+  "schema_version": "env-provenance.v1",
+  "node_version": "v26.5.0",
+  "platform": "darwin",
+  "arch": "arm64",
+  "cpu_count": 8,
+  "total_mem": 8589934592,
+  "env_allowlisted": {
+    "HOME": "/Users/macm1",
+    "SHELL": "/bin/zsh",
+    "LANG": "en_US.UTF-8",
+    "TERM": "xterm-256color",
+    "USER": "macm1",
+    "PATH": "[REDACTED]"
+  },
+  "captured_at": "2026-07-15T03:10:42.809Z",
+  "host_id": "qual-host-m1",
+  "boot_id": "boot_darwin_1784033727",
+  "sha_under_test": "490440d2a18910fe02f412d588ccddce132522e6",
+  "purpose": "VB1 8-9h qualifying soak run 2"
+}
