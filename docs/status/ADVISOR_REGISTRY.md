@@ -1,4 +1,4 @@
-# Advisor Registry — registered work, none active (as of 2026-07-15, main 9a3c3f1)
+# Advisor Registry — registered work, none active (as of 2026-07-16, main 879fc02)
 
 **STATUS: registry · registered work, NONE ACTIVE · founder release required for any item**
 
@@ -7,7 +7,7 @@
 > in this file is activated by being written down.** Every item is REGISTERED · NONE ACTIVE · founder release required.
 > Merged ≠ accepted; DRAFT ≠ authority; registered ≠ released.
 >
-> **As of:** 2026-07-15 · **Base:** main `9a3c3f19a9bcbfda057487588f216bcb6c67d807` · **Repo:** private ·
+> **As of:** 2026-07-16 · **Base:** main `879fc02f9c36c096c78fcbdfa56d5b095c8f9e75` · **Repo:** private ·
 > **Author lane:** Lane B (docs-only). **This registry makes no readiness, approval, activation, or release claim.**
 
 All items HELD until explicit founder release. Merged ≠ accepted; DRAFT ≠ authority; registered ≠ released.
@@ -16,9 +16,10 @@ All items HELD until explicit founder release. Merged ≠ accepted; DRAFT ≠ au
 - H1 RC Documentation Integrity Gate — source docs/contracts/CLDH_RC_DOCUMENTATION_INTEGRITY_GATE.md in yosiwizman/akior-activepieces-engine. Status: SOURCE-NOT-READY (audited 2026-07-14: placeholder checker identity; SHA binding stale to their main). Adoption path: DRAFT authority citing pinned SHA, incl. mandatory KNOWN-GAP-WAIVED class wired to the W4-recorded absent VB1 pre-signature-audit artifact (named every run, never backfilled) → independent check → founder signature → FounderGate builder + checker + own 10+ mutation tests. NOT a VB1 acceptance criterion unless founder explicitly signs it in.
 - H2 Founder Gate Capsule — source: AKIOR FG01 capsule (manifest + minimal committed founder script + side-effect certification + explicit transition-state machine + receipt watcher). Status: AKIOR build in progress; wait for sealed CLEAN evidence at exact SHA. FounderGate applications in priority order: M1 soak-release ceremony, founder signature stamping, side-effect certification retrofitted onto "read-only" audit prompts.
 - H3 Founder-Driven Witness Contract — source: AKIOR witness-procedure correction (builder-driven ≠ founder acceptance; founder clicks, terminal instructs/observes read-only; contract check rejects witness packets where automation logs show the tested actions were machine-performed). Status: AKIOR fix in progress. FounderGate application: binding procedure for the future VB3/UI founder witness.
+- H4 No Split-Brain UI Contract — source: AKIOR UI critical-mutation incident (2026-07-16). Artifact family extended per 2026-07-16 incident: the critical-mutation registry gains a mandatory effect_class field (destructive / non-destructive / lifecycle-only) with mechanical guards (named failures; seeded red proofs) that lifecycle-only actions never reach destructive endpoints and destructive confirmations never render in non-destructive flows. Also: canonical source seal with supersession lineage + uniqueness guard (single SOURCE_READY authority per artifact family). Harvest waits for the FINAL seal at the final evaluated SHA. Status: REGISTERED · NONE ACTIVE · founder release required.
 
 ## Doctrine backlog (docs+hygiene wave, post-current-gates; sources pinned at exact versions in each DRAFT authority)
-- D1 Checker Shortcut Catalog — 11 named fake-done shortcuts into all checker standing instructions; the edit itself is evaluation-class (independent check + seeded-shortcut detection proof + founder signature).
+- D1 Checker Shortcut Catalog — 12 named fake-done shortcuts into all checker standing instructions; the edit itself is evaluation-class (independent check + seeded-shortcut detection proof + founder signature). Shortcut #12 (live incident 2026-07-16): transport success treated as operational success (HTTP 200 masking backend ok:false); required semantics: operation success only on explicit backend body proof (ok + enacted + lifecycle fields), never transport-level res.ok alone.
 - D2 Mechanical Floor — deny-lists (force-push, recursive delete) + deterministic hooks (secret-scan on write) on Pro AND M1; explicit sheriff carve-outs; hooks are evaluation-class with fire-proof mutation tests. NOTE: partially emergent already — the Pro's firewall hooks blocked reset --hard / rm -rf / git clean on 2026-07-15 during sheriff work, exactly as designed.
 - D3 Component Classification Doctrine (KEYSTONE — lands first or alongside; D1/D2/D5 enforcement are instances of it) — guidance-class vs evaluation-class; oracle-anchored change control for evaluation-class; enumerates current inventory by path on disk; the doctrine itself is evaluation-class (founder signature to amend). Gains the side-effect-certification principle from H2: "read-only by instruction" is a claim, not a property.
 - D4 Mismatch Log — Law-68 CONFLICT → recorded event, append-only under docs/assembly-evidence/ (MISMATCH-EVENTS.md exists; this doctrine makes the class systematic); evaluator repair = first-class prioritized work.
