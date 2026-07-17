@@ -1,0 +1,27 @@
+{
+  "schema": "phase7-recovery-1",
+  "updated_at_utc": "2026-07-17T18:50:52Z",
+  "overall_state": "PROGRAM_COMPLETE; READY-FOR-FOUNDER-WITNESS",
+  "phase7_branch": "integration/founder-url-drop-ui-phase7",
+  "phase7_base": "96932fe35a0768c92d11b02c940e087307965cb2",
+  "remote_main": "e1ca1989d2397297a450893f7890dbe7fc21e494",
+  "runner_risk": "NONE",
+  "m1_state": "FOUNDER_RELAYED_RUNNING (not probed)",
+  "m1_run_id": "integrated-8h-rerun-20260717T173028Z",
+  "lanes": {
+    "A_advisor": "PASS",
+    "B_ui_spec": "done",
+    "C_patch_guard": "done+7tests",
+    "D_neg_fixtures": "done+19tests",
+    "E_playwright_a11y": "done+browser-proof",
+    "builder_ui": "done+16selftest"
+  },
+  "correction_cycles": 1,
+  "next_safe_action": "Terminal-0 commit + draft HOLD PR",
+  "known_unknowns": [
+    "advisor verdict",
+    "playwright availability"
+  ],
+  "final_checker": "CHECKER-CLEAN",
+  "live_run": "fresh; VM destroyed; snapshot deleted"
+}

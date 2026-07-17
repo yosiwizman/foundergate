@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FounderGate — Check a public GitHub project</title>
+<link rel="stylesheet" href="/ui/tokens.css" />
+<link rel="stylesheet" href="/ui/urldrop.css" />
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <div class="brand">FounderGate</div>
+  <div class="witness-flag" role="note">Witness candidate — not an accepted product surface</div>
+  <button id="pause" class="pause" aria-label="Pause and get help">⏸ Pause &amp; get help</button>
+</header>
+
+<main id="main" tabindex="-1">
+  <h1>Check a public GitHub project</h1>
+  <p class="lead">Paste a <strong>public</strong> GitHub project link and run a safety check inside a throwaway sandbox. Nothing from the project is installed, built, tested, or run — we only look at it safely.</p>
+
+  <div class="warn" role="note">
+    <span class="pill pill-info">Public repositories only</span>
+    <span class="pill pill-muted">Private repositories are not supported</span>
+    <span class="pill pill-muted">Evaluation fixture</span>
+  </div>
+
+  <section class="card input-card" aria-labelledby="url-label">
+    <label id="url-label" for="url">Public GitHub URL</label>
+    <input id="url" type="text" inputmode="url" autocomplete="off" spellcheck="false"
+           aria-describedby="url-help" placeholder="https://github.com/owner/project" />
+    <p id="url-help" class="help">For this witness the live check runs only for the fixed evaluation fixture.</p>
+    <div class="row">
+      <button id="fixture-btn" class="secondary" aria-label="Use the fixed evaluation fixture URL">Use evaluation fixture</button>
+      <button id="run" class="primary" aria-label="Run Safety Check">Run Safety Check</button>
+    </div>
+    <p id="refusal" class="refusal" role="alert" aria-live="assertive" hidden></p>
+  </section>
+
+  <section class="card" aria-labelledby="progress-h" id="progress-card" hidden>
+    <h2 id="progress-h">Progress</h2>
+    <ol id="timeline" class="timeline" aria-live="polite"></ol>
+    <p id="stage" class="stage" aria-live="polite"></p>
+  </section>
+
+  <div class="grid">
+    <section class="card" aria-labelledby="commit-h">
+      <h2 id="commit-h">Exact commit locked</h2>
+      <p class="mono" id="commit">UNKNOWN</p>
+    </section>
+    <section class="card" aria-labelledby="fp-h">
+      <h2 id="fp-h">Snapshot fingerprint</h2>
+      <p class="mono small" id="fp-archive">archive: UNKNOWN</p>
+      <p class="mono small" id="fp-manifest">manifest: UNKNOWN</p>
+      <p class="small" id="fp-files">files: UNKNOWN</p>
+    </section>
+    <section class="card" aria-labelledby="boundary-h">
+      <h2 id="boundary-h">Safety boundary</h2>
+      <p class="small" id="b-egress">egress: UNKNOWN</p>
+      <p class="small" id="b-port">port binding: UNKNOWN</p>
+      <p class="small" id="b-socket">docker socket: UNKNOWN</p>
+    </section>
+  </div>
+
+  <section class="card result-card" aria-labelledby="result-h">
+    <h2 id="result-h">Result</h2>
+    <p id="result" class="result" role="status" aria-live="assertive">UNKNOWN</p>
+    <div class="badges">
+      <span class="badge badge-green" id="badge-compile">Compileability observed</span>
+      <span class="badge badge-amber">Build not proven</span>
+      <span class="badge badge-amber">Tests not proven</span>
+      <span class="badge badge-amber">Security not proven</span>
+      <span class="badge badge-amber">Production readiness not proven</span>
+    </div>
+    <p class="freshness small" id="freshness">freshness: UNKNOWN</p>
+  </section>
+
+  <div class="grid">
+    <section class="card" aria-labelledby="lim-h">
+      <h2 id="lim-h">Limitations</h2>
+      <ul class="small">
+        <li>Compileability observed (it parses)</li>
+        <li>Build <strong>not</strong> proven</li>
+        <li>Tests <strong>not</strong> proven</li>
+        <li>Security <strong>not</strong> proven</li>
+        <li>Production readiness <strong>not</strong> proven</li>
+        <li>No customer code · OpenSandbox candidate — not adopted</li>
+      </ul>
+    </section>
+    <section class="card" aria-labelledby="del-h">
+      <h2 id="del-h">Cleanup</h2>
+      <p class="small" id="deletion">Temporary sandbox removed: UNKNOWN</p>
+      <p class="small" id="vm">Disposable machine destroyed: UNKNOWN</p>
+    </section>
+    <section class="card" aria-labelledby="next-h">
+      <h2 id="next-h">Next safe action</h2>
+      <p class="small">Witness the flow, then accept as a witness candidate, reject, or report a problem. This is not product acceptance or a security sign-off.</p>
+    </section>
+  </div>
+
+  <details class="card evidence" id="evidence">
+    <summary aria-label="Open evidence details">Evidence details</summary>
+    <pre id="evidence-json" class="mono small">loading…</pre>
+  </details>
+
+  <section class="card fail-modes" aria-labelledby="fm-h">
+    <h2 id="fm-h">If something is missing</h2>
+    <p class="small">Missing evidence shows <strong>UNKNOWN</strong>. An old run shows <strong>STALE</strong>. A different URL is <strong>HELD</strong>. A private URL is <strong>refused</strong>. None of these mean success.</p>
+  </section>
+</main>
+
+<div id="help-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="help-h" hidden>
+  <div class="modal-body">
+    <h2 id="help-h">Pause &amp; get help</h2>
+    <p>You can stop at any time. Nothing here runs project code or touches customer data. Ask your FounderGate advisor to explain any card. Close this to return.</p>
+    <button id="help-close" class="primary">Close</button>
+  </div>
+</div>
+
+<script src="/ui/urldrop.js"></script>
+</body>
+</html>
