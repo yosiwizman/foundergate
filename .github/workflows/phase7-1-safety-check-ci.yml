@@ -8,6 +8,7 @@ on:
     branches:
       - integration/founder-safety-check-evidence-pack-phase7-1
       - build/founder-safety-check-runtime-phase7-1
+      - qualification/phase7-1-canonical-ui-tbf
   pull_request:
     branches:
       - integration/founder-url-drop-ui-phase7
@@ -33,7 +34,9 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Node selftests (exact SHA)
         run: node src/safety_check/service.selftest.mjs && node src/safety_check/evidence-pack.selftest.mjs && node src/founder_url_drop/urldrop.selftest.mjs
-      - name: Mac launcher anti-repeat test (clean Finder-like PATH; no UI)
+      - name: Canonical service-identity selftest
+        run: node src/safety_check/canonical-identity.selftest.mjs
+      - name: Mac launcher anti-repeat + identity test (clean Finder-like PATH; no UI)
         run: sh tools/macos/launcher.test.sh
       - name: Python intake + patch + negative + adoption-contract tests
         run: |

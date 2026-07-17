@@ -1,0 +1,87 @@
+[
+  {
+    "url": "http://127.0.0.1:4713/",
+    "method": "GET",
+    "status": 200
+  },
+  {
+    "url": "http://127.0.0.1:4713/ui/tokens.css",
+    "method": "GET",
+    "status": 200
+  },
+  {
+    "url": "http://127.0.0.1:4713/ui/safety.css",
+    "method": "GET",
+    "status": 200
+  },
+  {
+    "url": "http://127.0.0.1:4713/ui/safety.js",
+    "method": "GET",
+    "status": 200
+  },
+  {
+    "url": "http://127.0.0.1:4713/ui/tokens.css",
+    "method": "GET",
+    "status": 200
+  },
+  {
+    "url": "http://127.0.0.1:4713/",
+    "method": "GET",
+    "status": 200
+  },
+  {
+    "url": "http://127.0.0.1:4713/ui/safety.css",
+    "method": "GET",
+    "status": 200
+  },
+  {
+    "url": "http://127.0.0.1:4713/ui/safety.js",
+    "method": "GET",
+    "status": 200
+  },
+  {
+    "url": "http://127.0.0.1:4713/api/check",
+    "method": "POST",
+    "status": 200
+  },
+  {
+    "url": "http://127.0.0.1:4713/api/runs/sc-bcdfa110",
+    "method": "GET",
+    "status": 200
+  },
+  {
+    "url": "http://127.0.0.1:4713/api/runs/sc-bcdfa110/pause-request",
+    "method": "POST",
+    "status": 200
+  },
+  {
+    "url": "http://127.0.0.1:4713/api/check",
+    "method": "POST",
+    "status": 200
+  },
+  {
+    "url": "http://127.0.0.1:4713/api/check",
+    "method": "POST",
+    "status": 200
+  },
+  {
+    "url": "http://127.0.0.1:4713/ui/tokens.css",
+    "method": "GET",
+    "status": 200
+  },
+  {
+    "url": "http://127.0.0.1:4713/ui/safety.css",
+    "method": "GET",
+    "status": 200
+  },
+  {
+    "url": "http://127.0.0.1:4713/",
+    "method": "GET",
+    "status": 200
+  },
+  {
+    "url": "http://127.0.0.1:4713/ui/safety.js",
+    "method": "GET",
+    "status": 200
+  }
+]

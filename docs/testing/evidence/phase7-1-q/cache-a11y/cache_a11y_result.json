@@ -1,0 +1,15 @@
+{
+  "service_worker": "NONE",
+  "localStorage_keys": 0,
+  "sessionStorage_keys": 0,
+  "neutral_h1": "Check a public GitHub project",
+  "neutral_card_visible": true,
+  "after_hard_reload_neutral": true,
+  "stale_storage_ignored": true,
+  "zoom200_run_button_visible": true,
+  "zoom200_fixture_button_visible": true,
+  "reduced_motion_renders": true,
+  "keyboard_focus_reachable": true,
+  "run_button_focusable": true,
+  "verdict": "PASS"
+}
