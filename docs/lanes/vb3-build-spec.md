@@ -15,10 +15,12 @@ builds must be provably still-inert (EC-5).
 ## 1. Binding entry criteria — EC-1…EC-5 (verified AT BUILD TIME, each with a mechanical proof)
 Inherited as hard build preconditions from the VB1 hardening amendment; the VB3 build must carry a committed
 mutation-verified proof for each:
-- **EC-1 — rollback TOCTOU / `O_NOFOLLOW`:** the commit/rollback path opens with `O_NOFOLLOW` and is free of
-  time-of-check/time-of-use races; proof: a symlink/rug-pull fixture that the guard refuses.
-- **EC-2 — immutable approval provenance:** an approval is bound to `path@SHA` + a one-time nonce, tamper-evident,
-  non-replayable; proof: a replayed/edited approval is rejected.
+- **EC-1 — rollback TOCTOU / `O_NOFOLLOW`:** the commit/rollback path opens with `O_NOFOLLOW`, is free of
+  time-of-check/time-of-use races, and does **not rely on an advisory lock** for the race-safety (structural, not
+  cooperative); proof: a symlink/rug-pull fixture that the guard refuses.
+- **EC-2 — immutable approval provenance:** an approval is bound to its signed fields `{work, action, nonce,
+  rollbackable}` (path@SHA + one-time nonce), tamper-evident, non-replayable; proof: **edit / delete / reorder /
+  splice of the append-only provenance record is detected**, and a replayed/edited approval is rejected.
 - **EC-3 — mechanical single-writer:** exactly one gated writer (cross-process `O_EXCL`/lockdir); proof: a 2nd
   concurrent writer loses under a real race.
 - **EC-4 — module-private verifier:** the gate verifier is module-private (no external monkeypatch surface);
