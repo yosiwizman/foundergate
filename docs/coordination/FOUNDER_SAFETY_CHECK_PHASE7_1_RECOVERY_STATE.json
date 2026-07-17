@@ -1,7 +1,17 @@
 {
   "schema": "p71-recovery-1",
-  "updated_at_utc": "2026-07-17T20:05:00Z",
-  "overall_state": "BUILD_COMPLETE; CI_GREEN; CHECKER_CLEAN; LANE_F_COMPLETE; ADOPTION_CHECKER_CLEAN",
+  "updated_at_utc": "2026-07-17T21:40:00Z",
+  "overall_state": "BUILD_COMPLETE; CI_GREEN; CHECKER_CLEAN; LANE_F_COMPLETE; ADOPTION_CHECKER_CLEAN; FINDINGS_A_B_CLOSED; LAUNCHER_FIXED",
+  "witness_status": "READY-FOR-FOUNDER-LAUNCH-RETRY",
+  "launcher_fix": {
+    "bug": "FOUNDER-CAUGHT-BUG: MAC-LAUNCHER-CANNOT-LOCATE-EXISTING-NODE-FROM-FINDER",
+    "root_cause": "Finder-minimal-PATH + nvm-only Node (zsh-init) invisible to bash -lc command -v node",
+    "fix": "source-controlled deterministic Node>=20 resolver + launcher core + build-time embed; app regenerated",
+    "anti_repeat_test": "tools/macos/launcher.test.sh 12/12; wired into exact-SHA CI",
+    "finder_launch_proven": "health 200, nvm node resolved w/o terminal PATH, loopback only, initial page renders, 0 Lima VMs, clean stop",
+    "independent_checker": "LAUNCHER-CHECKER-CLEAN (1 non-blocking dev-only string reworded)",
+    "exact_sha_ci": "SUCCESS run 29615300811 on ec06cdd (ubuntu-latest)"
+  },
   "phase71_branch": "integration/founder-safety-check-evidence-pack-phase7-1",
   "phase71_base": "6a269787a05982dc8feda14f5f79f102d5ba9551",
   "remote_main": "e1ca1989d2397297a450893f7890dbe7fc21e494",

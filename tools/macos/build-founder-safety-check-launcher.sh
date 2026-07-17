@@ -14,7 +14,7 @@ TEMPLATE="$HERE/foundergate-safety-check-launcher.applescript"
 # 1. Discover + verify a Node >=20 absolute path using the SAME resolver the app will use.
 NODE_BIN="$("/bin/sh" "$RESOLVE_SH" "${FG_EMBEDDED_NODE:-$(command -v node || true)}" || true)"
 if [ -z "${NODE_BIN:-}" ]; then
-  echo "BUILD-FAIL: no verified Node >=20 found to embed. Install/enable Node 20+ and rebuild." >&2
+  echo "BUILD-FAIL (operator): no verified Node >=20 was discoverable to embed into the app. Ensure a Node 20+ runtime is present in this build environment, then rerun this build script." >&2
   exit 2
 fi
 NODE_VER="$("$NODE_BIN" --version)"

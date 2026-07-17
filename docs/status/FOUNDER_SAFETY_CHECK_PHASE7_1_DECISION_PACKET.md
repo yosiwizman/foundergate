@@ -61,3 +61,6 @@ any of them is adopted, proven, or authorized. No "no future rework" promise is 
 
 ## Recommendation: **READY_FOR_FORMAL_FOUNDER_WITNESS**
 All READY conditions met: checker clean; real UI-created runtime job; result/repository binding; no initial false result; Evidence Pack download (all formats); actual Playwright + trace + axe; exact-SHA CI green; one-click launcher (no founder terminal); teardown/deletion/VM-destruction; M1 not contacted; main unchanged; no self-hosted runner. Authorizes a founder witness of **usability only** — not product acceptance, adoption, production integration, customer execution, private repositories, payment, or legal-term approval.
+
+## Launcher retry status (2026-07-17)
+FOUNDER-CAUGHT-BUG: MAC-LAUNCHER-CANNOT-LOCATE-EXISTING-NODE-FROM-FINDER — corrected in source (deterministic Node>=20 resolver + build-time embed), anti-repeat test 12/12 wired into exact-SHA CI, actual Finder-equivalent launch proven, independent LAUNCHER-CHECKER-CLEAN. The earlier one-click-launcher PASS was incomplete and is disproven/corrected. Witness status: **READY-FOR-FOUNDER-LAUNCH-RETRY** — the formal founder witness remains UNACCEPTED until the founder personally re-double-clicks the corrected app.
