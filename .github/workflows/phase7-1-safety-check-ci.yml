@@ -33,10 +33,11 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Node selftests (exact SHA)
         run: node src/safety_check/service.selftest.mjs && node src/safety_check/evidence-pack.selftest.mjs && node src/founder_url_drop/urldrop.selftest.mjs
-      - name: Python intake + patch + negative tests
+      - name: Python intake + patch + negative + adoption-contract tests
         run: |
           cd prototypes/customer_repository_intake && python3 -m unittest test_contract test_negative_fixtures
           cd ../sandbox_provider_adapter && python3 -m unittest test_patch_compatibility
+          cd ../project_adoption && python3 -m unittest test_adoption_contract
       - name: Playwright + axe UI tests (deterministic CI mode; no VM)
         run: npx playwright test
       - name: Upload Playwright report + traces + axe results
