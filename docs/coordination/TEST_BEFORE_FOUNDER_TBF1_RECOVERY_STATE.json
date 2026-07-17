@@ -1,7 +1,7 @@
 {
   "schema": "tbf1-recovery-1",
   "updated_at_utc": "2026-07-17T22:30:27Z",
-  "overall_state": "EXECUTABLE_CORE_BUILT_AND_TESTED; DOCS_WRITTEN; PENDING CI + CHECKER + ADVISOR + INTEGRATION",
+  "overall_state": "ACTIVE-AND-ENFORCED; CHECKER_CLEAN; ADVISOR_READY_FOR_INTEGRATION; PR160 draft",
   "branch": "policy/test-before-founder-tbf1",
   "base_sha": "facfd82ff814f21df010144d3a6bf8f3329da04c",
   "remote_main": "e1ca1989d2397297a450893f7890dbe7fc21e494",
@@ -11,5 +11,9 @@
   "selftests": "30/30",
   "mutations": "11/11",
   "boundaries": "PRs 151-159 draft/unmerged; no main merge; no OpenSandbox adoption; no AKIOR; no M1",
-  "next_safe_action": "register evaluation-class; apply to Phase 7.1; push; CI; independent checker; final Advisor; stacked draft PR"
+  "next_safe_action": "await founder; TBF-1 active. No main merge; PRs 151-160 draft.",
+  "checker_verdict": "TBF-CHECKER-CLEAN",
+  "advisor_verdict": "TBF-ADVISOR: READY-FOR-INTEGRATION",
+  "pr": 160,
+  "exact_sha_ci": "success on 2060db5 (ubuntu-latest)"
 }
