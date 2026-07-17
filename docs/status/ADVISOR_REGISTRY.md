@@ -1,4 +1,4 @@
-# Advisor Registry — registered work, none active (as of 2026-07-17, main de90295)
+# Advisor Registry — registered work, none active (as of 2026-07-17, main df0a366)
 
 **STATUS: registry · registered work, NONE ACTIVE · founder release required for any item**
 
@@ -7,7 +7,7 @@
 > in this file is activated by being written down.** Every item is REGISTERED · NONE ACTIVE · founder release required.
 > Merged ≠ accepted; DRAFT ≠ authority; registered ≠ released.
 >
-> **As of:** 2026-07-17 · **Base:** main `de90295d99b5038e0f68dc2ecdffb03706c6b836` · **Repo:** private ·
+> **As of:** 2026-07-17 · **Base:** main `df0a366` · **Repo:** private ·
 > **Author lane:** Lane B (docs-only). **This registry makes no readiness, approval, activation, or release claim.**
 
 All items HELD until explicit founder release. Merged ≠ accepted; DRAFT ≠ authority; registered ≠ released.
@@ -21,13 +21,13 @@ All items HELD until explicit founder release. Merged ≠ accepted; DRAFT ≠ au
 ## Doctrine backlog (docs+hygiene wave, post-current-gates; sources pinned at exact versions in each DRAFT authority)
 - D1 Checker Shortcut Catalog — 12 named fake-done shortcuts into all checker standing instructions; the edit itself is evaluation-class (independent check + seeded-shortcut detection proof + founder signature). Shortcut #12 (live incident 2026-07-16): transport success treated as operational success (HTTP 200 masking backend ok:false); required semantics: operation success only on explicit backend body proof (ok + enacted + lifecycle fields), never transport-level res.ok alone.
 - D2 Mechanical Floor — deny-lists (force-push, recursive delete) + deterministic hooks (secret-scan on write) on Pro AND M1; explicit sheriff carve-outs; hooks are evaluation-class with fire-proof mutation tests. NOTE: partially emergent already — the Pro's firewall hooks blocked reset --hard / rm -rf / git clean on 2026-07-15 during sheriff work, exactly as designed.
-- D3 Component Classification Doctrine (KEYSTONE — lands first or alongside; D1/D2/D5 enforcement are instances of it) — guidance-class vs evaluation-class; oracle-anchored change control for evaluation-class; enumerates current inventory by path on disk; the doctrine itself is evaluation-class (founder signature to amend). Gains the side-effect-certification principle from H2: "read-only by instruction" is a claim, not a property.
+- D3 Component Classification Doctrine (KEYSTONE — lands first or alongside; D1/D2/D5 enforcement are instances of it) — guidance-class vs evaluation-class; oracle-anchored change control for evaluation-class; enumerates current inventory by path on disk; the doctrine itself is evaluation-class (founder signature to amend). Gains the side-effect-certification principle from H2: "read-only by instruction" is a claim, not a property. **STATUS: RELEASED by founder 2026-07-17; DRAFT authored (docs/contracts/component-classification.md), independent adversarial check r1 NOT-CLEAN (§4 completeness) → r2 CLEAN, merged; founder SIGNATURE QUEUED (not signed).**
 - D4 Mismatch Log — Law-68 CONFLICT → recorded event, append-only under docs/assembly-evidence/ (MISMATCH-EVENTS.md exists; this doctrine makes the class systematic); evaluator repair = first-class prioritized work.
 - D5 Context Hygiene Law — ~300-line ceiling on standing operational context files ONLY (never constitution/ledgers/evidence); scheduled prune; enforced by a mechanical line-count check (RC-gate family) so it can block.
 - Rejected (founder-endorsed): agent/skill/tool maximalism; self-evolution of evaluation components without an external oracle anchor.
 
 ## Founder backlog (priority order)
-- P1 Backup/DR lane — git-bundle both repos + off-repo evidence (incl. single-copy raw AKIOR soak report at /Users/yosiwizman/Projects/akior-soak-runs/) to two locations; encrypted + data-classified off-site; periodically TESTED restore is the acceptance criterion; untested backup = nonexistent. Stopgap copy of the AKIOR report remains available founder-lane.
+- P1 Backup/DR lane — git-bundle both repos + off-repo evidence (incl. single-copy raw AKIOR soak report at /Users/yosiwizman/Projects/akior-soak-runs/) to two locations; encrypted + data-classified off-site; periodically TESTED restore is the acceptance criterion; untested backup = nonexistent. Stopgap copy of the AKIOR report remains available founder-lane. **STATUS: RELEASED + DONE 2026-07-17 — encrypted (AES-256) bundles of both repos + raw soak reports; TESTED restore PASSED (both bundles restore to origin HEADs, hashes match); key stored outside the repo, never committed. No writable second volume was available; off-site copy 2 + key-custody QUEUED as founder actions (docs/assembly-evidence/backup-dr/BACKUP_DR_RECORD.md).**
 - P2 Governance-on-disk — docs/advisor/ for handoffs + tracker versions; committed handoffs carry data class; founder-lane negotiation numbers redacted BEFORE first commit (history is forever). THIS REGISTRY is the first installment.
 - P3 Dependency/CVE lane — periodic audit→propose→check→evidence wave; never moves main during a live soak binding; never runs on a soak host.
 - P4 Secrets lifecycle — folds into the W3 Key Custody follow-up; blocked behind the KCA precondition (see below).
@@ -35,8 +35,9 @@ All items HELD until explicit founder release. Merged ≠ accepted; DRAFT ≠ au
 
 ## Standing decisions on record
 - KCA precondition: UNSATISFIABLE in current single-operational-principal reality (checker finding, docs/assembly-evidence/kca/LANE_A_KCA_CHECK.md). Founder decision: DEFERRED — two-principal setup available (second GitHub identity + separate M1 user + role row) whenever founders choose; until then dispatcher build remains blocked by HR-4. No exception signed.
-- W1-H1 (labeled soak sub-result): tracked hardening item, future evaluation-class lane, not authorized.
+- W1-H1 (labeled soak sub-result): **RELEASED by founder 2026-07-17 + DONE** — the accumulator (`src/tools/reliability-soak.mjs`) now emits a labeled "SUB-RESULT (availability + duration only — NOT the gate verdict)" line that carries no gate-pass token; the gate-pass token is emitted only by the AND-gate (`computeVerdict`). One builder + one independent adversarial checker CLEAN with mutation proof (gate-fails-but-availability-passes → sub-result cannot be parsed as gate verdict); merged.
 - W2 build-time items (ID entropy · pin hash · status mapping): must-fix-before-VB2-build.
+- VB1: **ACCEPTED by founder 2026-07-17 (founder gate G4-B-VB1)** at audited tree `src/v8b1` @ `cba621e28cbebf808286dbb37fed17eddb914cb7`, accepted at main `9b1ad230…`, on the basis of two independent audits + re-audit + advisor pre-signature audit + completed §29 endurance evidence. Acceptance activates no live controls — the act edge stays machine-gated (VB3_VERIFIER=null) until VB3.
 - SD-1: CLOSED by PR #127.
 - VB1 pre-signature-audit: historical absence (W4) remains permanently recorded as a mismatch — never backfilled. Current artifact honestly created 2026-07-17 (advisor-pre-signature-audit.md) for the current acceptance, pre-signature as §12 requires.
 
