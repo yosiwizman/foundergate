@@ -1,0 +1,1009 @@
+{
+  "config": {
+    "argv": [
+      "/Users/yosiwizman/.nvm/versions/node/v24.13.1/bin/node",
+      "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/node_modules/.bin/playwright",
+      "test"
+    ],
+    "configFile": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/playwright.config.mjs",
+    "rootDir": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "desktop",
+        "name": "desktop",
+        "testDir": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "mobile",
+        "name": "mobile",
+        "testDir": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "docs/testing/evidence/playwright-report",
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/testing/evidence/playwright-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.1",
+    "workers": 6,
+    "webServer": {
+      "command": "FG_UI_CI=1 FG_SAFETY_PORT=4711 FG_SAFETY_RUNS_DIR=/tmp/pw-safety-runs node src/safety_check/service.mjs",
+      "url": "http://127.0.0.1:4711/api/health",
+      "reuseExistingServer": false,
+      "timeout": 20000
+    }
+  },
+  "suites": [
+    {
+      "title": "safety.spec.mjs",
+      "file": "safety.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "initial neutral state has no completed result",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 174,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:39.670Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-initial-neutral-state-has-no-completed-result-desktop/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-initial-neutral-state-has-no-completed-result-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-37c83f7166f722b800ed",
+          "file": "safety.spec.mjs",
+          "line": 6,
+          "column": 1
+        },
+        {
+          "title": "fixture button binds the fixture URL",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 202,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:39.954Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-fixture-button-binds-the-fixture-URL-desktop/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-fixture-button-binds-the-fixture-URL-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-c8948d6278808b5c5e80",
+          "file": "safety.spec.mjs",
+          "line": 12,
+          "column": 1
+        },
+        {
+          "title": "Run creates a new run id, shows stages, result bound to run and repository",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4308,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:40.173Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-Run-creates-a-new-r-f39ac-bound-to-run-and-repository-desktop/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-Run-creates-a-new-r-f39ac-bound-to-run-and-repository-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-1c53971ea4b12fa022cf",
+          "file": "safety.spec.mjs",
+          "line": 17,
+          "column": 1
+        },
+        {
+          "title": "build/tests/security/production remain not proven",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 128,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:44.498Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-build-tests-security-production-remain-not-proven-desktop/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-build-tests-security-production-remain-not-proven-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-bdc665d0879c90c31caf",
+          "file": "safety.spec.mjs",
+          "line": 31,
+          "column": 1
+        },
+        {
+          "title": "evidence pack becomes available and download link is set",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3683,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:44.641Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-evidence-pack-becom-1b839-le-and-download-link-is-set-desktop/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-evidence-pack-becom-1b839-le-and-download-link-is-set-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-346c67d01a1d92bdc469",
+          "file": "safety.spec.mjs",
+          "line": 37,
+          "column": 1
+        },
+        {
+          "title": "another public URL is HELD",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 268,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:48.343Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-another-public-URL-is-HELD-desktop/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-another-public-URL-is-HELD-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-fc40a16d9f17693b62cf",
+          "file": "safety.spec.mjs",
+          "line": 44,
+          "column": 1
+        },
+        {
+          "title": "SSH URL is refused",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 244,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:48.629Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-SSH-URL-is-refused-desktop/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-SSH-URL-is-refused-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-e12d275ecc9c10ddf5ee",
+          "file": "safety.spec.mjs",
+          "line": 50,
+          "column": 1
+        },
+        {
+          "title": "Pause & get help is visible and states honest power",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 298,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:48.890Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-Pause-get-help-is-visible-and-states-honest-power-desktop/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-Pause-get-help-is-visible-and-states-honest-power-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-c51ee4ae6e76e34c7aa2",
+          "file": "safety.spec.mjs",
+          "line": 56,
+          "column": 1
+        },
+        {
+          "title": "no raw terminal command is founder-facing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 134,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:49.205Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-no-raw-terminal-command-is-founder-facing-desktop/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-no-raw-terminal-command-is-founder-facing-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-a6c7d81a9d7949a5b1e2",
+          "file": "safety.spec.mjs",
+          "line": 62,
+          "column": 1
+        },
+        {
+          "title": "axe: no critical or serious accessibility violations",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 441,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:49.352Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-axe-no-critical-or-serious-accessibility-violations-desktop/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-axe-no-critical-or-serious-accessibility-violations-desktop/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-2721bdcc83f0ddbcc417",
+          "file": "safety.spec.mjs",
+          "line": 67,
+          "column": 1
+        },
+        {
+          "title": "initial neutral state has no completed result",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 201,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:39.674Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-initial-neutral-state-has-no-completed-result-mobile/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-initial-neutral-state-has-no-completed-result-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-252905d7ea8a5562483f",
+          "file": "safety.spec.mjs",
+          "line": 6,
+          "column": 1
+        },
+        {
+          "title": "fixture button binds the fixture URL",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 219,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:39.982Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-fixture-button-binds-the-fixture-URL-mobile/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-fixture-button-binds-the-fixture-URL-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-b9d31ba1f745630c52b9",
+          "file": "safety.spec.mjs",
+          "line": 12,
+          "column": 1
+        },
+        {
+          "title": "Run creates a new run id, shows stages, result bound to run and repository",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 4060,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:40.223Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-Run-creates-a-new-r-f39ac-bound-to-run-and-repository-mobile/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-Run-creates-a-new-r-f39ac-bound-to-run-and-repository-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-f72b85e546c84c45f357",
+          "file": "safety.spec.mjs",
+          "line": 17,
+          "column": 1
+        },
+        {
+          "title": "build/tests/security/production remain not proven",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 151,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:44.306Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-build-tests-security-production-remain-not-proven-mobile/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-build-tests-security-production-remain-not-proven-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-0ea0a3041f5ef4d19a19",
+          "file": "safety.spec.mjs",
+          "line": 31,
+          "column": 1
+        },
+        {
+          "title": "evidence pack becomes available and download link is set",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 2020,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:44.494Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-evidence-pack-becom-1b839-le-and-download-link-is-set-mobile/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-evidence-pack-becom-1b839-le-and-download-link-is-set-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-4b5fada90788e667ae7b",
+          "file": "safety.spec.mjs",
+          "line": 37,
+          "column": 1
+        },
+        {
+          "title": "another public URL is HELD",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 1881,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:46.545Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-another-public-URL-is-HELD-mobile/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-another-public-URL-is-HELD-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-c77315f13eccb762ec1b",
+          "file": "safety.spec.mjs",
+          "line": 44,
+          "column": 1
+        },
+        {
+          "title": "SSH URL is refused",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 358,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:48.452Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-SSH-URL-is-refused-mobile/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-SSH-URL-is-refused-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-515968d9973213103c84",
+          "file": "safety.spec.mjs",
+          "line": 50,
+          "column": 1
+        },
+        {
+          "title": "Pause & get help is visible and states honest power",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 324,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:48.841Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-Pause-get-help-is-visible-and-states-honest-power-mobile/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-Pause-get-help-is-visible-and-states-honest-power-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-4a7ddc43948b0bd29403",
+          "file": "safety.spec.mjs",
+          "line": 56,
+          "column": 1
+        },
+        {
+          "title": "no raw terminal command is founder-facing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 171,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:49.181Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-no-raw-terminal-command-is-founder-facing-mobile/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-no-raw-terminal-command-is-founder-facing-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-6d2d4a58f6775416ed48",
+          "file": "safety.spec.mjs",
+          "line": 62,
+          "column": 1
+        },
+        {
+          "title": "axe: no critical or serious accessibility violations",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 507,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-07-17T19:27:49.368Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-axe-no-critical-or-serious-accessibility-violations-mobile/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1/test-results/safety-axe-no-critical-or-serious-accessibility-violations-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0049c1f8562512252e62-e065db29d631a8d42379",
+          "file": "safety.spec.mjs",
+          "line": 67,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-17T19:27:39.247Z",
+    "duration": 10793.368999999999,
+    "expected": 20,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

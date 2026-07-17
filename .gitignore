@@ -65,3 +65,8 @@ coverage/
 # committed a secret). Keep these OUT of the index.
 *.copy
 cycle-*
+var/foundergate/
+/Users/yosiwizman/Desktop/FounderGate Safety Check.app
+*.app
+docs/testing/evidence/playwright-report/
+test-results/

@@ -1,0 +1,16 @@
+{
+  "run_id": "sc-0bc1b04f",
+  "files": [
+    "EVIDENCE_PACK/evidence-pack.html",
+    "EVIDENCE_PACK/evidence-pack.json",
+    "EVIDENCE_PACK/evidence-pack.md",
+    "EVIDENCE_PACK/evidence-pack.sha256",
+    "RUN_ACQUISITION.json",
+    "RUN_ARTIFACT_HASHES.sha256",
+    "RUN_LEDGER.jsonl",
+    "RUN_LIMITATIONS.json",
+    "RUN_REQUEST.json",
+    "RUN_RESULT.json",
+    "RUN_VERIFIER.json"
+  ]
+}

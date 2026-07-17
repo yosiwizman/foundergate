@@ -1,0 +1,20 @@
+{"ts":"2026-07-17T19:21:04.296Z","run_id":"sc-0bc1b04f","stage":0,"name":"queued","status":"DONE"}
+{"ts":"2026-07-17T19:21:04Z","run_id":"sc-0bc1b04f","stage":1,"name":"validating URL","status":"DONE"}
+{"ts":"2026-07-17T19:21:04Z","run_id":"sc-0bc1b04f","stage":2,"name":"resolving exact commit","status":"RUNNING"}
+{"ts":"2026-07-17T19:21:04Z","run_id":"sc-0bc1b04f","stage":2,"name":"resolving exact commit","status":"DONE"}
+{"ts":"2026-07-17T19:21:04Z","run_id":"sc-0bc1b04f","stage":3,"name":"acquiring immutable snapshot","status":"DONE"}
+{"ts":"2026-07-17T19:21:04Z","run_id":"sc-0bc1b04f","stage":4,"name":"validating archive","status":"DONE"}
+{"ts":"2026-07-17T19:21:04Z","run_id":"sc-0bc1b04f","stage":5,"name":"fingerprinting snapshot","status":"DONE"}
+{"ts":"2026-07-17T19:21:04Z","run_id":"sc-0bc1b04f","stage":6,"name":"creating disposable sandbox","status":"RUNNING"}
+{"ts":"2026-07-17T19:22:08Z","run_id":"sc-0bc1b04f","stage":6,"name":"creating disposable sandbox","status":"DONE"}
+{"ts":"2026-07-17T19:22:08Z","run_id":"sc-0bc1b04f","stage":7,"name":"running harness-owned compileability check","status":"RUNNING"}
+{"ts":"2026-07-17T19:22:21Z","run_id":"sc-0bc1b04f","stage":7,"name":"running harness-owned compileability check","status":"DONE"}
+{"ts":"2026-07-17T19:22:21Z","run_id":"sc-0bc1b04f","stage":8,"name":"exporting evidence","status":"RUNNING"}
+{"ts":"2026-07-17T19:22:21Z","run_id":"sc-0bc1b04f","stage":8,"name":"exporting evidence","status":"DONE"}
+{"ts":"2026-07-17T19:22:21Z","run_id":"sc-0bc1b04f","stage":9,"name":"removing temporary snapshot","status":"RUNNING"}
+{"ts":"2026-07-17T19:22:21Z","run_id":"sc-0bc1b04f","stage":9,"name":"removing temporary snapshot","status":"DONE"}
+{"ts":"2026-07-17T19:22:21Z","run_id":"sc-0bc1b04f","stage":10,"name":"destroying disposable runtime","status":"RUNNING"}
+{"ts":"2026-07-17T19:22:24Z","run_id":"sc-0bc1b04f","stage":10,"name":"destroying disposable runtime","status":"DONE"}
+{"ts":"2026-07-17T19:22:24Z","run_id":"sc-0bc1b04f","stage":11,"name":"generating Evidence Pack","status":"RUNNING"}
+{"ts":"2026-07-17T19:22:26Z","run_id":"sc-0bc1b04f","stage":11,"name":"generating Evidence Pack","status":"DONE"}
+{"ts":"2026-07-17T19:22:26Z","run_id":"sc-0bc1b04f","stage":12,"name":"complete","status":"DONE"}

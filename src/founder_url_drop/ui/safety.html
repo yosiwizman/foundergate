@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FounderGate — Safety Check</title>
+<link rel="stylesheet" href="/ui/tokens.css" />
+<link rel="stylesheet" href="/ui/safety.css" />
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <div class="brand">FounderGate</div>
+  <div class="witness-flag" role="note">Witness candidate — not an accepted product surface</div>
+  <button id="pause" class="pause" aria-label="Pause and get help">⏸ Pause &amp; get help</button>
+</header>
+
+<main id="main" tabindex="-1">
+  <h1>Check a public GitHub project</h1>
+  <p class="lead">Paste a <strong>public</strong> GitHub project link and run a real safety check inside a throwaway sandbox. Nothing from the project is installed, built, tested, or run — only a safe compileability look.</p>
+  <div class="warn" role="note">
+    <span class="pill pill-info">Public repositories only</span>
+    <span class="pill pill-muted">Private repositories are not supported</span>
+    <span class="pill pill-muted">Evaluation fixture</span>
+  </div>
+
+  <section class="card input-card" aria-labelledby="url-label">
+    <label id="url-label" for="url">Public GitHub URL</label>
+    <input id="url" type="text" inputmode="url" autocomplete="off" spellcheck="false" aria-describedby="url-help" placeholder="https://github.com/owner/project" />
+    <p id="url-help" class="help">The live check runs only for the fixed evaluation fixture; other public URLs are held.</p>
+    <div class="row">
+      <button id="fixture-btn" class="secondary" aria-label="Use the fixed evaluation fixture URL">Use evaluation fixture</button>
+      <button id="run" class="primary" aria-label="Run Safety Check">Run Safety Check</button>
+    </div>
+    <p id="refusal" class="refusal" role="alert" aria-live="assertive" hidden></p>
+  </section>
+
+  <section class="card" id="neutral-card" aria-labelledby="neutral-h">
+    <h2 id="neutral-h">No check has run yet</h2>
+    <p class="neutral">Results will appear here only after you start a check and it finishes producing evidence. Nothing is shown before a run.</p>
+  </section>
+
+  <section class="card" id="run-card" aria-labelledby="run-h" hidden>
+    <h2 id="run-h">Safety Check run</h2>
+    <p class="small">Repository: <strong id="run-repo">—</strong> &nbsp;·&nbsp; Run ID: <span id="run-id" class="runid">—</span></p>
+    <ol id="timeline" class="timeline" aria-live="polite"></ol>
+    <p id="stage" class="stage" aria-live="polite"></p>
+    <p id="run-status" class="pending" role="status" aria-live="assertive">In progress…</p>
+  </section>
+
+  <div class="grid" id="result-grid" hidden>
+    <section class="card" aria-labelledby="commit-h">
+      <h2 id="commit-h">Exact version locked</h2>
+      <p class="small">Repository: <strong id="r-repo">—</strong></p>
+      <p class="mono" id="commit">—</p>
+      <p class="small" id="run-when">—</p>
+    </section>
+    <section class="card" aria-labelledby="safe-h">
+      <h2 id="safe-h">Safety boundary (plain English)</h2>
+      <p class="small" id="s-egress">—</p>
+      <p class="small" id="s-port">—</p>
+      <p class="small" id="s-socket">—</p>
+    </section>
+    <section class="card result-card" aria-labelledby="result-h">
+      <h2 id="result-h">Result</h2>
+      <p id="result" class="result" role="status">—</p>
+      <div class="badges">
+        <span class="badge badge-green" id="badge-compile">Compileability observed</span>
+        <span class="badge badge-amber">Build not proven</span>
+        <span class="badge badge-amber">Tests not proven</span>
+        <span class="badge badge-amber">Security not proven</span>
+        <span class="badge badge-amber">Production readiness not proven</span>
+      </div>
+    </section>
+  </div>
+
+  <div class="grid" id="finish-grid" hidden>
+    <section class="card" aria-labelledby="clean-h">
+      <h2 id="clean-h">Cleanup</h2>
+      <p class="small" id="c-teardown">—</p>
+      <p class="small" id="c-vm">—</p>
+    </section>
+    <section class="card" aria-labelledby="pack-h">
+      <h2 id="pack-h">Evidence Pack</h2>
+      <p class="small" id="pack-status">Available after the run and cleanup complete.</p>
+      <a id="pack-dl" class="secondary dl" role="button" aria-label="Download Evidence Pack" hidden>Download Evidence Pack</a>
+    </section>
+    <section class="card" aria-labelledby="lim-h">
+      <h2 id="lim-h">Limitations</h2>
+      <ul class="small"><li>Compileability observed (it parses)</li><li>Build <strong>not</strong> proven</li><li>Tests <strong>not</strong> proven</li><li>Security <strong>not</strong> proven</li><li>Production readiness <strong>not</strong> proven</li><li>No customer code · OpenSandbox candidate — not adopted</li></ul>
+    </section>
+  </div>
+
+  <details class="card evidence" id="evidence"><summary aria-label="Open evidence details">Evidence details (raw)</summary><pre id="evidence-json" class="mono small">Run a check to populate evidence.</pre></details>
+  <section class="card" aria-labelledby="fm-h"><h2 id="fm-h">If something is missing</h2><p class="small">Missing evidence shows <strong>UNKNOWN</strong>. An old run shows <strong>STALE</strong>. A different URL is <strong>HELD</strong>. A private URL is <strong>refused</strong>. Teardown-pending will not claim "removed." None of these mean success.</p></section>
+</main>
+
+<div id="help-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="help-h" hidden>
+  <div class="modal-body"><h2 id="help-h">Pause &amp; get help</h2>
+  <p id="pause-msg">You can stop anytime. Nothing here runs project code or touches customer data. If a check is running, pausing requests a stop at the next safe cleanup point — immediate cancellation is not yet proven.</p>
+  <button id="help-close" class="primary">Close</button></div>
+</div>
+<script src="/ui/safety.js"></script>
+</body>
+</html>
