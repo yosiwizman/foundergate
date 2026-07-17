@@ -1,0 +1,108 @@
+[soak] claim 24h, interval 900s, state /Users/macm1/Projects/foundergate/docs/assembly-evidence/VB1/soak/run24-2026-07-15/soak-24h.json, sha 0cd51f8d34af1c0c3837210845c47deb7c53e9ce
+[soak] this is a REAL wall-clock run — it will not "complete" faster than 24h (§29).
+[soak] 2026-07-16T02:23:38.584Z span 0.000h/24h · avail 100.00% · samples 1
+[soak] 2026-07-16T02:38:46.721Z span 0.252h/24h · avail 100.00% · samples 2
+[soak] 2026-07-16T02:53:46.733Z span 0.502h/24h · avail 100.00% · samples 3
+[soak] 2026-07-16T03:08:46.694Z span 0.752h/24h · avail 100.00% · samples 4
+[soak] 2026-07-16T03:23:46.764Z span 1.002h/24h · avail 100.00% · samples 5
+[soak] 2026-07-16T03:38:46.754Z span 1.252h/24h · avail 100.00% · samples 6
+[soak] 2026-07-16T03:53:46.651Z span 1.502h/24h · avail 100.00% · samples 7
+[soak] 2026-07-16T04:08:46.626Z span 1.752h/24h · avail 100.00% · samples 8
+[soak] 2026-07-16T04:23:46.645Z span 2.002h/24h · avail 100.00% · samples 9
+[soak] 2026-07-16T04:38:46.689Z span 2.252h/24h · avail 100.00% · samples 10
+[soak] 2026-07-16T04:53:46.683Z span 2.502h/24h · avail 100.00% · samples 11
+[soak] 2026-07-16T05:08:46.604Z span 2.752h/24h · avail 100.00% · samples 12
+[soak] 2026-07-16T05:23:46.692Z span 3.002h/24h · avail 100.00% · samples 13
+[soak] 2026-07-16T05:38:46.586Z span 3.252h/24h · avail 100.00% · samples 14
+[soak] 2026-07-16T05:53:46.650Z span 3.502h/24h · avail 100.00% · samples 15
+[soak] 2026-07-16T06:08:46.640Z span 3.752h/24h · avail 100.00% · samples 16
+[soak] 2026-07-16T06:23:46.628Z span 4.002h/24h · avail 100.00% · samples 17
+[soak] 2026-07-16T06:38:46.595Z span 4.252h/24h · avail 100.00% · samples 18
+[soak] 2026-07-16T06:53:46.675Z span 4.502h/24h · avail 100.00% · samples 19
+[soak] 2026-07-16T07:08:46.604Z span 4.752h/24h · avail 100.00% · samples 20
+[soak] 2026-07-16T07:23:46.623Z span 5.002h/24h · avail 100.00% · samples 21
+[soak] 2026-07-16T07:38:46.548Z span 5.252h/24h · avail 100.00% · samples 22
+[soak] 2026-07-16T07:53:46.521Z span 5.502h/24h · avail 100.00% · samples 23
+[soak] 2026-07-16T08:08:46.509Z span 5.752h/24h · avail 100.00% · samples 24
+[soak] 2026-07-16T08:23:46.527Z span 6.002h/24h · avail 100.00% · samples 25
+[soak] 2026-07-16T08:38:46.519Z span 6.252h/24h · avail 100.00% · samples 26
+[soak] 2026-07-16T08:53:46.578Z span 6.502h/24h · avail 100.00% · samples 27
+[soak] 2026-07-16T09:08:46.437Z span 6.752h/24h · avail 100.00% · samples 28
+[soak] 2026-07-16T09:23:46.469Z span 7.002h/24h · avail 100.00% · samples 29
+[soak] 2026-07-16T09:38:46.566Z span 7.252h/24h · avail 100.00% · samples 30
+[soak] 2026-07-16T09:53:46.618Z span 7.502h/24h · avail 100.00% · samples 31
+[soak] 2026-07-16T10:08:46.633Z span 7.752h/24h · avail 100.00% · samples 32
+[soak] 2026-07-16T10:23:46.586Z span 8.002h/24h · avail 100.00% · samples 33
+[soak] 2026-07-16T10:38:46.547Z span 8.252h/24h · avail 100.00% · samples 34
+[soak] 2026-07-16T10:53:46.530Z span 8.502h/24h · avail 100.00% · samples 35
+[soak] 2026-07-16T11:08:46.535Z span 8.752h/24h · avail 100.00% · samples 36
+[soak] 2026-07-16T11:23:46.606Z span 9.002h/24h · avail 100.00% · samples 37
+[soak] 2026-07-16T11:38:46.521Z span 9.252h/24h · avail 100.00% · samples 38
+[soak] 2026-07-16T11:53:46.481Z span 9.502h/24h · avail 100.00% · samples 39
+[soak] 2026-07-16T12:08:46.430Z span 9.752h/24h · avail 100.00% · samples 40
+[soak] 2026-07-16T12:23:46.407Z span 10.002h/24h · avail 100.00% · samples 41
+[soak] 2026-07-16T12:38:46.385Z span 10.252h/24h · avail 100.00% · samples 42
+[soak] 2026-07-16T12:53:46.406Z span 10.502h/24h · avail 100.00% · samples 43
+[soak] 2026-07-16T13:08:46.401Z span 10.752h/24h · avail 100.00% · samples 44
+[soak] 2026-07-16T13:23:46.370Z span 11.002h/24h · avail 100.00% · samples 45
+[soak] 2026-07-16T13:38:46.355Z span 11.252h/24h · avail 100.00% · samples 46
+[soak] 2026-07-16T13:53:46.349Z span 11.502h/24h · avail 100.00% · samples 47
+[soak] 2026-07-16T14:08:46.458Z span 11.752h/24h · avail 100.00% · samples 48
+[soak] 2026-07-16T14:23:46.431Z span 12.002h/24h · avail 100.00% · samples 49
+[soak] 2026-07-16T14:38:46.352Z span 12.252h/24h · avail 100.00% · samples 50
+[soak] 2026-07-16T14:53:46.430Z span 12.502h/24h · avail 100.00% · samples 51
+[soak] 2026-07-16T15:08:46.440Z span 12.752h/24h · avail 100.00% · samples 52
+[soak] 2026-07-16T15:23:46.444Z span 13.002h/24h · avail 100.00% · samples 53
+[soak] 2026-07-16T15:38:46.439Z span 13.252h/24h · avail 100.00% · samples 54
+[soak] 2026-07-16T15:53:46.463Z span 13.502h/24h · avail 100.00% · samples 55
+[soak] 2026-07-16T16:08:46.487Z span 13.752h/24h · avail 100.00% · samples 56
+[soak] 2026-07-16T16:23:46.492Z span 14.002h/24h · avail 100.00% · samples 57
+[soak] 2026-07-16T16:38:46.483Z span 14.252h/24h · avail 100.00% · samples 58
+[soak] 2026-07-16T16:53:46.483Z span 14.502h/24h · avail 100.00% · samples 59
+[soak] 2026-07-16T17:08:46.386Z span 14.752h/24h · avail 100.00% · samples 60
+[soak] 2026-07-16T17:23:46.316Z span 15.002h/24h · avail 100.00% · samples 61
+[soak] 2026-07-16T17:38:46.262Z span 15.252h/24h · avail 100.00% · samples 62
+[soak] 2026-07-16T17:53:46.300Z span 15.502h/24h · avail 100.00% · samples 63
+[soak] 2026-07-16T18:08:46.315Z span 15.752h/24h · avail 100.00% · samples 64
+[soak] 2026-07-16T18:23:46.307Z span 16.002h/24h · avail 100.00% · samples 65
+[soak] 2026-07-16T18:38:46.312Z span 16.252h/24h · avail 100.00% · samples 66
+[soak] 2026-07-16T18:53:46.219Z span 16.502h/24h · avail 100.00% · samples 67
+[soak] 2026-07-16T19:08:46.176Z span 16.752h/24h · avail 100.00% · samples 68
+[soak] 2026-07-16T19:23:46.395Z span 17.002h/24h · avail 100.00% · samples 69
+[soak] 2026-07-16T19:38:46.331Z span 17.252h/24h · avail 100.00% · samples 70
+[soak] 2026-07-16T19:53:46.346Z span 17.502h/24h · avail 100.00% · samples 71
+[soak] 2026-07-16T20:08:46.358Z span 17.752h/24h · avail 100.00% · samples 72
+[soak] 2026-07-16T20:23:46.327Z span 18.002h/24h · avail 100.00% · samples 73
+[soak] 2026-07-16T20:38:46.290Z span 18.252h/24h · avail 100.00% · samples 74
+[soak] 2026-07-16T20:53:46.369Z span 18.502h/24h · avail 100.00% · samples 75
+[soak] 2026-07-16T21:08:46.349Z span 18.752h/24h · avail 100.00% · samples 76
+[soak] 2026-07-16T21:23:46.424Z span 19.002h/24h · avail 100.00% · samples 77
+[soak] 2026-07-16T21:38:46.352Z span 19.252h/24h · avail 100.00% · samples 78
+[soak] 2026-07-16T21:53:46.403Z span 19.502h/24h · avail 100.00% · samples 79
+[soak] 2026-07-16T22:08:46.382Z span 19.752h/24h · avail 100.00% · samples 80
+[soak] 2026-07-16T22:23:46.430Z span 20.002h/24h · avail 100.00% · samples 81
+[soak] 2026-07-16T22:38:46.382Z span 20.252h/24h · avail 100.00% · samples 82
+[soak] 2026-07-16T22:53:46.511Z span 20.502h/24h · avail 100.00% · samples 83
+[soak] 2026-07-16T23:08:46.377Z span 20.752h/24h · avail 100.00% · samples 84
+[soak] 2026-07-16T23:23:46.217Z span 21.002h/24h · avail 100.00% · samples 85
+[soak] 2026-07-16T23:38:46.141Z span 21.252h/24h · avail 100.00% · samples 86
+[soak] 2026-07-16T23:53:46.217Z span 21.502h/24h · avail 100.00% · samples 87
+[soak] 2026-07-17T00:08:46.210Z span 21.752h/24h · avail 100.00% · samples 88
+[soak] 2026-07-17T00:23:46.234Z span 22.002h/24h · avail 100.00% · samples 89
+[soak] 2026-07-17T00:38:46.221Z span 22.252h/24h · avail 100.00% · samples 90
+[soak] 2026-07-17T00:53:46.272Z span 22.502h/24h · avail 100.00% · samples 91
+[soak] 2026-07-17T01:08:46.330Z span 22.752h/24h · avail 100.00% · samples 92
+[soak] 2026-07-17T01:23:46.350Z span 23.002h/24h · avail 100.00% · samples 93
+[soak] 2026-07-17T01:38:46.351Z span 23.252h/24h · avail 100.00% · samples 94
+[soak] 2026-07-17T01:53:46.382Z span 23.502h/24h · avail 100.00% · samples 95
+[soak] 2026-07-17T02:08:46.331Z span 23.752h/24h · avail 100.00% · samples 96
+[soak] 2026-07-17T02:23:46.241Z span 24.002h/24h · avail 100.00% · samples 97
+
+FOUNDERGATE HARNESS 24-HOUR SOAK PASS
+start: 2026-07-16T02:23:38.583Z
+end: 2026-07-17T02:23:46.241Z
+span: 24.00h (claim 24h)
+availability: 100.000% (SLO 99.00%)
+samples: 97 (ok 97 / fail 0)
+SHA under test: 0cd51f8d34af1c0c3837210845c47deb7c53e9ce
+[soak] PASS written to /Users/macm1/Projects/foundergate/docs/assembly-evidence/VB1/soak/run24-2026-07-15/soak-24h-PASS.txt

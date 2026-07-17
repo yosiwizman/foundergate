@@ -1,0 +1,26 @@
+FOUNDERGATE HARNESS 24-HOUR SOAK PASS
+
+start: 2026-07-16T02:23:38.583Z
+end: 2026-07-17T02:23:46.241Z
+actual span: 24.002h (claimed span 24h)
+SHA under test: 0cd51f8d34af1c0c3837210845c47deb7c53e9ce
+availability: 100.000% (SLO 99.00%) over 97 samples (ok 97 / fail 0)
+monitoring evidence: monitor-record.jsonl, monitor-snapshot.json
+failures & interventions log: intervention-log.jsonl
+QUIET_HOST eligibility: INTACT for the whole run
+caffeinate power assertion: HELD (descendant)
+frozen-code integrity: NO DRIFT (manifest re-verified at end)
+lease: lease_4b928ab8e6cd49c9b9f54454fa488625
+run: run_30ced1a1-ec10-4b67-8152-105f7ac0e05b
+host: qual-host
+
+AND-gate held: availability SLO AND QUIET_HOST eligibility AND frozen-code integrity all TRUE.
+
+--- accumulator output (verbatim, authoritative) ---
+FOUNDERGATE HARNESS 24-HOUR SOAK PASS
+start: 2026-07-16T02:23:38.583Z
+end: 2026-07-17T02:23:46.241Z
+span: 24.00h (claim 24h)
+availability: 100.000% (SLO 99.00%)
+samples: 97 (ok 97 / fail 0)
+SHA under test: 0cd51f8d34af1c0c3837210845c47deb7c53e9ce
