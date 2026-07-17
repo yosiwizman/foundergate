@@ -27,3 +27,12 @@
   1. **one prompt per message, host-labeled**, remains the delivery law;
   2. **host-role self-check belongs at the TOP of any prompt that can write** (future H2 capsule scope);
   3. **a soak host that can push to main is a standing hazard** — tracked for the **D2 mechanical-floor lane** (M1-side deny rules for main-affecting operations).
+
+---
+
+## 2026-07-17 — Advisor-issued audit release quoted a bind SHA that resolves to no object in origin
+
+- **What was asserted:** the VB1 two-audit release was issued "Bound to exact main SHA `41c2f80`."
+- **Ground truth:** `41c2f80` resolves to **no object in origin** — not a commit, not an ancestor of main, not a ref/tag. The advisor stated a SHA from memory, not from disk. Current main == origin/main was `b904366856d4adc8ec1332a83a6c3998863e52b4`.
+- **Outcome:** the terminal **halted fail-closed at the binding gate**; no audits ran; no false evidence was produced. The corrected release re-bound to `b904366856d4adc8ec1332a83a6c3998863e52b4`.
+- **Lesson:** binding SHAs are quoted only from disk / terminal reports, never reconstructed from memory.
