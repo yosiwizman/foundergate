@@ -22,6 +22,10 @@ on run
 		display dialog "FounderGate could not start its local engine. No project or evidence was changed. Close this message and report the problem." buttons {"OK"} default button 1 with icon stop
 		return
 	end if
+	if out contains "UNKNOWN_SERVICE" then
+		display dialog "FounderGate could not verify its own service on this computer, so it opened nothing and ran no check. No project or evidence was changed. Close this message and report the problem." buttons {"OK"} default button 1 with icon stop
+		return
+	end if
 	if (out contains "STARTED") or (out contains "ALREADY_UP") then
 		open location theURL
 		return

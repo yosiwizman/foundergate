@@ -41,11 +41,23 @@ if [ "${1:-}" = "--stop" ]; then
   _log "stop: not running"; echo "NOT_RUNNING"; exit 0
 fi
 
-# Idempotent: if health already answers, do not start a second server.
+# Idempotent + IDENTITY-SAFE: reuse a :4700 server ONLY when its canonical identity matches the
+# expected service, UI contract and THIS repo. A 200 alone (a foreign/old/other-worktree server)
+# must NOT be reused — fail closed and open no unknown service.
+EXPECT_SERVICE="foundergate-safety-check"
+EXPECT_UI_CONTRACT="${FG_UI_CONTRACT:-phase7.1-neutral-first-v1}"
 if [ "$(_health)" = "200" ]; then
-  _log "already-up"; echo "ALREADY_UP"; echo "OPEN ${URL}"
-  [ "$OPEN_BROWSER" = "1" ] && command -v open >/dev/null 2>&1 && open "$URL" >/dev/null 2>&1
-  exit 0
+  flat="$(curl -s -m 3 "http://127.0.0.1:${PORT}/api/health" 2>/dev/null | tr -d ' \n')"
+  _field() { printf '%s' "$flat" | grep -o "\"$1\":\"[^\"]*\"" | head -1 | sed 's/.*://; s/"//g'; }
+  svc="$(_field service)"; uic="$(_field ui_contract)"; rid="$(_field repo_id)"
+  exp_rid="$(printf '%s' "${REPO}" | shasum -a 256 2>/dev/null | cut -c1-16)"
+  if [ "$svc" = "$EXPECT_SERVICE" ] && [ "$uic" = "$EXPECT_UI_CONTRACT" ] && [ -n "$rid" ] && [ "$rid" = "$exp_rid" ]; then
+    _log "already-up identity-verified svc=$svc uic=$uic"; echo "ALREADY_UP"; echo "OPEN ${URL}"
+    [ "$OPEN_BROWSER" = "1" ] && command -v open >/dev/null 2>&1 && open "$URL" >/dev/null 2>&1
+    exit 0
+  fi
+  _log "port-4700-held-by-unknown-service svc=$svc uic=$uic rid=$rid exp=$exp_rid"
+  echo "UNKNOWN_SERVICE"; exit 6   # fail closed: open no unknown service, run no check
 fi
 
 NODE="$("$HERE/resolve-node.sh" "${FG_EMBEDDED_NODE:-}" 2>/dev/null)" || NODE=""

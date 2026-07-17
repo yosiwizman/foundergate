@@ -10,7 +10,7 @@ const execFileSyncQuiet = (script, dir, id) => execFileSync("node", [script, dir
 import { readFileSync, existsSync, mkdirSync, readdirSync, writeFileSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve, extname } from "node:path";
-import { randomUUID } from "node:crypto";
+import { randomUUID, createHash } from "node:crypto";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..", "..");
@@ -25,6 +25,19 @@ const FIXTURE = "https://github.com/pypa/sampleproject";
 const UI_CI = process.env.FG_UI_CI === "1";
 const MIME = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8", ".zip": "application/zip", ".pdf": "application/pdf" };
 const SAFE = new Set(["safety.html", "safety.css", "safety.js", "tokens.css"]);
+// Canonical service identity — a launcher must reuse a :4700 server ONLY when this identity matches
+// the expected canonical service (never merely because the port returns 200). repo_id is a hash so
+// no private path leaks; the founder UI never displays it.
+const SERVICE_NAME = "foundergate-safety-check";
+const UI_CONTRACT_VERSION = "phase7.1-neutral-first-v1";
+const SERVER_ENTRY = "src/safety_check/service.mjs";
+const REPO_ID = createHash("sha256").update(REPO).digest("hex").slice(0, 16);
+function canonicalIdentity() {
+  const a = activeRun();
+  return { service: SERVICE_NAME, ui_contract: UI_CONTRACT_VERSION, server_entry: SERVER_ENTRY,
+    repo_id: REPO_ID, worktree: REPO.split("/").pop(), pid: process.pid,
+    active_run: a ? a.run_id : null, active: !!a };
+}
 mkdirSync(RUNS_DIR, { recursive: true });
 
 const jres = (res, code, obj) => { res.writeHead(code, { "content-type": MIME[".json"] }); res.end(JSON.stringify(obj, null, 2)); };
@@ -107,7 +120,7 @@ export function createSafetyServer() {
     const u = new URL(req.url, "http://127.0.0.1");
     const path = u.pathname;
     if (path === "/") { res.writeHead(200, { "content-type": MIME[".html"] }); return res.end(readFileSync(join(UI, "safety.html"))); }
-    if (path === "/api/health") return jres(res, 200, { ok: true, fixture: FIXTURE, active: !!activeRun() });
+    if (path === "/api/health" || path === "/api/identity") return jres(res, 200, { ok: true, fixture: FIXTURE, ...canonicalIdentity() });
     if (path === "/api/state") { const a = activeRun() || latestRun(); return jres(res, 200, a || { status: "NEUTRAL", note: "no run yet — click Run Safety Check for the fixed fixture" }); }
     if (path === "/api/check" && req.method === "POST") {
       let body = ""; req.on("data", (c) => { body += c; if (body.length > 4000) req.destroy(); });

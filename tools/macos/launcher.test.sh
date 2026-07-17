@@ -86,6 +86,15 @@ else
   pid1="$(cat "$TMP/pid" 2>/dev/null)"
   out2="$(L 2>/dev/null)"; pid2="$(cat "$TMP/pid" 2>/dev/null)"
   { echo "$out2" | grep -q "ALREADY_UP" && [ "$pid1" = "$pid2" ]; } && ok "9 duplicate launch → ALREADY_UP, same PID" || no "9 duplicate ($out2 pid1=$pid1 pid2=$pid2)"
+  # 13 foreign/other-worktree service holding the port is NOT reused (canonical identity fail-closed)
+  L >/dev/null 2>&1; sleep 1
+  fout="$(env -i HOME="$HOME" PATH="$FINDER_PATH" FG_EMBEDDED_NODE="$REAL_NODE" FG_REPO_ROOT="$TMP/foreign-wt" \
+          FG_SAFETY_PORT="$PORT" FG_OPEN_BROWSER=0 FG_PID_FILE="$TMP/pidF" FG_LAUNCH_LOGDIR="$LOGDIR" \
+          FG_SAFETY_RUNS_DIR="$RUNS" /bin/sh "$LAUNCH" 2>/dev/null)"
+  echo "$fout" | grep -q "UNKNOWN_SERVICE" && ok "13 foreign-identity :$PORT server not reused (fail closed)" || no "13 foreign reuse ($fout)"
+  # 14 canonical identity relaunch IS reused (same repo -> ALREADY_UP)
+  cout="$(L 2>/dev/null)"
+  echo "$cout" | grep -q "ALREADY_UP" && ok "14 canonical identity verified -> reused" || no "14 canonical reuse ($cout)"
   # 10 stop path terminates the governed server
   sout="$(L --stop 2>/dev/null)"
   sleep 1
