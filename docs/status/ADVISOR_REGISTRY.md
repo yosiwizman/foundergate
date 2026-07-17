@@ -1,4 +1,4 @@
-# Advisor Registry — registered work, none active (as of 2026-07-16, main 879fc02)
+# Advisor Registry — registered work, none active (as of 2026-07-17, main 8b9d957)
 
 **STATUS: registry · registered work, NONE ACTIVE · founder release required for any item**
 
@@ -7,7 +7,7 @@
 > in this file is activated by being written down.** Every item is REGISTERED · NONE ACTIVE · founder release required.
 > Merged ≠ accepted; DRAFT ≠ authority; registered ≠ released.
 >
-> **As of:** 2026-07-16 · **Base:** main `879fc02f9c36c096c78fcbdfa56d5b095c8f9e75` · **Repo:** private ·
+> **As of:** 2026-07-17 · **Base:** main `8b9d957cfae84b8a745ee8975482ea9f04d9b568` · **Repo:** private ·
 > **Author lane:** Lane B (docs-only). **This registry makes no readiness, approval, activation, or release claim.**
 
 All items HELD until explicit founder release. Merged ≠ accepted; DRAFT ≠ authority; registered ≠ released.
@@ -39,3 +39,6 @@ All items HELD until explicit founder release. Merged ≠ accepted; DRAFT ≠ au
 - W2 build-time items (ID entropy · pin hash · status mapping): must-fix-before-VB2-build.
 - SD-1: CLOSED by PR #127.
 - VB1 pre-signature-audit artifact: genuinely ABSENT, honestly recorded (W4), stays OPEN, never backfilled.
+
+## Registered future product stage
+- FS1 CUSTOMER SOAK-AS-A-FEATURE ("Endurance Evidence for founder projects") — origin: founder product decision 2026-07-17, the night §29 endurance evidence completed on FounderGate itself. Insight: demo-works ≠ endures; non-developer founders are never told the difference by any AI-builder tool; FounderGate's own soak machinery (soak driver, quiet-host guard, freeze/attestation, lease) is generic and becomes the engine. Scope when released: (a) plain-English soak setup for a founder's app (health definition templates replacing hand-written SLOs), (b) managed quiet run environment (the founder does not own a dedicated Mac), (c) Truth Dashboard endurance cards with honest PASS / NOT-PASSED-with-true-reason in founder language, (d) the qualification ladder 8h → 24h → 48h → 30d as guided steps in the founder flow at the approach to go-live. Position: AFTER V8.11 (post-VB3 — the recommendation belongs at the act edge); entering V8.11 mid-stage would violate Law 69 scope discipline. V8.11-NATIVE SLOTS (ride along with already-planned work, no new scope): (1) evidence taxonomy includes an Endurance category from day one — FounderGate's own soak rows are its first entries; (2) VB3 gate-card data model carries an endurance-evidence field (present/absent/stale); (3) the 8h→24h→48h→30d ladder is recorded in the assembly manual as the standing qualification pattern. Release: founder gate, not before VB3 acceptance. Status: REGISTERED · NONE ACTIVE · founder release required.
