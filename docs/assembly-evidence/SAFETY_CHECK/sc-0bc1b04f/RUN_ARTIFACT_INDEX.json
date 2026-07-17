@@ -4,7 +4,9 @@
     "EVIDENCE_PACK/evidence-pack.html",
     "EVIDENCE_PACK/evidence-pack.json",
     "EVIDENCE_PACK/evidence-pack.md",
+    "EVIDENCE_PACK/evidence-pack.pdf",
     "EVIDENCE_PACK/evidence-pack.sha256",
+    "EVIDENCE_PACK/evidence-pack.zip",
     "RUN_ACQUISITION.json",
     "RUN_ARTIFACT_HASHES.sha256",
     "RUN_LEDGER.jsonl",
@@ -12,5 +14,6 @@
     "RUN_REQUEST.json",
     "RUN_RESULT.json",
     "RUN_VERIFIER.json"
-  ]
+  ],
+  "reseal_note": "PDF and ZIP sealed into governed evidence from the already-generated run artifacts under founder authorization (OpenSandbox/Safety-Check experimental track). Content unchanged; hashes regenerated and verified. See docs/status/OPENSANDBOX_SAFETY_CHECK_EXPERIMENTAL_TRACK_AUTHORIZATION.md."
 }
