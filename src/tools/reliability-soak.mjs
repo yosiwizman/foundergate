@@ -1,14 +1,16 @@
 // FounderGate — RELIABILITY SOAK ACCUMULATOR (AKIOR-HARVEST #5; adopt-now, wide-safe).
 //
 // Folds many health-sample WINDOWS (each carrying a real timestamp) over wall-clock
-// into a single rolling aggregate + SLO verdict, and emits the §29-compliant
-// "FOUNDERGATE HARNESS <N>-HOUR SOAK PASS" line ONLY when the run GENUINELY spans the
-// claimed duration AND meets the SLO. If the run is short or the SLO is missed it emits
-// an honest "NOT PASSED (still running / incomplete)" line and NEVER the string
-// "SOAK PASS" — the tool itself cannot fabricate a soak. Its PASS output is, by
-// construction, VALID under report-provenance `validateSoakClaims` (start/end
-// timestamps span ≥ the claim). This is the rolling tool the Honest-Duration &
-// Soak-Proof Law (Assembly Manual §29) demands.
+// into a single rolling aggregate + SLO verdict, and emits an availability + duration
+// SUB-RESULT — NOT the gate verdict — ONLY when the run GENUINELY spans the claimed
+// duration AND meets the SLO. If the run is short or the SLO is missed it emits an honest
+// "NOT PASSED (still running / incomplete)" line. W1-H1: this tool NEVER emits the bare
+// gate-pass token "<label> <N>-HOUR SOAK PASS" — that token belongs ONLY to the AND-gate
+// verdict (availability SLO AND QUIET_HOST eligibility AND frozen-code integrity), which
+// the soak driver's computeVerdict emits. The accumulator can attest availability+duration
+// only; it cannot see quiet-host or freeze integrity, so labelling its output as a
+// sub-result prevents it from being read as — or parsed as — the gate verdict. This is
+// the rolling tool the Honest-Duration & Soak-Proof Law (Assembly Manual §29) demands.
 //
 // Pure Node, zero-dependency: timestamps are DATA passed in (no Date.now()); no network.
 // Adapted as an original implementation from the AKIOR pattern (scripts/_lib/
@@ -44,10 +46,9 @@ export function slo(soak) {
   };
 }
 
-// Emit the soak verdict as a committable report STRING. Emits a "<N>-HOUR SOAK PASS"
-// line (with start/end timestamps that span the claim) ONLY when duration AND SLO are
-// met with samples present; otherwise an honest NOT-PASSED line with the numbers and
-// NEVER "SOAK PASS".
+// Emit the soak accumulator output as a committable report STRING. On a met claim it emits an
+// explicitly LABELED availability+duration SUB-RESULT (W1-H1) — never the bare gate-pass token
+// "<label> <N>-HOUR SOAK PASS"; otherwise an honest NOT-PASSED line with the numbers.
 export function soakReport(soak, { sha } = {}) {
   const s = slo(soak);
   const hdr = `${soak.label} ${soak.claimHours}-HOUR SOAK`;
@@ -59,7 +60,13 @@ export function soakReport(soak, { sha } = {}) {
     `samples: ${s.samples} (ok ${s.ok} / fail ${s.fail})`,
     `SHA under test: ${sha || "UNKNOWN"}`,
   ].join("\n");
-  if (s.meetsDuration && s.meetsSlo && s.samples > 0) return `${hdr} PASS\n${meta}`;
+  // W1-H1: label the availability+duration sub-result so it can never be read as — or parsed as —
+  // the gate verdict. The rendered line "${hdr} availability+duration PASS" contains no "SOAK PASS"
+  // substring (SOAK is followed by " availability+duration"), so validateSoakClaims / a gate-token
+  // scan match it on ZERO lines; the gate-pass token is emitted ONLY by the AND-gate (computeVerdict).
+  if (s.meetsDuration && s.meetsSlo && s.samples > 0) {
+    return `SUB-RESULT (availability + duration only — NOT the gate verdict): ${hdr} availability+duration PASS\n${meta}`;
+  }
   const why = [
     !s.meetsDuration ? `span ${s.spanHours.toFixed(2)}h < claim ${soak.claimHours}h` : null,
     !s.meetsSlo ? `availability ${(s.availability * 100).toFixed(3)}% < SLO` : null,

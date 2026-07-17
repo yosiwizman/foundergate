@@ -33,14 +33,22 @@ check("addWindow accumulates ok/fail and tracks span", () => {
   assert.equal(s.meetsSlo, true);
 });
 
-check("a run that SPANS the claim and meets SLO emits a VALID §29 SOAK PASS", () => {
+check("W1-H1: a met claim emits a LABELED availability+duration SUB-RESULT, never the gate-pass token", () => {
   const soak = healthy(8, 9); // 9h span for an 8h claim
   const report = soakReport(soak, { sha: "abc1234" });
-  assert.match(report, /FOUNDERGATE HARNESS 8-HOUR SOAK PASS/);
   assert.equal(passed(soak), true);
-  // dogfood: the emitted report must be VALID under the soak-proof law
-  const soaks = validateSoakClaims(report);
-  assert.ok(soaks.length === 1 && soaks[0].ok, `emitted PASS must satisfy §29: ${JSON.stringify(soaks)}`);
+  // the accumulator output is explicitly labeled as a sub-result (availability+duration only)...
+  assert.match(report, /SUB-RESULT \(availability \+ duration only/);
+  assert.match(report, /NOT the gate verdict\)/);
+  assert.match(report, /availability\+duration PASS/);
+  // ...and it carries NO bare gate-pass token, so a gate-token scan / validateSoakClaims match it on
+  // ZERO lines (the gate-pass token belongs ONLY to the AND-gate verdict, not this accumulator).
+  assert.doesNotMatch(report, /FOUNDERGATE HARNESS 8-HOUR SOAK PASS/);
+  assert.doesNotMatch(report, /\bSOAK PASS\b/);
+  assert.equal(validateSoakClaims(report).length, 0);
+  // the availability + duration numbers are still carried honestly
+  assert.match(report, /span: 9\.00h \(claim 8h\)/);
+  assert.match(report, /availability: 100\.000%/);
 });
 
 check("a SHORT run NEVER emits 'SOAK PASS' — honest NOT-PASSED instead", () => {
