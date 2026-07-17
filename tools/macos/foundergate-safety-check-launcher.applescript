@@ -1,36 +1,31 @@
 -- FounderGate Safety Check — one-click launcher (no Terminal required).
--- Starts the loopback service from the Phase 7.1 worktree, waits for health, opens the browser.
--- Never exposes beyond 127.0.0.1; no admin; no daemon; does not contact the M1.
+--
+-- Thin wrapper: the real logic lives in source control at
+-- tools/macos/launch-foundergate-safety-check.sh + resolve-node.sh. The build process
+-- embeds a VERIFIED absolute Node path + the repo root below, so this works even when
+-- Finder gives the app only a minimal macOS PATH (no shell/nvm init). Loopback only; no
+-- admin; no daemon; does not contact the M1; does not start a sandbox VM merely by opening.
 on run
-	set repoRoot to "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1"
-	set portNum to "4700"
-	set healthURL to "http://127.0.0.1:" & portNum & "/api/health"
-	set pidFile to "/tmp/foundergate-safety-check.pid"
-	-- avoid a duplicate server: if health already answers, just open the browser
-	set alreadyUp to (do shell script "/usr/bin/curl -s -m 2 -o /dev/null -w '%{http_code}' " & healthURL & " || echo 000")
-	if alreadyUp is not "200" then
-		try
-			set nodeBin to do shell script "/bin/bash -lc 'command -v node'"
-		on error
-			display dialog "Could not find Node.js. Please install Node 20+ and try again." buttons {"OK"} default button 1 with icon stop
-			return
-		end try
-		-- start detached, loopback only, record PID
-		do shell script "cd " & quoted form of repoRoot & " && FG_SAFETY_PORT=" & portNum & " nohup " & quoted form of nodeBin & " src/safety_check/service.mjs >/tmp/foundergate-safety-check.log 2>&1 & echo $! > " & pidFile
-		-- wait up to ~20s for health
-		set ok to false
-		repeat 20 times
-			delay 1
-			set code to (do shell script "/usr/bin/curl -s -m 2 -o /dev/null -w '%{http_code}' " & healthURL & " || echo 000")
-			if code is "200" then
-				set ok to true
-				exit repeat
-			end if
-		end repeat
-		if not ok then
-			display dialog "FounderGate Safety Check did not start in time. See /tmp/foundergate-safety-check.log." buttons {"OK"} default button 1 with icon stop
-			return
-		end if
+	set nodeBin to "@@NODE_BIN@@"
+	set repoRoot to "@@REPO_ROOT@@"
+	set launchSh to "@@LAUNCH_SH@@"
+	set portNum to "@@PORT@@"
+	set theURL to "http://127.0.0.1:" & portNum & "/"
+
+	set cmd to "FG_EMBEDDED_NODE=" & quoted form of nodeBin & " " & ¬
+		"FG_REPO_ROOT=" & quoted form of repoRoot & " " & ¬
+		"FG_SAFETY_PORT=" & portNum & " FG_OPEN_BROWSER=0 " & ¬
+		"/bin/sh " & quoted form of launchSh & " 2>/dev/null || true"
+	set out to do shell script cmd
+
+	if out contains "NODE_NOT_FOUND" then
+		display dialog "FounderGate could not start its local engine. No project or evidence was changed. Close this message and report the problem." buttons {"OK"} default button 1 with icon stop
+		return
 	end if
-	do shell script "/usr/bin/open http://127.0.0.1:" & portNum & "/"
+	if (out contains "STARTED") or (out contains "ALREADY_UP") then
+		open location theURL
+		return
+	end if
+	-- REPO_MISSING / HEALTH_TIMEOUT / anything else
+	display dialog "FounderGate could not start its local engine. No project or evidence was changed. Close this message and report the problem." buttons {"OK"} default button 1 with icon stop
 end run

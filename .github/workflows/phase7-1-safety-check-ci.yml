@@ -33,6 +33,8 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Node selftests (exact SHA)
         run: node src/safety_check/service.selftest.mjs && node src/safety_check/evidence-pack.selftest.mjs && node src/founder_url_drop/urldrop.selftest.mjs
+      - name: Mac launcher anti-repeat test (clean Finder-like PATH; no UI)
+        run: sh tools/macos/launcher.test.sh
       - name: Python intake + patch + negative + adoption-contract tests
         run: |
           cd prototypes/customer_repository_intake && python3 -m unittest test_contract test_negative_fixtures
