@@ -1,0 +1,38 @@
+{
+  "schema_version": "cross-machine-1",
+  "updated_at_utc": "2026-07-17T17:14:43Z",
+  "m1_lane_state": "NOT_STARTED (rerun not authorized by this prompt)",
+  "m1_host": "Apple M1 qualification host",
+  "m1_run_id": null,
+  "m1_evaluated_sha": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+  "m1_worktree": "dedicated detached qualification worktree (planned)",
+  "m1_branch": "none (detached HEAD at evaluated SHA)",
+  "m1_active": false,
+  "m1_git_write_allowed": false,
+  "pro_lane_state": "DESIGN complete; checker CHECKER-CLEAN; ready to commit",
+  "pro_host": "Apple M4 Pro Mac Mini (Mac16,11)",
+  "pro_branch": "design/opensandbox-customer-intake-phase5",
+  "pro_worktree": "/Users/yosiwizman/Projects/foundergate-wt-opensandbox-customer-intake-phase5",
+  "pro_pr": "pending (draft)",
+  "pro_active": true,
+  "pro_git_write_allowed": true,
+  "shared_resources": [],
+  "runner_trigger_risk": "NONE (0 self-hosted runners; workflows GitHub-hosted ubuntu-latest; selftests push=main-only)",
+  "forbidden_cross_lane_actions": [
+    "Pro touching M1 worktree/evidence/branch/SHA-checkout",
+    "main merge during soak",
+    "M1 fetch/pull/checkout/commit/push during active run",
+    "tags/force-push/soak-branch changes during soak",
+    "triggering M1 automation",
+    "Pro accepting/signing VB2"
+  ],
+  "collision_state": "NONE (no shared worktree/branch/evidence-dir/runtime/VM/docker/runner/merge-target/mutable-ref)",
+  "merge_state": "main UNMERGED; no merge authorized",
+  "next_safe_action": "commit allowed files; push; open draft HOLD PR; do NOT start M1",
+  "known_unknowns": [
+    "future M1 run scheduling (founder-gated)",
+    "whether a future self-hosted runner will be added (would require re-audit)"
+  ],
+  "checker_state": "CHECKER-CLEAN",
+  "cross_machine_parallelism_ready": "YES"
+}
