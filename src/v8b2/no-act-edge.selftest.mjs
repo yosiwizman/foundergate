@@ -10,6 +10,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as queueModel from "./cto-queue.mjs";
 import * as queueView from "./queue-view.mjs";
+import * as store from "./classified-object-store.mjs";
 import { emptyQueue, addItem, REDACTED } from "./cto-queue.mjs";
 import { renderQueueText, renderQueueHtml } from "./queue-view.mjs";
 
@@ -54,7 +55,7 @@ check("UI-shell exports contain NO executor / act / approve / run function", () 
 });
 
 check("NO module under src/v8b2 imports anything from src/v8b1 (lane isolation)", () => {
-  const files = ["cto-queue.mjs", "queue-view.mjs", "cto-queue.selftest.mjs", "no-act-edge.selftest.mjs"];
+  const files = ["cto-queue.mjs", "queue-view.mjs", "cto-queue.selftest.mjs", "no-act-edge.selftest.mjs", "classified-object-store.mjs", "classified-object-store.selftest.mjs"];
   // (a) NO import/require statement anywhere resolves into v8b1.
   for (const f of files) {
     for (const line of sourceOf(f).split("\n")) {
@@ -69,8 +70,8 @@ check("NO module under src/v8b2 imports anything from src/v8b1 (lane isolation)"
   }
 });
 
-check("neither source imports fs / net / child_process / process (no side-effect surface)", () => {
-  for (const f of ["cto-queue.mjs", "queue-view.mjs"]) {
+check("no production source imports fs / net / child_process / process (no side-effect surface)", () => {
+  for (const f of ["cto-queue.mjs", "queue-view.mjs", "classified-object-store.mjs"]) {
     const src = sourceOf(f);
     for (const imp of SIDE_EFFECT_IMPORTS) {
       assert.ok(!src.includes(`"${imp}"`) && !src.includes(`'${imp}'`), `${f} imports ${imp}`);
@@ -79,6 +80,21 @@ check("neither source imports fs / net / child_process / process (no side-effect
       assert.ok(!src.includes(call), `${f} contains side-effecting token ${call}`);
     }
   }
+});
+
+check("ClassifiedObjectStore: no act/approve/execute export; only node:crypto (pure hash + isolated entropy)", () => {
+  const src = sourceOf("classified-object-store.mjs");
+  // its exported functions must not read like an act edge
+  for (const [n, v] of Object.entries(store)) {
+    if (typeof v === "function") assert.ok(!ACT_WORDS.test(n), `store export ${n} reads like an act edge`);
+  }
+  // the ONLY node built-in it may import is node:crypto (createHash = pure; randomBytes = ID-mint entropy).
+  const builtinImports = [...src.matchAll(/from\s+["'](node:[^"']+)["']/g)].map((m) => m[1]);
+  for (const b of builtinImports) assert.equal(b, "node:crypto", `unexpected node built-in import: ${b}`);
+  // entropy (randomBytes) is used ONLY inside newId(); the rest is deterministic given inputs.
+  assert.ok(/export function newId\(\)\s*\{\s*return idFromBytes\(randomBytes\(16\)\)/.test(src), "randomBytes must be isolated in newId()");
+  // no act edge on the store: it never sends/executes/approves — proven by the export + import scans above.
+  assert.ok(!/child_process|node:fs|fetch\(|process\.exit/.test(src), "store must have no execute/network/exit surface");
 });
 
 check("the UI shell HTML has no <script>, form, button, or on* handler (no wired affordance)", () => {
