@@ -49,14 +49,19 @@ if [ -x /opt/homebrew/bin/node ]; then
   [ -n "$out" ] && ok "2 homebrew/known-location node found" || no "2 homebrew node"
 else ok "2 (skip: /opt/homebrew/bin/node not present on this host)"; fi
 
-# 3. invalid embedded Node path is rejected (isolated: must NOT be returned; nothing else exists)
-out="$(run_isolated /bin/sh "$RESOLVE" "/nonexistent/node" 2>/dev/null)"; rc=$?
-{ [ "$rc" -ne 0 ] && [ -z "$out" ]; } && ok "3 invalid node path rejected" || no "3 invalid path accepted ($out)"
+# 3. invalid embedded Node path is never RETURNED (a real system node may still win the fallback)
+out="$(run_isolated /bin/sh "$RESOLVE" "/nonexistent/node" 2>/dev/null)"
+[ "$out" != "/nonexistent/node" ] && ok "3 invalid embedded path never returned (out='${out:-<none>}')" || no "3 invalid path returned"
 
-# 4. Node below version 20 is rejected (isolated)
+# 4. version gate enforced: (a) an impossibly-high bar rejects even a real node; (b) v18 never returned
 printf '#!/bin/sh\necho v18.19.0\n' > "$TMP/oldnode"; chmod +x "$TMP/oldnode"
-out="$(run_isolated /bin/sh "$RESOLVE" "$TMP/oldnode" 2>/dev/null)"
-[ "$out" != "$TMP/oldnode" ] && ok "4 node below 20 rejected" || no "4 node<20 accepted ($out)"
+gate_ok=0
+if [ -n "$REAL_NODE" ]; then
+  out="$(env -i HOME="$TMP/emptyhome" PATH="$FINDER_PATH" FG_MIN_NODE_MAJOR=999 /bin/sh "$RESOLVE" "$REAL_NODE" 2>/dev/null)"; rc=$?
+  { [ "$rc" -ne 0 ] && [ -z "$out" ]; } && gate_ok=1
+else gate_ok=1; fi
+out2="$(run_isolated /bin/sh "$RESOLVE" "$TMP/oldnode" 2>/dev/null)"
+{ [ "$gate_ok" -eq 1 ] && [ "$out2" != "$TMP/oldnode" ]; } && ok "4 version gate rejects <20 / high-bar node" || no "4 version gate (gate_ok=$gate_ok out2='$out2')"
 
 # 5. malicious project-local ./node is ignored (isolated + cwd holds a fake v99 node)
 mkdir -p "$TMP/evil"; printf '#!/bin/sh\necho v99.0.0\n' > "$TMP/evil/node"; chmod +x "$TMP/evil/node"
