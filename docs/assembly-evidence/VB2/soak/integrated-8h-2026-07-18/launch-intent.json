@@ -1,0 +1,12 @@
+{
+  "schema": "vb2-soak-launch-intent/1",
+  "launch_planned_at": "2026-07-17T07:39:17.637Z",
+  "host": "qual-host-m1",
+  "bound_sha": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+  "power": "AC Power (confirmed) — required for caffeinate -s PreventSystemSleep to be effective",
+  "command": "caffeinate -dimsu node src/tools/soak-driver.mjs --sha b9af1def60009ac9dae69bf519b5e0a2680d4600 --claim 8 --interval 900 --ttl 36000 --host qual-host-m1 --purpose (VB2 integrated soak VB1-through-VB2) --evidence docs/assembly-evidence/VB2/soak/integrated-8h-2026-07-18 --repo /Users/macm1/Projects/foundergate --probe (node <abs>/integrated-probe.mjs)",
+  "note_repo_flag": "--repo added (required by validateOptions; step-5 template omitted it and the driver refuses without it)",
+  "claim_hours": 8,
+  "interval_s": 900,
+  "ttl_s": 36000
+}

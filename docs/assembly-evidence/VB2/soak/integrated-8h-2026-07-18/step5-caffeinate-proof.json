@@ -1,0 +1,15 @@
+{
+  "schema": "vb2-soak-caffeinate-proof/1",
+  "verified_at": "2026-07-17T07:41:25.824Z",
+  "method": "independent pmset -g assertions after launch",
+  "driver_pid": 1715,
+  "caffeinate_pid": 1716,
+  "caffeinate_ppid_relationship": "caffeinate 1716 is in the driver 1715 process tree (descendant); pmset reports it \"asserting on behalf of node (pid 1715)\"",
+  "system_PreventSystemSleep_preflight": 0,
+  "system_PreventSystemSleep_active": 1,
+  "PreventSystemSleep_source": "caffeinate -dimsu (-s) pid 1716 on behalf of driver pid 1715",
+  "preexisting_unrelated_caffeinate": "pid 1778 (caffeinate -i -t 300, ppid=986 claude agent) holds ONLY PreventUserIdleSystemSleep (no -s); NOT this run pin",
+  "driver_self_report": "caffeinate assertion: HELD (descendant) — from driver-console.log",
+  "no_timeout": "the -dimsu pin has no -t timeout; it holds for the driver process lifetime (pid 1715). (The unrelated 1778 has -t 300 and is not the pin.)",
+  "verdict": "PASS — caffeinate -dimsu holds PreventSystemSleep over the driver own process tree, no timeout."
+}

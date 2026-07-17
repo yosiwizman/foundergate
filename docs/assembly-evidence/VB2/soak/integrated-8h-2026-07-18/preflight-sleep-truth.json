@@ -1,0 +1,41 @@
+{
+  "schema": "vb2-soak-sleep-truth-preflight/1",
+  "captured_at": "2026-07-17T07:25:14.656Z",
+  "host": "qual-host-m1",
+  "bound_sha": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+  "idle_sleep_timers": {
+    "sleep": 0,
+    "displaysleep": 0,
+    "disksleep": 0,
+    "standby": 0,
+    "note": "all idle-sleep timers are ZERO (pass §3 requirement)"
+  },
+  "sleep_currently": "0 (sleep prevented by caffeinate, bluetoothd, powerd) — per pmset -g",
+  "residual_sleep_capability": {
+    "present": true,
+    "factors": [
+      "powernap=1",
+      "womp=1 (wake-on-magic-packet)",
+      "tcpkeepalive=1",
+      "host has historically entered TCPKeepAlive Maintenance Sleep (last full Sleep 2026-07-14 18:26)"
+    ],
+    "coverage": "NOT covered by idle timers alone; REQUIRES the caffeinate -dimsu (-s PreventSystemSleep on AC) pin in step 5. This is the 'or covered by the pin below' clause."
+  },
+  "assertions_at_preflight": {
+    "PreventSystemSleep": 0,
+    "PreventUserIdleSystemSleep": 1,
+    "holders": [
+      "pid 1400 caffeinate (transient, 300s) — PRE-EXISTING, NOT this run's pin",
+      "pid 398 bluetoothd",
+      "pid 347 powerd (display-on)"
+    ],
+    "kernel": "0x104=USB,MAGICWAKE"
+  },
+  "baseline_sleepwake_counts": {
+    "source": "pmset -g log",
+    "full_sleep_events_total": 70,
+    "last_full_sleep": "2026-07-14 18:32:31 -0400 Kernel Client Acks  \tDelays to Sleep notifications: [AppleANS3NVMeController driver is slow(msg: SetState to 0)(50 ms)]",
+    "method": "After the run, re-count full Sleep events with timestamp >= run start; ANY new full Sleep during the run window = permanent §5.1 QUIET_HOST downgrade."
+  },
+  "verdict": "PREFLIGHT OK — idle-sleep timers zero; residual maintenance-sleep capability exists and is delegated to the caffeinate -dimsu pin (verified independently in step 5)."
+}
