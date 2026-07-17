@@ -45,6 +45,29 @@ ALLOWED_MOUNT_KINDS = frozenset({"none", "provider_volume"})
 
 _LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1", "[::1]"})
 _SHA256_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
+# Governed image identity: repository[:tag]@sha256:<64 lowercase hex>.
+_GOVERNED_IMAGE_RE = re.compile(r"^[a-z0-9][a-z0-9._/-]*(:[a-zA-Z0-9._-]+)?@sha256:[0-9a-f]{64}$")
+
+
+def validate_governed_image_ref(ref: Optional[str]) -> None:
+    """N2: a governed/qualification run requires an EXACT digest-pinned image.
+
+    Rejects: empty/missing name, tag-only, ':latest', empty/short/malformed digest,
+    uppercase or non-hex digest.
+    """
+    if not ref:
+        raise ValidationError("governed image: missing image identity")
+    if ":latest" in ref:
+        raise ValidationError("governed image: ':latest' is not permitted")
+    if "@sha256:" not in ref:
+        raise ValidationError("governed image: an exact '@sha256:<digest>' is required (tag-only rejected)")
+    digest = ref.split("@sha256:", 1)[1]
+    if len(digest) != 64:
+        raise ValidationError(f"governed image: digest must be 64 hex chars, got {len(digest)}")
+    if digest != digest.lower() or any(c not in "0123456789abcdef" for c in digest):
+        raise ValidationError("governed image: digest must be lowercase hexadecimal")
+    if not _GOVERNED_IMAGE_RE.match(ref):
+        raise ValidationError(f"governed image: malformed digest-pinned reference: {ref!r}")
 
 
 # --------------------------------------------------------------------------- #
@@ -324,8 +347,7 @@ def validate_create_request(req: CreateSessionRequest, mode: RunMode) -> None:
     if mode is RunMode.GOVERNED:
         if req.egress_policy is None or req.egress_policy.default_action != "deny":
             raise ValidationError("governed mode requires default-deny egress")
-        if "latest" in req.workload_image_ref.split("@")[0].split(":")[-1:]:
-            raise ValidationError("':latest' image tag is not permitted for governed runs")
+        validate_governed_image_ref(req.workload_image_ref)   # N2: exact digest required
 
 
 def evaluate_run(

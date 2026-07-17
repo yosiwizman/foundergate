@@ -8,9 +8,10 @@ import hashlib
 import unittest
 
 from contract import (
-    Acceptance, AuthorityError, Confidence, CreateSessionRequest, EgressPolicy,
-    EgressRule, Mount, ProviderProtocolError, ProviderUnavailable, ResourceLimits,
-    RunMode, RunOutcome, ValidationError, evaluate_run,
+    Acceptance, AuthorityError, Confidence, CreateSessionRequest, DownloadResult,
+    EgressPolicy, EgressRule, Mount, ProviderProtocolError, ProviderUnavailable,
+    ResourceLimits, RunMode, RunOutcome, ValidationError, evaluate_run,
+    validate_governed_image_ref,
 )
 from fake_provider import FakeProvider
 from opensandbox_provider import OpenSandboxConfig, OpenSandboxProvider
@@ -46,8 +47,15 @@ class ContractTests(unittest.TestCase):
         p.terminate_session(s.session_id, 10)
         tp = p.prove_termination(s.session_id, 10)
         self.assertTrue(tp.session_absent)
-        outcome = evaluate_run(ex, up.stored_sha256 == _sha(content),
-                               dl.downloaded_sha256 == dl.downloaded_sha256, tp)
+        # N1: meaningful assertions (replacing a tautological digest comparison)
+        self.assertEqual(s.session_id, "fake-0")                 # deterministic session identity
+        self.assertEqual(s.status, "Running")                    # deterministic state transition
+        self.assertEqual(ex.stdout_ref.kind, "stdout")           # exact evidence field
+        self.assertIsInstance(dl, DownloadResult)                # provider-neutral response type
+        self.assertEqual(dl.downloaded_sha256, _sha(b"RESULT"))  # real digest of downloaded bytes
+        self.assertFalse(hasattr(dl, "execution_complete"))      # no provider-specific field leak
+        download_ok = dl.downloaded_sha256 == _sha(b"RESULT")
+        outcome = evaluate_run(ex, up.stored_sha256 == _sha(content), download_ok, tp)
         self.assertEqual(outcome, RunOutcome.EVIDENCE_SUFFICIENT)
 
     # 2
@@ -179,6 +187,32 @@ class ContractTests(unittest.TestCase):
             self.assertIn(outcome, (RunOutcome.NOT_PASSED, RunOutcome.UNKNOWN),
                           f"failure {fail} produced {outcome}")
             self.assertNotEqual(outcome, RunOutcome.EVIDENCE_SUFFICIENT)
+
+    # 18 — N2: strict governed digest validation (positive + negatives)
+    def test_18_governed_image_digest_strict(self):
+        good = "docker.io/library/python@sha256:" + "a1" * 32   # 64 lowercase hex
+        validate_governed_image_ref(good)                        # positive: no raise
+        validate_governed_image_ref("python@sha256:" + "d" * 64)  # bare name ok
+        bad = [
+            "",                                          # missing name
+            "python:3.11-slim",                          # tag-only, no digest
+            "python:latest",                             # :latest tag-only
+            "python:latest@sha256:" + "a" * 64,          # :latest present
+            "python@sha256:",                            # empty digest
+            "python@sha256:abcd",                        # short digest
+            "python@sha256:" + "A" * 64,                 # uppercase hex
+            "python@sha256:" + "g" * 64,                 # non-hex
+            "@sha256:" + "a" * 64,                        # missing repository name
+        ]
+        for ref in bad:
+            with self.assertRaises(ValidationError, msg=f"should reject {ref!r}"):
+                validate_governed_image_ref(ref)
+        # and end-to-end via create_session in governed mode
+        from fake_provider import FakeProvider as FP
+        gp = FP(mode=RunMode.GOVERNED)
+        with self.assertRaises(ValidationError):
+            gp.create_session(_req(image="python:latest",
+                                   egress=EgressPolicy("deny", ())))
 
     # bonus: disabled transport => ProviderUnavailable (no network in tests)
     def test_17_disabled_transport_is_unavailable(self):
