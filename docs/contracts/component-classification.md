@@ -1,0 +1,80 @@
+# Component Classification Doctrine (D3 — KEYSTONE · DRAFT, authorizes nothing)
+
+> **STATUS: DRAFT · PENDING FOUNDER SIGNATURE.** This doctrine is the keystone that D1/D2/D5 enforcement are
+> instances of. It defines the two component classes, the change-control each requires, and enumerates the
+> current evaluation-class inventory by exact path. **This document is itself evaluation-class** — it may be
+> amended only under the evaluation-class change-control below (independent check + mutation proof + founder
+> signature). Merged ≠ accepted; DRAFT ≠ authority. **Base:** main `e1cee56`.
+
+---
+
+## 1. The two classes
+
+- **Guidance-class** — components whose failure produces *worse advice or worse ergonomics*, not a false
+  verdict: proposals, lane packets, dashboards' cosmetic copy, roadmaps, most docs, UI polish. Change control:
+  ordinary builder + review + green CI. No founder signature required to change.
+
+- **Evaluation-class** — components that **decide, gate, attest, or measure truth**: anything whose bug can turn
+  a NOT-PASS into a PASS, mask a defect, fabricate or fail to catch false evidence, or let a held thing act. A
+  bug here is a *false verdict*, which is categorically worse than bad advice. Evaluation-class components carry
+  **oracle-anchored change control** (§3).
+
+**Litmus test (apply to any component):** *"If this silently returned the wrong answer, could a human or a
+downstream gate wrongly believe something unsafe/untrue is safe/true?"* If yes → evaluation-class.
+
+## 2. Side-effect-certification principle (from H2)
+
+**"Read-only by instruction" is a claim, not a property.** A prompt or comment saying a component is read-only
+does not make it so. Evaluation-class components that assert read-only / no-side-effect behavior must **prove**
+it mechanically (no fs/net/child_process/clock imports; injectable IO; selftests asserting zero writes), and
+audits of "read-only" prompts must verify the property from the code/behavior, not from the instruction. A
+control that *could* mutate state is treated as mutating until proven otherwise.
+
+## 3. Oracle-anchored change control (evaluation-class ONLY)
+
+An evaluation-class component may change only through all four, in order:
+1. **Independent check** — a checker ≠ the author reviews the exact changed SHA, read-only, verdict committed.
+2. **Mutation proof that the guard FIRES** — a committed test that *breaks the thing the component is supposed
+   to catch* and proves the component (or its selftest) goes RED. A guard that cannot be shown to fail on a
+   real defect is vacuous and is rejected. (The "oracle" is this adversarial proof, external to the component.)
+3. **Green CI** at the exact SHA (the required `selftests` check).
+4. **Founder signature** for changes to the *classification itself* or to any component's *class* (adding/
+   removing evaluation-class status). Routine bug-fixes within an already-evaluation-class component need 1–3;
+   re-classifying a component, or amending THIS doctrine, needs 1–4.
+
+Terminal-0 is the sole merge sheriff; author ≠ checker ≠ signer throughout (§12 separation).
+
+## 4. Current evaluation-class inventory (by exact path, at `e1cee56`)
+
+These are the components that decide/gate/attest/measure truth today. Each is evaluation-class and governed by §3.
+
+**Evidence-integrity infrastructure (L1–L4):**
+- `src/freeze-manifest/` — L1: pins code state (per-file sha256+mode+manifest_hash); catches drift.
+- `src/run-attestation/` (incl. `attestation.mjs`) — L2: append-only hash-chained run record; `verifyAttestation` (intact | broken-at | broken-anchor); `isSoakEligible`. Head-anchoring defeats full-rewrite forgery.
+- `src/environment-provenance/` — L3: allowlist-only capture + `verifyNoSecrets` (no value leak).
+- `src/quiet-host-monitor/` — L4: §8/§10 detection + §4.2 preflight + §5.1 permanent QUIET_HOST downgrade.
+
+**Soak verdict + measurement:**
+- `src/tools/reliability-soak.mjs` — the availability+duration accumulator; `passed()`/`slo()` feed the AND-gate; emits a LABELED sub-result, never the gate token (W1-H1).
+- `src/tools/soak-driver.mjs` — `computeVerdict` (the AND-gate: availability SLO AND QUIET_HOST eligibility AND frozen-code integrity), the sole emitter of the gate-pass token; freeze/attestation/lease orchestration; SD-1 sentinel intervention log.
+- `src/tools/soak-monitor.mjs` — resource-trend/liveness observability accumulator (emits no soak-pass string).
+
+**CI guards (block merge on false/tampered evidence):**
+- `src/tools/evidence-integrity.selftest.mjs` — rejects 0-byte evidence, unstamped placeholders, malformed stamped SHAs.
+- `src/tools/report-provenance.mjs` (+ `.selftest.mjs`) — `validateSoakClaims` (a SOAK PASS line needs real timestamps spanning the claim), `validateReport` (claims cite resolving PR+SHA).
+
+**Standing instructions & harnesses that gate correctness:**
+- Checker standing instructions (the adversarial-checker prompt contract used in every builder+checker lane) — evaluation-class as *doctrine*; D1 (Checker Shortcut Catalog) hardens them.
+- The mechanical floor (D2) deny-lists/hooks and the **future RC Documentation Integrity Gate** (harvest H1) — evaluation-class when built.
+- **This doctrine document** (`docs/contracts/component-classification.md`) — evaluation-class; amend only per §3 incl. founder signature.
+
+*(VB1 `src/v8b1` run launcher/executor is a sensitive PRODUCT component with its own gate chain, already accepted at G4-B-VB1; it is act-capable, not truth-measuring — governed by its build-contract + VB3 gating rather than this measurement doctrine. Listed here for boundary clarity, not as a measurement oracle.)*
+
+## 5. Enforcement relationship
+- **D1** (Checker Shortcut Catalog) = evaluation-class change-control applied to the checker standing instructions.
+- **D2** (Mechanical Floor) = evaluation-class change-control applied to deny-lists + write-time hooks.
+- **D5** (Context Hygiene line-count check) = an evaluation-class RC-gate-family guard.
+Each is an *instance* of this keystone; this doctrine is the shared definition they inherit.
+
+## Queued founder-gate sentence (queued — NOT executed)
+> "I sign the Component Classification Doctrine (docs/contracts/component-classification.md @ main <SHA>) as independently checked CLEAN: evaluation-class components change only under oracle-anchored control (independent check + mutation proof the guard fires + green CI + founder signature to re-classify or amend this doctrine); the enumerated evaluation-class inventory is adopted; the side-effect-certification principle ('read-only by instruction' is a claim, not a property) is binding. This doctrine is itself evaluation-class."
