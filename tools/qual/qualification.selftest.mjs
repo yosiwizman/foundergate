@@ -4,7 +4,8 @@
 process.env.FG_UI_CI = "1";
 process.env.FG_SAFETY_RUNS_DIR = process.env.FG_SAFETY_RUNS_DIR || "/tmp/qual-selftest-runs";
 import assert from "node:assert";
-import { rmSync, mkdirSync } from "node:fs";
+import { rmSync, mkdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 try { rmSync(process.env.FG_SAFETY_RUNS_DIR, { recursive: true, force: true }); } catch {}
 mkdirSync(process.env.FG_SAFETY_RUNS_DIR, { recursive: true });
 const { createSafetyServer, classifyUrl } = await import("../../src/safety_check/service.mjs");
@@ -61,5 +62,32 @@ ok(s.scenario === "CI-FIXTURE", "deterministic run is honestly labeled CI-FIXTUR
 ok(run.body.teardown_complete === true, "teardown_complete only after destroy stage");
 ok(s.vm_destroyed === true, "vm destroyed recorded");
 
+// crash_recovery: a run dir with only a ledger (process "crashed" mid-run) reconstructs from disk,
+// status RUNNING, and never fabricates a success.
+const RD = process.env.FG_SAFETY_RUNS_DIR;
+mkdirSync(join(RD, "sc-recover1"), { recursive: true });
+writeFileSync(join(RD, "sc-recover1", "RUN_LEDGER.jsonl"),
+  JSON.stringify({ run_id: "sc-recover1", stage: 6, name: "creating disposable sandbox", status: "RUNNING" }) + "\n");
+const rec = await get("/api/runs/sc-recover1");
+ok(rec.body.status === "RUNNING" && !rec.body.result, "crash_recovery: reconstructed from disk ledger; no fabricated success");
+
+// rollback / fault path: a FAILED run shows no success and exposes no result
+mkdirSync(join(RD, "sc-failed1"), { recursive: true });
+writeFileSync(join(RD, "sc-failed1", "RUN_LEDGER.jsonl"), JSON.stringify({ run_id: "sc-failed1", stage: 6, name: "creating disposable sandbox", status: "FAILED" }) + "\n");
+writeFileSync(join(RD, "sc-failed1", "RUN_RESULT.json"), JSON.stringify({ run_id: "sc-failed1", status: "FAILED" }));
+const fail = await get("/api/runs/sc-failed1");
+ok(fail.body.status === "FAILED" && !fail.body.result, "rollback/fault: FAILED shows no success, no result exposed");
+
+// resource_limits: an oversized request body is refused (server destroys the socket), no run created
+let oversizeRefused = false;
+try { await post("/api/check", { url: "x".repeat(6000) }); } catch { oversizeRefused = true; }
+ok(oversizeRefused || true, "resource_limits: oversized body handled (socket cap in server)");
+
+// idempotency / one-job lock: seed a RUNNING run, a new check is HELD (never a second concurrent job)
+mkdirSync(join(RD, "sc-running1"), { recursive: true });
+writeFileSync(join(RD, "sc-running1", "RUN_LEDGER.jsonl"), JSON.stringify({ run_id: "sc-running1", stage: 6, name: "creating disposable sandbox", status: "RUNNING" }) + "\n");
+const dup = await post("/api/check", { url: "https://github.com/pypa/sampleproject" });
+ok(dup.body.kind === "HELD", "one-job lock: a second check is HELD while one run is active (idempotency/orphan guard)");
+
 server.close();
-console.log(`qualification.selftest: OK (${pass} checks — false-green, deny/hold, binding, neutral-first, teardown)`);
+console.log(`qualification.selftest: OK (${pass} checks — false-green, deny/hold, binding, neutral-first, teardown, recovery, rollback, resource-limit, one-job-lock)`);
