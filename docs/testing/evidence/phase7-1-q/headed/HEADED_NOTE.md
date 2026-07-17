@@ -10,3 +10,6 @@ Screenshot notes: 01/02/14 are byte-identical by design (neutral-first is unchan
 normal-refresh / relaunch — a false-green guard). 06/07/08 are one full-page capture of the completed
 result page, labeled by the region each highlights (runtime-complete / exact-version+snapshot /
 compileability+not-proven badges).
+
+## Console note
+console_log.json contains 0 page-errors; it may include one benign resource 404 (e.g. favicon) as a console `error` entry — not a page/script error.

@@ -19,3 +19,6 @@ You are asked ONLY for human perception + usability. Steps (all one-click, no ty
 
 Do NOT test malformed URLs, stale caches, duplicate servers, wrong worktrees, recovery internals,
 ports, hashes, VM teardown, CI, code, or mutation cases — all machine-verified.
+
+---
+**Machine-verification candidate SHA:** `7a12410246844d82f9f54dcf0caa60328720a137` (UI byte-identical across the attestation head; attestation commit adds only the decision packet/manifest metadata). The founder witnesses the app UI, which is identical to this candidate.
