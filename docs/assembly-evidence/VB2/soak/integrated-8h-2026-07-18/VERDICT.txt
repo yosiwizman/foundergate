@@ -1,0 +1,27 @@
+FOUNDERGATE HARNESS 8-HOUR SOAK — NOT-PASSED
+
+start: 2026-07-17T07:39:29.090Z
+end: 2026-07-17T15:54:29.041Z
+actual span: 8.250h (claimed span 8h)
+SHA under test: b9af1def60009ac9dae69bf519b5e0a2680d4600
+availability: 100.000% (SLO 99.00%) over 34 samples (ok 34 / fail 0)
+monitoring evidence: monitor-record.jsonl, monitor-snapshot.json
+failures & interventions log: intervention-log.jsonl
+QUIET_HOST eligibility: INTACT for the whole run
+caffeinate power assertion: HELD (descendant)
+frozen-code integrity: DRIFT DETECTED
+lease: lease_e9c12296d27d478583e0cfe367b2cb9c
+run: run_7cbb7cb1-b70e-4ec7-9cf3-35be6f11b174
+host: qual-host-m1
+
+NOT-PASSED — true reasons:
+  1. frozen code drifted during the run: "git HEAD moved during the run: 73e2c407d9dc84dde2ee572a214d0685147d0b9e != b9af1def60009ac9dae69bf519b5e0a2680d4600"
+
+--- accumulator output (verbatim, authoritative) ---
+SUB-RESULT (availability + duration only — NOT the gate verdict): FOUNDERGATE HARNESS 8-HOUR SOAK availability+duration PASS
+start: 2026-07-17T07:39:29.090Z
+end: 2026-07-17T15:54:29.041Z
+span: 8.25h (claim 8h)
+availability: 100.000% (SLO 99.00%)
+samples: 34 (ok 34 / fail 0)
+SHA under test: b9af1def60009ac9dae69bf519b5e0a2680d4600

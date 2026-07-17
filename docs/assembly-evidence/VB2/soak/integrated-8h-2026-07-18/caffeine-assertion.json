@@ -1,0 +1,13 @@
+{
+  "at": "2026-07-17T07:39:28.912Z",
+  "required": true,
+  "held": true,
+  "holders": [
+    {
+      "pid": 1716,
+      "cmd": "caffeinate -dimsu node src/tools/soak-driver.mjs --sha b9af1def60009ac9dae69bf519b5e0a2680d4600 --claim 8 --interval 900 --ttl 36000 --host qual-host-m1 --purpo",
+      "via": "descendant"
+    }
+  ],
+  "checked_pids": 544
+}

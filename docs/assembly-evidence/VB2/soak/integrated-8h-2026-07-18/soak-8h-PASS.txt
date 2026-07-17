@@ -1,0 +1,7 @@
+SUB-RESULT (availability + duration only — NOT the gate verdict): FOUNDERGATE HARNESS 8-HOUR SOAK availability+duration PASS
+start: 2026-07-17T07:39:29.090Z
+end: 2026-07-17T15:54:29.041Z
+span: 8.25h (claim 8h)
+availability: 100.000% (SLO 99.00%)
+samples: 34 (ok 34 / fail 0)
+SHA under test: b9af1def60009ac9dae69bf519b5e0a2680d4600
