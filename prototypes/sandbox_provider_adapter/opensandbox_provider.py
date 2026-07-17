@@ -17,13 +17,47 @@ from dataclasses import dataclass
 from typing import Optional
 
 from contract import (
-    Confidence, CreateSessionRequest, CreateSessionResult, EgressPolicy,
+    AuthorityError, Confidence, CreateSessionRequest, CreateSessionResult, EgressPolicy,
     EvidenceRef, ExecResult, InspectResult, Mount, ProviderMeta,
     ProviderProtocolError, ProviderUnavailable, RunMode, SandboxProvider,
     TerminationProof, TerminateResult, Timestamps, ValidationError,
     DownloadResult, EgressResult, EvidenceBundle, HealthResult,
     is_loopback_endpoint, validate_create_request,
 )
+
+# Governed control/execd/HTTP ports that must never be published on a non-loopback host IP.
+GOVERNED_CONTROL_PORTS = frozenset({"44772", "8080", "18080"})
+_LOOPBACK_HOST_IPS = frozenset({"127.0.0.1", "::1"})
+
+
+def assert_no_public_port_binding(port_map) -> None:
+    """Phase 4.1 provider guard. Reject the runtime if any governed control/execd/HTTP
+    port is published on a non-loopback HostIp.
+
+    `port_map` is Docker's `NetworkSettings.Ports` / `HostConfig.PortBindings` shape:
+    ``{ "44772/tcp": [ {"HostIp": "127.0.0.1", "HostPort": "40001"}, ... ], ... }``.
+    Passing (no publication) and loopback-only publication are OK. A `0.0.0.0`/`::`/empty
+    HostIp is rejected. Malformed metadata is rejected. Never silently continues.
+    Raises provider-neutral errors only (AuthorityError / ProviderProtocolError).
+    """
+    if not isinstance(port_map, dict):
+        raise ProviderProtocolError("malformed Docker port binding metadata (not an object)")
+    for cport, binds in port_map.items():
+        pnum = str(cport).split("/")[0]
+        if pnum not in GOVERNED_CONTROL_PORTS:
+            continue
+        if binds is None:                       # exposed but not published -> best outcome
+            continue
+        if not isinstance(binds, list):
+            raise ProviderProtocolError(f"malformed binding list for port {cport}")
+        for b in binds:
+            if not isinstance(b, dict) or "HostIp" not in b:
+                raise ProviderProtocolError(f"malformed binding entry for port {cport}")
+            host_ip = (b.get("HostIp") or "").strip()
+            if host_ip not in _LOOPBACK_HOST_IPS:   # '', '0.0.0.0', '::', or any public IP
+                raise AuthorityError(
+                    f"governed port {pnum} published on non-loopback HostIp {host_ip!r} "
+                    "(0.0.0.0/public exposure is rejected)")
 
 _TS = Timestamps("2026-01-01T00:00:00Z", "2026-01-01T00:00:01Z",
                  "2026-01-01T00:00:00Z", "2026-01-01T00:00:01Z")

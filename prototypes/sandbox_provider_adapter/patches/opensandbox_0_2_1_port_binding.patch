@@ -1,0 +1,24 @@
+--- opensandbox_server/services/docker/port_allocator.py	2026-07-17 12:24:45
++++ opensandbox_server/services/docker/port_allocator.py	2026-07-17 12:24:45
+@@ -22,7 +22,7 @@
+ 
+ from opensandbox_server.services.constants import SandboxErrorCodes
+ 
+-DOCKER_PUBLISH_HOST = "0.0.0.0"
++DOCKER_PUBLISH_HOST = "127.0.0.1"  # FounderGate Phase 4.1: loopback-only publish (proxy uses 127.0.0.1)
+ # The probe is a short-lived availability check and must match Docker's
+ # publish scope; probing only localhost can miss ports bound on other host
+ # interfaces that Docker would later fail to publish.
+--- opensandbox_server/services/docker/networking.py	2026-07-17 12:24:45
++++ opensandbox_server/services/docker/networking.py	2026-07-17 12:24:45
+@@ -402,8 +402,8 @@
+                     sidecar_env.append(f"{key}={value}")
+ 
+         sidecar_port_bindings: dict[str, tuple[str, int]] = {
+-            "44772": ("0.0.0.0", host_execd_port),
+-            "8080": ("0.0.0.0", host_http_port),
++            "44772": ("127.0.0.1", host_execd_port),  # FounderGate Phase 4.1: loopback-only
++            "8080": ("127.0.0.1", host_http_port),  # FounderGate Phase 4.1: loopback-only
+         }
+         if extra_port_bindings:
+             sidecar_port_bindings.update(extra_port_bindings)

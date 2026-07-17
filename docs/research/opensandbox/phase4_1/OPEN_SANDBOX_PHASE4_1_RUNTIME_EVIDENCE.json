@@ -1,0 +1,148 @@
+{
+  "schema": "OPEN_SANDBOX_PHASE4_1_RUNTIME_EVIDENCE/1",
+  "context": "live runtime inside one disposable Ubuntu 24.04 ARM64 Lima/VZ VM on the M4 Pro Mac Mini; PATCHED opensandbox-server 0.2.1 (loopback publish); VM destroyed after capture",
+  "claim_classes": [
+    "VERIFIED-RUNTIME",
+    "VERIFIED-DISK",
+    "VERIFIED-VM-METADATA",
+    "VERIFIED-DOCKER-METADATA",
+    "PARTIALLY-VERIFIED",
+    "UNVERIFIED",
+    "CONTRADICTED",
+    "UNKNOWN"
+  ],
+  "host": {
+    "model": "Mac16,11",
+    "chip": "Apple M4 Pro",
+    "memory": "24 GiB",
+    "arch": "arm64",
+    "class": "HOST-PROVEN-NOT-M1"
+  },
+  "vm_manager": {
+    "tool": "Lima",
+    "version": "2.1.4",
+    "backend": "vz"
+  },
+  "vm": {
+    "name": "foundergate-opensandbox-phase4-1",
+    "os": "Ubuntu 24.04 ARM64",
+    "image_digest": "sha256:cafa1a965b591b7c4184b484ffd8e625981a79d48f9b4ae8a4adf7b4c5ade927",
+    "plain": true,
+    "mounts": "[]",
+    "portForwards": "[]",
+    "nat_ip": "192.168.5.15",
+    "class": "VERIFIED-VM-METADATA"
+  },
+  "patch": {
+    "class": "VERIFIED-DISK",
+    "file": "prototypes/sandbox_provider_adapter/patches/opensandbox_0_2_1_port_binding.patch",
+    "sha256": "38c111c784e28aeba1029ab08e1cc235dccae67b2424511eb0a39cff28546382",
+    "change": "0.0.0.0 -> 127.0.0.1 at port_allocator.py:25 (DOCKER_PUBLISH_HOST) + networking.py:405-406 (sidecar execd/http). 3 lines, 2 files.",
+    "applied_scope": "inside the disposable VM ONLY; global macOS OpenSandbox untouched",
+    "in_vm_proof": "port_allocator.py:25 DOCKER_PUBLISH_HOST=127.0.0.1; networking.py:405-406 127.0.0.1 (patch-proof.txt sha 7bc12d3e...)",
+    "kind": "fallback B (loopback-only bind); preferred A (no publish) rejected: egress-sandbox proxy uses host-mapped endpoint, would break",
+    "maintenance_risk": "LOW-MEDIUM (3 localized literal changes; re-check on OpenSandbox upgrade; upstream [docker].publish_host would remove burden)"
+  },
+  "server": {
+    "bind": "127.0.0.1:8090 (ss-confirmed)",
+    "secure_runtime": "NOT configured (runc)",
+    "execd_image": "opensandbox/execd@sha256:1dc98c7de10b...",
+    "egress_image": "opensandbox/egress@sha256:973130e01bf7..."
+  },
+  "port_binding_keystone": {
+    "class": "VERIFIED-DOCKER-METADATA+RUNTIME",
+    "outcome": "B: HOST PORT BOUND TO 127.0.0.1 ONLY",
+    "guard_verdict": "GUARD_PASS (no governed 0.0.0.0 binding)",
+    "sidecar_published": {
+      "44772/tcp": "127.0.0.1:58165",
+      "8080/tcp": "127.0.0.1:53327",
+      "18080/tcp": "127.0.0.1:57075"
+    },
+    "reachability": {
+      "vm_loopback_127.0.0.1:58165": "HTTP 200 (proxy path works)",
+      "vm_nonloopback_192.168.5.15:58165": "HTTP 000 (UNREACHABLE - loopback-only, not NAT containment)",
+      "macos": "HTTP 000 (unreachable)"
+    },
+    "no_governed_0_0_0_0": true,
+    "native_proxy_used_not_published_port": true
+  },
+  "native_proxy": {
+    "class": "VERIFIED-RUNTIME",
+    "result": "PRESERVED after loopback patch (adapter used /proxy/44772; builder ran exit 0)"
+  },
+  "lifecycle": {
+    "class": "VERIFIED-RUNTIME",
+    "sandbox_id": "403641eb-820e-4a20-8d9a-7710f3f5c2ec",
+    "create_http": 202,
+    "neutral_type": "CreateSessionResult",
+    "preupload_digests": {
+      "README.md": "sha256:19474f1f5a653707ce207aae02e561bce0bd917c881d010e2dd7a5ca915b6d94",
+      "input.txt": "sha256:e95d4100df95aa4ab54242734d460c42010e311a3db4494b535e983ca1b061cc",
+      "builder.sh": "sha256:82f68bdffaf4c65a52ee8bbeb43c6eebcccdc029f00f0adf70b2ae38519ecb0c"
+    },
+    "insandbox_digests_match": true,
+    "builder_exit": 0,
+    "builder_elapsed_s": 1.027,
+    "result_digest": "sha256:78cdd70b6cf73f1df92024c030e3036804194ad92b0d5c3cd35779dac0c37f86",
+    "download_sha256": "sha256:78cdd70b6cf73f1df92024c030e3036804194ad92b0d5c3cd35779dac0c37f86",
+    "export_matches": true
+  },
+  "trust_boundary": {
+    "class": "VERIFIED-RUNTIME",
+    "sentinel": "/Users/yosiwizman/Projects/foundergate/OPEN_SANDBOX_PHASE4_1_FORBIDDEN_SENTINEL.txt",
+    "inside_write": "workload-local (wrote_rc=0)",
+    "mac_present": false,
+    "vm_present": false,
+    "main_clean": true,
+    "interpretation": "THE PATH WAS WORKLOAD-LOCAL. NO FOUNDERGATE HOST PATH WAS MODIFIED.",
+    "docker_socket": "SOCKET_ABSENT; no docker CLI",
+    "identity": "uid=0(root); no-host-mounts"
+  },
+  "egress": {
+    "class": "VERIFIED-RUNTIME",
+    "mode": "dns+nft",
+    "default": "deny",
+    "allow": [
+      "example.com"
+    ],
+    "T1_example_com": "ALLOW (200)",
+    "T2_example_org_https": "DENIED",
+    "T3_direct_1.1.1.1:443": "DENIED (timeout)",
+    "T4_ipv6_direct": "DENIED (OSError)",
+    "nft": "policy drop + drop 853 + drop @deny + accept @allow",
+    "workload_NET_ADMIN": false,
+    "reproven_under_patch": true,
+    "classification": "EGRESS-STRICT-BEHAVIOR-CONFIRMED (patch did not weaken egress)"
+  },
+  "teardown": {
+    "class": "VERIFIED-RUNTIME",
+    "session": "DELETE 204/GET 404",
+    "containers": "gone",
+    "network": "gone",
+    "volume": "gone",
+    "server": "procs 0, 8090 CLOSED",
+    "vm_baseline": "0 containers, 0 opensandbox nets/vols"
+  },
+  "vm_destruction": {
+    "class": "VERIFIED-VM-METADATA",
+    "instance": "deleted",
+    "dir_disk": "gone",
+    "hostagent": "none",
+    "mac_forwards": 0,
+    "host_disk_after": "30.04 GiB",
+    "lima_remains": true,
+    "limitation": "removal under Lima observable state, not forensic erasure"
+  },
+  "prototype_tests": "19 passed (incl test_19 port-binding guard)",
+  "evidence_export_sha256": {
+    "evidence-core.json": "e2bc26db55cdfacfb48f2fe8593792958a9b92c4d7ccdf9d2bb5a879ea48ebd2",
+    "server.stderr.log": "7ab02393feb4c11af0f142f2efde54111221fedb1ea23d3bfda9de6690543085",
+    "config.toml": "2dce41defc6a623317aed622406e45c89c0f76944db1e0b3372cb9d4610d7625",
+    "patch-proof.txt": "7bc12d3e752297835d6e78f9a439b8eca38a0a8fe7fd9f3f64f1082257397b68"
+  },
+  "authorizations": {
+    "PRODUCTION_INTEGRATION_AUTHORIZED": "NO",
+    "OPENSANDBOX_ADOPTION_AUTHORIZED": "NO",
+    "MAIN_MERGE_AUTHORIZED": "NO"
+  }
+}

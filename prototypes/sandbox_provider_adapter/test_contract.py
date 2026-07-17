@@ -14,7 +14,9 @@ from contract import (
     validate_governed_image_ref,
 )
 from fake_provider import FakeProvider
-from opensandbox_provider import OpenSandboxConfig, OpenSandboxProvider
+from opensandbox_provider import (
+    OpenSandboxConfig, OpenSandboxProvider, assert_no_public_port_binding,
+)
 
 IMG = "python@sha256:" + "d" * 64
 
@@ -213,6 +215,34 @@ class ContractTests(unittest.TestCase):
         with self.assertRaises(ValidationError):
             gp.create_session(_req(image="python:latest",
                                    egress=EgressPolicy("deny", ())))
+
+    # 19 — Phase 4.1 port-binding guard (no-publish / loopback-only pass; 0.0.0.0 / malformed reject)
+    def test_19_port_binding_guard(self):
+        # A. no publication (port exposed, HostBindings None) -> OK
+        assert_no_public_port_binding({"44772/tcp": None})
+        # B. loopback-only publication -> OK
+        assert_no_public_port_binding({
+            "44772/tcp": [{"HostIp": "127.0.0.1", "HostPort": "40001"}],
+            "8080/tcp": [{"HostIp": "127.0.0.1", "HostPort": "40002"}],
+            "18080/tcp": [{"HostIp": "::1", "HostPort": "40003"}]})
+        # non-governed ports are ignored even if public
+        assert_no_public_port_binding({"9999/tcp": [{"HostIp": "0.0.0.0", "HostPort": "9"}]})
+        # C. 0.0.0.0 on a governed port -> AuthorityError (neutral)
+        for bad in ("0.0.0.0", "::", "", "192.168.5.15"):
+            with self.assertRaises(AuthorityError, msg=f"should reject HostIp {bad!r}"):
+                assert_no_public_port_binding({"44772/tcp": [{"HostIp": bad, "HostPort": "40001"}]})
+        # D. malformed Docker metadata -> ProviderProtocolError (neutral), never silent
+        for bad_meta in (None, "not-a-dict", {"44772/tcp": "not-a-list"},
+                         {"44772/tcp": [{"HostPort": "40001"}]}):   # missing HostIp
+            with self.assertRaises((ProviderProtocolError,)):
+                assert_no_public_port_binding(bad_meta)
+        # E. the guard raises only provider-neutral errors (never a provider-specific type)
+        try:
+            assert_no_public_port_binding({"8080/tcp": [{"HostIp": "0.0.0.0", "HostPort": "1"}]})
+        except AuthorityError:
+            pass
+        else:
+            self.fail("guard did not reject 0.0.0.0")
 
     # bonus: disabled transport => ProviderUnavailable (no network in tests)
     def test_17_disabled_transport_is_unavailable(self):

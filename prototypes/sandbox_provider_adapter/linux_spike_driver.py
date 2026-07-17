@@ -13,12 +13,45 @@ from contract import (
     CreateSessionRequest, EgressPolicy, EgressRule, ResourceLimits, RunMode,
     evaluate_run, ExecResult, EvidenceRef, Confidence, validate_governed_image_ref,
 )
-from opensandbox_provider import OpenSandboxProvider, OpenSandboxConfig
+import subprocess
+from opensandbox_provider import (
+    OpenSandboxProvider, OpenSandboxConfig, assert_no_public_port_binding,
+)
+
+
+def port_binding_keystone(sid):
+    """Phase 4.1 keystone: inspect Docker port bindings for the sandbox's governed
+    ports and run the provider guard. Returns (result_dict, guard_verdict)."""
+    import json as _json
+    names = subprocess.run(
+        ["bash", "-c", f"sg docker -c \"docker ps --format '{{{{.ID}}}} {{{{.Names}}}}'\" | grep {sid[:12]}"],
+        capture_output=True, text=True).stdout.strip().splitlines()
+    combined = {}
+    per_container = {}
+    for line in names:
+        cid = line.split()[0]
+        pj = subprocess.run(
+            ["bash", "-c", f"sg docker -c \"docker inspect {cid} --format '{{{{json .NetworkSettings.Ports}}}}'\""],
+            capture_output=True, text=True).stdout.strip()
+        try:
+            ports = _json.loads(pj) or {}
+        except Exception:
+            ports = {}
+        per_container[line] = ports
+        combined.update(ports)
+    try:
+        assert_no_public_port_binding(combined)
+        verdict = "GUARD_PASS (no governed 0.0.0.0 binding)"
+    except Exception as e:
+        verdict = f"GUARD_REJECT: {type(e).__name__}: {e}"
+    return per_container, verdict
 
 SERVER = "http://127.0.0.1:8090"          # loopback only
 EXECD_PORT = 44772
-RT = "/tmp/foundergate-opensandbox-phase4"
-FG_SENTINEL = "/Users/yosiwizman/Projects/foundergate/OPEN_SANDBOX_PHASE4_FORBIDDEN_SENTINEL.txt"
+RT = os.environ.get("PHASE4_RT", "/tmp/foundergate-opensandbox-phase4")
+FG_SENTINEL = os.environ.get(
+    "PHASE4_SENTINEL",
+    "/Users/yosiwizman/Projects/foundergate/OPEN_SANDBOX_PHASE4_FORBIDDEN_SENTINEL.txt")
 IMG = "python@sha256:db3ff2e1800a8581e2c48a27c3995339d47bdf046da21c7627accd3d51053a93"
 now = lambda: time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 sha = lambda b: "sha256:" + hashlib.sha256(b).hexdigest()
@@ -114,6 +147,13 @@ def main():
     ev["steps"]["create"] = {"http": st, "session_id": sid, "state": created.status,
                              "provider_meta_leak_check": type(created).__name__}
     time.sleep(3)
+
+    # PORT-BINDING KEYSTONE (Phase 4.1): inspect Docker + run the provider guard
+    per_container, guard_verdict = port_binding_keystone(sid)
+    ev["steps"]["port_binding"] = {"per_container_ports": per_container, "guard": guard_verdict}
+    print("PORT_BINDING:", guard_verdict)
+    for name, ports in per_container.items():
+        print("  ", name, "->", ports)
 
     # 2. upload + verify in-sandbox digests
     ev["steps"]["upload"] = {f: upload(sid, f"/workspace/{f}", c) for f, c in files.items()}
