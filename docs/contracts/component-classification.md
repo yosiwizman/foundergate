@@ -44,9 +44,15 @@ An evaluation-class component may change only through all four, in order:
 
 Terminal-0 is the sole merge sheriff; author ≠ checker ≠ signer throughout (§12 separation).
 
-## 4. Current evaluation-class inventory (by exact path, at `e1cee56`)
+## 4. Current evaluation-class inventory (by exact path)
 
-These are the components that decide/gate/attest/measure truth today. Each is evaluation-class and governed by §3.
+**Mechanical criterion (authoritative, not a hand-curated closed set):** a component is evaluation-class iff it
+**decides/gates/attests/measures truth** — operationally, **every `*.selftest.mjs` run by the `selftests` CI gate**
+(`scripts/run-selftests.mjs` discovers and runs all of them on every PR) **plus the modules those selftests
+guard**. The enumeration below is the current inventory *derived from* that criterion and kept in sync with it; it
+is **illustrative of the rule, not a competing closed list** — if a truth-deciding, CI-gated component is not yet
+named here, the criterion still governs it and this §4 is amended (per §3) to name it. Each listed component is
+evaluation-class and governed by §3.
 
 **Evidence-integrity infrastructure (L1–L4):**
 - `src/freeze-manifest/` — L1: pins code state (per-file sha256+mode+manifest_hash); catches drift.
@@ -67,6 +73,28 @@ These are the components that decide/gate/attest/measure truth today. Each is ev
 - Checker standing instructions (the adversarial-checker prompt contract used in every builder+checker lane) — evaluation-class as *doctrine*; D1 (Checker Shortcut Catalog) hardens them.
 - The mechanical floor (D2) deny-lists/hooks and the **future RC Documentation Integrity Gate** (harvest H1) — evaluation-class when built.
 - **This doctrine document** (`docs/contracts/component-classification.md`) — evaluation-class; amend only per §3 incl. founder signature.
+
+**Independent-check enforcement (the code that gates §3 step 1):**
+- `src/checker/validate.mjs` — rejects self-approval / dirty-but-clean / nonzero-writes checker reports.
+- `src/checker/prepush-checker.mjs` — pre-push read-only checker.
+- `src/checker/metrics/score.mjs` — anti-trust VETO deciding if a checker's result is trustworthy.
+- `src/checker/swarm/swarm-coordinator.mjs` — checker-swarm coordination.
+- Checker standing instructions (the adversarial-checker prompt contract) — evaluation-class doctrine (D1 hardens it).
+
+**Refuse-to-act / held-action / lease gates (the "let a held thing act" clause):**
+- `src/shwl/guard.mjs` (+ the `src/shwl/*` selftests) — the shared heavy-op lease guard that REFUSES (not warns), fail-safe default-to-HEAVY; soak-driver lease orchestration depends on it.
+- `src/held-actions/hold-action.mjs` (+selftest) — enforces a HELD action is never sent (`transport_call_count:0`).
+- `src/v8b2/no-act-edge.selftest.mjs` — proves there is NO act/approve/execute path in the VB2 scaffold.
+- `src/cage/escape-tests/escape-harness.selftest.mjs` — deny-by-default containment attestation (routes only to HELD, never live); `src/evidence/cage-evidence-ledger.mjs`.
+
+**Fail-closed schema / descriptor / fixture / launcher guards:**
+- `src/v8a1/schema-first-gate.mjs` (+ `src/v8a1/dashboard/view-model.selftest.mjs` and related) — Law-53 gate: no schema, no UI (fails closed).
+- `src/adapters/interface/validate.mjs` + `src/adapters/registry/validate-registry.mjs` — descriptor validators (reject self-merge / privileged-execution / planned-but-installed).
+- `src/tools/fixture-write-safety.selftest.mjs` — mechanizes the §2 side-effect-certification principle (committed-fixture writes impossible).
+- `src/tools/critical-path-gate.selftest.mjs` — launcher gate that refuses to start on a parked-defect-on-critical-path match.
+
+**Product-boundary proof guards (each decides a truth about a shipped app; CI-gated):**
+- `src/v8a2/preview/{no-live-path,no-dead-controls,mock-send-refusal}.selftest.mjs`; `src/v8a3/filecabinet/no-secret-leak.selftest.mjs`; `src/v8a4/guide/{injection,no-blocked-content-leak}.selftest.mjs`; the `cannot-invent-state.selftest.mjs` family (Law-54 UNKNOWN honesty).
 
 *(VB1 `src/v8b1` run launcher/executor is a sensitive PRODUCT component with its own gate chain, already accepted at G4-B-VB1; it is act-capable, not truth-measuring — governed by its build-contract + VB3 gating rather than this measurement doctrine. Listed here for boundary clarity, not as a measurement oracle.)*
 
