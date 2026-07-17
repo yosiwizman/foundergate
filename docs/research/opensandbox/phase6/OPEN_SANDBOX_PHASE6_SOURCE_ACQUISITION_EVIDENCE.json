@@ -1,0 +1,55 @@
+{
+  "schema": "phase6-source-acquisition/1",
+  "source_provider": "github-public",
+  "source_provider_version": "0.1.0-phase6",
+  "normalized_url": {
+    "host": "github.com",
+    "owner": "pypa",
+    "repository": "sampleproject"
+  },
+  "default_ref": "HEAD",
+  "exact_commit": "621e4974ca25ce531773def586ba3ed8e736b3fc",
+  "resolution_method": "git ls-remote HEAD",
+  "is_private": false,
+  "redirect_chain": [
+    "https://codeload.github.com/pypa/sampleproject/tar.gz/621e4974ca25ce531773def586ba3ed8e736b3fc"
+  ],
+  "final_host": "codeload.github.com",
+  "http_status": 200,
+  "archive_content_type": "application/x-gzip",
+  "reported_content_length": null,
+  "actual_byte_count": 5978,
+  "archive_sha256": "fd8597e4d351a9fd42007f48339dc93ee6469d8555fd0ff24906c69905357c01",
+  "limits": {
+    "max_compressed": 10485760,
+    "max_expanded": 20971520,
+    "max_file_count": 1000,
+    "max_file_size": 5242880,
+    "max_path_len": 240
+  },
+  "archive_scan": {
+    "entries": 18,
+    "total_size": 13390,
+    "ok": true,
+    "unsafe": [],
+    "license_files": [
+      "LICENSE.txt"
+    ],
+    "secret_like": [],
+    "submodules": [],
+    "lfs": []
+  },
+  "manifest_file_count": 12,
+  "manifest_total_bytes": 13390,
+  "canonical_manifest_sha256": "649ecb02d79d5cee55c86549b6dff26fb341c4a4de6d3c92d959c42714b6e7de",
+  "binding": {
+    "url": "https://github.com/pypa/sampleproject",
+    "exact_commit": "621e4974ca25ce531773def586ba3ed8e736b3fc",
+    "archive_sha256": "fd8597e4d351a9fd42007f48339dc93ee6469d8555fd0ff24906c69905357c01",
+    "manifest_sha256": "649ecb02d79d5cee55c86549b6dff26fb341c4a4de6d3c92d959c42714b6e7de",
+    "acquisition_timestamp": "recorded-in-ledger"
+  },
+  "extracted_root": "/tmp/foundergate-public-repo-phase6-p6run20260717/repository",
+  "acquisition_temp_root": "/tmp/foundergate-public-repo-phase6-p6run20260717",
+  "note": "resolved default HEAD to an exact commit BEFORE acquisition; exact-commit archive (not a branch/mutable-tag archive); no repository code executed on the Pro"
+}

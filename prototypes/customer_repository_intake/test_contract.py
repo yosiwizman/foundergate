@@ -126,5 +126,107 @@ class IntakeTests(unittest.TestCase):
         self.assertEqual(st1, st2)                  # deterministic policy
 
 
+class GitHubProviderTests(unittest.TestCase):
+    """Phase-6 source-provider tests. Synthetic tar archives only — NO network."""
+
+    def _make_tar(self, entries):
+        import tarfile, tempfile, io, os
+        fd, path = tempfile.mkstemp(suffix=".tar.gz"); os.close(fd)
+        with tarfile.open(path, "w:gz") as tf:
+            for e in entries:
+                ti = tarfile.TarInfo(name=e["name"])
+                ti.type = e.get("type", tarfile.REGTYPE)
+                ti.size = e.get("size", 0)
+                ti.linkname = e.get("linkname", "")
+                data = e.get("data", b"")
+                ti.size = len(data)
+                tf.addfile(ti, io.BytesIO(data))
+        return path
+
+    def _scan(self, entries):
+        from github_public_provider import GitHubPublicProvider
+        return GitHubPublicProvider().inspect_archive(self._make_tar(entries))
+
+    def E(self, name, **k):
+        d = {"name": f"sampleproject-abc/{name}"}; d.update(k); return d
+
+    def test_p6_01_normalize_fixture_url(self):
+        n = normalize_github_url("https://github.com/pypa/sampleproject")
+        self.assertEqual((n.owner, n.repository), ("pypa", "sampleproject"))
+
+    def test_p6_02_redirect_to_wrong_host_rejected(self):
+        from github_public_provider import _HostAllowlistRedirect
+        from contract import ValidationError as VE
+        h = _HostAllowlistRedirect([])
+        with self.assertRaises(VE):
+            h.redirect_request(None, None, 302, "", {}, "https://evil.example/x")
+        # allowlisted host does not raise on the host check (will call super -> returns a Request or None)
+        try:
+            h.redirect_request(__import__("urllib.request", fromlist=["Request"]).Request("https://github.com/a"),
+                               None, 302, "", {}, "https://codeload.github.com/a/b/tar.gz/x")
+        except Exception as e:
+            self.assertNotIn("non-allowlisted", str(e))
+
+    def test_p6_03_oversized_expanded_rejected(self):
+        scan = self._scan([self.E("big.bin", data=b"x" * (5 * 1024 * 1024 + 1))])
+        self.assertFalse(scan.ok)
+
+    def test_p6_04_excessive_file_count_rejected(self):
+        scan = self._scan([self.E(f"f{i}.txt", data=b"x") for i in range(1001)])
+        self.assertFalse(scan.ok)
+
+    def test_p6_05_path_traversal_rejected(self):
+        self.assertFalse(self._scan([self.E("../escape", data=b"x")]).ok)
+
+    def test_p6_06_absolute_path_rejected(self):
+        import tarfile
+        self.assertFalse(self._scan([{"name": "/etc/evil", "data": b"x"}]).ok)
+
+    def test_p6_07_windows_drive_rejected(self):
+        self.assertFalse(self._scan([{"name": "C:\\evil", "data": b"x"}]).ok)
+
+    def test_p6_08_symlink_rejected(self):
+        import tarfile
+        self.assertFalse(self._scan([self.E("link", type=tarfile.SYMTYPE, linkname="../../etc/passwd")]).ok)
+
+    def test_p6_09_hardlink_rejected(self):
+        import tarfile
+        self.assertFalse(self._scan([self.E("hl", type=tarfile.LNKTYPE, linkname="README")]).ok)
+
+    def test_p6_10_device_fifo_rejected(self):
+        import tarfile
+        self.assertFalse(self._scan([self.E("dev", type=tarfile.CHRTYPE)]).ok)
+        self.assertFalse(self._scan([self.E("fifo", type=tarfile.FIFOTYPE)]).ok)
+
+    def test_p6_11_duplicate_and_case_collision(self):
+        dup = self._scan([self.E("a.txt", data=b"1"), self.E("a.txt", data=b"2")])
+        self.assertFalse(dup.ok)
+        cc = self._scan([self.E("Readme.md", data=b"1"), self.E("README.MD", data=b"2")])
+        self.assertFalse(cc.ok)
+
+    def test_p6_12_submodule_and_lfs_and_secret_indicators(self):
+        s = self._scan([self.E(".gitmodules", data=b"[submodule]"), self.E("id_rsa", data=b"KEY"),
+                        self.E("LICENSE.txt", data=b"MIT")])
+        self.assertIn(".gitmodules", s.submodules[0] if s.submodules else "")
+        self.assertTrue(s.secret_like)
+        self.assertTrue(s.license_files)
+
+    def test_p6_13_canonical_manifest_deterministic(self):
+        import tempfile, os
+        from github_public_provider import canonical_manifest
+        d = tempfile.mkdtemp()
+        os.makedirs(os.path.join(d, "src"), exist_ok=True)
+        open(os.path.join(d, "src", "a.py"), "w").write("print(1)\n")
+        open(os.path.join(d, "b.txt"), "w").write("hello")
+        m1, s1 = canonical_manifest(d)
+        m2, s2 = canonical_manifest(d)
+        self.assertEqual(s1, s2)
+        self.assertEqual([i["path"] for i in m1], ["b.txt", "src/a.py"])
+
+    def test_p6_14_provider_version_present(self):
+        from github_public_provider import GitHubPublicProvider
+        self.assertTrue(GitHubPublicProvider().version)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
