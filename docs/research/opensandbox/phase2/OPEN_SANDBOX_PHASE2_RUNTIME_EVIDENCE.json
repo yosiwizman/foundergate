@@ -1,0 +1,167 @@
+{
+  "schema": "OPEN_SANDBOX_PHASE2_RUNTIME_EVIDENCE/1",
+  "generated_context": "builder terminal; runtime torn down after capture",
+  "claim_classes": [
+    "VERIFIED-RUNTIME",
+    "VERIFIED-DISK",
+    "VERIFIED-DOCKER-METADATA",
+    "PARTIALLY-VERIFIED",
+    "UNVERIFIED",
+    "CONTRADICTED",
+    "UNKNOWN"
+  ],
+  "host": {
+    "model": "Mac16,11 Apple M4 Pro",
+    "class": "HOST-PROVEN-NOT-M1"
+  },
+  "pins": {
+    "foundergate_main": "e1ca1989d2397297a450893f7890dbe7fc21e494",
+    "phase2_branch_base_pr151_head": "e58632b582c8fe8d59c206afe7d8caefb8f13cf1",
+    "opensandbox_commit": "192b5bf54a5fd01c7050ba4de9aba48939776cef",
+    "server": "opensandbox-server==0.2.1 (Python 3.11.15)",
+    "execd_image": "opensandbox/execd:v1.0.21",
+    "execd_build": "docker/execd/v1.0.21 git 34653f7a70da87029abb40624f1de8dfee3f1576 go1.25.9 linux/arm64",
+    "egress_image": "opensandbox/egress@sha256:973130e01bf76e8e686e2853ebf47b21741bc8781919bb4a7cf60af09a3c6e8a (v1.1.4)",
+    "workload_image": "python@sha256:db3ff2e1800a8581e2c48a27c3995339d47bdf046da21c7627accd3d51053a93 (python:3.11-slim)"
+  },
+  "server": {
+    "bind": "127.0.0.1:8090",
+    "class": "VERIFIED-RUNTIME",
+    "secure_runtime": "NOT configured \u2014 server logged 'Secure runtime is not configured' => default runc/standard container isolation",
+    "insecure_mode": "OPENSANDBOX_INSECURE_SERVER acknowledged (no api_key); server never exposed to LAN"
+  },
+  "seam": {
+    "lifecycle": "REST /v1/sandboxes (create/get/delete) \u2014 VERIFIED-RUNTIME",
+    "exec_files": "execd REST via published host port (POST /command, POST /files/upload, GET /files/download) \u2014 VERIFIED-RUNTIME",
+    "note_proxy": "server-internal proxy /v1/sandboxes/{id}/proxy/{port} returned HTTP 000 on macOS Docker Desktop (host cannot route to container bridge IP); execd reached via its Docker-published host port instead"
+  },
+  "core_lifecycle": {
+    "sandbox_id": "e1fa2e91-e526-43e0-86e3-2a8aca5d5ae7",
+    "container": "3d40e2707829",
+    "docker_metadata": {
+      "class": "VERIFIED-DOCKER-METADATA",
+      "Privileged": false,
+      "NetworkMode": "bridge",
+      "CapAdd": null,
+      "CapDrop": [
+        "AUDIT_WRITE",
+        "MKNOD",
+        "NET_ADMIN",
+        "NET_RAW",
+        "SYS_ADMIN",
+        "SYS_MODULE",
+        "SYS_PTRACE",
+        "SYS_TIME",
+        "SYS_TTY_CONFIG"
+      ],
+      "SecurityOpt": [
+        "no-new-privileges:true"
+      ],
+      "Devices": null,
+      "Mounts": []
+    },
+    "upload_status": {
+      "README.md": 200,
+      "input.txt": 200,
+      "builder.sh": 200
+    },
+    "preupload_digests": {
+      "README.md": "6ca386e0cc1da8cd06ad22f39a15110cc191fd9ed353b6dece6d317645bd580c",
+      "input.txt": "65da4a8465f339ccadbb4540891604d1369a2e7d2ee1f72ddb4aefb96c0ae8b3",
+      "builder.sh": "accad72f9461181fc43d5e8543db9bb0db0ecb86adecad159a86493ab7e5c03e"
+    },
+    "insandbox_digests_match": true,
+    "insandbox_digests_raw": "6ca386e0cc1da8cd06ad22f39a15110cc191fd9ed353b6dece6d317645bd580c  README.md\n65da4a8465f339ccadbb4540891604d1369a2e7d2ee1f72ddb4aefb96c0ae8b3  input.txt\naccad72f9461181fc43d5e8543db9bb0db0ecb86adecad159a86493ab7e5c03e  builder.sh",
+    "builder_stdout": "{\"event\":\"builder_ok\",\"timestamp\":\"2026-07-17T14:43:42Z\",\"input_sha256\":\"65da4a8465f339ccadbb4540891604d1369a2e7d2ee1f72ddb4aefb96c0ae8b3\",\"output_sha256\":\"68c1530617ee8c030053544a1973b4d34b0ce0531d1fda97a0a1e7283052197a\",\"uid\":\"0\",\"cwd\":\"/workspace\"}\n__RC=0",
+    "builder_exit": "0 (printed __RC=0)",
+    "result_content": "FOUNDERGATE_OPENSANDBOX_PHASE2_BUILDER_OK",
+    "result_sha256_insandbox": "68c1530617ee8c030053544a1973b4d34b0ce0531d1fda97a0a1e7283052197a",
+    "exported_sha256": "68c1530617ee8c030053544a1973b4d34b0ce0531d1fda97a0a1e7283052197a",
+    "export_matches_insandbox": true,
+    "class": "VERIFIED-RUNTIME"
+  },
+  "host_boundary": {
+    "class": "VERIFIED-RUNTIME+DOCKER-METADATA",
+    "attempted_path": "/Users/yosiwizman/Projects/foundergate/OPEN_SANDBOX_FORBIDDEN_WRITE_SENTINEL.txt",
+    "inside_container_write": "succeeded (wrote_rc=0, 28 bytes) \u2014 CONTAINER-LOCAL",
+    "host_sentinel_present_after": false,
+    "interpretation": "THE PATH WAS CONTAINER-LOCAL. THE HOST FOUNDERGATE PATH WAS NOT MODIFIED.",
+    "container_mounts": "[] (zero bind mounts; no host source, no home, no docker.sock)",
+    "main_head_after": "e1ca1989d2397297a450893f7890dbe7fc21e494 (clean)"
+  },
+  "docker_socket": {
+    "class": "VERIFIED-RUNTIME",
+    "inside_result": "/var/run/docker.sock: No such file or directory => SOCKET_ABSENT",
+    "host_docker_internal": "resolves to fdc4:f303:9324::254 (Docker Desktop DNS alias) \u2014 DNS name only, NOT a socket or Docker API",
+    "workload_uid": "0 (root inside container; no-new-privileges + caps dropped)"
+  },
+  "egress": {
+    "mode": "dns+nft",
+    "defaultAction": "deny",
+    "allowlist": [
+      "example.com"
+    ],
+    "T1_example_com": "ALLOWED_STATUS 200",
+    "T2_example_org_https": "DENIED (URLError Name or service not known \u2014 DNS NXDOMAIN)",
+    "T3_direct_ip_1.1.1.1_443": "DENIED (TimeoutError \u2014 nft IP-layer drop; no direct-IP bypass)",
+    "T4_example_org_dns_resolve": "DNS_BLOCKED (gaierror)",
+    "sidecar_image": "opensandbox/egress@sha256:973130e01bf76e8e686e2853ebf47b21741bc8781919bb4a7cf60af09a3c6e8a",
+    "workload_shares_sidecar_netns": true,
+    "workload_has_NET_ADMIN": false,
+    "sidecar_has_NET_ADMIN": true,
+    "classification": "EGRESS-STRICT-BEHAVIOR-CONFIRMED-IN-SPIKE",
+    "no_https_mitm_used": true,
+    "no_custom_root_cert": true
+  },
+  "egress_nft_chain": "table inet opensandbox chain egress: type filter hook output policy DROP; accept established/mark0x1/lo; drop dport 853; drop @deny sets; accept @dyn_allow/@allow sets; final drop",
+  "teardown": {
+    "class": "VERIFIED-RUNTIME+DOCKER-METADATA",
+    "core_sandbox": "DELETE 204, GET 404, container gone",
+    "egress_sandbox": "DELETE 204, GET 404, workload+sidecar+named-volume gone",
+    "server": "PID gone, no opensandbox-server process, 8090 no listener",
+    "docker_state": "containers 17==baseline17, networks 5==baseline5, no opensandbox/sandbox containers or networks left",
+    "sentinel_absent_final": true,
+    "main_clean_final": true
+  },
+  "control_plane_authority": {
+    "class": "VERIFIED-DOCKER-METADATA",
+    "note": "the server used the host Docker socket to create/destroy containers (control-plane authority). The workload sandbox was NEVER given /var/run/docker.sock (Mounts=[]; SOCKET_ABSENT inside)."
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "sev": "KNOWN-LIMITATION",
+      "text": "Default runtime = runc/standard container isolation; NOT kernel/microVM. Server: 'Secure runtime is not configured.'"
+    },
+    {
+      "id": "F2",
+      "sev": "MACOS-LIMITATION",
+      "text": "Server-internal execd proxy failed (HTTP 000) on macOS Docker Desktop; execd reached via Docker-published host port."
+    },
+    {
+      "id": "F3",
+      "sev": "HARDENING-GAP",
+      "text": "execd/control ports were Docker-published with HostIp 0.0.0.0 (all interfaces), NOT 127.0.0.1. At minimum host-localhost reachable; LAN-reachability not independently tested from a second host (rule 2). Not loopback-restricted => a real gap for any non-loopback deployment."
+    },
+    {
+      "id": "F4",
+      "sev": "OBSERVATION",
+      "text": "Workload ran as uid=0 (root) inside the container (with no-new-privileges + 9 caps dropped)."
+    },
+    {
+      "id": "F5",
+      "sev": "OBSERVATION",
+      "text": "Egress-mode sandbox mounted one Docker-managed NAMED volume (opensandbox-runtime-*/_data -> /opt/opensandbox, execd staging). Core sandbox had Mounts=[]. Neither is a host source path or docker.sock."
+    },
+    {
+      "id": "F6",
+      "sev": "SDK-MISMATCH",
+      "text": "Python SDK 0.1.14 create needs entrypoint+resourceLimits (drove via REST); its /files/upload sends the metadata part without a filename, but execd v1.0.21 reads form.File[metadata] (requires a filename). Builder added a filename to succeed. Possible SDK/execd version mismatch."
+    },
+    {
+      "id": "F7",
+      "sev": "NOT-RUN",
+      "text": "Playwright / rendered-UI feasibility (optional Phase 8) was NOT run."
+    }
+  ]
+}
