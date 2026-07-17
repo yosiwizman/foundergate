@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TBF-1 Witness Readiness (derived only)",
+  "type": "object",
+  "required": ["lane_id", "candidate_sha", "derived_state"],
+  "properties": {
+    "lane_id": {"type": "string"},
+    "candidate_sha": {"type": "string"},
+    "derived_state": {"type": "string", "enum": [
+      "NOT_READY", "MACHINE_VERIFICATION_IN_PROGRESS", "MACHINE_VERIFICATION_BLOCKED",
+      "READY_FOR_HUMAN_PERCEPTION_WITNESS", "WITNESS_COMPLETED", "REJECTED"]},
+    "derived_by": {"type": "string", "const": "tools/policy/validate_witness_readiness.py"},
+    "reasons": {"type": "array", "items": {"type": "string"}}
+  }
+}

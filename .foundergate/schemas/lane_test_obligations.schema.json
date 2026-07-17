@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TBF-1 Lane Test Obligations",
+  "type": "object",
+  "required": ["lane_id", "policy_version", "policy_digest", "base_sha", "risk_class",
+               "impact_classes", "required_test_classes", "current_state"],
+  "properties": {
+    "lane_id": {"type": "string"},
+    "policy_version": {"type": "string"},
+    "policy_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "objective": {"type": "string"},
+    "base_sha": {"type": "string"},
+    "risk_class": {"type": "string"},
+    "impact_classes": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "required_test_classes": {"type": "array", "items": {"type": "string"}},
+    "not_applicable": {"type": "array", "items": {
+      "type": "object", "required": ["class", "reason"],
+      "properties": {"class": {"type": "string"}, "reason": {"type": "string"}}}},
+    "local_tests": {"type": "array"}, "ci_tests": {"type": "array"},
+    "browser_tests": {"type": "array"}, "negative_tests": {"type": "array"},
+    "mutation_tests": {"type": "array"}, "recovery_tests": {"type": "array"},
+    "teardown_tests": {"type": "array"}, "evidence_requirements": {"type": "array"},
+    "independent_checker": {"type": "boolean"}, "final_advisor_required": {"type": "boolean"},
+    "founder_gate_required": {"type": "boolean"},
+    "witness_trigger": {"type": "string"}, "merge_readiness_trigger": {"type": "string"},
+    "current_state": {"type": "string"}
+  }
+}
