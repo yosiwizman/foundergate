@@ -1,1 +1,15 @@
-{"schema":"p71-recovery-1","updated_at_utc":"2026-07-17T19:07:16Z","overall_state":"TRUTHGAP_RECORDED; BUILDING","phase71_branch":"integration/founder-safety-check-evidence-pack-phase7-1","phase71_base":"6a269787a05982dc8feda14f5f79f102d5ba9551","remote_main":"e1ca1989d2397297a450893f7890dbe7fc21e494","runner_risk":"NONE","m1_state":"FOUNDER_RELAYED_RUNNING (not probed)","truth_gap":"BUTTON-DID-NOT-LAUNCH-A-NEW-RUNTIME","correction_cycles":0,"next_safe_action":"advisor audit; build real runtime job service"}
+{
+  "schema": "p71-recovery-1",
+  "updated_at_utc": "2026-07-17T19:34:05Z",
+  "overall_state": "BUILD_COMPLETE; CI_GREEN; CHECKER_PENDING",
+  "phase71_branch": "integration/founder-safety-check-evidence-pack-phase7-1",
+  "phase71_base": "6a269787a05982dc8feda14f5f79f102d5ba9551",
+  "remote_main": "e1ca1989d2397297a450893f7890dbe7fc21e494",
+  "runner_risk": "NONE",
+  "m1_state": "FOUNDER_RELAYED_RUNNING (not probed)",
+  "truth_gap": "BUTTON-DID-NOT-LAUNCH-A-NEW-RUNTIME",
+  "correction_cycles": 3,
+  "next_safe_action": "await checker; then integration PR + witness",
+  "exact_sha_ci": "SUCCESS (run 29607840593 on 0bcbd60)",
+  "live_run": "sc-0bc1b04f COMPLETE, VM destroyed"
+}
