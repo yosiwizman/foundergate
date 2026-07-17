@@ -1,0 +1,13 @@
+{
+  "at": "2026-07-16T02:23:30.350Z",
+  "required": true,
+  "held": true,
+  "holders": [
+    {
+      "pid": 57090,
+      "cmd": "caffeinate -dimsu node src/tools/soak-driver.mjs --sha 0cd51f8d34af1c0c3837210845c47deb7c53e9ce --claim 24 --evidence /Users/macm1/Projects/foundergate/docs/ass",
+      "via": "descendant"
+    }
+  ],
+  "checked_pids": 642
+}

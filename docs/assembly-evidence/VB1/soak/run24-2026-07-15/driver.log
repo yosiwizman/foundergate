@@ -1,0 +1,39 @@
+[2026-07-16T02:23:30.269Z] VB1 qualifying soak driver — pid 57085, host qual-host, sha 0cd51f8d34af1c0c3837210845c47deb7c53e9ce, claim 24h, ttl 108000s
+[2026-07-16T02:23:30.272Z] operator contract: launched under `caffeinate -dimsu` (verified read-only, never spawned here)
+[2026-07-16T02:23:30.307Z] HARD GATE ok — HEAD 0cd51f8d34af1c0c3837210845c47deb7c53e9ce, frozen scope clean
+[2026-07-16T02:23:30.309Z] L3 provenance captured (no secrets)
+[2026-07-16T02:23:30.323Z] L1 freeze manifest — manifest_hash d2591ef940f37ff1dd78a7ec3e70541203d5dfde4367b1185a08371665ecf05f, 338 files, anchor 0cd51f8d34af1c0c3837210845c47deb7c53e9ce
+[2026-07-16T02:23:30.350Z] caffeinate assertion: HELD (descendant)
+[2026-07-16T02:23:30.417Z] intervention-log opened (sentinel) — run run_30ced1a1-ec10-4b67-8152-105f7ac0e05b
+[2026-07-16T02:23:30.417Z] lease acquired lease_4b928ab8e6cd49c9b9f54454fa488625, run run_30ced1a1-ec10-4b67-8152-105f7ac0e05b; TTL 108000s; preflight quiet
+[2026-07-16T02:23:30.449Z] launching soak-run.mjs — claim 24h, interval 900s, probe "npm test"
+[2026-07-17T02:23:46.269Z] L1 freeze re-verified — NO DRIFT (manifest_hash unchanged, 338 files)
+[2026-07-17T02:23:46.270Z] VERDICT:
+FOUNDERGATE HARNESS 24-HOUR SOAK PASS
+
+start: 2026-07-16T02:23:38.583Z
+end: 2026-07-17T02:23:46.241Z
+actual span: 24.002h (claimed span 24h)
+SHA under test: 0cd51f8d34af1c0c3837210845c47deb7c53e9ce
+availability: 100.000% (SLO 99.00%) over 97 samples (ok 97 / fail 0)
+monitoring evidence: monitor-record.jsonl, monitor-snapshot.json
+failures & interventions log: intervention-log.jsonl
+QUIET_HOST eligibility: INTACT for the whole run
+caffeinate power assertion: HELD (descendant)
+frozen-code integrity: NO DRIFT (manifest re-verified at end)
+lease: lease_4b928ab8e6cd49c9b9f54454fa488625
+run: run_30ced1a1-ec10-4b67-8152-105f7ac0e05b
+host: qual-host
+
+AND-gate held: availability SLO AND QUIET_HOST eligibility AND frozen-code integrity all TRUE.
+
+--- accumulator output (verbatim, authoritative) ---
+FOUNDERGATE HARNESS 24-HOUR SOAK PASS
+start: 2026-07-16T02:23:38.583Z
+end: 2026-07-17T02:23:46.241Z
+span: 24.00h (claim 24h)
+availability: 100.000% (SLO 99.00%)
+samples: 97 (ok 97 / fail 0)
+SHA under test: 0cd51f8d34af1c0c3837210845c47deb7c53e9ce
+[2026-07-17T02:23:46.286Z] lease release: {"ok":true,"released_at":"2026-07-17T02:23:46.271Z"}
+[2026-07-17T02:23:46.286Z] DONE — verdict PASS

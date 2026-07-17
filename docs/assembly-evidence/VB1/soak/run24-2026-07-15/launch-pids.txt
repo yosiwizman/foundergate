@@ -1,0 +1,6 @@
+VB1 24h qualifying soak — launch PIDs (2026-07-16 02:23 UTC)
+driver (lease owner) : 57085  node src/tools/soak-driver.mjs
+caffeinate -dimsu    : 57090  (asserting on behalf of node pid 57085, no timeout)
+soak child           : 57139  node src/tools/soak-run.mjs (probe "npm test", interval 900s)
+bound SHA            : 0cd51f8d34af1c0c3837210845c47deb7c53e9ce
+claim                : 24h   TTL 108000s (30h)   purpose "VB1 24h qualifying soak"
