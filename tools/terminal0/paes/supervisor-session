@@ -11,10 +11,13 @@ import { dirname, join } from "node:path";
 import { canEnterRunning, evaluateStop, deadlineStatus } from "../../../src/supervisor/supervisor-core.mjs";
 import { acquireSingleton, releaseSingleton } from "../../../src/supervisor/singleton.mjs";
 import { runBeatingChild } from "../../../src/supervisor/worker-heartbeat.mjs";
+import { originalRunDeadline, workerSpawnDecision, isDoneOutcome, shouldStopScheduling } from "../../../src/supervisor/deadline-law.mjs";
 import { readFileSync as _rf, existsSync as _ex } from "node:fs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
-const SUP = join(REPO, ".foundergate", "supervisor");
+// SUP defaults to the real supervisor dir; FG_SUP_DIR lets tests point the real
+// production supervisor at an isolated synthetic state root (no real state touched).
+const SUP = process.env.FG_SUP_DIR || join(REPO, ".foundergate", "supervisor");
 const CLAUDE = process.env.FG_CLAUDE_BIN || "claude";
 // Each tool is a SEPARATE argv element — several Bash patterns contain an
 // internal space (e.g. "Bash(git add:*)"), so a single space-joined string
@@ -25,6 +28,11 @@ const ALLOWLIST = ["Read", "Edit", "Write", "Grep", "Glob",
 const CYCLE_SLEEP_MS = Number(process.env.FG_CYCLE_SLEEP_MS || 8000);
 const HEARTBEAT_INTERVAL_MS = Number(process.env.FG_HEARTBEAT_INTERVAL_MS || 1000);
 const WARMUP_BEATS = Number(process.env.FG_WARMUP_BEATS || 5);
+// Drain margin: stop taking NEW work this many seconds before the deadline. The
+// HARD deadline law (per-worker effective timeout) is independent of and stronger
+// than this; the margin only affects when draining begins. Configurable so
+// deadline-during-worker behaviour is testable without a 15-minute wait.
+const DRAIN_MARGIN_S = Number(process.env.FG_DRAIN_MARGIN_S || 900);
 let hbSeq = 0;
 const MAX_CYCLES = Number(process.env.FG_MAX_CYCLES || 0); // 0 = until deadline
 
@@ -57,7 +65,35 @@ function preconditions() {
   };
 }
 
+// The IMMUTABLE original run deadline (epoch seconds): the ORC recovery
+// checkpoint's original_deadline (survives restart/recovery) or, absent that, the
+// cycle deadline. Missing/malformed -> null so the deadline law fails closed.
+function originalDeadlineS() {
+  // SUP-relative recovery path: identical to REPO/.foundergate/recovery in
+  // production, isolated under FG_SUP_DIR for tests.
+  const cp = join(SUP, "..", "recovery", "checkpoint.json");
+  const checkpoint = existsSync(cp)
+    ? (() => { try { return JSON.parse(readFileSync(cp, "utf8")); } catch { return null; } })() : null;
+  const cycle = rj("current-cycle.json", null);
+  return originalRunDeadline({ checkpoint, cycle });
+}
+// Optional authorized per-job timeout (seconds). Env/queue can only SHORTEN the
+// window (the deadline law caps it by remaining run time); they can never enlarge it.
+function jobTimeoutS(job) {
+  const q = Number(job && job.timeout_s);
+  const e = Number(process.env.FG_JOB_TIMEOUT_S);
+  const cands = [q, e].filter((n) => Number.isFinite(n) && n > 0);
+  return cands.length ? Math.min(...cands) : null;
+}
+
 async function runWorker(job) {
+  // HARD DEADLINE LAW: compute remaining run time and the effective (capped)
+  // timeout for THIS invocation. If the deadline has passed, never spawn.
+  const decision = workerSpawnDecision({ originalDeadlineS: originalDeadlineS(), nowS: nowS(), jobTimeoutS: jobTimeoutS(job) });
+  if (!decision.spawn) {
+    led({ evt: "worker_not_spawned", job_id: job.job_id, outcome: decision.outcome, reason: "run deadline expired before spawn" });
+    return { outcome: decision.outcome, ok: false, preSpawn: true, spawned: false };
+  }
   const pf = join(SUP, "worker-results", `${job.job_id}.prompt.txt`);
   const prompt = existsSync(pf) ? readFileSync(pf, "utf8") : (job.prompt || 'Return {"noop":true}');
   const sess = rj(`worker-results/${job.job_id}.session`, null);
@@ -67,20 +103,24 @@ async function runWorker(job) {
   const args = sess && sess.session_id
     ? ["--resume", sess.session_id, "-p", prompt, ...tail]
     : ["-p", prompt, ...tail];
-  led({ evt: "worker_invocation", job_id: job.job_id, mode: sess ? "resume" : "fresh" });
-  // NON-BLOCKING spawn + heartbeat interval: liveness stays fresh for the whole
-  // worker (even one longer than the 120s staleness interval), so a live-but-busy
-  // supervisor is never misclassified as stale and replaced. Was spawnSync, which
-  // froze the single-threaded event loop for the worker's entire duration.
+  led({ evt: "worker_invocation", job_id: job.job_id, mode: sess ? "resume" : "fresh", effective_timeout_s: decision.effectiveTimeoutS, timeout_outcome: decision.timeoutOutcome });
+  // NON-BLOCKING spawn in its OWN PROCESS GROUP (detached) + heartbeat interval:
+  // liveness stays fresh for the whole worker, AND the effective timeout is a HARD
+  // execution boundary — on timeout/stop the whole process tree is SIGTERM->grace
+  // ->SIGKILL'd and VERIFIED gone. A timeout is never marked SUCCESS/DONE.
   const r = await runBeatingChild({
-    spawnChild: () => spawn(CLAUDE, args, { cwd: REPO, stdio: ["ignore", "pipe", "pipe"] }),
+    spawnChild: () => spawn(CLAUDE, args, { cwd: REPO, stdio: ["ignore", "pipe", "pipe"], detached: true }),
     beat, intervalMs: HEARTBEAT_INTERVAL_MS, maxBufferBytes: 64 * 1024 * 1024,
+    effectiveTimeoutS: decision.effectiveTimeoutS, timeoutOutcome: decision.timeoutOutcome,
+    stopRequested: () => !!rj("stop.json", {}).panic_stop,
+    onEvent: (o) => led({ ...o, job_id: job.job_id }),
   });
-  let cost = null, sid = null, ok = false;
-  try { const o = JSON.parse((r.stdout || "").trim().split("\n").pop()); cost = o.total_cost_usd; sid = o.session_id; ok = o.subtype === "success" && !o.is_error; } catch { /* */ }
+  let cost = null, sid = null;
+  const ok = r.outcome === "SUCCESS";
+  try { const o = JSON.parse((r.stdout || "").trim().split("\n").pop()); cost = o.total_cost_usd; sid = o.session_id; } catch { /* */ }
   if (sid) wj(`worker-results/${job.job_id}.session`, { session_id: sid });
-  led({ evt: "worker_result", job_id: job.job_id, exit: r.status, success: ok, cost_usd: cost, overflow: r.overflow });
-  return { ok, cost };
+  led({ evt: "worker_result", job_id: job.job_id, outcome: r.outcome, exit: r.status, success: ok, cost_usd: cost, overflow: r.overflow, escalated: r.escalated, terminated: r.terminated });
+  return { outcome: r.outcome, ok, cost, escalated: r.escalated, terminated: r.terminated, spawned: true };
 }
 
 async function main() {
@@ -120,7 +160,7 @@ async function main() {
   for (;;) {
     beat();
     cycles++;
-    const ds = deadlineStatus(nowS(), cycle.start, cycle.deadline, 900);
+    const ds = deadlineStatus(nowS(), cycle.start, cycle.deadline, DRAIN_MARGIN_S);
     const q = rj("queue.json", { jobs: [] });
     const ready = (q.jobs || []).filter((j) => j.state === "READY");
     const ctx = { ready_jobs: (ds === "DEADLINE_REACHED" || ds === "DRAINING") ? 0 : ready.length,
@@ -136,8 +176,24 @@ async function main() {
     if (ready.length && activated) {
       const job = ready[0];
       const res = await runWorker(job);
-      const jobs = q.jobs.map((j) => j.job_id === job.job_id ? { ...j, state: res.ok ? "DONE" : "FAILED", restart_count: (j.restart_count || 0) + (res.ok ? 0 : 1) } : j);
+      // Outcome -> job state. Only SUCCESS is DONE. A deadline-expired or
+      // stop-terminated job is PRESERVED (HELD, not DONE, not restart-counted) so
+      // remaining work survives a governed shutdown; every other non-success
+      // outcome (timeout/overflow/spawn-error/unknown) is FAILED and fails closed.
+      const preserved = res.outcome === "RUN_DEADLINE_EXPIRED" || res.outcome === "TERMINATED_BY_STOP";
+      const newState = isDoneOutcome(res.outcome) ? "DONE" : (preserved ? "HELD" : "FAILED");
+      const jobs = q.jobs.map((j) => j.job_id === job.job_id
+        ? { ...j, state: newState, last_outcome: res.outcome, restart_count: (j.restart_count || 0) + (newState === "FAILED" ? 1 : 0) }
+        : j);
       wj("queue.json", { ...q, jobs });
+      // HARD DEADLINE: once the run deadline is reached (pre-spawn or mid-worker),
+      // STOP scheduling further jobs and enter governed shutdown. Remaining READY
+      // jobs are preserved as queued; the original deadline is never extended.
+      if (shouldStopScheduling(res.outcome)) {
+        wj("state.json", { state: "RUN_DEADLINE_EXPIRED", mode: "USER_SESSION_DETACHED", updated_at: new Date(nowS() * 1000).toISOString() });
+        led({ evt: "run_deadline_expired", job_id: job.job_id, pre_spawn: !!res.preSpawn, note: "governed shutdown; remaining jobs preserved; original deadline unchanged" });
+        break;
+      }
     } else {
       led({ evt: activated ? "idle_cycle" : "awaiting_activation", note: activated ? "no ready job; heartbeat continues" : "jobs gated until activation; heartbeat continues" });
     }

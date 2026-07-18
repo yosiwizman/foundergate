@@ -1,0 +1,2 @@
+{"evt":"dcl_capture","state":"DIGEST_VERIFIED","sha256":"13537d8c273fe6492b735d7c0db0a47d55866a0f6ca43d19e1858e3109ef0c59","ts":1784418229}
+{"evt":"phase1_reconciled","main_clean":true,"synced":true,"decision_consumed":false,"real_run":"NOT_STARTED","ts":1784418229}

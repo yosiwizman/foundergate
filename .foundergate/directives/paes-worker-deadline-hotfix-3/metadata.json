@@ -1,0 +1,18 @@
+{
+  "directive_id": "paes-worker-deadline-hotfix-3",
+  "title_verified": true,
+  "sha256": "13537d8c273fe6492b735d7c0db0a47d55866a0f6ca43d19e1858e3109ef0c59",
+  "stored_sha256": "13537d8c273fe6492b735d7c0db0a47d55866a0f6ca43d19e1858e3109ef0c59",
+  "digest_equal": true,
+  "byte_count": 14732,
+  "line_count": 551,
+  "boundary_anchor_first": "FOUNDERGATE PAES-WORKER-DEADLINE-HOTFIX-3 — HARD RUN DEADLINE, B",
+  "boundary_anchor_last": "TFIX: REJECT\\nPAES-WORKER-DEADLINE-HOTFIX: INSUFFICIENT-EVIDENCE\\n",
+  "required_sections_present": true,
+  "missing_sections": [],
+  "verdict_list_complete": true,
+  "missing_verdicts": [],
+  "untruncated": true,
+  "current_state": "DIGEST_VERIFIED",
+  "captured_at_note": "transcript-to-disk digest computed over the persisted body"
+}
