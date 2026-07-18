@@ -83,8 +83,11 @@ async function run() {
     const now = nowS();
     ok("10 CONTROL: no-beat worker leaves lock STALE (isHealthy false)",
       isHealthy(lock, { pid_alive: true, now, stale_interval: STALE }) === false);
-    ok("11 CONTROL: stale live lock WOULD be recovered (the bug the fix removes)",
-      evaluateAcquire(lock, { pid: process.pid + 1, run_id: "R2", nonce: "n2" }, { pid_alive: false, now, stale_interval: STALE }).action === "recover");
+    // pid_alive:true here is the honest mirror of test 09 — the ONLY difference is
+    // heartbeat freshness (the variable the fix controls). A LIVE-but-stale lock is
+    // recovered => a live, busy supervisor WOULD be replaced. That is the bug.
+    ok("11 CONTROL: LIVE-but-stale lock WOULD be recovered (a live busy supervisor replaced — the exact bug)",
+      evaluateAcquire(lock, { pid: process.pid + 1, run_id: "R2", nonce: "n2" }, { pid_alive: true, now, stale_interval: STALE }).action === "recover");
   }
 
   // 5. OVERFLOW: exceeding maxBufferBytes flags overflow + kills the child + ok=false.
