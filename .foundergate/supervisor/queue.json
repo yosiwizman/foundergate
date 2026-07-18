@@ -2,15 +2,35 @@
   "schema": "supervisor-queue",
   "jobs": [
     {
-      "job_id": "qual1",
-      "state": "FAILED",
-      "prompt": "Use the Write tool to create the file .foundergate/supervisor/worker-results/qual1.result.json containing exactly {\"ok\":true,\"synthetic\":true}. Then reply with {\"done\":true}. Do not modify any other file. Do not run git push or any merge.",
+      "job_id": "sq1",
+      "state": "DONE",
+      "prompt": "Use the Write tool to create .foundergate/supervisor/worker-results/sq1.result.json with exactly {\"ok\":true,\"n\":1}. Then reply {\"done\":true}. Do not modify other files. No git push/merge.",
       "required_tools": [
         "Write"
       ],
       "risk_class": "wide_safe",
-      "restart_count": 1
+      "restart_count": 0
+    },
+    {
+      "job_id": "sq2",
+      "state": "DONE",
+      "prompt": "Use the Write tool to create .foundergate/supervisor/worker-results/sq2.result.json with exactly {\"ok\":true,\"n\":2}. Then reply {\"done\":true}. Do not modify other files. No git push/merge.",
+      "required_tools": [
+        "Write"
+      ],
+      "risk_class": "wide_safe",
+      "restart_count": 0
+    },
+    {
+      "job_id": "sq3",
+      "state": "DONE",
+      "prompt": "Use the Write tool to create .foundergate/supervisor/worker-results/sq3.result.json with exactly {\"ok\":true,\"n\":3}. Then reply {\"done\":true}. Do not modify other files. No git push/merge.",
+      "required_tools": [
+        "Write"
+      ],
+      "risk_class": "wide_safe",
+      "restart_count": 0
     }
   ],
-  "updated_at": "live2"
+  "updated_at": "sess3"
 }

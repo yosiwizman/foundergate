@@ -1,0 +1,31 @@
+{
+  "directive_id": "paes-session-1",
+  "title": "FOUNDERGATE PAES-SESSION-1 \u2014 AUTHENTICATED USER-SESSION DETACHED SUPERVISOR QUALIFICATION AND WAVE-2 HANDOFF",
+  "version": 1,
+  "issuer": "founder",
+  "source_line": 22723,
+  "source_type": "user",
+  "sha256": "45cea4f702ee70f74a06d6681d532123d35b79ed686d4ad73da6bdc455b8de0a",
+  "stored_sha256": "45cea4f702ee70f74a06d6681d532123d35b79ed686d4ad73da6bdc455b8de0a",
+  "digest_equal": true,
+  "byte_count": 13552,
+  "line_count": 480,
+  "required_sections_present": {
+    "AUTHORITY": true,
+    "PURPOSE": true,
+    "PHASE 0": true,
+    "PHASE 3 \u2014 DETACHED SESSION QUALIFICATION": true,
+    "PHASE 5 \u2014 UNATTENDED HANDOFF BARRIER": true,
+    "FINAL OUTPUT": true,
+    "PAES-SESSION1: SELF-CAPTURE-FAILED": true
+  },
+  "depends_on": [
+    "dcl-1",
+    "arlc-1",
+    "are-1",
+    "paes-1",
+    "fgri-1",
+    "fgri-paes-recovery-1"
+  ],
+  "current_state": "DIGEST_VERIFIED"
+}

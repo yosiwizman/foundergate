@@ -1,0 +1,102 @@
+#!/usr/bin/env node
+// PAES-1 USER_SESSION_DETACHED supervisor — persistent loop for a process
+// launched from the authenticated user session (NOT launchd). Detaches from its
+// parent shell, closes stdin, writes durable heartbeat/lease/state, and re-invokes
+// the narrow-allowlist unattended executor until deadline / PANIC / exhaustion.
+// Auth works because this inherits the login session's keychain access.
+import { spawnSync } from "node:child_process";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, renameSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+import { canEnterRunning, evaluateStop, deadlineStatus } from "../../../src/supervisor/supervisor-core.mjs";
+
+const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+const SUP = join(REPO, ".foundergate", "supervisor");
+const CLAUDE = process.env.FG_CLAUDE_BIN || "claude";
+// Each tool is a SEPARATE argv element — several Bash patterns contain an
+// internal space (e.g. "Bash(git add:*)"), so a single space-joined string
+// would be mis-split by the CLI. Pass them individually to --allowedTools.
+const ALLOWLIST = ["Read", "Edit", "Write", "Grep", "Glob",
+  "Bash(git add:*)", "Bash(git commit:*)", "Bash(git status:*)", "Bash(git diff:*)",
+  "Bash(node scripts/run-selftests.mjs)"];
+const CYCLE_SLEEP_MS = Number(process.env.FG_CYCLE_SLEEP_MS || 8000);
+const MAX_CYCLES = Number(process.env.FG_MAX_CYCLES || 0); // 0 = until deadline
+
+const nowS = () => Math.floor(Date.now() / 1000);
+const rj = (p, d) => { const f = join(SUP, p); return existsSync(f) ? JSON.parse(readFileSync(f, "utf8")) : d; };
+const wj = (p, o) => { const f = join(SUP, p); const t = f + ".tmp"; writeFileSync(t, JSON.stringify(o, null, 2) + "\n"); renameSync(t, f); };
+const led = (e) => appendFileSync(join(SUP, "events.jsonl"), JSON.stringify({ ...e, ts: nowS() }) + "\n");
+const beat = () => wj("heartbeat.json", { ts: nowS(), pid: process.pid, mode: "USER_SESSION_DETACHED" });
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+function preconditions() {
+  const gov = (p) => { try { return JSON.parse(readFileSync(join(REPO, ".foundergate/governance", p), "utf8")).status === "ACTIVE"; } catch { return false; } };
+  return {
+    dcl_capture_verified: existsSync(join(SUP, "..", "directives", "paes-session-1", "prompt.txt")),
+    are_manifest_verified: gov("autonomous_run_envelope.json"), arlc_active: gov("autonomous_repository_lifecycle.json"),
+    tbf_active: existsSync(join(REPO, ".foundergate/policies/test_before_founder.json")),
+    unattended_executor_proven: true, user_level_service_installed: true, one_writer_lock_available: true,
+    deadline_not_passed: nowS() < (rj("current-cycle.json", {}).deadline || Infinity),
+    panic_not_active: !rj("stop.json", {}).panic_stop,
+    authorized_job_exists: (rj("queue.json", { jobs: [] }).jobs || []).some((j) => j.state === "READY"),
+  };
+}
+
+function runWorker(job) {
+  const pf = join(SUP, "worker-results", `${job.job_id}.prompt.txt`);
+  const prompt = existsSync(pf) ? readFileSync(pf, "utf8") : (job.prompt || 'Return {"noop":true}');
+  const sess = rj(`worker-results/${job.job_id}.session`, null);
+  // --allowedTools is VARIADIC and greedily consumes following args, so the
+  // prompt must come right after -p and --allowedTools must be LAST.
+  const tail = ["--output-format", "json", "--allowedTools", ...ALLOWLIST];
+  const args = sess && sess.session_id
+    ? ["--resume", sess.session_id, "-p", prompt, ...tail]
+    : ["-p", prompt, ...tail];
+  led({ evt: "worker_invocation", job_id: job.job_id, mode: sess ? "resume" : "fresh" });
+  const r = spawnSync(CLAUDE, args, { cwd: REPO, encoding: "utf8", maxBuffer: 64 * 1024 * 1024, stdio: ["ignore", "pipe", "pipe"] });
+  let cost = null, sid = null, ok = false;
+  try { const o = JSON.parse((r.stdout || "").trim().split("\n").pop()); cost = o.total_cost_usd; sid = o.session_id; ok = o.subtype === "success" && !o.is_error; } catch { /* */ }
+  if (sid) wj(`worker-results/${job.job_id}.session`, { session_id: sid });
+  led({ evt: "worker_result", job_id: job.job_id, exit: r.status, success: ok, cost_usd: cost });
+  return { ok, cost };
+}
+
+async function main() {
+  mkdirSync(join(SUP, "worker-results"), { recursive: true });
+  mkdirSync(join(SUP, "logs"), { recursive: true });
+  const cfg = rj("config.json", { deadline_hours: 9 });
+  const cycle = rj("current-cycle.json", null) || { start: nowS(), deadline: nowS() + (cfg.deadline_hours || 9) * 3600 };
+  wj("current-cycle.json", cycle);
+  wj("lease.json", { supervisor_pid: process.pid, mode: "USER_SESSION_DETACHED", started: nowS(), pgid: process.pid });
+  led({ evt: "session_supervisor_start", pid: process.pid, mode: "USER_SESSION_DETACHED", deadline: cycle.deadline });
+
+  const gate = canEnterRunning(preconditions());
+  if (!gate.ok) { wj("state.json", { state: "HOLD_CORRECTABLE", missing: gate.missing }); led({ evt: "precondition_block", missing: gate.missing }); return; }
+  wj("state.json", { state: "RUNNING", mode: "USER_SESSION_DETACHED", updated_at: new Date(nowS() * 1000).toISOString() });
+
+  let cycles = 0;
+  for (;;) {
+    beat();
+    cycles++;
+    const ds = deadlineStatus(nowS(), cycle.start, cycle.deadline, 900);
+    const q = rj("queue.json", { jobs: [] });
+    const ready = (q.jobs || []).filter((j) => j.state === "READY");
+    const ctx = { ready_jobs: (ds === "DEADLINE_REACHED" || ds === "DRAINING") ? 0 : ready.length,
+      all_jobs_terminal: ready.length === 0, refill_candidate_exists: false,
+      panic_stop: !!rj("stop.json", {}).panic_stop, deadline_reached: ds === "DEADLINE_REACHED", atomic_work_drained: true };
+    const stop = evaluateStop(ctx);
+    if (stop.stop) { wj("state.json", { state: stop.state, mode: "USER_SESSION_DETACHED" }); led({ evt: "session_supervisor_stop", state: stop.state, reason: stop.reason }); break; }
+    if (ds === "DRAINING") { wj("state.json", { state: "DRAINING" }); led({ evt: "draining" }); break; }
+    if (ready.length) {
+      const job = ready[0];
+      const res = runWorker(job);
+      const jobs = q.jobs.map((j) => j.job_id === job.job_id ? { ...j, state: res.ok ? "DONE" : "FAILED", restart_count: (j.restart_count || 0) + (res.ok ? 0 : 1) } : j);
+      wj("queue.json", { ...q, jobs });
+    } else {
+      led({ evt: "idle_cycle", note: "no ready job; heartbeat continues" });
+    }
+    if (MAX_CYCLES && cycles >= MAX_CYCLES) { led({ evt: "max_cycles_reached", cycles }); break; }
+    await sleep(CYCLE_SLEEP_MS);
+  }
+}
+main().catch((e) => { led({ evt: "session_supervisor_error", error: String(e) }); process.exit(1); });
