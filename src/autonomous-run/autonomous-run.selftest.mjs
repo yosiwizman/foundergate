@@ -137,6 +137,34 @@ ok("M revise with meta produces new digest", reviseManifest(fullMani, { blueprin
 writeRecovery(join(tmp, "recovery.json"), { state: "RUNNING" });
 ok("M atomic recovery written", existsSync(join(tmp, "recovery.json")));
 
+// ---- Regression: ARE1-CHECKER findings (F1-F5) ----
+// F1: fail-open classifier — production/customer/payment phrasings must be founder gates.
+for (const ext of ["deploy_to_prod_server", "ship_to_public", "go_live", "charge_card"]) {
+  ok(`F1 external '${ext}' -> founder gate`, mk({ external_actions: [ext] }).true_founder_gates.includes("FR-Q"));
+}
+for (const dc of ["pii", "customer_pii", "health_records"]) {
+  ok(`F1 data '${dc}' -> founder gate`, mk({ data_classes: [dc] }).true_founder_gates.includes("FR-Q"));
+}
+// F1 delegation/fail-closed: with no ARLC policy on disk, an authority-bearing need still fails closed.
+import { classifyRequirementGate } from "./blueprint-compiler.mjs";
+ok("F1 fail-closed without ARLC policy (authority need -> founder)", classifyRequirementGate({ external_actions: ["unknown_action"] }, null) === "TRUE_FOUNDER_GATE");
+ok("F1 routine (no authority need) stays operational", classifyRequirementGate({ text: "internal tool" }, null) === "OPERATIONAL_AUTONOMOUS");
+// F2: PASS never from empty predicates / no evidence.
+ok("F2 empty predicates -> INSUFFICIENT_EVIDENCE", computeFinalStatus([], []).status === "INSUFFICIENT_EVIDENCE");
+ok("F2 no evidence -> INSUFFICIENT_EVIDENCE", computeFinalStatus([{ id: "p", met: true, evidence: ["e"], blocking: true }], []).status === "INSUFFICIENT_EVIDENCE");
+// F3: SoD cannot be bypassed by omitting actor-role fields; valid when actors differ.
+ok("F3 PLAN_CHECKED without builder_actor rejected", validateTransition({ prior_state: "CHECKER_REQUIRED", next_state: "PLAN_CHECKED", reason_code: "c", actor: "B1", authority_source: "p", exact_sha: "s", blueprint_digest: "d", manifest_digest: "m", evidence_paths: ["e"], timestamp: "t", idempotency_key: "k", recovery_action: "n" }).valid === false);
+ok("F3 RUNNING without checker_actor rejected", validateTransition({ prior_state: "READY_TO_RUN", next_state: "RUNNING", reason_code: "r", actor: "C1", authority_source: "p", exact_sha: "s", blueprint_digest: "d", manifest_digest: "m", evidence_paths: ["e"], timestamp: "t", idempotency_key: "k", recovery_action: "n" }).valid === false);
+ok("F3 valid PLAN_CHECKED with distinct builder_actor", validateTransition({ prior_state: "CHECKER_REQUIRED", next_state: "PLAN_CHECKED", reason_code: "c", actor: "CHK", builder_actor: "BLD", authority_source: "p", exact_sha: "s", blueprint_digest: "d", manifest_digest: "m", evidence_paths: ["e"], timestamp: "t", idempotency_key: "k", recovery_action: "n" }).valid === true);
+ok("F3 PLAN_CHECKED from wrong prior rejected", validateTransition({ prior_state: "BLUEPRINT_RECEIVED", next_state: "PLAN_CHECKED", reason_code: "c", actor: "CHK", builder_actor: "BLD", authority_source: "p", exact_sha: "s", blueprint_digest: "d", manifest_digest: "m", evidence_paths: ["e"], timestamp: "t", idempotency_key: "k", recovery_action: "n" }).valid === false);
+// F4: duplicate requirement id -> PLAN_INVALID.
+const dupBp = fullBlueprint(); dupBp.functional_requirements = [{ id: "FR-1", text: "a" }, { id: "FR-1", text: "b" }];
+ok("F4 duplicate requirement id -> PLAN_INVALID", compileBlueprint(dupBp, { policyVersion: "1.0.0", repoRoot: process.cwd() }).ok === false);
+// F5: empty-string risk field rejected; empty array allowed.
+const emptyStr = fullBlueprint(); emptyStr.spending_limits = "";
+ok("F5 empty-string risk field -> BLUEPRINT_INVALID", validateBlueprint(emptyStr).state === "BLUEPRINT_INVALID");
+ok("F5 empty-array risk field still valid (explicit none)", validateBlueprint(fullBlueprint()).state === "BLUEPRINT_ACCEPTED");
+
 rmSync(tmp, { recursive: true, force: true });
 console.log(`\nARE-1 SELFTEST: ${n - fails.length}/${n} passed`);
 if (fails.length) { console.log("FAILED:", fails.join(", ")); process.exit(1); }

@@ -38,11 +38,20 @@ export function validateTransition(t) {
     problems.push(`PASS requires prior in {${[...PASS_PREDS].join(",")}}, got ${t.prior_state}`);
   }
   // Builder cannot create CHECKER-CLEAN; checker cannot execute the work.
-  if (t.next_state === "PLAN_CHECKED" && t.actor && t.builder_actor && t.actor === t.builder_actor) {
-    problems.push("builder cannot self-certify (create CHECKER-CLEAN)");
+  // Fail closed: the actor-role context is REQUIRED for these transitions and
+  // the prior state is constrained, so omitting the fields cannot bypass the
+  // separation-of-duties check.
+  const PLAN_CHECKED_PREDS = ["CHECKER_REQUIRED", "PLAN_COMPILED"];
+  const RUNNING_PREDS = ["READY_TO_RUN", "RUNNING_WITH_RECOVERY", "ROUTINE_CORRECTION"];
+  if (t.next_state === "PLAN_CHECKED") {
+    if (!PLAN_CHECKED_PREDS.includes(t.prior_state)) problems.push(`PLAN_CHECKED must come from ${PLAN_CHECKED_PREDS.join("/")}`);
+    if (!t.builder_actor) problems.push("PLAN_CHECKED requires builder_actor (to prove checker != builder)");
+    else if (t.actor === t.builder_actor) problems.push("builder cannot self-certify (create CHECKER-CLEAN)");
   }
-  if (t.next_state === "RUNNING" && t.actor && t.checker_actor && t.actor === t.checker_actor) {
-    problems.push("checker cannot execute the work it checks");
+  if (t.next_state === "RUNNING") {
+    if (!RUNNING_PREDS.includes(t.prior_state)) problems.push(`RUNNING must come from ${RUNNING_PREDS.join("/")}`);
+    if (!t.checker_actor) problems.push("RUNNING requires checker_actor (to prove executor != checker)");
+    else if (t.actor === t.checker_actor) problems.push("checker cannot execute the work it checks");
   }
   return { valid: problems.length === 0, problems };
 }

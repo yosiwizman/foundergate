@@ -44,8 +44,14 @@ export function validateBlueprint(bp) {
   if (!bp || typeof bp !== "object") {
     return { state: "BLUEPRINT_INVALID", valid: false, missing: REQUIRED_FIELDS.slice(), problems: ["not an object"], digest: null };
   }
-  const missing = REQUIRED_FIELDS.filter((f) => !(f in bp) || bp[f] === null || bp[f] === undefined);
-  const missingRiskAuthority = missing.filter((f) => RISK_AUTHORITY_FIELDS.includes(f));
+  const isAbsent = (v) => v === null || v === undefined;
+  const missing = REQUIRED_FIELDS.filter((f) => !(f in bp) || isAbsent(bp[f]));
+  // Risk/authority fields fail closed on an empty/whitespace STRING (not a valid
+  // risk-surface statement). An empty ARRAY is a valid explicit "none" declaration
+  // (e.g. external_actions: [] = "no external actions") and is allowed.
+  const isEmptyString = (v) => typeof v === "string" && v.trim() === "";
+  const missingRiskAuthority = RISK_AUTHORITY_FIELDS.filter(
+    (f) => !(f in bp) || isAbsent(bp[f]) || isEmptyString(bp[f]));
 
   // A blueprint may never self-grant authority.
   if (bp.grants_live_authority === true || bp.authority_granted === true) {

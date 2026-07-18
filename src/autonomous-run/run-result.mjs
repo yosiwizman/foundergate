@@ -22,6 +22,16 @@ export const CAPSULE_REQUIRED = [
 export function computeFinalStatus(completionPredicates, evidence) {
   const preds = completionPredicates || [];
   const anyEvidence = Array.isArray(evidence) && evidence.length > 0;
+
+  // Missing evidence can NEVER produce PASS. No completion predicates at all, or
+  // no evidence at all, is insufficient — not a pass by vacuous truth.
+  if (preds.length === 0) {
+    return { status: "INSUFFICIENT_EVIDENCE", reason: "no completion predicates declared" };
+  }
+  if (!anyEvidence) {
+    return { status: "INSUFFICIENT_EVIDENCE", reason: "no evidence present" };
+  }
+
   const blocking = preds.filter((p) => p.blocking !== false);
   const nonBlocking = preds.filter((p) => p.blocking === false);
 

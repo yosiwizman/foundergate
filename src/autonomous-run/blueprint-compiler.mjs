@@ -18,22 +18,44 @@ function loadArlcClasses(repoRoot) {
   return JSON.parse(readFileSync(p, "utf8")).action_classification;
 }
 
-// Map a requirement's declared authority needs to an ARLC action class.
+// Map a requirement's declared authority needs to an action class by DELEGATING
+// to the active ARLC policy (single source of truth) and FAILING CLOSED.
+// Rule: a requirement is OPERATIONAL_AUTONOMOUS only if it carries NO external
+// action, NO provider need, and NO sensitive data class. Any authority-bearing
+// need routes to a founder/human gate. If the ARLC policy is unavailable we
+// cannot verify against the source of truth, so we still fail closed.
+const SENSITIVE_DATA = ["customer", "pii", "health", "private", "secret", "personal", "financial"];
+
 export function classifyRequirementGate(req, arlcClasses) {
-  const needs = new Set([
-    ...(req.provider_needs || []),
-    ...(req.external_actions || []),
-    ...(req.data_classes || []),
-  ].map((s) => String(s).toLowerCase()));
-  const founderTriggers = ["provider_adoption", "customer_data", "private_repository",
-    "production", "public_release", "payment", "payments", "akior", "live_run"];
-  if ([...needs].some((n) => founderTriggers.some((t) => n.includes(t)))) {
-    return "TRUE_FOUNDER_GATE";
+  if (req.legal === true || req.security_boundary === true) return "HUMAN_EXPERT_GATE";
+  if (req.authority_unknown === true) return "TRUE_FOUNDER_GATE"; // fail closed
+
+  const external = (req.external_actions || []).map((s) => String(s).toLowerCase());
+  const providers = (req.provider_needs || []).map((s) => String(s).toLowerCase());
+  const data = (req.data_classes || []).map((s) => String(s).toLowerCase());
+  const hasAuthorityNeed = external.length > 0 || providers.length > 0;
+  const sensitiveData = data.some((d) => SENSITIVE_DATA.some((k) => d.includes(k)));
+
+  // Delegate: derive founder-gate keywords from ARLC's TRUE_FOUNDER_GATE examples
+  // (so the classification tracks the ARLC policy, not a private copy).
+  const founderKeywords = new Set();
+  const arlcFounder = arlcClasses && arlcClasses.classes &&
+    arlcClasses.classes.TRUE_FOUNDER_GATE && arlcClasses.classes.TRUE_FOUNDER_GATE.examples;
+  if (arlcFounder) {
+    for (const ex of arlcFounder) {
+      for (const tok of String(ex).toLowerCase().split(/[_\s]+/)) if (tok.length > 2) founderKeywords.add(tok);
+    }
   }
-  if ((req.legal || req.security_boundary) === true) return "HUMAN_EXPERT_GATE";
-  // Unknown/unclassifiable authority need -> fail closed to a founder gate.
-  if (req.authority_unknown === true) return "TRUE_FOUNDER_GATE";
-  void arlcClasses;
+  // Hardening synonyms for common phrasings the examples may not spell out.
+  ["prod", "pii", "card", "charge", "live", "ship", "public", "health", "customer",
+   "private", "akior", "payment", "deploy", "release", "provider", "adopt"].forEach((k) => founderKeywords.add(k));
+  const text = [...external, ...providers, ...data].join(" ");
+  const matchesFounder = [...founderKeywords].some((k) => text.includes(k));
+
+  if (matchesFounder || sensitiveData) return "TRUE_FOUNDER_GATE";
+  // Fail closed: any remaining authority-bearing need is a founder gate even if
+  // no keyword matched (unknown external action / provider is not routine).
+  if (hasAuthorityNeed) return "TRUE_FOUNDER_GATE";
   return "OPERATIONAL_AUTONOMOUS";
 }
 
@@ -58,13 +80,17 @@ export function compileBlueprint(bp, opts = {}) {
     return { id, text: r.text || String(r), gate: classifyRequirementGate(r, arlcClasses), trace: trace(id) };
   });
 
-  // No silent drop: every input requirement must appear in the registry.
-  const inputIds = reqs.map((r, i) => r.id || `FR-${i + 1}`);
+  // No silent drop / add: the registry must have exactly one entry per input
+  // requirement, and no duplicate IDs (an ID collision would silently merge two
+  // requirements into one — a real drop). Count + duplicate checks can actually fire.
   const outputIds = requirements.map((r) => r.id);
-  const dropped = inputIds.filter((id) => !outputIds.includes(id));
-  const added = outputIds.filter((id) => !inputIds.includes(id));
-  if (dropped.length) return { ok: false, state: "PLAN_INVALID", reason: "silent requirement deletion", dropped };
-  if (added.length) return { ok: false, state: "PLAN_INVALID", reason: "unrequested requirement addition", added };
+  if (requirements.length !== reqs.length) {
+    return { ok: false, state: "PLAN_INVALID", reason: "requirement count changed", input: reqs.length, output: requirements.length };
+  }
+  const dupOut = outputIds.filter((id, i) => outputIds.indexOf(id) !== i);
+  if (dupOut.length) {
+    return { ok: false, state: "PLAN_INVALID", reason: "duplicate requirement id (silent-merge/collision risk)", duplicates: [...new Set(dupOut)] };
+  }
 
   const specCards = requirements.map((r) => ({
     spec_card_id: `SC-${r.id}`, requirement_id: r.id, gate: r.gate,
