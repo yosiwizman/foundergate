@@ -49,7 +49,10 @@ if (existsSync(EVID)) {
   walk(EVID, (p, st) => {
     checked++;
     const rel = relative(REPO, p);
-    if (st.size === 0) { problems.push(`EMPTY evidence file: ${rel}`); return; }
+    // A 0-byte .log (stdout/stderr capture) is legitimate — it means "no output" — and is NOT a
+    // fabrication risk (e.g. an externally-published soak sentinel-watch.log that logged nothing).
+    // Every OTHER empty evidence file (json/md/txt/jsonl/sha256/…) stays rejected (teeth intact).
+    if (st.size === 0) { if (extname(p) !== ".log") problems.push(`EMPTY evidence file: ${rel}`); return; }
     if (TEXT.has(extname(p))) {
       const s = readFileSync(p, "utf8");
       for (const re of PLACEHOLDERS) {
@@ -138,6 +141,14 @@ if (!existsSync(helper)) {
     problems.push("scripts/stamp.mjs must read (readFileSync) before it writes (writeFileSync)");
   }
 }
+
+// Mutation proof (self-check): the 0-byte exemption is scoped to .log ONLY. An empty
+// json/md/txt evidence file is still a violation; only an empty .log (no-output capture) is exempt.
+const emptyFlagged = (name) => extname(name) !== ".log";
+for (const nonlog of ["x.json", "x.md", "x.txt", "RUN_RESULT.json", "evidence-pack.sha256"]) {
+  if (!emptyFlagged(nonlog)) problems.push(`evidence-integrity teeth regression: empty ${nonlog} no longer flagged`);
+}
+if (emptyFlagged("sentinel-watch.log")) problems.push("evidence-integrity: empty .log must be exempt (no-output capture)");
 
 if (problems.length) {
   console.error(`EVIDENCE-INTEGRITY-GUARD: FAIL (${problems.length}) — checked ${checked} evidence files`);
