@@ -1,0 +1,8 @@
+{
+  "directive_id": "paes-launch-hotfix-1",
+  "sha256": "faa97985ea11548ddb4e79bde7a9ec56acff633f3a9bd1b5b240483348fa8b0c",
+  "stored_sha256": "faa97985ea11548ddb4e79bde7a9ec56acff633f3a9bd1b5b240483348fa8b0c",
+  "digest_equal": true,
+  "byte_count": 13805,
+  "current_state": "DIGEST_VERIFIED"
+}

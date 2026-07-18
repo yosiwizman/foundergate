@@ -1,0 +1,502 @@
+FOUNDERGATE PAES-LAUNCH-HOTFIX-1 — FAILED-LAUNCH RECONCILIATION, ESM ENTRYPOINT FIX, AND REAL LAUNCH-PATH REQUALIFICATION
+
+PURPOSE
+
+The founder ran the approved PAES Wave-2 launcher.
+
+Governance preflight passed, but the launcher failed before unattended activation while executing:
+
+tools/terminal0/paes/create-wave2-run.mjs
+
+The observed failure was:
+
+ReferenceError: require is not defined in ES module scope
+
+The failing statement used CommonJS require() inside an ES-module .mjs file under Node.js v24.13.1.
+
+Correct this launch-path defect, reconcile all partial state from the failed attempt, test the actual production entrypoint, independently review the correction, merge through ARLC, and return one exact retry command.
+
+Do not start the real nine-hour run during this directive.
+
+Do not consume the founder activation decision.
+
+Do not weaken any existing control.
+
+AUTHORITY
+
+This directive adds no new authority.
+
+Continue under the existing:
+
+ACTIVATE_SAFE_NARROW_ALLOWLIST
+
+authority and all existing DCL, ARLC, ARE, FGRI, PAES and ORC restrictions.
+
+Continue to refuse:
+
+- full autonomy;
+- dangerously-skip-permissions;
+- automatic permission escalation;
+- direct push to main;
+- copied or exported credentials;
+- new API credentials;
+- M1 contact;
+- AKIOR access;
+- customer or private repositories;
+- production data;
+- public deployment;
+- payment;
+- external send;
+- live-provider activation;
+- OpenSandbox adoption;
+- VB3 live action;
+- 48-hour qualification;
+- V8-C, V8-D or V8-E implementation.
+
+OPERATING MODE
+
+MAC MINI PRO ONLY
+DCL-LOCKED
+ARLC-GOVERNED
+ARE-GOVERNED
+FGRI-GOVERNED
+PAES-GOVERNED
+ORC-GOVERNED
+NARROW-SENSITIVE ACTIVATION-PATH FIX
+ONE PRIMARY BUILDER
+ONE INDEPENDENT CHECKER
+ONE SEPARATE READ-ONLY ADVISOR
+TERMINAL-0 SOLE MERGE SHERIFF
+DISK-FIRST
+APPEND-ONLY
+FAIL-CLOSED
+NO LAUNCH
+NO DECISION CONSUMPTION
+NO DIRECT MAIN PUSH
+NO SECOND LAUNCHER
+NO ALTERNATE EXECUTION PATH
+NO TEST THAT BYPASSES THE REAL ENTRYPOINT
+
+PHASE 0 — DCL SELF-CAPTURE
+
+Before material work:
+
+1. Locate this exact directive in the active Harvest transcript.
+2. Capture its complete exact body.
+3. Verify the exact title:
+
+FOUNDERGATE PAES-LAUNCH-HOTFIX-1 — FAILED-LAUNCH RECONCILIATION, ESM ENTRYPOINT FIX, AND REAL LAUNCH-PATH REQUALIFICATION
+
+4. Verify it contains:
+   - PURPOSE;
+   - AUTHORITY;
+   - PHASE 0;
+   - PHASE 1 — FAILED-LAUNCH RECONCILIATION;
+   - PHASE 2 — ESM ACTIVATION-PATH AUDIT;
+   - PHASE 4 — REAL ENTRYPOINT QUALIFICATION;
+   - PHASE 6 — INDEPENDENT REVIEW;
+   - FINAL OUTPUT;
+   - the complete verdict list.
+5. Verify the directive is complete and untruncated.
+6. Compute SHA-256, byte count, line count and boundary anchors.
+7. Persist through DCL.
+8. Require transcript-to-disk digest equality.
+9. Create queue, dependencies, recovery, events, next-safe-action, completion predicates and stop predicates.
+10. Transition:
+
+RECEIVED
+→ CAPTURED
+→ DIGEST_VERIFIED
+→ QUEUED
+→ READY
+→ RUNNING
+
+If capture fails:
+
+PAES-LAUNCH-HOTFIX: SELF-CAPTURE-FAILED
+
+PHASE 1 — FAILED-LAUNCH RECONCILIATION
+
+Mechanically inspect the exact current state created by the founder's failed launch.
+
+Verify:
+
+- authorized host;
+- repository root and origin;
+- local and remote main;
+- synchronization;
+- main cleanliness;
+- open PRs;
+- active branches and worktrees;
+- activation gate;
+- activation resolution;
+- consumed state;
+- expiry;
+- current run manifest;
+- run ID;
+- start timestamp;
+- deadline;
+- checkpoint;
+- recovery journal;
+- action journal;
+- singleton lock;
+- writer lock;
+- heartbeat;
+- lease;
+- supervisor;
+- watchdog;
+- workers;
+- LaunchAgent;
+- PANIC_STOP;
+- current next-safe-action.
+
+Record the failed launch append-only with classification:
+
+LAUNCH_PREFLIGHT_PASSED
+RUN_CREATION_FAILED
+UNATTENDED_MODE_NOT_ENTERED
+REAL_NINE_HOUR_RUN_NOT_STARTED
+NO_UNSAFE_FALLBACK_USED
+
+Do not assume the decision remains unconsumed merely because the launcher printed a failure.
+
+Verify it from disk.
+
+If any activation decision was consumed, any real supervisor started, or any live deadline was created, stop and reconcile before code modification.
+
+Any action journal entry left at ACTION_STARTED must remain UNCERTAIN until mechanically reconciled.
+
+Do not delete partial records.
+
+PHASE 2 — ESM ACTIVATION-PATH AUDIT
+
+Inspect the complete real activation chain, including:
+
+- tools/terminal0/paes/start-wave2-session
+- tools/terminal0/paes/create-wave2-run.mjs
+- tools/terminal0/paes/supervisor-session
+- recovery helpers invoked by the starter;
+- decision-validation helpers;
+- journal and checkpoint helpers;
+- any imported executable module reached before supervisor detachment.
+
+Search every relevant .mjs and ES-module JavaScript file for incompatible CommonJS use:
+
+- require(
+- module.exports
+- exports.
+- __dirname
+- __filename
+
+Classify every occurrence:
+
+VALID_BY_CREATE_REQUIRE
+INVALID_COMMONJS_IN_ESM
+DEAD_CODE
+TEST_ONLY
+UNKNOWN
+
+Do not automatically permit createRequire.
+
+Use native ES module imports unless a mechanically justified dependency specifically requires createRequire.
+
+The known failing statement must be replaced through the existing node:fs import, using existsSync imported at module scope.
+
+Audit the full file for duplicate imports, unreachable code, partial writes and any other Node-v24 incompatibility.
+
+PHASE 3 — IMPLEMENT THE NARROW FIX
+
+Create one isolated hotfix branch and worktree from the mechanically resolved current main.
+
+Write a lane contract containing:
+
+- objective;
+- exact base;
+- allowed files;
+- forbidden files;
+- risk classification;
+- tests;
+- checker;
+- rollback;
+- merge handoff.
+
+Allowed files must be limited to:
+
+- the defective activation entrypoint;
+- directly necessary activation-path tests;
+- narrowly necessary documentation/evidence;
+- decision re-binding records after final integration if required.
+
+Do not modify unrelated ORC, PAES, governance or product behavior.
+
+Do not create a second launcher or second run-creation implementation.
+
+Correct every mechanically proven ESM incompatibility in the real activation path.
+
+Preserve all prior failed-launch evidence.
+
+PHASE 4 — REAL ENTRYPOINT QUALIFICATION
+
+The previous false green occurred because the real run-creation entrypoint was not executed far enough under the actual Node environment.
+
+Add a regression test that executes the actual production:
+
+tools/terminal0/paes/create-wave2-run.mjs
+
+using an isolated temporary state root or other sanctioned test seam.
+
+The test must use the same production implementation, not a rewritten mock copy.
+
+It must not:
+
+- consume the real founder decision;
+- alter the real repository state;
+- start a real supervisor;
+- create a real nine-hour run;
+- modify the real recovery journal.
+
+Prove under the currently installed Node version:
+
+1. the entrypoint parses;
+2. all ES-module imports load;
+3. no `require is not defined` failure occurs;
+4. checkpoint initialization succeeds in isolation;
+5. action-journal initialization succeeds;
+6. original deadline is written once;
+7. an existing journal is preserved;
+8. duplicate initialization is idempotent;
+9. partial failure is fail-closed;
+10. no activation decision is consumed;
+11. no supervisor is started;
+12. no real state directory is modified.
+
+Also execute a dry isolated traversal of the actual launcher path through:
+
+preflight
+→ decision validation
+→ recovery-mode determination
+→ run creation
+→ qualification boundary
+
+Stop before real detachment, decision consumption or supervisor activation.
+
+Do not create a test-only alternate production path.
+
+Any test seam must be limited to state-root isolation and explicit refusal of live activation.
+
+PHASE 5 — TESTING
+
+Run:
+
+- shell syntax validation;
+- Node syntax and module-load validation;
+- the new exact regression test;
+- activation-path integration tests;
+- recovery tests;
+- decision-consumption ordering tests;
+- duplicate-start tests;
+- deadline tests;
+- singleton tests;
+- negative tests;
+- mutation tests;
+- secret scan;
+- credential scan;
+- forbidden-artifact scan;
+- full repository selftests;
+- exact-SHA CI.
+
+Specifically prove these mutations fail:
+
+- reintroduce require() in the .mjs entrypoint;
+- omit existsSync import;
+- consume decision before successful qualification;
+- create a deadline after a failed run creation;
+- start a supervisor after run-creation failure;
+- continue after an exception;
+- overwrite an existing action journal;
+- create duplicate action IDs.
+
+PHASE 6 — INDEPENDENT REVIEW
+
+Commission one independent checker that did not implement the fix.
+
+The checker must verify:
+
+- failed launch was reconciled honestly;
+- decision remains unconsumed;
+- nine-hour run remains NOT_STARTED;
+- no partial supervisor exists;
+- all relevant ESM/CommonJS incompatibilities were audited;
+- the actual production entrypoint was executed under Node v24;
+- the regression test would have caught the original defect;
+- the launcher fails closed on run-creation failure;
+- no second launcher or alternate authority path was introduced;
+- no permission or governance weakening occurred.
+
+Allowed checker verdicts:
+
+PAES-LAUNCH-HOTFIX-CHECKER: CLEAN
+PAES-LAUNCH-HOTFIX-CHECKER: FINDINGS
+PAES-LAUNCH-HOTFIX-CHECKER: REJECT
+PAES-LAUNCH-HOTFIX-CHECKER: INSUFFICIENT_EVIDENCE
+
+After checker CLEAN, commission one separate read-only Advisor.
+
+The Advisor must independently verify:
+
+- exact candidate;
+- narrow scope;
+- real entrypoint execution;
+- regression quality;
+- decision state;
+- launch readiness;
+- merge safety.
+
+Allowed Advisor verdicts:
+
+PAES-LAUNCH-HOTFIX-ADVISOR: READY-TO-INTEGRATE
+PAES-LAUNCH-HOTFIX-ADVISOR: HOLD-CORRECTABLE-FINDINGS
+PAES-LAUNCH-HOTFIX-ADVISOR: REJECT
+PAES-LAUNCH-HOTFIX-ADVISOR: INSUFFICIENT_EVIDENCE
+
+Checker and Advisor must be distinct agent invocations.
+
+Allow up to three bounded correction cycles.
+
+PHASE 7 — INTEGRATION AND DECISION REBINDING
+
+Merge only through ARLC after:
+
+- checker CLEAN;
+- separate Advisor READY;
+- exact-SHA CI green;
+- no post-review product drift;
+- no secret;
+- no credential;
+- no scope expansion.
+
+Do not push directly to main.
+
+After merge:
+
+1. resolve exact final main;
+2. run post-merge tests and CI;
+3. verify merged activation-path files match the reviewed candidate;
+4. verify the nine-hour run remains NOT_STARTED;
+5. verify the decision remains consumed:false;
+6. verify no supervisor is active.
+
+If the activation decision no longer binds to the corrected final product head:
+
+- preserve the historical binding;
+- create an append-only narrow re-binding;
+- retain identical ACTIVATE_SAFE_NARROW_ALLOWLIST authority;
+- retain all refused options;
+- retain one-time use;
+- provide a new bounded expiry;
+- do not consume it.
+
+Run one independent read-only final-head checker and one separate final-head Advisor if any executable file changed after candidate review.
+
+PHASE 8 — RETRY READINESS
+
+Do not run the launcher.
+
+Mechanically resolve the exact retry command from current disk.
+
+Before returning READY-TO-RETRY require:
+
+- main clean and synchronized;
+- no open integration PR;
+- activation-path code corrected;
+- actual entrypoint executed successfully in isolation;
+- checker CLEAN;
+- Advisor READY;
+- exact-SHA CI green;
+- post-merge verification green;
+- activation decision valid;
+- activation decision consumed:false;
+- activation decision unexpired;
+- no supervisor, watchdog or worker active;
+- PANIC_STOP absent;
+- real nine-hour run NOT_STARTED.
+
+FINAL OUTPUT
+
+Return:
+
+1. Host identity.
+2. Directive digest.
+3. Starting main SHA.
+4. Failed-launch timestamp.
+5. Failed-launch classification.
+6. Activation consumed state after failure.
+7. Run manifest state after failure.
+8. Deadline state after failure.
+9. Supervisor state after failure.
+10. Journal reconciliation result.
+11. Exact defective file and line.
+12. Root cause.
+13. All ESM/CommonJS findings.
+14. Corrected files.
+15. Regression-test path.
+16. Installed Node version.
+17. Actual production-entrypoint result.
+18. Isolated launcher-path result.
+19. Decision-ordering result.
+20. Deadline fail-closed result.
+21. Supervisor fail-closed result.
+22. Duplicate-prevention result.
+23. Recovery-test result.
+24. Full repository test result.
+25. Mutation result.
+26. Independent checker identity.
+27. Checker verdict.
+28. Separate Advisor identity.
+29. Advisor verdict.
+30. Candidate exact-SHA CI.
+31. Merge result.
+32. Final main SHA.
+33. Post-merge result.
+34. Decision binding result.
+35. Decision consumed state.
+36. Decision expiry.
+37. Current runtime state.
+38. Real nine-hour run state.
+39. Exact retry launcher path.
+40. Exact retry command from disk.
+41. Expected successful message.
+42. Expected failed message.
+43. Evidence paths.
+44. Remaining limitations.
+45. Exact next founder action.
+46. Final verdict.
+
+Required exact statements:
+
+THE FAILED LAUNCH WAS RECORDED HONESTLY AND WAS NOT PRESENTED AS A STARTED NINE-HOUR RUN.
+
+THE ACTIVATION DECISION WAS NOT CONSUMED BY THE FAILED RUN-CREATION ATTEMPT.
+
+THE COMMONJS-IN-ES-MODULE DEFECT WAS FIXED IN THE REAL PRODUCTION ENTRYPOINT.
+
+THE ACTUAL RUN-CREATION ENTRYPOINT WAS EXECUTED UNDER THE INSTALLED NODE VERSION DURING QUALIFICATION.
+
+THE REGRESSION TEST WOULD FAIL IF REQUIRE() WERE REINTRODUCED INTO THE ES-MODULE ENTRYPOINT.
+
+A RUN-CREATION FAILURE CANNOT START THE SUPERVISOR, CREATE A LIVE DEADLINE OR CONSUME THE ACTIVATION DECISION.
+
+THE REAL NINE-HOUR WAVE-2 RUN REMAINS NOT_STARTED.
+
+Finish with exactly one verdict:
+
+PAES-LAUNCH-HOTFIX: READY-TO-RETRY
+PAES-LAUNCH-HOTFIX: CHECKER-FINDINGS
+PAES-LAUNCH-HOTFIX: ADVISOR-FINDINGS
+PAES-LAUNCH-HOTFIX: HOLD-CORRECTABLE-FINDINGS
+PAES-LAUNCH-HOTFIX: RUNTIME-CONFLICT
+PAES-LAUNCH-HOTFIX: ACTIVATION-BINDING-FAILED
+PAES-LAUNCH-HOTFIX: UNRESOLVED-CRITICAL-BLOCKER
+PAES-LAUNCH-HOTFIX: SELF-CAPTURE-FAILED
+PAES-LAUNCH-HOTFIX: REJECT
+PAES-LAUNCH-HOTFIX: INSUFFICIENT-EVIDENCE
