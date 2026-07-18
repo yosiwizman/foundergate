@@ -1,0 +1,31 @@
+{
+  "schema": "paes-hotfix-rebinding-1",
+  "gate_id": "gate-1784355114-paesact",
+  "authorized_by": "PAES-LAUNCH-SAFETY-HB-INDEPENDENCE",
+  "created_at": "2026-07-18T23:35:28.000Z",
+  "reason": "supervisor-session (executable) changed: worker now non-blocking spawn + heartbeat interval so liveness is independent of the blocking worker; re-bind narrow authority to corrected product head",
+  "preserved_prior": {
+    "prior_target": "e5b77d0e56726af5354dcc64478bfab2d2345c1b",
+    "prior_expiry": 1784502564,
+    "historical_exact_sha": "2e3c06091bd07fafde974ca14f360f69f8115fd7",
+    "prior_rebinding_refs": [
+      ".foundergate/gates/rebindings/gate-1784355114-paesact-orc1r.json",
+      ".foundergate/gates/rebindings/gate-1784355114-paesact-hotfix.json",
+      ".foundergate/gates/rebindings/gate-1784355114-paesact-handoff-hotfix-2.json"
+    ]
+  },
+  "rebound_to_sha": "94d441b92eea61b2415e49a58b9202af05f50d4d",
+  "action": "activate_paes_narrow_allowlist",
+  "permission_scope": "narrow allowlist (unchanged)",
+  "one_time_use": true,
+  "consumed": false,
+  "renewed_expiry": 1784504128,
+  "renewed_expiry_iso": "2026-07-19T23:35:28.000Z",
+  "does_not_authorize": [
+    "consumption",
+    "execution",
+    "9h run start",
+    "authority expansion",
+    "PAES start"
+  ]
+}
