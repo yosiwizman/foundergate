@@ -1,0 +1,39 @@
+[2026-07-17T17:37:33.351Z] VB1 qualifying soak driver — pid 8564, host qual-host-m1, sha b9af1def60009ac9dae69bf519b5e0a2680d4600, claim 8h, ttl 36000s
+[2026-07-17T17:37:33.353Z] operator contract: launched under `caffeinate -dimsu` (verified read-only, never spawned here)
+[2026-07-17T17:37:33.482Z] HARD GATE ok — HEAD b9af1def60009ac9dae69bf519b5e0a2680d4600, frozen scope clean
+[2026-07-17T17:37:33.484Z] L3 provenance captured (no secrets)
+[2026-07-17T17:37:33.498Z] L1 freeze manifest — manifest_hash 098b428fef98e254d3ec4080838b256a99d783b7cb8ef5acc215d26a9a1312e7, 340 files, anchor b9af1def60009ac9dae69bf519b5e0a2680d4600
+[2026-07-17T17:37:33.523Z] caffeinate assertion: HELD (descendant)
+[2026-07-17T17:37:33.595Z] intervention-log opened (sentinel) — run run_f3124ace-e39f-4d52-9e46-1dc5b2f1e1b1
+[2026-07-17T17:37:33.595Z] lease acquired lease_89490eb048674250b3c1eb0998a10fcb, run run_f3124ace-e39f-4d52-9e46-1dc5b2f1e1b1; TTL 36000s; preflight quiet
+[2026-07-17T17:37:33.627Z] launching soak-run.mjs — claim 8h, interval 900s, probe "node /Users/macm1/Projects/foundergate-wt-vb2-integrated-8h-rerun-20260717T173028Z/docs/assembly-evidence/VB2/soak/integrated-8h-rerun-20260717T173028Z/integrated-probe.mjs"
+[2026-07-18T01:52:33.705Z] L1 freeze re-verified — NO DRIFT (manifest_hash unchanged, 340 files)
+[2026-07-18T01:52:33.706Z] VERDICT:
+FOUNDERGATE HARNESS 8-HOUR SOAK PASS
+
+start: 2026-07-17T17:37:33.708Z
+end: 2026-07-18T01:52:33.655Z
+actual span: 8.250h (claimed span 8h)
+SHA under test: b9af1def60009ac9dae69bf519b5e0a2680d4600
+availability: 100.000% (SLO 99.00%) over 34 samples (ok 34 / fail 0)
+monitoring evidence: monitor-record.jsonl, monitor-snapshot.json
+failures & interventions log: intervention-log.jsonl
+QUIET_HOST eligibility: INTACT for the whole run
+caffeinate power assertion: HELD (descendant)
+frozen-code integrity: NO DRIFT (manifest re-verified at end)
+lease: lease_89490eb048674250b3c1eb0998a10fcb
+run: run_f3124ace-e39f-4d52-9e46-1dc5b2f1e1b1
+host: qual-host-m1
+
+AND-gate held: availability SLO AND QUIET_HOST eligibility AND frozen-code integrity all TRUE.
+
+--- accumulator output (verbatim, authoritative) ---
+SUB-RESULT (availability + duration only — NOT the gate verdict): FOUNDERGATE HARNESS 8-HOUR SOAK availability+duration PASS
+start: 2026-07-17T17:37:33.708Z
+end: 2026-07-18T01:52:33.655Z
+span: 8.25h (claim 8h)
+availability: 100.000% (SLO 99.00%)
+samples: 34 (ok 34 / fail 0)
+SHA under test: b9af1def60009ac9dae69bf519b5e0a2680d4600
+[2026-07-18T01:52:33.719Z] lease release: {"ok":true,"released_at":"2026-07-18T01:52:33.707Z"}
+[2026-07-18T01:52:33.719Z] DONE — verdict PASS

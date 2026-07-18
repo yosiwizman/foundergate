@@ -1,0 +1,8 @@
+  PID  %CPU COMM
+ 7695  11.0 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/150.0.7871.127/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)
+  986   4.2 claude
+  664   2.4 /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal
+  411   2.1 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+  665   1.6 /System/Applications/Utilities/Activity Monitor.app/Contents/MacOS/Activity Monitor
+  812   0.9 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/150.0.7871.127/Helpers/Google Chrome Helper.app/Contents/MacOS/Google Chrome Helper
+  608   0.7 /System/Library/Input Methods/Assistive Control.app/Contents/MacOS/Assistive Control

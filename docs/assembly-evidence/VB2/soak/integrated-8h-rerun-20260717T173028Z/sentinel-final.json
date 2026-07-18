@@ -1,0 +1,9 @@
+{
+  "sentinel": "final",
+  "at": "2026-07-18T01:55:55.917Z",
+  "total_ticks": 99,
+  "max_new_system_sleep": 0,
+  "ticks_without_PreventSystemSleep": 1,
+  "head_ever_drifted": false,
+  "driver_gone": true
+}

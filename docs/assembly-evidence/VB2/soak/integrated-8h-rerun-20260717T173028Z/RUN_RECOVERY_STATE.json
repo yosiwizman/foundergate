@@ -1,0 +1,42 @@
+{
+  "run_id": "integrated-8h-rerun-20260717T173028Z",
+  "state": "FINAL_SEAL_COMPLETE_PASS",
+  "note": "all 18 seal checks PASS; AND-gate PASS",
+  "updated_at": "2026-07-18T02:20:23.289Z",
+  "bound_sha": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+  "history": [
+    {
+      "state": "PREFLIGHT",
+      "at": "2026-07-17T17:32:24.839Z",
+      "note": "worktree created; host+repo preflight done"
+    },
+    {
+      "state": "REHEARSAL",
+      "at": "2026-07-17T17:33:22.947Z",
+      "note": "quiet-host preflight clean; starting rehearsals"
+    },
+    {
+      "state": "READY",
+      "at": "2026-07-17T17:37:21.131Z",
+      "note": "freeze-manifest-begin done; about to begin ABSOLUTE git freeze + launch"
+    },
+    {
+      "state": "RUNNING",
+      "at": "2026-07-17T17:38:55.402Z",
+      "note": "driver+sentinel live; first probe window ok; freeze intact"
+    },
+    {
+      "state": "FINAL_SEAL_IN_PROGRESS",
+      "at": "2026-07-18T02:12:16.549Z",
+      "note": "resume from disk"
+    },
+    {
+      "state": "FINAL_SEAL_COMPLETE_PASS",
+      "at": "2026-07-18T02:20:23.289Z",
+      "note": "18/18 checks pass"
+    }
+  ],
+  "running_ticks": 99,
+  "last_sentinel_head": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+  "last_new_system_sleep": 0
+}
