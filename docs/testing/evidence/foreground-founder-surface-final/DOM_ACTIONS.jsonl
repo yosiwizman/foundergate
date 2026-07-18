@@ -1,0 +1,5 @@
+{"action":"goto","url":"/"}
+{"action":"open-existing-run","run":"sc-15f0cfc5"}
+{"action":"click","selector":"#pack-dl"}
+{"action":"reload"}
+{"action":"click","selector":"#pause"}

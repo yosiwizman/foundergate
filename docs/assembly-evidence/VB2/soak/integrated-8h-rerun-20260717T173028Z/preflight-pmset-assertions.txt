@@ -1,0 +1,24 @@
+2026-07-17 13:33:01 -0400 
+Assertion status system-wide:
+   BackgroundTask                 0
+   ApplePushServiceTask           0
+   UserIsActive                   1
+   PreventUserIdleDisplaySleep    0
+   SoftwareUpdateTask             0
+   PreventSystemSleep             0
+   ExternalMedia                  0
+   PreventUserIdleSystemSleep     1
+   NetworkClientActive            0
+Listed by owning process:
+   pid 8218(caffeinate): [0x0000913900018784] 00:03:56 PreventUserIdleSystemSleep named: "caffeinate command-line tool"  
+	Details: caffeinate asserting for 300 secs
+	Localized=THE CAFFEINATE TOOL IS PREVENTING SLEEP.
+	Timeout will fire in 63 secs Action=TimeoutActionRelease
+   pid 398(bluetoothd): [0x0000922500018799] 00:00:00 PreventUserIdleSystemSleep named: "com.apple.BTStack"  
+   pid 398(bluetoothd): [0x000000390009803a] 00:05:32 UserIsActive named: "Bluetooth LE HID Activity"  
+   pid 411(WindowServer): [0x0000003a00098044] 00:00:00 UserIsActive named: "com.apple.iohideventsystem.queue.tickle serviceID:10000187b service:AppleUserHIDEventService product:MK 835 eventType:3"  
+   pid 347(powerd): [0x0000003700018009] 10:22:38 PreventUserIdleSystemSleep named: "Powerd - Prevent sleep while display is on"  
+   pid 347(powerd): [0x000000370009800a] 10:22:38 UserIsActive named: "com.apple.powerd.ws.initialize"  
+Kernel Assertions: 0x104=USB,MAGICWAKE
+   id=537  level=255 0x4=USB creat= description=com.apple.usb.externaldevice.02200000 owner=HD Pro Webcam C920
+   id=543  level=255 0x100=MAGICWAKE creat= description=en1 owner=IOSkywalkNetworkBSDClient

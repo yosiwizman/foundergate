@@ -1,0 +1,27 @@
+{
+  "schema": "vb2-rerun-attestation-verification/1",
+  "verified_at": "2026-07-18T02:15:15.060Z",
+  "attestation_entries": 4,
+  "expected_head_hash": "eaf65340e5a67e6a18c0f6c1b0ab98e51afa02949e27228852590f3dea143523",
+  "correct_anchor": {
+    "anchor": "eaf65340e5a67e6a18c0f6c1b0ab98e51afa02949e27228852590f3dea143523",
+    "result": "intact",
+    "accepted": true
+  },
+  "wrong_anchor": {
+    "anchor": "0af65340e5a67e6a18c0f6c1b0ab98e51afa02949e27228852590f3dea143523",
+    "result": "broken-anchor",
+    "rejected": true
+  },
+  "no_anchor_chain": "intact",
+  "soak_eligibility": {
+    "eligible": true,
+    "status": "ELIGIBLE",
+    "reason": "span meets claim and no unresolved failures",
+    "spanSeconds": 29700.063,
+    "claimSeconds": 28800,
+    "unresolvedFailures": [],
+    "verdict": "intact"
+  },
+  "expected_head_sha_git": "b9af1def60009ac9dae69bf519b5e0a2680d4600"
+}

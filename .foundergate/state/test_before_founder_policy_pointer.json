@@ -1,0 +1,11 @@
+{
+  "policy_id": "test-before-founder",
+  "policy_version": "1.1.0",
+  "source_path": ".foundergate/policies/test_before_founder.json",
+  "policy_digest": "e1fbb8f08bb6cc7cbc3ec24b9da85aacb4a4b716be7f1d73e2170cadb572d7d3",
+  "activation_authority": "Founder and Acceptance Authority",
+  "activation_record": "docs/status/TEST_BEFORE_FOUNDER_FOUNDER_AUTHORIZATION.md",
+  "evaluation_class": true,
+  "state": "ACTIVE",
+  "notes": "TBF-1 + FFS-1 (foreground-founder-surface) amendment. Founder-authorized 2026-07-17. Amend only via founder signature + independent checker + mutation proof + exact-SHA CI + updated digest + append-only record."
+}

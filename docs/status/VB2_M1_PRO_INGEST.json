@@ -1,0 +1,29 @@
+{
+  "schema": "vb2-m1-pro-ingest/1",
+  "ingested_at_utc": "2026-07-18T02:38:20Z",
+  "m1_contact": "NONE (read from published origin branch)",
+  "evidence_branch": "soak-evidence-vb2-integrated-8h-rerun-20260717T173028Z",
+  "evidence_commit": "68cb1fa76c12fc57507d6dc36389c85f2c48f17a",
+  "evaluated_sha": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+  "evidence_only_commit": true,
+  "evidence_file_count": 47,
+  "qualification_run_id": "integrated-8h-rerun-20260717T173028Z",
+  "driver_lease_run_id": "run_f3124ace-e39f-4d52-9e46-1dc5b2f1e1b1",
+  "verdict": "VB2-SOAK: PASS",
+  "checks_18_of_18": true,
+  "availability": "100% 34/34",
+  "quiet_host": "INTACT",
+  "system_sleep": 0,
+  "freeze_begin_eq_end": true,
+  "freeze_manifest_hash": "098b428fef98e254d3ec4080838b256a99d783b7cb8ef5acc215d26a9a1312e7",
+  "governed_file_count": 340,
+  "head_eq_sha_all_ticks": true,
+  "sentinel_ticks": 99,
+  "git_during_active_window": "NONE",
+  "wrong_anchor_rejected": true,
+  "correct_anchor_accepted": true,
+  "prior_not_passed_preserved": {
+    "branch": "soak-evidence-vb2-integrated-8h",
+    "commit": "e718b93"
+  }
+}

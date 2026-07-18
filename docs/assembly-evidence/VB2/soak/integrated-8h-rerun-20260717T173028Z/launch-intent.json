@@ -1,0 +1,8 @@
+{
+  "schema": "vb2-rerun-launch-intent/1",
+  "at": "2026-07-17T17:37:21.089Z",
+  "command": "caffeinate -dimsu node src/tools/soak-driver.mjs --sha b9af1def… --claim 8 --interval 900 --ttl 36000 --host qual-host-m1 --purpose \"VB2 integrated soak rerun (VB1-through-VB2)\" --evidence <evdir-rel> --repo /Users/macm1/Projects/foundergate-wt-vb2-integrated-8h-rerun-20260717T173028Z --probe \"node <evdir>/integrated-probe.mjs\"",
+  "no_timeout": "caffeinate has NO -t flag",
+  "cwd": "/Users/macm1/Projects/foundergate-wt-vb2-integrated-8h-rerun-20260717T173028Z",
+  "note": "run in detached worktree; absolute git freeze active from this point"
+}

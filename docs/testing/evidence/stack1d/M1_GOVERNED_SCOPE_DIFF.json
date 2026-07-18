@@ -1,0 +1,24 @@
+{
+  "governed_scope": [
+    "src/**",
+    "scripts/**",
+    "package.json"
+  ],
+  "governed_file_count": 340,
+  "evaluated_sha": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+  "cumulative_head": "4a9e58bfec4f7079fa6d1568a9cc9baf61e8f0be",
+  "unchanged": 338,
+  "modified": 2,
+  "deleted": 0,
+  "modified_files": [
+    "package.json",
+    "src/tools/evidence-integrity.selftest.mjs"
+  ],
+  "modified_files_classification": {
+    "package.json": "additive devDependencies (test tooling; no runtime effect)",
+    "src/tools/evidence-integrity.selftest.mjs": "bounded CI-guard refinement (empty .log exemption; teeth intact, mutation-proven; not production runtime)"
+  },
+  "governed_runtime_behavior_drift": false,
+  "cumulative_head_8h_soaked_claim": false,
+  "applicability": "ACCEPTED_VB2_STAGE_ONLY"
+}

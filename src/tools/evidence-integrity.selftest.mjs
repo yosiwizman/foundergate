@@ -16,12 +16,22 @@ import { join, dirname, extname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 
+import { validateEmptyArtifact, manifestIsWellFormed } from "./empty-artifact-policy.mjs";
+
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..", ".."); // src/tools -> repo root
 const EVID = join(REPO, "docs", "assembly-evidence");
 
+// STACK-1E: empty evidence is INVALID BY DEFAULT. A 0-byte file passes ONLY if its exact repo-rel
+// path is declared in the governed empty-artifact manifest with verified companions + bindings.
+const EMPTY_MANIFEST_PATH = join(REPO, ".foundergate", "evidence", "empty_artifact_manifest.json");
+let emptyManifest = { entries: [] };
+try { if (existsSync(EMPTY_MANIFEST_PATH)) emptyManifest = JSON.parse(readFileSync(EMPTY_MANIFEST_PATH, "utf8")); } catch { emptyManifest = { entries: [] }; }
+
 const problems = [];
 let checked = 0;
+// reject any wildcard / extension-only / directory empty exemption in the manifest itself
+for (const p of manifestIsWellFormed(emptyManifest)) problems.push(p);
 
 function walk(dir, fn) {
   for (const name of readdirSync(dir)) {
@@ -49,7 +59,17 @@ if (existsSync(EVID)) {
   walk(EVID, (p, st) => {
     checked++;
     const rel = relative(REPO, p);
-    if (st.size === 0) { problems.push(`EMPTY evidence file: ${rel}`); return; }
+    // Empty evidence is INVALID BY DEFAULT (any extension). A 0-byte file passes ONLY when its exact
+    // repo-relative path is declared in the governed empty-artifact manifest AND every companion
+    // verifies (exists, non-empty, hash-match) and binds the artifact to its evaluated_sha + run id.
+    if (st.size === 0) {
+      const entry = (emptyManifest.entries || []).find((e) => e.artifact_path === rel);
+      const v = validateEmptyArtifact(rel, entry, {
+        readFile: (c) => { const cp = join(REPO, c); return existsSync(cp) ? readFileSync(cp) : null; },
+      });
+      if (!v.allowed) problems.push(`EMPTY evidence file: ${rel} — ${v.reason}`);
+      return;
+    }
     if (TEXT.has(extname(p))) {
       const s = readFileSync(p, "utf8");
       for (const re of PLACEHOLDERS) {

@@ -1,0 +1,43 @@
+{
+  "policy_id": "autonomous-merge-authority",
+  "version": "1.0.0",
+  "evaluation_class": true,
+  "founder_record": "docs/status/AUTONOMOUS_MERGE_AUTHORITY_FOUNDER_RECORD.md",
+  "permit_when_all_true": [
+    "one_designated_cumulative_pr",
+    "exact_current_head",
+    "approved_base_main",
+    "exact_head_ci_green",
+    "independent_checker_clean",
+    "final_advisor_ready",
+    "no_post_attestation_code_drift",
+    "complete_ancestry",
+    "no_forbidden_artifacts",
+    "merge_method_allowed(merge_commit)",
+    "no_active_merge_embargo",
+    "rollback_and_cleanup_plan_present"
+  ],
+  "deny_when_any_true": [
+    "checks_missing_or_stale",
+    "unresolved_findings",
+    "head_moved_after_attestation",
+    "pr_contains_unrelated_work",
+    "security_or_legal_gate",
+    "live_provider_or_adoption_gate",
+    "customer_or_private_data_gate",
+    "would_weaken_protected_policy",
+    "active_qualification_forbids_main_movement"
+  ],
+  "does_not_authorize": [
+    "opensandbox_adoption",
+    "customer_execution",
+    "private_repositories",
+    "production_deployment",
+    "public_release",
+    "payments",
+    "akior_access",
+    "provider_activation_beyond_disk_authority",
+    "check_bypass",
+    "governance_weakening"
+  ]
+}

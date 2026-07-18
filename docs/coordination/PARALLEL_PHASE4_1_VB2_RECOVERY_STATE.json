@@ -1,0 +1,58 @@
+{
+  "schema_version": "parallel-recovery-1",
+  "updated_at_utc": "2026-07-17T16:47:00Z",
+  "host_identity": "Mac16,11/Apple M4 Pro/24GiB/arm64",
+  "overall_state": "BOTH_LANES_TERMINAL",
+  "lane_a_state": "runtime complete + torn down + VM destroyed; checker CLEAN; ready to commit",
+  "lane_b_state": "audit COMPLETE: RERUN-AUTHORIZED",
+  "active_phase_by_lane": {
+    "A": "A8 commit+PR",
+    "B": "complete"
+  },
+  "branch_by_lane": {
+    "A": "spike/opensandbox-port-binding-phase4-1",
+    "B": "none"
+  },
+  "head_sha_by_lane": {
+    "A": "f6eeb8f (pre-commit)",
+    "B": "e718b93 (evidence, read-only)"
+  },
+  "worktree_or_clone_by_lane": {
+    "A": "/Users/yosiwizman/Projects/foundergate-wt-opensandbox-phase4-1",
+    "B": "/tmp/foundergate-vb2-soak-audit-ro"
+  },
+  "active_vm": null,
+  "active_vm_manager": "Lima 2.1.4 (no VM running)",
+  "active_runtime_processes": [],
+  "active_sandbox_ids": [],
+  "active_server_endpoints": [],
+  "last_completed_event_id": "A014",
+  "last_completed_phase_by_lane": {
+    "A": "A6 checker CLEAN + A7 decision",
+    "B": "B2 verdict"
+  },
+  "current_blockers": [],
+  "teardown_state": "COMPLETE (sandbox+server+VM destroyed, verified)",
+  "checker_state": "CHECKER-CLEAN",
+  "next_safe_action_by_lane": {
+    "A": "git add allowed files (NOT __pycache__); commit; push; draft PR",
+    "B": "none"
+  },
+  "resume_allowed": true,
+  "resume_conditions": [
+    "main clean e1ca1989",
+    "only allowed files",
+    "runtime already torn down"
+  ],
+  "forbidden_resume_actions": [
+    "re-run VM",
+    "merge/close PR",
+    "commit __pycache__",
+    "claim adoption"
+  ],
+  "known_unknowns": [
+    "upstream acceptance of patch",
+    "forensic VM erasure",
+    "VB2 rerun outcome (not launched)"
+  ]
+}

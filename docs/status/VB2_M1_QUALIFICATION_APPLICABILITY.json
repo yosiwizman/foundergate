@@ -1,0 +1,9 @@
+{
+  "M1_SOAK_APPLICABILITY": "ACCEPTED_VB2_STAGE_ONLY",
+  "evaluated_sha": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+  "governed_unchanged": 338,
+  "governed_modified": 2,
+  "governed_deleted": 0,
+  "only_change": "package.json devDependencies (test tooling) + src/tools/evidence-integrity.selftest.mjs CI-guard refinement (empty .log exemption) \u2014 both disclosed; no governed runtime behavior drift",
+  "exact_head_soak_required_by_disk_authority": false
+}

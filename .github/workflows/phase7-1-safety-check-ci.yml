@@ -1,0 +1,62 @@
+# FounderGate Phase 7.1 — exact-SHA CI for the Safety Check UI + Evidence Pack.
+# GitHub-hosted only; no secrets; no self-hosted runner; does NOT run a Lima/OpenSandbox VM.
+# Verifies the exact code + UI behavior (deterministic FG_UI_CI mode) with Node selftests,
+# Python intake/patch/evidence tests, actual Playwright, and automated axe.
+name: phase7-1-safety-check
+on:
+  push:
+    branches:
+      - integration/founder-safety-check-evidence-pack-phase7-1
+      - build/founder-safety-check-runtime-phase7-1
+      - qualification/phase7-1-canonical-ui-tbf
+      - correction/ffs1-foreground-founder-surface
+  pull_request:
+    branches:
+      - integration/founder-url-drop-ui-phase7
+permissions:
+  contents: read
+concurrency:
+  group: p71-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  safety-check-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - run: echo "exact tested SHA = ${{ github.sha }}"
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - name: Install dev dependencies (Playwright + axe)
+        run: npm install --no-audit --no-fund
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Node selftests (exact SHA)
+        run: node src/safety_check/service.selftest.mjs && node src/safety_check/evidence-pack.selftest.mjs && node src/founder_url_drop/urldrop.selftest.mjs
+      - name: Canonical service-identity selftest
+        run: node src/safety_check/canonical-identity.selftest.mjs
+      - name: Phase 7.1-Q qualification selftest (false-green, deny/hold, recovery, one-job-lock)
+        run: node tools/qual/qualification.selftest.mjs
+      - name: FFS-1 completion-invariant selftest
+        run: node src/safety_check/completion-invariant.selftest.mjs
+      - name: Mac launcher anti-repeat + identity test (clean Finder-like PATH; no UI)
+        run: sh tools/macos/launcher.test.sh
+      - name: Python intake + patch + negative + adoption-contract tests
+        run: |
+          cd prototypes/customer_repository_intake && python3 -m unittest test_contract test_negative_fixtures
+          cd ../sandbox_provider_adapter && python3 -m unittest test_patch_compatibility
+          cd ../project_adoption && python3 -m unittest test_adoption_contract
+      - name: Playwright + axe UI tests (deterministic CI mode; no VM)
+        run: npx playwright test
+      - name: Upload Playwright report + traces + axe results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase7-1-playwright-report-${{ github.sha }}
+          path: |
+            docs/testing/evidence/playwright-report
+            docs/testing/evidence/playwright-results.json
+            test-results
+          retention-days: 14

@@ -1,0 +1,37 @@
+{
+  "schema_version": "cross-machine-1",
+  "updated_at_utc": "2026-07-17T17:50:00Z",
+  "m1_lane_state": "FOUNDER_RELAYED_RUNNING \u2014 NOT INDEPENDENTLY PROBED FROM PRO",
+  "m1_host": "Apple M1 qualification host",
+  "m1_run_id": "integrated-8h-rerun-20260717T173028Z",
+  "m1_evaluated_sha": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+  "m1_reported_state": "RUNNING",
+  "m1_reported_start": "2026-07-17T17:37:33Z",
+  "m1_active": true,
+  "m1_git_write_allowed": false,
+  "pro_lane_state": "Phase 6 runtime spike EXECUTING",
+  "pro_host": "Mac16,11/Apple M4 Pro/24GiB/arm64",
+  "pro_branch": "spike/opensandbox-public-repo-intake-phase6",
+  "pro_worktree": "/Users/yosiwizman/Projects/foundergate-wt-opensandbox-public-repo-phase6",
+  "pro_pr": "pending",
+  "pro_active": true,
+  "pro_git_write_allowed": true,
+  "shared_resources": [],
+  "runner_trigger_risk": "NONE",
+  "collision_state": "NONE",
+  "merge_state": "main UNMERGED (e1ca1989)",
+  "forbidden_cross_lane_actions": [
+    "contact M1",
+    "merge main",
+    "modify soak evidence branch",
+    "modify M1 run dir/worktree",
+    "force-push/delete qualification refs",
+    "tags",
+    "self-hosted runner",
+    "M1-contacting automation"
+  ],
+  "next_safe_action": "acquire public fixture exact commit; run tests; create disposable VM",
+  "known_unknowns": [
+    "M1 soak outcome (not probed)"
+  ]
+}

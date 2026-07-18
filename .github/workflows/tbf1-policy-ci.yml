@@ -1,0 +1,38 @@
+# TBF-1 — Test-Before-Founder policy enforcement CI (exact-SHA, GitHub-hosted only).
+# No secrets, no self-hosted runner, no VM, no M1 contact. Validates the machine-enforced
+# governance: policy integrity + invariant floor, schemas, validator selftests, mutation proofs,
+# and synthetic complete/incomplete lane derivations.
+name: tbf1-policy
+on:
+  push:
+    branches:
+      - policy/test-before-founder-tbf1
+      - qualification/phase7-1-canonical-ui-tbf
+      - correction/ffs1-foreground-founder-surface
+  pull_request:
+    branches:
+      - integration/founder-safety-check-evidence-pack-phase7-1
+permissions:
+  contents: read
+concurrency:
+  group: tbf1-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  tbf1-policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "exact tested SHA = ${{ github.sha }}"
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - name: Policy integrity + invariant floor (digest matches pointer)
+        run: python3 tools/policy/validate_policy_integrity.py
+      - name: Schemas are valid JSON
+        run: |
+          for f in .foundergate/schemas/*.json .foundergate/policies/*.json .foundergate/state/*.json; do
+            python3 -c "import json,sys; json.load(open('$f')); print('ok', '$f')"
+          done
+      - name: Validator selftests (30) + mutation proofs (11)
+        run: |
+          cd tools/policy
+          python3 -W ignore::ResourceWarning -m unittest test_tbf_policy test_tbf_mutation test_ffs_mutation -v

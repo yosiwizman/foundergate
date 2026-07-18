@@ -1,0 +1,135 @@
+{
+  "lane_id": "phase7_1_ui_qualification",
+  "candidate_sha": "facfd82ff814f21df010144d3a6bf8f3329da04c",
+  "policy_version": "1.0.0",
+  "policy_digest": "6df22c4f6f53735ba66a62f9c8dcbc299e5f3c84daa57ba8a023680814947c4e",
+  "impact_classes": [
+    "UI_AFFECTING",
+    "RUNTIME_AFFECTING",
+    "GATE_OR_AUTHORITY_AFFECTING"
+  ],
+  "tests": [
+    {
+      "class": "syntax_unit",
+      "status": "PASS",
+      "sha": "facfd82ff814f21df010144d3a6bf8f3329da04c",
+      "command": "phase7.1 durable evidence",
+      "evidence": [
+        {
+          "path": "src/safety_check/service.selftest.mjs",
+          "sha256": "d1988a404fda5da9796648e50b4aa55001476c0488f764f431218a27c49b7c91"
+        }
+      ]
+    },
+    {
+      "class": "actual_playwright",
+      "status": "PASS",
+      "sha": "facfd82ff814f21df010144d3a6bf8f3329da04c",
+      "command": "phase7.1 durable evidence",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/playwright-results.json",
+          "sha256": "6ff75c26dc853e3b3c180fc5960d92da64f1150c123f65326f6b054c8ef0c0ba"
+        }
+      ]
+    },
+    {
+      "class": "headless_exact_sha_ci",
+      "status": "PASS",
+      "sha": "facfd82ff814f21df010144d3a6bf8f3329da04c",
+      "command": "phase7.1 durable evidence",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/playwright-results.json",
+          "sha256": "6ff75c26dc853e3b3c180fc5960d92da64f1150c123f65326f6b054c8ef0c0ba"
+        }
+      ]
+    },
+    {
+      "class": "screenshots",
+      "status": "PASS",
+      "sha": "facfd82ff814f21df010144d3a6bf8f3329da04c",
+      "command": "phase7.1 durable evidence",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/launcher/initial-page.png",
+          "sha256": "59c130999afd75f0978c2030def516ee9dcd7098786af8d49924efd122dda644"
+        }
+      ]
+    },
+    {
+      "class": "trace",
+      "status": "PASS",
+      "sha": "facfd82ff814f21df010144d3a6bf8f3329da04c",
+      "command": "phase7.1 durable evidence",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/traces/sample-trace.zip",
+          "sha256": "22bd9d150c896417527dbef0bde5f602d16ad961f25a1aa73f5b7f17dd73d26c"
+        }
+      ]
+    },
+    {
+      "class": "automated_accessibility",
+      "status": "PASS",
+      "sha": "facfd82ff814f21df010144d3a6bf8f3329da04c",
+      "command": "phase7.1 durable evidence",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/playwright-results.json",
+          "sha256": "6ff75c26dc853e3b3c180fc5960d92da64f1150c123f65326f6b054c8ef0c0ba"
+        }
+      ]
+    },
+    {
+      "class": "initial_neutral_state",
+      "status": "PASS",
+      "sha": "facfd82ff814f21df010144d3a6bf8f3329da04c",
+      "command": "phase7.1 durable evidence",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/launcher/initial-page.png",
+          "sha256": "59c130999afd75f0978c2030def516ee9dcd7098786af8d49924efd122dda644"
+        }
+      ]
+    },
+    {
+      "class": "responsive_mobile",
+      "status": "PASS",
+      "sha": "facfd82ff814f21df010144d3a6bf8f3329da04c",
+      "command": "phase7.1 durable evidence",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/playwright-results.json",
+          "sha256": "6ff75c26dc853e3b3c180fc5960d92da64f1150c123f65326f6b054c8ef0c0ba"
+        }
+      ]
+    },
+    {
+      "class": "false_green",
+      "status": "PASS",
+      "sha": "facfd82ff814f21df010144d3a6bf8f3329da04c",
+      "command": "phase7.1 durable evidence",
+      "evidence": [
+        {
+          "path": "src/safety_check/evidence-pack.selftest.mjs",
+          "sha256": "68d313f2ed83bdea28e37706f7c7e4cd37c6d7b3977015369f0a40268c264756"
+        }
+      ]
+    }
+  ],
+  "not_applicable": [],
+  "checker": {
+    "verdict": "CLEAN",
+    "identity": "phase7.1 final checker + adoption + launcher checkers"
+  },
+  "advisor": {
+    "present": true,
+    "verdict": "PASS-WITH-CORRECTIONS(closed)"
+  },
+  "founder_witness_or_signature": false,
+  "terminal0_decision_packet": true,
+  "remaining_limitations": [
+    "headed Mac Playwright durable export, video, 200% zoom, reduced-motion, cache/storage/service-worker, stale-state, console/network/page-error durable logs, keyboard/focus durable evidence are OUTSTANDING"
+  ]
+}

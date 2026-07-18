@@ -1,0 +1,188 @@
+{
+  "schema": "OPEN_SANDBOX_PHASE6_RUNTIME_EVIDENCE/1",
+  "context": "public GitHub fixture -> exact commit -> immutable snapshot -> disposable Ubuntu 24.04 ARM64 Lima/VZ VM -> PATCHED opensandbox-server 0.2.1 (loopback) -> governed sandbox -> harness compileall -> teardown -> deletion -> VM destroyed",
+  "claim_classes": [
+    "VERIFIED-RUNTIME",
+    "VERIFIED-DISK",
+    "VERIFIED-VM-METADATA",
+    "VERIFIED-DOCKER-METADATA",
+    "PARTIALLY-VERIFIED",
+    "UNVERIFIED",
+    "CONTRADICTED",
+    "UNKNOWN"
+  ],
+  "host": {
+    "model": "Mac16,11",
+    "chip": "Apple M4 Pro",
+    "memory": "24 GiB",
+    "arch": "arm64",
+    "class": "HOST-PROVEN-NOT-M1"
+  },
+  "cross_machine": {
+    "m1_state_source": "FOUNDER_RELAY",
+    "m1_reported_run_id": "integrated-8h-rerun-20260717T173028Z",
+    "m1_reported_state": "RUNNING",
+    "m1_evaluated_sha": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+    "m1_contacted": false,
+    "remote_main_checkpoints": {
+      "preflight": "e1ca1989",
+      "post_acquisition": "e1ca1989",
+      "post_vm_destruction": "e1ca1989"
+    },
+    "runner_trigger_risk": "NONE"
+  },
+  "source_acquisition": {
+    "class": "VERIFIED-RUNTIME+DISK",
+    "url": "https://github.com/pypa/sampleproject",
+    "resolved_exact_commit": "621e4974ca25ce531773def586ba3ed8e736b3fc",
+    "resolution_method": "git ls-remote HEAD",
+    "archive_url": "https://codeload.github.com/pypa/sampleproject/tar.gz/621e4974ca25ce531773def586ba3ed8e736b3fc",
+    "final_host": "codeload.github.com",
+    "redirect_to_other_host": false,
+    "archive_bytes": 5978,
+    "archive_sha256": "fd8597e4d351a9fd42007f48339dc93ee6469d8555fd0ff24906c69905357c01",
+    "archive_scan": "clean (18 entries, no unsafe, no secrets/submodules/lfs)",
+    "license": "LICENSE.txt",
+    "canonical_manifest_file_count": 12,
+    "canonical_manifest_sha256": "649ecb02d79d5cee55c86549b6dff26fb341c4a4de6d3c92d959c42714b6e7de",
+    "is_private": false,
+    "no_repo_code_executed_on_pro": true
+  },
+  "vm": {
+    "class": "VERIFIED-VM-METADATA",
+    "manager": "Lima 2.1.4 (vz)",
+    "name": "foundergate-opensandbox-phase6",
+    "os": "Ubuntu 24.04 ARM64",
+    "image_digest": "sha256:cafa1a96...",
+    "plain": true,
+    "mounts": "[]",
+    "portForwards": "[]"
+  },
+  "opensandbox": {
+    "server": "opensandbox-server==0.2.1 (patched loopback)",
+    "bind": "127.0.0.1:8090 (ss-confirmed)",
+    "secure_runtime": "NOT configured (runc)",
+    "patch": "Phase-4.1 loopback-bind applied in VM (DOCKER_PUBLISH_HOST=127.0.0.1)",
+    "images_arm64": {
+      "workload": "python@sha256:db3ff2e1...",
+      "execd": "opensandbox/execd@sha256:1dc98c7d...",
+      "egress": "opensandbox/egress@sha256:973130e0..."
+    }
+  },
+  "port_binding_keystone": {
+    "class": "VERIFIED-DOCKER-METADATA",
+    "guard": "GUARD_PASS",
+    "sidecar_ports": "44772/8080/18080 -> 127.0.0.1 only",
+    "outcome": "loopback-only (no governed 0.0.0.0)"
+  },
+  "sandbox_lifecycle": {
+    "class": "VERIFIED-RUNTIME",
+    "sid": "4d2d46bd-34c4-47e8-9b07-1cb624be4d31",
+    "create_http": 202,
+    "transfer_digests_match": true,
+    "insandbox_upload_digests": "verified"
+  },
+  "harness_verifier": {
+    "class": "VERIFIED-RUNTIME",
+    "classification": "COMPILEABILITY_OBSERVED",
+    "archive_revalidated_ok": true,
+    "in_sandbox_manifest_sha256": "649ecb02d79d5cee55c86549b6dff26fb341c4a4de6d3c92d959c42714b6e7de",
+    "in_sandbox_manifest_matches_pro": true,
+    "license_present": true,
+    "pyproject_parseable": true,
+    "project_metadata": {
+      "name": "sampleproject",
+      "has_build_system": true
+    },
+    "src_dir_exists": true,
+    "compileall_exit": 0,
+    "generated_bytecode_count": 2,
+    "post_cleanup_matches_pro": true,
+    "not_claimed": [
+      "APPLICATION_WORKS",
+      "BUILD_PASSED",
+      "TESTS_PASSED",
+      "SAFE",
+      "PRODUCTION_READY"
+    ],
+    "only_harness_compileall_ran": true,
+    "no_repository_defined_command_ran": true
+  },
+  "docker_metadata": {
+    "class": "VERIFIED-DOCKER-METADATA",
+    "Privileged": false,
+    "NetworkMode": "container:<sidecar>",
+    "CapAdd": null,
+    "Devices": null,
+    "Mounts": "one Docker named volume opensandbox-runtime-* -> /opt/opensandbox (execd staging; NOT host bind/socket/FG/macOS)"
+  },
+  "authority": {
+    "class": "VERIFIED-RUNTIME",
+    "docker_socket": "SOCKET_ABSENT / FILE_ABSENT",
+    "docker_api": "NO_DOCKER_API (FileNotFoundError)",
+    "docker_cli": "NO_DOCKER_CLI",
+    "macos_path": "NO_USERS (/Users not visible)",
+    "host_mounts": "NO_HOST_MOUNTS",
+    "founder_acceptance_field": "absent (adapter returns observations only)",
+    "workload_uid": "0 (root; recorded risk)"
+  },
+  "egress": {
+    "class": "VERIFIED-RUNTIME",
+    "mode": "dns+nft",
+    "default": "deny",
+    "allowlist": "(none)",
+    "example_com_dns": "DENIED (gaierror)",
+    "example_com_https": "DENIED (URLError)",
+    "direct_ipv4_1.1.1.1:443": "DENIED (timeout)",
+    "ipv6_direct": "DENIED (OSError)",
+    "nft": "policy drop + drop 853",
+    "classification": "default-deny egress proven (empty allowlist)"
+  },
+  "output_digest_proof": {
+    "class": "VERIFIED-RUNTIME",
+    "exported_manifest_equals_insandbox": true,
+    "insandbox_manifest_equals_pro": true,
+    "commit_and_archive_bound": true,
+    "verifier_result_download": {
+      "http": 200,
+      "sha256": "9a73ce99c541e98e91f4327c7e34cb10a439003465954b1230f9b8121ef61bc1",
+      "bytes": 1268
+    },
+    "no_provider_field_leak": true
+  },
+  "teardown": {
+    "class": "VERIFIED-RUNTIME",
+    "session": "DELETE 204/GET 404",
+    "containers_network_volume": "gone",
+    "server": "procs 0, 8090 CLOSED",
+    "vm_baseline": "0 containers"
+  },
+  "deletion": {
+    "class": "VERIFIED-DISK",
+    "vm_source_snapshot": "deleted + absent",
+    "pro_acquisition_root": "deleted + absent (archive, extracted tree, manifest copies, directory)",
+    "limitation": "Deletion is proven under observable filesystem and VM-manager state, not physical-storage forensic erasure."
+  },
+  "vm_destruction": {
+    "class": "VERIFIED-VM-METADATA",
+    "instance": "deleted",
+    "dir_disk": "gone",
+    "hostagent": "none",
+    "mac_forwards": 0,
+    "host_disk_after": "30.74 GiB"
+  },
+  "prototype_tests": "36 passed (22 intake + 14 github provider; no network in tests)",
+  "evidence_export_sha256": {
+    "verifier_result.json": "9a73ce99c541e98e91f4327c7e34cb10a439003465954b1230f9b8121ef61bc1",
+    "orchestrate_result.json": "42b45b60ecb4ae63db08c8d5d74da94de0640aff34d124f8770d053d59bd2d4f",
+    "server.stderr.log": "40c51a35d10109915390b9788f8aa0fc5f76e12f37bdcede3247d6cb3eb8720a",
+    "config.toml": "6ff7334ebf9093d93b39ac1c82ed72ebe824b6854063107273a6f0a4ac517539"
+  },
+  "authorizations": {
+    "CUSTOMER_CODE_EXECUTION_AUTHORIZED": "NO",
+    "PRIVATE_REPOSITORY_INTAKE_AUTHORIZED": "NO",
+    "OPENSANDBOX_ADOPTION_AUTHORIZED": "NO",
+    "PRODUCTION_INTEGRATION_AUTHORIZED": "NO",
+    "MAIN_MERGE_AUTHORIZED": "NO"
+  }
+}

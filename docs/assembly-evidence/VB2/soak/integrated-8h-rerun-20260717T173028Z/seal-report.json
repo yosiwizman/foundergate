@@ -1,0 +1,236 @@
+{
+  "schema": "vb2-rerun-seal-report/1",
+  "sealed_at": "2026-07-18T02:17:54.615Z",
+  "run_id": "integrated-8h-rerun-20260717T173028Z",
+  "driver_lease_run": "run_f3124ace-e39f-4d52-9e46-1dc5b2f1e1b1",
+  "evaluated_sha": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+  "worktree": "/Users/macm1/Projects/foundergate-wt-vb2-integrated-8h-rerun-20260717T173028Z",
+  "all_checks_pass": true,
+  "verdict": "VB2-SOAK: PASS",
+  "checks": [
+    {
+      "check": 1,
+      "name": "run ID consistency",
+      "pass": true,
+      "detail": {
+        "qualification_run_id": "integrated-8h-rerun-20260717T173028Z",
+        "sources": {
+          "dirName": "integrated-8h-rerun-20260717T173028Z",
+          "rec": "integrated-8h-rerun-20260717T173028Z",
+          "intent": "integrated-8h-rerun-20260717T173028Z",
+          "ledger0": "integrated-8h-rerun-20260717T173028Z"
+        },
+        "driver_lease_run_id": "run_f3124ace-e39f-4d52-9e46-1dc5b2f1e1b1",
+        "driver_ids": [
+          "run_f3124ace-e39f-4d52-9e46-1dc5b2f1e1b1",
+          "run_f3124ace-e39f-4d52-9e46-1dc5b2f1e1b1",
+          "run_f3124ace-e39f-4d52-9e46-1dc5b2f1e1b1"
+        ],
+        "qualOk": true,
+        "drvOk": true
+      }
+    },
+    {
+      "check": 2,
+      "name": "evaluated SHA consistency",
+      "pass": true,
+      "detail": {
+        "head": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+        "intent": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+        "begin": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+        "hardGate": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+        "verdictSha": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+        "sentSha": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+        "anchor": "b9af1def60009ac9dae69bf519b5e0a2680d4600"
+      }
+    },
+    {
+      "check": 3,
+      "name": "detached worktree",
+      "pass": true,
+      "detail": {
+        "detached": true,
+        "branch": "(none)",
+        "worktree": "/Users/macm1/Projects/foundergate-wt-vb2-integrated-8h-rerun-20260717T173028Z"
+      }
+    },
+    {
+      "check": 4,
+      "name": "driver terminal state (exit code is supporting only)",
+      "pass": true,
+      "detail": {
+        "started": true,
+        "done_verdict_pass": true,
+        "lease_released": true,
+        "no_surviving_child": true
+      }
+    },
+    {
+      "check": 5,
+      "name": "required duration >= 8h",
+      "pass": true,
+      "detail": {
+        "start": "2026-07-17T17:37:33.708Z",
+        "end": "2026-07-18T01:52:33.655Z",
+        "span_hours": 8.25,
+        "claim_hours": 8
+      }
+    },
+    {
+      "check": 6,
+      "name": "verdict AND-gate (not exit code)",
+      "pass": true,
+      "detail": {
+        "pass_line": true,
+        "and_gate_statement": true,
+        "availability_pred": true,
+        "quiet_host_pred": true,
+        "frozen_integrity_pred": true
+      }
+    },
+    {
+      "check": 7,
+      "name": "begin freeze manifest",
+      "pass": true,
+      "detail": {
+        "file_count": 340,
+        "manifest_hash": "098b428fef98e254d3ec4080838b256a99d783b7cb8ef5acc215d26a9a1312e7",
+        "expected_sha": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+        "scope_ok": true
+      }
+    },
+    {
+      "check": 8,
+      "name": "end freeze manifest (same impl/scope)",
+      "pass": true,
+      "detail": {
+        "file_count": 340,
+        "manifest_hash": "098b428fef98e254d3ec4080838b256a99d783b7cb8ef5acc215d26a9a1312e7",
+        "scope_ok": true
+      }
+    },
+    {
+      "check": 9,
+      "name": "begin/end manifest equality",
+      "pass": true,
+      "detail": {
+        "count_match": true,
+        "hash_match": true,
+        "begin_hash": "098b428fef98e254d3ec4080838b256a99d783b7cb8ef5acc215d26a9a1312e7",
+        "end_hash": "098b428fef98e254d3ec4080838b256a99d783b7cb8ef5acc215d26a9a1312e7",
+        "added_or_modified": 0,
+        "removed": 0
+      }
+    },
+    {
+      "check": 10,
+      "name": "observed HEAD continuity == SHA",
+      "pass": true,
+      "detail": {
+        "tick_count": 99,
+        "head_mismatch_count": 0,
+        "head_ever_drifted": false
+      }
+    },
+    {
+      "check": 11,
+      "name": "sentinel continuity",
+      "pass": true,
+      "detail": {
+        "start": true,
+        "tick_count": 99,
+        "max_heartbeat_gap_s": 300,
+        "interval_s": 300,
+        "driver_pid_monitored": true,
+        "terminal_observation": true,
+        "mid_run_interventions": 0
+      }
+    },
+    {
+      "check": 12,
+      "name": "recovery-state continuity (<=5min)",
+      "pass": true,
+      "detail": {
+        "current_state": "FINAL_SEAL_IN_PROGRESS",
+        "running_ticks_heartbeat": 99,
+        "history_len": 5,
+        "note": "5-min recovery heartbeat folded into sentinel tick (running_ticks)"
+      }
+    },
+    {
+      "check": 13,
+      "name": "sleep-prevention (no host sleep during run)",
+      "pass": true,
+      "detail": {
+        "caffeinate_no_timeout": true,
+        "PreventSystemSleep_at_launch": true,
+        "on_behalf_of_driver": true,
+        "pss_held_every_run_tick": true,
+        "pss_lapses_only_post_exit": true,
+        "new_system_sleep": 0
+      }
+    },
+    {
+      "check": 14,
+      "name": "quiet-host / foreign-workload (runtime evidence)",
+      "pass": true,
+      "detail": {
+        "preflight_quiet": true,
+        "downgraded": false,
+        "episodes": 0,
+        "eligible_final": true,
+        "run_samples": 495,
+        "eligible_false_samples": 0,
+        "foreign_heavy_samples": 0
+      }
+    },
+    {
+      "check": 15,
+      "name": "lease + lock integrity",
+      "pass": true,
+      "detail": {
+        "events": [
+          "ACQUIRE",
+          "PREFLIGHT_PASS",
+          "ACTIVATE",
+          "RELEASE"
+        ],
+        "release_ok": true,
+        "release_reason": "SOAK_COMPLETE",
+        "lease_status": "RELEASED",
+        "no_lock": true
+      }
+    },
+    {
+      "check": 16,
+      "name": "capability integrity (no override/bypass)",
+      "pass": true,
+      "detail": {
+        "launch_baseline_lease_cap": true,
+        "post_release_entries": [],
+        "override_capability": false
+      }
+    },
+    {
+      "check": 17,
+      "name": "attestation validation",
+      "pass": true,
+      "detail": {
+        "correct_anchor": "intact",
+        "correct_accepted": true,
+        "wrong_anchor": "broken-anchor",
+        "wrong_rejected": true,
+        "soak_eligibility": "ELIGIBLE"
+      }
+    },
+    {
+      "check": 18,
+      "name": "artifact completeness (existence+non-empty)",
+      "pass": true,
+      "detail": {
+        "required": 21,
+        "missing": []
+      }
+    }
+  ]
+}

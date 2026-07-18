@@ -1,0 +1,22 @@
+{
+  "base": "http://127.0.0.1:4713/",
+  "screenshots": [
+    "01-neutral-initial.png",
+    "02-normal-refresh-still-neutral.png",
+    "03-fixture-selected.png",
+    "04-before-check.png",
+    "05-check-started-run-id.png",
+    "06-runtime-complete.png",
+    "07-exact-version-and-snapshot.png",
+    "08-compileability-and-not-proven-badges.png",
+    "09-cleanup-and-evidence-pack.png",
+    "10-evidence-details-raw.png",
+    "11-pause-and-get-help-open.png",
+    "12-held-other-public-url.png",
+    "13-refused-ssh-url.png",
+    "14-relaunch-neutral-canonical.png"
+  ],
+  "console_entries": 1,
+  "network_entries": 17,
+  "page_errors": 0
+}

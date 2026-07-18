@@ -1,0 +1,16 @@
+# OpenSandbox — License Compatibility Note (technical, NOT legal advice)
+
+**Evaluated commit:** `192b5bf54a5fd01c7050ba4de9aba48939776cef`. **LICENSE digest:** `sha256:50e6751797c50dedd75ef1b8a0d9e42f5f8472e9fbce91f34718e9f97b0c780a`. This is a technical compatibility note for engineering planning, **not legal advice**; a lawyer must clear commercial distribution.
+
+- **Root license:** **Apache-2.0** [VERIFIED-DOCUMENTED — `LICENSE` first lines "Apache License / Version 2.0"; VERIFIED-GITHUB-METADATA — repo `license.spdx_id = Apache-2.0`, retrieved 2026-07-17].
+- **NOTICE file:** **ABSENT** at this commit [VERIFIED-DOCUMENTED — `NOTICE` FILE-NOT-PRESENT]. Apache-2.0 §4(d) only requires propagating a NOTICE **if one exists**; none does here, so there is no upstream NOTICE text to carry (LICENSE + copyright retention still apply).
+- **Apache-2.0 obligations (if FounderGate redistributes OpenSandbox code/images):** retain the `LICENSE` text and copyright notices (§4(a)); include a copy of the license with any distribution; **state significant changes** in modified files (§4(b)); preserve attribution notices found in source (§4(d)).
+- **Attribution / modification notices:** required only on **redistribution** of the code; mark modified files as changed.
+- **Patent license:** Apache-2.0 §3 grants a patent license from contributors; it **terminates** if the licensee initiates patent litigation over the work. [VERIFIED-DOCUMENTED]
+- **Trademark exclusion:** §6 grants **no trademark rights** — "OpenSandbox" name/logos are not licensed for FounderGate branding. [VERIFIED-DOCUMENTED]
+- **Distribution consideration:** two distinct modes —
+  - **Using the running service via an SDK/REST** (FounderGate calls a locally-run OpenSandbox server): this is *use*, not redistribution of modified source — the redistribution obligations (§4) are **not triggered** by mere use. [PARTIALLY-VERIFIED — legal characterization; confirm with counsel.]
+  - **Redistributing OpenSandbox (modified or not), or shipping its Docker images inside a FounderGate product:** triggers §4 obligations **and** the separate licenses of every bundled dependency/image.
+- **Separate-license dependencies/images (each may carry its own terms — inventory required before commercial distribution):** Docker images (`opensandbox/server|execd|egress` + Aliyun-mirror copies), bundled **Chromium** (BSD-style + its own components), **Playwright**, **mitmproxy**, and the optional secure runtimes **gVisor**, **Kata Containers**, **Firecracker** (each typically Apache-2.0 but must be verified per version). These are NOT covered by the OpenSandbox root license and must be inventoried individually. [UNVERIFIED — dependency licenses not individually confirmed in this Phase-1 pass.]
+
+**Requirement recorded:** before any commercial *distribution* (not needed for an internal spike or for using the service), FounderGate must produce a **dependency-and-image license inventory** (root Apache-2.0 + every image + every bundled binary: Chromium, Playwright, mitmproxy, gVisor/Kata/Firecracker if used) and a legal review. An internal Phase-2 spike that only *runs* the service triggers none of the distribution obligations.

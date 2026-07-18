@@ -1,0 +1,13 @@
+{
+  "resolved_utc": "2026-07-18T02:11:03Z",
+  "final_head": "3718ca90382d7d5d9c6ba82862dbeb89e192ca36",
+  "descends_from_remote_main": true,
+  "merge_base_main_final": "e1ca1989d2397297a450893f7890dbe7fc21e494",
+  "all_prior_heads_ancestor_of_final": true,
+  "nonlinear_required_commit": false,
+  "prs_151_162_all_ancestors": true,
+  "cumulative_commits": 33,
+  "cumulative_files": 327,
+  "note": "Clean linear tower on current main; every open PR head 151-162 is an ancestor of the final accepted head.",
+  "cumulative_commits_note": "33 stack commits (main..pre-seal 20136202) + acceptance-seal/attestation commits (docs-only; product tree FROZEN at a64ebcd)"
+}

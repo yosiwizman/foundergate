@@ -1,0 +1,36 @@
+{
+  "schema": "p71-recovery-1",
+  "updated_at_utc": "2026-07-17T21:40:00Z",
+  "overall_state": "BUILD_COMPLETE; CI_GREEN; CHECKER_CLEAN; LANE_F_COMPLETE; ADOPTION_CHECKER_CLEAN; FINDINGS_A_B_CLOSED; LAUNCHER_FIXED",
+  "witness_status": "READY-FOR-FOUNDER-LAUNCH-RETRY",
+  "launcher_fix": {
+    "bug": "FOUNDER-CAUGHT-BUG: MAC-LAUNCHER-CANNOT-LOCATE-EXISTING-NODE-FROM-FINDER",
+    "root_cause": "Finder-minimal-PATH + nvm-only Node (zsh-init) invisible to bash -lc command -v node",
+    "fix": "source-controlled deterministic Node>=20 resolver + launcher core + build-time embed; app regenerated",
+    "anti_repeat_test": "tools/macos/launcher.test.sh 12/12; wired into exact-SHA CI",
+    "finder_launch_proven": "health 200, nvm node resolved w/o terminal PATH, loopback only, initial page renders, 0 Lima VMs, clean stop",
+    "independent_checker": "LAUNCHER-CHECKER-CLEAN (1 non-blocking dev-only string reworded)",
+    "exact_sha_ci": "SUCCESS run 29615300811 on ec06cdd (ubuntu-latest)"
+  },
+  "phase71_branch": "integration/founder-safety-check-evidence-pack-phase7-1",
+  "phase71_base": "6a269787a05982dc8feda14f5f79f102d5ba9551",
+  "remote_main": "e1ca1989d2397297a450893f7890dbe7fc21e494",
+  "runner_risk": "NONE",
+  "m1_state": "FOUNDER_RELAYED_RUNNING (not probed)",
+  "truth_gap": "BUTTON-DID-NOT-LAUNCH-A-NEW-RUNTIME (corrected; live run sc-0bc1b04f)",
+  "correction_cycles": 5,
+  "lane_f": {
+    "mode": "WIDE-SAFE design + synthetic contract tests; NO AKIOR access; NO live runtime",
+    "adoption_contract_tests": "20/20 pass",
+    "adoption_checker_verdict": "ADOPTION-CHECKER-CLEAN",
+    "advisories": "3 non-blocking; 2 applied (planner comment + broadened test_19); 1 documented (acceptance is runtime founder-path, not the synthetic dataclass)",
+    "core_project_neutrality_proven": true,
+    "fixed_fixture_isolated_from_core": true,
+    "akior_repository_accessed": false,
+    "android_execution_proven": false,
+    "akior_adoption_authorized": false
+  },
+  "next_safe_action": "commit Lane F + push branch; corrective exact-SHA CI; update PR #159; await founder witness",
+  "exact_sha_ci": "SUCCESS (prior run 29607840593 on 0bcbd60); Lane F corrective CI pending push",
+  "live_run": "sc-0bc1b04f COMPLETE, VM destroyed"
+}

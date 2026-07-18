@@ -1,0 +1,11 @@
+{
+  "host_model": "Mac16,11",
+  "host_architecture": "arm64",
+  "configured_founder_browser": "Google Chrome",
+  "browser_application": "/Applications/Google Chrome.app",
+  "browser_bundle_identifier": "com.google.Chrome",
+  "launcher_application": "~/Desktop/FounderGate Safety Check.app",
+  "ui_contract": "phase7.1-neutral-first-v1",
+  "visible_window_required": true,
+  "notes": "No secrets or personal browser data. Foreground founder-surface tests use a dedicated temporary Chrome profile; never the founder's personal profile."
+}

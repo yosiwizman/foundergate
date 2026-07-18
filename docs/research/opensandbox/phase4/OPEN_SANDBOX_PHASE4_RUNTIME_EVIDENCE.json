@@ -1,0 +1,171 @@
+{
+  "schema": "OPEN_SANDBOX_PHASE4_RUNTIME_EVIDENCE/1",
+  "context": "live runtime inside one disposable Ubuntu 24.04 ARM64 VM (Lima/VZ) on the Apple M4 Pro Mac Mini; VM destroyed after capture",
+  "claim_classes": [
+    "VERIFIED-RUNTIME",
+    "VERIFIED-DISK",
+    "VERIFIED-VM-METADATA",
+    "VERIFIED-DOCKER-METADATA",
+    "PARTIALLY-VERIFIED",
+    "UNVERIFIED",
+    "CONTRADICTED",
+    "UNKNOWN"
+  ],
+  "host": {
+    "model": "Mac16,11",
+    "chip": "Apple M4 Pro",
+    "memory": "24 GiB",
+    "arch": "arm64",
+    "macos": "26.3.1",
+    "class": "HOST-PROVEN-NOT-M1"
+  },
+  "vm_manager": {
+    "tool": "Lima",
+    "version": "2.1.4",
+    "bottle": "arm64_tahoe sha256:3c5700d39777426daf59dafdd7afaa34ac29d88ad9c5e4e345929d7cf55410c0",
+    "runtime_deps": "none (no QEMU)",
+    "backend": "Apple Virtualization Framework (vmType: vz)",
+    "class": "VERIFIED-DISK"
+  },
+  "vm": {
+    "name": "foundergate-opensandbox-phase4",
+    "os": "Ubuntu 24.04.4 LTS",
+    "kernel": "6.8.0-124-generic",
+    "arch": "aarch64",
+    "cpus": 4,
+    "memory": "7.7Gi",
+    "disk": "24GiB",
+    "nat_ip": "192.168.5.15",
+    "networking": "user-mode NAT (VZ)",
+    "plain_mode": true,
+    "mounts": "[] (no host/shared-folder/home/foundergate mount)",
+    "port_forwards": "[] (no macOS forward; only loopback Lima SSH)",
+    "loadDotSSHPubKeys": false,
+    "ubuntu_image": "cloud-images.ubuntu.com/.../release-20260615/ubuntu-24.04-server-cloudimg-arm64.img",
+    "ubuntu_image_digest": "sha256:cafa1a965b591b7c4184b484ffd8e625981a79d48f9b4ae8a4adf7b4c5ade927",
+    "lima_run_key_fpr": "SHA256:NEuR2Fd/kw7als1F+/ZGZT92CSHkTeLta+DMHlz2wlY",
+    "class": "VERIFIED-VM-METADATA"
+  },
+  "opensandbox": {
+    "server": "opensandbox-server==0.2.1",
+    "python": "3.12.3",
+    "bind": "127.0.0.1:8090 (ss-confirmed; NOT 0.0.0.0)",
+    "secure_runtime": "NOT configured -> runc / standard container isolation",
+    "images_linux_arm64": {
+      "workload": "python@sha256:db3ff2e1800a8581e2c48a27c3995339d47bdf046da21c7627accd3d51053a93 (arch=arm64,os=linux)",
+      "execd": "opensandbox/execd@sha256:1dc98c7de10b9a73450ac75aa0f200ad7972f2c40f5225f6a8998e166b45d6dd",
+      "egress": "opensandbox/egress@sha256:973130e01bf76e8e686e2853ebf47b21741bc8781919bb4a7cf60af09a3c6e8a"
+    }
+  },
+  "native_proxy": {
+    "class": "VERIFIED-RUNTIME",
+    "result": "WORKS",
+    "evidence": "adapter used /v1/sandboxes/{id}/proxy/44772/{ping,command,files}; ping 200; command 200; server access log shows only proxy paths (no published-port fallback)",
+    "published_port_fallback_used": false
+  },
+  "zero_zero_finding": {
+    "class": "VERIFIED-DOCKER-METADATA",
+    "finding": "OpenSandbox 0.2.1 HARDCODES publishing execd(44772)/http(8080)/policy(18080) to 0.0.0.0 (port_allocator.py:25 DOCKER_PUBLISH_HOST='0.0.0.0'; networking.py:405-406); host_ip config only affects endpoint URLs, not the publish bind. Observed: sidecar published 0.0.0.0:*->44772/8080/18080.",
+    "containment": "contained inside the NAT-only VM: Lima portForwards=[]; Mac->192.168.5.15:<execd> returned HTTP 000 (unreachable); no macOS listener for 8090/execd. The adapter uses the native proxy, never the published port.",
+    "control_exposed_beyond_vm": false
+  },
+  "lifecycle": {
+    "class": "VERIFIED-RUNTIME",
+    "sandbox_id": "aa030fee-457a-4b32-af9a-2b97ffbfa0a6",
+    "create_http": 202,
+    "neutral_type": "CreateSessionResult",
+    "upload_http": {
+      "README.md": 200,
+      "input.txt": 200,
+      "builder.sh": 200
+    },
+    "preupload_digests": {
+      "README.md": "sha256:19474f1f5a653707ce207aae02e561bce0bd917c881d010e2dd7a5ca915b6d94",
+      "input.txt": "sha256:e95d4100df95aa4ab54242734d460c42010e311a3db4494b535e983ca1b061cc",
+      "builder.sh": "sha256:82f68bdffaf4c65a52ee8bbeb43c6eebcccdc029f00f0adf70b2ae38519ecb0c"
+    },
+    "insandbox_digests_match": true,
+    "builder_exit": 0,
+    "builder_elapsed_s": 1.042,
+    "builder_stdout": "{\"event\":\"builder_ok\",\"timestamp\":\"2026-07-17T15:54:07Z\",\"input_digest\":\"e95d4100df95aa4ab54242734d460c42010e311a3db4494b535e983ca1b061cc\",\"output_digest\":\"78cdd70b6cf73f1df92024c030e3036804194ad92b0d5c3cd35779dac0c37f86\",\"uid\":\"0\",\"working_directory\":\"/workspace\"}\n__RC=0",
+    "result_content": "FOUNDERGATE_OPENSANDBOX_PHASE4_BUILDER_OK",
+    "result_digest": "sha256:78cdd70b6cf73f1df92024c030e3036804194ad92b0d5c3cd35779dac0c37f86",
+    "download_sha256": "sha256:78cdd70b6cf73f1df92024c030e3036804194ad92b0d5c3cd35779dac0c37f86",
+    "export_matches_insandbox": true
+  },
+  "trust_boundary": {
+    "class": "VERIFIED-RUNTIME+DOCKER-METADATA",
+    "sentinel_path": "/Users/yosiwizman/Projects/foundergate/OPEN_SANDBOX_PHASE4_FORBIDDEN_SENTINEL.txt",
+    "inside_write": "succeeded workload-local (wrote_rc=0, 7 bytes)",
+    "mac_host_present": false,
+    "vm_host_present": false,
+    "main_clean": true,
+    "interpretation": "THE PATH WAS WORKLOAD-LOCAL. NO FOUNDERGATE HOST PATH WAS MODIFIED.",
+    "docker_socket": "SOCKET_ABSENT; /var/run/docker.sock No such file; docker CLI not found in workload",
+    "workload_metadata": "CapAdd=null, Privileged=false, NetMode=container:<sidecar>, Mounts=[one Docker named volume opensandbox-runtime-*/_data -> /opt/opensandbox (execd staging; NOT a host path or docker.sock)]",
+    "host_mounts_in_proc": "none (no docker.sock/Users/foundergate/virtiofs/9p in /proc/mounts)"
+  },
+  "root_non_root": {
+    "class": "VERIFIED-RUNTIME",
+    "default_uid": "0 (root)",
+    "execd_uid1000": "uid=1000 gid=1000 groups=1000 (per-command non-root works, no unsafe modification)",
+    "result": "NON_ROOT_WORKLOAD_CONFIRMED (per-command; container/execd control processes remain root \u2014 root-in-container recorded as a risk)"
+  },
+  "egress": {
+    "class": "VERIFIED-RUNTIME",
+    "mode": "dns+nft",
+    "default": "deny",
+    "allow": [
+      "example.com"
+    ],
+    "T1_example_com": "ALLOW (DNS 104.20.23.154, HTTPS 200)",
+    "T2_example_org_https": "DENIED (URLError)",
+    "T3_example_org_dns": "DNS_BLOCKED (gaierror)",
+    "T4_direct_tcp_1.1.1.1:443": "DENIED (TimeoutError, nft)",
+    "T5_numeric_ip_https_1.1.1.1": "DENIED (URLError)",
+    "T6_ipv6": "available; direct v6 2606:4700:4700::1111:443 DENIED (OSError)",
+    "nft_chain": "table inet opensandbox chain egress: type filter hook output policy DROP; accept established; drop 853; drop @deny sets; accept @dyn_allow/@allow sets; final drop",
+    "sidecar_logs": "egress policy loaded default=deny rules=[allow example.com]; enforcement mode: dns+nft; DNS redirect installed; nftables static policy applied (default=deny, allow_v4=2)",
+    "workload_NET_ADMIN": false,
+    "sidecar_NET_ADMIN": true,
+    "classification": "EGRESS-STRICT-BEHAVIOR-CONFIRMED-IN-LINUX-SPIKE"
+  },
+  "rendered_ui": {
+    "class": "UNKNOWN",
+    "result": "RENDERED_UI_NOT_RUN (optional; disk/time-bounded)"
+  },
+  "teardown": {
+    "class": "VERIFIED-RUNTIME+DOCKER-METADATA",
+    "session": "DELETE 204, GET 404",
+    "containers": "workload+sidecar gone",
+    "network": "gone",
+    "volume": "gone",
+    "server": "no binary process, 8090 CLOSED",
+    "vm_docker_baseline": "0 containers, 3 default networks, 0 opensandbox volumes"
+  },
+  "vm_destruction": {
+    "class": "VERIFIED-VM-METADATA",
+    "instance": "shut down + deleted",
+    "dir_and_disk": "gone",
+    "hostagent_process": "none",
+    "mac_port_forwards": "0 (Lima SSH dropped)",
+    "host_disk_after": "33.37 GiB free",
+    "lima_remains_installed": true,
+    "limitation": "VM destruction proves removal under Lima's observable state; it does NOT prove forensic erasure from physical storage."
+  },
+  "evidence_export_digests": {
+    "evidence-core.json": "da365e5bea748b7c1e465fec5ef921cb8f8931baf8dfab0e11d8ce41b3b58a3d",
+    "server.stderr.log": "f998ef74efdf57f9d621552fd024317ea91569d33eacd92d16c76ef2a657d60e",
+    "config.toml": "5704c765e755293f34a904aa6ea68a7c2d4839bc9f5bc6642c6775c6ed92e9f8"
+  },
+  "prototype": {
+    "tests": "18 passed (python3 -m unittest test_contract)",
+    "N1": "test_01 tautological assertion replaced with meaningful checks",
+    "N2": "strict governed digest validation (repo@sha256:64-lowercase-hex; rejects tag-only/:latest/empty/short/uppercase/non-hex/missing-name)"
+  },
+  "authorizations": {
+    "PRODUCTION_INTEGRATION_AUTHORIZED": "NO",
+    "OPENSANDBOX_ADOPTION_AUTHORIZED": "NO",
+    "MAIN_MERGE_AUTHORIZED": "NO"
+  }
+}

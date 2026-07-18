@@ -1,0 +1,12 @@
+{
+  "schema": "stack1-recovery-1",
+  "updated_at_utc": "2026-07-18T02:11:03Z",
+  "overall_state": "ACCEPTANCE_SEALED; STACK_AUDITED; CUMULATIVE_PR_PENDING_RETARGET; MERGE_HELD_BY_M1_EMBARGO",
+  "open_prs": 12,
+  "final_head": "3718ca90382d7d5d9c6ba82862dbeb89e192ca36",
+  "remote_main": "e1ca1989d2397297a450893f7890dbe7fc21e494",
+  "m1_merge_embargo": "ACTIVE_OR_UNKNOWN",
+  "merge_method": "MERGE_COMMIT",
+  "next_safe_action": "retarget final PR to main (draft); exact-SHA CI; checker; advisor; stop at founder merge gate",
+  "commit_count_note": "34 at final head = 33 stack + 1 seal commit; attestation commits are docs-only, product frozen at a64ebcd"
+}

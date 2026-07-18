@@ -1,0 +1,26 @@
+{
+  "schema": "foundergate-empty-artifact-manifest/1",
+  "policy_version": "STACK1E-1",
+  "note": "Empty evidence is INVALID BY DEFAULT. Only the EXACT artifact_path entries below may be zero-byte, and only when every companion verifies. No wildcard/extension/directory exemption.",
+  "entries": [
+    {
+      "artifact_path": "docs/assembly-evidence/VB2/soak/integrated-8h-rerun-20260717T173028Z/sentinel-watch.log",
+      "allow_empty": true,
+      "empty_reason": "Sentinel-watch stdout log: the sentinel wrote its structured evidence to companion artifacts (intervention/attestation/soak JSON); its stdout produced no output (no errors) — a legitimately-empty capture. Externally published by the M1; must not be rewritten.",
+      "producer": "sentinel-watch.mjs (M1 VB2 soak harness)",
+      "producer_exit_status": 0,
+      "qualification_run_id": "integrated-8h-rerun-20260717T173028Z",
+      "driver_lease_run_id": "run_f3124ace-e39f-4d52-9e46-1dc5b2f1e1b1",
+      "evaluated_sha": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+      "companion_artifacts": [
+        "docs/assembly-evidence/VB2/soak/integrated-8h-rerun-20260717T173028Z/freeze-manifest-begin.json",
+        "docs/assembly-evidence/VB2/soak/integrated-8h-rerun-20260717T173028Z/RESULT-ONEPAGE.md"
+      ],
+      "companion_hashes": {
+        "docs/assembly-evidence/VB2/soak/integrated-8h-rerun-20260717T173028Z/freeze-manifest-begin.json": "17c57d7f53f0dfcaef6c37dd41013bccc3250d8ef96f7c699cd9a9de06e26815",
+        "docs/assembly-evidence/VB2/soak/integrated-8h-rerun-20260717T173028Z/RESULT-ONEPAGE.md": "1e6fa3c1e0525014c838cc8e25dc7f8797430226303f28fd4ca1de994ac38d68"
+      },
+      "reviewer": "Terminal-0 (STACK-1E); companions bind evaluated_sha + qualification_run_id"
+    }
+  ]
+}

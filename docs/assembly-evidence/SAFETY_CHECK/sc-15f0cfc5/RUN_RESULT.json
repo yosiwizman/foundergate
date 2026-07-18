@@ -1,0 +1,23 @@
+{
+  "run_id": "sc-15f0cfc5",
+  "fixture_url": "https://github.com/pypa/sampleproject",
+  "status": "COMPLETE",
+  "exact_commit": "621e4974ca25ce531773def586ba3ed8e736b3fc",
+  "archive_sha256": "fd8597e4d351a9fd42007f48339dc93ee6469d8555fd0ff24906c69905357c01",
+  "canonical_manifest_sha256": "649ecb02d79d5cee55c86549b6dff26fb341c4a4de6d3c92d959c42714b6e7de",
+  "manifest_file_count": 12,
+  "port_binding_guard": "GUARD_PASS",
+  "server_bind": "LOOPBACK",
+  "egress_example_com": "DENIED",
+  "docker_socket": "ABSENT",
+  "classification": "COMPILEABILITY_OBSERVED",
+  "compileall_exit": 0,
+  "in_sandbox_manifest_matches_pro": true,
+  "teardown_get_status": "404",
+  "vm_destroyed": true,
+  "build_proven": false,
+  "tests_proven": false,
+  "security_proven": false,
+  "production_ready": false,
+  "note": "harness compileability only; no repository build/tests/scripts ran"
+}

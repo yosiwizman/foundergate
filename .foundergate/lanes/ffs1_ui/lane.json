@@ -1,0 +1,41 @@
+{
+  "lane_id": "ffs1_ui",
+  "policy_version": "1.1.0",
+  "policy_digest": "e1fbb8f08bb6cc7cbc3ec24b9da85aacb4a4b716be7f1d73e2170cadb572d7d3",
+  "objective": "FFS-1 foreground founder-surface + Evidence Pack recovery",
+  "base_sha": "0af5f0cdda1b0bad9f9775182fdbe6acaf77814b",
+  "risk_class": "high",
+  "impact_classes": [
+    "UI_AFFECTING"
+  ],
+  "required_test_classes": [
+    "actual_playwright",
+    "automated_accessibility",
+    "cache_storage_service_worker",
+    "console_log",
+    "false_green",
+    "final_advisor_before_acceptance_witness",
+    "focus_behavior",
+    "foreground_founder_surface",
+    "headed_local_browser",
+    "headless_exact_sha_ci",
+    "independent_checker",
+    "initial_neutral_state",
+    "keyboard_only",
+    "network_log",
+    "page_error_log",
+    "reduced_motion_where_applicable",
+    "responsive_mobile",
+    "screenshots",
+    "stale_state",
+    "syntax_unit",
+    "trace",
+    "video_acceptance_critical",
+    "zoom_200"
+  ],
+  "not_applicable": [],
+  "independent_checker": true,
+  "final_advisor_required": true,
+  "founder_gate_required": true,
+  "current_state": "MACHINE_VERIFICATION_IN_PROGRESS"
+}

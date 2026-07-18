@@ -1,0 +1,13 @@
+# capability-dir listing @ launch 2026-07-17T17:38:17.644Z
+path: /Users/macm1/.cldh/host-workload-lease/capability
+total 8
+drwx------  3 macm1  staff   96 Jul 17 13:37 .
+drwx------  8 macm1  staff  256 Jul 17 13:38 ..
+-rw-------  1 macm1  staff   72 Jul 17 13:37 lease_89490eb048674250b3c1eb0998a10fcb.cap
+
+# capability-dir listing @ POST-RELEASE 2026-07-18T02:15:36.836Z
+path: /Users/macm1/.cldh/host-workload-lease/capability
+total 0
+drwx------  2 macm1  staff   64 Jul 17 21:52 .
+drwx------  7 macm1  staff  224 Jul 17 21:52 ..
+# file contents / type (safe):

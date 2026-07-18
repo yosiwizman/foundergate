@@ -1,0 +1,14 @@
+{
+  "screenshots": [
+    "01-before-launcher-desktop.png",
+    "02-chrome-visible-frontmost.png",
+    "03-canonical-neutral-page.png",
+    "04-existing-run-loaded.png",
+    "05-evidence-pack-state.png",
+    "06-download-control-visible.png",
+    "07-download-completed.png",
+    "08-refreshed-state.png",
+    "09-pause-and-get-help.png",
+    "10-final-state.png"
+  ]
+}

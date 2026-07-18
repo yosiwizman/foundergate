@@ -1,0 +1,13 @@
+{
+  "compileability_observed": true,
+  "build_proven": false,
+  "tests_proven": false,
+  "security_proven": false,
+  "production_ready": false,
+  "unknowns": [
+    "build",
+    "tests",
+    "security",
+    "production_readiness"
+  ]
+}

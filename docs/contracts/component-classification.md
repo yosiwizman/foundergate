@@ -98,6 +98,13 @@ evaluation-class and governed by §3.
 
 *(VB1 `src/v8b1` run launcher/executor is a sensitive PRODUCT component with its own gate chain, already accepted at G4-B-VB1; it is act-capable, not truth-measuring — governed by its build-contract + VB3 gating rather than this measurement doctrine. Listed here for boundary clarity, not as a measurement oracle.)*
 
+**Test-Before-Founder policy engine (TBF-1 — decides founder-witness + merge readiness):**
+- `.foundergate/policies/test_before_founder.json` (+ `.foundergate/state/test_before_founder_policy_pointer.json`, `.foundergate/schemas/*.json`) — the versioned, digest-pinned governance policy.
+- `tools/policy/tbf_lib.py` — the engine that derives witness-readiness and merge-readiness from disk evidence; carries the **non-weakenable invariant floor** (UI/RUNTIME/GATE/SECURITY minimums, UNKNOWN=FAIL_CLOSED, STALE≠current, derived-only readiness) that fails closed on any policy weakening even if the digest is re-stamped.
+- `tools/policy/validate_{policy_integrity,lane_test_obligations,test_evidence,witness_readiness,merge_readiness}.py` — the five CI-gated validators.
+- `tools/policy/foreground_validate.py` + `tools/policy/test_ffs_mutation.py` (20 mutation proofs) + `.foundergate/machine_profiles/mac-mini-pro-founder-surface.json` — FFS-1 foreground-founder-surface enforcement (policy v1.1.0); wired into `derive_witness_readiness`.
+- `tools/policy/test_tbf_policy.py` (30 selftests) + `tools/policy/test_tbf_mutation.py` (11 mutation proofs the guard fires) — the oracle. Governed by §3; founder-authorized at `docs/status/TEST_BEFORE_FOUNDER_FOUNDER_AUTHORIZATION.md`; constitution at `docs/contracts/TEST_BEFORE_FOUNDER_CONSTITUTION.md`.
+
 ## 5. Enforcement relationship
 - **D1** (Checker Shortcut Catalog) = evaluation-class change-control applied to the checker standing instructions.
 - **D2** (Mechanical Floor) = evaluation-class change-control applied to deny-lists + write-time hooks.

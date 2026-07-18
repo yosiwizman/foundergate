@@ -1,0 +1,48 @@
+{
+  "mode": "verify",
+  "steps": {
+    "archive_revalidation": {
+      "unsafe": [],
+      "ok": true
+    },
+    "manifest_recompute": {
+      "file_count": 12,
+      "sha256": "649ecb02d79d5cee55c86549b6dff26fb341c4a4de6d3c92d959c42714b6e7de",
+      "matches_pro_manifest": true
+    },
+    "license_present": true,
+    "pyproject_parseable": true,
+    "project_metadata": {
+      "name": "sampleproject",
+      "has_build_system": true
+    },
+    "src_dir_exists": true,
+    "compileall": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "generated_bytecode": [
+      {
+        "path": "src/sample/__pycache__/simple.cpython-311.pyc",
+        "sha256": "ed9f680278be11964a04426373c55fc63ad6a31414b6a51e5d7ca6a97730e777"
+      },
+      {
+        "path": "src/sample/__pycache__/__init__.cpython-311.pyc",
+        "sha256": "48a5e57ef9845a063eff14e5fb16b537dce327ca990d921432b838e4afff77f0"
+      }
+    ],
+    "post_cleanup_manifest": {
+      "sha256": "649ecb02d79d5cee55c86549b6dff26fb341c4a4de6d3c92d959c42714b6e7de",
+      "still_matches_pro_manifest": true
+    }
+  },
+  "classification": "COMPILEABILITY_OBSERVED",
+  "not_claimed": [
+    "APPLICATION_WORKS",
+    "BUILD_PASSED",
+    "TESTS_PASSED",
+    "SAFE",
+    "PRODUCTION_READY"
+  ]
+}
