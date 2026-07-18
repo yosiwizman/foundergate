@@ -7,7 +7,7 @@
 | FFS_LAW_MACHINE_ENFORCED | YES (foreground_validate + 20 mutation proofs + UI floor + prompt stop value) |
 | MACHINE_PROFILE | .foundergate/machine_profiles/mac-mini-pro-founder-surface.json (Google Chrome) |
 | COMPLETION_INVARIANT_ENFORCED | YES (UNKNOWN/CORRUPT pack ⇒ COMPLETE_PACK_FAILED, not acceptable) |
-| EVIDENCE_PACK_FAILURE_CLASS | NOT_GENERATED at runtime (stage 11 UNKNOWN; Chrome/PDF contention) |
+| EVIDENCE_PACK_FAILURE_CLASS | NOT_GENERATED at runtime (stage 11 UNKNOWN; generator returned nonzero, precise cause UNKNOWN) |
 | EVIDENCE_PACK_RECOVERY | RECOVERED deterministically from sealed evidence (no new run/VM/clone); hash-verified |
 | RUN_sc-15f0cfc5 | bound to disk; one live run; VM destroyed; pack now AVAILABLE |
 | FOREGROUND_RUN | FOREGROUND_TEST_VERIFIED (real launcher + Google Chrome frontmost/onscreen + DOM download) |
