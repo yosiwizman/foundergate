@@ -28,24 +28,53 @@ export function evaluateAcquire(existing, req, ctx) {
   return { action: "recover", reason: "stale lock (dead PID or expired heartbeat)", recovered_from: existing.pid };
 }
 
+function mkLock(req, now) {
+  return { pid: req.pid, pgid: req.pgid, run_id: req.run_id, exact_sha: req.exact_sha,
+    started: now, last_heartbeat: now, deadline: req.deadline, nonce: req.nonce };
+}
+
 // Atomic acquire. Returns {acquired, lock} or {acquired:false, existing, decision}.
+// Concurrency-safe: fresh acquire is O_EXCL; stale/corrupt recovery is serialized
+// through an O_EXCL recovery mutex with a re-check, so two racing recoverers can
+// never both win (fixes the unlink+create TOCTOU).
 export function acquireSingleton(lockPath, req, ctx) {
-  const existing = existsSync(lockPath) ? safeRead(lockPath) : null;
-  const decision = evaluateAcquire(existing, req, ctx);
+  const fileExists = existsSync(lockPath);
+  const existing = fileExists ? safeRead(lockPath) : null;
+  const corrupt = fileExists && existing === null; // exists but unparseable -> stale/recoverable
+  const decision = corrupt
+    ? { action: "recover", reason: "corrupt/empty lock", recovered_from: null }
+    : evaluateAcquire(existing, req, ctx);
   if (decision.action === "reject") return { acquired: false, existing, decision };
+
   if (decision.action === "recover") {
-    // Preserve the stale record's evidence pointer, then replace atomically.
-    try { unlinkSync(lockPath); } catch { /* race: another recoverer won */ }
+    // Serialize recovery: only one process may reclaim a stale/corrupt lock.
+    const rlock = lockPath + ".recover";
+    let rfd;
+    try { rfd = openSync(rlock, "wx"); }
+    catch { return { acquired: false, existing, decision: { action: "reject", reason: "recovery in progress by a peer" } }; }
+    try {
+      // Re-check under the mutex: a peer may already have published a healthy lock.
+      const cur = existsSync(lockPath) ? safeRead(lockPath) : null;
+      if (cur && isHealthy(cur, ctx)) {
+        return { acquired: false, existing: cur, decision: { action: "reject", reason: "peer recovered to a healthy lock" } };
+      }
+      try { unlinkSync(lockPath); } catch { /* already gone */ }
+      const fd = openSync(lockPath, "wx");
+      const lock = mkLock(req, ctx.now);
+      writeSync(fd, JSON.stringify(lock, null, 2) + "\n");
+      closeSync(fd);
+      return { acquired: true, lock, recovered: existing ? existing.pid : null };
+    } finally { try { unlinkSync(rlock); } catch { /* */ } }
   }
-  // O_EXCL create: fails if a competitor created it first (race-safe).
+
+  // Fresh acquire (no lock): O_EXCL — only one of N racing starts wins.
   let fd;
   try { fd = openSync(lockPath, "wx"); }
   catch { return { acquired: false, existing: safeRead(lockPath), decision: { action: "reject", reason: "lost creation race" } }; }
-  const lock = { pid: req.pid, pgid: req.pgid, run_id: req.run_id, exact_sha: req.exact_sha,
-    started: ctx.now, last_heartbeat: ctx.now, deadline: req.deadline, nonce: req.nonce };
+  const lock = mkLock(req, ctx.now);
   writeSync(fd, JSON.stringify(lock, null, 2) + "\n");
   closeSync(fd);
-  return { acquired: true, lock, recovered: decision.action === "recover" ? decision.recovered_from : null };
+  return { acquired: true, lock, recovered: null };
 }
 
 export function releaseSingleton(lockPath, ownerPid) {

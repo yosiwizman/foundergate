@@ -57,7 +57,29 @@ ok("17 supervisor-session exits when singleton not acquired", /!acq\.acquired/.t
 ok("18 supervisor-session refreshes lock heartbeat", /last_heartbeat = nowS\(\)/.test(supSession));
 ok("19 supervisor-session releases lock on exit", /releaseSingleton\(/.test(supSession) && /process\.on\("exit"/.test(supSession));
 ok("20 launcher tears down supervisor on qualification failure", /kill "\$SUP_PID"/.test(starter) && /panic_stop":true/.test(starter));
-ok("21 launcher does NOT consume decision on failure path", starter.indexOf("consume-and-start") < starter.indexOf("Live handoff qualification failed"));
+// Strengthened: the FAILURE branch (after the qual-failed marker) must not call consume.
+const failBranch = starter.slice(starter.indexOf("Live handoff qualification failed"));
+ok("21 failure branch never calls consume-and-start", !failBranch.includes("consume-and-start"));
+ok("21b launcher teardown is owner-checked (no blind rm of a peer lock)", /l\.pid===Number\(process\.argv\[2\]\)/.test(starter));
+
+// ---- Recovery-race + corrupt-lock regressions (RECHECKER Findings A/B) ----
+const t2 = mkdtempSync(join(tmpdir(), "sing2-"));
+const lp2 = join(t2, "s.lock");
+// seed a STALE lock (dead pid, old heartbeat)
+writeFileSync(lp2, JSON.stringify({ pid: 999999, run_id: "OLD", last_heartbeat: 1, nonce: "old" }) + "\n");
+// two concurrent recoverers: the recovery mutex must let only ONE win
+const rA = acquireSingleton(lp2, { pid: 1001, run_id: "A", nonce: "a", exact_sha: "s", deadline: 99 }, { now: 5000, pid_alive: false, stale_interval: 120 });
+// simulate B racing while A holds the recovery mutex: create the .recover mutex to force B to see contention
+writeFileSync(lp2 + ".recover", ""); // A's mutex would be gone already; emulate an in-progress peer
+const rB = acquireSingleton(lp2, { pid: 1002, run_id: "B", nonce: "b" }, { now: 5001, pid_alive: false, stale_interval: 120 });
+ok("22 stale recovery: first recoverer wins", rA.acquired === true);
+ok("23 stale recovery: concurrent peer blocked by recovery mutex", rB.acquired === false);
+try { rmSync(lp2 + ".recover", { force: true }); } catch {}
+// corrupt/empty lock must be recoverable, not a permanent wedge
+writeFileSync(lp2, ""); // corrupt/empty
+const rC = acquireSingleton(lp2, { pid: 1003, run_id: "C", nonce: "c", exact_sha: "s", deadline: 99 }, { now: 6000, pid_alive: false, stale_interval: 120 });
+ok("24 corrupt/empty lock is recovered (not a permanent wedge)", rC.acquired === true && rC.lock.pid === 1003);
+rmSync(t2, { recursive: true, force: true });
 
 rmSync(tmp, { recursive: true, force: true });
 console.log(`\nPAES SINGLETON SELFTEST: ${n - fails.length}/${n} passed`);

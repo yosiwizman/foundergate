@@ -32,7 +32,8 @@ const led = (e) => appendFileSync(join(SUP, "events.jsonl"), JSON.stringify({ ..
 // Heartbeat also refreshes the singleton lock's last_heartbeat so staleness works.
 const beat = () => {
   wj("heartbeat.json", { ts: nowS(), pid: process.pid, mode: "USER_SESSION_DETACHED" });
-  try { const l = JSON.parse(_rf(LOCK, "utf8")); if (l.pid === process.pid) { l.last_heartbeat = nowS(); writeFileSync(LOCK, JSON.stringify(l, null, 2) + "\n"); } } catch { /* */ }
+  // Atomic (temp+rename) so a crash mid-beat cannot truncate/corrupt the lock.
+  try { const l = JSON.parse(_rf(LOCK, "utf8")); if (l.pid === process.pid) { l.last_heartbeat = nowS(); const t = LOCK + ".tmp"; writeFileSync(t, JSON.stringify(l, null, 2) + "\n"); renameSync(t, LOCK); } } catch { /* */ }
 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 

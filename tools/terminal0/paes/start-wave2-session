@@ -87,7 +87,9 @@ else
   kill "$SUP_PID" 2>/dev/null || true
   sleep 1
   kill -9 "$SUP_PID" 2>/dev/null || true
-  rm -f "$LOCK" 2>/dev/null || true
+  # Owner-checked lock removal (kill -9 skips the exit handler): only remove the
+  # lock if it belongs to the supervisor we started, never a peer's lock.
+  "$NODE_BIN" -e 'const fs=require("fs");try{const l=JSON.parse(fs.readFileSync(process.argv[1]));if(l.pid===Number(process.argv[2]))fs.unlinkSync(process.argv[1])}catch{}' "$LOCK" "$SUP_PID" 2>/dev/null || true
   say "Supervisor stopped. Activation decision remains unconsumed."
   fail_out
 fi
