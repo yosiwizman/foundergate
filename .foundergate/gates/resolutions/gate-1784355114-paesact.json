@@ -10,10 +10,10 @@
   ],
   "deciding_authority": "founder",
   "decision_source": "founder_directive_FGRI-1",
-  "request_digest": "sha256:04429d060ba32d22574061df5d8ad85308bbe51e1abf64d70e285fe1a15eabec",
+  "request_digest": "sha256:52e2645c93f3f8988088a02318a5957e609ac6bbeedd8580191d035b5cb8dce8",
   "policy_digest": "sha256:a32acfa6dfd8390eefddd2049b8ed4fcf40d4e4bc43402f818e2bde024acddd0",
   "timestamp": 1784355114,
-  "expiry": 1784441514,
+  "expiry": 1784483602,
   "one_time_use": true,
   "anti_replay_nonce": "paes-act-4c257074c3c0",
   "action": "activate_paes_narrow_allowlist",
@@ -23,5 +23,7 @@
   ],
   "consumed": false,
   "note": "KEEP_IDLE refusal applies ONLY to this gate; future gates may still use KEEP_PAUSED safe default",
-  "resolution_digest": "sha256:df8db1880fb17522627dcd66f21158531c1ec00e9e700fe324a611b12188e20f"
+  "resolution_digest": "sha256:3fda01215311b77507f30b64b5600cb7b5f3d95b04818cb9fb3202dfe64afd8c",
+  "rebinding_ref": ".foundergate/gates/rebindings/gate-1784355114-paesact-orc1r.json",
+  "active_target_sha": "88e1a511d55ef376adc4d792e80df27319ecc153"
 }

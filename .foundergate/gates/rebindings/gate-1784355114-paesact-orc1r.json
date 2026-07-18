@@ -1,0 +1,38 @@
+{
+  "schema": "orc-activation-rebinding-1",
+  "gate_id": "gate-1784355114-paesact",
+  "authorized_by": "ORC-1R",
+  "created_at": "2026-07-18T17:53:22.000Z",
+  "preserved_historical_binding": {
+    "original_exact_sha": "2e3c06091bd07fafde974ca14f360f69f8115fd7",
+    "original_expiry": 1784441514,
+    "note": "historical binding preserved verbatim; not altered"
+  },
+  "rebound_to_sha": "88e1a511d55ef376adc4d792e80df27319ecc153",
+  "repository": "yosiwizman/foundergate",
+  "action": "activate_paes_narrow_allowlist",
+  "autonomy_policy_envelope": "autonomy_policy_envelope@1.0.0",
+  "permission_scope": "narrow allowlist (unchanged)",
+  "one_time_use": true,
+  "consumed": false,
+  "renewed_expiry": 1784483602,
+  "renewed_expiry_iso": "2026-07-19T17:53:22.000Z",
+  "preconditions_met": {
+    "orc_complete": true,
+    "candidate_checker_clean": "ORC1R-CHECKER-CLEAN",
+    "candidate_advisor_ready": "ORC1R-ADVISOR READY-TO-INTEGRATE",
+    "exact_sha_ci_green": true,
+    "arlc_merge": "#171",
+    "post_merge_ci_green": true,
+    "final_head_resolved": "88e1a511d55ef376adc4d792e80df27319ecc153",
+    "post_merge_review": "POSTMERGE-CLEAN",
+    "no_scope_expansion": true,
+    "no_hidden_live_authority": true
+  },
+  "does_not_authorize": [
+    "consumption",
+    "execution",
+    "9h run start",
+    "authority expansion"
+  ]
+}
