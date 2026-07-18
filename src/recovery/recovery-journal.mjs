@@ -71,7 +71,13 @@ export function resumeState(journalPath) {
 // A reboot must NOT extend the original deadline. Returns the recovery verdict.
 export function recoveryVerdict(checkpoint, resume, ctx = {}) {
   const now = ctx.now;
-  if (checkpoint && checkpoint.original_deadline !== undefined && now !== undefined && now >= checkpoint.original_deadline) {
+  // FAIL CLOSED: an active run whose checkpoint lacks an original_deadline cannot
+  // be safely resumed — we must not silently proceed (which would effectively
+  // grant an unbounded deadline). Require evidence of the original deadline.
+  if (checkpoint && checkpoint.run_id && (checkpoint.original_deadline === undefined || checkpoint.original_deadline === null)) {
+    return { verdict: "INSUFFICIENT_EVIDENCE", reasons: ["active run checkpoint has no original_deadline; cannot resume without it (fail closed)"] };
+  }
+  if (checkpoint && checkpoint.original_deadline !== undefined && checkpoint.original_deadline !== null && now !== undefined && now >= checkpoint.original_deadline) {
     return { verdict: "RUN_DEADLINE_EXPIRED", reasons: ["original deadline passed; seal interrupted run; do NOT resume; queue remaining work for a new authorized run"] };
   }
   if (resume.duplicates && resume.duplicates.length) {

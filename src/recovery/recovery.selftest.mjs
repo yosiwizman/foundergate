@@ -59,6 +59,7 @@ ok("verdict: uncertain external -> POSSIBLE_EXTERNAL_ACTION_CONFLICT", recoveryV
 ok("verdict: uncertain local -> ONE_DECISION_REQUIRED", recoveryVerdict({ original_deadline: 9999 }, { incomplete: [{ action_id: "l", certainty: "UNCERTAIN", effect_class: "REVERSIBLE_LOCAL" }], duplicates: [] }, { now: 1 }).verdict === "ONE_DECISION_REQUIRED");
 ok("verdict: duplicate -> RECOVERY_BLOCKED", recoveryVerdict({ original_deadline: 9999 }, { incomplete: [], duplicates: ["d1"] }, { now: 1 }).verdict === "RECOVERY_BLOCKED");
 ok("effect classes are the 6 required", EFFECT_CLASSES.length === 6);
+ok("29 active run without original_deadline fails closed", recoveryVerdict({ run_id: "R", original_deadline: undefined }, { incomplete: [], duplicates: [] }, { now: 5 }).verdict === "INSUFFICIENT_EVIDENCE");
 
 
 // ---- ORC starter-integration wiring guards ----
