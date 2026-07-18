@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "supervisor-event",
+  "type": "object",
+  "required": [
+    "prior_state",
+    "next_state",
+    "reason",
+    "exact_sha",
+    "timestamp",
+    "idempotency_key",
+    "next_safe_action"
+  ],
+  "properties": {
+    "prior_state": {},
+    "next_state": {},
+    "reason": {},
+    "exact_sha": {},
+    "timestamp": {},
+    "idempotency_key": {},
+    "next_safe_action": {}
+  }
+}

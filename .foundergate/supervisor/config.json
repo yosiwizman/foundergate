@@ -1,0 +1,9 @@
+{
+  "label": "com.software4all.foundergate.paes-supervisor.v1",
+  "deadline_hours": 9,
+  "max_code_workers": 2,
+  "max_sensitive_core_writers": 1,
+  "repo": "/Users/yosiwizman/Projects/foundergate",
+  "unattended_mechanism": "claude -p --output-format json --allowedTools <allowlist>",
+  "activation": "NOT_ACTIVATED"
+}

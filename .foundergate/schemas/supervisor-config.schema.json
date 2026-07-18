@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "supervisor-config",
+  "type": "object",
+  "required": [
+    "label",
+    "deadline_hours",
+    "max_code_workers",
+    "max_sensitive_core_writers",
+    "repo"
+  ],
+  "properties": {
+    "label": {},
+    "deadline_hours": {},
+    "max_code_workers": {},
+    "max_sensitive_core_writers": {},
+    "repo": {}
+  }
+}

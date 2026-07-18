@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Generates the user-level LaunchAgent plist from the template. Does NOT load it.
+# Loading is an explicit, separately-authorized step (launchctl bootstrap gui/$UID ...).
+set -euo pipefail
+REPO="$(cd "$(dirname "$0")/../../.." && pwd)"
+DEST="$HOME/Library/LaunchAgents/com.software4all.foundergate.paes-supervisor.v1.plist"
+sed "s#@@REPO@@#$REPO#g" "$REPO/tools/terminal0/paes/com.software4all.foundergate.paes-supervisor.plist.template" > "/tmp/com.software4all.foundergate.paes-supervisor.v1.plist"
+echo "generated plist at /tmp/com.software4all.foundergate.paes-supervisor.v1.plist (NOT installed/loaded)."
+echo "to install (explicit): cp /tmp/com.software4all.foundergate.paes-supervisor.v1.plist '$DEST' && launchctl bootstrap gui/$(id -u) '$DEST'"
+echo "RunAtLoad=false + KeepAlive=false: bounded, no unbounded restart loop, no auto-run."

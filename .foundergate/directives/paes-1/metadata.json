@@ -1,0 +1,33 @@
+{
+  "directive_id": "paes-1",
+  "title": "FOUNDERGATE PAES-1 \u2014 PERSISTENT AUTONOMOUS EXECUTION SUPERVISOR AND V8-B WAVE-2",
+  "version": 1,
+  "issuer": "founder",
+  "source_transcript_line": 22285,
+  "source_type": "user",
+  "sha256": "fbe500627a1e18328d776c9c7335290b37109acf8d891797e53e5bdb1490e513",
+  "stored_sha256": "fbe500627a1e18328d776c9c7335290b37109acf8d891797e53e5bdb1490e513",
+  "digest_equal": true,
+  "byte_count": 24671,
+  "line_count": 969,
+  "beginning_anchor": "FOUNDERGATE PAES-1 \u2014 PERSISTENT AUTONOMOUS EXECUTION SUPERVISOR AND V8-B WAVE-2\n\nFOUNDER AUTHORIZATION\n\nI authorize FounderGate to build, qualify and activate one bounded user-level Persistent Auton",
+  "ending_anchor": "-WITH-INDEPENDENT-WORK-EXHAUSTED\nPAES1-WAVE2: HOLD-CORRECTABLE-FINDINGS\nPAES1-WAVE2: UNRESOLVED-CRITICAL-BLOCKER\nPAES1-WAVE2: SELF-CAPTURE-FAILED\nPAES1-WAVE2: REJECT\nPAES1-WAVE2: INSUFFICIENT-EVIDENCE",
+  "required_sections_present": {
+    "FOUNDER AUTHORIZATION": true,
+    "PURPOSE": true,
+    "HARD BOUNDARIES": true,
+    "PHASE 0": true,
+    "PHASE 2 \u2014 UNATTENDED EXECUTOR CAPABILITY": true,
+    "PHASE 5 \u2014 MECHANICAL CONTINUATION LAW": true,
+    "PHASE 11 \u2014 V8-B EXECUTION": true,
+    "FINAL OUTPUT": true,
+    "PAES1-WAVE2: SELF-CAPTURE-FAILED": true
+  },
+  "depends_on": [
+    "dcl-1",
+    "arlc-1",
+    "are-1"
+  ],
+  "machine": "mac-mini-pro",
+  "current_state": "DIGEST_VERIFIED"
+}

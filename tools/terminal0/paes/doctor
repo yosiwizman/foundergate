@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# PAES doctor — read-only preflight. Prints capability + governance state. Activates nothing.
+set -euo pipefail
+REPO="$(cd "$(dirname "$0")/../../.." && pwd)"
+echo "host: $(sysctl -n hw.model)"
+echo "claude: $(command -v claude || echo MISSING) $(claude --version 2>/dev/null | head -1)"
+echo "unattended_capability: $(python3 -c "import json;print(json.load(open('$REPO/.foundergate/supervisor/unattended_capability.json'))['result'])" 2>/dev/null || echo UNKNOWN)"
+for p in durable_directive_control autonomous_repository_lifecycle autonomous_run_envelope; do
+  echo "$p: $(python3 -c "import json;print(json.load(open('$REPO/.foundergate/governance/$p.json'))['status'])" 2>/dev/null || echo UNKNOWN)"
+done
+echo "loaded_launch_agent: $(launchctl list 2>/dev/null | grep foundergate.paes || echo NONE)"

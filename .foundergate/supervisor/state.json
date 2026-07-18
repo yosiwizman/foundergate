@@ -1,0 +1,6 @@
+{
+  "schema": "supervisor-state",
+  "state": "QUALIFYING",
+  "updated_at": "2026-07-18T06:00:00Z",
+  "note": "mechanical core built + 42/42 synthetic qualification; NOT activated (see activation decision)"
+}
