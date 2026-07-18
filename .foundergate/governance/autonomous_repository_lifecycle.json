@@ -1,0 +1,156 @@
+{
+  "policy_id": "autonomous_repository_lifecycle",
+  "version": "1.0.0",
+  "title": "Autonomous Repository Lifecycle Law (ARLC-1)",
+  "status": "ACTIVE",
+  "authority_basis": {
+    "founder_authorization_record": "docs/governance/AUTONOMOUS_REPOSITORY_LIFECYCLE_FOUNDER_AUTHORIZATION.md",
+    "supersedes": [
+      "Earlier disk rules requiring explicit founder approval for every write to main"
+    ],
+    "does_not_supersede": [
+      "Hard safety floor (non-weakenable invariants)",
+      "Evidence / checker / Advisor requirements",
+      "Exact-SHA CI requirement",
+      "Qualification and rollback requirements",
+      "Customer-data, payment, provider-activation, production, public-release, security-boundary, live-action authority requirements"
+    ]
+  },
+  "separation_of_duties": {
+    "principle": "No component may discover, approve, execute AND certify the same action. No component may self-certify the action it performed.",
+    "roles": {
+      "MOD-001": "Core / precedence + policy load (read-only over actions)",
+      "MOD-013": "Orchestrator (sequences lifecycle; does not certify)",
+      "MOD-018": "Merge Gate (evaluates eligibility; does not execute or certify its own verdict)",
+      "MOD-022": "GitHub Connector (executes the merge on a signed eligibility token; does not decide eligibility)",
+      "MOD-014": "Gate / Witness Engine (independent verification; does not build)",
+      "MOD-015": "Audit Ledger (records; cannot approve)"
+    },
+    "forbidden_combinations": [
+      ["evaluate_eligibility", "execute_merge"],
+      ["execute_merge", "certify_merge"],
+      ["build_candidate", "approve_candidate"],
+      ["approve_candidate", "certify_candidate"]
+    ]
+  },
+  "precedence": [
+    "hard_safety_floor",
+    "explicit_founder_instruction",
+    "disk_policy",
+    "qualification_locks",
+    "derived_state",
+    "task_prompt",
+    "advisor_narrative",
+    "chat_memory"
+  ],
+  "action_classification": {
+    "unknown_disposition": "FAIL_CLOSED",
+    "classes": {
+      "OPERATIONAL_AUTONOMOUS": {
+        "description": "Routine mechanically-qualified repository operations Terminal-0 may perform without a founder gate.",
+        "examples": [
+          "merge_qualified_cumulative_pr_to_main",
+          "close_superseded_pr",
+          "delete_branch_fully_in_main",
+          "remove_worktree_no_unique_work",
+          "post_merge_verification"
+        ],
+        "requires_all": [
+          "candidate_checker_clean",
+          "candidate_advisor_ready",
+          "exact_sha_ci_green",
+          "product_tree_frozen_or_authorized_delta",
+          "full_ancestry_preserved",
+          "no_forbidden_artifacts",
+          "no_active_merge_embargo",
+          "no_loss_cleanup_proof",
+          "separation_of_duties_satisfied"
+        ]
+      },
+      "TRUE_FOUNDER_GATE": {
+        "description": "Actions that create new legal, provider, production, customer-data, payment, public-release, security-boundary, or live-action authority. Founder decision required.",
+        "examples": [
+          "adopt_provider_as_default",
+          "execute_customer_or_private_repository",
+          "production_deployment",
+          "public_release",
+          "enable_payments",
+          "grant_akior_access",
+          "authorize_new_live_runtime_run_without_standing_authority",
+          "weaken_any_safety_floor_or_governance_invariant"
+        ]
+      },
+      "HUMAN_EXPERT_GATE": {
+        "description": "Actions requiring qualified human expert sign-off (legal terms, security boundary changes).",
+        "examples": ["accept_legal_terms", "modify_security_boundary", "sign_design_partner_agreement"]
+      }
+    }
+  },
+  "repository_lifecycle_states": [
+    "IDLE",
+    "CANDIDATE_QUALIFYING",
+    "MERGE_ELIGIBLE",
+    "MERGING",
+    "POST_MERGE_VERIFY",
+    "CLEANUP",
+    "CLEAN",
+    "HOLD",
+    "PANIC"
+  ],
+  "merge_eligibility_engine": {
+    "all_must_be_true": [
+      "checker_clean",
+      "advisor_ready",
+      "exact_sha_ci_green",
+      "evaluated_head_matches_live_head",
+      "merge_method_is_merge_commit",
+      "all_declared_ancestors_present",
+      "product_tree_frozen_or_delta_authorized",
+      "zero_forbidden_artifacts",
+      "no_active_embargo",
+      "separation_of_duties_satisfied"
+    ],
+    "any_true_denies": [
+      "unknown_classification",
+      "candidate_head_drifted",
+      "forbidden_artifact_present",
+      "ancestry_gap",
+      "active_embargo_present",
+      "ci_not_green_at_exact_sha",
+      "would_weaken_safety_floor",
+      "self_certification_detected"
+    ]
+  },
+  "connector_boundary": {
+    "rule": "MOD-022 executes a merge ONLY on a signed eligibility token issued by MOD-018 for an exact SHA. The connector does not evaluate eligibility and cannot merge without a matching token.",
+    "token_binds": ["evaluated_sha", "merge_method", "issuing_component", "policy_digest"]
+  },
+  "no_loss_cleanup_engine": {
+    "fail_closed": true,
+    "delete_branch_requires": ["head_is_ancestor_of_main", "not_an_evidence_branch", "not_a_not_passed_branch"],
+    "remove_worktree_requires": ["no_unique_tracked_uncommitted_changes"],
+    "preserve_always": ["main", "soak-evidence-*", "not-passed evidence branches"]
+  },
+  "queues": {
+    "founder_queue": "TRUE_FOUNDER_GATE + HUMAN_EXPERT_GATE actions only",
+    "operational_queue": "OPERATIONAL_AUTONOMOUS actions"
+  },
+  "panic_hold": {
+    "PANIC": "Immediate stop of all lifecycle actions; requires founder/operator recovery.",
+    "HOLD": "Pause new merges; existing verification may complete read-only.",
+    "recovery": "Requires a fresh checker + fresh Advisor at a frozen candidate before resuming."
+  },
+  "does_not_authorize": [
+    "OpenSandbox adoption or default activation",
+    "customer or private repository execution",
+    "production deployment",
+    "public release",
+    "payments or fund transfers",
+    "AKIOR access / modification / execution / adoption",
+    "provider activation beyond existing disk authority",
+    "bypassing checker / Advisor / exact-SHA CI",
+    "weakening any safety-floor or governance invariant",
+    "self-hosted runners",
+    "rewriting or force-pushing evidence branches"
+  ]
+}

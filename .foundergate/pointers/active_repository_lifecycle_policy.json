@@ -1,0 +1,12 @@
+{
+  "schema": "arlc-pointer-1",
+  "active_policy": ".foundergate/governance/autonomous_repository_lifecycle.json",
+  "active_policy_digest": "sha256:125dfb396dca942a2013b920a540cf9db4b5a1b95207f984f9c193d48eb39873",
+  "safety_floor_digest": "sha256:e1fbb8f08bb6cc7cbc3ec24b9da85aacb4a4b716be7f1d73e2170cadb572d7d3",
+  "autonomous_merge_authority_digest": "sha256:af5b74891ce129b32dd4347ea0f617cc1f5cc095dc1472abf3f2dc5bf3d7badc",
+  "founder_authorization_record": "docs/governance/AUTONOMOUS_REPOSITORY_LIFECYCLE_FOUNDER_AUTHORIZATION.md",
+  "controller_lib": "tools/terminal0/arlc_lib.py",
+  "controller_lib_digest": "sha256:7120f2ba3b24ad6a614a93a1a7916c1b1de56dce8e8b4ef6ace8af90ed96e47f",
+  "status": "ACTIVE",
+  "precedence_is_fixed": true
+}
