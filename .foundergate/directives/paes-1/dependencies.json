@@ -1,0 +1,8 @@
+{
+  "directive_id": "paes-1",
+  "depends_on": [
+    "dcl-1",
+    "arlc-1",
+    "are-1"
+  ]
+}

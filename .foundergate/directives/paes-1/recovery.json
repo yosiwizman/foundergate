@@ -1,0 +1,16 @@
+{
+  "directive_id": "paes-1",
+  "next_safe_action": "merge + live-activation qualification",
+  "completion_predicates": [
+    "executor proven",
+    "core qualified",
+    "merged",
+    "activated"
+  ],
+  "stop_predicates": [
+    "deadline",
+    "PANIC",
+    "capability gap"
+  ],
+  "updated_at": "2026-07-18T06:24:28Z"
+}
