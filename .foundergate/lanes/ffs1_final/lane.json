@@ -37,5 +37,5 @@
   "independent_checker": true,
   "final_advisor_required": true,
   "founder_gate_required": true,
-  "current_state": "MACHINE_VERIFICATION_IN_PROGRESS"
+  "current_state": "READY"
 }

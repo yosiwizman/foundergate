@@ -241,10 +241,13 @@
   ],
   "not_applicable": [],
   "checker": {
-    "verdict": "PENDING"
+    "verdict": "CLEAN",
+    "identity": "fresh independent FFS-1 FINAL checker (12 items; product freeze confirmed)"
   },
   "advisor": {
-    "present": false
+    "present": true,
+    "verdict": "FFS1-FINAL-ADVISOR: READY-FOR-MINIMAL-PACK-WITNESS",
+    "note": "re-derived final candidate a64ebcd; product frozen; foreground VERIFIED; download==governed pack; CI green on the SHA itself; only finalization was committing these records"
   },
   "founder_witness_or_signature": false,
   "terminal0_decision_packet": true,
