@@ -1,0 +1,1016 @@
+FOUNDERGATE V8B-AUTONOMOUS-WAVE-1 — DCL-LOCKED NINE-HOUR PARALLEL V8-B EXECUTION
+
+PURPOSE
+
+Begin the next autonomous FounderGate execution wave under the active Durable Directive Control Layer and Autonomous Repository Lifecycle Controller.
+
+Run for up to nine hours from actual execution start, or until all currently authorized safe work is complete or genuinely blocked.
+
+Do not stop the entire program merely because one lane reaches a founder gate.
+
+Park the gated lane, record the exact gate, and continue every independent authorized lane.
+
+CURRENT ORIENTATION ONLY
+
+Recent terminal output reported:
+
+- DCL-1 ACTIVE on main;
+- ARLC-1 ACTIVE on main;
+- cumulative FounderGate stack merged;
+- zero open PRs;
+- ARE-1 core present on an unmerged branch;
+- V8-B completion matrix not built;
+- SCL-1 not built;
+- wide-safe V8-B work remaining;
+- VB3 specification and inert core not built;
+- VB3 act edge frozen;
+- 48-hour qualification not started.
+
+These are orientation values only.
+
+Resolve all current SHAs, branches, worktrees, policies, queue states, run IDs, CI states and GitHub facts mechanically from current disk, Git and GitHub.
+
+OPERATING MODE
+
+AUTONOMOUS GATE-TO-GATE
+DCL-1 REQUIRED
+ARLC-1 REQUIRED
+DISK-FIRST
+ATOMIC RECOVERY
+APPEND-ONLY EVENTS
+TERMINAL-0 SOLE INTEGRATION SHERIFF
+MAXIMUM SAFE PARALLELISM
+MAXIMUM TWO LOCAL CODE WRITERS
+MAXIMUM ONE SENSITIVE-CORE WRITER
+MULTIPLE READ-ONLY CHECKERS PERMITTED
+FRESH CHECKER AFTER MATERIAL CORRECTION
+FINAL READ-ONLY ADVISOR WHERE REQUIRED
+ONE CUMULATIVE INTEGRATION LINE
+NO LONG STACKED PR TOWER
+
+HARD BOUNDARIES
+
+NO M1 CONTACT
+NO AKIOR REPOSITORY ACCESS
+NO CUSTOMER CODE
+NO PRIVATE REPOSITORY
+NO PRODUCTION DATA
+NO PUBLIC DEPLOYMENT
+NO PAYMENT
+NO EXTERNAL SEND
+NO PROVIDER ADOPTION
+NO OPENSANDBOX DEFAULT SELECTION
+NO DIRECT HOST FALLBACK
+NO 48-HOUR QUALIFICATION START
+NO FOUNDER SIGNATURE FABRICATION
+NO FOUNDER-WITNESS FABRICATION
+NO V8-C, V8-D OR V8-E PRODUCT IMPLEMENTATION
+NO STAGE-SKIPPING
+NO SELF-CHECKING
+NO CHECKER EXECUTION OF THE WORK IT CHECKS
+NO UNRECORDED MERGE
+NO SILENT SCOPE EXPANSION
+
+PHASE 0 — DCL SELF-CAPTURE BEFORE EXECUTION
+
+Before performing any product, governance, repository or planning work:
+
+1. Locate this exact directive in the active Harvest transcript.
+2. Extract the complete exact user-message body.
+3. Verify that it begins with:
+
+FOUNDERGATE V8B-AUTONOMOUS-WAVE-1 — DCL-LOCKED NINE-HOUR PARALLEL V8-B EXECUTION
+
+4. Verify that it contains:
+   - PURPOSE;
+   - OPERATING MODE;
+   - HARD BOUNDARIES;
+   - PHASE 0;
+   - NINE-HOUR CHECKPOINT;
+   - FINAL OUTPUT;
+   - final verdict list.
+5. Verify the message is complete and not truncated.
+6. Compute:
+   - SHA-256;
+   - byte count;
+   - line count;
+   - beginning anchor;
+   - ending anchor.
+7. Persist the exact immutable body under the active DCL convention.
+8. Re-read the stored body.
+9. Recompute its SHA-256.
+10. Require exact transcript-to-disk equality.
+11. Create:
+    - directive metadata;
+    - dependency record;
+    - queue entry;
+    - append-only events;
+    - atomic recovery state;
+    - next-safe-action;
+    - completion predicates;
+    - stop predicates.
+12. Transition:
+
+RECEIVED
+→ CAPTURED
+→ DIGEST_VERIFIED
+→ QUEUED
+→ READY
+→ RUNNING
+
+Do not execute Phase 1 until DCL verifies the exact body.
+
+If capture or equality fails, stop with:
+
+V8B-WAVE1: SELF-CAPTURE-FAILED
+
+PHASE 1 — BOOTSTRAP AND CURRENT-STATE RECONCILIATION
+
+Mechanically verify:
+
+1. Host identity.
+2. FounderGate repository and origin.
+3. Current remote main SHA.
+4. Local main SHA.
+5. DCL policy, pointer, digest and ACTIVE status.
+6. ARLC policy, pointer, digest and ACTIVE status.
+7. Test-Before-Founder policy and digest.
+8. Foreground Founder-Surface policy and digest.
+9. Current directive queue.
+10. Current operational queue.
+11. Current founder queue.
+12. Current autonomous-run state.
+13. Open PRs.
+14. Local and remote branches.
+15. Worktrees and dirty worktrees.
+16. Active writer locks.
+17. Active processes and ports.
+18. Active VMs.
+19. Current CI status.
+20. Evidence branches that must be preserved.
+21. Current ARE-1 branch, head, worktree, tests and evidence.
+22. Existing SCL-1 branch or worktree, if any.
+23. Existing V8-B completion or VB3 artifacts, if any.
+
+Do not duplicate an existing valid lane.
+
+Do not discard unique work.
+
+Reconcile stale narrative against disk truth.
+
+Create the governed run identity:
+
+V8B-AUTONOMOUS-WAVE-1
+
+Record:
+
+- directive digest;
+- starting main SHA;
+- start timestamp;
+- policy digests;
+- active dependencies;
+- planned lanes;
+- founder-gate conditions;
+- nine-hour checkpoint time.
+
+Use DCL immediately as the authoritative directive ledger.
+
+If ARE-1 becomes active during this wave, bind the remaining segment to an Autonomous Run Envelope.
+
+Do not retroactively claim the earlier DCL-only segment was ARE-enforced.
+
+PHASE 2 — PARALLEL EXECUTION PLAN
+
+Create one collision-checked lane contract for every lane before writing.
+
+Every lane contract must include:
+
+- lane ID;
+- objective;
+- risk class;
+- exact base SHA;
+- branch;
+- worktree;
+- allowed paths;
+- forbidden paths;
+- dependencies;
+- writer;
+- checker;
+- tests;
+- evidence;
+- rollback;
+- merge destination;
+- founder-gate triggers;
+- next safe action.
+
+Concurrency rules:
+
+1. No more than two local code writers.
+2. No more than one sensitive-core writer.
+3. Terminal-0 owns:
+   - package files;
+   - lockfiles;
+   - shared workflows;
+   - active policy pointers;
+   - integration branch;
+   - merge actions.
+4. Read-only audit, test and checker lanes may run concurrently when they do not modify files.
+5. UI shells may run in parallel only when they contain no authority or live-action edge.
+6. SCL-1 and VB3 sensitive-core writes may not run concurrently.
+7. ARE-1 integration and DCL/ARLC governance paths may not overlap without an explicit collision ruling.
+8. No lane may independently merge itself.
+
+PHASE 3 — ARE-1 RECOVERY, QUALIFICATION AND INTEGRATION
+
+Inspect the existing ARE-1 branch and worktree.
+
+Do not merge it wholesale merely because it exists.
+
+Verify:
+
+- exact base;
+- divergence from current main;
+- implementation paths;
+- schemas;
+- Blueprint Intake Contract;
+- Blueprint Compiler;
+- Autonomous Run Manifest;
+- Run Envelope state machine;
+- run registry;
+- event ledger;
+- recovery;
+- founder-interaction accounting;
+- final proof capsule;
+- pattern-promotion controls;
+- self-hosting classification;
+- tests;
+- checker evidence;
+- Advisor evidence;
+- CI status;
+- secrets and forbidden artifacts.
+
+If the branch is stale:
+
+- create a clean ARE-1 continuation branch from current main;
+- selectively reconcile valid work;
+- preserve authorship and evidence;
+- do not silently drop requirements.
+
+Required ARE-1 properties:
+
+- blueprint expresses intent, not authority;
+- every requirement has an ID;
+- every lane traces to a requirement;
+- every action traces to a lane and authority;
+- every artifact traces to a run, manifest and exact SHA;
+- builder cannot self-check;
+- missing evidence cannot produce PASS;
+- one internal run cannot establish outside-operator proof;
+- pattern promotion requires reproduction and independent review.
+
+Run:
+
+- schema tests;
+- unit tests;
+- integration tests;
+- negative tests;
+- mutation tests;
+- crash recovery;
+- historical replay;
+- exact-SHA CI.
+
+Commission a fresh independent checker.
+
+Commission a fresh read-only Advisor after checker-clean.
+
+Correct bounded findings for up to three cycles.
+
+After every material correction:
+
+- freeze new candidate;
+- rerun affected tests;
+- run exact-SHA CI;
+- obtain a fresh checker;
+- obtain a fresh Advisor.
+
+Integrate ARE-1 under ARLC standing authority only when all predicates pass.
+
+Activate it for future lanes.
+
+If ARE-1 cannot be integrated safely, record the exact blocker and continue unrelated lanes.
+
+PHASE 4 — V8-B COMPLETION MATRIX
+
+Audit current main against Roadmap V8.11 §16.2 and the live V8-B build contract.
+
+Create or reconcile:
+
+docs/status/V8B_COMPLETION_MATRIX.md
+docs/status/V8B_COMPLETION_MATRIX.json
+docs/status/V8B_CRITICAL_PATH.md
+docs/status/V8B_PARALLEL_WORK_MAP.json
+docs/status/V8B_FOUNDER_GATE_MAP.md
+
+Include one row for every requirement:
+
+- Run Launcher;
+- CTO queue;
+- lane routing;
+- Advisor verification status;
+- wide/narrow execution labels;
+- checker records;
+- Bench v1;
+- project Bench;
+- Founder Hand-Burden score;
+- Playwright evidence system;
+- evidence viewer;
+- GitHub repository links;
+- PR links;
+- branch links;
+- file links;
+- integration status cards;
+- per-run cost;
+- quota percentage;
+- cost per PR;
+- Release Label Ladder;
+- Spec Card Engine;
+- full data classification;
+- anti-repeat conversion;
+- minimal License/IP register;
+- Gate/Witness Engine;
+- V8-B Stranger Test readiness;
+- V8-B integrated acceptance readiness.
+
+Allowed states:
+
+ACCEPTED
+PROVEN
+BUILT
+CHECKER-CLEAN
+MERGED
+PARTIAL
+STALE
+UNKNOWN
+NOT PROVEN
+NOT BUILT
+BLOCKED
+FOUNDER WITNESS REQUIRED
+QUALIFICATION REQUIRED
+
+For every incomplete row record:
+
+- exact missing behavior;
+- exact missing evidence;
+- dependency;
+- wide-safe or narrow-sensitive;
+- machine work remaining;
+- founder involvement;
+- next lane;
+- acceptance predicate.
+
+Do not use vague “mostly complete” classifications.
+
+PHASE 5 — VB2 FORMAL ACCEPTANCE READINESS
+
+Audit VB2 against current main and current evidence.
+
+Verify:
+
+- exact build scope;
+- accepted VB0/VB1 dependencies;
+- queue behavior;
+- ID entropy;
+- canonical serialization;
+- QueueEvent chain;
+- lifecycle-state mapping;
+- independent checker;
+- M1 integrated soak evidence;
+- M1 Pro-side audit;
+- evidence-commit ancestry;
+- post-merge CI;
+- no active VB3 act edge.
+
+Create or refresh:
+
+docs/status/VB2_FORMAL_ACCEPTANCE_PACKET.md
+docs/status/VB2_FORMAL_ACCEPTANCE_PACKET.json
+docs/status/VB2_FOUNDER_WITNESS_CARD.md
+docs/status/VB2_ACCEPTANCE_READINESS.md
+
+Never fabricate a founder decision.
+
+Never backdate an acceptance.
+
+Derive one:
+
+VB2: ACCEPTED-UNDER-ACTIVE-MECHANICAL-AUTHORITY
+VB2: READY-FOR-FOUNDER-ACCEPTANCE
+VB2: HOLD-CORRECTABLE-FINDINGS
+VB2: NOT-PASSED
+VB2: INSUFFICIENT-EVIDENCE
+
+If a human UI witness or founder acceptance remains required:
+
+- place the exact item in the founder queue;
+- keep the founder packet minimal;
+- park the acceptance lane;
+- continue every independent lane.
+
+The entire program must not stop merely because VB2 awaits founder acceptance.
+
+PHASE 6 — SCL-1 PROVIDER-NEUTRAL CONTROL LAYER
+
+If an existing SCL-1 lane exists, reconcile it.
+
+Do not create a duplicate.
+
+Build a provider-neutral Sandbox Control Layer with:
+
+- provider registry;
+- provider capability contract;
+- source-provider contract;
+- project-adapter contract;
+- Check Plan schema;
+- command allow/deny policy;
+- no-host-fallback invariant;
+- immutable source binding;
+- exact evaluated-SHA binding;
+- run-ID namespace;
+- resource limits;
+- timeouts;
+- teardown;
+- interruption recovery;
+- evidence normalization;
+- Evidence Pack interface;
+- provider health;
+- provider replacement seam;
+- fake provider;
+- deterministic synthetic fixtures;
+- OpenSandbox Provider 001 adapter.
+
+OpenSandbox must remain:
+
+CANDIDATE
+NOT ADOPTED
+NOT DEFAULT
+
+SCL-1 must not:
+
+- select a provider as default;
+- execute customer/private code;
+- expose credentials;
+- run production actions;
+- fall back to the host;
+- claim isolation not proven;
+- claim provider adoption;
+- claim Android execution.
+
+Required tests:
+
+- provider unavailable;
+- false capability declaration;
+- source digest mismatch;
+- mutable source reference;
+- forbidden command;
+- undeclared command;
+- host fallback attempt;
+- timeout;
+- interrupted run;
+- teardown failure;
+- missing evidence;
+- malformed evidence;
+- wrong run ID;
+- wrong SHA;
+- duplicate run;
+- provider swap;
+- recovery;
+- secret-class rejection;
+- private-repository rejection;
+- customer-execution rejection.
+
+Use synthetic and fake-provider qualification.
+
+Perform no live provider run unless existing disk authority explicitly permits the exact fixed fixture.
+
+If live authority is absent:
+
+- prepare the live-fixture decision packet;
+- mark authority required;
+- continue unrelated lanes.
+
+PHASE 7 — WIDE-SAFE V8-B BUILD LANES
+
+Use the completion matrix to select the highest-value incomplete non-conflicting work.
+
+Eligible lanes:
+
+A. BENCH V1
+
+Build:
+
+- component result ledger;
+- project result ledger;
+- Founder Hand-Burden metrics;
+- evidence source links;
+- honest UNKNOWN handling.
+
+B. PLAYWRIGHT EVIDENCE SYSTEM AND VIEWER
+
+Build:
+
+- screenshot indexing;
+- video indexing;
+- trace indexing;
+- console logs;
+- network logs;
+- page-error logs;
+- viewport identity;
+- mobile evidence;
+- accessibility evidence;
+- reduced motion;
+- keyboard-only;
+- 200% zoom;
+- low-hand-burden evidence;
+- readable Evidence Viewer.
+
+C. GITHUB LINKS AND INTEGRATION CARDS
+
+Build read-only cards for:
+
+- repository;
+- PR;
+- branch;
+- file;
+- GitHub status;
+- Supabase status;
+- Vercel status;
+- Docker/runtime status.
+
+Use:
+
+CONNECTED
+NOT CONNECTED
+UNKNOWN
+STALE
+CONFLICT
+
+Do not fabricate integration status.
+
+D. COST DISPLAY
+
+Build:
+
+- recorded per-run cost;
+- quota percentage;
+- cost per PR;
+- unknown-cost handling;
+- source evidence.
+
+Do not claim runtime cost enforcement unless VB4 is proven.
+
+E. RELEASE LABEL LADDER
+
+Build:
+
+- current label;
+- evidence requirements;
+- transition history;
+- denied transitions;
+- honest unknown state.
+
+Do not claim PILOT_READY or production readiness.
+
+F. SPEC CARD ENGINE
+
+Build:
+
+- scope;
+- non-goals;
+- risks;
+- dependencies;
+- tests;
+- evidence;
+- gate triggers;
+- exact-SHA binding.
+
+G. ANTI-REPEAT SYSTEM
+
+Convert verified founder-caught defects into:
+
+- named failure pattern;
+- permanent regression test;
+- evidence link;
+- guard owner;
+- current status.
+
+Do not auto-mutate code from an unverified report.
+
+H. MINIMAL LICENSE/IP REGISTER
+
+Record:
+
+- dependency;
+- version;
+- source;
+- license;
+- copied-code status;
+- generated-code status;
+- restrictions;
+- unresolved questions.
+
+I. DATA-CLASSIFICATION RECONCILIATION
+
+Reconcile:
+
+- Bug Collector;
+- Project Guide;
+- Worker Cage;
+- Evidence Bus;
+- CTO queue;
+- SCL;
+- Gate/Witness inputs;
+- Blueprint intake;
+- autonomous run manifests.
+
+Use synthetic fixtures only.
+
+Every lane requires:
+
+- exact base SHA;
+- tests;
+- evidence;
+- independent review;
+- exact-SHA CI;
+- Terminal-0 integration.
+
+PHASE 8 — VB3 SPECIFICATION
+
+Finalize the VB3 Gate/Witness Engine build contract.
+
+Bind:
+
+EC-1 — rollback hardening
+
+- no-follow file behavior;
+- re-canonicalization before mutation;
+- lock across validation, mutation and undo capture;
+- path-substitution tests.
+
+EC-2 — immutable approval provenance
+
+- approval ID;
+- exact SHA;
+- exact project;
+- exact action;
+- exact scope;
+- data class;
+- authority;
+- timestamp;
+- expiry;
+- anti-replay;
+- evidence digest.
+
+EC-3 — mechanical single writer
+
+- one sanctioned mutation route;
+- alternate route denial;
+- one writer lock;
+- stale-writer recovery;
+- duplicate-writer tests.
+
+EC-4 — module-private verifier
+
+- no caller-supplied verifier;
+- no defaultable verifier;
+- no null substitution;
+- no mock substitution in production path.
+
+EC-5 — proven inert before acceptance
+
+- act edge disabled;
+- no real token;
+- no real mutation;
+- no live provider;
+- no customer/private data;
+- synthetic fixtures only.
+
+H3 — founder-driven witness
+
+- actual founder input;
+- no generated substitute;
+- exact human-perception scope.
+
+H4 — single canonical state
+
+- one approval source;
+- one witness source;
+- stale UI fails closed;
+- split-brain state refused.
+
+Create or reconcile:
+
+docs/lanes/VB3_BUILD_CONTRACT.md
+docs/contracts/VB3_GATE_WITNESS_ENGINE.md
+docs/status/VB3_ENTRY_CRITERIA.md
+docs/status/VB3_ACCEPTANCE_MATRIX.md
+docs/testing/VB3_MUTATION_PLAN.md
+docs/qualification/VB3_48H_QUALIFICATION_CONTRACT.md
+docs/witness/VB3_FOUNDER_UI_WITNESS_CONTRACT.md
+
+Commission a fresh specification checker.
+
+Correct bounded specification findings.
+
+If current disk authority does not permit VB3 implementation:
+
+- do not fabricate authority;
+- place the exact build-start decision in the founder queue;
+- continue all unrelated lanes.
+
+PHASE 9 — VB3 INERT CORE
+
+Begin only when all are true:
+
+- VB3 specification checker-clean;
+- current disk authority permits implementation;
+- no other sensitive-core writer is active;
+- one primary builder is assigned;
+- one independent adversarial checker is assigned;
+- shared-path collisions are cleared.
+
+Allowed:
+
+- approval schema;
+- witness schema;
+- state machine;
+- immutable provenance;
+- exact-SHA/action/project binding;
+- anti-replay;
+- expiry;
+- module-private disabled verifier;
+- single-writer guard;
+- rollback prerequisite;
+- evidence requirement;
+- synthetic UI read model;
+- negative tests;
+- mutation tests.
+
+Forbidden:
+
+- real executor mutation;
+- real token mint;
+- live provider;
+- customer/private repository;
+- payment;
+- send;
+- deployment;
+- production action;
+- founder acceptance simulation.
+
+Required state:
+
+VB3_ACT_EDGE: FROZEN
+VB3_VERIFIER: PRIVATE_BUT_DISABLED
+LIVE_ACTION: NOT_AUTHORIZED
+FOUNDER_WITNESS: NOT_PERFORMED
+48H_QUALIFICATION: NOT_STARTED
+
+If implementation authority is absent, skip Phase 9 and continue other work.
+
+PHASE 10 — UI MACHINE QUALIFICATION
+
+For every newly built founder-facing surface:
+
+1. launch through the approved real launcher where applicable;
+2. use actual Google Chrome for final pre-founder surface qualification;
+3. verify foreground/frontmost/onscreen state where FFS applies;
+4. use actual DOM actions;
+5. capture:
+   - screenshots;
+   - video;
+   - trace;
+   - console;
+   - network;
+   - page errors;
+   - window identity;
+   - candidate SHA.
+6. test:
+   - desktop;
+   - mobile;
+   - accessibility;
+   - keyboard-only;
+   - 200% zoom;
+   - reduced motion;
+   - low-hand burden;
+   - UNKNOWN;
+   - STALE;
+   - CONFLICT;
+   - missing evidence.
+7. verify no action-looking control exists unless truly wired;
+8. label fixtures and simulations clearly.
+
+Machine qualification may produce:
+
+READY_FOR_HUMAN_PERCEPTION_WITNESS
+
+It may not produce:
+
+FOUNDER_WITNESS_PASSED
+
+PHASE 11 — INTEGRATION AND MERGE CONTROL
+
+Do not create a long PR stack.
+
+Use one cumulative V8-B Wave-1 integration line.
+
+Internal lane branches are permitted.
+
+Terminal-0 must integrate sequentially.
+
+Before integrating a lane require:
+
+- exact current head;
+- exact base;
+- test results;
+- evidence;
+- independent checker;
+- no post-checker product drift;
+- exact-SHA CI;
+- no forbidden artifacts;
+- no true founder gate hidden in the diff;
+- no policy weakening.
+
+Routine qualified merges may proceed under active ARLC authority.
+
+After every merge:
+
+- verify main ancestry;
+- run post-merge CI;
+- close superseded internal PRs;
+- remove branches/worktrees only after no-loss proof;
+- preserve evidence branches;
+- update DCL and ARE recovery states;
+- continue to the next lane.
+
+PHASE 12 — FUTURE-STAGE BOUNDARY
+
+Do not implement V8-C, V8-D or V8-E.
+
+Read-only gap maps are allowed:
+
+docs/status/V8C_READINESS_GAP_MAP.md
+docs/status/V8D_READINESS_GAP_MAP.md
+docs/status/V8E_READINESS_GAP_MAP.md
+
+Every future-stage file must state:
+
+PLANNING ONLY
+STAGE NOT STARTED
+NO IMPLEMENTATION AUTHORIZED
+NO ACCEPTANCE CLAIM
+
+PHASE 13 — CONTINUATION LAW
+
+After each lane reaches a terminal state:
+
+1. persist state;
+2. seal evidence;
+3. update the completion matrix;
+4. integrate when eligible;
+5. select the next highest-value safe lane.
+
+Do not stop because:
+
+- one lane completed;
+- one lane failed;
+- one lane entered checker review;
+- one lane needs founder acceptance;
+- one lane needs live authority;
+- one lane is blocked by a future dependency.
+
+Park blocked lanes and continue independent work.
+
+Stop the full execution only for:
+
+- DCL integrity failure;
+- ARLC integrity failure;
+- wrong host;
+- unresolved shared writer collision;
+- active PANIC_STOP;
+- policy corruption;
+- critical repository corruption;
+- no authorized safe work remaining;
+- nine-hour checkpoint reached after finishing active atomic work.
+
+NINE-HOUR CHECKPOINT
+
+Approximately nine hours after RUNNING begins:
+
+1. finish current atomic actions safely;
+2. stop starting new large lanes;
+3. allow active tests and checkers to finish where practical;
+4. persist every directive, lane and run recovery state;
+5. reconcile disk, Git and GitHub;
+6. update the completion matrix;
+7. seal the Wave-1 proof capsule;
+8. leave remaining routine work in the operational queue;
+9. leave true founder decisions in the founder queue;
+10. produce the final report.
+
+Time elapsed does not equal completion.
+
+Do not mark unfinished work complete.
+
+FINAL OUTPUT
+
+Return:
+
+1. Host identity.
+2. Start and end timestamps.
+3. Directive ID and digest.
+4. Starting main SHA.
+5. Final main SHA.
+6. DCL status.
+7. ARLC status.
+8. ARE-1 status.
+9. Autonomous run ID and manifest digest.
+10. Open PR count.
+11. Branches/worktrees created.
+12. Branches/worktrees cleaned.
+13. Preserved evidence branches.
+14. V8-B completion matrix summary.
+15. VB2 acceptance readiness.
+16. SCL-1 status.
+17. OpenSandbox status.
+18. Bench v1 status.
+19. Playwright evidence-system status.
+20. Evidence Viewer status.
+21. GitHub/integration-card status.
+22. Cost-display status.
+23. Release Label Ladder status.
+24. Spec Card Engine status.
+25. Anti-repeat status.
+26. License/IP register status.
+27. Data-classification status.
+28. VB3 specification status.
+29. VB3 implementation-authority status.
+30. VB3 inert-core status.
+31. VB3 act-edge status.
+32. UI machine-qualification status.
+33. 48-hour qualification readiness.
+34. V8-C/D/E planning-only status.
+35. Local test totals.
+36. Exact-SHA CI results.
+37. Independent checker verdicts.
+38. Advisor verdicts.
+39. Corrections performed.
+40. Work merged.
+41. Work remaining unmerged.
+42. Operational queue.
+43. Founder queue.
+44. Human-expert queue.
+45. Exact next true founder action.
+46. Exact next autonomous action.
+47. Remaining limitations.
+48. Proof-capsule path and digest.
+
+Required exact statements:
+
+V8B-AUTONOMOUS-WAVE-1 CAPTURED AND VERIFIED ITS COMPLETE DIRECTIVE BODY BEFORE EXECUTION.
+
+THE RUN DID NOT DEPEND SOLELY ON CONVERSATIONAL MEMORY.
+
+A TRUE FOUNDER GATE IN ONE LANE DID NOT STOP INDEPENDENT AUTHORIZED WORK.
+
+ARE-1 WAS INTEGRATED ONLY AFTER CURRENT-MAIN RECONCILIATION, TESTING, INDEPENDENT CHECKING AND EXACT-SHA CI, OR ITS PRECISE BLOCKER WAS RECORDED.
+
+THE SOFTWARE BLUEPRINT EXPRESSES INTENT AND DOES NOT BY ITSELF GRANT LIVE AUTHORITY.
+
+SCL-1 REMAINED PROVIDER-NEUTRAL; OPENSANDBOX REMAINED CANDIDATE, NOT ADOPTED OR DEFAULT.
+
+NO DIRECT HOST FALLBACK WAS AUTHORIZED.
+
+VB2 ACCEPTANCE WAS NOT FABRICATED OR BACKDATED.
+
+VB3’S ACT EDGE REMAINED FROZEN UNLESS A LATER EXPLICIT AUTHORITY AND COMPLETE QUALIFICATION CHANGED IT.
+
+MACHINE UI QUALIFICATION DID NOT SUBSTITUTE FOR A FOUNDER HUMAN-PERCEPTION WITNESS.
+
+THE 48-HOUR QUALIFICATION WAS NOT STARTED FROM THE PRO.
+
+V8-C, V8-D AND V8-E PRODUCT IMPLEMENTATION DID NOT BEGIN.
+
+TIME ELAPSED WAS NOT USED AS EVIDENCE OF COMPLETION.
+
+Finish with exactly one verdict:
+
+V8B-WAVE1: COMPLETE-TO-NEXT-TRUE-GATE
+V8B-WAVE1: NINE-HOUR-CHECKPOINT-SUBSTANTIAL-PROGRESS
+V8B-WAVE1: ALL-AUTHORIZED-SAFE-WORK-EXHAUSTED
+V8B-WAVE1: TRUE-FOUNDER-GATE-WITH-INDEPENDENT-WORK-EXHAUSTED
+V8B-WAVE1: HUMAN-EXPERT-GATE-WITH-INDEPENDENT-WORK-EXHAUSTED
+V8B-WAVE1: HOLD-CORRECTABLE-FINDINGS
+V8B-WAVE1: UNRESOLVED-CRITICAL-BLOCKER
+V8B-WAVE1: SELF-CAPTURE-FAILED
+V8B-WAVE1: REJECT
+V8B-WAVE1: INSUFFICIENT-EVIDENCE

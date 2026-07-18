@@ -1,0 +1,22 @@
+{
+  "schema": "vb2-acceptance-1",
+  "generated_at": "2026-07-18T04:36:14Z",
+  "main_sha": "7e3e96316bed4653abb2b24529ab8854489bb946",
+  "checks": {
+    "vb2_build_merged": true,
+    "m1_integrated_8h_soak_evidence_in_main": true,
+    "evidence_commit_ancestry_preserved": true,
+    "independent_checker_separation": true,
+    "pro_side_evidence_audit": true,
+    "post_merge_ci_green": true,
+    "no_active_vb3_act_edge": true,
+    "human_ui_witness_performed": false,
+    "founder_signature": false
+  },
+  "mechanical_checks_pass": true,
+  "human_perception_requirement_remains": true,
+  "verdict": "VB2: READY-FOR-FOUNDER-ACCEPTANCE",
+  "founder_queue_item": "Perform VB2 founder UI witness (human-perception acceptance of the VB2/Phase-7.1 witness candidate).",
+  "not_fabricated": "No founder decision, signature, or witness was fabricated or backdated.",
+  "parked": "VB2 acceptance lane PARKED at founder gate; all independent lanes continue."
+}

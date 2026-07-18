@@ -1,0 +1,35 @@
+{
+  "directive_id": "v8b-wave-1",
+  "title": "FOUNDERGATE V8B-AUTONOMOUS-WAVE-1 \u2014 DCL-LOCKED NINE-HOUR PARALLEL V8-B EXECUTION",
+  "version": 1,
+  "issuer": "founder",
+  "source_session_id": "884194cb-17e3-495f-a55d-bf602139bcf3",
+  "source_transcript_path": "/Users/yosiwizman/.claude/projects/-Users-yosiwizman-Projects-foundergate/884194cb-17e3-495f-a55d-bf602139bcf3.jsonl",
+  "source_line": 21984,
+  "source_type": "user",
+  "received_body_path": ".foundergate/directives/v8b-wave-1/prompt.txt",
+  "sha256": "728678d165cef6365583aa87677db81b996e3f551547c70d40ea95417c6ce566",
+  "stored_sha256": "728678d165cef6365583aa87677db81b996e3f551547c70d40ea95417c6ce566",
+  "digest_equal": true,
+  "byte_count": 23375,
+  "line_count": 1016,
+  "beginning_anchor": "FOUNDERGATE V8B-AUTONOMOUS-WAVE-1 \u2014 DCL-LOCKED NINE-HOUR PARALLEL V8-B EXECUTION\n\nPURPOSE\n\nBegin the next autonomous FounderGate execution wave under the active Durable Directive Control Layer and A",
+  "ending_anchor": "XPERT-GATE-WITH-INDEPENDENT-WORK-EXHAUSTED\nV8B-WAVE1: HOLD-CORRECTABLE-FINDINGS\nV8B-WAVE1: UNRESOLVED-CRITICAL-BLOCKER\nV8B-WAVE1: SELF-CAPTURE-FAILED\nV8B-WAVE1: REJECT\nV8B-WAVE1: INSUFFICIENT-EVIDENCE",
+  "required_sections_present": {
+    "PURPOSE": true,
+    "OPERATING MODE": true,
+    "HARD BOUNDARIES": true,
+    "PHASE 0": true,
+    "NINE-HOUR CHECKPOINT": true,
+    "FINAL OUTPUT": true,
+    "V8B-WAVE1: SELF-CAPTURE-FAILED": true
+  },
+  "cross_source_identical": true,
+  "depends_on": [
+    "dcl-1",
+    "arlc-1"
+  ],
+  "machine": "mac-mini-pro",
+  "writer_owner": "terminal-0",
+  "current_state": "DIGEST_VERIFIED"
+}

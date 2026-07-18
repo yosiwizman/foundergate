@@ -1,0 +1,211 @@
+{
+  "schema": "v8b-matrix-1",
+  "generated_at": "2026-07-18T04:35:35Z",
+  "main_sha": "7e3e96316bed4653abb2b24529ab8854489bb946",
+  "legend": [
+    "ACCEPTED",
+    "PROVEN",
+    "BUILT",
+    "CHECKER-CLEAN",
+    "MERGED",
+    "PARTIAL",
+    "STALE",
+    "UNKNOWN",
+    "NOT PROVEN",
+    "NOT BUILT",
+    "BLOCKED",
+    "FOUNDER WITNESS REQUIRED",
+    "QUALIFICATION REQUIRED"
+  ],
+  "rows": [
+    {
+      "requirement": "Run Launcher",
+      "state": "BUILT",
+      "class": "narrow",
+      "missing_behavior": "one-click launch proven (Phase7.1)",
+      "missing_evidence": "formal founder launch witness",
+      "founder_involvement": "FOUNDER WITNESS REQUIRED",
+      "next_lane": "VB2 acceptance"
+    },
+    {
+      "requirement": "CTO queue",
+      "state": "PARTIAL",
+      "class": "wide",
+      "missing_behavior": "dedicated CTO queue surface",
+      "missing_evidence": "live queue UI evidence",
+      "founder_involvement": "none",
+      "next_lane": "wide-safe lane"
+    },
+    {
+      "requirement": "Lane routing",
+      "state": "PARTIAL",
+      "class": "wide",
+      "missing_behavior": "unified router across ARLC/ARE queues",
+      "missing_evidence": "end-to-end routing evidence",
+      "founder_involvement": "none",
+      "next_lane": "ARE-1 integration"
+    },
+    {
+      "requirement": "Advisor verification status",
+      "state": "BUILT",
+      "class": "wide",
+      "missing_behavior": "-",
+      "missing_evidence": "advisor records present",
+      "founder_involvement": "none",
+      "next_lane": "-"
+    },
+    {
+      "requirement": "Wide/narrow execution labels",
+      "state": "BUILT",
+      "class": "wide",
+      "missing_behavior": "-",
+      "missing_evidence": "ARE compiler + ARLC classes",
+      "founder_involvement": "none",
+      "next_lane": "-"
+    },
+    {
+      "requirement": "Checker records",
+      "state": "BUILT",
+      "class": "wide",
+      "missing_behavior": "-",
+      "missing_evidence": "independent checker records present",
+      "founder_involvement": "none",
+      "next_lane": "-"
+    },
+    {
+      "requirement": "Bench v1",
+      "state": "NOT BUILT",
+      "class": "wide",
+      "missing_behavior": "component+project result ledger, hand-burden",
+      "missing_evidence": "none",
+      "founder_involvement": "none",
+      "next_lane": "Bench v1 lane"
+    },
+    {
+      "requirement": "Project Bench",
+      "state": "NOT BUILT",
+      "class": "wide",
+      "missing_behavior": "per-project result ledger",
+      "missing_evidence": "none",
+      "founder_involvement": "none",
+      "next_lane": "Bench lane"
+    },
+    {
+      "requirement": "Founder Hand-Burden score",
+      "state": "PARTIAL",
+      "class": "wide",
+      "missing_behavior": "live scoring surface",
+      "missing_evidence": "ARE burden metrics only",
+      "founder_involvement": "none",
+      "next_lane": "Bench v1 lane"
+    },
+    {
+      "requirement": "Playwright evidence system",
+      "state": "PARTIAL",
+      "class": "wide",
+      "missing_behavior": "generalized evidence indexer",
+      "missing_evidence": "Phase7.1 safety-check only",
+      "founder_involvement": "none",
+      "next_lane": "evidence lane"
+    },
+    {
+      "requirement": "Evidence Viewer",
+      "state": "NOT BUILT",
+      "class": "wide",
+      "missing_behavior": "readable viewer surface",
+      "missing_evidence": "none",
+      "founder_involvement": "none",
+      "next_lane": "evidence lane"
+    },
+    {
+      "requirement": "GitHub links / integration cards",
+      "state": "NOT BUILT",
+      "class": "wide",
+      "missing_behavior": "read-only repo/PR/branch/file cards",
+      "missing_evidence": "none",
+      "founder_involvement": "none",
+      "next_lane": "integration-card lane"
+    },
+    {
+      "requirement": "Cost display",
+      "state": "PARTIAL",
+      "class": "wide",
+      "missing_behavior": "per-run/quota/cost-per-PR display",
+      "missing_evidence": "cost_budget schema only",
+      "founder_involvement": "none",
+      "next_lane": "cost lane"
+    },
+    {
+      "requirement": "Release Label Ladder",
+      "state": "NOT BUILT",
+      "class": "wide",
+      "missing_behavior": "label + transition history surface",
+      "missing_evidence": "none",
+      "founder_involvement": "none",
+      "next_lane": "ladder lane"
+    },
+    {
+      "requirement": "Spec Card Engine",
+      "state": "PARTIAL",
+      "class": "wide",
+      "missing_behavior": "standalone spec-card engine",
+      "missing_evidence": "ARE compiler emits spec cards",
+      "founder_involvement": "none",
+      "next_lane": "spec-card lane"
+    },
+    {
+      "requirement": "Full data classification",
+      "state": "PARTIAL",
+      "class": "narrow",
+      "missing_behavior": "end-to-end classification enforcement",
+      "missing_evidence": "schema+fixture+partial enforcement",
+      "founder_involvement": "none",
+      "next_lane": "data-class lane"
+    },
+    {
+      "requirement": "Anti-repeat system",
+      "state": "PARTIAL",
+      "class": "wide",
+      "missing_behavior": "defect->pattern->regression conversion",
+      "missing_evidence": "TBF-1 anti-repeat tests only",
+      "founder_involvement": "none",
+      "next_lane": "anti-repeat lane"
+    },
+    {
+      "requirement": "Minimal License/IP register",
+      "state": "NOT BUILT",
+      "class": "wide",
+      "missing_behavior": "dependency license register",
+      "missing_evidence": "none",
+      "founder_involvement": "none",
+      "next_lane": "license lane"
+    },
+    {
+      "requirement": "Gate/Witness Engine",
+      "state": "PARTIAL",
+      "class": "narrow",
+      "missing_behavior": "VB3 gate/witness engine (act edge)",
+      "missing_evidence": "witness validators+schemas only",
+      "founder_involvement": "FOUNDER WITNESS REQUIRED",
+      "next_lane": "VB3 spec"
+    },
+    {
+      "requirement": "V8-B Stranger Test readiness",
+      "state": "NOT PROVEN",
+      "class": "narrow",
+      "missing_behavior": "stranger-operator run",
+      "missing_evidence": "none",
+      "founder_involvement": "FOUNDER WITNESS REQUIRED",
+      "next_lane": "after wide-safe"
+    },
+    {
+      "requirement": "V8-B integrated acceptance",
+      "state": "NOT PROVEN",
+      "class": "narrow",
+      "missing_behavior": "formal integrated acceptance",
+      "missing_evidence": "VB2 stage-accepted only",
+      "founder_involvement": "FOUNDER WITNESS REQUIRED",
+      "next_lane": "VB2 formal acceptance"
+    }
+  ]
+}
