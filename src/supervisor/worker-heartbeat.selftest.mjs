@@ -50,44 +50,49 @@ async function run() {
     ok("06 REAL worker completed (status 0)", r.status === 0);
   }
 
-  // 3. STALENESS NON-MISCLASSIFICATION: with beats refreshing the lock's
-  // last_heartbeat, a live supervisor running a worker LONGER than stale_interval
-  // stays HEALTHY and a second acquire is REJECTED (not recovered/replaced).
+  // 3. STALENESS CLASSIFICATION IS PURE — test it deterministically with explicit
+  // now/last_heartbeat (NO reliance on wall-clock second boundaries; that made an
+  // earlier version CI-flaky). This is the exact classification a second acquire
+  // uses: a LIVE pid whose heartbeat is stale is RECOVERED (the misclassification).
   {
-    const STALE = 1; // seconds — tiny so a ~1.6s worker exceeds it
-    const nowS = () => Math.floor(Date.now() / 1000);
-    const lock = { pid: process.pid, last_heartbeat: nowS(), run_id: "R", nonce: "n" };
-    const r = await runBeatingChild({
-      spawnChild: () => require_spawn([EXE, "-e", "setTimeout(()=>process.exit(0), 1600)"]),
-      beat: () => { lock.last_heartbeat = nowS(); }, intervalMs: 300,
-    });
-    const now = nowS();
-    ok("07 worker outran stale_interval", r.status === 0);
-    ok("08 live supervisor stays HEALTHY (beats kept last_heartbeat fresh)",
-      isHealthy(lock, { pid_alive: true, now, stale_interval: STALE }) === true);
-    ok("09 second acquire is REJECTED, not recover (no replace of a live busy supervisor)",
-      evaluateAcquire(lock, { pid: process.pid + 1, run_id: "R2", nonce: "n2" }, { pid_alive: true, now, stale_interval: STALE }).action === "reject");
+    const now = 10_000, STALE = 120;
+    const fresh = { pid: 500, last_heartbeat: now - 5,   run_id: "R", nonce: "n" }; // beat 5s ago
+    const stale = { pid: 500, last_heartbeat: now - 300, run_id: "R", nonce: "n" }; // no beat 300s
+    ok("07 fresh heartbeat + alive -> HEALTHY", isHealthy(fresh, { pid_alive: true, now, stale_interval: STALE }) === true);
+    ok("08 fresh + alive -> 2nd acquire REJECTED (live supervisor not replaced)",
+      evaluateAcquire(fresh, { pid: 501, run_id: "R2", nonce: "n2" }, { pid_alive: true, now, stale_interval: STALE }).action === "reject");
+    ok("09 STALE + ALIVE -> 2nd acquire RECOVERS (a LIVE busy supervisor WOULD be replaced — the exact bug)",
+      evaluateAcquire(stale, { pid: 501, run_id: "R2", nonce: "n2" }, { pid_alive: true, now, stale_interval: STALE }).action === "recover");
   }
 
-  // 4. CONTROL: WITHOUT beats (the old spawnSync starvation), the SAME-duration
-  // worker leaves the lock stale -> isHealthy false -> a second acquire RECOVERS.
-  // This proves the test genuinely detects the misclassification the fix removes.
+  // 4. RUNTIME FRESHNESS (ms — robust, no second-boundary flakiness): run the REAL
+  // worker WITH beats and record a ms timestamp each beat; the max gap between
+  // liveness refreshes must stay FAR under the staleness window. A CONTROL run with
+  // beat() a NO-OP (the old spawnSync-frozen loop) shows the gap grows to the whole
+  // worker duration — the starvation the fix removes.
   {
-    const STALE = 1;
-    const nowS = () => Math.floor(Date.now() / 1000);
-    const lock = { pid: process.pid, last_heartbeat: nowS(), run_id: "R", nonce: "n" };
-    await runBeatingChild({ // beat is a NO-OP -> simulates the frozen event loop
-      spawnChild: () => require_spawn([EXE, "-e", "setTimeout(()=>process.exit(0), 1600)"]),
-      beat: () => {}, intervalMs: 300,
+    const WORKER_MS = 1600, INTERVAL = 200;
+    const stamps = [Date.now()];
+    await runBeatingChild({
+      spawnChild: () => require_spawn([EXE, "-e", `setTimeout(()=>process.exit(0), ${WORKER_MS})`]),
+      beat: () => stamps.push(Date.now()), intervalMs: INTERVAL,
     });
-    const now = nowS();
-    ok("10 CONTROL: no-beat worker leaves lock STALE (isHealthy false)",
-      isHealthy(lock, { pid_alive: true, now, stale_interval: STALE }) === false);
-    // pid_alive:true here is the honest mirror of test 09 — the ONLY difference is
-    // heartbeat freshness (the variable the fix controls). A LIVE-but-stale lock is
-    // recovered => a live, busy supervisor WOULD be replaced. That is the bug.
-    ok("11 CONTROL: LIVE-but-stale lock WOULD be recovered (a live busy supervisor replaced — the exact bug)",
-      evaluateAcquire(lock, { pid: process.pid + 1, run_id: "R2", nonce: "n2" }, { pid_alive: true, now, stale_interval: STALE }).action === "recover");
+    stamps.push(Date.now());
+    let maxGapWith = 0; for (let i = 1; i < stamps.length; i++) maxGapWith = Math.max(maxGapWith, stamps[i] - stamps[i - 1]);
+
+    const t0 = Date.now();
+    await runBeatingChild({ // beat NO-OP -> frozen-loop simulation (old spawnSync)
+      spawnChild: () => require_spawn([EXE, "-e", `setTimeout(()=>process.exit(0), ${WORKER_MS})`]),
+      beat: () => {}, intervalMs: INTERVAL,
+    });
+    const noBeatGap = Date.now() - t0;
+
+    ok(`10 WITH beats: >=3 real refreshes and max liveness gap (${maxGapWith}ms) < full-worker gap`,
+      stamps.length >= 3 && maxGapWith < WORKER_MS);
+    ok(`11 CONTROL no beats: liveness gap (${noBeatGap}ms) grows to ~the whole worker duration`,
+      noBeatGap >= WORKER_MS - 150);
+    ok(`12 beats demonstrably keep liveness fresher than starvation (${maxGapWith}ms < ${noBeatGap}ms)`,
+      maxGapWith < noBeatGap);
   }
 
   // 5. OVERFLOW: exceeding maxBufferBytes flags overflow + kills the child + ok=false.
@@ -96,13 +101,13 @@ async function run() {
       spawnChild: () => require_spawn([EXE, "-e", "process.stdout.write('x'.repeat(5000)); setTimeout(()=>{},50)"]),
       beat: () => {}, intervalMs: 1000, maxBufferBytes: 1000,
     });
-    ok("12 overflow flagged + not ok", r.overflow === true && r.ok === false);
+    ok("13 overflow flagged + not ok", r.overflow === true && r.ok === false);
   }
 
   // 6. SPAWN ERROR: spawnChild throwing resolves ok:false (never throws).
   {
     const r = await runBeatingChild({ spawnChild: () => { throw new Error("boom"); }, beat: () => {}, intervalMs: 100 });
-    ok("13 spawn error -> ok:false, resolved not thrown", r.ok === false && /boom/.test(r.stderr || r.error || ""));
+    ok("14 spawn error -> ok:false, resolved not thrown", r.ok === false && /boom/.test(r.stderr || r.error || ""));
   }
 
   console.log(`\nWORKER-HEARTBEAT SELFTEST: ${n - fails.length}/${n} passed`);
