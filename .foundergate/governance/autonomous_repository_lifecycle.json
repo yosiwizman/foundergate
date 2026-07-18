@@ -26,11 +26,21 @@
       "MOD-014": "Gate / Witness Engine (independent verification; does not build)",
       "MOD-015": "Audit Ledger (records; cannot approve)"
     },
+    "duty_categories": {
+      "rule": "A single component may hold duties in AT MOST ONE category; spanning two or more is a self-certification violation.",
+      "BUILD": ["build_candidate"],
+      "APPROVE": ["evaluate_eligibility", "approve_candidate"],
+      "EXECUTE": ["execute_merge"],
+      "CERTIFY": ["certify_candidate", "certify_merge"]
+    },
     "forbidden_combinations": [
       ["evaluate_eligibility", "execute_merge"],
       ["execute_merge", "certify_merge"],
       ["build_candidate", "approve_candidate"],
-      ["approve_candidate", "certify_candidate"]
+      ["approve_candidate", "certify_candidate"],
+      ["build_candidate", "certify_candidate"],
+      ["evaluate_eligibility", "certify_merge"],
+      ["build_candidate", "execute_merge"]
     ]
   },
   "precedence": [

@@ -15,6 +15,7 @@ Precedence (highest first) is fixed and non-reorderable by any caller:
 from __future__ import annotations
 
 import hashlib
+import hmac
 import json
 from dataclasses import dataclass, field
 from typing import Any
@@ -86,6 +87,34 @@ FORBIDDEN_COMBINATIONS = (
     frozenset({"approve_candidate", "certify_candidate"}),
 )
 
+# Each duty belongs to exactly one stage category. Strict separation: a single
+# component may hold duties in AT MOST ONE category — so it can never both
+# produce/approve/execute AND certify the same lifecycle action. This is the
+# authoritative encoding of "no component may self-certify the action it
+# performed"; the pairwise FORBIDDEN_COMBINATIONS above are a documented subset.
+DUTY_CATEGORY = {
+    "build_candidate": "BUILD",
+    "evaluate_eligibility": "APPROVE",
+    "approve_candidate": "APPROVE",
+    "execute_merge": "EXECUTE",
+    "certify_candidate": "CERTIFY",
+    "certify_merge": "CERTIFY",
+}
+
+# Branch names that are never deletable regardless of ancestry.
+PROTECTED_BRANCHES = frozenset({"main", "master"})
+
+
+def _normalize_branch(branch: Any) -> str | None:
+    """Canonicalize a branch identifier; return None if empty/ambiguous."""
+    if not isinstance(branch, str):
+        return None
+    n = branch.strip()
+    if n.startswith("refs/heads/"):
+        n = n[len("refs/heads/"):]
+    n = n.strip()
+    return n or None
+
 
 class ClassificationError(Exception):
     pass
@@ -124,6 +153,11 @@ def separation_of_duties_ok(component_actions: dict[str, set[str]]) -> tuple[boo
     violations: list[str] = []
     for comp, actions in component_actions.items():
         acts = set(actions)
+        # Authoritative rule: at most one duty category per component.
+        cats = {DUTY_CATEGORY[a] for a in acts if a in DUTY_CATEGORY}
+        if len(cats) > 1:
+            violations.append(f"{comp} spans duty categories {sorted(cats)} (self-certification risk)")
+        # Explicit documented pairwise combos (subset; kept for clarity).
         for combo in FORBIDDEN_COMBINATIONS:
             if combo.issubset(acts):
                 violations.append(f"{comp} holds forbidden combo {sorted(combo)}")
@@ -139,11 +173,16 @@ class MergeVerdict:
     reason: str = ""
 
 
-def evaluate_merge_eligibility(action: str, facts: dict[str, bool]) -> MergeVerdict:
+def evaluate_merge_eligibility(action: str, facts: dict[str, bool],
+                               component_actions: dict[str, set[str]] | None = None) -> MergeVerdict:
     """Decide whether an autonomous merge is eligible.
 
     Fail-closed: any missing required fact is treated as False (not eligible);
     any denial predicate that is True blocks; non-operational class blocks.
+
+    If `component_actions` is supplied, separation of duties is COMPUTED from it
+    (the caller-asserted `separation_of_duties_satisfied` flag cannot override a
+    real violation) — closing the "trust the flag" gap.
     """
     action_class = classify_action(action)
     if action_class != "OPERATIONAL_AUTONOMOUS":
@@ -151,6 +190,13 @@ def evaluate_merge_eligibility(action: str, facts: dict[str, bool]) -> MergeVerd
             eligible=False, action_class=action_class,
             reason=f"action '{action}' is {action_class}; not autonomously mergeable",
         )
+
+    facts = dict(facts)
+    if component_actions is not None:
+        sod_ok, sod_violations = separation_of_duties_ok(component_actions)
+        facts["separation_of_duties_satisfied"] = facts.get("separation_of_duties_satisfied", True) and sod_ok
+        if not sod_ok:
+            facts["self_certification_detected"] = True
 
     failed = [k for k in MERGE_REQUIRED_TRUE if not facts.get(k, False)]
     denials = [k for k in MERGE_ANY_TRUE_DENIES if facts.get(k, False)]
@@ -173,18 +219,25 @@ class EligibilityToken:
     signature: str
 
     @staticmethod
+    def _sign(evaluated_sha: str, merge_method: str, issuing_component: str,
+              policy_digest: str, secret: str) -> str:
+        payload = f"{evaluated_sha}|{merge_method}|{issuing_component}|{policy_digest}"
+        return hmac.new(secret.encode(), payload.encode(), hashlib.sha256).hexdigest()
+
+    @staticmethod
     def issue(evaluated_sha: str, merge_method: str, issuing_component: str,
               policy_digest: str, secret: str) -> "EligibilityToken":
-        payload = f"{evaluated_sha}|{merge_method}|{issuing_component}|{policy_digest}"
-        sig = hashlib.sha256((secret + "|" + payload).encode()).hexdigest()
+        sig = EligibilityToken._sign(evaluated_sha, merge_method, issuing_component, policy_digest, secret)
         return EligibilityToken(evaluated_sha, merge_method, issuing_component, policy_digest, sig)
 
     def valid_for(self, live_sha: str, secret: str, executing_component: str) -> tuple[bool, str]:
-        payload = f"{self.evaluated_sha}|{self.merge_method}|{self.issuing_component}|{self.policy_digest}"
-        expect = hashlib.sha256((secret + "|" + payload).encode()).hexdigest()
-        if self.signature != expect:
+        if not self.evaluated_sha or not live_sha:
+            return False, "empty SHA — fail closed"
+        expect = EligibilityToken._sign(self.evaluated_sha, self.merge_method,
+                                        self.issuing_component, self.policy_digest, secret)
+        if not hmac.compare_digest(self.signature, expect):
             return False, "bad signature"
-        if self.evaluated_sha != live_sha:
+        if not hmac.compare_digest(self.evaluated_sha, live_sha):
             return False, f"head drift: token {self.evaluated_sha[:9]} != live {live_sha[:9]}"
         if self.issuing_component == executing_component:
             return False, "self-execution: issuer cannot also execute (separation of duties)"
@@ -193,13 +246,23 @@ class EligibilityToken:
         return True, "valid"
 
 
-def branch_deletion_allowed(branch: str, head_in_main: bool,
-                            is_evidence: bool, is_not_passed: bool) -> tuple[bool, str]:
+def branch_deletion_allowed(branch: Any, head_in_main: bool,
+                            is_evidence: bool, is_not_passed: bool,
+                            protected: set[str] | None = None) -> tuple[bool, str]:
     """No-loss cleanup: a branch may be deleted only if it is fully in main and
-    is neither an evidence branch nor a not-passed evidence branch."""
-    if branch == "main":
-        return False, "never delete main"
-    if is_evidence or branch.startswith("soak-evidence-"):
+    is neither a protected trunk, an evidence branch, nor a not-passed branch.
+
+    Fail-closed on empty/ambiguous names and on any protected trunk regardless
+    of spelling (refs/heads/ prefix, trailing whitespace, case)."""
+    n = _normalize_branch(branch)
+    if n is None:
+        return False, "empty/ambiguous branch name — fail closed"
+    protected_set = {p.lower() for p in PROTECTED_BRANCHES}
+    if protected:
+        protected_set |= {(_normalize_branch(p) or "").lower() for p in protected}
+    if n.lower() in protected_set:
+        return False, "protected trunk branch — never delete"
+    if is_evidence or n.startswith("soak-evidence-"):
         return False, "evidence branch preserved"
     if is_not_passed:
         return False, "not-passed evidence branch preserved"

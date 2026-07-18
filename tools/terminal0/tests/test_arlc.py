@@ -91,6 +91,26 @@ check("42 main never deleted", A.branch_deletion_allowed("main", True, False, Fa
 check("43 branch not in main kept", A.branch_deletion_allowed("lane-x", False, False, False)[0] is False)
 check("44 worktree with unique changes kept", A.worktree_removal_allowed(True)[0] is False)
 
+# --- Regression: ARLC1-CHECKER findings (45-56) ---
+# F1: never-delete-main must survive non-canonical spellings + empty names.
+check("45 refs/heads/main not deletable", A.branch_deletion_allowed("refs/heads/main", True, False, False)[0] is False)
+check("46 'main\\n' not deletable", A.branch_deletion_allowed("main\n", True, False, False)[0] is False)
+check("47 'Main' (case) not deletable", A.branch_deletion_allowed("Main", True, False, False)[0] is False)
+check("48 master protected", A.branch_deletion_allowed("master", True, False, False)[0] is False)
+check("49 empty/None branch fails closed", A.branch_deletion_allowed("", True, False, False)[0] is False and A.branch_deletion_allowed(None, True, False, False)[0] is False)
+check("50 refs/heads/ prefix on evidence still preserved", A.branch_deletion_allowed("refs/heads/soak-evidence-x", True, False, False)[0] is False)
+# F2: self-certification must be flagged by SoD.
+check("51 build+certify flagged", A.separation_of_duties_ok({"X": {"build_candidate", "certify_candidate"}})[0] is False)
+check("52 evaluate+certify flagged", A.separation_of_duties_ok({"X": {"evaluate_eligibility", "certify_merge"}})[0] is False)
+check("53 build+execute flagged", A.separation_of_duties_ok({"X": {"build_candidate", "execute_merge"}})[0] is False)
+check("54 same-category duties allowed", A.separation_of_duties_ok({"X": {"certify_candidate", "certify_merge"}})[0] is True)
+# F3: merge engine computes SoD from component duties, ignoring an over-optimistic flag.
+f = all_true_merge_facts()
+check("55 engine derives SoD violation from duties", A.evaluate_merge_eligibility("merge_qualified_cumulative_pr_to_main", f, {"X": {"evaluate_eligibility", "execute_merge", "certify_merge"}}).eligible is False)
+# F4: token fails closed on empty SHA.
+tok_empty = A.EligibilityToken.issue("", "merge_commit", "MOD-018", DIG, SECRET)
+check("56 empty-SHA token fails closed", tok_empty.valid_for("", SECRET, "MOD-022")[0] is False)
+
 print(f"\nARLC-1 TESTS: {N - len(FAIL)}/{N} passed")
 if FAIL:
     print("FAILED:", ", ".join(FAIL))
