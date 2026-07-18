@@ -1,0 +1,40 @@
+{
+  "proof": "concurrent-observer readings of the REAL supervisor heartbeat.json (seq field) during synthetic GATED requalification; production supervisor-session + real beat() writer",
+  "need": 3,
+  "raw_polls": [
+    1,
+    2,
+    3,
+    3,
+    4,
+    5,
+    5,
+    6,
+    7,
+    8,
+    8,
+    9,
+    10,
+    10
+  ],
+  "note": "raw_polls contains duplicate reads because the observer polled every ~0.7s vs a 1.0s beat; the production qualifier folds these via v>lastVal (strictly-increasing) exactly as reproduced below",
+  "strictly_advancing_fold": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "distinct_advancing_count": 10,
+  "satisfies_need_ge_3": true,
+  "supervisor_seq_monotonic": true,
+  "jobs_gated_zero_executed": true,
+  "no_synthetic_heartbeats": "observer only READ heartbeat.json; supervisor wrote real hbSeq values",
+  "real_decision_consumed": false,
+  "real_13_job_queue_activated": false
+}
