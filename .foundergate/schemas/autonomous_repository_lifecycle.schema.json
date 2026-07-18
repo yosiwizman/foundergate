@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "autonomous_repository_lifecycle",
+  "type": "object",
+  "required": ["policy_id","version","status","separation_of_duties","precedence","action_classification","merge_eligibility_engine","no_loss_cleanup_engine","does_not_authorize"],
+  "properties": {
+    "policy_id": {"const": "autonomous_repository_lifecycle"},
+    "version": {"type": "string"},
+    "status": {"enum": ["ACTIVE","HOLD","PANIC"]},
+    "precedence": {"type": "array", "items": {"type": "string"}, "minItems": 8},
+    "action_classification": {"type": "object", "required": ["unknown_disposition","classes"]},
+    "merge_eligibility_engine": {"type": "object", "required": ["all_must_be_true","any_true_denies"]},
+    "no_loss_cleanup_engine": {"type": "object", "required": ["fail_closed"]},
+    "does_not_authorize": {"type": "array", "minItems": 1}
+  }
+}
