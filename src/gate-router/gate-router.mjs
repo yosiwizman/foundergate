@@ -33,12 +33,30 @@ const QUESTION_SIGNALS = [
 // A final answer that contains an UNRESOLVED authority request also counts.
 const AUTHORITY_SIGNALS = [/\bneed(s)? (your )?(permission|authorization|approval)\b/i, /\bmissing authority\b/i, /\brequires broader permission\b/i, /\bhow should i proceed\b/i, /\bpermission (denied|required)\b/i];
 
+// Broader intent signals — a regex heuristic is never exhaustive, so detection
+// errs toward OVER-parking (a false positive parks a lane, which is safe; it
+// never grants authority). These catch common confirm/approve/ask forms.
+const INTENT_SIGNALS = [
+  /\bshould i\b/i, /\bshall i\b/i, /\bmay i\b/i, /\bcan i\b/i,
+  /\bdo you (approve|want|agree|prefer|wish)\b/i, /\bwould you (like|prefer|want)\b/i,
+  /\bare you sure\b/i, /\bis it (ok|okay|safe|fine|alright)\b/i, /\bgo ahead\b.*\?/i,
+  /\bhit enter\b/i, /\benter\s+['"]?(yes|y|no|n|\d+)['"]?\s+to\b/i, /\btype\s+['"]?(yes|y|confirm)['"]?\b/i,
+  /\bpause(d|s)? (here )?(until|for)\b/i, /\bi('| wi)ll pause\b/i,
+  /\blet me know (if|how|which|whether|what|when)\b/i, /\btell me (which|what|whether|how|when)\b/i,
+  /\bwaiting (for|on) (you|your)\b/i, /\buntil you (respond|reply|confirm|decide|answer)\b/i,
+  /\bhow (would|do) you (like|want).*(to )?(proceed|continue|handle)\b/i, /\bplease (confirm|approve|advise|respond|let me know)\b/i,
+];
+// A trailing question that references a risky action is very likely a confirm prompt.
+const RISKY_ACTION = /(delete|drop|overwrite|remove|deploy|merge|push|rollback|reset|force|truncate|database|table|rows|prod(uction)?|confirm|approve)/i;
+
 export function detectInteractiveQuestion(workerOutput) {
   const text = typeof workerOutput === "string" ? workerOutput : JSON.stringify(workerOutput || "");
-  const q = QUESTION_SIGNALS.find((r) => r.test(text));
+  const q = QUESTION_SIGNALS.find((r) => r.test(text)) || INTENT_SIGNALS.find((r) => r.test(text));
+  // Any question mark near a risky action word -> treat as a confirm prompt.
+  const riskyQuestion = /\?/.test(text) && RISKY_ACTION.test(text);
   const a = AUTHORITY_SIGNALS.find((r) => r.test(text));
-  const readsStdin = /process\.stdin|readline|read from stdin/i.test(text);
-  const kind = q ? "interactive_question" : readsStdin ? "stdin_read" : a ? "unresolved_authority" : null;
+  const readsStdin = /process\.stdin|readline|read from stdin|scanf|gets\(|input\(\)/i.test(text);
+  const kind = (q || riskyQuestion) ? "interactive_question" : readsStdin ? "stdin_read" : a ? "unresolved_authority" : null;
   return { intercepted: !!kind, kind };
 }
 

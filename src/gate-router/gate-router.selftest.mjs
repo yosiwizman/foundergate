@@ -88,6 +88,20 @@ const resNoOneTime = { ...resNoSha, exact_sha: "SHA_A" }; // no one_time_use fie
 ok("F3 one-time default-on: consumed rejected even without flag", verifyDecision(req3, resNoOneTime, { now: 1010, already_consumed: true }).valid === false);
 ok("F3 correct SHA + fresh accepted", verifyDecision(req3, { ...resNoSha, exact_sha: "SHA_A" }, { now: 1010, exact_sha: "SHA_A" }).valid === true);
 
+// ---- Regression: FGRI-PAES-CHECKER residual detection gaps ----
+for (const s of ["Should I go ahead and drop the table?", "Do you approve this change?",
+  "Is it OK to overwrite the existing config?", "Type 'yes' to confirm deletion:",
+  "Ready to proceed? Enter 1 to confirm.", "Are you sure you want to delete these 4000 rows?",
+  "Shall I continue with the rollback?", "I need you to tell me which database to use.",
+  "Please let me know if I should merge this PR.", "Hit enter when ready.",
+  "I'll pause here until you respond.", "Let me know how you'd like to proceed."]) {
+  ok(`GAP intercepts: ${JSON.stringify(s).slice(0, 40)}`, detectInteractiveQuestion(s).intercepted === true);
+}
+// still no false-park on normal successful output
+for (const s of ["committed changes; 94/94 tests pass", "wrote evidence file and sealed the capsule", "merged PR #168; ancestry verified"]) {
+  ok(`GAP no false-park: ${JSON.stringify(s).slice(0, 34)}`, detectInteractiveQuestion(s).intercepted === false);
+}
+
 console.log(`\nFGRI-1 GATE-ROUTER SELFTEST: ${n - fails.length}/${n} passed`);
 if (fails.length) { console.log("FAILED:", fails.join(", ")); process.exit(1); }
 process.exit(0);

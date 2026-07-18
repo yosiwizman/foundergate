@@ -5,16 +5,20 @@
   "mechanism": "claude -p <prompt> --output-format json --allowedTools <allowlist>",
   "result": "UNATTENDED_EXECUTOR: AUTHENTICATION_NOT_AVAILABLE",
   "evidence": {
-    "exit_code": 0,
-    "elapsed_s": 3,
-    "is_error": false,
-    "structured_output": "{\"probe\":\"alive\",\"writes\":0}",
-    "permission_denials": [],
-    "num_turns": 1,
-    "session_id": "9e3182ab-62d9-4c87-9983-14102edec1c7",
-    "total_cost_usd": 0.0918175,
-    "residual_child_processes": 0,
-    "credential_copying": "NONE (used existing installed OAuth; no key passed, no serialization, no log leak)"
+    "interactive_session_probe": {
+      "exit_code": 0,
+      "elapsed_s": 3,
+      "is_error": false,
+      "structured_output": "{\"probe\":\"alive\",\"writes\":0}",
+      "permission_denials": [],
+      "num_turns": 1,
+      "session_id": "9e3182ab-62d9-4c87-9983-14102edec1c7",
+      "total_cost_usd": 0.0918175,
+      "residual_child_processes": 0,
+      "credential_copying": "NONE (used existing installed OAuth; no key passed, no serialization, no log leak)"
+    },
+    "note": "this probe ran in the INTERACTIVE session env (has keychain access); NOT the launchd context",
+    "launchd_clean_env": "claude -p -> Not logged in (exit 1)"
   },
   "material_findings": [
     {
