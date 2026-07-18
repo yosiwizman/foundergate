@@ -1,7 +1,7 @@
 // PAES singleton self-test — proves duplicate/racing supervisors cannot start
 // (regression for the overlapping-supervisor activity observed in prior qual).
 import { isHealthy, evaluateAcquire, acquireSingleton, releaseSingleton } from "./singleton.mjs";
-import { mkdtempSync, rmSync, existsSync, writeFileSync } from "node:fs";
+import { mkdtempSync, rmSync, existsSync, writeFileSync, readdirSync as _rd, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -46,12 +46,11 @@ ok("15 lock file carries no credential material", !/ghp_|sk-|oauth|token|ANTHROP
 // ---- WIRING guards (regression for PAES-STARTER-CHECKER F1/F2): the singleton
 // must be actually CALLED on the live path, and the launcher must tear down the
 // supervisor on qualification failure. ----
-import { readFileSync as rf } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join as pj } from "node:path";
 const HERE = dirname(fileURLToPath(import.meta.url));
-const supSession = rf(pj(HERE, "../../tools/terminal0/paes/supervisor-session"), "utf8");
-const starter = rf(pj(HERE, "../../tools/terminal0/paes/start-wave2-session"), "utf8");
+const supSession = readFileSync(pj(HERE, "../../tools/terminal0/paes/supervisor-session"), "utf8");
+const starter = readFileSync(pj(HERE, "../../tools/terminal0/paes/start-wave2-session"), "utf8");
 ok("16 supervisor-session actually calls acquireSingleton (wired, not dead code)", /acquireSingleton\(/.test(supSession));
 ok("17 supervisor-session exits when singleton not acquired", /!acq\.acquired/.test(supSession) && /process\.exit\(0\)/.test(supSession));
 ok("18 supervisor-session refreshes lock heartbeat", /last_heartbeat = nowS\(\)/.test(supSession));
@@ -80,6 +79,28 @@ writeFileSync(lp2, ""); // corrupt/empty
 const rC = acquireSingleton(lp2, { pid: 1003, run_id: "C", nonce: "c", exact_sha: "s", deadline: 99 }, { now: 6000, pid_alive: false, stale_interval: 120 });
 ok("24 corrupt/empty lock is recovered (not a permanent wedge)", rC.acquired === true && rC.lock.pid === 1003);
 rmSync(t2, { recursive: true, force: true });
+
+// ---- Atomic-creation regression (CHECK3 finding): the lock must NEVER appear
+// empty/partial to a reader (temp+link), so a concurrent corrupt-recoverer
+// cannot observe an in-creation empty lock and steal it. ----
+const t3 = mkdtempSync(join(tmpdir(), "atom-"));
+const lp3 = join(t3, "s.lock");
+const rD = acquireSingleton(lp3, { pid: 700, run_id: "D", nonce: "d", exact_sha: "s", deadline: 9 }, { now: 1000 });
+const onDisk = JSON.parse(readFileSync(lp3, "utf8")); // must parse fully immediately (never empty)
+ok("25 fresh lock is published atomically (fully-formed, never empty)", rD.acquired === true && onDisk.pid === 700 && onDisk.last_heartbeat === 1000);
+// second concurrent fresh create against the existing (healthy) lock -> rejected, never steals
+const rE = acquireSingleton(lp3, { pid: 701, run_id: "E", nonce: "e" }, { now: 1001, pid_alive: true, stale_interval: 120 });
+ok("26 second create rejected; original lock intact", rE.acquired === false && JSON.parse(readFileSync(lp3, "utf8")).pid === 700);
+// no leftover temp files from atomic creation
+ok("27 no leftover .tmp files from atomic create", !_rd(t3).some((f) => f.endsWith(".tmp")));
+rmSync(t3, { recursive: true, force: true });
+
+// The in-creation empty window is closed BY CONSTRUCTION: atomicCreate publishes
+// via link(), so a reader observing the lock at any instant sees either no file
+// or a fully-formed one — never empty. This asserts the mechanism (temp+link),
+// since the microsecond race itself is not deterministically reproducible.
+const srcSing = readFileSync(new URL("./singleton.mjs", import.meta.url), "utf8");
+ok("28 lock creation is atomic (link-based, not empty-then-write)", /linkSync\(/.test(srcSing) && !/openSync\([^)]*"wx"/.test(srcSing));
 
 rmSync(tmp, { recursive: true, force: true });
 console.log(`\nPAES SINGLETON SELFTEST: ${n - fails.length}/${n} passed`);
