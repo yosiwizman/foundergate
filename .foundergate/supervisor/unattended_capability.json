@@ -3,7 +3,7 @@
   "recorded_at": "2026-07-18T05:53:21Z",
   "executable": "/Users/yosiwizman/.local/bin/claude -> versions/2.1.212",
   "mechanism": "claude -p <prompt> --output-format json --allowedTools <allowlist>",
-  "result": "UNATTENDED_EXECUTOR: PROVEN",
+  "result": "UNATTENDED_EXECUTOR: AUTHENTICATION_NOT_AVAILABLE",
   "evidence": {
     "exit_code": 0,
     "elapsed_s": 3,
@@ -28,5 +28,17 @@
       "touches_boundary": "NO SILENT POLICY WEAKENING"
     }
   ],
-  "credential_safety": "SAFE (no copy/serialize/log; existing auth only)"
+  "credential_safety": "SAFE (no copy/serialize/log; existing auth only)",
+  "correction": {
+    "prior_claim": "UNATTENDED_EXECUTOR: PROVEN was INCOMPLETE \u2014 it tested the interactive-session environment, which inherits keychain/OAuth access.",
+    "launchd_clean_env_result": "claude -p returns 'Not logged in \u00b7 Please run /login' (exit 1) in a launchd-clean environment (env -i HOME PATH).",
+    "root_cause": "Claude Code OAuth credentials are in the macOS keychain; a user-level launchd background process cannot access them without keychain grant/unlock.",
+    "forbidden_workarounds": [
+      "copy/serialize the credential (DENIED)",
+      "set ANTHROPIC_API_KEY / new paid API account (DENIED)"
+    ],
+    "conclusion": "Persistent unattended execution under launchd is NOT possible with the current auth model under the founder's constraints.",
+    "verified_live": true,
+    "evidence": "launchd kickstart -> supervisor RAN under launchd (heartbeat+events written) but worker claude -p exited 1; reproduced with env -i -> 'Not logged in'"
+  }
 }

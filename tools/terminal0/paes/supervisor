@@ -69,7 +69,8 @@ function runWorker(job, cycle) {
   const base = ["-p", "--output-format", "json", "--allowedTools", WORKER_ALLOWLIST];
   const args = sess && sess.session_id ? ["--resume", sess.session_id, ...base, prompt] : [...base, prompt];
   ledger({ evt: "worker_invocation", job_id: job.job_id, mode: sess ? "resume" : "fresh", allowlist: WORKER_ALLOWLIST });
-  const r = spawnSync("claude", args, { cwd: REPO, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
+  const CLAUDE = process.env.FG_CLAUDE_BIN || "claude";
+  const r = spawnSync(CLAUDE, args, { cwd: REPO, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
   let cost = null, sid = null, ok = false;
   try { const out = JSON.parse((r.stdout || "").trim().split("\n").pop()); cost = out.total_cost_usd; sid = out.session_id; ok = out.subtype === "success" && !out.is_error; } catch { /* */ }
   if (sid) wj(`worker-results/${job.job_id}.session`, { session_id: sid });

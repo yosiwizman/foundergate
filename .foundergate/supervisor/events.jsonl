@@ -1,0 +1,5 @@
+{"evt":"supervisor_start","pid":67776,"deadline":1784356356,"allowlist":"Read Edit Write Grep Glob Bash(git add:*) Bash(git commit:*) Bash(git status:*) Bash(git diff:*) Bash(node scripts/run-selftests.mjs)","ts":1784356056}
+{"evt":"draining","ds":"DRAINING","ts":1784356056}
+{"evt":"supervisor_start","pid":68017,"deadline":1784363329,"allowlist":"Read Edit Write Grep Glob Bash(git add:*) Bash(git commit:*) Bash(git status:*) Bash(git diff:*) Bash(node scripts/run-selftests.mjs)","ts":1784356129}
+{"evt":"worker_invocation","job_id":"qual1","mode":"fresh","allowlist":"Read Edit Write Grep Glob Bash(git add:*) Bash(git commit:*) Bash(git status:*) Bash(git diff:*) Bash(node scripts/run-selftests.mjs)","ts":1784356129}
+{"evt":"worker_result","job_id":"qual1","exit":1,"success":false,"cost_usd":null,"session_id":null,"ts":1784356132}
