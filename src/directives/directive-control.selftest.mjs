@@ -3,6 +3,7 @@ import {
   sha256, verifyCapture, validateDirectiveRecord, canRun, validateTransition,
   safeToCompact, safeToStop, resolveDependencies, enqueueIdempotent,
   classifyHistorical, DIRECTIVE_REQUIRED, isTerminal,
+  supersessionValid, detectDroppedDirectives,
 } from "./directive-control.mjs";
 
 let n = 0; const fails = [];
@@ -31,12 +32,12 @@ ok("09 dependency missing -> waiting", resolveDependencies({ dependencies: ["arl
 ok("10 dependency satisfied -> ready", resolveDependencies({ dependencies: ["arlc-1"] }, ["arlc-1"]).state === "READY");
 
 // 11 silently dropped; 12 duplicate directive
-ok("11 dropped directive detectable (required fields enforce presence)", DIRECTIVE_REQUIRED.includes("directive_id"));
+ok("11 dropped directive detected (in index, absent from queue)", detectDroppedDirectives(["a", "b"], ["a"]).dropped.includes("b") && detectDroppedDirectives(["a"], ["a"]).ok === true);
 const q = enqueueIdempotent(["a"], "b");
 ok("12 duplicate directive idempotent", enqueueIdempotent(q.queue, "b").idempotent === true);
 
 // 13 supersession without record
-ok("13 supersession requires superseded_by field present", validateDirectiveRecord({}).problems.length > 0);
+ok("13 SUPERSEDED without superseded_by rejected; with record accepted", supersessionValid({ current_state: "SUPERSEDED" }).valid === false && supersessionValid({ current_state: "SUPERSEDED", superseded_by: "dcl-1" }).valid === true);
 
 // 14 compaction before capture unsafe; 15 safe after capture
 ok("14 compaction before capture -> COMPACTION_UNSAFE", safeToCompact([{ directive_id: "d", current_state: "RECEIVED", digest_verified: false, queue_state_exists: false, recovery_state_exists: false, next_safe_action: null }]).verdict === "COMPACTION_UNSAFE");
@@ -67,7 +68,7 @@ ok("25 not found -> NOT_PROVEN (no reconstruction)", classifyHistorical(false, f
 
 // 26 current directive self-capture; 27 transcript/disk digest equality
 ok("26 self-capture verifies", verifyCapture(BODY, REC).verified === true);
-ok("27 transcript==disk digest equality", sha256(BODY) === REC.sha256);
+ok("27 digest equality is discriminating (matches identical, rejects altered)", sha256(BODY) === REC.sha256 && sha256(BODY + "x") !== REC.sha256);
 
 // 28 immutable prompt-body enforcement
 ok("28 body modified after capture flagged", validateDirectiveRecord({ body_modified_after_capture: true }).problems.some((p) => p.includes("modified after capture")));

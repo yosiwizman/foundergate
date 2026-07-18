@@ -129,6 +129,23 @@ export function enqueueIdempotent(queue, directiveId) {
   return { queue: [...queue, directiveId], appended: true };
 }
 
+// A directive in SUPERSEDED state must name what superseded it; and a
+// reconciliation must detect a directive present in the index but dropped from
+// the queue (a silently-dropped directive).
+export function supersessionValid(rec) {
+  if (rec.current_state === "SUPERSEDED" && !rec.superseded_by) {
+    return { valid: false, problem: "SUPERSEDED without superseded_by record" };
+  }
+  return { valid: true };
+}
+
+export function detectDroppedDirectives(indexIds, queueIds, terminalIds = []) {
+  // Any active (non-terminal) directive in the index but absent from the queue
+  // is silently dropped.
+  const dropped = indexIds.filter((id) => !queueIds.includes(id) && !terminalIds.includes(id));
+  return { dropped, ok: dropped.length === 0 };
+}
+
 // ---- Historical classification ----
 export function classifyHistorical(found, wasQueuedOnDisk) {
   if (!found) return "NOT_PROVEN";
