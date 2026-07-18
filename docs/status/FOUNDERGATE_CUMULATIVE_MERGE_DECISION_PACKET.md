@@ -1,0 +1,15 @@
+# FounderGate Cumulative Merge Decision Packet (STACK-1D)
+- **Merging PR:** #162 (single cumulative PR), base **main**, kept draft.
+- **Exact current head:** `5974d8774160db63605a4d8a0a9dc0b86117278f` (re-resolve at authorized merge). **Base:** main `e1ca1989d2397297a450893f7890dbe7fc21e494`.
+- **Merge method:** MERGE COMMIT (preserves exact phase + M1 evidence SHAs in main ancestry).
+- **Included earlier PRs:** #151–#161 (all ancestors; superseded).
+- **Founder acceptance:** ACCEPT WITNESS CANDIDATE (Phase 7.1) — sealed.
+- **M1 evidence commit:** `68cb1fa76c12fc57507d6dc36389c85f2c48f17a` (evaluated `b9af1def`) — merged non-fast-forward, evidence-only, preserved in ancestry.
+- **M1 applicability:** ACCEPTED_VB2_STAGE_ONLY (339/340 governed byte-identical; only change = package.json devDeps).
+- **Pro-side M1 audit:** CLEAN-WITH-ANNOTATED-METADATA-DEFECTS. **Active-window embargo:** CLEARED. **MAIN_MERGE:** NOT_AUTHORIZED (founder gate).
+- **Bounded integration correction:** evidence-integrity guard now exempts empty .log (teeth intact, mutation-proven); founder-witnessed product byte-identical to a64ebcd.
+- **Exact-SHA CI:** required green on `5974d8774160db63605a4d8a0a9dc0b86117278f` (see CI record). **Checker/Advisor:** STACK1D (records below).
+- **Limitations:** cumulative head not itself 8h-soaked (not required); OpenSandbox candidate-only; build/tests/security/production NOT proven.
+- **Rollback:** single merge-commit revert on main.
+- **Cleanup:** per POST_MERGE_CLEANUP_PLAN (only after authorized+verified merge).
+- **READY_FOR_FOUNDER_MERGE_GATE:** all criteria satisfied (acceptance sealed; M1 PASS audited; active window closed; applicability known; no exact-head soak required; M1 evidence commit preserved; ancestry complete; cumulative diff clean; exact-head CI green; checker+Advisor). **The one remaining action is the founder's main-merge authorization.**
