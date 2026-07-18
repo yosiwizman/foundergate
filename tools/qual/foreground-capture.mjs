@@ -11,7 +11,7 @@ import { join } from "node:path";
 const RUN_ID = "sc-15f0cfc5";
 const CAND = process.env.FG_CAND || "unknown";
 const PORT = "4700";
-const OUT = "docs/testing/evidence/foreground-founder-surface";
+const OUT = process.env.FG_OUT || "docs/testing/evidence/foreground-founder-surface";
 for (const d of ["screenshots", "video", "trace", "downloads"]) mkdirSync(join(OUT, d), { recursive: true });
 const PACE = 1200;
 const osa = (s) => { try { return execFileSync("osascript", ["-e", s], { encoding: "utf8" }).trim(); } catch (e) { return "ERR:" + String(e.message).split("\n")[0]; } };

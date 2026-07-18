@@ -1,0 +1,254 @@
+{
+  "lane_id": "ffs1_final",
+  "candidate_sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+  "policy_version": "1.1.0",
+  "policy_digest": "e1fbb8f08bb6cc7cbc3ec24b9da85aacb4a4b716be7f1d73e2170cadb572d7d3",
+  "impact_classes": [
+    "UI_AFFECTING"
+  ],
+  "tests": [
+    {
+      "class": "foreground_founder_surface",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/foreground-founder-surface-final/RESULT.json",
+          "sha256": "9f6b00fc37628a01353787396bdd4316f87180d63be961478110fe14350d10d0"
+        }
+      ]
+    },
+    {
+      "class": "actual_playwright",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/phase7-1-q/headed/trace.zip",
+          "sha256": "ef9c98b269611456f0d8f2b0cfab6e1649bc015df58cd4cc6c4400ab91e62d97"
+        }
+      ]
+    },
+    {
+      "class": "headed_local_browser",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/phase7-1-q/headed/trace.zip",
+          "sha256": "ef9c98b269611456f0d8f2b0cfab6e1649bc015df58cd4cc6c4400ab91e62d97"
+        }
+      ]
+    },
+    {
+      "class": "screenshots",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/foreground-founder-surface/screenshots/05-evidence-pack-state.png",
+          "sha256": "91da9988e13812df5c6508531b483921c51f9da1b21da0b6bf58dbab66f59900"
+        }
+      ]
+    },
+    {
+      "class": "trace",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/foreground-founder-surface/trace/trace.zip",
+          "sha256": "40cadef651b183dbc74c801fc85902045ad4101085f0be4f58c03a99d5e2c833"
+        }
+      ]
+    },
+    {
+      "class": "video_acceptance_critical",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/foreground-founder-surface/video/page@75874c220f7b52af91bb664a96dbd614.webm",
+          "sha256": "c445430bfb76878f72f08892c3373ebbf1a8bf842bb75bf4095574cf6a4d05fe"
+        }
+      ]
+    },
+    {
+      "class": "console_log",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/foreground-founder-surface/console.jsonl",
+          "sha256": "c4d852e14523812ae62a105d54c92320ccdff51970946eabd8c662adab6073c3"
+        }
+      ]
+    },
+    {
+      "class": "network_log",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/foreground-founder-surface/network.jsonl",
+          "sha256": "ea3211ff12b5fb9820f323640c3c1fdca7de976d3554d6640344c3fbb59f15d3"
+        }
+      ]
+    },
+    {
+      "class": "page_error_log",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/foreground-founder-surface/page-errors.jsonl",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "class": "initial_neutral_state",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/foreground-founder-surface/screenshots/03-canonical-neutral-page.png",
+          "sha256": "21a9cf46711da41c753ddfaae04f4e29d93c3ee3a9e610a736786d38fd4f3087"
+        }
+      ]
+    },
+    {
+      "class": "stale_state",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/phase7-1-q/cache-a11y/cache_a11y_result.json",
+          "sha256": "536300c489b9b980da824ae57760c37632ad84cd6d6c423e90a3aabcadb03e73"
+        }
+      ]
+    },
+    {
+      "class": "cache_storage_service_worker",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/phase7-1-q/cache-a11y/cache_a11y_result.json",
+          "sha256": "536300c489b9b980da824ae57760c37632ad84cd6d6c423e90a3aabcadb03e73"
+        }
+      ]
+    },
+    {
+      "class": "responsive_mobile",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/phase7-1-q/CI_EXACT_SHA.json",
+          "sha256": "2833ac23c59011810e7c5433c6cdc2977c08940a0fbca93f8e77bcefba53b3d3"
+        }
+      ]
+    },
+    {
+      "class": "keyboard_only",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/phase7-1-q/cache-a11y/cache_a11y_result.json",
+          "sha256": "536300c489b9b980da824ae57760c37632ad84cd6d6c423e90a3aabcadb03e73"
+        }
+      ]
+    },
+    {
+      "class": "focus_behavior",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/phase7-1-q/cache-a11y/cache_a11y_result.json",
+          "sha256": "536300c489b9b980da824ae57760c37632ad84cd6d6c423e90a3aabcadb03e73"
+        }
+      ]
+    },
+    {
+      "class": "automated_accessibility",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/phase7-1-q/CI_EXACT_SHA.json",
+          "sha256": "2833ac23c59011810e7c5433c6cdc2977c08940a0fbca93f8e77bcefba53b3d3"
+        }
+      ]
+    },
+    {
+      "class": "zoom_200",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/phase7-1-q/cache-a11y/cache_a11y_result.json",
+          "sha256": "536300c489b9b980da824ae57760c37632ad84cd6d6c423e90a3aabcadb03e73"
+        }
+      ]
+    },
+    {
+      "class": "reduced_motion_where_applicable",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/phase7-1-q/cache-a11y/cache_a11y_result.json",
+          "sha256": "536300c489b9b980da824ae57760c37632ad84cd6d6c423e90a3aabcadb03e73"
+        }
+      ]
+    },
+    {
+      "class": "headless_exact_sha_ci",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "docs/testing/evidence/phase7-1-q/CI_EXACT_SHA.json",
+          "sha256": "2833ac23c59011810e7c5433c6cdc2977c08940a0fbca93f8e77bcefba53b3d3"
+        }
+      ]
+    },
+    {
+      "class": "syntax_unit",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "tools/qual/qualification.selftest.mjs",
+          "sha256": "9a63f83bad3249be1b43c4dee8f7857e0f9e9e1667d6b2ebdb3b8f3e8177af23"
+        }
+      ]
+    },
+    {
+      "class": "false_green",
+      "status": "PASS",
+      "sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+      "evidence": [
+        {
+          "path": "src/safety_check/completion-invariant.selftest.mjs",
+          "sha256": "b36e76a110247f0835273f819933cafc8f17a8327f37b1e570b45f59a696dcd8"
+        }
+      ]
+    }
+  ],
+  "not_applicable": [],
+  "checker": {
+    "verdict": "PENDING"
+  },
+  "advisor": {
+    "present": false
+  },
+  "founder_witness_or_signature": false,
+  "terminal0_decision_packet": true,
+  "remaining_limitations": [
+    "Evidence Pack recovered deterministically from sealed evidence (no new run); foreground run replayed the existing run sc-15f0cfc5"
+  ]
+}
