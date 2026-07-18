@@ -60,6 +60,12 @@ ok("20 launcher tears down supervisor on qualification failure", /kill "\$SUP_PI
 const failBranch = starter.slice(starter.indexOf("Live handoff qualification failed"));
 ok("21 failure branch never calls consume-and-start", !failBranch.includes("consume-and-start"));
 ok("21b launcher teardown is owner-checked (no blind rm of a peer lock)", /l\.pid===Number\(process\.argv\[2\]\)/.test(starter));
+// ADVISOR finding: consume must not self-compare exact_sha (a no-op) and must
+// record the actual activated SHA; the launcher must pass it.
+const consume = readFileSync(pj(HERE, "../../tools/terminal0/paes/consume-and-start.mjs"), "utf8");
+ok("21c consume-and-start does NOT self-compare exact_sha", !/exact_sha:\s*res\.exact_sha/.test(consume));
+ok("21d consume-and-start records the activated SHA", /activated_sha:\s*activatedSha/.test(consume));
+ok("21e launcher passes live HEAD to consume-and-start", /consume-and-start\.mjs".*rev-parse HEAD/.test(starter));
 
 // ---- Recovery-race + corrupt-lock regressions (RECHECKER Findings A/B) ----
 const t2 = mkdtempSync(join(tmpdir(), "sing2-"));
