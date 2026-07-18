@@ -42,9 +42,22 @@ export function validateTransition(t) {
   // through RUNNING -> READY_TO_RUN -> PLAN_CHECKED, no run can reach PASS
   // without traversing the separation-of-duties-guarded states. This closes the
   // "skip PLAN_CHECKED/RUNNING and go straight to PASS with a solo actor" bypass.
+  // Every entry into RUNNING must trace back to PLAN_CHECKED: the only non-RUNNING
+  // predecessor of RUNNING is READY_TO_RUN (<-PLAN_CHECKED); ROUTINE_CORRECTION and
+  // RECOVERING are post-run re-entries constrained to come from RUNNING itself, so
+  // they cannot be used as an unchecked back door into RUNNING/PASS.
+  // Closure invariant: every predecessor listed here traces back to PLAN_CHECKED,
+  // so no path reaches RUNNING (and thus PASS) without traversing the
+  // builder!=checker gate at PLAN_CHECKED and the checker!=executor gate at RUNNING.
+  // CHECKER_FINDINGS/BLOCKED are only reachable from PLAN_CHECKED or RUNNING, so
+  // the correction/recovery re-entries they feed cannot bypass PLAN_CHECKED.
   const STATE_PREDECESSORS = {
     PLAN_CHECKED: ["CHECKER_REQUIRED", "PLAN_COMPILED"],
     READY_TO_RUN: ["PLAN_CHECKED"],
+    CHECKER_FINDINGS: ["PLAN_CHECKED", "RUNNING"],
+    BLOCKED: ["RUNNING", "READY_TO_RUN"],
+    ROUTINE_CORRECTION: ["RUNNING", "CHECKER_FINDINGS"],
+    RECOVERING: ["RUNNING", "BLOCKED"],
     RUNNING: ["READY_TO_RUN", "ROUTINE_CORRECTION", "RECOVERING"],
     EVIDENCE_SEALING: ["RUNNING"],
     ADVISOR_REQUIRED: ["EVIDENCE_SEALING"],

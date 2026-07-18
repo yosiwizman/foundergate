@@ -179,6 +179,15 @@ ok("R2 RUNNING->EVIDENCE_SEALING valid", validateTransition(mkT("RUNNING", "EVID
 ok("R2 READY_TO_RUN requires PLAN_CHECKED prior", validateTransition(mkT("BLUEPRINT_ACCEPTED", "READY_TO_RUN")).valid === false);
 ok("R2 ADVISOR_REQUIRED must come from EVIDENCE_SEALING", validateTransition(mkT("CHECKER_REQUIRED", "ADVISOR_REQUIRED")).valid === false);
 ok("R2 solo-actor cannot reach RUNNING (checker_actor==actor still blocked)", validateTransition(mkT("READY_TO_RUN", "RUNNING", { checker_actor: "SOLO" })).valid === false);
+// R1b: substring-embedding sensitive data must not slip through the allowlist (token-exact).
+for (const dc of ["genetic_test_results", "hiv_test_results", "public_health_records", "republican_affiliation", "drug_test_results", "device_id"]) {
+  ok(`R1b embedded-sensitive '${dc}' -> founder gate`, mk({ data_classes: [dc] }).true_founder_gates.includes("FR-Q"));
+}
+ok("R1b multi-token allowlisted 'synthetic_fixture' operational", classifyRequirementGate({ data_classes: ["synthetic_fixture"] }, null) === "OPERATIONAL_AUTONOMOUS");
+// R2b: unchecked back-door into RUNNING via ROUTINE_CORRECTION/RECOVERING is closed.
+ok("R2b PLAN_COMPILED->ROUTINE_CORRECTION rejected (must come from RUNNING)", validateTransition(mkT("PLAN_COMPILED", "ROUTINE_CORRECTION")).valid === false);
+ok("R2b BLUEPRINT_ACCEPTED->RECOVERING rejected (must come from RUNNING)", validateTransition(mkT("BLUEPRINT_ACCEPTED", "RECOVERING")).valid === false);
+ok("R2b RUNNING->ROUTINE_CORRECTION valid (legit post-run)", validateTransition(mkT("RUNNING", "ROUTINE_CORRECTION")).valid === true);
 
 rmSync(tmp, { recursive: true, force: true });
 console.log(`\nARE-1 SELFTEST: ${n - fails.length}/${n} passed`);

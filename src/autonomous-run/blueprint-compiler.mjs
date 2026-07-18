@@ -37,8 +37,15 @@ export function classifyRequirementGate(req, arlcClasses) {
   const providers = (req.provider_needs || []).map((s) => String(s).toLowerCase());
   const data = (req.data_classes || []).map((s) => String(s).toLowerCase());
   const hasAuthorityNeed = external.length > 0 || providers.length > 0;
-  // Fail closed: any data class not on the non-sensitive allowlist is sensitive.
-  const sensitiveData = data.some((d) => !KNOWN_NONSENSITIVE_DATA.some((k) => d.includes(k)));
+  // Fail closed with TOKEN-EXACT matching (not substring): a data class is
+  // non-sensitive only if EVERY one of its tokens is an allowlist token. So
+  // "genetic_test_results" (has "genetic") and "public_health_records" (has
+  // "health") are sensitive; only "synthetic_fixture"/"public"/"test" are routine.
+  const nonSensitive = (d) => {
+    const toks = d.split(/[^a-z0-9]+/).filter(Boolean);
+    return toks.length > 0 && toks.every((t) => KNOWN_NONSENSITIVE_DATA.includes(t));
+  };
+  const sensitiveData = data.some((d) => !nonSensitive(d));
 
   // Delegate: derive founder-gate keywords from ARLC's TRUE_FOUNDER_GATE examples
   // (so the classification tracks the ARLC policy, not a private copy).
