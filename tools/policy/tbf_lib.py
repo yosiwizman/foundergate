@@ -33,6 +33,7 @@ UI_FLOOR = {
     "actual_playwright", "headed_local_browser", "headless_exact_sha_ci", "screenshots",
     "automated_accessibility", "initial_neutral_state", "false_green", "independent_checker",
     "final_advisor_before_acceptance_witness",
+    "foreground_founder_surface",  # FFS-1: a real foreground-visible founder-browser run is required
 }
 RUNTIME_FLOOR = {"unit", "crash_recovery", "teardown", "cleanup", "exact_version_proof", "independent_checker"}
 GATE_FLOOR = {"unauthorized_path", "mutation_gate_fires", "independent_checker"}
@@ -238,6 +239,12 @@ def derive_witness_readiness(lane: dict, manifest: dict, policy: dict, repo_root
     if "final_advisor_before_acceptance_witness" in reqset:
         if not (manifest.get("advisor", {}) or {}).get("present"):
             return "MACHINE_VERIFICATION_BLOCKED", ["final Advisor audit missing"]
+    # FFS-1: a founder-facing UI lane cannot be READY without a VERIFIED foreground-founder-surface run.
+    if "foreground_founder_surface" in reqset:
+        import foreground_validate
+        ok_fg, fg_err = foreground_validate.verify_from_manifest(manifest, repo_root)
+        if not ok_fg:
+            return "MACHINE_VERIFICATION_BLOCKED", fg_err
     # a manifest may NOT self-declare readiness; if it tries and it disagrees, reject
     claimed = manifest.get("declared_witness_readiness")
     if claimed and claimed != "READY_FOR_HUMAN_PERCEPTION_WITNESS":

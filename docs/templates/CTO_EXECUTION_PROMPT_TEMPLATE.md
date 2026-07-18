@@ -16,3 +16,9 @@ Every future CTO/builder lane MUST begin by enforcing the active Test-Before-Fou
 8. Before merge readiness, run `tools/policy/validate_merge_readiness.py`.
 
 The full constitution need not be pasted; load and enforce the authoritative disk policy.
+
+## FFS-1 foreground obligation (founder-facing UI lanes)
+Additionally load `.foundergate/machine_profiles/mac-mini-pro-founder-surface.json`, derive the
+`foreground_founder_surface` obligation, run internal headless tests first, then run ONE final
+foreground-visible founder-surface test (real launcher + Google Chrome + DOM). Block founder return if
+that final test is missing or failed with: `TBF-HOLD: FOREGROUND-FOUNDER-SURFACE-NOT-VERIFIED`.

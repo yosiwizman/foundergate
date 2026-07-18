@@ -76,8 +76,47 @@ export function readRun(id) {
   // teardown_complete gate: only true when destroy stage done
   const teardown_complete = stages.some((s)=>s.name==="destroying disposable runtime" && s.status==="DONE");
   const evidence_pack = existsSync(join(dir, "EVIDENCE_PACK", "evidence-pack.zip"));
-  return { run_id: id, repository_url: req?.repository_url || FIXTURE, status, stages, current_stage: last ? { n: last.stage, name: last.name, status: last.status } : null,
-    result: status === "COMPLETE" ? result : null, teardown_complete, evidence_pack_ready: evidence_pack };
+  // COMPLETION INVARIANT (FFS-1): a run that requires an Evidence Pack may not present as an
+  // acceptable completed witness candidate while the pack is UNKNOWN/MISSING/FAILED/CORRUPT/STALE.
+  // The pack is VERIFIED only when its zip exists AND its sha256 manifest recomputes.
+  const packVerified = verifyPack(join(dir, "EVIDENCE_PACK"));
+  const packStage = stages.filter((s)=>s.name==="generating Evidence Pack").pop();
+  const requiresPack = !!packStage; // this run reached the pack-generation stage
+  let witness_state, pack_message;
+  if (status === "COMPLETE" && requiresPack && !packVerified) {
+    witness_state = "COMPLETE_PACK_FAILED";
+    pack_message = "The safety check finished, but its Evidence Pack was not produced. This run cannot be accepted.";
+  } else if (status === "COMPLETE" && packVerified) {
+    witness_state = "COMPLETE_WITH_VERIFIED_EVIDENCE_PACK";
+  } else if (status === "FAILED") {
+    witness_state = "FAILED";
+  } else {
+    witness_state = "RUNNING";
+  }
+  // acceptable witness candidate ONLY when the pack is verified
+  const acceptable = witness_state === "COMPLETE_WITH_VERIFIED_EVIDENCE_PACK";
+  return { run_id: id, repository_url: req?.repository_url || FIXTURE, status, witness_state, stages,
+    current_stage: last ? { n: last.stage, name: last.name, status: last.status } : null,
+    result: acceptable ? result : null, teardown_complete,
+    evidence_pack_ready: evidence_pack && packVerified, evidence_pack_verified: packVerified,
+    acceptable, pack_message };
+}
+
+// Verify a pack directory against its own sha256 manifest (fail-closed: any mismatch/missing => false).
+function verifyPack(packDir) {
+  const manifest = join(packDir, "evidence-pack.sha256");
+  const zip = join(packDir, "evidence-pack.zip");
+  if (!existsSync(manifest) || !existsSync(zip)) return false;
+  try {
+    for (const line of readFileSync(manifest, "utf8").split("\n")) {
+      const m = line.trim(); if (!m) continue;
+      const [hash, name] = m.split(/\s+/);
+      const f = join(packDir, name);
+      if (!existsSync(f)) return false;
+      if (createHash("sha256").update(readFileSync(f)).digest("hex") !== hash) return false;
+    }
+    return true;
+  } catch { return false; }
 }
 
 function activeRun() {
@@ -135,7 +174,7 @@ export function createSafetyServer() {
       if (sub === "/evidence") return jres(res, 200, { run_id: id, result: r.result, evidence_pack_ready: r.evidence_pack_ready });
       if (sub === "/evidence-pack") {
         const zip = join(runDir(id), "EVIDENCE_PACK", "evidence-pack.zip");
-        if (r.status !== "COMPLETE" || !r.teardown_complete || !existsSync(zip)) return jres(res, 200, { status: "UNKNOWN", reason: "Evidence Pack not available until runtime + teardown complete" });
+        if (r.status !== "COMPLETE" || !r.teardown_complete || !r.evidence_pack_verified || !existsSync(zip)) return jres(res, 200, { status: "UNKNOWN", reason: "Evidence Pack not available (must be generated + hash-verified after runtime + teardown)" });
         res.writeHead(200, { "content-type": MIME[".zip"], "content-disposition": `attachment; filename="evidence-pack-${id}.zip"` });
         return res.end(readFileSync(zip));
       }

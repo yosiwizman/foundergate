@@ -8,6 +8,7 @@ on:
     branches:
       - policy/test-before-founder-tbf1
       - qualification/phase7-1-canonical-ui-tbf
+      - correction/ffs1-foreground-founder-surface
   pull_request:
     branches:
       - integration/founder-safety-check-evidence-pack-phase7-1
@@ -34,4 +35,4 @@ jobs:
       - name: Validator selftests (30) + mutation proofs (11)
         run: |
           cd tools/policy
-          python3 -W ignore::ResourceWarning -m unittest test_tbf_policy test_tbf_mutation -v
+          python3 -W ignore::ResourceWarning -m unittest test_tbf_policy test_tbf_mutation test_ffs_mutation -v

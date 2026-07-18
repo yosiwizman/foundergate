@@ -1,0 +1,4 @@
+{"step":"canonical-page-frontmost","frontmost":"Google Chrome","chrome_window_count":"1","bounds":"100, 80, 1320, 940"}
+{"step":"existing-run-loaded","frontmost":"Google Chrome","chrome_window_count":"1","bounds":"100, 80, 1320, 940"}
+{"step":"refreshed-state","frontmost":"Google Chrome","chrome_window_count":"1","bounds":"100, 80, 1320, 940"}
+{"step":"final","frontmost":"Google Chrome","chrome_window_count":"1","bounds":"100, 80, 1320, 940"}

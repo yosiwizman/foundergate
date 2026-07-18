@@ -1,77 +1,165 @@
 {
   "policy_id": "test-before-founder",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Test Before Founder (TBF-1)",
   "evaluation_class": true,
   "unknown_behavior": "FAIL_CLOSED",
   "stale_behavior": "NOT_CURRENT",
   "core_law": "Before the founder is asked to witness, accept, sign, review or interact with a change, Terminal-0 must exhaust every applicable machine-verifiable check and seal the evidence to disk. Missing required evidence blocks founder readiness. UNKNOWN is not PASS. STALE is not current. A builder's statement is not independent verification. Founder involvement is reserved for human perception, usability judgment, signatures, legal or commercial authority, live-action authorization and other decisions that cannot be mechanically derived.",
   "impact_classes": [
-    "DOCUMENTATION_ONLY", "UI_AFFECTING", "API_AFFECTING", "RUNTIME_AFFECTING",
-    "DATA_AFFECTING", "RECOVERY_AFFECTING", "SECURITY_BOUNDARY_AFFECTING",
-    "GATE_OR_AUTHORITY_AFFECTING", "DEPENDENCY_AFFECTING", "PROVIDER_AFFECTING",
-    "LIVE_ACTION_AFFECTING", "PRODUCTION_AFFECTING", "UNKNOWN"
+    "DOCUMENTATION_ONLY",
+    "UI_AFFECTING",
+    "API_AFFECTING",
+    "RUNTIME_AFFECTING",
+    "DATA_AFFECTING",
+    "RECOVERY_AFFECTING",
+    "SECURITY_BOUNDARY_AFFECTING",
+    "GATE_OR_AUTHORITY_AFFECTING",
+    "DEPENDENCY_AFFECTING",
+    "PROVIDER_AFFECTING",
+    "LIVE_ACTION_AFFECTING",
+    "PRODUCTION_AFFECTING",
+    "UNKNOWN"
   ],
   "impact_matrix": {
     "DOCUMENTATION_ONLY": [
-      "link_path_validation", "schema_validation_where_applicable",
-      "claim_register_comparison", "protected_authority_check",
+      "link_path_validation",
+      "schema_validation_where_applicable",
+      "claim_register_comparison",
+      "protected_authority_check",
       "independent_doc_review_if_governance"
     ],
     "UI_AFFECTING": [
-      "syntax_unit", "actual_playwright", "headed_local_browser", "headless_exact_sha_ci",
-      "screenshots", "video_acceptance_critical", "trace", "console_log", "network_log",
-      "page_error_log", "responsive_mobile", "keyboard_only", "focus_behavior",
-      "automated_accessibility", "zoom_200", "reduced_motion_where_applicable",
-      "initial_neutral_state", "stale_state", "cache_storage_service_worker",
-      "false_green", "independent_checker", "final_advisor_before_acceptance_witness"
+      "syntax_unit",
+      "actual_playwright",
+      "headed_local_browser",
+      "headless_exact_sha_ci",
+      "screenshots",
+      "video_acceptance_critical",
+      "trace",
+      "console_log",
+      "network_log",
+      "page_error_log",
+      "responsive_mobile",
+      "keyboard_only",
+      "focus_behavior",
+      "automated_accessibility",
+      "zoom_200",
+      "reduced_motion_where_applicable",
+      "initial_neutral_state",
+      "stale_state",
+      "cache_storage_service_worker",
+      "false_green",
+      "foreground_founder_surface",
+      "independent_checker",
+      "final_advisor_before_acceptance_witness"
     ],
     "API_AFFECTING": [
-      "contract_tests", "schema_validation", "authz_where_applicable", "negative_requests",
-      "malformed_input", "idempotency_duplicate", "timeout_behavior", "evidence_binding"
+      "contract_tests",
+      "schema_validation",
+      "authz_where_applicable",
+      "negative_requests",
+      "malformed_input",
+      "idempotency_duplicate",
+      "timeout_behavior",
+      "evidence_binding"
     ],
     "RUNTIME_AFFECTING": [
-      "unit", "integration", "bounded_live_runtime_where_authorized", "negative",
-      "fault_injection", "crash_recovery", "rollback", "cleanup", "teardown",
-      "orphan_detection", "resource_limits", "exact_version_proof", "independent_checker"
+      "unit",
+      "integration",
+      "bounded_live_runtime_where_authorized",
+      "negative",
+      "fault_injection",
+      "crash_recovery",
+      "rollback",
+      "cleanup",
+      "teardown",
+      "orphan_detection",
+      "resource_limits",
+      "exact_version_proof",
+      "independent_checker"
     ],
     "DATA_AFFECTING": [
-      "migration", "backup_restore_where_applicable", "corruption", "schema_compatibility",
-      "rollback", "deletion_proof", "privacy_classification"
+      "migration",
+      "backup_restore_where_applicable",
+      "corruption",
+      "schema_compatibility",
+      "rollback",
+      "deletion_proof",
+      "privacy_classification"
     ],
     "RECOVERY_AFFECTING": [
-      "crash_recovery", "rollback", "cleanup", "teardown", "orphan_detection", "unit"
+      "crash_recovery",
+      "rollback",
+      "cleanup",
+      "teardown",
+      "orphan_detection",
+      "unit"
     ],
     "SECURITY_BOUNDARY_AFFECTING": [
-      "deny_path", "bypass_attempts", "mutation", "secret_scan", "permission",
-      "isolation", "independent_adversarial_checker"
+      "deny_path",
+      "bypass_attempts",
+      "mutation",
+      "secret_scan",
+      "permission",
+      "isolation",
+      "independent_adversarial_checker"
     ],
     "GATE_OR_AUTHORITY_AFFECTING": [
-      "unauthorized_path", "second_authority", "signature_bypass", "protected_file_check",
-      "mutation_gate_fires", "independent_checker", "founder_signature_where_required"
+      "unauthorized_path",
+      "second_authority",
+      "signature_bypass",
+      "protected_file_check",
+      "mutation_gate_fires",
+      "independent_checker",
+      "founder_signature_where_required"
     ],
     "DEPENDENCY_AFFECTING": [
-      "source_license_verification", "version_pinning", "compatibility",
-      "failure_behavior", "replacement_disable_path", "update_drift_guard", "qualification_evidence"
+      "source_license_verification",
+      "version_pinning",
+      "compatibility",
+      "failure_behavior",
+      "replacement_disable_path",
+      "update_drift_guard",
+      "qualification_evidence"
     ],
     "PROVIDER_AFFECTING": [
-      "source_license_verification", "version_pinning", "compatibility",
-      "failure_behavior", "replacement_disable_path", "update_drift_guard", "qualification_evidence"
+      "source_license_verification",
+      "version_pinning",
+      "compatibility",
+      "failure_behavior",
+      "replacement_disable_path",
+      "update_drift_guard",
+      "qualification_evidence"
     ],
     "LIVE_ACTION_AFFECTING": [
-      "all_lower_layer", "human_expert_review_where_required", "rollback_rehearsal",
-      "incident_path", "explicit_founder_gate", "no_inferred_authority"
+      "all_lower_layer",
+      "human_expert_review_where_required",
+      "rollback_rehearsal",
+      "incident_path",
+      "explicit_founder_gate",
+      "no_inferred_authority"
     ],
     "PRODUCTION_AFFECTING": [
-      "all_lower_layer", "human_expert_review_where_required", "rollback_rehearsal",
-      "incident_path", "explicit_founder_gate", "no_inferred_authority"
+      "all_lower_layer",
+      "human_expert_review_where_required",
+      "rollback_rehearsal",
+      "incident_path",
+      "explicit_founder_gate",
+      "no_inferred_authority"
     ]
   },
   "ui_evidence_law": {
     "distinct_non_interchangeable": [
-      "source_inspection", "unit_tests", "headless_browser_automation",
-      "headed_local_browser_proof", "screenshot_evidence", "trace_evidence",
-      "video_evidence", "accessibility_evidence", "founder_perception_witness"
+      "source_inspection",
+      "unit_tests",
+      "headless_browser_automation",
+      "headed_local_browser_proof",
+      "screenshot_evidence",
+      "trace_evidence",
+      "video_evidence",
+      "accessibility_evidence",
+      "founder_perception_witness"
     ],
     "screenshot_alone_is_not_acceptance": true,
     "headless_ci_alone_not_visible_proof": true,
@@ -81,9 +169,16 @@
   "not_applicable": {
     "required_test_cannot_be_na": true,
     "allowed_reasons": [
-      "no_rendered_surface", "no_runtime_surface", "no_api_surface", "no_data_layer",
-      "no_external_dependency", "no_security_boundary", "no_authority_gate",
-      "no_live_action", "no_production_surface", "documentation_only_no_execution"
+      "no_rendered_surface",
+      "no_runtime_surface",
+      "no_api_surface",
+      "no_data_layer",
+      "no_external_dependency",
+      "no_security_boundary",
+      "no_authority_gate",
+      "no_live_action",
+      "no_production_surface",
+      "documentation_only_no_execution"
     ],
     "blocked_not_pass": "A required test that cannot run is BLOCKED, never converted to PASS via waiver."
   },
@@ -91,28 +186,90 @@
     "readiness_derived_only": true,
     "builder_cannot_set": true,
     "states": [
-      "NOT_READY", "MACHINE_VERIFICATION_IN_PROGRESS", "MACHINE_VERIFICATION_BLOCKED",
-      "READY_FOR_HUMAN_PERCEPTION_WITNESS", "WITNESS_COMPLETED", "REJECTED"
+      "NOT_READY",
+      "MACHINE_VERIFICATION_IN_PROGRESS",
+      "MACHINE_VERIFICATION_BLOCKED",
+      "READY_FOR_HUMAN_PERCEPTION_WITNESS",
+      "WITNESS_COMPLETED",
+      "REJECTED"
     ]
   },
   "merge": {
     "green_ci_alone_insufficient": true,
     "requires": [
-      "policy_active_digest_match", "lane_obligations_valid", "evidence_complete",
-      "exact_sha_ci_current", "checker_satisfied", "founder_witness_or_signature_where_required",
-      "no_active_qualification_prohibits_merge", "terminal0_decision_packet"
+      "policy_active_digest_match",
+      "lane_obligations_valid",
+      "evidence_complete",
+      "exact_sha_ci_current",
+      "checker_satisfied",
+      "founder_witness_or_signature_where_required",
+      "no_active_qualification_prohibits_merge",
+      "terminal0_decision_packet"
     ]
   },
   "amendment": {
-    "requires": ["founder_signature", "independent_checker", "mutation_proof", "exact_sha_ci",
-                 "updated_policy_digest", "append_only_governance_record"],
+    "requires": [
+      "founder_signature",
+      "independent_checker",
+      "mutation_proof",
+      "exact_sha_ci",
+      "updated_policy_digest",
+      "append_only_governance_record"
+    ],
     "protected": true
+  },
+  "foreground_founder_surface": {
+    "version": "FFS-1",
+    "required_for": "every founder-facing UI change or witness candidate",
+    "rule": "Before the founder is involved, one full foreground-visible browser run must complete through the same launcher, browser, route and DOM interaction path the founder will use. headless=false alone is insufficient: the window must be visibly rendered, frontmost, onscreen, not minimized, on the active logged-in Mac session, using the configured founder browser, launched through the real launcher, and operated through actual DOM controls. Internal/unit/mutation/API/CI tests may be headless; the final pre-founder surface qualification may not. Headless exact-SHA CI remains separately required and is not interchangeable with foreground proof.",
+    "founder_browser": "Google Chrome",
+    "states": [
+      "NOT_REQUIRED",
+      "REQUIRED_NOT_STARTED",
+      "FOREGROUND_TEST_RUNNING",
+      "FOREGROUND_TEST_FAILED",
+      "FOREGROUND_TEST_BLOCKED",
+      "FOREGROUND_TEST_VERIFIED"
+    ],
+    "only_satisfying_state": "FOREGROUND_TEST_VERIFIED",
+    "required_evidence": [
+      "real_launcher_used",
+      "configured_founder_browser",
+      "headless_false",
+      "browser_process_identity",
+      "visible_window_count",
+      "frontmost",
+      "minimized_false",
+      "onscreen_position",
+      "window_dimensions",
+      "active_gui_session",
+      "ui_contract",
+      "candidate_sha",
+      "dom_transcript",
+      "screenshot_sequence",
+      "continuous_video",
+      "playwright_trace",
+      "console_log",
+      "network_log",
+      "page_error_log",
+      "download_evidence_where_applicable",
+      "final_dom_assertions",
+      "independent_checker_verdict"
+    ],
+    "machine_profile": ".foundergate/machine_profiles/mac-mini-pro-founder-surface.json",
+    "stop_value": "TBF-HOLD: FOREGROUND-FOUNDER-SURFACE-NOT-VERIFIED",
+    "completion_invariant": "A Safety Check requiring an Evidence Pack may not display COMPLETE, DONE or a founder witness candidate while the Evidence Pack is UNKNOWN, MISSING, FAILED, CORRUPT, STALE or NOT-PASSED. Only COMPLETE_WITH_VERIFIED_EVIDENCE_PACK may expose a completed witness candidate, Evidence Pack AVAILABLE, and the Download action."
   },
   "cto_prompt_law": {
     "steps": [
-      "locate_active_policy_from_disk", "verify_digest", "record_version_in_lane_contract",
-      "classify_task_impacts", "derive_required_tests",
-      "refuse_if_missing_corrupt_or_unknown", "write_all_evidence_to_disk",
+      "locate_active_policy_from_disk",
+      "verify_digest",
+      "record_version_in_lane_contract",
+      "classify_task_impacts",
+      "load_machine_founder_surface_profile_and_derive_foreground_obligation",
+      "derive_required_tests",
+      "refuse_if_missing_corrupt_or_unknown",
+      "write_all_evidence_to_disk",
       "validate_witness_readiness_before_founder"
     ],
     "stop_value": "TBF-HOLD: ACTIVE-POLICY-MISSING-OR-INVALID"
@@ -121,8 +278,13 @@
     "authority": "Founder and Acceptance Authority",
     "record": "docs/status/TEST_BEFORE_FOUNDER_FOUNDER_AUTHORIZATION.md",
     "does_not_authorize": [
-      "accept_phase7_1_interface", "main_merge", "opensandbox_adoption",
-      "customer_or_private_repositories", "production_deployment", "akior_access", "m1_contact"
+      "accept_phase7_1_interface",
+      "main_merge",
+      "opensandbox_adoption",
+      "customer_or_private_repositories",
+      "production_deployment",
+      "akior_access",
+      "m1_contact"
     ]
   }
 }

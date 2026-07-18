@@ -33,8 +33,19 @@ def complete_ui(tmp):
     concrete = [c for c in derived if c not in tbf_lib.META_CLASSES]
     tests = []
     for c in concrete:
-        rel = f"evidence/{c}.txt"
-        h = _write(os.path.join(tmp, rel), f"evidence for {c}")
+        if c == "foreground_founder_surface":
+            fg = {"foreground_state": "FOREGROUND_TEST_VERIFIED", "browser": "Google Chrome",
+                  "headless": False, "real_launcher_used": True, "visible_window_count": 1,
+                  "minimized": False, "onscreen": True, "frontmost": True, "active_gui_session": True,
+                  "ui_contract": "phase7.1-neutral-first-v1", "candidate_sha": CANDIDATE,
+                  "screenshots": 11, "video": True, "trace": True, "dom_assertions": 7,
+                  "final_dom_assertions": True, "api_substituted_founder_action": False,
+                  "pack_state": "AVAILABLE"}
+            rel = "evidence/foreground/RESULT.json"
+            h = _write(os.path.join(tmp, rel), json.dumps(fg))
+        else:
+            rel = f"evidence/{c}.txt"
+            h = _write(os.path.join(tmp, rel), f"evidence for {c}")
         tests.append({"class": c, "status": "PASS", "sha": CANDIDATE,
                       "evidence": [{"path": rel, "sha256": h}]})
     lane = {

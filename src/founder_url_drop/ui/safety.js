@@ -36,7 +36,15 @@ async function tick(runId){
   if (r.status === "RUNNING"){ $("run-status").textContent = "In progress… results are hidden until evidence is produced."; $("run-status").className = "pending"; return; }
   clearInterval(poll); poll = null;
   if (r.status === "FAILED"){ $("run-status").textContent = "This check FAILED — no success is shown."; $("run-status").className = "stage-run failed"; return; }
-  // COMPLETE — reveal result bound to this run
+  // COMPLETION INVARIANT (FFS-1): a finished run with an unverified Evidence Pack is NOT acceptable.
+  if (r.witness_state === "COMPLETE_PACK_FAILED"){
+    $("run-status").textContent = r.pack_message || "The safety check finished, but its Evidence Pack was not produced. This run cannot be accepted.";
+    $("run-status").className = "stage-run failed";
+    $("result-grid").hidden = true; $("finish-grid").hidden = true;
+    const a = $("pack-dl"); if (a) a.hidden = true;
+    return;
+  }
+  // COMPLETE_WITH_VERIFIED_EVIDENCE_PACK — reveal result bound to this run
   $("run-status").textContent = "Complete."; $("run-status").className = "";
   const s = r.result || {};
   $("result-grid").hidden = false; $("finish-grid").hidden = false;
@@ -50,8 +58,8 @@ async function tick(runId){
   // cleanup only when teardown complete
   $("c-teardown").textContent = r.teardown_complete ? ("Temporary sandbox removed (session gone: " + fe(s.teardown_get_status) + ")") : "Temporary sandbox removal: pending";
   $("c-vm").textContent = s.vm_destroyed ? "Disposable machine destroyed." : "Disposable machine destruction: UNKNOWN";
-  // evidence pack only when complete + teardown + pack ready
-  if (r.evidence_pack_ready && r.teardown_complete){ $("pack-status").textContent = "Ready."; const a = $("pack-dl"); a.hidden = false; a.href = "/api/runs/"+runId+"/evidence-pack"; }
+  // evidence pack only when complete + teardown + pack VERIFIED
+  if (r.evidence_pack_ready && r.evidence_pack_verified && r.teardown_complete){ $("pack-status").textContent = "AVAILABLE."; const a = $("pack-dl"); a.hidden = false; a.href = "/api/runs/"+runId+"/evidence-pack"; }
   else { $("pack-status").textContent = "Evidence Pack: UNKNOWN (produced only after runtime + cleanup complete)"; }
   try { $("evidence-json").textContent = JSON.stringify(r.result, null, 2); } catch {}
 }
@@ -78,4 +86,13 @@ $("url").addEventListener("keydown", (e) => { if (e.key === "Enter") runCheck();
 $("pause").addEventListener("click", async () => { if (currentRun) { try { await fetch("/api/runs/"+currentRun+"/pause-request", {method:"POST"}); } catch {} } $("help-modal").hidden = false; $("help-close").focus(); });
 $("help-close").addEventListener("click", () => { $("help-modal").hidden = true; $("pause").focus(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") $("help-modal").hidden = true; });
-// NEUTRAL on load — no results fetched, nothing green
+// Open an EXISTING run (recovery/replay view) when ?run=<id> is present — no new check is started.
+(function openExistingRun(){
+  const m = /[?&]run=([a-z0-9-]+)/.exec(location.search);
+  if (!m) return; // NEUTRAL on load — no results fetched, nothing green
+  const id = m[1]; currentRun = id;
+  $("neutral-card").hidden = true; $("run-card").hidden = false;
+  $("result-grid").hidden = true; $("finish-grid").hidden = true;
+  $("run-id").textContent = id; $("run-status").textContent = "Loading existing run…";
+  tick(id);
+})();

@@ -9,6 +9,7 @@ on:
       - integration/founder-safety-check-evidence-pack-phase7-1
       - build/founder-safety-check-runtime-phase7-1
       - qualification/phase7-1-canonical-ui-tbf
+      - correction/ffs1-foreground-founder-surface
   pull_request:
     branches:
       - integration/founder-url-drop-ui-phase7
@@ -38,6 +39,8 @@ jobs:
         run: node src/safety_check/canonical-identity.selftest.mjs
       - name: Phase 7.1-Q qualification selftest (false-green, deny/hold, recovery, one-job-lock)
         run: node tools/qual/qualification.selftest.mjs
+      - name: FFS-1 completion-invariant selftest
+        run: node src/safety_check/completion-invariant.selftest.mjs
       - name: Mac launcher anti-repeat + identity test (clean Finder-like PATH; no UI)
         run: sh tools/macos/launcher.test.sh
       - name: Python intake + patch + negative + adoption-contract tests
