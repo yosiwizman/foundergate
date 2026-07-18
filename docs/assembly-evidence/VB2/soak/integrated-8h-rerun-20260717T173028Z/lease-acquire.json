@@ -1,0 +1,18 @@
+{
+  "at": "2026-07-17T17:37:33.595Z",
+  "lease_id": "lease_89490eb048674250b3c1eb0998a10fcb",
+  "run_id": "run_f3124ace-e39f-4d52-9e46-1dc5b2f1e1b1",
+  "owner_project": "foundergate",
+  "purpose": "VB2 integrated soak rerun (VB1-through-VB2)",
+  "host_id": "qual-host-m1",
+  "boot_id": "boot_darwin_1784272173",
+  "owner_pid": 8564,
+  "heartbeat_interval_s": 60,
+  "lease_ttl_s": 36000,
+  "preflight": {
+    "quiet": true,
+    "loadavg_1m": 1.263671875,
+    "ncpu": 8,
+    "foreign_heavy": []
+  }
+}

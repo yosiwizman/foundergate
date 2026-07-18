@@ -1,0 +1,87 @@
+{
+  "schema": "vb2-soak-rehearsal/1",
+  "at": "2026-07-17T17:34:31.328Z",
+  "repo": "/Users/macm1/Projects/foundergate-wt-vb2-integrated-8h-rerun-20260717T173028Z",
+  "proofs": {
+    "4a_quiet_host_detector": {
+      "verdict": "PASS",
+      "control_clean": {
+        "foreign_heavy": 0,
+        "eligible": true,
+        "downgraded": false
+      },
+      "foreign_heavy": {
+        "flagged": [
+          {
+            "pid": 9001,
+            "pcpu": 3,
+            "second_soak": true,
+            "cmd": "node /other/repo/src/tools/soak-run.mjs --claim 24"
+          },
+          {
+            "pid": 9002,
+            "pcpu": 95,
+            "second_soak": false,
+            "cmd": "xcodebuild -scheme App build"
+          }
+        ],
+        "downgrade_recorded": true,
+        "eligible_after": false,
+        "episodes": [
+          {
+            "kind": "PROHIBITED_WORKLOAD",
+            "from": "2026-07-13T12:01:00.000Z",
+            "to": null,
+            "reason": "foreign op 'soak'",
+            "detail": {
+              "pid": 9001,
+              "pcpu": 3,
+              "cmd": "node /other/repo/src/tools/soak-run.mjs --claim 24",
+              "second_soak": true
+            }
+          },
+          {
+            "kind": "PROHIBITED_WORKLOAD",
+            "from": "2026-07-13T12:01:00.000Z",
+            "to": null,
+            "reason": "foreign op 'heavy'",
+            "detail": {
+              "pid": 9002,
+              "pcpu": 95,
+              "cmd": "xcodebuild -scheme App build",
+              "second_soak": false
+            }
+          }
+        ]
+      },
+      "stale_heartbeat": {
+        "effective": "RECOVERY_REQUIRED",
+        "detection": {
+          "kind": "MISSING_HEARTBEAT",
+          "from": "2026-07-13T12:05:00.000Z",
+          "to": "2026-07-13T12:05:00.000Z",
+          "reason": "STALE_HEARTBEAT",
+          "detail": "the owner's heartbeat is stale — recovery required, NOT auto-unlocked"
+        },
+        "eligible_after": false
+      }
+    },
+    "4b_store_in_launch_path": {
+      "verdict": "PASS",
+      "normal_exit": 0,
+      "normal_expect": 0,
+      "bypass_exit": 1,
+      "bypass_expect": "non-zero",
+      "normal_stderr": "[probe] VB1 launch ok — session used, act-edge contained at NO_WIRED_APPROVAL\n[probe] item built + validated: q000000000001\n[probe] chain: intact readLifecycle: RESOLVED hasCreate: true bypass: false => healthy: true",
+      "bypass_stderr": "[probe] VB1 launch ok — session used, act-edge contained at NO_WIRED_APPROVAL\n[probe] item built + validated: q000000000001\n[probe] chain: intact readLifecycle: UNKNOWN hasCreate: false bypass: true => healthy: false\n[probe] UNHEALTHY (bypass=true) chain=intact lifecycle=UNKNOWN hasCreate=false",
+      "interpretation": "The VB2 ClassifiedObjectStore is load-bearing: with it the probe passes; routing around it FAILS."
+    }
+  },
+  "overall": {
+    "verdict": "REHEARSAL PASS — both proofs hold; proceed to the real run",
+    "hard_stop": null,
+    "error": null
+  }
+}
+
+REHEARSAL PASS

@@ -1,0 +1,12 @@
+{
+  "schema": "vb2-rerun-caffeinate-proof/1",
+  "verified_at": "2026-07-17T17:38:17.607Z",
+  "method": "independent pmset -g assertions",
+  "driver_pid": 8564,
+  "caffeinate_pid": 0,
+  "no_timeout": "launched as caffeinate -dimsu with NO -t flag",
+  "PreventSystemSleep_active": true,
+  "caffeinate_asserts_for_driver": true,
+  "driver_self_report": "caffeinate assertion: HELD (descendant)",
+  "final_release": "to be captured at driver exit"
+}

@@ -1,0 +1,21 @@
+{
+  "schema": "vb2-rerun-env-provenance/1",
+  "captured_at": "2026-07-17T17:33:01.970Z",
+  "host": {
+    "hostname": "qual-host-m1",
+    "model": "Macmini9,1",
+    "chip": "Apple M1",
+    "arch": "arm64",
+    "cores": "8",
+    "mem_bytes": 8589934592,
+    "macos": "26.5.2",
+    "build": "25F84",
+    "user": "macm1"
+  },
+  "power": {
+    "ac": "Now drawing from 'AC Power'"
+  },
+  "node_version": "v26.5.0",
+  "disk": "/dev/disk3s3s1   228Gi    12Gi   185Gi     6%    459k  1.9G    0%   /",
+  "no_secrets": true
+}
