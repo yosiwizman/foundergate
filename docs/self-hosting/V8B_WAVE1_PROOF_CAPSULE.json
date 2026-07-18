@@ -1,0 +1,55 @@
+{
+  "schema": "v8b-wave1-capsule-1",
+  "run_id": "V8B-AUTONOMOUS-WAVE-1",
+  "generated_at": "2026-07-18T05:08:03Z",
+  "directive_digest": "sha256:728678d165cef6365583aa87677db81b996e3f551547c70d40ea95417c6ce566",
+  "starting_main_sha": "7e3e96316bed4653abb2b24529ab8854489bb946",
+  "final_main_sha": "83e86f4e377abc0e6396eea742aa35102991b7e4",
+  "lanes_completed": [
+    "Phase0 DCL self-capture",
+    "Phase1 reconciliation",
+    "Phase3 ARE-1 qualify+integrate (ARE1: ACTIVE)",
+    "Phase4 V8-B completion matrix",
+    "Phase5 VB2 acceptance packet"
+  ],
+  "lanes_parked_at_gate": [
+    "Phase5 VB2 formal acceptance (FOUNDER WITNESS)",
+    "Phase6 SCL-1 live fixture (AUTHORITY REQUIRED)",
+    "Phase8/9 VB3 inert core (IMPL AUTHORITY ABSENT; act edge FROZEN)",
+    "Phase10 UI witness (FOUNDER)"
+  ],
+  "lanes_bounded_remaining": [
+    "Phase7 wide-safe builds (Bench/evidence viewer/cards/cost/ladder/spec-card/anti-repeat/license/data-class)",
+    "SCL-1 runtime"
+  ],
+  "merges": [
+    "#165 wave-1 (matrix+VB2+planning)",
+    "#166 ARE-1 (4-cycle checker-clean)"
+  ],
+  "independent_checkers": {
+    "ARE-1": [
+      "ARE1-CHECKER FINDINGS",
+      "ARE1-RECHECKER FINDINGS",
+      "ARE1-CHECK3 FINDINGS",
+      "ARE1-CHECK4 CLEAN"
+    ]
+  },
+  "advisors": {
+    "ARE-1": "READY-TO-INTEGRATE"
+  },
+  "correction_cycles": {
+    "ARE-1": 3
+  },
+  "tests": "92/92 repo suite; ARE-1 79/79; DCL 32/32; ARLC 56/56",
+  "vb3_act_edge": "FROZEN",
+  "live_action": "NOT_AUTHORIZED",
+  "48h_qualification": "NOT_STARTED",
+  "next_true_founder_gate": "VB2 formal acceptance (human UI witness)",
+  "honest_non_claims": {
+    "BLUEPRINT_DRIVEN_RUN_PROVEN": "NO",
+    "OUTSIDE_OPERATOR": "NO",
+    "CUSTOMER_CODE": "NO",
+    "GENERAL_PRODUCT_RELIABILITY": "NO",
+    "TIME_AS_COMPLETION": "NO"
+  }
+}

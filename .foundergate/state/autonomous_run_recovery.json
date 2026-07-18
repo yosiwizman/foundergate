@@ -1,6 +1,8 @@
 {
   "schema": "are1-recovery-1",
-  "run_id": "v8b-nightshift",
-  "last_next_safe_action": "ARE-1 build + qualify",
-  "updated_at": "2026-07-18T04:06:22Z"
+  "run_id": "V8B-AUTONOMOUS-WAVE-1",
+  "updated_at": "2026-07-18T05:08:03Z",
+  "envelope": "ACTIVE",
+  "last_next_safe_action": "wide-safe V8-B builds (operational queue); founder gates parked",
+  "main_sha": "83e86f4e377abc0e6396eea742aa35102991b7e4"
 }
