@@ -52,12 +52,16 @@ function atomicCreate(lockPath, lock) {
 // through an O_EXCL recovery mutex with a re-check, so two racing recoverers can
 // never both win (fixes the unlink+create TOCTOU).
 export function acquireSingleton(lockPath, req, ctx) {
+  // Liveness must be evaluated for the ACTUAL holder read here — not a value the
+  // caller computed for a holder it saw earlier (which may have changed). A
+  // pidAliveFn closes that TOCTOU; ctx.pid_alive is the pure-logic fallback.
+  const liveFor = (pid) => (typeof ctx.pidAliveFn === "function" ? ctx.pidAliveFn(pid) : ctx.pid_alive);
   const fileExists = existsSync(lockPath);
   const existing = fileExists ? safeRead(lockPath) : null;
   const corrupt = fileExists && existing === null; // exists but unparseable -> stale/recoverable
   const decision = corrupt
     ? { action: "recover", reason: "corrupt/empty lock", recovered_from: null }
-    : evaluateAcquire(existing, req, ctx);
+    : evaluateAcquire(existing, req, { ...ctx, pid_alive: existing ? liveFor(existing.pid) : ctx.pid_alive });
   if (decision.action === "reject") return { acquired: false, existing, decision };
 
   if (decision.action === "recover") {
@@ -70,11 +74,20 @@ export function acquireSingleton(lockPath, req, ctx) {
       return { acquired: false, existing, decision: { action: "reject", reason: "recovery in progress by a peer" } };
     }
     try {
-      // Re-check under the mutex: a peer may already have published a healthy lock.
+      // Re-check under the mutex. FAIL CLOSED: only trample a lock that is STILL
+      // the exact stale/corrupt one we decided to recover. If a peer changed it
+      // (different pid/started/nonce), that peer won — never trample its lock,
+      // even though our up-front ctx.pid_alive (computed for the ORIGINAL holder)
+      // would misjudge a different, live holder as dead.
       const cur = existsSync(lockPath) ? safeRead(lockPath) : null;
-      if (cur && isHealthy(cur, ctx)) {
-        return { acquired: false, existing: cur, decision: { action: "reject", reason: "peer recovered to a healthy lock" } };
+      const sameAsDecided = cur && existing &&
+        cur.pid === existing.pid && cur.started === existing.started && cur.nonce === existing.nonce;
+      // Never trample a lock that changed under us, AND never trample a currently
+      // HEALTHY holder (liveness re-evaluated for the ACTUAL current holder).
+      if (cur && (!sameAsDecided || isHealthy(cur, { ...ctx, pid_alive: liveFor(cur.pid) }))) {
+        return { acquired: false, existing: cur, decision: { action: "reject", reason: "peer changed/holds the lock under recovery; not trampling" } };
       }
+      // cur is null (gone) or byte-identical to the stale lock we verified -> safe to reclaim.
       try { unlinkSync(lockPath); } catch { /* already gone */ }
       const lock = mkLock(req, ctx.now);
       if (!atomicCreate(lockPath, lock)) {

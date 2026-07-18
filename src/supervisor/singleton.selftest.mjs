@@ -102,6 +102,23 @@ rmSync(t3, { recursive: true, force: true });
 const srcSing = readFileSync(new URL("./singleton.mjs", import.meta.url), "utf8");
 ok("28 lock creation is atomic (link-based, not empty-then-write)", /linkSync\(/.test(srcSing) && !/openSync\([^)]*"wx"/.test(srcSing));
 
+// ---- CHECK4 finding: SEQUENTIAL recover must not trample a peer's fresh live
+// lock. A recovers stale D -> publishes live A. B (decided recover on D, pid_alive
+// false for D) runs AFTER A released the mutex: its re-check sees A's DIFFERENT
+// lock and must reject (not trample), even though ctx.pid_alive was false for D.
+const t4 = mkdtempSync(join(tmpdir(), "seq-"));
+const lp4 = join(t4, "s.lock");
+// Realistic liveness: a real pidAliveFn. A uses THIS process's pid (genuinely
+// alive); D is a dead pid. B must reject because A is really alive.
+const realAlive = (pid) => { try { process.kill(pid, 0); return true; } catch { return false; } };
+writeFileSync(lp4, JSON.stringify({ pid: 999999, run_id: "D", started: 1, last_heartbeat: 1, nonce: "d" }) + "\n");
+const seqA = acquireSingleton(lp4, { pid: process.pid, run_id: "A", nonce: "a", exact_sha: "s", deadline: 9 }, { now: 5000, pidAliveFn: realAlive, stale_interval: 120 });
+const seqB = acquireSingleton(lp4, { pid: process.pid + 1, run_id: "B", nonce: "b", exact_sha: "s", deadline: 9 }, { now: 5001, pidAliveFn: realAlive, stale_interval: 120 });
+const finalHolder = JSON.parse(readFileSync(lp4, "utf8")).pid;
+ok("29 A recovers dead D (realistic liveness)", seqA.acquired === true && finalHolder === process.pid);
+ok("30 B does NOT trample A's live lock (pidAliveFn re-evaluates the real holder)", seqB.acquired === false && finalHolder === process.pid);
+rmSync(t4, { recursive: true, force: true });
+
 rmSync(tmp, { recursive: true, force: true });
 console.log(`\nPAES SINGLETON SELFTEST: ${n - fails.length}/${n} passed`);
 if (fails.length) { console.log("FAILED:", fails.join(", ")); process.exit(1); }

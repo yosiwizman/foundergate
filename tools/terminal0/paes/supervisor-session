@@ -79,10 +79,11 @@ async function main() {
   // ATOMIC SINGLETON: refuse to start if a healthy supervisor already holds the
   // lock (prevents the overlapping-supervisor bug). Recovers a genuinely-stale
   // lock. O_EXCL create makes concurrent launches race-safe — only one wins.
-  const existingLock = _ex(LOCK) ? (() => { try { return JSON.parse(_rf(LOCK, "utf8")); } catch { return null; } })() : null;
-  const existingAlive = existingLock ? (() => { try { process.kill(existingLock.pid, 0); return true; } catch { return false; } })() : false;
+  // pidAliveFn lets the lock library re-evaluate liveness for whatever holder it
+  // actually reads (closes the TOCTOU where a peer changed the lock underneath).
+  const pidAliveFn = (pid) => { try { process.kill(pid, 0); return true; } catch { return false; } };
   const acq = acquireSingleton(LOCK, { pid: process.pid, pgid: process.pid, run_id: cycle.run_id || "run", exact_sha: cycle.blueprint_digest || "sha", nonce: String(cycle.start), deadline: cycle.deadline },
-    { now: nowS(), pid_alive: existingAlive, stale_interval: 120 });
+    { now: nowS(), pidAliveFn, stale_interval: 120 });
   if (!acq.acquired) { led({ evt: "singleton_rejected", reason: acq.decision && acq.decision.reason }); process.exit(0); }
   if (acq.recovered) led({ evt: "singleton_recovered_stale", from_pid: acq.recovered });
   const releaseLock = () => { try { releaseSingleton(LOCK, process.pid); } catch { /* */ } };
