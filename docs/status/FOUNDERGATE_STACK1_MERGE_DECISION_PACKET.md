@@ -1,0 +1,14 @@
+# STACK-1 Merge Decision Packet
+- **Merging PR:** #162 (cumulative), retargeted to main, kept draft.
+- **Exact head:** 20136202e0c354049158b03302c08494d42f1012 · **Exact base:** main e1ca1989d2397297a450893f7890dbe7fc21e494.
+- **Merge method:** MERGE COMMIT (preserves exact phase SHAs in main ancestry).
+- **Included prior PRs:** #151–#161 (all ancestors; superseded by the cumulative head).
+- **Founder acceptance:** ACCEPT WITNESS CANDIDATE (Phase 7.1 human-perception witness) — sealed.
+- **Exact-SHA CI:** required green on the exact final cumulative head (see CI record).
+- **Independent checker / Advisor:** STACK1 cumulative checker + final Advisor (pending records).
+- **M1 merge-embargo:** ACTIVE/UNKNOWN — the M1 qualification is relayed-running and NOT cleared on Pro-side disk; **merge is HELD**.
+- **Scope:** integrate the reviewed Sandbox Safety Check + TBF + FFS work as a candidate; NOT release acceptance, NOT OpenSandbox adoption, NOT SCL-1.
+- **Limitations:** build/tests/security/production NOT proven; OpenSandbox candidate-only; foreground SHA-binding declarative (disclosed).
+- **Cleanup:** per POST_MERGE_CLEANUP_PLAN (only after authorized merge).
+- **Rollback:** single merge-commit revert on main restores the pre-merge state.
+- **READY_FOR_FOUNDER_MERGE_GATE requires:** acceptance sealed ✅ · ancestry complete ✅ · cumulative PR correct (pending retarget) · cumulative diff clean ✅ · exact-SHA CI green (pending final head) · checker clean (pending) · Advisor clean (pending) · **M1 embargo CLEARED (NOT cleared → HELD)**.

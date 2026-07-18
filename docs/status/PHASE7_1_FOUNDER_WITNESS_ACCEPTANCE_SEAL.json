@@ -1,0 +1,55 @@
+{
+  "schema": "phase7_1-acceptance-seal-1",
+  "founder_decision": "ACCEPT WITNESS CANDIDATE",
+  "timestamp_utc": "2026-07-18T02:10:18Z",
+  "phase7_1_founder_witness": "ACCEPTED",
+  "human_perception_witness": "COMPLETED",
+  "accepted_product_candidate_sha": "a64ebcdc784b2f472d42335b0972683482e330c7",
+  "product_tree_digests": {
+    "src/safety_check": "65e60c418fde1e5ff5922899021179aa8d0e2efd",
+    "src/founder_url_drop": "12a19a16ac1c9c49da7b1c8614122610013dfbe4",
+    "tools/macos": "76dee20ac720b8ae6fff093603434753e9484ac2",
+    ".foundergate/policies": "8ea6fa9c8016544488593a712f5e2c61b0984c4a"
+  },
+  "run_id": "sc-15f0cfc5",
+  "repository": "https://github.com/pypa/sampleproject",
+  "exact_commit": "621e4974ca25ce531773def586ba3ed8e736b3fc",
+  "archive_sha256": "fd8597e4d351a9fd42007f48339dc93ee6469d8555fd0ff24906c69905357c01",
+  "snapshot_manifest_sha256": "649ecb02d79d5cee55c86549b6dff26fb341c4a4de6d3c92d959c42714b6e7de",
+  "evidence_pack": {
+    "formats": [
+      "json",
+      "md",
+      "html",
+      "pdf",
+      "sha256",
+      "zip"
+    ],
+    "json_sha256": "c83593834af5a771725245b811f1b02dd7c3eb05a7bb17f0d9adcb8f61c595fd",
+    "zip_sha256": "472e2ecfcfc901c8c92374056e63395464e076605b0982b636c4ec5aab620f60"
+  },
+  "foreground_founder_surface": "FOREGROUND_TEST_VERIFIED",
+  "independent_checker": "FFS1-FINAL-CHECKER-CLEAN",
+  "final_advisor": "FFS1-FINAL-ADVISOR: READY-FOR-MINIMAL-PACK-WITNESS",
+  "tbf_witness_readiness": "READY_FOR_HUMAN_PERCEPTION_WITNESS",
+  "accepted_scope": "exact corrected Phase 7.1 human-perception witness candidate only",
+  "exclusions": [
+    "main_merge",
+    "release_acceptance",
+    "opensandbox_adoption",
+    "scl1_implementation",
+    "general_public_execution",
+    "private_repositories",
+    "customer_execution",
+    "akior_adoption",
+    "production",
+    "m1_contact"
+  ],
+  "remaining_limitations": [
+    "build/tests/security/production NOT proven",
+    "OpenSandbox tested candidate not adopted",
+    "foreground SHA-binding declarative (disclosed)"
+  ],
+  "merge_status": "NOT_AUTHORIZED (M1 merge-embargo ACTIVE/UNKNOWN)",
+  "provider_adoption_status": "CANDIDATE (not adopted)"
+}

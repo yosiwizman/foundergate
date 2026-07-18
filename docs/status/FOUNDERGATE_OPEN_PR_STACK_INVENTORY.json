@@ -1,0 +1,152 @@
+{
+  "resolved_utc": "2026-07-18T02:11:03Z",
+  "final_accepted_head": "20136202e0c354049158b03302c08494d42f1012",
+  "remote_main": "e1ca1989d2397297a450893f7890dbe7fc21e494",
+  "open_pr_count": 12,
+  "prs": [
+    {
+      "number": 151,
+      "title": "[HOLD] OpenSandbox Phase 1 architecture audit \u2014 no spike aut",
+      "draft": true,
+      "head_branch": "audit/opensandbox-phase1",
+      "base_branch": "main",
+      "head_sha": "e58632b582c8fe8d59c206afe7d8caefb8f13cf1",
+      "mergeable": "MERGEABLE",
+      "head_is_ancestor_of_final": true,
+      "contains_commits_absent_from_final": false,
+      "superseded_by_final": true
+    },
+    {
+      "number": 152,
+      "title": "[HOLD] OpenSandbox Phase 2 bounded runtime spike \u2014 no adopti",
+      "draft": true,
+      "head_branch": "spike/opensandbox-phase2",
+      "base_branch": "audit/opensandbox-phase1",
+      "head_sha": "adcb169e0c61948c253aead576cd90727227e455",
+      "mergeable": "MERGEABLE",
+      "head_is_ancestor_of_final": true,
+      "contains_commits_absent_from_final": false,
+      "superseded_by_final": true
+    },
+    {
+      "number": 153,
+      "title": "[HOLD] OpenSandbox Phase 3 provider-neutral adapter design \u2014",
+      "draft": true,
+      "head_branch": "design/opensandbox-provider-adapter-phase3",
+      "base_branch": "spike/opensandbox-phase2",
+      "head_sha": "3fe19c11a27d00c1773f80608889809cd76ab2fb",
+      "mergeable": "MERGEABLE",
+      "head_is_ancestor_of_final": true,
+      "contains_commits_absent_from_final": false,
+      "superseded_by_final": true
+    },
+    {
+      "number": 154,
+      "title": "[HOLD] OpenSandbox Phase 4 disposable Linux-VM adapter spike",
+      "draft": true,
+      "head_branch": "spike/opensandbox-linux-adapter-phase4",
+      "base_branch": "design/opensandbox-provider-adapter-phase3",
+      "head_sha": "f6eeb8fe84bc6af95801a6635682869babfd908f",
+      "mergeable": "MERGEABLE",
+      "head_is_ancestor_of_final": true,
+      "contains_commits_absent_from_final": false,
+      "superseded_by_final": true
+    },
+    {
+      "number": 155,
+      "title": "[HOLD] OpenSandbox Phase 4.1 port-binding mitigation spike \u2014",
+      "draft": true,
+      "head_branch": "spike/opensandbox-port-binding-phase4-1",
+      "base_branch": "spike/opensandbox-linux-adapter-phase4",
+      "head_sha": "900fa8f01148bd54da665f0060baa16a0a9754ad",
+      "mergeable": "MERGEABLE",
+      "head_is_ancestor_of_final": true,
+      "contains_commits_absent_from_final": false,
+      "superseded_by_final": true
+    },
+    {
+      "number": 156,
+      "title": "[HOLD] OpenSandbox Phase 5 public-repository intake design \u2014",
+      "draft": true,
+      "head_branch": "design/opensandbox-customer-intake-phase5",
+      "base_branch": "spike/opensandbox-port-binding-phase4-1",
+      "head_sha": "e1147c50eb9b7f3bef17c6760556a0f52964df13",
+      "mergeable": "MERGEABLE",
+      "head_is_ancestor_of_final": true,
+      "contains_commits_absent_from_final": false,
+      "superseded_by_final": true
+    },
+    {
+      "number": 157,
+      "title": "[HOLD] OpenSandbox Phase 6 public-repository intake runtime ",
+      "draft": true,
+      "head_branch": "spike/opensandbox-public-repo-intake-phase6",
+      "base_branch": "design/opensandbox-customer-intake-phase5",
+      "head_sha": "96932fe35a0768c92d11b02c940e087307965cb2",
+      "mergeable": "MERGEABLE",
+      "head_is_ancestor_of_final": true,
+      "contains_commits_absent_from_final": false,
+      "superseded_by_final": true
+    },
+    {
+      "number": 158,
+      "title": "[HOLD] FounderGate Phase 7 founder URL-drop UI witness candi",
+      "draft": true,
+      "head_branch": "integration/founder-url-drop-ui-phase7",
+      "base_branch": "spike/opensandbox-public-repo-intake-phase6",
+      "head_sha": "6a269787a05982dc8feda14f5f79f102d5ba9551",
+      "mergeable": "MERGEABLE",
+      "head_is_ancestor_of_final": true,
+      "contains_commits_absent_from_final": false,
+      "superseded_by_final": true
+    },
+    {
+      "number": 159,
+      "title": "[HOLD] FounderGate Phase 7.1 bounded Safety Check and Eviden",
+      "draft": true,
+      "head_branch": "integration/founder-safety-check-evidence-pack-phase7-1",
+      "base_branch": "integration/founder-url-drop-ui-phase7",
+      "head_sha": "facfd82ff814f21df010144d3a6bf8f3329da04c",
+      "mergeable": "MERGEABLE",
+      "head_is_ancestor_of_final": true,
+      "contains_commits_absent_from_final": false,
+      "superseded_by_final": true
+    },
+    {
+      "number": 160,
+      "title": "[HOLD] TBF-1 \u2014 permanent machine-enforced Test-Before-Founde",
+      "draft": true,
+      "head_branch": "policy/test-before-founder-tbf1",
+      "base_branch": "integration/founder-safety-check-evidence-pack-phase7-1",
+      "head_sha": "51cafe6e2b877dfa980eb625bf0500bef77437fa",
+      "mergeable": "MERGEABLE",
+      "head_is_ancestor_of_final": true,
+      "contains_commits_absent_from_final": false,
+      "superseded_by_final": true
+    },
+    {
+      "number": 161,
+      "title": "[HOLD] FounderGate Phase 7.1-Q TBF canonical UI and machine ",
+      "draft": true,
+      "head_branch": "qualification/phase7-1-canonical-ui-tbf",
+      "base_branch": "policy/test-before-founder-tbf1",
+      "head_sha": "a103f2e1368c4f767f5bc2a952ebaad1d1cf9ec1",
+      "mergeable": "MERGEABLE",
+      "head_is_ancestor_of_final": true,
+      "contains_commits_absent_from_final": false,
+      "superseded_by_final": true
+    },
+    {
+      "number": 162,
+      "title": "[HOLD] FounderGate FFS-1 foreground founder-surface law + Ev",
+      "draft": true,
+      "head_branch": "correction/ffs1-foreground-founder-surface",
+      "base_branch": "qualification/phase7-1-canonical-ui-tbf",
+      "head_sha": "20136202e0c354049158b03302c08494d42f1012",
+      "mergeable": "MERGEABLE",
+      "head_is_ancestor_of_final": true,
+      "contains_commits_absent_from_final": false,
+      "superseded_by_final": false
+    }
+  ]
+}
