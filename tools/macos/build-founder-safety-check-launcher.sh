@@ -7,6 +7,7 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$HERE/../.." && pwd)"
 OUT="${FG_LAUNCHER_OUT:-$HOME/Desktop/FounderGate Safety Check.app}"
 PORT="${FG_SAFETY_PORT:-4700}"
+OPEN_PATH="${FG_OPEN_PATH:-/}"   # the founder page to open (e.g. "/?run=<id>" for a recovery witness)
 LAUNCH_SH="$HERE/launch-foundergate-safety-check.sh"
 RESOLVE_SH="$HERE/resolve-node.sh"
 TEMPLATE="$HERE/foundergate-safety-check-launcher.applescript"
@@ -27,6 +28,7 @@ sed -e "s#@@NODE_BIN@@#${NODE_BIN}#g" \
     -e "s#@@REPO_ROOT@@#${REPO_ROOT}#g" \
     -e "s#@@LAUNCH_SH@@#${LAUNCH_SH}#g" \
     -e "s#@@PORT@@#${PORT}#g" \
+    -e "s#@@OPEN_PATH@@#${OPEN_PATH}#g" \
     "$TEMPLATE" > "$TMP"
 
 # 3. Compile to the .app (unsigned, local, no install).

@@ -10,7 +10,8 @@ on run
 	set repoRoot to "@@REPO_ROOT@@"
 	set launchSh to "@@LAUNCH_SH@@"
 	set portNum to "@@PORT@@"
-	set theURL to "http://127.0.0.1:" & portNum & "/"
+	set openPath to "@@OPEN_PATH@@"
+	set theURL to "http://127.0.0.1:" & portNum & openPath
 
 	set cmd to "FG_EMBEDDED_NODE=" & quoted form of nodeBin & " " & ¬
 		"FG_REPO_ROOT=" & quoted form of repoRoot & " " & ¬
