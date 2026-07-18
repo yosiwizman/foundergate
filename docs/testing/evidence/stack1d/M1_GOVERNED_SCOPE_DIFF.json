@@ -1,0 +1,19 @@
+{
+  "governed_scope": [
+    "src/**",
+    "scripts/**",
+    "package.json"
+  ],
+  "governed_file_count": 340,
+  "evaluated_sha": "b9af1def60009ac9dae69bf519b5e0a2680d4600",
+  "cumulative_head": "3d5708492a1b3d2937f9daa830881111a2a3935a",
+  "manifest_matches_evaluated_sha": true,
+  "manifest_parent_mismatches": 0,
+  "unchanged": 339,
+  "modified": 1,
+  "deleted": 0,
+  "modified_files": [
+    "package.json"
+  ],
+  "deleted_files": []
+}

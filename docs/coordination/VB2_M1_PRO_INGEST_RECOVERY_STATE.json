@@ -1,0 +1,1 @@
+{"schema":"vb2-m1-ingest-recovery/1","state":"INGESTED_PASS","evidence_commit":"68cb1fa76c12fc57507d6dc36389c85f2c48f17a","applicability":"ACCEPTED_VB2_STAGE_ONLY","next":"reconcile identifiers+metadata; clear active embargo; merge evidence commit into #162"}
