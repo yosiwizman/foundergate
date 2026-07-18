@@ -1,0 +1,27 @@
+{
+  "$schema":"http://json-schema.org/draft-07/schema#","title":"Empty-Artifact Manifest (STACK-1E)",
+  "type":"object","required":["schema","policy_version","entries"],
+  "properties":{
+    "schema":{"type":"string"},"policy_version":{"type":"string"},
+    "entries":{"type":"array","items":{
+      "type":"object",
+      "required":["artifact_path","allow_empty","empty_reason","producer","producer_exit_status","qualification_run_id","evaluated_sha","companion_artifacts","companion_hashes","reviewer"],
+      "properties":{
+        "artifact_path":{"type":"string","not":{"pattern":"[*?]|/$"}},
+        "sha256":{"type":"string"},
+        "required":{"type":"boolean"},
+        "allow_empty":{"type":"boolean","const":true},
+        "empty_reason":{"type":"string","minLength":1},
+        "producer":{"type":"string","minLength":1},
+        "producer_exit_status":{"type":"integer"},
+        "qualification_run_id":{"type":"string","minLength":1},
+        "driver_lease_run_id":{"type":"string"},
+        "evaluated_sha":{"type":"string","pattern":"^[0-9a-f]{40}$"},
+        "companion_artifacts":{"type":"array","minItems":1,"items":{"type":"string"}},
+        "companion_hashes":{"type":"object"},
+        "reviewer":{"type":"string"},
+        "policy_version":{"type":"string"}
+      }
+    }}
+  }
+}

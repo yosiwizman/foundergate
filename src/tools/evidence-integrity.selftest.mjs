@@ -16,12 +16,22 @@ import { join, dirname, extname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 
+import { validateEmptyArtifact, manifestIsWellFormed } from "./empty-artifact-policy.mjs";
+
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..", ".."); // src/tools -> repo root
 const EVID = join(REPO, "docs", "assembly-evidence");
 
+// STACK-1E: empty evidence is INVALID BY DEFAULT. A 0-byte file passes ONLY if its exact repo-rel
+// path is declared in the governed empty-artifact manifest with verified companions + bindings.
+const EMPTY_MANIFEST_PATH = join(REPO, ".foundergate", "evidence", "empty_artifact_manifest.json");
+let emptyManifest = { entries: [] };
+try { if (existsSync(EMPTY_MANIFEST_PATH)) emptyManifest = JSON.parse(readFileSync(EMPTY_MANIFEST_PATH, "utf8")); } catch { emptyManifest = { entries: [] }; }
+
 const problems = [];
 let checked = 0;
+// reject any wildcard / extension-only / directory empty exemption in the manifest itself
+for (const p of manifestIsWellFormed(emptyManifest)) problems.push(p);
 
 function walk(dir, fn) {
   for (const name of readdirSync(dir)) {
@@ -49,10 +59,17 @@ if (existsSync(EVID)) {
   walk(EVID, (p, st) => {
     checked++;
     const rel = relative(REPO, p);
-    // A 0-byte .log (stdout/stderr capture) is legitimate — it means "no output" — and is NOT a
-    // fabrication risk (e.g. an externally-published soak sentinel-watch.log that logged nothing).
-    // Every OTHER empty evidence file (json/md/txt/jsonl/sha256/…) stays rejected (teeth intact).
-    if (st.size === 0) { if (extname(p) !== ".log") problems.push(`EMPTY evidence file: ${rel}`); return; }
+    // Empty evidence is INVALID BY DEFAULT (any extension). A 0-byte file passes ONLY when its exact
+    // repo-relative path is declared in the governed empty-artifact manifest AND every companion
+    // verifies (exists, non-empty, hash-match) and binds the artifact to its evaluated_sha + run id.
+    if (st.size === 0) {
+      const entry = (emptyManifest.entries || []).find((e) => e.artifact_path === rel);
+      const v = validateEmptyArtifact(rel, entry, {
+        readFile: (c) => { const cp = join(REPO, c); return existsSync(cp) ? readFileSync(cp) : null; },
+      });
+      if (!v.allowed) problems.push(`EMPTY evidence file: ${rel} — ${v.reason}`);
+      return;
+    }
     if (TEXT.has(extname(p))) {
       const s = readFileSync(p, "utf8");
       for (const re of PLACEHOLDERS) {
@@ -141,14 +158,6 @@ if (!existsSync(helper)) {
     problems.push("scripts/stamp.mjs must read (readFileSync) before it writes (writeFileSync)");
   }
 }
-
-// Mutation proof (self-check): the 0-byte exemption is scoped to .log ONLY. An empty
-// json/md/txt evidence file is still a violation; only an empty .log (no-output capture) is exempt.
-const emptyFlagged = (name) => extname(name) !== ".log";
-for (const nonlog of ["x.json", "x.md", "x.txt", "RUN_RESULT.json", "evidence-pack.sha256"]) {
-  if (!emptyFlagged(nonlog)) problems.push(`evidence-integrity teeth regression: empty ${nonlog} no longer flagged`);
-}
-if (emptyFlagged("sentinel-watch.log")) problems.push("evidence-integrity: empty .log must be exempt (no-output capture)");
 
 if (problems.length) {
   console.error(`EVIDENCE-INTEGRITY-GUARD: FAIL (${problems.length}) — checked ${checked} evidence files`);
