@@ -1,0 +1,16 @@
+{
+  "directive_id": "fgri-paes-recovery-1",
+  "next_safe_action": "merge FGRI+PAES; attempt live activation; establish handoff-barrier status",
+  "completion_predicates": [
+    "FGRI merged",
+    "PAES merged",
+    "decision consumed",
+    "handoff barrier met OR blocker proven"
+  ],
+  "stop_predicates": [
+    "self-capture-failed",
+    "autonomy-capability-gap",
+    "PANIC"
+  ],
+  "updated_at": "2026-07-18T06:22:53Z"
+}

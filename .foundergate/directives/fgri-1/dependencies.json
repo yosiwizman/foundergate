@@ -1,0 +1,9 @@
+{
+  "directive_id": "fgri-1",
+  "depends_on": [
+    "dcl-1",
+    "arlc-1",
+    "are-1",
+    "paes-1"
+  ]
+}

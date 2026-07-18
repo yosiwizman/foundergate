@@ -1,0 +1,33 @@
+{
+  "directive_id": "fgri-paes-recovery-1",
+  "title": "FOUNDERGATE FGRI-PAES-RECOVERY-1 \u2014 COMPLETE, QUALIFY, MERGE, ACTIVATE, AND HAND OFF TO PERSISTENT EXECUTION",
+  "version": 1,
+  "issuer": "founder",
+  "source_line": 22543,
+  "source_type": "attachment",
+  "sha256": "f15be4a871a10f4f2cbb241f391a4ec3e37abb8ab4bb653cb8d508741e1c07ff",
+  "stored_sha256": "f15be4a871a10f4f2cbb241f391a4ec3e37abb8ab4bb653cb8d508741e1c07ff",
+  "digest_equal": true,
+  "byte_count": 22449,
+  "line_count": 841,
+  "required_sections_present": {
+    "AUTHORITY SCOPE": true,
+    "PURPOSE": true,
+    "PHASE 0": true,
+    "PHASE 3 \u2014 FGRI COMPLETION": true,
+    "PHASE 4 \u2014 PAES COMPLETION": true,
+    "PHASE 6 \u2014 CONTROLLED QUALIFICATION": true,
+    "PHASE 10 \u2014 UNATTENDED HANDOFF BARRIER": true,
+    "FINAL OUTPUT": true,
+    "FGRI-PAES-RECOVERY: SELF-CAPTURE-FAILED": true
+  },
+  "cross_source_identical": true,
+  "depends_on": [
+    "dcl-1",
+    "arlc-1",
+    "are-1",
+    "paes-1",
+    "fgri-1"
+  ],
+  "current_state": "DIGEST_VERIFIED"
+}

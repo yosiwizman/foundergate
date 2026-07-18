@@ -1,0 +1,15 @@
+{
+  "directive_id": "fgri-1",
+  "next_safe_action": "checker-clean -> merge -> activate router",
+  "completion_predicates": [
+    "router built",
+    "envelope active",
+    "inbox active",
+    "merged"
+  ],
+  "stop_predicates": [
+    "checker reject",
+    "PANIC"
+  ],
+  "updated_at": "2026-07-18T06:22:53Z"
+}

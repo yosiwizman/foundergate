@@ -1,0 +1,10 @@
+{
+  "directive_id": "fgri-paes-recovery-1",
+  "depends_on": [
+    "dcl-1",
+    "arlc-1",
+    "are-1",
+    "paes-1",
+    "fgri-1"
+  ]
+}
