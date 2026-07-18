@@ -4,12 +4,13 @@
 // parent shell, closes stdin, writes durable heartbeat/lease/state, and re-invokes
 // the narrow-allowlist unattended executor until deadline / PANIC / exhaustion.
 // Auth works because this inherits the login session's keychain access.
-import { spawnSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, renameSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { canEnterRunning, evaluateStop, deadlineStatus } from "../../../src/supervisor/supervisor-core.mjs";
 import { acquireSingleton, releaseSingleton } from "../../../src/supervisor/singleton.mjs";
+import { runBeatingChild } from "../../../src/supervisor/worker-heartbeat.mjs";
 import { readFileSync as _rf, existsSync as _ex } from "node:fs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
@@ -56,7 +57,7 @@ function preconditions() {
   };
 }
 
-function runWorker(job) {
+async function runWorker(job) {
   const pf = join(SUP, "worker-results", `${job.job_id}.prompt.txt`);
   const prompt = existsSync(pf) ? readFileSync(pf, "utf8") : (job.prompt || 'Return {"noop":true}');
   const sess = rj(`worker-results/${job.job_id}.session`, null);
@@ -67,11 +68,18 @@ function runWorker(job) {
     ? ["--resume", sess.session_id, "-p", prompt, ...tail]
     : ["-p", prompt, ...tail];
   led({ evt: "worker_invocation", job_id: job.job_id, mode: sess ? "resume" : "fresh" });
-  const r = spawnSync(CLAUDE, args, { cwd: REPO, encoding: "utf8", maxBuffer: 64 * 1024 * 1024, stdio: ["ignore", "pipe", "pipe"] });
+  // NON-BLOCKING spawn + heartbeat interval: liveness stays fresh for the whole
+  // worker (even one longer than the 120s staleness interval), so a live-but-busy
+  // supervisor is never misclassified as stale and replaced. Was spawnSync, which
+  // froze the single-threaded event loop for the worker's entire duration.
+  const r = await runBeatingChild({
+    spawnChild: () => spawn(CLAUDE, args, { cwd: REPO, stdio: ["ignore", "pipe", "pipe"] }),
+    beat, intervalMs: HEARTBEAT_INTERVAL_MS, maxBufferBytes: 64 * 1024 * 1024,
+  });
   let cost = null, sid = null, ok = false;
   try { const o = JSON.parse((r.stdout || "").trim().split("\n").pop()); cost = o.total_cost_usd; sid = o.session_id; ok = o.subtype === "success" && !o.is_error; } catch { /* */ }
   if (sid) wj(`worker-results/${job.job_id}.session`, { session_id: sid });
-  led({ evt: "worker_result", job_id: job.job_id, exit: r.status, success: ok, cost_usd: cost });
+  led({ evt: "worker_result", job_id: job.job_id, exit: r.status, success: ok, cost_usd: cost, overflow: r.overflow });
   return { ok, cost };
 }
 
@@ -127,7 +135,7 @@ async function main() {
     const activated = existsSync(join(SUP, "handoff.json"));
     if (ready.length && activated) {
       const job = ready[0];
-      const res = runWorker(job);
+      const res = await runWorker(job);
       const jobs = q.jobs.map((j) => j.job_id === job.job_id ? { ...j, state: res.ok ? "DONE" : "FAILED", restart_count: (j.restart_count || 0) + (res.ok ? 0 : 1) } : j);
       wj("queue.json", { ...q, jobs });
     } else {
