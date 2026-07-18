@@ -1,1 +1,1 @@
-governed scope diff (evaluated b9af1def -> cumulative head): 339 unchanged / 1 modified (package.json devDeps only) / 0 deleted; VB2 runtime byte-identical.
+Governed-scope diff (evaluated b9af1def -> cumulative head): 338 unchanged / 2 modified / 0 deleted. The 2 changes: (1) package.json additive devDependencies (test tooling); (2) src/tools/evidence-integrity.selftest.mjs bounded CI-guard refinement (empty .log exemption, teeth intact). No governed production-runtime (src/** runtime, scripts/**) behavior drift. Cumulative head NOT claimed 8h-soaked.
