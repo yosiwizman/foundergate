@@ -1,0 +1,38 @@
+{
+  "schema": "are1-selfhosting-1",
+  "run_id": "v8b-nightshift",
+  "recorded_at": "2026-07-18T04:07:08Z",
+  "SEGMENT_A_PRE_ENVELOPE": {
+    "label": "RETROSPECTIVE RECONSTRUCTION (from disk, Git, GitHub only \u2014 no backdating, no invented events)",
+    "work": [
+      "STACK-1F: merged cumulative PR #162 -> main (merge commit e4f69db) under standing autonomous authority",
+      "closed superseded PRs #151-#161 (never merged individually)",
+      "no-loss branch/worktree cleanup (evidence branches preserved; phase7-1 worktree kept for unique change)",
+      "ARLC-1: built lifecycle law + controller; independent checker cycle (findings->fixed->CLEAN); Advisor READY-TO-ACTIVATE",
+      "merged PR #163 -> main (2853194); ARLC1: ACTIVE"
+    ],
+    "evidence": "Git merge commits e4f69db, 2853194; PR states MERGED/CLOSED; .foundergate/state/arlc_activation.json"
+  },
+  "SEGMENT_B_ENVELOPE_ENFORCED": {
+    "label": "ENVELOPE-ENFORCED",
+    "activation_status": "PENDING \u2014 ARE-1 activates at Phase 15 integration; no enforced events claimed before activation",
+    "activation_base_main_sha": "28531940537a0945e97c6471eea56eb8ea1083b6",
+    "enforced_events": [],
+    "note": "The ARE-1 mechanism cannot have enforced work that predates its own activation. Future Nightshift lanes attach here after ARE1: ACTIVE."
+  },
+  "classification": {
+    "INTERNAL_SELF_HOSTING_OBSERVED": "YES",
+    "AUTONOMOUS_REPOSITORY_LIFECYCLE_PROVEN_FOR_THIS_RUN": "YES (merge+closure+cleanup+ARLC merge done autonomously, qualified)",
+    "AUTONOMOUS_LANE_CONTINUATION_OBSERVED": "YES (gate-to-gate continuation across STACK-1F -> ARLC-1 -> ARE-1)",
+    "FOUNDER_HAND_BURDEN_MEASURED": "YES",
+    "BLUEPRINT_DRIVEN_RUN_PROVEN": "NO (no actual software blueprint was present and bound from the start; this run was DIRECTIVE-driven, not blueprint-driven)"
+  },
+  "explicit_non_claims": {
+    "OUTSIDE_OPERATOR_PROVEN": "NO",
+    "SECOND_PROJECT_PROVEN": "NO",
+    "CUSTOMER_CODE_PROVEN": "NO",
+    "PRIVATE_REPOSITORY_PROVEN": "NO",
+    "EXTERNAL_NON_DEVELOPER_ADOPTION_PROVEN": "NO",
+    "GENERAL_PRODUCT_RELIABILITY_PROVEN": "NO"
+  }
+}

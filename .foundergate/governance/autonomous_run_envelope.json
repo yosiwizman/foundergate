@@ -1,0 +1,37 @@
+{
+  "policy_id": "autonomous_run_envelope",
+  "version": "1.0.0",
+  "status": "ACTIVE",
+  "purpose": "Bind software blueprint -> plan -> Spec Cards -> lanes -> actions -> sandbox -> evidence -> checker -> lifecycle -> founder gates -> result.",
+  "depends_on": {
+    "ARLC-1": "sha256:d918011669a39b7f81a24bc2ca587d6a38030d1b21d23f7427e31e87efef358c"
+  },
+  "invariants": [
+    "THE SOFTWARE BLUEPRINT EXPRESSES INTENT; IT DOES NOT BY ITSELF GRANT LIVE AUTHORITY.",
+    "EVERY AUTONOMOUS RUN IS BOUND TO ONE BLUEPRINT DIGEST, ONE RUN MANIFEST AND ONE EXACT CODE STATE.",
+    "EVERY LANE, ACTION, EVIDENCE ARTIFACT AND VERDICT IS TRACEABLE TO THE BLUEPRINT AND RUN MANIFEST.",
+    "MISSING OR CONFLICTING EVIDENCE CANNOT PRODUCE PASS.",
+    "A SINGLE SUCCESSFUL RUN CANNOT AUTOMATICALLY PROMOTE A PATTERN TO ADOPTED.",
+    "ROUTINE AUTONOMOUS WORK REMAINS IN THE OPERATIONAL QUEUE; ONLY TRUE FOUNDER OR HUMAN-EXPERT GATES ENTER THE FOUNDER QUEUE.",
+    "UNKNOWN NEVER TRANSITIONS DIRECTLY TO PASS."
+  ],
+  "gate_classification_delegated_to": "ARLC-1 action_classification (single source of truth; not duplicated)",
+  "modules": {
+    "validator": "src/autonomous-run/blueprint-validator.mjs",
+    "compiler": "src/autonomous-run/blueprint-compiler.mjs",
+    "envelope": "src/autonomous-run/run-envelope.mjs",
+    "ledger": "src/autonomous-run/run-ledger.mjs",
+    "result": "src/autonomous-run/run-result.mjs",
+    "pattern": "src/autonomous-run/pattern-registry.mjs"
+  },
+  "does_not_authorize": [
+    "OpenSandbox adoption",
+    "customer/private execution",
+    "production",
+    "public release",
+    "payments",
+    "AKIOR",
+    "provider activation",
+    "outside-operator/second-project/customer-code claims from internal self-hosting"
+  ]
+}

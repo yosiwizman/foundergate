@@ -1,0 +1,38 @@
+{
+  "schema": "are1-founder-burden-1",
+  "run_id": "v8b-nightshift",
+  "recorded_at": "2026-07-18T04:07:08Z",
+  "scope": "This session's envelope program (Segment A reconstruction). Target: zero UNNECESSARY founder technical operations \u2014 not zero founder decisions.",
+  "founder_prompts_provided": 3,
+  "founder_signatures_provided": 0,
+  "founder_ui_witnesses": 0,
+  "founder_clicks": 0,
+  "founder_terminal_actions": 0,
+  "founder_debugging_actions": 0,
+  "founder_raw_log_reviews": 0,
+  "false_founder_gates_suppressed": [
+    "merge #162 to main",
+    "merge #163 to main",
+    "close 11 superseded PRs",
+    "branch/worktree cleanup"
+  ],
+  "routine_actions_completed_autonomously": [
+    "merge #162",
+    "close #151-#161",
+    "remove obsolete worktrees",
+    "merge #163",
+    "exact-SHA CI polling",
+    "selftests",
+    "ARLC build+fix"
+  ],
+  "correction_cycles": 1,
+  "true_founder_decisions_supplied": "standing autonomous-merge authority + ARLC/ARE-1 directives (prior founder decisions; not re-litigated)",
+  "founder_role_distinction": {
+    "initiated_the_program": "YES (directives)",
+    "operated_the_repository": "NO (Terminal-0 did all git/merge/CI)",
+    "supplied_a_true_decision": "YES (standing authorizations)",
+    "performed_a_ui_witness": "NO",
+    "debugged_technical_work": "NO"
+  },
+  "interpretation": "Zero founder technical operations were required for the routine merges, closures and cleanup; the founder supplied direction and standing authority only."
+}

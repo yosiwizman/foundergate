@@ -1,0 +1,12 @@
+{
+  "schema": "are1-intake-1",
+  "directive": "ARE-1",
+  "directive_signature_digest": "sha256:8404dd30f1824601a48cc718e811a4117f4415195ae9538ecebab02686f03e54",
+  "depends_on": "ARLC-1",
+  "arlc_status": "ACTIVE",
+  "proceed": true,
+  "lane_branch": "lane/are-1-autonomous-run-envelope",
+  "base_main": "28531940537a0945e97c6471eea56eb8ea1083b6",
+  "path_collision_with_arlc": "NONE (disjoint: ARE-1 does not write tools/terminal0 or ARLC policy/pointer)",
+  "nightshift": "this conversation is the current run; attached additively, not restarted"
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "autonomous_run_event",
+  "type": "object",
+  "required": [
+    "run_id",
+    "blueprint_digest",
+    "manifest_digest",
+    "project",
+    "lane",
+    "exact_sha",
+    "action_class",
+    "authority",
+    "executor",
+    "result",
+    "evidence",
+    "duration",
+    "correction_cycle",
+    "founder_interruption",
+    "next_safe_action",
+    "idempotency_key"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "run_id": {},
+    "blueprint_digest": {},
+    "manifest_digest": {},
+    "project": {},
+    "lane": {},
+    "exact_sha": {},
+    "action_class": {},
+    "authority": {},
+    "executor": {},
+    "result": {},
+    "evidence": {},
+    "duration": {},
+    "correction_cycle": {},
+    "founder_interruption": {},
+    "next_safe_action": {},
+    "idempotency_key": {}
+  }
+}
