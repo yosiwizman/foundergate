@@ -1,0 +1,15 @@
+{
+  "schema": "are1-evidence-index-1",
+  "run_id": "v8b-nightshift",
+  "recorded_at": "2026-07-18T04:07:08Z",
+  "artifacts": [
+    "docs/self-hosting/V8B_NIGHTSHIFT_AUTONOMOUS_RUN.json",
+    ".foundergate/state/arlc_activation.json",
+    ".foundergate/governance/autonomous_run_envelope.json",
+    "src/autonomous-run/*.mjs (37/37 selftest)"
+  ],
+  "merges": [
+    "e4f69db (#162)",
+    "2853194 (#163)"
+  ]
+}

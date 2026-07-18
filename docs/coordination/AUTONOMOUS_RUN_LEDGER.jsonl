@@ -1,0 +1,2 @@
+{"run_id": "v8b-nightshift", "event": "segment_a_reconstructed", "ts": "2026-07-18T04:06:22Z", "merges": ["e4f69db (#162)", "2853194 (#163)"], "note": "pre-envelope; retrospective"}
+{"run_id": "v8b-nightshift", "event": "are1_envelope_activated_pending_integration", "ts": "2026-07-18T04:06:22Z", "base_main": "28531940537a0945e97c6471eea56eb8ea1083b6"}

@@ -1,0 +1,9 @@
+{
+  "schema": "are1-active-run-1",
+  "run_id": "v8b-nightshift",
+  "status": "RUNNING",
+  "envelope": "ACTIVE",
+  "activation_main_sha": "28531940537a0945e97c6471eea56eb8ea1083b6",
+  "activation_time": "2026-07-18T04:06:22Z",
+  "note": "pre-envelope work reconstructed retrospectively; not backdated"
+}
