@@ -1,0 +1,9 @@
+{
+  "schema": "directive-deps-1",
+  "dcl-1": {
+    "depends_on": [
+      "arlc-1"
+    ],
+    "arlc_status": "ACTIVE"
+  }
+}

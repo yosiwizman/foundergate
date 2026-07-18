@@ -1,0 +1,472 @@
+queue FOUNDERGATE STACK-1F — STANDING AUTONOMOUS MERGE AUTHORITY, CUMULATIVE MERGE, REPOSITORY CLEANUP, AND SCL-1 GATE-TO-GATE EXECUTION
+
+FOUNDER GOVERNANCE CLARIFICATION
+
+I establish the following permanent FounderGate operating rule:
+
+A repository merge is not a founder gate merely because it writes main.
+
+Terminal-0 may merge autonomously when the exact candidate satisfies all current machine-enforced merge-readiness requirements and the merge does not create new legal, provider, production, customer-data, payment, public-release, security-boundary, or live-action authority.
+
+The founder is not a release engineer.
+
+The founder is required only for true founder gates and human-perception witnesses.
+
+Terminal-0 must not stop for routine qualified merges, PR closure, branch cleanup, worktree cleanup, CI correction, bounded reconciliation, or ordinary integration work.
+
+This standing authority does not permit bypassing checks or weakening governance.
+
+It does not authorize OpenSandbox adoption, customer or private repository execution, production deployment, public release, payments, AKIOR access, or provider activation beyond existing disk authority.
+
+CLASSIFICATION
+
+GOVERNANCE AUTHORITY: FOUNDER-AUTHORIZED STANDING RULE
+STACK MERGE: NARROW-SENSITIVE OPERATIONAL ACTION
+POST-MERGE CLEANUP: WIDE-SAFE WITH FAIL-CLOSED DELETION CHECKS
+SCL-1 BUILD: WIDE-SAFE AND NARROW-SENSITIVE BY COMPONENT
+TERMINAL-0: SOLE MERGE SHERIFF
+NO FOUNDER INTERRUPTION FOR ROUTINE MERGE OR CLEANUP
+STOP ONLY AT A TRUE FOUNDER GATE, HUMAN-EXPERT GATE, OR UNRESOLVED MATERIAL BLOCKER
+
+PURPOSE
+
+After STACK1E proves the exact cumulative candidate ready:
+
+1. merge the single cumulative PR into main;
+2. verify the merge mechanically;
+3. close the superseded phase PRs;
+4. clean obsolete branches and worktrees safely;
+5. start SCL-1 from clean updated main;
+6. continue autonomously until the next genuine founder gate.
+
+Do not merge the earlier PRs individually.
+
+Do not request founder approval for routine merge execution.
+
+PHASE 0 — PRECONDITIONS
+
+Before operating:
+
+1. Prove host identity is Mac16,11 / Apple M4 Pro.
+2. Resolve repository and origin.
+3. Fetch current remote references.
+4. Resolve current remote main.
+5. Resolve live cumulative PR mechanically.
+6. Verify the cumulative PR is PR #162 or record the current mechanically resolved replacement if GitHub state changed.
+7. Resolve:
+   - base branch;
+   - exact base SHA;
+   - head branch;
+   - exact full head SHA;
+   - draft state;
+   - mergeability;
+   - current checks.
+8. Load the final STACK1E decision packet.
+9. Verify the exact final verdict is:
+   STACK1E: READY-FOR-FOUNDER-MERGE-GATE
+10. Verify a fresh checker verdict exists:
+    STACK1E-CHECKER-CLEAN
+11. Verify a fresh final Advisor verdict exists:
+    STACK1E-ADVISOR: READY-FOR-FOUNDER-MERGE-GATE
+12. Verify the checker and Advisor bind to the current exact candidate or permitted attestation descendant.
+13. Verify no product, runtime, launcher, policy, validator, schema or test code changed after the final attestations.
+14. Verify exact-final-head CI is green.
+15. Verify the Phase 7.1 founder witness acceptance seal.
+16. Verify the exact M1 evidence commit remains in cumulative ancestry.
+17. Verify every required earlier phase PR head remains in cumulative ancestry.
+18. Verify no unresolved review thread or blocking finding exists.
+19. Verify the cumulative diff contains no forbidden artifact.
+20. Verify no active M1 qualification contract currently prohibits main merge.
+21. Verify no active runtime or Lima VM exists.
+22. Verify no conflicting writer is modifying the cumulative branch or main.
+
+Do not use remembered SHAs, PR numbers, paths, branches, workflow runs, or statuses.
+
+If any merge-readiness condition is missing:
+
+- classify the issue;
+- perform up to three bounded correction cycles;
+- rerun affected tests;
+- obtain exact-SHA CI;
+- obtain fresh checker and final Advisor attestations;
+- continue automatically.
+
+Do not involve the founder unless resolving the issue would itself require a true founder decision.
+
+PHASE 1 — MERGE-AUTHORITY DERIVATION
+
+Create or reconcile:
+
+.foundergate/policies/autonomous_merge_authority.json
+.foundergate/schemas/autonomous_merge_authority.schema.json
+docs/contracts/AUTONOMOUS_MERGE_AUTHORITY.md
+docs/roadmap/AUTONOMOUS_MERGE_AUTHORITY_ADDENDUM.md
+docs/status/AUTONOMOUS_MERGE_AUTHORITY_FOUNDER_RECORD.md
+docs/coordination/AUTONOMOUS_MERGE_AUTHORITY_LEDGER.jsonl
+
+Record the founder governance clarification verbatim.
+
+The policy must permit autonomous main merge only when all required predicates are mechanically true.
+
+Required predicates include:
+
+- one designated cumulative PR;
+- exact current head;
+- approved base;
+- exact-head CI green;
+- independent checker clean;
+- final Advisor ready;
+- no post-attestation code drift;
+- complete ancestry;
+- no forbidden artifacts;
+- merge method allowed;
+- no active merge embargo;
+- rollback and cleanup plan present.
+
+The policy must deny autonomous merge when:
+
+- checks are missing or stale;
+- findings remain unresolved;
+- head moved after attestation;
+- the PR contains unrelated work;
+- a security or legal gate exists;
+- a live provider/adoption gate exists;
+- a customer/private-data gate exists;
+- the merge would weaken a protected policy;
+- an active qualification contract forbids main movement.
+
+Add tests and mutations proving every denial condition.
+
+PHASE 2 — FINAL PRE-MERGE FREEZE
+
+Freeze the exact cumulative head.
+
+Record:
+
+AUTONOMOUS_MERGE_EVALUATED_HEAD
+
+Mechanically verify:
+
+- remote head has not moved;
+- local branch matches remote head;
+- worktree is clean;
+- expected-head SHA matches the evaluated head;
+- exact-final-head workflows remain green;
+- no attestation is stale.
+
+If the head moves, restart the applicable readiness validation automatically.
+
+PHASE 3 — READY-STATE TRANSITION
+
+If GitHub requires a draft PR to be marked ready before merge:
+
+1. mark the cumulative PR ready for review;
+2. verify the head did not move;
+3. verify no check was invalidated;
+4. proceed directly to merge.
+
+Do not stop for founder involvement.
+
+Do not enable indefinite auto-merge if an immediate verified merge is possible.
+
+PHASE 4 — CUMULATIVE MAIN MERGE
+
+Merge the single cumulative PR into main using:
+
+MERGE COMMIT
+
+Requirements:
+
+- use the exact expected head SHA;
+- do not squash;
+- do not rebase-merge;
+- do not force-push;
+- do not merge earlier PRs individually;
+- preserve every accepted historical SHA;
+- preserve the exact M1 evidence commit;
+- preserve the prior NOT-PASSED evidence history;
+- preserve the founder acceptance record.
+
+Record:
+
+- PR;
+- exact pre-merge main;
+- exact head;
+- merge commit;
+- merge timestamp;
+- merge method;
+- GitHub response;
+- operator;
+- policy decision.
+
+If GitHub rejects the merge because the head changed:
+
+- do not force;
+- re-derive readiness;
+- rerun affected checks;
+- continue autonomously.
+
+PHASE 5 — POST-MERGE VERIFICATION
+
+Immediately after the merge:
+
+1. fetch current remote main;
+2. resolve the exact merge commit;
+3. verify the cumulative head is a parent or ancestor according to the merge method;
+4. verify every required phase SHA remains in main ancestry;
+5. verify the exact M1 evidence commit remains in main ancestry;
+6. verify the founder-accepted product tree is intact;
+7. verify policy digests;
+8. verify no unexpected file entered main;
+9. verify main is clean locally;
+10. run all required post-merge local tests;
+11. run required GitHub-hosted CI on the exact merge commit;
+12. verify no self-hosted runner;
+13. verify no M1 contact;
+14. verify no runtime or VM starts.
+
+Do not proceed to destructive cleanup until post-merge verification and CI pass.
+
+Allow up to three bounded correction cycles where correction can be made safely without rewriting accepted history.
+
+If the merge itself is valid but post-merge CI exposes a correctable integration defect:
+
+- create one bounded correction branch from main;
+- correct;
+- test;
+- check;
+- merge under the standing autonomous merge authority when all conditions pass;
+- do not involve the founder unless a true decision is required.
+
+PHASE 6 — CLOSE SUPERSEDED PRS
+
+After verified merge:
+
+1. resolve the complete earlier PR list mechanically.
+2. For each earlier stacked PR fully contained in main:
+   - add a final comment stating:
+     SUPERSEDED BY VERIFIED CUMULATIVE INTEGRATION
+   - link the cumulative merged PR and merge commit;
+   - close the PR without merging it individually.
+3. The cumulative PR should already be closed as MERGED by GitHub.
+4. Do not close any PR containing unique work absent from main.
+5. Verify the open PR count after cleanup.
+
+Expected historical range is #151–#161, but resolve mechanically rather than assuming.
+
+PHASE 7 — BRANCH CLEANUP
+
+Build a deletion inventory.
+
+For each candidate remote branch prove:
+
+- all commits are reachable from main or intentionally preserved elsewhere;
+- no open non-superseded PR depends on it;
+- no active worktree uses it;
+- no unique commit would be lost;
+- it is not an evidence-preservation branch;
+- it is not the M1 PASS branch;
+- it is not the prior NOT-PASSED evidence branch;
+- it is not a protected branch.
+
+Preserve:
+
+- main;
+- required evidence branches;
+- current qualification evidence;
+- any branch required by a live contractual record.
+
+Delete only mechanically safe obsolete phase branches.
+
+Record every deleted and preserved branch with reason.
+
+PHASE 8 — WORKTREE CLEANUP
+
+For every obsolete local worktree:
+
+1. verify it is not active;
+2. verify no process uses it;
+3. verify no uncommitted or untracked unique files exist;
+4. verify all required commits are preserved remotely and in main;
+5. archive any governed evidence required by policy;
+6. remove the worktree safely;
+7. prune stale worktree records.
+
+Do not remove the main worktree.
+
+Do not remove current evidence or qualification worktrees if policy requires retention.
+
+PHASE 9 — POST-CLEANUP RECONCILIATION
+
+Produce:
+
+docs/status/STACK1F_AUTONOMOUS_MERGE_REPORT.md
+docs/status/STACK1F_AUTONOMOUS_MERGE_REPORT.json
+docs/status/STACK1F_PR_CLEANUP_REPORT.md
+docs/status/STACK1F_BRANCH_WORKTREE_CLEANUP_REPORT.md
+docs/coordination/STACK1F_LEDGER.jsonl
+docs/coordination/STACK1F_RECOVERY_STATE.json
+
+Record:
+
+- merge commit;
+- post-merge CI;
+- ancestry proof;
+- PRs merged;
+- PRs closed as superseded;
+- branches deleted;
+- branches preserved;
+- worktrees removed;
+- worktrees preserved;
+- final open PR count;
+- final branch count;
+- final worktree count;
+- next safe action.
+
+PHASE 10 — START SCL-1 FROM CLEAN MAIN
+
+Only after the cumulative merge and cleanup are verified:
+
+1. resolve the exact updated remote main;
+2. update the clean local main worktree;
+3. verify policy integrity;
+4. create one new SCL-1 integration branch and isolated worktree;
+5. do not create a long tower of phase PRs;
+6. use one cumulative SCL-1 PR with internal lane records;
+7. create the SCL-1 lane contract;
+8. classify all components as wide-safe or narrow-sensitive;
+9. run wide-safe lanes in parallel;
+10. use one writer for sandbox execution, command policy, provider activation, recovery and authority paths;
+11. use independent checkers;
+12. continue correction cycles automatically;
+13. exhaust machine-verifiable testing before involving the founder.
+
+SCL-1 objective:
+
+Build the permanent provider-neutral FounderGate Sandbox Control Layer with:
+
+- provider registry;
+- source-provider contract;
+- project-adapter contract;
+- Check Plan;
+- authorized-command policy;
+- no-host-fallback;
+- recovery;
+- resource limits;
+- evidence normalization;
+- OpenSandbox Provider 001 adapter with CANDIDATE status;
+- normal FounderGate integration;
+- foreground UI qualification;
+- AKIOR adoption package without accessing AKIOR.
+
+OpenSandbox must remain:
+
+CANDIDATE
+NOT ADOPTED
+NOT DEFAULT
+
+PHASE 11 — AUTONOMOUS STOP RULE
+
+Do not stop for:
+
+- routine commits;
+- CI repair;
+- checker findings that can be corrected;
+- documentation reconciliation;
+- PR creation;
+- PR retargeting;
+- qualified merge;
+- superseded PR closure;
+- safe branch cleanup;
+- safe worktree cleanup;
+- safe SCL-1 architecture;
+- synthetic tests;
+- mock-provider tests;
+- accessibility testing;
+- screenshots;
+- exact-SHA CI;
+- independent checking.
+
+Stop only at the first actual true gate:
+
+A. SCL-1 live fixed-fixture authority is required and no standing disk authority permits it.
+
+B. OpenSandbox adoption or default-provider selection is proposed.
+
+C. The SCL-1 founder-facing UI is machine-qualified and ready for human-perception witness.
+
+D. Private repository, customer code, production data, credentials, or real provider access is required.
+
+E. Public deployment or release is proposed.
+
+F. A legal, security, payment, IP, tax, health, or regulatory expert judgment is required.
+
+G. A material policy weakening or irreversible migration is proposed.
+
+If existing disk authority already permits one bounded SCL-1 fixed-fixture run:
+
+- execute exactly the permitted run;
+- seal evidence;
+- continue to the UI witness without founder interruption.
+
+If authority is absent:
+
+- stop with a clear live-runtime authorization gate.
+
+PHASE 12 — FINAL OUTPUT
+
+Return:
+
+1. Pro host identity.
+2. Pre-merge main.
+3. Cumulative PR.
+4. Exact cumulative head.
+5. Standing merge-policy version and digest.
+6. Merge method.
+7. Main merge commit.
+8. Phase-SHA ancestry result.
+9. M1 evidence-SHA ancestry result.
+10. Post-merge local tests.
+11. Post-merge exact-SHA CI.
+12. Earlier PRs closed as superseded.
+13. Remaining open PRs.
+14. Remote branches removed.
+15. Evidence branches preserved.
+16. Worktrees removed.
+17. Worktrees preserved.
+18. Final repository hygiene result.
+19. Updated main SHA.
+20. SCL-1 branch and worktree.
+21. SCL-1 lanes launched.
+22. SCL-1 current machine-verifiable status.
+23. Exact next true founder gate.
+24. Exact founder action required, if any.
+
+Required exact statements:
+
+ROUTINE MECHANICALLY QUALIFIED MERGES ARE TERMINAL-0 OPERATIONAL ACTIONS, NOT FOUNDER GATES.
+
+PR #162 WAS MERGED ONCE AS THE SINGLE CUMULATIVE INTEGRATION; EARLIER STACKED PRS WERE NOT MERGED INDIVIDUALLY.
+
+ALL ACCEPTED EXACT SHAS REMAIN IN MAIN ANCESTRY.
+
+EARLIER PRS WERE CLOSED AS SUPERSEDED ONLY AFTER THE CUMULATIVE MERGE AND POST-MERGE VERIFICATION PASSED.
+
+OBSOLETE BRANCHES AND WORKTREES WERE REMOVED ONLY AFTER NO-LOSS CHECKS.
+
+SCL-1 STARTED FROM CLEAN VERIFIED MAIN.
+
+THE FOUNDER WAS NOT USED AS A RELEASE ENGINEER.
+
+NO OPENSANDBOX ADOPTION, CUSTOMER EXECUTION, PRIVATE-REPOSITORY ACCESS, PRODUCTION DEPLOYMENT, AKIOR ACCESS OR POLICY WEAKENING WAS IMPLIED BY THE MERGE.
+
+Finish with exactly one verdict:
+
+STACK1F: MERGED-CLEANED-SCL1-RUNNING
+SCL1: LIVE-FIXTURE-AUTHORITY-REQUIRED
+SCL1: READY-FOR-FOUNDER-UI-WITNESS
+SCL1: PROVIDER-ADOPTION-GATE
+SCL1: HOLD-HUMAN-EXPERT-GATE
+SCL1: HOLD-CORRECTABLE-FINDINGS
+SCL1: REJECT
+SCL1: INSUFFICIENT-EVIDENCE

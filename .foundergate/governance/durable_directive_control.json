@@ -1,0 +1,37 @@
+{
+  "policy_id": "durable_directive_control",
+  "version": "1.0.0",
+  "status": "ACTIVE",
+  "principle": "No autonomous FounderGate directive may depend solely on Claude Code conversational memory.",
+  "requires_before_execution": [
+    "exact body",
+    "sha256",
+    "byte_count",
+    "line_count",
+    "beginning+ending anchors",
+    "issuer",
+    "receipt timestamp",
+    "dependency graph",
+    "queue state",
+    "recovery state",
+    "append-only ledger",
+    "next safe action",
+    "completion predicates",
+    "stop predicates"
+  ],
+  "immutable_body": true,
+  "corrections_require_new_version_and_digest": true,
+  "compaction_unsafe_until": [
+    "body CAPTURED",
+    "digest verifies",
+    "queue exists",
+    "dependencies",
+    "recovery state",
+    "next safe action"
+  ],
+  "depends_on": {
+    "ARLC-1": "sha256:d918011669a39b7f81a24bc2ca587d6a38030d1b21d23f7427e31e87efef358c"
+  },
+  "control_library": "src/directives/directive-control.mjs",
+  "no_reconstruction": "A directive whose receipt cannot be proven from the transcript/disk is recorded NOT_PROVEN, never reconstructed or backdated."
+}

@@ -1,0 +1,42 @@
+{
+  "stack-1e": {
+    "found": true,
+    "source_type": "user",
+    "line": 21276,
+    "sha256": "c46e554a8eb1e152b014df7bb9718c68587d81f3e9aec19432bbdb8883c77483",
+    "byte_count": 14168,
+    "line_count": 505,
+    "status": "HISTORICAL_RECEIVED_NOT_LOCKED"
+  },
+  "stack-1f": {
+    "found": true,
+    "source_type": "attachment",
+    "line": 21378,
+    "sha256": "2d0a54240d73fc967a0a6f1c782b6ffc3ae0e6a271082b5cbe60b2cde6ac7883",
+    "byte_count": 14883,
+    "line_count": 472,
+    "status": "HISTORICAL_RECEIVED_NOT_LOCKED"
+  },
+  "arlc-1": {
+    "found": true,
+    "source_type": "attachment",
+    "line": 21420,
+    "sha256": "d1aa7cad71fb8ef01a50d50a564436754ba646d8947e07450f181df84905cd48",
+    "byte_count": 26536,
+    "line_count": 917,
+    "status": "HISTORICAL_RECEIVED_NOT_LOCKED"
+  },
+  "v8b-nightshift-1": {
+    "found": false,
+    "status": "NOT_PROVEN"
+  },
+  "are-1": {
+    "found": true,
+    "source_type": "attachment",
+    "line": 21661,
+    "sha256": "4fa9c888977780f2ba3c4b7995d132039d677aee25d7d03000c58b960e5277cb",
+    "byte_count": 19739,
+    "line_count": 785,
+    "status": "CAPTURED_NOT_QUEUED"
+  }
+}

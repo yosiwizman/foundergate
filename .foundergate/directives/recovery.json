@@ -1,0 +1,7 @@
+{
+  "schema": "directive-recovery-1",
+  "updated_at": "2026-07-18T04:13:39Z",
+  "active_directive": "dcl-1",
+  "last_next_safe_action": "build DCL layer -> checker -> advisor -> activate",
+  "reconciled_main_sha": "28531940537a0945e97c6471eea56eb8ea1083b6"
+}

@@ -1,0 +1,785 @@
+FOUNDERGATE ARE-1 — AUTONOMOUS RUN ENVELOPE, BLUEPRINT INTAKE, SELF-HOSTING PROOF REGISTRY, AND CURRENT NIGHTSHIFT INSTRUMENTATION
+
+CLASSIFICATION
+
+CROSS-CUTTING V8-B CONTROL AND EVIDENCE MECHANISM
+WIDE-SAFE DESIGN, SCHEMAS, FIXTURES, REPORTING AND UI
+NARROW-SENSITIVE AUTOMATIC ENFORCEMENT HOOKS
+ONE PRIMARY ENFORCEMENT WRITER
+INDEPENDENT CHECKER
+TERMINAL-0 SOLE INTEGRATION SHERIFF
+NO INTERRUPTION OF ACTIVE ARLC-1
+NO RESTART OF CURRENT NIGHTSHIFT
+NO M1 CONTACT
+NO AKIOR ACCESS
+NO PRIVATE OR CUSTOMER REPOSITORY
+NO PRODUCTION DATA
+NO OPENSANDBOX ADOPTION
+NO LIVE EXTERNAL ACTION
+NO FOUNDER SIGNATURE FABRICATION
+NO RETROACTIVE BACKDATING
+NO GENERAL PRODUCT CLAIM FROM ONE INTERNAL RUN
+
+PURPOSE
+
+Build a permanent Autonomous Run Envelope that connects:
+
+software blueprint
+→ governed project plan
+→ Spec Cards
+→ lanes
+→ machine actions
+→ sandbox runs
+→ evidence
+→ checker verdicts
+→ lifecycle decisions
+→ true founder gates
+→ final run result
+
+Attach the current V8-B Nightshift run to this mechanism without rewriting its earlier history.
+
+Use the current run as an INTERNAL SELF-HOSTING evidence case.
+
+Do not claim outside-operator, second-project, customer-code or general non-developer product proof from this run.
+
+PHASE 0 — QUEUE AND NON-INTERFERENCE
+
+Inspect the active ARLC-1 and V8-B Nightshift recovery states.
+
+If ARLC-1 is not active:
+
+1. queue ARE-1 behind ARLC activation;
+2. record the full directive digest;
+3. record dependency on ARLC;
+4. do not touch ARLC files, active policy pointers, controller code, writer locks or current candidate;
+5. resume automatically after ARLC becomes ACTIVE.
+
+If the V8-B Nightshift is active:
+
+1. register ARE-1 as a disjoint lane;
+2. inspect its branch, worktree and allowed paths;
+3. prove path non-collision;
+4. do not restart the Nightshift;
+5. do not alter its existing append-only records;
+6. attach through new additive records only.
+
+Resolve all run IDs, SHAs, branches, paths, timestamps and statuses from current disk and Git.
+
+PHASE 1 — ARCHITECTURAL PLACEMENT
+
+Do not build an independent omnipotent autonomous agent.
+
+Place the mechanism across existing FounderGate responsibilities:
+
+- MOD-001 Core:
+  loads the active run envelope and refuses unmanaged execution;
+
+- MOD-004 Product Intake Officer:
+  validates the software blueprint;
+
+- MOD-005 CTO Planner:
+  compiles accepted blueprint requirements into Spec Cards and lane plans;
+
+- MOD-013 Branch/PR/Lane Orchestrator:
+  binds lanes and repository work to blueprint requirements;
+
+- MOD-014 Gate/Witness Engine:
+  classifies and emits only true founder gates;
+
+- MOD-015 Audit Log / Proof Ledger:
+  records append-only run events and final proof capsules;
+
+- MOD-018 Integration Merge Gate:
+  records mechanically authorized lifecycle transitions;
+
+- MOD-022 GitHub Connector:
+  executes bounded repository actions but does not decide authority;
+
+- SCL:
+  executes approved sandbox Check Plans;
+
+- ARLC:
+  performs qualified repository lifecycle work;
+
+- Terminal-0:
+  remains the sole integration and sequential write sheriff.
+
+No component may:
+
+- define the blueprint;
+- grant authority;
+- execute the work;
+- check its own result;
+- and certify completion.
+
+Maintain separation of duties.
+
+PHASE 2 — BLUEPRINT INTAKE CONTRACT
+
+Create or reconcile:
+
+docs/contracts/BLUEPRINT_INTAKE_CONTRACT.md
+docs/contracts/AUTONOMOUS_RUN_ENVELOPE.md
+.foundergate/governance/autonomous_run_envelope.json
+.foundergate/schemas/software_blueprint.schema.json
+.foundergate/schemas/autonomous_run_manifest.schema.json
+.foundergate/schemas/autonomous_run_event.schema.json
+.foundergate/schemas/autonomous_run_result.schema.json
+.foundergate/schemas/autonomous_run_pattern.schema.json
+
+If an exact authoritative equivalent already exists, extend it rather than creating a competing contract.
+
+Do not modify frozen accepted-product paths without proving the change is authorized and required.
+
+The Software Blueprint must include:
+
+- blueprint ID;
+- project identity;
+- blueprint version;
+- author;
+- source;
+- creation time;
+- objective;
+- target users;
+- user journeys;
+- functional requirements;
+- non-functional requirements;
+- explicit non-goals;
+- data classes;
+- secret classes;
+- private/customer data requirements;
+- integrations;
+- provider needs;
+- external actions;
+- irreversible actions;
+- spending limits;
+- deployment target;
+- platform targets;
+- accessibility requirements;
+- acceptance criteria;
+- human-perception requirements;
+- legal/security/IP/expert questions;
+- known unknowns;
+- founder decisions already made;
+- founder decisions still required;
+- rollback expectations;
+- evidence expectations;
+- release expectations.
+
+Reject or hold a blueprint that omits required risk and authority fields.
+
+The blueprint expresses product intent.
+
+It does not itself grant live authority.
+
+PHASE 3 — BLUEPRINT COMPILER
+
+Build a deterministic Blueprint Compiler.
+
+Create or reconcile under repository conventions components equivalent to:
+
+src/autonomous-run/blueprint-validator.mjs
+src/autonomous-run/blueprint-compiler.mjs
+src/autonomous-run/run-envelope.mjs
+src/autonomous-run/run-ledger.mjs
+src/autonomous-run/run-result.mjs
+src/autonomous-run/pattern-registry.mjs
+src/autonomous-run/selftest.mjs
+
+The compiler must produce:
+
+- normalized blueprint;
+- blueprint SHA-256 digest;
+- requirements registry;
+- Spec Card set;
+- lane DAG;
+- risk classification;
+- wide-safe lanes;
+- narrow-sensitive lanes;
+- true founder gates;
+- human-expert gates;
+- Check Plans;
+- sandbox requirements;
+- provider requirements;
+- data boundaries;
+- expected evidence classes;
+- acceptance predicates;
+- rollback requirements;
+- estimated founder interactions;
+- estimated operational actions;
+- explicit stage boundaries.
+
+Every generated item must trace to:
+
+blueprint requirement ID
++
+blueprint digest
++
+compiler version
++
+policy version
+
+No requirement may silently disappear.
+
+No unrequested material feature may silently appear.
+
+PHASE 4 — AUTONOMOUS RUN MANIFEST
+
+Before an autonomous run begins, require one immutable Run Manifest containing:
+
+- autonomous run ID;
+- project ID;
+- blueprint ID;
+- blueprint digest;
+- blueprint version;
+- exact base SHA;
+- active policy digests;
+- ARLC version;
+- SCL version;
+- Gate/Witness version;
+- compiler version;
+- planned lanes;
+- permitted actions;
+- forbidden actions;
+- active founder decisions;
+- unresolved founder gates;
+- human-expert gates;
+- data classes;
+- sandbox class;
+- providers;
+- budgets;
+- expected evidence;
+- checker assignments;
+- rollback plan;
+- recovery plan;
+- start conditions;
+- completion conditions;
+- stop conditions.
+
+Manifest changes require:
+
+- a new manifest version;
+- a new digest;
+- reason;
+- authority;
+- changed-scope analysis.
+
+Do not mutate a historical manifest in place.
+
+PHASE 5 — RUN ENVELOPE STATE MACHINE
+
+Implement explicit states:
+
+BLUEPRINT_RECEIVED
+BLUEPRINT_INVALID
+BLUEPRINT_HELD
+BLUEPRINT_ACCEPTED
+PLAN_COMPILED
+PLAN_CHECKED
+READY_TO_RUN
+RUNNING
+ROUTINE_CORRECTION
+TRUE_FOUNDER_GATE
+HUMAN_EXPERT_GATE
+BLOCKED
+RECOVERING
+EVIDENCE_SEALING
+CHECKER_REQUIRED
+CHECKER_FINDINGS
+ADVISOR_REQUIRED
+PASS
+PASS_WITH_LIMITATIONS
+NOT_PASSED
+INSUFFICIENT_EVIDENCE
+CANCELLED
+SUPERSEDED
+
+Each transition requires:
+
+- prior state;
+- next state;
+- exact reason code;
+- actor;
+- authority source;
+- exact SHA;
+- blueprint digest;
+- manifest digest;
+- evidence paths;
+- timestamp;
+- idempotency key;
+- recovery action.
+
+UNKNOWN never transitions directly to PASS.
+
+A builder cannot create CHECKER-CLEAN.
+
+A checker cannot execute the work it checks.
+
+PHASE 6 — AUTOMATIC RUN LOGGING
+
+Create or reconcile:
+
+.foundergate/registries/autonomous_run_registry.jsonl
+.foundergate/registries/autonomous_run_pattern_registry.jsonl
+.foundergate/state/active_autonomous_run.json
+.foundergate/state/autonomous_run_recovery.json
+docs/coordination/AUTONOMOUS_RUN_LEDGER.jsonl
+docs/status/AUTONOMOUS_RUN_INDEX.md
+
+Use append-only ledgers and atomic recovery state.
+
+Every material event must record:
+
+- run ID;
+- blueprint digest;
+- manifest digest;
+- project;
+- lane;
+- exact SHA;
+- action class;
+- authority;
+- executor;
+- result;
+- evidence;
+- duration;
+- correction cycle;
+- founder interruption;
+- next safe action.
+
+Automatically log:
+
+- blueprint validation;
+- plan compilation;
+- lane creation;
+- worktree creation;
+- branch creation;
+- commits;
+- PR creation;
+- CI;
+- checker findings;
+- corrections;
+- Advisor review;
+- merges;
+- PR closures;
+- branch cleanup;
+- worktree cleanup;
+- sandbox creation;
+- sandbox teardown;
+- evidence sealing;
+- founder gate creation;
+- founder decision;
+- final verdict.
+
+Do not depend on terminal scrollback.
+
+PHASE 7 — FOUNDER INTERACTION ACCOUNTING
+
+For every autonomous run, measure:
+
+- founder prompts provided;
+- founder signatures provided;
+- founder UI witnesses;
+- founder clicks;
+- founder terminal actions;
+- founder debugging actions;
+- founder raw-log reviews;
+- false founder gates suppressed;
+- routine actions completed autonomously;
+- time between true founder gates;
+- total elapsed run time;
+- machine-active time;
+- blocked time;
+- correction cycles.
+
+Create:
+
+docs/metrics/FOUNDER_HAND_BURDEN_AUTONOMOUS_RUN.md
+docs/metrics/FOUNDER_HAND_BURDEN_AUTONOMOUS_RUN.json
+
+The system must distinguish:
+
+- founder initiated the program;
+- founder operated the repository;
+- founder supplied a true decision;
+- founder performed a UI witness;
+- founder debugged technical work.
+
+The target is not zero founder decisions.
+
+The target is zero unnecessary founder technical operations.
+
+PHASE 8 — FINAL AUTONOMOUS RUN PROOF CAPSULE
+
+Every terminal run must produce one immutable final capsule containing:
+
+- run identity;
+- blueprint identity and digest;
+- final manifest digest;
+- start and end times;
+- exact starting SHA;
+- exact final SHA;
+- lanes attempted;
+- lanes completed;
+- lanes blocked;
+- machine actions;
+- merge actions;
+- sandbox actions;
+- tests;
+- CI;
+- checker verdicts;
+- Advisor verdicts;
+- founder gates;
+- founder decisions;
+- human-expert gates;
+- evidence index;
+- hashes;
+- known limitations;
+- unresolved requirements;
+- final status;
+- next action.
+
+Allowed final statuses:
+
+PASS
+PASS_WITH_LIMITATIONS
+NOT_PASSED
+INSUFFICIENT_EVIDENCE
+CANCELLED
+SUPERSEDED
+
+PASS must require all declared completion predicates.
+
+PASS_WITH_LIMITATIONS must name every unmet non-blocking predicate.
+
+Missing evidence must never become PASS.
+
+PHASE 9 — CURRENT NIGHTSHIFT SELF-HOSTING RECORD
+
+Create a governed self-hosting record for the current ARLC/V8-B Nightshift program.
+
+Create:
+
+docs/self-hosting/V8B_NIGHTSHIFT_AUTONOMOUS_RUN.md
+docs/self-hosting/V8B_NIGHTSHIFT_AUTONOMOUS_RUN.json
+docs/self-hosting/V8B_NIGHTSHIFT_EVIDENCE_INDEX.json
+docs/self-hosting/V8B_NIGHTSHIFT_ARTIFACT_HASHES.sha256
+
+The record must divide the run into:
+
+SEGMENT A — PRE-ENVELOPE
+
+- work that occurred before ARE-1 activation;
+- reconstructed only from existing disk, Git and GitHub evidence;
+- clearly labeled retrospective reconstruction;
+- no backdating;
+- no invented events.
+
+SEGMENT B — ENVELOPE-ENFORCED
+
+- work occurring after ARE-1 activation;
+- logged directly by the envelope;
+- exact activation timestamp;
+- exact activation SHA;
+- exact policy digest.
+
+Record:
+
+- initial founder instruction count;
+- additional founder interventions;
+- repository actions completed autonomously;
+- PR merge result;
+- PR closure result;
+- branch/worktree cleanup;
+- ARLC construction;
+- SCL-1 progress;
+- V8-B lanes;
+- correction cycles;
+- true gates;
+- false routine gates avoided;
+- total founder technical burden.
+
+Classify the current evidence using exact labels:
+
+INTERNAL_SELF_HOSTING_OBSERVED
+AUTONOMOUS_REPOSITORY_LIFECYCLE_PROVEN_FOR_THIS_RUN
+AUTONOMOUS_LANE_CONTINUATION_OBSERVED
+FOUNDER_HAND_BURDEN_MEASURED
+BLUEPRINT_DRIVEN_RUN_PROVEN only if an actual blueprint was present and bound from the start
+
+Explicitly record:
+
+OUTSIDE_OPERATOR_PROVEN: NO
+SECOND_PROJECT_PROVEN: NO
+CUSTOMER_CODE_PROVEN: NO
+PRIVATE_REPOSITORY_PROVEN: NO
+EXTERNAL_NON_DEVELOPER_ADOPTION_PROVEN: NO
+GENERAL_PRODUCT_RELIABILITY_PROVEN: NO
+
+PHASE 10 — PATTERN PROMOTION LAW
+
+Do not automatically convert one successful run into permanent product behavior.
+
+A run pattern becomes PROMOTION_ELIGIBLE only when:
+
+- exact behavior is named;
+- blueprint and manifest are available;
+- evidence is complete;
+- checker is clean;
+- no hidden founder operation was required;
+- result is reproducible;
+- negative cases pass;
+- safety boundaries are explicit;
+- rollback is proven;
+- at least two independent successful executions exist, unless the active policy permits one for low-risk deterministic behavior.
+
+Pattern states:
+
+OBSERVED
+CANDIDATE
+REPRODUCED
+CHECKER_CLEAN
+PROMOTION_ELIGIBLE
+ADOPTED
+REJECTED
+RETIRED
+
+The current Nightshift may produce OBSERVED or CANDIDATE patterns.
+
+Do not automatically label them ADOPTED.
+
+PHASE 11 — FOUNDER-FACING RUN SUMMARY
+
+Build or prepare a read-only FounderGate run summary that answers:
+
+- What software are we building?
+- Which blueprint version is active?
+- What is running now?
+- What completed?
+- What failed?
+- What was corrected?
+- What evidence exists?
+- What is safe?
+- What remains unproven?
+- Is FounderGate waiting for me?
+- Why am I needed?
+- What happens if I do nothing?
+- What must not be touched?
+
+The surface must not expose raw terminal output as the primary interface.
+
+It must display:
+
+- current run state;
+- blueprint completion percentage based only on requirement states;
+- active lanes;
+- completed lanes;
+- blocked lanes;
+- evidence status;
+- founder gate queue;
+- operational queue;
+- next safe action;
+- claim limitations.
+
+UNKNOWN, STALE and CONFLICT must remain visible and non-green.
+
+This is a machine-qualified surface only.
+
+It does not replace a founder UI witness.
+
+PHASE 12 — TESTS AND MUTATIONS
+
+Add tests proving:
+
+1. missing blueprint blocks run;
+2. invalid blueprint blocks run;
+3. missing blueprint digest blocks run;
+4. changed blueprint creates a new manifest;
+5. silent requirement deletion fails;
+6. unauthorized requirement addition fails;
+7. lane without requirement trace fails;
+8. action without lane fails;
+9. action without authority fails;
+10. evidence without exact SHA fails;
+11. evidence without blueprint binding fails;
+12. wrong run ID fails;
+13. wrong manifest digest fails;
+14. builder self-check fails;
+15. checker execution attempt fails;
+16. routine repository work stays out of founder queue;
+17. real provider adoption enters founder queue;
+18. customer data enters founder queue;
+19. public release enters founder queue;
+20. missing evidence blocks PASS;
+21. partial evidence produces INSUFFICIENT_EVIDENCE;
+22. correction after checker invalidates checker;
+23. duplicate event is idempotent;
+24. crash recovery resumes without duplicate action;
+25. pre-envelope evidence cannot be mislabeled directly enforced;
+26. retrospective event cannot be backdated;
+27. one run cannot automatically produce ADOPTED pattern;
+28. internal self-hosting cannot produce outside-operator proof;
+29. run with hidden founder debugging reports founder burden;
+30. a successful run generates a complete proof capsule.
+
+Run:
+
+- schema tests;
+- unit tests;
+- integration tests;
+- mutation tests;
+- crash-recovery tests;
+- historical replay;
+- current-run replay;
+- exact-SHA CI;
+- secret scan;
+- forbidden-artifact scan.
+
+PHASE 13 — INDEPENDENT CHECKER
+
+Commission a checker that did not build ARE-1.
+
+The checker must verify:
+
+- architecture does not duplicate ARLC, SCL, CTO Planner or Gate/Witness Engine;
+- blueprint is intent, not authority;
+- every lane and action is traceable;
+- no self-certification exists;
+- current run reconstruction is honest;
+- no backdating occurred;
+- founder burden metrics are accurate;
+- pattern promotion is conservative;
+- false product claims are blocked;
+- run capsule is complete;
+- tests and mutations are meaningful.
+
+Allowed verdicts:
+
+ARE1-CHECKER-CLEAN
+ARE1-CHECKER-FINDINGS
+ARE1-CHECKER-REJECT
+ARE1-CHECKER-INSUFFICIENT-EVIDENCE
+
+Allow up to three bounded correction cycles.
+
+PHASE 14 — FINAL READ-ONLY ADVISOR
+
+After checker-clean, commission a fresh read-only Solutions Architect.
+
+The Advisor must independently determine:
+
+- whether ARE-1 belongs in V8-B;
+- whether it correctly connects Blueprint, ARLC, SCL and Gate/Witness;
+- whether it reduces founder technical burden;
+- whether it preserves true founder authority;
+- whether the current self-hosting run is classified honestly;
+- whether any claim exceeds evidence;
+- whether activation is safe.
+
+Allowed verdicts:
+
+ARE1-ADVISOR: READY-TO-INTEGRATE
+ARE1-ADVISOR: HOLD-CORRECTABLE-FINDINGS
+ARE1-ADVISOR: REJECT
+ARE1-ADVISOR: INSUFFICIENT-EVIDENCE
+
+Any correction after Advisor review requires:
+
+- new exact candidate;
+- affected tests;
+- exact-SHA CI;
+- fresh checker;
+- fresh Advisor.
+
+PHASE 15 — INTEGRATION
+
+After checker-clean and Advisor ready:
+
+1. integrate ARE-1 into the current cumulative V8-B integration line;
+2. do not create a long stacked PR chain;
+3. preserve exact evidence;
+4. run cumulative tests;
+5. run exact-SHA CI;
+6. merge under ARLC standing authority when all predicates pass;
+7. run post-merge verification;
+8. activate ARE-1 for future autonomous runs;
+9. leave the current run classified according to its actual pre-envelope and enforced segments.
+
+Record:
+
+ARE1: ACTIVE
+
+PHASE 16 — CONTINUATION
+
+After ARE-1 activates:
+
+- continue the V8-B Nightshift;
+- do not restart completed work;
+- bind all new Nightshift lanes to the active run envelope;
+- generate the final proof capsule at Nightshift completion;
+- continue routine work autonomously;
+- surface only a true founder gate.
+
+FINAL OUTPUT
+
+Return:
+
+1. Pro host identity.
+2. ARLC status.
+3. Nightshift run ID.
+4. ARE-1 branch and head.
+5. ARE-1 policy version and digest.
+6. Blueprint schema path and version.
+7. Manifest schema path and version.
+8. Run-event schema path and version.
+9. Result-capsule schema path and version.
+10. Blueprint compiler path and version.
+11. Run Envelope state-machine result.
+12. Automatic ledger result.
+13. Recovery test result.
+14. Founder-queue purity result.
+15. Founder Hand-Burden metrics.
+16. Pre-envelope segment classification.
+17. Envelope-enforced segment classification.
+18. Current Nightshift self-hosting classification.
+19. Current run proof capsule path and digest.
+20. Pattern candidates produced.
+21. Patterns promoted.
+22. Explicit non-claims.
+23. Test and mutation totals.
+24. Exact-SHA CI.
+25. Independent checker verdict.
+26. Final Advisor verdict.
+27. Integration result.
+28. Activation result.
+29. Current V8-B Nightshift status.
+30. Exact next true founder gate.
+
+Required exact statements:
+
+THE SOFTWARE BLUEPRINT EXPRESSES INTENT; IT DOES NOT BY ITSELF GRANT LIVE AUTHORITY.
+
+EVERY AUTONOMOUS RUN IS BOUND TO ONE BLUEPRINT DIGEST, ONE RUN MANIFEST AND ONE EXACT CODE STATE.
+
+EVERY LANE, ACTION, EVIDENCE ARTIFACT AND VERDICT IS TRACEABLE TO THE BLUEPRINT AND RUN MANIFEST.
+
+THE CURRENT NIGHTSHIFT RUN WAS NOT RETROACTIVELY CLAIMED TO HAVE BEEN ENVELOPE-ENFORCED BEFORE ARE-1 ACTIVATION.
+
+THE CURRENT RUN IS INTERNAL SELF-HOSTING EVIDENCE, NOT OUTSIDE-OPERATOR OR CUSTOMER PROOF.
+
+MISSING OR CONFLICTING EVIDENCE CANNOT PRODUCE PASS.
+
+A SINGLE SUCCESSFUL RUN CANNOT AUTOMATICALLY PROMOTE A PATTERN TO ADOPTED.
+
+ROUTINE AUTONOMOUS WORK REMAINS IN THE OPERATIONAL QUEUE; ONLY TRUE FOUNDER OR HUMAN-EXPERT GATES ENTER THE FOUNDER QUEUE.
+
+FOUNDERGATE RECORDS BOTH WHAT THE MACHINE COMPLETED AND HOW MUCH TECHNICAL WORK THE FOUNDER HAD TO PERFORM.
+
+Finish with exactly one verdict:
+
+ARE1: ACTIVE-NIGHTSHIFT-INSTRUMENTED
+ARE1: READY-TO-INTEGRATE
+ARE1: HOLD-CORRECTABLE-FINDINGS
+ARE1: TRUE-FOUNDER-GATE
+ARE1: HUMAN-EXPERT-GATE
+ARE1: REJECT
+ARE1: INSUFFICIENT-EVIDENCE

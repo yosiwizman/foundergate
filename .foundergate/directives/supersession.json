@@ -1,0 +1,18 @@
+{
+  "schema": "directive-supersession-1",
+  "updated_at": "2026-07-18T04:13:39Z",
+  "dcl-1_supersedes": [
+    {
+      "target": "v8b-nightshift-1",
+      "basis": "historical receipt NOT_PROVEN (never received; only referenced)",
+      "claim": "NOT claimed to have executed"
+    },
+    {
+      "target": "are-1",
+      "basis": "historically CAPTURED_NOT_QUEUED (received, not durably queued)",
+      "claim": "forward continuation replaced by DCL-1; ARE-1 core work preserved on its branch"
+    }
+  ],
+  "did_not_reconstruct_v8b_nightshift": true,
+  "did_not_backdate": true
+}

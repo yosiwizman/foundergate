@@ -1,0 +1,883 @@
+FOUNDERGATE DCL-1 — DURABLE DIRECTIVE LOCK, NIGHTSHIFT RECOVERY, AUTONOMOUS RUN INSTRUMENTATION, AND V8-B CONTINUATION
+
+FOUNDER AUTHORIZATION
+
+I authorize FounderGate to establish a permanent Durable Directive Control Layer.
+
+No autonomous FounderGate directive may depend solely on Claude Code conversational memory.
+
+Before execution, every material directive must have:
+
+- the exact received body;
+- SHA-256 digest;
+- byte count;
+- line count;
+- beginning and ending anchors;
+- issuer;
+- receipt timestamp;
+- dependency graph;
+- current queue state;
+- atomic recovery state;
+- append-only event ledger;
+- next safe action;
+- completion predicates;
+- stop predicates.
+
+This directive is the canonical replacement for any unproven V8B-NIGHTSHIFT-1 queue item and for any ARE-1 instruction that was received but not durably queued.
+
+Do not reconstruct the missing historical Nightshift directive and pretend it was received.
+
+Record the prior failure honestly.
+
+Use this directive’s own complete body as the authoritative forward instruction.
+
+OPERATING MODE
+
+MAC MINI PRO ONLY
+TERMINAL-0 SOLE INTEGRATION WRITER
+DISK-FIRST
+FAIL-CLOSED
+IDEMPOTENT
+CRASH-RECOVERABLE
+NO INTERRUPTION OF AN ACTIVE ATOMIC ARLC ACTION
+NO M1 CONTACT
+NO AKIOR ACCESS
+NO CUSTOMER CODE
+NO PRIVATE REPOSITORY
+NO PRODUCTION DATA
+NO PUBLIC DEPLOYMENT
+NO PAYMENT OR EXTERNAL SEND
+NO OPENSANDBOX ADOPTION
+NO DEFAULT-PROVIDER SELECTION
+NO 48-HOUR SOAK START
+NO V8-C, V8-D OR V8-E IMPLEMENTATION
+NO FOUNDER SIGNATURE FABRICATION
+NO BACKDATING
+NO SILENT DIRECTIVE RECONSTRUCTION
+NO MORE THAN TWO LOCAL CODE WRITERS
+NO MORE THAN ONE SENSITIVE-CORE WRITER
+
+PHASE 0 — CAPTURE THIS DIRECTIVE BEFORE ACTING
+
+Before performing any other material action:
+
+1. Resolve the active Claude Code Harvest session transcript mechanically.
+2. Locate the exact user-message record whose first title line is:
+
+FOUNDERGATE DCL-1 — DURABLE DIRECTIVE LOCK, NIGHTSHIFT RECOVERY, AUTONOMOUS RUN INSTRUMENTATION, AND V8-B CONTINUATION
+
+3. Extract the complete exact user-message body.
+4. Verify it contains:
+   - this title;
+   - FOUNDER AUTHORIZATION;
+   - PHASE 0;
+   - FINAL OUTPUT;
+   - the final verdict list.
+5. Verify it is not truncated.
+6. Compute:
+   - SHA-256;
+   - exact byte count;
+   - exact line count;
+   - first 200 bytes;
+   - final 200 bytes.
+7. Persist the body without editing or normalizing it.
+8. Re-read the stored body and recompute its digest.
+9. Require exact transcript/stored digest equality.
+10. Only then may this directive enter QUEUED state.
+
+If this exact message cannot be recovered completely:
+
+DCL1: SELF-CAPTURE-FAILED
+
+Stop without performing the later phases.
+
+PHASE 1 — SAFE COORDINATION WITH ACTIVE ARLC
+
+Inspect the current ARLC recovery state, writer lock, branch, worktree and active atomic action.
+
+If ARLC is performing an atomic write, commit, merge, activation, cleanup or evidence seal:
+
+- do not interrupt it;
+- do not take its writer lock;
+- create only a non-conflicting pending-directive record where permitted;
+- wait until the active atomic action reaches a durable boundary.
+
+If writing even the pending record would conflict:
+
+- remain read-only;
+- retain this directive in the session transcript;
+- capture it immediately when the writer boundary clears;
+- do not proceed to Nightshift work before capture succeeds.
+
+After the safe boundary:
+
+- acquire the normal Terminal-0 single-writer lock;
+- reconcile actual Git, GitHub and disk state;
+- resume from disk truth.
+
+PHASE 2 — PERMANENT DIRECTIVE STORAGE
+
+Create or reconcile under current repository conventions:
+
+.foundergate/directives/
+.foundergate/directives/index.json
+.foundergate/directives/active.json
+.foundergate/directives/queue.json
+.foundergate/directives/dependencies.json
+.foundergate/directives/events.jsonl
+.foundergate/directives/recovery.json
+.foundergate/schemas/directive.schema.json
+.foundergate/schemas/directive_queue.schema.json
+.foundergate/schemas/directive_event.schema.json
+.foundergate/governance/durable_directive_control.json
+docs/contracts/DURABLE_DIRECTIVE_CONTROL.md
+docs/status/DURABLE_DIRECTIVE_CONTROL_STATUS.md
+
+For each directive use a directory equivalent to:
+
+.foundergate/directives/<directive-id>/
+
+containing:
+
+prompt.txt
+metadata.json
+dependencies.json
+state.json
+events.jsonl
+coverage.json
+result.json
+
+The exact stored prompt body is immutable.
+
+Corrections require a new directive version and new digest.
+
+Never overwrite a historical prompt body.
+
+PHASE 3 — DIRECTIVE SCHEMA
+
+Every directive record must include:
+
+- directive_id;
+- title;
+- version;
+- issuer;
+- source_session_id;
+- source_transcript_path;
+- source_message_timestamp;
+- received_body_path;
+- sha256;
+- byte_count;
+- line_count;
+- beginning_anchor;
+- ending_anchor;
+- received_at;
+- captured_at;
+- risk_class;
+- machine;
+- dependencies;
+- supersedes;
+- superseded_by;
+- allowed_paths;
+- forbidden_paths;
+- writer_owner;
+- checker;
+- recovery_path;
+- ledger_path;
+- current_state;
+- next_safe_action;
+- completion_predicates;
+- stop_predicates;
+- founder_gate_triggers;
+- human_expert_gate_triggers;
+- retry_limit;
+- last_heartbeat;
+- final_result.
+
+Reject:
+
+- missing prompt body;
+- missing digest;
+- digest mismatch;
+- missing dependency state;
+- unknown machine;
+- ambiguous writer ownership;
+- missing recovery state;
+- prompt summary substituted for full body;
+- body modified after capture.
+
+PHASE 4 — DIRECTIVE STATE MACHINE
+
+Implement:
+
+RECEIVED
+CAPTURED
+DIGEST_VERIFIED
+QUEUED
+WAITING_ON_DEPENDENCY
+READY
+RUNNING
+RUNNING_WITH_RECOVERY
+HOLD_CORRECTABLE
+TRUE_FOUNDER_GATE
+HUMAN_EXPERT_GATE
+BLOCKED
+EVIDENCE_SEALING
+COMPLETED
+COMPLETED_WITH_LIMITATIONS
+FAILED
+REJECTED
+INSUFFICIENT_EVIDENCE
+SUPERSEDED
+CANCELLED
+
+Each transition must record:
+
+- prior state;
+- next state;
+- reason;
+- exact prompt digest;
+- exact code SHA where applicable;
+- actor;
+- evidence;
+- timestamp;
+- idempotency key;
+- next safe action.
+
+No directive may transition to RUNNING unless:
+
+- body exists;
+- digest verifies;
+- dependencies are satisfied;
+- recovery state exists;
+- writer ownership is valid.
+
+PHASE 5 — BOOTSTRAP AND COMPACTION ENFORCEMENT
+
+Extend the active Terminal-0 bootstrap and shutdown/continuation guards.
+
+At every startup or resumed session:
+
+1. load active directive index;
+2. verify every active body digest;
+3. validate queue schema;
+4. validate dependencies;
+5. detect orphaned or dropped directives;
+6. reconcile actual work against directive state;
+7. resume the highest-priority safe action.
+
+Before conversational compaction may be treated as safe:
+
+- every active material directive must be CAPTURED;
+- digest must verify;
+- queue state must exist;
+- recovery state must exist;
+- next safe action must exist.
+
+If not:
+
+COMPACTION_UNSAFE
+
+The terminal must write the missing durable controls before depending on compaction.
+
+Before reporting DONE or stopping, the continuation guard must verify that no READY or actionable RUNNING directive remains.
+
+PHASE 6 — HISTORICAL DIRECTIVE RECOVERY
+
+Audit these historical titles from the Harvest transcript:
+
+1. FOUNDERGATE STACK-1E — NARROW EMPTY-EVIDENCE POLICY CORRECTION AND FINAL MERGE-ATTESTATION CLOSURE
+2. FOUNDERGATE STACK-1F — STANDING AUTONOMOUS MERGE AUTHORITY, CUMULATIVE MERGE, REPOSITORY CLEANUP, AND SCL-1 GATE-TO-GATE EXECUTION
+3. FOUNDERGATE ARLC-1 — PERMANENT AUTONOMOUS REPOSITORY LIFECYCLE CONTROLLER, CURRENT STACK CLOSURE, AND GATE-TO-GATE CONTINUATION
+4. FOUNDERGATE V8B-NIGHTSHIFT-1 — AUTONOMOUS OVERNIGHT V8-B COMPLETION WAVE
+5. FOUNDERGATE ARE-1 — AUTONOMOUS RUN ENVELOPE, BLUEPRINT INTAKE, SELF-HOSTING PROOF REGISTRY, AND CURRENT NIGHTSHIFT INSTRUMENTATION
+
+For each exact message found:
+
+- extract the exact user-message body;
+- store it as a historical prompt body;
+- compute and verify SHA-256;
+- record receipt;
+- bind existing execution artifacts;
+- derive the honest historical status.
+
+Do not mark a historical directive as pre-execution locked when it was not.
+
+Use:
+
+HISTORICAL_RECEIVED_NOT_LOCKED
+
+where appropriate.
+
+For V8B-NIGHTSHIFT-1:
+
+- search exact title;
+- search its distinctive final verdict strings;
+- search its required exact statements;
+- search its main phase headings;
+- search adjacent user records.
+
+If no exact complete message is found:
+
+V8B_NIGHTSHIFT_HISTORICAL_RECEIPT: NOT_PROVEN
+
+Do not recreate it from memory or another chat.
+
+For ARE-1:
+
+- archive the exact body if found;
+- record that it was historically CAPTURED_NOT_QUEUED unless disk proves otherwise.
+
+PHASE 7 — CANONICAL FORWARD DIRECTIVE
+
+Register this DCL-1 directive as the authoritative forward replacement for:
+
+- the unproven historical V8B-NIGHTSHIFT-1 continuation;
+- the historically received but unqueued ARE-1 continuation.
+
+Record:
+
+supersedes:
+- V8B-NIGHTSHIFT-1 historical intent, receipt not proven;
+- ARE-1 historical queued-continuation intent.
+
+Do not claim the old directives executed.
+
+The forward work authorized by DCL-1 is defined in Phases 8 through 16 below.
+
+PHASE 8 — ARLC COMPLETION
+
+Allow ARLC-1 to finish before overlapping work.
+
+Verify and complete:
+
+- lifecycle controller;
+- mandatory Terminal-0 bootstrap;
+- shutdown continuation guard;
+- operational queue;
+- founder queue;
+- merge eligibility;
+- persistent reconciler;
+- writer lock;
+- crash recovery;
+- historical replay;
+- independent checker;
+- final Advisor;
+- activation.
+
+Correct bounded findings for up to three cycles.
+
+After each correction:
+
+- freeze a new candidate;
+- rerun affected tests;
+- run exact-SHA CI;
+- obtain a fresh checker;
+- obtain a fresh final Advisor.
+
+Record one honest state:
+
+ARLC1: ACTIVE
+ARLC1: HOLD_CORRECTABLE
+ARLC1: REJECT
+ARLC1: INSUFFICIENT_EVIDENCE
+
+Do not silently imitate ARLC if it is not active.
+
+PHASE 9 — AUTONOMOUS RUN ENVELOPE
+
+Build the permanent Blueprint-to-Evidence Autonomous Run Envelope.
+
+It must connect:
+
+software blueprint
+→ normalized requirements
+→ Spec Cards
+→ lane DAG
+→ risk classes
+→ permitted actions
+→ sandbox Check Plans
+→ evidence requirements
+→ checker verdicts
+→ lifecycle actions
+→ founder gates
+→ final proof capsule.
+
+Create or reconcile:
+
+docs/contracts/BLUEPRINT_INTAKE_CONTRACT.md
+docs/contracts/AUTONOMOUS_RUN_ENVELOPE.md
+.foundergate/governance/autonomous_run_envelope.json
+.foundergate/schemas/software_blueprint.schema.json
+.foundergate/schemas/autonomous_run_manifest.schema.json
+.foundergate/schemas/autonomous_run_event.schema.json
+.foundergate/schemas/autonomous_run_result.schema.json
+.foundergate/registries/autonomous_run_registry.jsonl
+.foundergate/state/active_autonomous_run.json
+.foundergate/state/autonomous_run_recovery.json
+docs/coordination/AUTONOMOUS_RUN_LEDGER.jsonl
+
+Build deterministic equivalents of:
+
+- blueprint validator;
+- blueprint compiler;
+- run-envelope state machine;
+- run ledger;
+- result capsule;
+- pattern registry;
+- selftests.
+
+Every lane, action, evidence artifact and verdict must trace to:
+
+- blueprint requirement ID;
+- blueprint digest;
+- run-manifest digest;
+- exact code SHA;
+- policy version.
+
+The blueprint expresses intent.
+
+It does not grant live authority.
+
+PHASE 10 — CURRENT SELF-HOSTING RUN
+
+Create one current self-hosting run record for the ARLC/V8-B continuation.
+
+Divide it honestly:
+
+SEGMENT A — PRE-DCL
+
+- reconstructed only from existing transcript, Git, GitHub, ledger and recovery evidence;
+- not labeled directive-lock-enforced;
+- no invented or backdated events.
+
+SEGMENT B — DCL-ENFORCED
+
+- begins at DCL-1 activation timestamp and exact SHA;
+- every material event logged directly;
+- exact directive digest bound;
+- current recovery state maintained.
+
+Classify only what evidence supports:
+
+INTERNAL_SELF_HOSTING_OBSERVED
+AUTONOMOUS_REPOSITORY_LIFECYCLE_PROVEN_FOR_THIS_RUN
+AUTONOMOUS_LANE_CONTINUATION_OBSERVED
+FOUNDER_HAND_BURDEN_MEASURED
+DURABLE_DIRECTIVE_CONTINUATION_PROVEN_FOR_DCL_SEGMENT
+
+Explicitly record:
+
+OUTSIDE_OPERATOR_PROVEN: NO
+SECOND_PROJECT_PROVEN: NO
+CUSTOMER_CODE_PROVEN: NO
+PRIVATE_REPOSITORY_PROVEN: NO
+GENERAL_PRODUCT_RELIABILITY_PROVEN: NO
+
+PHASE 11 — V8-B COMPLETION MATRIX
+
+Audit current main against Roadmap V8.11 §16.2 and the live V8-B contract.
+
+Create one exact row for:
+
+- Run Launcher;
+- CTO queue and lane routing;
+- Advisor verification status;
+- wide/narrow labels;
+- checker records;
+- Bench v1;
+- project Bench;
+- Founder Hand-Burden score;
+- Playwright evidence system;
+- evidence viewer;
+- GitHub links;
+- integration status cards;
+- cost dashboard;
+- Release Label Ladder;
+- Spec Card Engine;
+- data-classification enforcement;
+- anti-repeat system;
+- minimal License/IP register;
+- Gate/Witness Engine;
+- V8-B Stranger Test readiness;
+- V8-B acceptance readiness.
+
+Use only:
+
+ACCEPTED
+PROVEN
+BUILT
+CHECKER-CLEAN
+MERGED
+PARTIAL
+STALE
+UNKNOWN
+NOT PROVEN
+NOT BUILT
+BLOCKED
+FOUNDER WITNESS REQUIRED
+QUALIFICATION REQUIRED
+
+Create:
+
+docs/status/V8B_COMPLETION_MATRIX.md
+docs/status/V8B_COMPLETION_MATRIX.json
+docs/status/V8B_CRITICAL_PATH.md
+docs/status/V8B_PARALLEL_WORK_MAP.json
+
+PHASE 12 — VB2 ACCEPTANCE RECONCILIATION
+
+Audit:
+
+- VB2 build;
+- checker separation;
+- adversarial tests;
+- integrated M1 soak;
+- raw evidence;
+- Pro-side evidence audit;
+- evidence commit ancestry;
+- current main ancestry;
+- post-merge tests;
+- act edge frozen to VB3.
+
+Never fabricate a founder decision.
+
+Derive:
+
+VB2: ACCEPTED-UNDER-ACTIVE-MECHANICAL-AUTHORITY
+VB2: READY-FOR-FORMAL-ACCEPTANCE
+VB2: HOLD-CORRECTABLE-FINDINGS
+VB2: NOT-PASSED
+VB2: INSUFFICIENT_EVIDENCE
+
+Use mechanical acceptance only when active founder-approved policy explicitly permits it and no human-perception or signature requirement remains.
+
+Otherwise prepare the acceptance packet and continue unrelated safe work.
+
+PHASE 13 — SCL-1
+
+Adopt an existing SCL-1 lane if ARLC already created one.
+
+Do not create a duplicate.
+
+Build the provider-neutral Sandbox Control Layer:
+
+- provider registry;
+- capability declarations;
+- source-provider contract;
+- project-adapter contract;
+- Check Plan;
+- command policy;
+- no-host-fallback;
+- immutable source binding;
+- recovery;
+- resource limits;
+- timeout;
+- teardown;
+- evidence normalization;
+- run-ID namespace separation;
+- exact-SHA binding;
+- provider health;
+- provider replacement seam;
+- mock provider;
+- OpenSandbox Provider 001 adapter.
+
+OpenSandbox remains:
+
+CANDIDATE
+NOT ADOPTED
+NOT DEFAULT
+
+Use synthetic and fake-provider tests.
+
+Perform a live fixed-public-fixture run only if current disk authority explicitly permits it.
+
+PHASE 14 — WIDE-SAFE V8-B WORK
+
+Run safe non-conflicting lanes for incomplete requirements, prioritizing:
+
+- Bench v1;
+- Playwright evidence system;
+- evidence viewer;
+- GitHub links;
+- integration status cards;
+- cost display;
+- Release Label Ladder display;
+- Spec Card Engine;
+- anti-repeat system;
+- minimal License/IP register;
+- data-classification reconciliation.
+
+Every lane requires:
+
+- lane contract;
+- exact base SHA;
+- allowed and forbidden paths;
+- collision check;
+- tests;
+- evidence;
+- independent review;
+- exact-SHA CI;
+- Terminal-0 integration.
+
+No display-only feature may claim active enforcement.
+
+PHASE 15 — VB3 SPECIFICATION AND INERT CORE
+
+Finalize:
+
+- VB3 build contract;
+- EC-1 rollback hardening;
+- EC-2 immutable approval provenance;
+- EC-3 mechanical single writer;
+- EC-4 module-private verifier;
+- EC-5 proven inert before acceptance;
+- H3 founder-driven witness;
+- H4 one canonical UI/engine state;
+- mutation plan;
+- 48-hour qualification contract;
+- founder UI witness contract.
+
+Commission an independent specification checker.
+
+Only after specification checker-clean and no sensitive-writer conflict:
+
+- build an inert synthetic-fixture VB3 core;
+- keep the act edge disabled;
+- do not mint real tokens;
+- do not execute real mutations;
+- do not activate providers;
+- do not access customer/private data.
+
+Required states:
+
+VB3_ACT_EDGE: FROZEN
+LIVE_ACTION: NOT_AUTHORIZED
+48H_QUALIFICATION: NOT_STARTED
+FOUNDER_WITNESS: NOT_PERFORMED
+
+Run negative, replay, bypass, provenance, dual-writer, rollback and stale-state tests.
+
+PHASE 16 — UI MACHINE QUALIFICATION
+
+For every new founder-facing surface:
+
+- use the approved foreground Chrome launcher;
+- run Playwright;
+- capture screenshots, video, trace, console, network and page errors;
+- test desktop and mobile;
+- test accessibility;
+- test keyboard-only;
+- test 200% zoom;
+- test reduced motion;
+- test low-hand-burden use;
+- test UNKNOWN, STALE, CONFLICT and missing-evidence states;
+- verify no false action controls.
+
+Machine testing may produce:
+
+READY_FOR_HUMAN_PERCEPTION_WITNESS
+
+It may not produce:
+
+FOUNDER_WITNESS_PASSED
+
+PHASE 17 — FUTURE-STAGE BOUNDARY
+
+V8-C, V8-D and V8-E implementation remains prohibited before V8-B acceptance.
+
+Read-only planning files are allowed only when labeled:
+
+PLANNING ONLY
+STAGE NOT STARTED
+NO IMPLEMENTATION AUTHORIZED
+NO ACCEPTANCE CLAIM
+
+Do not create future-stage product code.
+
+PHASE 18 — NINE-HOUR CHECKPOINT
+
+Approximately nine hours after DCL-1 begins active execution:
+
+1. finish current atomic actions safely;
+2. stop launching new large lanes;
+3. persist all directive and run recovery states;
+4. reconcile Git, GitHub and disk;
+5. generate final proof capsules;
+6. leave remaining routine work in the operational queue;
+7. surface only a genuine true founder or human-expert gate.
+
+Time elapsed does not imply completion.
+
+PHASE 19 — TESTS
+
+Test the Durable Directive Control Layer for:
+
+1. missing body;
+2. missing digest;
+3. digest mismatch;
+4. truncated body;
+5. body changed after capture;
+6. summary substituted for body;
+7. queue entry without body;
+8. body without queue;
+9. dependency missing;
+10. dependency reversed;
+11. directive silently dropped;
+12. duplicate directive;
+13. supersession without record;
+14. context compaction before capture;
+15. safe compaction after capture;
+16. restart recovery;
+17. duplicate resume;
+18. wrong machine;
+19. writer collision;
+20. shutdown with actionable work;
+21. true founder gate stop;
+22. human-expert gate stop;
+23. failed directive preserved;
+24. historical received-not-locked classification;
+25. missing historical Nightshift not reconstructed;
+26. current directive self-capture;
+27. exact transcript/disk digest equality;
+28. immutable prompt-body enforcement;
+29. idempotent queue processing;
+30. complete final proof capsule.
+
+Run:
+
+- schemas;
+- unit tests;
+- integration tests;
+- mutation tests;
+- crash recovery;
+- compaction simulation;
+- historical replay;
+- exact-SHA CI;
+- secret scan;
+- forbidden-artifact scan.
+
+PHASE 20 — INDEPENDENT CHECKER AND ADVISOR
+
+Commission a checker that did not build DCL-1.
+
+The checker must verify:
+
+- complete self-capture;
+- digest reproduction;
+- immutable body;
+- state machine;
+- queue and dependencies;
+- recovery;
+- compaction safety;
+- historical honesty;
+- no directive reconstruction;
+- current self-hosting instrumentation;
+- Nightshift continuation coverage.
+
+Allowed:
+
+DCL1-CHECKER-CLEAN
+DCL1-CHECKER-FINDINGS
+DCL1-CHECKER-REJECT
+DCL1-CHECKER-INSUFFICIENT_EVIDENCE
+
+After checker-clean, commission a fresh read-only Advisor.
+
+Allowed:
+
+DCL1-ADVISOR: READY-TO-ACTIVATE
+DCL1-ADVISOR: HOLD-CORRECTABLE-FINDINGS
+DCL1-ADVISOR: REJECT
+DCL1-ADVISOR: INSUFFICIENT_EVIDENCE
+
+Any correction after review requires a new candidate, tests, exact-SHA CI, fresh checker and fresh Advisor.
+
+PHASE 21 — ACTIVATION AND CONTINUATION
+
+After checker-clean and Advisor-ready:
+
+- activate DCL-1;
+- bind current autonomous run;
+- continue the V8-B phases above;
+- merge qualified work under active ARLC authority;
+- close routine superseded work automatically;
+- preserve evidence;
+- continue until the nine-hour checkpoint or a true gate.
+
+FINAL OUTPUT
+
+Return:
+
+1. Pro host identity.
+2. Active session ID.
+3. DCL-1 source transcript path.
+4. DCL-1 prompt byte count.
+5. DCL-1 prompt line count.
+6. DCL-1 transcript SHA-256.
+7. DCL-1 stored SHA-256.
+8. Digest equality result.
+9. DCL policy version and digest.
+10. Directive queue path.
+11. Directive recovery path.
+12. Historical STACK-1E status.
+13. Historical STACK-1F status.
+14. Historical ARLC-1 status.
+15. Historical V8B-NIGHTSHIFT-1 receipt result.
+16. Historical ARE-1 status.
+17. Supersession record.
+18. ARLC current status.
+19. Current autonomous-run ID.
+20. Current blueprint/run-manifest status.
+21. Pre-DCL segment classification.
+22. DCL-enforced segment classification.
+23. V8-B completion matrix.
+24. VB2 acceptance status.
+25. SCL-1 status.
+26. V8-B wide-safe work completed.
+27. VB3 specification status.
+28. VB3 inert-core status.
+29. VB3 act-edge status.
+30. UI machine-qualification status.
+31. 48-hour qualification readiness.
+32. Local tests.
+33. Exact-SHA CI.
+34. DCL checker verdict.
+35. DCL Advisor verdict.
+36. Work integrated.
+37. Work still queued.
+38. Founder queue.
+39. Operational queue.
+40. Exact next true founder gate.
+
+Required exact statements:
+
+THE HISTORICAL V8B-NIGHTSHIFT-1 DIRECTIVE WAS NOT RECONSTRUCTED OR BACKDATED WHEN ITS RECEIPT COULD NOT BE PROVEN.
+
+DCL-1 CAPTURED AND VERIFIED ITS OWN COMPLETE BODY BEFORE DEPENDING ON CONVERSATIONAL MEMORY.
+
+SESSION TRANSCRIPT RECEIPT AND DISK-PRESERVED DIRECTIVE BODY HAVE MATCHING SHA-256 DIGESTS.
+
+CONTEXT COMPACTION IS NOT TREATED AS SAFE UNTIL DIRECTIVE BODY, DIGEST, QUEUE, DEPENDENCIES AND RECOVERY STATE EXIST.
+
+THE CURRENT FORWARD V8-B PROGRAM IS GOVERNED BY DCL-1, NOT BY AN ASSUMED HISTORICAL NIGHTSHIFT PROMPT.
+
+THE CURRENT RUN’S PRE-DCL SEGMENT IS RETROSPECTIVE EVIDENCE; ONLY THE POST-ACTIVATION SEGMENT IS DIRECTIVE-LOCK-ENFORCED.
+
+THE SOFTWARE BLUEPRINT EXPRESSES INTENT AND DOES NOT BY ITSELF GRANT LIVE AUTHORITY.
+
+VB3’S ACT EDGE REMAINS FROZEN.
+
+THE 48-HOUR QUALIFICATION WAS NOT STARTED FROM THE PRO.
+
+V8-C, V8-D AND V8-E IMPLEMENTATION DID NOT BEGIN BEFORE V8-B ACCEPTANCE.
+
+Finish with exactly one verdict:
+
+DCL1: ACTIVE-V8B-CONTINUING
+DCL1: READY-TO-ACTIVATE
+DCL1: HOLD-CORRECTABLE-FINDINGS
+DCL1: TRUE-FOUNDER-GATE
+DCL1: HUMAN-EXPERT-GATE
+DCL1: SELF-CAPTURE-FAILED
+DCL1: REJECT
+DCL1: INSUFFICIENT_EVIDENCE
