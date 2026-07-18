@@ -1,0 +1,505 @@
+FOUNDERGATE STACK-1E — NARROW EMPTY-EVIDENCE POLICY CORRECTION AND FINAL MERGE-ATTESTATION CLOSURE
+
+CLASSIFICATION
+
+NARROW-SENSITIVE GOVERNANCE AND EVIDENCE-GATE CORRECTION
+ONE PRIMARY WRITER
+ONE FRESH INDEPENDENT CHECKER
+ONE FRESH FINAL READ-ONLY ADVISOR
+TERMINAL-0 SOLE INTEGRATION SHERIFF
+NO MAIN MERGE
+NO PR CLOSURE
+NO BRANCH DELETION
+NO WORKTREE DELETION
+NO SCL-1 BUILD
+NO OPENSANDBOX ADOPTION
+NO AKIOR ACCESS
+NO M1 CONTACT
+NO NEW SANDBOX OR VM
+NO REWRITE OR FORCE-PUSH OF M1 EVIDENCE
+
+PURPOSE
+
+Correct the final two blockers before the founder main-merge gate:
+
+1. The evidence-integrity guard currently exempts every zero-byte `.log` file. That exemption is too broad and weakens the evidence gate.
+2. The latest checker and Advisor verdicts became stale because corrections were applied after their reviews.
+
+Produce one frozen cumulative candidate, run exact-head qualification, obtain fresh clean independent attestations, and stop at the founder merge gate.
+
+Do not merge main.
+
+CURRENT CLAIMED STATE TO RE-DERIVE
+
+Resolve mechanically rather than trusting these narrative values:
+
+- repository: yosiwizman/foundergate;
+- cumulative PR: #162;
+- base: main;
+- head branch: correction/ffs1-foreground-founder-surface;
+- M1 evidence commit preserved in ancestry;
+- Phase 7.1 founder witness accepted;
+- M1 active qualification window closed;
+- prior checker verdict contained findings;
+- prior Advisor verdict contained correctable findings;
+- all 12 PRs remain open;
+- main remains unmerged.
+
+PHASE 0 — PRECONDITIONS
+
+Before writing:
+
+1. Prove host identity is Mac16,11 / Apple M4 Pro.
+2. Resolve repository and origin.
+3. Fetch current remote references.
+4. Resolve current remote main.
+5. Resolve live PR #162:
+   - state;
+   - draft state;
+   - base;
+   - head branch;
+   - exact full head SHA;
+   - mergeability;
+   - changed-file count;
+   - commit count.
+6. Resolve every commit added after:
+   - the prior checker-reviewed SHA;
+   - the prior Advisor-reviewed SHA;
+   - the last exact-SHA CI candidate.
+7. Resolve all existing checker and Advisor reports from disk.
+8. Resolve current required workflow results.
+9. Load and verify the active Test-Before-Founder policy.
+10. Load and verify the Foreground Founder-Surface policy.
+11. Run policy-integrity validation.
+12. Verify the founder-accepted product paths remain byte-identical to the accepted candidate.
+13. Verify the exact M1 evidence commit remains in ancestry.
+14. Verify no main merge, PR closure, branch deletion, worktree deletion or SCL-1 implementation occurred.
+15. Verify no active runtime or Lima VM exists.
+
+Do not use remembered SHAs, branch heads, paths or statuses.
+
+If the accepted founder-facing product tree drifted, stop:
+
+STACK1E-HOLD: ACCEPTED-PRODUCT-DRIFT
+
+PHASE 1 — REVOKE PREMATURE READINESS
+
+Record:
+
+STACK1D_MERGE_READINESS: STALE
+
+Reasons:
+
+- prior checker verdict was FINDINGS, followed by changes;
+- prior Advisor verdict was HOLD-CORRECTABLE-FINDINGS, followed by changes;
+- no fresh checker and fresh final Advisor were recorded after the final corrections;
+- the empty-`.log` integrity exemption is overbroad.
+
+Preserve all historical verdicts.
+
+Do not rewrite them as clean.
+
+Create or update:
+
+docs/status/STACK1E_FINAL_CLOSURE_STATUS.md
+docs/coordination/STACK1E_FINAL_CLOSURE_LEDGER.jsonl
+docs/coordination/STACK1E_FINAL_CLOSURE_RECOVERY_STATE.json
+docs/lanes/STACK1E_FINAL_CLOSURE_LANE.md
+
+The ledger is append-only.
+
+The recovery state is atomic.
+
+PHASE 2 — REPLACE THE BLANKET EMPTY-LOG EXEMPTION
+
+Inspect the exact current implementation of:
+
+src/tools/evidence-integrity.selftest.mjs
+
+Remove any rule equivalent to:
+
+“all zero-byte `.log` files are valid.”
+
+The permanent policy must be:
+
+EMPTY EVIDENCE IS INVALID BY DEFAULT.
+
+A zero-byte artifact may pass only when all of the following are true:
+
+1. its exact repository-relative path is declared in a governed artifact manifest;
+2. that manifest explicitly sets:
+   allow_empty: true
+3. the manifest includes:
+   empty_reason
+4. the manifest identifies:
+   producer
+5. the manifest records:
+   producer_exit_status
+6. the manifest identifies one or more required non-empty companion artifacts;
+7. every companion artifact exists;
+8. every companion artifact hash verifies;
+9. run ID binding matches;
+10. evaluated-SHA binding matches;
+11. artifact-manifest hash verifies;
+12. no other policy forbids emptiness for that artifact class.
+
+Do not infer allow-empty from file extension.
+
+Do not permit wildcard:
+
+*.log
+
+Do not permit directory-wide empty-file exemptions.
+
+For the historical M1 artifact, allow only the exact mechanically resolved path corresponding to the empty sentinel-watch log, and only when its required structured companion evidence verifies.
+
+Do not modify the M1 evidence file itself.
+
+Do not rewrite or force-push the M1 evidence branch.
+
+PHASE 3 — EMPTY-ARTIFACT SCHEMA
+
+Create or reconcile a versioned schema under the repository’s existing evidence conventions.
+
+The schema must support fields equivalent to:
+
+- artifact_path;
+- sha256;
+- required;
+- allow_empty;
+- empty_reason;
+- producer;
+- producer_exit_status;
+- qualification_run_id;
+- driver_lease_run_id where applicable;
+- evaluated_sha;
+- companion_artifacts;
+- companion_hashes;
+- reviewer;
+- policy_version.
+
+Reject:
+
+- missing allow_empty declaration;
+- allow_empty without reason;
+- allow_empty without producer status;
+- allow_empty without companions;
+- missing companion;
+- empty companion;
+- wrong run ID;
+- wrong evaluated SHA;
+- wrong hash;
+- undeclared empty file;
+- wildcard empty exemption;
+- extension-only exemption.
+
+PHASE 4 — REQUIRED MUTATION TESTS
+
+Add and execute mutations proving:
+
+1. undeclared empty arbitrary.log is rejected;
+2. empty driver.log is rejected;
+3. empty command.log is rejected;
+4. empty attestation.log is rejected;
+5. empty teardown.log is rejected;
+6. empty security.log is rejected;
+7. empty JSON is rejected;
+8. empty Markdown is rejected;
+9. empty checksum file is rejected;
+10. declared sentinel-watch.log with valid companion evidence is accepted;
+11. declared sentinel-watch.log without companions is rejected;
+12. declared sentinel-watch.log with an empty companion is rejected;
+13. declared sentinel-watch.log with wrong companion hash is rejected;
+14. declared sentinel-watch.log with wrong run ID is rejected;
+15. declared sentinel-watch.log with wrong evaluated SHA is rejected;
+16. manifest tampering is rejected;
+17. allow_empty wildcard is rejected;
+18. extension-only exemption is rejected.
+
+The tests must prove both:
+
+- the historical legitimate no-output artifact can be represented honestly;
+- the evidence-integrity gate retains its original fail-closed behavior for every other artifact.
+
+PHASE 5 — CANDIDATE FREEZE
+
+After the correction and all reconciliation records are complete:
+
+1. commit all intended code, schema, test and record changes;
+2. push the cumulative branch;
+3. resolve the exact full SHA;
+4. record it as:
+
+STACK1E_EVALUATED_CANDIDATE_SHA
+
+5. freeze:
+   - product code;
+   - runtime code;
+   - launcher code;
+   - policy code;
+   - evidence-validator code;
+   - test code;
+   - integration records.
+
+Any later change to these invalidates the candidate and restarts Phase 5.
+
+PHASE 6 — LOCAL QUALIFICATION
+
+Run all applicable tests at STACK1E_EVALUATED_CANDIDATE_SHA:
+
+- repository selftests;
+- evidence-integrity tests;
+- empty-artifact schema tests;
+- all new mutations;
+- TBF tests;
+- FFS tests;
+- run-ID namespace tests;
+- launcher tests;
+- completion-invariant tests;
+- Evidence Pack tests;
+- policy-integrity validation;
+- protected-file checks;
+- secret scan;
+- ancestry proof;
+- M1 evidence-hash verification;
+- cumulative diff audit.
+
+No new live Safety Check is required.
+
+Do not start a sandbox or VM.
+
+PHASE 7 — EXACT-SHA CI
+
+Push STACK1E_EVALUATED_CANDIDATE_SHA.
+
+Run every required GitHub-hosted workflow on that exact SHA.
+
+Require success for current equivalents of:
+
+- selftests;
+- tbf1-policy;
+- phase7-1-safety-check;
+- evidence-integrity;
+- mutation tests.
+
+Do not accept green results from an ancestor.
+
+Record workflow names, run IDs, conclusions and exact SHA.
+
+PHASE 8 — FRESH INDEPENDENT CHECKER
+
+Only after local qualification and exact-SHA CI succeed, commission a completely fresh independent checker.
+
+The checker must not reuse the previous checker conclusion.
+
+The checker must verify:
+
+- exact candidate SHA;
+- empty-artifact policy is manifest-controlled;
+- no extension-wide exemption remains;
+- all 18 empty-artifact mutations;
+- historical M1 evidence remains unchanged;
+- M1 evidence commit remains in ancestry;
+- founder-accepted product remains unchanged;
+- current PR #162 contains the complete prior stack;
+- exact-SHA CI;
+- forbidden-artifact result;
+- main remains unmerged;
+- no PRs were closed;
+- SCL-1 was not started.
+
+Allowed verdicts:
+
+STACK1E-CHECKER-CLEAN
+STACK1E-CHECKER-FINDINGS
+STACK1E-CHECKER-REJECT
+STACK1E-CHECKER-INSUFFICIENT-EVIDENCE
+
+Do not translate FINDINGS into CLEAN merely because corrections are obvious.
+
+If the checker finds any issue:
+
+1. correct it within the bounded scope;
+2. create a new evaluated candidate SHA;
+3. rerun affected local tests;
+4. rerun exact-SHA CI;
+5. commission another fresh checker.
+
+PHASE 9 — CHECKER ATTESTATION COMMIT
+
+After STACK1E-CHECKER-CLEAN:
+
+1. commit only the checker report and required checker evidence;
+2. prove the delta from STACK1E_EVALUATED_CANDIDATE_SHA is attestation-only;
+3. record the new exact head;
+4. do not change code, schemas, policies, tests or operational records.
+
+If any non-attestation file changes, restart from Phase 5.
+
+PHASE 10 — FRESH FINAL READ-ONLY ADVISOR
+
+Commission a completely fresh read-only Solutions Architect after the checker-clean report exists.
+
+The Advisor must independently verify:
+
+- current remote main;
+- PR #162 base and head;
+- evaluated candidate SHA;
+- checker attestation head;
+- exact-SHA CI;
+- empty-artifact policy;
+- mutation results;
+- M1 evidence preservation;
+- M1 soak applicability classification;
+- founder acceptance seal;
+- complete PR ancestry;
+- cumulative diff;
+- product-tree preservation;
+- merge method;
+- post-merge cleanup plan.
+
+Allowed verdicts:
+
+STACK1E-ADVISOR: READY-FOR-FOUNDER-MERGE-GATE
+STACK1E-ADVISOR: HOLD-CORRECTABLE-FINDINGS
+STACK1E-ADVISOR: REJECT
+STACK1E-ADVISOR: INSUFFICIENT-EVIDENCE
+
+If the Advisor finds a correction:
+
+1. do not merely record that it was fixed;
+2. apply the correction;
+3. restart at Phase 5;
+4. obtain a new checker-clean verdict;
+5. obtain a new final Advisor verdict.
+
+The Advisor may not correct the tree it audits.
+
+PHASE 11 — FINAL ATTESTATION HEAD
+
+After the Advisor returns READY:
+
+1. commit only:
+   - final Advisor report;
+   - final decision packet;
+   - attestation indexes and hashes.
+2. resolve the exact final PR head.
+3. verify the delta from STACK1E_EVALUATED_CANDIDATE_SHA contains only approved attestation evidence.
+4. verify no product, runtime, launcher, policy, validator, schema or test file changed.
+5. run exact-SHA CI on the exact final PR head.
+6. run a mechanical attestation-closure validator.
+7. update PR #162 metadata only after all checks pass.
+
+Record:
+
+STACK1E_FINAL_ATTESTATION_HEAD
+
+PHASE 12 — PR #162 FINAL POSTURE
+
+Keep PR #162:
+
+OPEN
+DRAFT
+BASE main
+UNMERGED
+
+Update its body to state:
+
+- single cumulative integration PR;
+- earlier PRs included;
+- Phase 7.1 founder witness accepted;
+- M1 VB2 soak passed for ACCEPTED_VB2_STAGE_ONLY;
+- M1 evidence commit preserved;
+- metadata defects annotated;
+- empty-evidence policy corrected without rewriting M1 evidence;
+- final checker clean;
+- final Advisor ready;
+- exact-final-head CI green;
+- merge method MERGE COMMIT;
+- OpenSandbox unadopted;
+- SCL-1 not started;
+- founder merge signature still required.
+
+Do not close #151–#161.
+
+Do not merge.
+
+PHASE 13 — FINAL MERGE-READINESS VALIDATION
+
+Derive readiness mechanically.
+
+READY requires all:
+
+- current main resolved;
+- current PR #162 exact head resolved;
+- candidate frozen;
+- local tests pass;
+- exact-candidate CI passes;
+- exact-final-head CI passes;
+- STACK1E-CHECKER-CLEAN;
+- STACK1E-ADVISOR: READY-FOR-FOUNDER-MERGE-GATE;
+- M1 evidence commit preserved;
+- founder acceptance sealed;
+- all earlier required PR heads in ancestry;
+- product tree unchanged;
+- no forbidden artifacts;
+- no main merge;
+- no PR closure;
+- no SCL-1 work.
+
+FINAL OUTPUT
+
+Return:
+
+1. Pro host identity.
+2. Current remote main.
+3. PR #162 base, exact head, draft state and mergeability.
+4. Prior checker-reviewed SHA.
+5. Prior Advisor-reviewed SHA.
+6. Files changed after each prior review.
+7. Empty-log weakness classification.
+8. Corrected empty-artifact policy.
+9. Schema path and version.
+10. Exact historical empty artifact authorized.
+11. Required companion evidence.
+12. Mutation-test results.
+13. Evaluated candidate SHA.
+14. Local test results.
+15. Exact-candidate CI results.
+16. Fresh checker verdict.
+17. Checker attestation head.
+18. Fresh final Advisor verdict.
+19. Final attestation head.
+20. Exact-final-head CI results.
+21. Product-tree preservation.
+22. M1 evidence-commit ancestry.
+23. Complete prior-PR ancestry.
+24. Forbidden-artifact result.
+25. PR #162 update result.
+26. Exact next founder gate.
+
+Required exact statements:
+
+THE PRIOR STACK1D CHECKER AND ADVISOR VERDICTS WERE STALE AFTER THEIR FINDINGS WERE CORRECTED.
+
+A CORRECTED FINDING WAS NOT TREATED AS A FRESH CLEAN INDEPENDENT VERDICT.
+
+ZERO-BYTE EVIDENCE IS REJECTED BY DEFAULT; EMPTINESS MAY BE ALLOWED ONLY FOR AN EXACT MANIFEST-DECLARED ARTIFACT WITH A VERIFIED REASON AND COMPANION EVIDENCE.
+
+NO FILE-EXTENSION-WIDE EMPTY-EVIDENCE EXEMPTION REMAINS.
+
+THE HISTORICAL M1 EVIDENCE WAS NOT REWRITTEN OR FORCE-PUSHED.
+
+THE EXACT M1 EVIDENCE COMMIT REMAINS IN THE CUMULATIVE BRANCH ANCESTRY.
+
+PR #162 REMAINS THE SINGLE CUMULATIVE PR AGAINST MAIN.
+
+NO MAIN MERGE, PR CLOSURE, BRANCH DELETION, WORKTREE DELETION, SCL-1 BUILD, OPENSANDBOX ADOPTION, AKIOR ACCESS OR M1 CONTACT WAS AUTHORIZED.
+
+Finish with exactly one verdict:
+
+STACK1E: READY-FOR-FOUNDER-MERGE-GATE
+STACK1E: HOLD-CORRECTABLE-FINDINGS
+STACK1E: HOLD-TRUE-FOUNDER-GATE
+STACK1E: REJECT
+STACK1E: INSUFFICIENT-EVIDENCE

@@ -1,0 +1,37 @@
+{
+  "directive_id": "dcl-1",
+  "title": "FOUNDERGATE DCL-1 \u2014 DURABLE DIRECTIVE LOCK, NIGHTSHIFT RECOVERY, AUTONOMOUS RUN INSTRUMENTATION, AND V8-B CONTINUATION",
+  "version": 1,
+  "issuer": "founder",
+  "source_session_id": "884194cb-17e3-495f-a55d-bf602139bcf3",
+  "source_transcript_path": "/Users/yosiwizman/.claude/projects/-Users-yosiwizman-Projects-foundergate/884194cb-17e3-495f-a55d-bf602139bcf3.jsonl",
+  "source_transcript_lines": {
+    "queue_operation": 21806,
+    "attachment": 21812
+  },
+  "cross_source_identical": true,
+  "received_body_path": ".foundergate/directives/dcl-1/prompt.txt",
+  "sha256": "dde0e32a3e54a1af67a6f942d2020e0482568214c53cea2bba49bbcb893152f9",
+  "stored_sha256": "dde0e32a3e54a1af67a6f942d2020e0482568214c53cea2bba49bbcb893152f9",
+  "digest_equal": true,
+  "byte_count": 21949,
+  "line_count": 883,
+  "beginning_anchor": "FOUNDERGATE DCL-1 \u2014 DURABLE DIRECTIVE LOCK, NIGHTSHIFT RECOVERY, AUTONOMOUS RUN INSTRUMENTATION, AND V8-B CONTINUATION\n\nFOUNDER AUTHORIZATION\n\nI authorize FounderGate to establish a permanent Durabl",
+  "ending_anchor": "\n\nDCL1: ACTIVE-V8B-CONTINUING\nDCL1: READY-TO-ACTIVATE\nDCL1: HOLD-CORRECTABLE-FINDINGS\nDCL1: TRUE-FOUNDER-GATE\nDCL1: HUMAN-EXPERT-GATE\nDCL1: SELF-CAPTURE-FAILED\nDCL1: REJECT\nDCL1: INSUFFICIENT_EVIDENCE",
+  "required_sections_present": {
+    "FOUNDERGATE DCL-1": true,
+    "FOUNDER AUTHORIZATION": true,
+    "PHASE 0": true,
+    "FINAL OUTPUT": true,
+    "DCL1: ACTIVE-V8B-CONTINUING": true,
+    "DCL1: SELF-CAPTURE-FAILED": true,
+    "DCL1: INSUFFICIENT_EVIDENCE": true
+  },
+  "starts_with_title": true,
+  "ends_with_final_verdict": true,
+  "risk_class": "governance_control_layer",
+  "machine": "mac-mini-pro",
+  "writer_owner": "terminal-0",
+  "checker": "DCL1-CHECKER (independent, pending)",
+  "current_state": "DIGEST_VERIFIED"
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "directive-index-1",
+  "updated_at": "2026-07-18T04:13:39Z",
+  "directives": {
+    "dcl-1": {
+      "state": "DIGEST_VERIFIED",
+      "sha256": "dde0e32a3e54a1af67a6f942d2020e0482568214c53cea2bba49bbcb893152f9",
+      "role": "canonical_forward"
+    },
+    "stack-1e": {
+      "state": "HISTORICAL_RECEIVED_NOT_LOCKED",
+      "sha256": "c46e554a8eb1e152b014df7bb9718c68587d81f3e9aec19432bbdb8883c77483"
+    },
+    "stack-1f": {
+      "state": "HISTORICAL_RECEIVED_NOT_LOCKED",
+      "sha256": "2d0a54240d73fc967a0a6f1c782b6ffc3ae0e6a271082b5cbe60b2cde6ac7883"
+    },
+    "arlc-1": {
+      "state": "HISTORICAL_RECEIVED_NOT_LOCKED",
+      "sha256": "d1aa7cad71fb8ef01a50d50a564436754ba646d8947e07450f181df84905cd48"
+    },
+    "are-1": {
+      "state": "CAPTURED_NOT_QUEUED",
+      "sha256": "4fa9c888977780f2ba3c4b7995d132039d677aee25d7d03000c58b960e5277cb"
+    },
+    "v8b-nightshift-1": {
+      "state": "NOT_PROVEN",
+      "sha256": null,
+      "note": "never received; only referenced inside DCL-1"
+    }
+  }
+}

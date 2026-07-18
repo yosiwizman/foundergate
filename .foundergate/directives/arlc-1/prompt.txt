@@ -1,0 +1,917 @@
+FOUNDERGATE ARLC-1 — PERMANENT AUTONOMOUS REPOSITORY LIFECYCLE CONTROLLER, CURRENT STACK CLOSURE, AND GATE-TO-GATE CONTINUATION
+
+FOUNDER AUTHORIZATION
+
+I establish the Autonomous Repository Lifecycle Law as a permanent FounderGate operating rule.
+
+Routine mechanically qualified repository operations are backend Terminal-0 responsibilities, not founder gates.
+
+FounderGate must autonomously discover, verify, execute, reconcile and close routine repository lifecycle work without requiring the founder or Advisor to remember to paste another prompt.
+
+The founder must be surfaced only for:
+
+- human-perception UI witnesses;
+- legal, security, tax, IP, payment, health or regulatory judgment;
+- provider adoption or default-provider selection;
+- private repository, customer-data or production-data authority;
+- public deployment or release;
+- irreversible deletion or migration;
+- spending beyond approved budgets;
+- live external actions;
+- policy weakening;
+- a genuinely unresolved strategic decision.
+
+Routine commits, PR operations, mechanically qualified merges, CI reruns, checker correction cycles, superseded-PR closure, branch cleanup, worktree cleanup, lane continuation and safe phase transitions are not founder gates.
+
+This authorization supersedes earlier disk rules that required founder approval for every main merge or prohibited Terminal-0 from executing an otherwise mechanically qualified merge.
+
+It does not weaken evidence, checker, Advisor, exact-SHA, qualification, rollback, data, security or active-lock requirements.
+
+It does not authorize OpenSandbox adoption, customer or private repository execution, production deployment, public release, AKIOR access, payments, external actions or policy weakening.
+
+ARCHITECTURAL VERDICT
+
+Do not implement one omnipotent auto-merge agent.
+
+Implement separation of duties:
+
+- MOD-001 FounderGate Core loads and enforces the active lifecycle law.
+- MOD-013 Branch/PR/Lane Orchestrator discovers and queues lifecycle work.
+- MOD-018 Integration Merge Gate derives eligibility.
+- MOD-022 GitHub Connector performs bounded remote operations.
+- MOD-015 Audit/Proof Ledger records actions and outcomes.
+- MOD-014 Gate/Witness Engine emits true founder gates.
+- Terminal-0 is the sole sequential executor.
+- Builders may not approve or merge their own work.
+- Checkers may not execute merges.
+- The connector may not decide eligibility.
+- The orchestrator may not grant authority.
+- The audit ledger may not approve.
+- No component may self-certify the action it performed.
+
+OPERATING MODE
+
+MAC MINI PRO ONLY
+TERMINAL-0 SOLE REPOSITORY WRITER AND MERGE SHERIFF
+DISK-FIRST
+FAIL-CLOSED
+IDEMPOTENT
+CRASH-RECOVERABLE
+ONE MERGE AT A TIME
+WIDE-SAFE PARALLEL READS AND TESTS
+NARROW-SENSITIVE SEQUENTIAL WRITES
+INDEPENDENT CHECKERS
+FINAL READ-ONLY ADVISOR WHERE POLICY REQUIRES
+FOUNDER INTERRUPTION ONLY AT TRUE GATES
+NO M1 CONTACT
+NO AKIOR ACCESS
+NO OPENSANDBOX ADOPTION
+NO CUSTOMER OR PRIVATE REPOSITORY
+NO PRODUCTION DEPLOYMENT
+
+PURPOSE
+
+1. Finish the current STACK1E qualification honestly.
+2. Permanently encode autonomous repository lifecycle authority on disk.
+3. Make every Terminal-0 run load and enforce it.
+4. Install an idempotent repository lifecycle reconciler.
+5. Prove the controller against synthetic and historical states.
+6. Use it to merge and clean the current cumulative stack when eligible.
+7. Start SCL-1 from clean verified main.
+8. Continue automatically until the next genuine founder gate.
+
+PHASE 0 — WAIT FOR CURRENT RUN TERMINAL STATE
+
+Do not interfere with an active STACK1E run.
+
+Mechanically determine whether STACK1E is:
+
+- RUNNING;
+- READY-FOR-FOUNDER-MERGE-GATE;
+- HOLD-CORRECTABLE-FINDINGS;
+- HOLD-TRUE-FOUNDER-GATE;
+- REJECT;
+- INSUFFICIENT-EVIDENCE.
+
+If RUNNING:
+
+- place this program into the governed Terminal-0 continuation queue;
+- record the queue item and digest;
+- do not modify the active candidate;
+- resume automatically when STACK1E reaches a terminal state.
+
+If HOLD-CORRECTABLE-FINDINGS:
+
+- perform up to three bounded correction cycles;
+- freeze a new exact candidate;
+- rerun required tests and CI;
+- obtain fresh checker and final Advisor verdicts;
+- continue without founder involvement.
+
+If REJECT or INSUFFICIENT-EVIDENCE:
+
+- preserve the evidence;
+- continue unrelated wide-safe ARLC design and synthetic testing;
+- do not merge the current stack;
+- stop only if the rejection blocks controller qualification or requires a real founder decision.
+
+If HOLD-TRUE-FOUNDER-GATE:
+
+- verify mechanically that the gate is genuinely founder-level under the new policy;
+- demote false routine gates to operational work;
+- surface only a valid true gate.
+
+PHASE 1 — CURRENT AUTHORITY AND CONFLICT AUDIT
+
+Before writing:
+
+1. Prove host identity is Mac16,11 / Apple M4 Pro.
+2. Resolve the repository and origin.
+3. Resolve current remote main.
+4. Resolve all open PRs.
+5. Resolve all remote and local branches.
+6. Resolve all worktrees.
+7. Resolve all active writers and locks.
+8. Load the current roadmap, standing laws and active policy pointers.
+9. Identify every rule stating:
+   - all main merges require founder approval;
+   - no AI component may execute a merge;
+   - Terminal-0 must stop at routine integration;
+   - every build wave requires separate founder interruption.
+10. Identify every rule stating:
+   - founder acts only at true gates;
+   - FounderGate controls PRs and integration;
+   - the integration gate is the sole path to main;
+   - Terminal-0 is merge sheriff.
+11. Produce an explicit conflict report.
+12. Do not silently reinterpret conflicting rules.
+
+Create:
+
+docs/governance/AUTONOMOUS_REPOSITORY_LIFECYCLE_AUTHORITY_CONFLICT_REPORT.md
+docs/governance/AUTONOMOUS_REPOSITORY_LIFECYCLE_FOUNDER_AUTHORIZATION.md
+docs/roadmap/AUTONOMOUS_REPOSITORY_LIFECYCLE_SUPERSESSION_ADDENDUM.md
+
+Record this founder authorization verbatim.
+
+The supersession addendum must state:
+
+- routine qualified merges no longer require founder interaction;
+- Terminal-0 executes them under standing authority;
+- individual modules still cannot self-approve;
+- true founder gates remain unchanged;
+- old blanket merge-gate language is superseded only to this extent;
+- hard safety floors remain binding.
+
+PHASE 2 — ACTIVE POLICY POINTER AND DIGEST
+
+Create or reconcile under existing repository conventions:
+
+.foundergate/policies/autonomous_repository_lifecycle.json
+.foundergate/schemas/autonomous_repository_lifecycle.schema.json
+.foundergate/pointers/active_repository_lifecycle_policy.json
+.foundergate/state/repository_lifecycle_state.json
+.foundergate/state/repository_lifecycle_queue.json
+.foundergate/state/founder_gate_queue.json
+.foundergate/locks/repository_writer.lock
+.foundergate/locks/PANIC_STOP
+.foundergate/registries/pr_registry.json
+.foundergate/registries/branch_registry.json
+.foundergate/registries/worktree_registry.json
+.foundergate/registries/lane_registry.json
+.foundergate/registries/merge_history.jsonl
+.foundergate/registries/lifecycle_action_ledger.jsonl
+
+Do not create an active PANIC_STOP file during normal operation.
+
+The active pointer must include:
+
+- policy ID;
+- policy version;
+- policy path;
+- SHA-256 digest;
+- founder authorization path;
+- activation timestamp;
+- minimum compatible controller version;
+- safety-floor digest;
+- superseded policies;
+- rollback policy.
+
+The controller must refuse write actions when:
+
+- pointer missing;
+- schema invalid;
+- digest mismatch;
+- founder authorization missing;
+- safety-floor digest mismatch;
+- policy version unsupported;
+- recovery state ambiguous.
+
+PHASE 3 — PERMANENT ACTION CLASSIFICATION
+
+Implement a machine-enforced classification matrix.
+
+OPERATIONAL_AUTONOMOUS actions include:
+
+- create branch;
+- create worktree;
+- commit bounded work;
+- push lane branch;
+- open or update draft PR;
+- retarget PR according to approved topology;
+- rerun CI;
+- correct bounded checker findings;
+- commission fresh checker;
+- commission fresh Advisor;
+- merge one mechanically eligible PR;
+- verify post-merge state;
+- close fully superseded PRs;
+- delete mechanically safe obsolete branches;
+- remove mechanically safe obsolete worktrees;
+- continue approved safe lanes;
+- start the next already-authorized build phase.
+
+TRUE_FOUNDER_GATE actions include:
+
+- human-perception UI witness;
+- provider adoption;
+- default-provider selection;
+- private repository access;
+- customer or production data;
+- credentials beyond existing approved scope;
+- live external send, call, message, payment or deletion;
+- public deployment or release;
+- legal, security, IP, tax, health or regulatory judgment;
+- irreversible migration;
+- budget increase beyond approved policy;
+- protected-policy weakening;
+- change to founder authority;
+- unresolved strategic choice.
+
+HUMAN_EXPERT_GATE actions must remain distinct from founder gates.
+
+UNKNOWN must fail closed.
+
+Add a gate-classification reason code and evidence path to every decision.
+
+PHASE 4 — PROMPT AND POLICY PRECEDENCE
+
+Implement this precedence:
+
+1. hard safety floor;
+2. current explicit founder instruction;
+3. active founder-approved disk policy;
+4. active qualification locks and evidence contracts;
+5. mechanically derived current state;
+6. task prompt;
+7. Advisor or CTO narrative;
+8. chat memory.
+
+A non-founder prompt may temporarily tighten operation only through a governed temporary hold containing:
+
+- hold ID;
+- issuer;
+- reason;
+- evidence;
+- scope;
+- start time;
+- expiry or release condition;
+- affected actions.
+
+Generic boilerplate such as:
+
+NO MAIN MERGE
+
+must not create a permanent founder gate unless backed by:
+
+- an active qualification lock;
+- an unresolved policy predicate;
+- a true-gate classification;
+- or an explicit current founder instruction.
+
+An explicit founder stop always wins.
+
+PHASE 5 — TERMINAL-0 MANDATORY BOOTSTRAP
+
+Implement a mandatory Terminal-0 bootstrap using current repository conventions.
+
+Create or reconcile components equivalent to:
+
+tools/terminal0/foundergate_bootstrap.py
+tools/terminal0/repository_lifecycle_controller.py
+tools/terminal0/repository_lifecycle_lib.py
+tools/terminal0/repository_lifecycle_cli.py
+tools/terminal0/terminal0_continuation_guard.py
+tools/terminal0/terminal0_shutdown_guard.py
+
+At the start of every Terminal-0 or CTO run, bootstrap must:
+
+1. prove host identity;
+2. acquire the single-writer lock;
+3. load active policy pointer;
+4. validate policy digest;
+5. validate safety floor;
+6. reconcile recovery state;
+7. fetch permitted remote state;
+8. inventory PRs, branches, worktrees and lanes;
+9. inspect active qualification locks;
+10. resume incomplete safe actions;
+11. populate the operational queue;
+12. populate the true-founder-gate queue;
+13. choose the highest-priority next safe action.
+
+No normal Terminal-0 task may proceed if bootstrap was skipped.
+
+Create a wrapper so standard CTO/Harvest entry paths invoke bootstrap automatically.
+
+A raw direct invocation that bypasses bootstrap must fail.
+
+PHASE 6 — CONTINUATION AND SHUTDOWN GUARD
+
+Before Terminal-0 may report STOP or DONE, it must run the shutdown guard.
+
+The guard must block routine shutdown when:
+
+- an eligible PR remains unmerged;
+- a verified merge remains unvalidated;
+- superseded PRs remain open;
+- safe cleanup remains pending;
+- a correction cycle remains available;
+- an approved lane has a next safe action;
+- an evidence packet remains unsealed;
+- a checker or Advisor refresh is mechanically required;
+- an operational queue item is actionable.
+
+Allowed stop reasons:
+
+- TRUE_FOUNDER_GATE;
+- HUMAN_EXPERT_GATE;
+- UNRESOLVED_CRITICAL_BLOCKER;
+- WRONG_HOST;
+- ACTIVE_QUALIFICATION_LOCK;
+- INSUFFICIENT_EVIDENCE;
+- PANIC_STOP;
+- no actionable work remains.
+
+The terminal must report the exact stop reason and evidence.
+
+PHASE 7 — REPOSITORY LIFECYCLE STATE MACHINE
+
+Implement an explicit idempotent state machine.
+
+Required PR states include:
+
+DISCOVERED
+LANE_BOUND
+EVIDENCE_INCOMPLETE
+CHECKER_REQUIRED
+CHECKER_FINDINGS
+ADVISOR_REQUIRED
+CI_REQUIRED
+CI_RUNNING
+STALE
+BLOCKED
+TRUE_FOUNDER_GATE
+HUMAN_EXPERT_GATE
+MERGE_ELIGIBLE
+MERGE_LOCKED
+MERGING
+MERGED
+POST_MERGE_VERIFYING
+POST_MERGE_VERIFIED
+SUPERSEDED
+CLOSE_ELIGIBLE
+CLOSED
+CLEANUP_ELIGIBLE
+CLEANED
+PARKED
+UNKNOWN
+
+Every transition must declare:
+
+- from state;
+- to state;
+- reason code;
+- evidence;
+- exact SHA;
+- actor;
+- timestamp;
+- idempotency key;
+- rollback or recovery action.
+
+Invalid transitions fail closed.
+
+Repeated execution of the same idempotency key must not duplicate a merge, PR comment, closure or deletion.
+
+PHASE 8 — MERGE ELIGIBILITY ENGINE
+
+A PR becomes MERGE_ELIGIBLE only when all applicable predicates pass:
+
+- PR belongs to a registered lane or approved cumulative integration;
+- exact head resolved;
+- approved base resolved;
+- branch and PR topology valid;
+- lane contract exists;
+- evidence packet complete;
+- builder and checker separated;
+- fresh checker clean;
+- final Advisor ready where required;
+- exact-head CI green;
+- no post-attestation code drift;
+- protected-file checks pass;
+- schemas pass;
+- integration tests pass;
+- data-classification checks pass;
+- no forbidden artifacts;
+- rollback plan exists;
+- active qualification locks permit main movement;
+- no true founder gate is embedded;
+- merge method is allowed;
+- no unresolved review thread;
+- no conflicting writer.
+
+A builder may never satisfy its own checker predicate.
+
+A green GitHub icon alone is never sufficient.
+
+Merge execution remains one-at-a-time through Terminal-0.
+
+PHASE 9 — GITHUB CONNECTOR BOUNDARY
+
+The GitHub connector may perform only policy-issued commands:
+
+- read PR metadata;
+- read checks;
+- create/update PRs;
+- add bounded comments and labels;
+- mark draft/ready where policy allows;
+- execute a merge only after receiving a signed machine eligibility token from MOD-018/Terminal-0;
+- close superseded PRs;
+- delete approved obsolete branches.
+
+The connector may not:
+
+- decide eligibility;
+- change policy;
+- manufacture checker verdicts;
+- force-push;
+- rebase accepted history;
+- expose credentials;
+- delete evidence branches;
+- delete protected branches;
+- merge when the eligibility token SHA differs from the live head.
+
+Use existing authenticated credentials through the system keychain or approved credential helper.
+
+Do not write tokens to repository files or logs.
+
+PHASE 10 — NO-LOSS CLEANUP ENGINE
+
+A PR may close as SUPERSEDED only when:
+
+- its full head is reachable from verified main;
+- no unique required commit remains outside main;
+- its evidence is preserved;
+- no active lane depends on it;
+- no unresolved finding requires the PR to remain open.
+
+A remote branch may be deleted only when:
+
+- all commits are reachable from verified main or a preserved evidence branch;
+- no open non-superseded PR uses it;
+- no active worktree uses it;
+- it is not protected;
+- it is not an M1 PASS evidence branch;
+- it is not a prior NOT-PASSED evidence branch;
+- rollback requirements are satisfied.
+
+A worktree may be removed only when:
+
+- no process uses it;
+- it is not current;
+- it has no unique uncommitted or untracked files;
+- all commits are preserved remotely;
+- governed evidence is archived;
+- recovery state does not reference it.
+
+Deletion decisions must be individually logged.
+
+PHASE 11 — PERSISTENT LOCAL RECONCILER
+
+A disk policy does not execute itself.
+
+Implement and qualify a Pro-side user LaunchAgent equivalent to:
+
+com.software4all.foundergate.repository-lifecycle
+
+The service must:
+
+- run at user login;
+- run at a bounded interval no more frequent than every 10 minutes;
+- run after Terminal-0 completes a material action;
+- use the same policy and controller code as interactive Terminal-0;
+- acquire the same single-writer lock;
+- perform one merge maximum per reconciliation cycle;
+- perform bounded safe closures and cleanup afterward;
+- back off on GitHub or network errors;
+- never contact the M1;
+- never start a sandbox or VM merely to reconcile repository state;
+- never act while PANIC_STOP exists;
+- never act while policy integrity fails;
+- never act while another writer owns the lock;
+- record DEFERRED when the Pro is offline, asleep, unauthenticated or network-unavailable.
+
+Do not claim continuous operation while the Pro is powered off.
+
+Install and activate the service only after:
+
+- synthetic tests pass;
+- historical replay passes;
+- independent checker is clean;
+- exact-SHA CI is green;
+- final Advisor confirms the service cannot bypass policy.
+
+PHASE 12 — FOUNDER QUEUE
+
+The founder queue must contain only true gates.
+
+Each founder gate record must include:
+
+- gate ID;
+- project;
+- exact action;
+- why founder judgment is required;
+- what locks;
+- what it authorizes;
+- what it does not authorize;
+- remaining unknowns;
+- undo cost;
+- recommendation;
+- evidence links;
+- expiration;
+- current status.
+
+Routine repository actions must never appear in the founder queue.
+
+Create a separate operational queue for:
+
+- CI;
+- PRs;
+- merges;
+- cleanup;
+- checker refresh;
+- Advisor refresh;
+- lane continuation.
+
+PHASE 13 — PANIC, HOLD AND RECOVERY
+
+Support:
+
+- global PANIC_STOP;
+- repository-scoped hold;
+- PR-scoped hold;
+- branch-scoped hold;
+- qualification lock;
+- temporary operational hold.
+
+Every hold must be durable and explainable.
+
+The controller must resume idempotently after:
+
+- process crash;
+- Pro restart;
+- network loss;
+- GitHub timeout;
+- interrupted merge request;
+- CI still running;
+- checker task interruption;
+- cleanup interruption.
+
+It must reconcile actual GitHub and Git state before resuming.
+
+Narrative recovery is prohibited.
+
+PHASE 14 — TESTING AND MUTATIONS
+
+Build comprehensive tests for:
+
+1. missing policy pointer blocks writes;
+2. wrong digest blocks writes;
+3. unsupported policy version blocks writes;
+4. bootstrap bypass is rejected;
+5. shutdown with actionable routine work is rejected;
+6. true founder gate permits stop;
+7. routine merge is not classified as founder gate;
+8. provider adoption is classified as founder gate;
+9. private repository access is classified as founder gate;
+10. public deployment is classified as founder gate;
+11. active M1 lock blocks main merge;
+12. expired M1 lock does not block;
+13. stale checker blocks merge;
+14. corrected finding without fresh checker blocks;
+15. stale Advisor blocks merge;
+16. exact-head CI mismatch blocks;
+17. head movement invalidates eligibility token;
+18. builder self-check blocks;
+19. connector cannot decide eligibility;
+20. orchestrator cannot merge;
+21. checker cannot execute;
+22. duplicate reconciliation does not double-merge;
+23. duplicate reconciliation does not double-close;
+24. partial crash resumes safely;
+25. superseded PR closes only after verified ancestry;
+26. unique-commit PR remains open;
+27. evidence branch is preserved;
+28. NOT-PASSED evidence branch is preserved;
+29. dirty worktree is not removed;
+30. active worktree is not removed;
+31. untracked unique file blocks removal;
+32. protected branch cannot be deleted;
+33. generic non-founder NO MAIN MERGE without governed hold does not create a permanent founder gate;
+34. explicit founder stop blocks immediately;
+35. PANIC_STOP blocks all writes;
+36. service cannot run concurrently with Terminal-0 writer;
+37. offline state records DEFERRED;
+38. unknown state never becomes green;
+39. operational queue does not leak into founder queue;
+40. actual true gate reaches founder queue.
+
+Run:
+
+- unit tests;
+- integration tests;
+- negative tests;
+- mutation tests;
+- crash-recovery tests;
+- GitHub API fixture tests;
+- local bare-repository merge tests;
+- synthetic PR-stack tests;
+- branch/worktree no-loss tests;
+- policy-integrity tests;
+- exact-SHA CI.
+
+PHASE 15 — HISTORICAL REPLAY
+
+Replay the controller read-only against recorded historical states, including:
+
+- the #151–#162 stacked PR history;
+- stale checker after correction;
+- stale Advisor after correction;
+- M1 active soak lock;
+- M1 completed soak;
+- Evidence Pack UNKNOWN contradiction;
+- cumulative PR ready;
+- superseded PR cleanup.
+
+The replay must demonstrate:
+
+- no premature merge;
+- no founder interruption for routine corrections;
+- one cumulative merge rather than twelve merges;
+- earlier PRs closed only after verified integration;
+- no evidence branch deletion;
+- correct next true gate.
+
+Create:
+
+docs/testing/AUTONOMOUS_REPOSITORY_LIFECYCLE_HISTORICAL_REPLAY.md
+docs/testing/evidence/arlc1-historical-replay/
+
+PHASE 16 — INDEPENDENT CHECKER
+
+Commission a fresh checker that did not build the controller.
+
+The checker must verify:
+
+- policy precedence;
+- founder authorization;
+- separation of duties;
+- startup enforcement;
+- shutdown continuation;
+- state transitions;
+- merge predicates;
+- connector permissions;
+- idempotency;
+- crash recovery;
+- no-loss cleanup;
+- persistent service;
+- true-gate classification;
+- founder queue purity;
+- historical replay;
+- no self-approval path.
+
+Allowed verdicts:
+
+ARLC1-CHECKER-CLEAN
+ARLC1-CHECKER-FINDINGS
+ARLC1-CHECKER-REJECT
+ARLC1-CHECKER-INSUFFICIENT-EVIDENCE
+
+Allow up to three bounded correction cycles.
+
+After every correction:
+
+- freeze a new candidate;
+- rerun affected tests;
+- rerun exact-SHA CI;
+- use a fresh checker context.
+
+PHASE 17 — FINAL READ-ONLY ADVISOR
+
+After checker-clean, commission a fresh read-only Solutions Architect.
+
+The Advisor must independently re-derive:
+
+- founder authorization;
+- superseded old authority rules;
+- active policy digest;
+- bootstrap enforcement;
+- lifecycle controller;
+- LaunchAgent configuration;
+- service permissions;
+- true-gate classifier;
+- merge safety;
+- cleanup safety;
+- current repository state;
+- historical replay;
+- checker result;
+- exact-SHA CI.
+
+The Advisor may not correct the work it audits.
+
+Allowed verdicts:
+
+ARLC1-ADVISOR: READY-TO-ACTIVATE
+ARLC1-ADVISOR: HOLD-CORRECTABLE-FINDINGS
+ARLC1-ADVISOR: REJECT
+ARLC1-ADVISOR: INSUFFICIENT-EVIDENCE
+
+A correction after Advisor review requires a new candidate, fresh checker and fresh Advisor.
+
+PHASE 18 — ACTIVATE CONTROLLER
+
+Only after:
+
+ARLC1-CHECKER-CLEAN
+
+and:
+
+ARLC1-ADVISOR: READY-TO-ACTIVATE
+
+activate:
+
+- active lifecycle policy pointer;
+- mandatory Terminal-0 bootstrap;
+- mandatory shutdown guard;
+- continuation queue;
+- user LaunchAgent;
+- founder queue;
+- operational queue.
+
+Record:
+
+ARLC1: ACTIVE
+
+Run one dry reconciliation cycle with writes disabled.
+
+Then run one controlled live reconciliation cycle.
+
+Prove:
+
+- no unauthorized action;
+- no duplicate action;
+- current locks respected;
+- current actionable work correctly classified.
+
+PHASE 19 — CURRENT STACK EXECUTION
+
+After STACK1E is mechanically ready and ARLC-1 is active:
+
+1. resolve the live cumulative PR;
+2. verify it remains the single complete integration PR;
+3. verify exact-head CI;
+4. verify fresh checker and Advisor;
+5. verify M1 evidence ancestry;
+6. verify founder witness acceptance;
+7. verify no active merge embargo;
+8. verify no true founder gate is embedded;
+9. merge the cumulative PR once with MERGE COMMIT;
+10. use expected-head SHA;
+11. run post-merge verification;
+12. run exact-merge-commit CI;
+13. verify all historical accepted SHAs remain in main ancestry;
+14. close earlier fully superseded PRs;
+15. preserve evidence branches;
+16. remove only mechanically safe obsolete branches;
+17. remove only mechanically safe obsolete worktrees;
+18. update all registries;
+19. verify repository hygiene.
+
+Do not merge #151–#161 individually.
+
+Do not ask the founder to execute or approve this routine merge.
+
+PHASE 20 — START SCL-1
+
+After verified cleanup:
+
+1. resolve updated clean main;
+2. create one SCL-1 cumulative branch and isolated worktree;
+3. register its lane;
+4. do not create another long PR tower;
+5. build the provider-neutral Sandbox Control Layer;
+6. run wide-safe lanes in parallel;
+7. keep execution, command policy, provider activation and recovery single-writer;
+8. keep OpenSandbox CANDIDATE;
+9. do not access AKIOR;
+10. continue correction and checking autonomously.
+
+Do not invent a 24-hour soak.
+
+Schedule endurance qualification only when the current roadmap or exact phase contract requires it.
+
+PHASE 21 — NEXT TRUE GATE
+
+Continue until exactly one of these occurs:
+
+SCL1: LIVE-FIXTURE-AUTHORITY-REQUIRED
+SCL1: PROVIDER-ADOPTION-GATE
+SCL1: READY-FOR-FOUNDER-UI-WITNESS
+SCL1: PRIVATE-OR-CUSTOMER-DATA-GATE
+SCL1: PUBLIC-RELEASE-GATE
+SCL1: HUMAN-EXPERT-GATE
+SCL1: POLICY-WEAKENING-GATE
+SCL1: UNRESOLVED-CRITICAL-BLOCKER
+
+Do not stop for ordinary repository lifecycle work.
+
+FINAL OUTPUT
+
+Return:
+
+1. Pro host identity.
+2. Current main.
+3. ARLC policy version and digest.
+4. Founder authorization record.
+5. Superseded roadmap rules.
+6. Bootstrap path and proof.
+7. Shutdown guard path and proof.
+8. Lifecycle controller path and version.
+9. LaunchAgent path and state.
+10. Writer-lock result.
+11. True-gate classifier result.
+12. Operational queue count.
+13. Founder queue count.
+14. Historical replay result.
+15. Mutation-test result.
+16. Exact-SHA CI result.
+17. Independent checker verdict.
+18. Final Advisor verdict.
+19. Controller activation result.
+20. Cumulative PR merged.
+21. Main merge commit.
+22. Post-merge CI.
+23. Superseded PRs closed.
+24. Remaining PRs.
+25. Branches deleted.
+26. Evidence branches preserved.
+27. Worktrees removed.
+28. Worktrees preserved.
+29. SCL-1 branch and worktree.
+30. SCL-1 current status.
+31. Exact next true founder gate.
+32. Exact founder action required.
+
+Required exact statements:
+
+ROUTINE REPOSITORY LIFECYCLE OPERATIONS ARE BACKEND TERMINAL-0 RESPONSIBILITIES, NOT FOUNDER GATES.
+
+A DISK POLICY ALONE DOES NOT EXECUTE; MANDATORY BOOTSTRAP, CONTINUATION ENFORCEMENT AND A PERSISTENT RECONCILER ARE ACTIVE.
+
+NO COMPONENT MAY DISCOVER, APPROVE, EXECUTE AND CERTIFY THE SAME MERGE.
+
+THE FOUNDER QUEUE CONTAINS ONLY TRUE FOUNDER OR HUMAN-EXPERT GATES.
+
+ELIGIBLE MERGES, SUPERSEDED-PR CLOSURE AND SAFE CLEANUP CONTINUE WITHOUT A NEW CHAT PROMPT.
+
+PR #162 WAS MERGED ONCE AS THE CUMULATIVE INTEGRATION; EARLIER STACKED PRS WERE NOT MERGED INDIVIDUALLY.
+
+EVIDENCE AND NOT-PASSED BRANCHES WERE PRESERVED.
+
+SCL-1 STARTED FROM CLEAN VERIFIED MAIN.
+
+NO OPENSANDBOX ADOPTION, CUSTOMER EXECUTION, PRIVATE-REPOSITORY ACCESS, PRODUCTION DEPLOYMENT, PUBLIC RELEASE, AKIOR ACCESS OR POLICY WEAKENING WAS IMPLIED.
+
+Finish with exactly one verdict:
+
+ARLC1: ACTIVE-CURRENT-STACK-CLEAN-SCL1-RUNNING
+SCL1: LIVE-FIXTURE-AUTHORITY-REQUIRED
+SCL1: PROVIDER-ADOPTION-GATE
+SCL1: READY-FOR-FOUNDER-UI-WITNESS
+SCL1: PRIVATE-OR-CUSTOMER-DATA-GATE
+SCL1: PUBLIC-RELEASE-GATE
+SCL1: HUMAN-EXPERT-GATE
+SCL1: POLICY-WEAKENING-GATE
+SCL1: HOLD-CORRECTABLE-FINDINGS
+SCL1: REJECT
+SCL1: INSUFFICIENT-EVIDENCE
