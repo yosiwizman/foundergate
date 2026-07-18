@@ -1,4 +1,5 @@
 {
   "run_id": "sc-15f0cfc5",
-  "state": "STARTED"
+  "state": "COMPLETE_WITH_VERIFIED_EVIDENCE_PACK",
+  "recovered": true
 }
