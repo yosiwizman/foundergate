@@ -1,0 +1,29 @@
+{
+  "schema": "v8b-parallel-1",
+  "generated_at": "2026-07-18T04:35:35Z",
+  "wide_safe_parallel": [
+    "Bench v1",
+    "Evidence Viewer",
+    "integration cards",
+    "cost display",
+    "Release Label Ladder",
+    "Spec Card Engine",
+    "anti-repeat",
+    "License/IP register",
+    "data-classification"
+  ],
+  "narrow_sensitive_serial": [
+    "Gate/Witness VB3 inert core",
+    "SCL-1 sensitive core"
+  ],
+  "founder_gated": [
+    "VB2 formal acceptance",
+    "VB3 founder witness",
+    "VB3 live action",
+    "48h qualification"
+  ],
+  "concurrency_rules": {
+    "max_local_code_writers": 2,
+    "max_sensitive_core_writers": 1
+  }
+}
