@@ -1,0 +1,30 @@
+{
+  "schema": "paes-hotfix-rebinding-1",
+  "gate_id": "gate-1784355114-paesact",
+  "authorized_by": "PAES-HANDOFF-HOTFIX-2",
+  "created_at": "2026-07-18T23:09:24.000Z",
+  "reason": "supervisor-session/qualify-handoff/create-wave2-run/start-wave2-session (executables) corrected for heartbeat qualification + launcher fail-closed; re-bind narrow authority to corrected product head",
+  "preserved_prior": {
+    "prior_target": "2b76f1b8c52c6b712b7ac4bfb4d17523e0710523",
+    "prior_expiry": 1784485966,
+    "historical_exact_sha": "2e3c06091bd07fafde974ca14f360f69f8115fd7",
+    "prior_rebinding_refs": [
+      ".foundergate/gates/rebindings/gate-1784355114-paesact-orc1r.json",
+      ".foundergate/gates/rebindings/gate-1784355114-paesact-hotfix.json"
+    ]
+  },
+  "rebound_to_sha": "e5b77d0e56726af5354dcc64478bfab2d2345c1b",
+  "action": "activate_paes_narrow_allowlist",
+  "permission_scope": "narrow allowlist (unchanged)",
+  "one_time_use": true,
+  "consumed": false,
+  "renewed_expiry": 1784502564,
+  "renewed_expiry_iso": "2026-07-19T23:09:24.000Z",
+  "does_not_authorize": [
+    "consumption",
+    "execution",
+    "9h run start",
+    "authority expansion",
+    "PAES start"
+  ]
+}
