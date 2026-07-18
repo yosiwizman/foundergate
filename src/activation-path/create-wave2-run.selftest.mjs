@@ -59,6 +59,17 @@ ok("10 no decision consumed (entrypoint never touches gates/)", !readFileSync(EN
 ok("11 no supervisor started (entrypoint has no spawn/exec)", !/spawn|execSync|fork\(/.test(readFileSync(ENTRYPOINT, "utf8")));
 ok("12 real repo .foundergate/recovery/checkpoint.json untouched", (() => { const real = join(REAL_REPO, ".foundergate/recovery/checkpoint.json"); return !existsSync(real) || true; })() && !iso.startsWith(REAL_REPO));
 
+// 13: PAES-HANDOFF-HOTFIX-2 — a fresh run must CLEAR a stale activation marker so
+// the supervisor starts gated (no pre-qualification job execution).
+const iso2 = makeIsolatedRepo();
+writeFileSync(join(iso2, ".foundergate/supervisor/handoff.json"), JSON.stringify({ stale: "SAFE_TO_LEAVE_UNATTENDED", from: "a previous run" }));
+const r13 = run(iso2);
+ok("13 stale handoff.json removed on fresh run creation (supervisor starts gated)",
+  r13.status === 0 && !existsSync(join(iso2, ".foundergate/supervisor/handoff.json")));
+ok("13b entrypoint actually clears the marker (not merely absent by accident)",
+  /rmSync\(SUP \+ "\/handoff\.json"/.test(readFileSync(ENTRYPOINT, "utf8")));
+rmSync(iso2, { recursive: true, force: true });
+
 // ---- Mutation proofs ----
 // M1: reintroduce require() in a copy of the entrypoint -> must FAIL under Node.
 const mut = join(iso, "mutant.mjs");

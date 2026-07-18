@@ -14,6 +14,17 @@ fail_out() {
   say "No unsafe permission or credential fallback was used."
   exit 1
 }
+# Tear down the supervisor we started so it is NOT left orphaned running
+# unattended. Set PANIC (stops on next cycle) AND kill the pid; the supervisor
+# releases its singleton lock on exit. kill -9 skips the exit handler, so remove
+# the lock ONLY if it belongs to the supervisor we started (never a peer's lock).
+stop_supervisor() {
+  echo '{"panic_stop":true,"reason":"activation not completed"}' > "$SUP/stop.json"
+  kill "$SUP_PID" 2>/dev/null || true
+  sleep 1
+  kill -9 "$SUP_PID" 2>/dev/null || true
+  "$NODE_BIN" -e 'const fs=require("fs");try{const l=JSON.parse(fs.readFileSync(process.argv[1]));if(l.pid===Number(process.argv[2]))fs.unlinkSync(process.argv[1])}catch{}' "$LOCK" "$SUP_PID" 2>/dev/null || true
+}
 
 # ---- environment discovery (no assumptions) ----
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -83,24 +94,36 @@ if [ "$QUAL_RC" = "0" ]; then
   # consume the decision exactly once (ONLY after qualification) + start Wave-2.
   # Pass the live activated SHA so consumption is bound to the actual code state.
   "$NODE_BIN" "$SCRIPT_DIR/consume-and-start.mjs" "$REPO" "$SUP_PID" "$(git -C "$REPO" rev-parse HEAD)"
-  DEADLINE="$("$NODE_BIN" -e "process.stdout.write(new Date(JSON.parse(require('fs').readFileSync('$SUP/current-cycle.json')).deadline*1000).toString())" 2>/dev/null)"
-  say ""; say "FounderGate is running autonomously."
-  say "You may close this Terminal."
-  say "The run will stop at: $DEADLINE"
-  say "Logout and reboot survival are not enabled."
-  exit 0
+  CONSUME_RC=$?
+  # Activation is complete ONLY if consumption succeeded AND the handoff marker was
+  # actually written. Without this check a failed consumption (e.g. an expired
+  # decision) would leave the supervisor gated forever while the founder is falsely
+  # told it is running autonomously. Fail closed and report the TRUE decision state.
+  if [ "$CONSUME_RC" = "0" ] && [ -f "$SUP/handoff.json" ]; then
+    DEADLINE="$("$NODE_BIN" -e "process.stdout.write(new Date(JSON.parse(require('fs').readFileSync('$SUP/current-cycle.json')).deadline*1000).toString())" 2>/dev/null)"
+    say ""; say "FounderGate is running autonomously."
+    say "You may close this Terminal."
+    say "The run will stop at: $DEADLINE"
+    say "Logout and reboot survival are not enabled."
+    exit 0
+  fi
+  # Consumption/handoff did NOT complete: fail closed. Read the real consumed flag
+  # from disk and report honestly (never claim "running" or a false "unconsumed").
+  HANDOFF_PRESENT="$([ -f "$SUP/handoff.json" ] && echo yes || echo no)"
+  CONSUMED_STATE="$("$NODE_BIN" -e "const fs=require('fs');try{const g=fs.readdirSync('$REPO/.foundergate/gates/resolutions').find(f=>f.endsWith('.json'));process.stdout.write(String(JSON.parse(fs.readFileSync('$REPO/.foundergate/gates/resolutions/'+g)).consumed===true))}catch(e){process.stdout.write('unknown')}")"
+  say ""; say "Activation did not complete (consume rc=$CONSUME_RC, handoff.json present: $HANDOFF_PRESENT) — stopping the supervisor cleanly..."
+  stop_supervisor
+  if [ "$CONSUMED_STATE" = "true" ]; then
+    say "WARNING: the activation decision is marked CONSUMED but the handoff did not complete."
+    say "Manual reconciliation is required before any retry (do NOT re-run until reconciled)."
+  else
+    say "Supervisor stopped. Activation decision remains unconsumed."
+  fi
+  fail_out
 else
-  # Qualification FAILED: tear down the supervisor we started so it is NOT left
-  # orphaned running unattended. Set PANIC (stops on next cycle) AND kill the pid;
-  # the supervisor releases its singleton lock on exit. Decision stays unconsumed.
+  # Qualification FAILED: tear down the supervisor cleanly. Decision stays unconsumed.
   say ""; say "Live handoff qualification failed — stopping the supervisor cleanly..."
-  echo '{"panic_stop":true,"reason":"handoff qualification failed"}' > "$SUP/stop.json"
-  kill "$SUP_PID" 2>/dev/null || true
-  sleep 1
-  kill -9 "$SUP_PID" 2>/dev/null || true
-  # Owner-checked lock removal (kill -9 skips the exit handler): only remove the
-  # lock if it belongs to the supervisor we started, never a peer's lock.
-  "$NODE_BIN" -e 'const fs=require("fs");try{const l=JSON.parse(fs.readFileSync(process.argv[1]));if(l.pid===Number(process.argv[2]))fs.unlinkSync(process.argv[1])}catch{}' "$LOCK" "$SUP_PID" 2>/dev/null || true
+  stop_supervisor
   say "Supervisor stopped. Activation decision remains unconsumed."
   fail_out
 fi

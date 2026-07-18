@@ -1,0 +1,26 @@
+{"evt":"session_supervisor_start","pid":61680,"mode":"USER_SESSION_DETACHED","deadline":1784394237,"ts":1784387037}
+{"evt":"worker_invocation","job_id":"sq1","mode":"fresh","ts":1784387037}
+{"evt":"worker_result","job_id":"sq1","exit":1,"success":false,"cost_usd":null,"ts":1784387038}
+{"evt":"session_supervisor_stop","state":"STOPPED_EXHAUSTED","reason":"STOPPED_EXHAUSTED","ts":1784387043}
+{"evt":"session_supervisor_start","pid":62352,"mode":"USER_SESSION_DETACHED","deadline":1784394399,"ts":1784387199}
+{"evt":"worker_invocation","job_id":"sq1","mode":"fresh","ts":1784387199}
+{"evt":"worker_result","job_id":"sq1","exit":1,"success":false,"cost_usd":null,"ts":1784387200}
+{"evt":"worker_invocation","job_id":"sq2","mode":"fresh","ts":1784387203}
+{"evt":"worker_result","job_id":"sq2","exit":1,"success":false,"cost_usd":null,"ts":1784387204}
+{"evt":"worker_invocation","job_id":"sq3","mode":"fresh","ts":1784387207}
+{"evt":"worker_result","job_id":"sq3","exit":1,"success":false,"cost_usd":null,"ts":1784387208}
+{"evt":"session_supervisor_stop","state":"STOPPED_EXHAUSTED","reason":"STOPPED_EXHAUSTED","ts":1784387211}
+{"evt":"session_supervisor_start","pid":63024,"mode":"USER_SESSION_DETACHED","deadline":1784394548,"ts":1784387348}
+{"evt":"worker_invocation","job_id":"sq1","mode":"fresh","ts":1784387348}
+{"evt":"worker_result","job_id":"sq1","exit":0,"success":true,"cost_usd":0.111208,"ts":1784387357}
+{"evt":"worker_invocation","job_id":"sq2","mode":"fresh","ts":1784387359}
+{"evt":"worker_result","job_id":"sq2","exit":0,"success":true,"cost_usd":0.1111975,"ts":1784387365}
+{"evt":"worker_invocation","job_id":"sq3","mode":"fresh","ts":1784387367}
+{"evt":"worker_result","job_id":"sq3","exit":0,"success":true,"cost_usd":0.09063249999999999,"ts":1784387373}
+{"evt":"session_supervisor_stop","state":"STOPPED_EXHAUSTED","reason":"STOPPED_EXHAUSTED","ts":1784387375}
+{"evt":"session_supervisor_start","pid":71549,"mode":"USER_SESSION_DETACHED","deadline":1784432804,"singleton":"acquired","ts":1784400404}
+{"evt":"worker_invocation","job_id":"w2-1-cto-queue","mode":"fresh","ts":1784400404}
+{"evt":"handoff_heartbeats","count":1,"ts":1784400426}
+{"evt":"handoff_auth_probe","ok":true,"ts":1784400429}
+{"evt":"handoff_selftests","green":true,"ts":1784400442}
+{"evt":"handoff_qualification","pass":false,"problems":["only 1 advancing heartbeats (need >=3)"],"ts":1784400442}
