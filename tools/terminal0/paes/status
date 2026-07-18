@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+// PAES read-only status surface. Binds 127.0.0.1 ONLY. No action controls, no
+// merge button, no false green. Reads .foundergate/supervisor/state.json + heartbeat.
+import { createServer } from "node:http";
+import { readFileSync, existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+const read = (p) => { const f = join(REPO, ".foundergate/supervisor", p); return existsSync(f) ? JSON.parse(readFileSync(f, "utf8")) : null; };
+const server = createServer((req, res) => {
+  const state = read("state.json") || { state: "UNKNOWN" };
+  const hb = read("heartbeat.json");
+  const fresh = hb && typeof hb.ts === "number";
+  res.writeHead(200, { "content-type": "application/json" });
+  res.end(JSON.stringify({ supervisor_state: state.state || "UNKNOWN", heartbeat: hb, heartbeat_fresh: !!fresh,
+    note: "read-only; heartbeat+process evidence are authoritative, not this UI", live_action_controls: "NONE" }, null, 2));
+});
+server.listen(4790, "127.0.0.1", () => console.log("PAES status read-only on http://127.0.0.1:4790"));

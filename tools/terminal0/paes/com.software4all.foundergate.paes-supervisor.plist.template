@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- USER-LEVEL LaunchAgent template. Generated plist is installed under
+     ~/Library/LaunchAgents/ and loaded ONLY after full qualification + founder
+     go. This template is committed; it is NOT auto-loaded by the build. -->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.software4all.foundergate.paes-supervisor.v1</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>@@REPO@@/tools/terminal0/paes/supervisor</string>
+  </array>
+  <key>WorkingDirectory</key><string>@@REPO@@</string>
+  <key>RunAtLoad</key><false/>            <!-- do not auto-run on load; explicit start only -->
+  <key>KeepAlive</key><false/>           <!-- bounded run; NOT an unbounded restart loop -->
+  <key>ProcessType</key><string>Background</string>
+  <key>StandardOutPath</key><string>@@REPO@@/.foundergate/supervisor/logs/supervisor.out.log</string>
+  <key>StandardErrorPath</key><string>@@REPO@@/.foundergate/supervisor/logs/supervisor.err.log</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>FG_PAES_DEADLINE_HOURS</key><string>9</string>
+    <key>FG_PAES_MAX_CODE_WORKERS</key><string>2</string>
+  </dict>
+</dict>
+</plist>

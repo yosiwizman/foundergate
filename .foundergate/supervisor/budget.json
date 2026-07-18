@@ -1,0 +1,6 @@
+{
+  "deadline_hours": 9,
+  "idle_probe_cost_usd": 0.0918,
+  "note": "per-invocation cost non-trivial; enforce plan limits; stop on limit",
+  "updated_at": "2026-07-18T06:00:00Z"
+}

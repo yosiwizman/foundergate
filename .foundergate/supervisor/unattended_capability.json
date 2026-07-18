@@ -1,0 +1,32 @@
+{
+  "schema": "paes-unattended-probe-1",
+  "recorded_at": "2026-07-18T05:53:21Z",
+  "executable": "/Users/yosiwizman/.local/bin/claude -> versions/2.1.212",
+  "mechanism": "claude -p <prompt> --output-format json --allowedTools <allowlist>",
+  "result": "UNATTENDED_EXECUTOR: PROVEN",
+  "evidence": {
+    "exit_code": 0,
+    "elapsed_s": 3,
+    "is_error": false,
+    "structured_output": "{\"probe\":\"alive\",\"writes\":0}",
+    "permission_denials": [],
+    "num_turns": 1,
+    "session_id": "9e3182ab-62d9-4c87-9983-14102edec1c7",
+    "total_cost_usd": 0.0918175,
+    "residual_child_processes": 0,
+    "credential_copying": "NONE (used existing installed OAuth; no key passed, no serialization, no log leak)"
+  },
+  "material_findings": [
+    {
+      "id": "COST_PROFILE",
+      "detail": "idle probe cost $0.0918 (full repo context reloaded on 1M-context model each invocation); 9h continuous re-invocation implies significant autonomous spend",
+      "touches_boundary": "do not bypass current plan or account limits"
+    },
+    {
+      "id": "PERMISSION_RELAXATION",
+      "detail": "unattended edit/commit/MERGE workers require --allowedTools allowlist or --dangerously-skip-permissions, disabling the OS permission guard that blocked direct-push-to-main this session",
+      "touches_boundary": "NO SILENT POLICY WEAKENING"
+    }
+  ],
+  "credential_safety": "SAFE (no copy/serialize/log; existing auth only)"
+}
