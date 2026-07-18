@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Emergency stop: sets PANIC_STOP; the supervisor stops on its next cycle.
+REPO="$(cd "$(dirname "$0")/../../.." && pwd)"
+echo '{"panic_stop":true,"reason":"founder emergency stop"}' > "$REPO/.foundergate/supervisor/stop.json"
+echo "PANIC_STOP set. FounderGate will stop on its next cycle."

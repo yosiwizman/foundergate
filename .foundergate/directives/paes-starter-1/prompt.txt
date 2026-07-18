@@ -1,0 +1,579 @@
+FOUNDERGATE PAES-STARTER-1 — FOUNDER-SAFE ONE-COMMAND SESSION LAUNCHER, LIVE HANDOFF QUALIFICATION, AND V8-B WAVE-2 START
+
+AUTHORITY
+
+This directive adds no new authority.
+
+Use the existing founder decision:
+
+ACTIVATE_SAFE_NARROW_ALLOWLIST
+
+Continue to refuse:
+
+- FULL_AUTONOMY;
+- --dangerously-skip-permissions;
+- automatic permission escalation;
+- direct push to main;
+- new API keys or paid accounts;
+- credential copying or serialization;
+- M1 contact;
+- AKIOR access;
+- private or customer repositories;
+- production data;
+- external sends;
+- payments;
+- live-provider activation;
+- OpenSandbox adoption;
+- VB3 live action;
+- the 48-hour qualification;
+- V8-C, V8-D or V8-E implementation.
+
+PURPOSE
+
+The current evidence proves that Claude workers authenticate and execute successfully when launched from the authenticated macOS user session.
+
+The remaining unproven boundary is survival after the real launching Terminal exits.
+
+Build a single founder-safe launcher that:
+
+1. performs all required preflight checks;
+2. creates the real ARE-governed Wave-2 run and nine-hour deadline;
+3. starts the PAES session supervisor from the normal macOS user session;
+4. exits its initiating shell;
+5. verifies persistent survival through advancing heartbeats;
+6. performs live worker-kill and recovery qualification;
+7. verifies FGRI gate routing and unrelated-lane continuation;
+8. consumes the existing founder activation decision exactly once only after qualification;
+9. starts the real V8-B operational queue;
+10. presents one plain-English result without requiring the founder to inspect logs.
+
+The launcher must be usable by a non-developer founder through one pasted command or one double-clickable file.
+
+OPERATING MODE
+
+MAC MINI PRO ONLY
+DCL-LOCKED
+ARLC-GOVERNED
+ARE-GOVERNED
+FGRI-GOVERNED
+PAES-SESSION-MODE
+TEST-BEFORE-FOUNDER
+DISK-FIRST
+APPEND-ONLY
+ATOMIC RECOVERY
+NARROW ALLOWLIST
+TERMINAL-0 SOLE MERGE SHERIFF
+NO INTERACTIVE BACKEND QUESTIONS
+NO CREDENTIAL MATERIAL IN FILES
+NO CLAIM OF LOGOUT OR REBOOT SURVIVAL
+NO DECISION CONSUMPTION BEFORE LIVE QUALIFICATION
+NO GLOBAL STOP FOR A SINGLE PARKED LANE
+
+PHASE 0 — DCL SELF-CAPTURE
+
+Before new material work:
+
+1. Locate this exact directive in the active Harvest transcript.
+2. Extract its complete exact body.
+3. Verify the title:
+
+FOUNDERGATE PAES-STARTER-1 — FOUNDER-SAFE ONE-COMMAND SESSION LAUNCHER, LIVE HANDOFF QUALIFICATION, AND V8-B WAVE-2 START
+
+4. Verify the body contains:
+   - AUTHORITY;
+   - PURPOSE;
+   - PHASE 0;
+   - PHASE 3 — STARTER TRANSACTION;
+   - PHASE 5 — REAL-TERMINAL HANDOFF QUALIFICATION;
+   - PHASE 8 — SUCCESS BARRIER;
+   - FINAL OUTPUT;
+   - final verdict list.
+5. Verify it is complete and untruncated.
+6. Compute SHA-256, byte count, line count and boundary anchors.
+7. Persist the immutable body under DCL.
+8. Re-read and recompute the digest.
+9. Require transcript-to-disk equality.
+10. Create complete state, dependencies, queue, events, recovery, next-safe-action, completion predicates and stop predicates.
+11. Transition:
+   RECEIVED
+   → CAPTURED
+   → DIGEST_VERIFIED
+   → QUEUED
+   → READY
+   → RUNNING
+
+If capture fails:
+
+PAES-STARTER1: SELF-CAPTURE-FAILED
+
+PHASE 1 — CURRENT-STATE RECONCILIATION
+
+Resolve mechanically:
+
+- host identity;
+- repository and origin;
+- local and remote main;
+- open PRs;
+- branches and worktrees;
+- dirty files;
+- active writer locks;
+- active PAES processes;
+- stale supervisor PIDs;
+- heartbeat files;
+- leases;
+- DCL, ARLC, ARE, FGRI and PAES states;
+- Autonomy Policy Envelope;
+- current activation decision and consumed state;
+- current operational queue;
+- V8-B completion matrix;
+- PANIC_STOP;
+- current tests and CI;
+- session-capability evidence;
+- current `supervisor-session` implementation.
+
+Confirm the latest worker-argument fixes are present on current main.
+
+Do not recreate valid completed work.
+
+Do not alter the historical launchd failure or sandbox-reaping evidence.
+
+PHASE 2 — BUILD THE FOUNDER-SAFE LAUNCHER
+
+Create or reconcile:
+
+tools/terminal0/paes/start-wave2-session
+tools/terminal0/paes/status-wave2-session
+tools/terminal0/paes/stop-wave2-session
+tools/terminal0/paes/doctor-wave2-session
+FounderGate-Start-Autonomous-Run.command
+
+The `.command` file must be executable and suitable for double-clicking from Finder.
+
+The command-line starter and `.command` launcher must call the same implementation.
+
+The starter must not require the founder to:
+
+- choose flags;
+- locate Node;
+- locate Claude;
+- inspect process IDs;
+- edit JSON;
+- review raw logs;
+- answer a backend question.
+
+The starter must mechanically discover:
+
+- repository root;
+- current supported shell;
+- Node executable;
+- Claude executable;
+- whether `setsid` exists;
+- supported detachment mechanism;
+- current user-session identity.
+
+Do not assume `setsid` exists.
+
+Use the safest mechanically available user-session mechanism.
+
+Allowed fallback order:
+
+1. `setsid` plus `nohup` when `setsid` is present and passes a local probe;
+2. `nohup` with closed stdin, redirected output, separate process group where available and shell disown;
+3. an already-installed terminal multiplexer only if it is proven available and no installation is required.
+
+Do not use launchd.
+
+PHASE 3 — STARTER TRANSACTION
+
+The starter must operate as a fail-closed transaction.
+
+Before launch it must verify:
+
+1. correct Mac Mini Pro host;
+2. correct FounderGate repository;
+3. clean and synchronized current main;
+4. DCL active;
+5. ARLC active;
+6. ARE active;
+7. FGRI active;
+8. PAES code present;
+9. Autonomy Policy Envelope active;
+10. PANIC_STOP absent;
+11. activation decision valid and unconsumed;
+12. no healthy supervisor already running;
+13. no valid active singleton lease;
+14. no unresolved duplicate writer;
+15. narrow allowlist present;
+16. dangerous permission bypass denied;
+17. direct push to main denied;
+18. current test and CI prerequisites satisfied.
+
+If a healthy supervisor is already running:
+
+- do not create another;
+- display its current status;
+- exit successfully without duplication.
+
+If a stale supervisor record exists:
+
+- preserve its evidence;
+- verify the process is absent;
+- recover the stale lease atomically;
+- record the recovery.
+
+Create a real ARE blueprint and run manifest for the remaining V8-B queue.
+
+Record:
+
+- run ID;
+- directive digest;
+- blueprint digest;
+- manifest digest;
+- starting main SHA;
+- actual UTC start;
+- absolute deadline exactly nine hours later;
+- drain-start time at eight hours and forty-five minutes;
+- operational jobs;
+- parked founder gates;
+- parked human-expert gates;
+- evidence plan;
+- completion predicates;
+- current job;
+- next-safe-action.
+
+The real queue must include every currently authorized incomplete wide-safe V8-B item from the current completion matrix.
+
+Do not include gated VB2 acceptance, VB3 live action, live providers, 48-hour qualification or V8-C/D/E implementation.
+
+PHASE 4 — SINGLETON AND PROCESS SAFETY
+
+Implement one atomic singleton lock covering:
+
+- supervisor identity;
+- PID;
+- process group;
+- run ID;
+- exact SHA;
+- started time;
+- last heartbeat;
+- deadline;
+- nonce.
+
+Reject:
+
+- duplicate supervisor;
+- duplicate watchdog;
+- duplicate worker on the same job;
+- stale PID reuse;
+- mismatched run ID;
+- mismatched exact SHA;
+- second launcher racing the first.
+
+The previous qualification observed overlapping supervisor activity.
+
+Add regression tests proving this cannot recur.
+
+The launcher must close stdin and redirect stdout and stderr to governed logs.
+
+No credential may appear in:
+
+- arguments;
+- environment files;
+- logs;
+- manifests;
+- queues;
+- PID files;
+- heartbeat files;
+- recovery files.
+
+PHASE 5 — REAL-TERMINAL HANDOFF QUALIFICATION
+
+The launcher itself must perform qualification from the real macOS user Terminal after it starts the detached supervisor.
+
+Sequence:
+
+1. Record launcher-shell PID.
+2. Start the detached supervisor.
+3. Record supervisor PID and process group.
+4. Start watchdog.
+5. Wait for initial heartbeat.
+6. Exit the initiating helper shell used for the qualification subprocess.
+7. Verify the supervisor remains alive after that helper exits.
+8. Observe at least three later heartbeat timestamps.
+9. Require monotonically advancing heartbeat sequence numbers.
+10. Run a detached read-only Claude authentication probe.
+11. Require structured output and exit zero.
+12. Run a branch-isolated synthetic writable worker.
+13. Require completion under the narrow allowlist.
+14. Deliberately terminate that worker.
+15. Require watchdog detection.
+16. Recover its lease.
+17. Relaunch it.
+18. Require completion without duplicate execution.
+19. Inject a synthetic interactive authority question.
+20. Require FGRI interception.
+21. Require only the affected synthetic lane to park.
+22. Require an unrelated synthetic lane to continue.
+23. Resolve the synthetic gate through a test-only resolution.
+24. Require one-time resumption.
+25. Require replay rejection.
+26. Attempt STOP while the queue is nonempty.
+27. Require STOP_REJECTED_QUEUE_NONEMPTY.
+28. Run credential and secret scans.
+29. Preserve every result in append-only evidence.
+
+Do not consume the real founder activation decision during the synthetic portion.
+
+If the real detached supervisor does not survive the helper-shell exit or heartbeats stop advancing:
+
+- stop safely;
+- preserve evidence;
+- leave the founder decision unconsumed;
+- return failure;
+- do not start Wave-2.
+
+PHASE 6 — INDEPENDENT REVIEW
+
+Before merging the launcher:
+
+1. Run schemas.
+2. Run unit and integration tests.
+3. Run negative tests.
+4. Run mutation tests.
+5. Run singleton-race tests.
+6. Run stale-PID tests.
+7. Run heartbeat tests.
+8. Run lease-recovery tests.
+9. Run deadline tests.
+10. Run credential scans.
+11. Run forbidden-artifact scans.
+12. Run exact-SHA CI.
+
+Commission a fresh independent PAES-STARTER checker.
+
+The checker must verify:
+
+- real-user-session design;
+- no launchd dependency;
+- detachment fallback correctness;
+- singleton enforcement;
+- no credential material;
+- narrow allowlist;
+- transaction rollback;
+- decision-consumption ordering;
+- handoff qualification;
+- queue and deadline creation;
+- evidence completeness;
+- founder-safe output.
+
+Allow up to three bounded correction cycles.
+
+After material correction, require a fresh checker.
+
+After checker-clean, commission a fresh read-only Advisor.
+
+Merge only after checker-clean, Advisor-ready and exact-SHA CI green.
+
+Use ARLC. Do not push directly to main.
+
+PHASE 7 — ACTIVATION AND WAVE-2 START
+
+The real starter, when run by the founder from ordinary macOS Terminal or Finder, must:
+
+1. pass the complete live qualification;
+2. activate PAES session mode;
+3. consume the existing ACTIVATE_SAFE_NARROW_ALLOWLIST decision exactly once;
+4. bind consumption to the activated SHA, run ID and persistence mode;
+5. write the resolution-consumed event;
+6. mark the activation gate CLOSED;
+7. start the real V8-B Wave-2 queue;
+8. verify supervisor, watchdog, heartbeat, lease, queue and next-safe-action;
+9. begin the nine-hour deadline;
+10. leave the initiating Terminal free to close.
+
+Persistence classification must remain:
+
+MODE:
+USER_SESSION_DETACHED
+
+SURVIVES_TERMINAL_CLOSURE:
+PROVEN only after live qualification
+
+SURVIVES_LOGOUT:
+NOT CLAIMED
+
+SURVIVES_REBOOT:
+NOT CLAIMED
+
+PRODUCT_BACKGROUND_SERVICE:
+NOT YET CLAIMED
+
+PHASE 8 — SUCCESS BARRIER
+
+The launcher may write:
+
+SAFE_TO_LEAVE_UNATTENDED
+
+only when all are true:
+
+1. current directive is digest-verified;
+2. launcher code is merged;
+3. checker is CLEAN;
+4. Advisor is READY;
+5. exact-SHA CI is green;
+6. actual user-session launcher ran;
+7. launcher helper exited;
+8. supervisor remained alive;
+9. watchdog remained alive;
+10. at least three post-exit heartbeats advanced;
+11. Claude authentication succeeded after detachment;
+12. no credential was copied, serialized or logged;
+13. controlled worker termination passed;
+14. automatic relaunch passed;
+15. duplicate execution was rejected;
+16. FGRI interception passed;
+17. lane-local parking passed;
+18. unrelated-lane continuation passed;
+19. queue-nonempty stop rejection passed;
+20. real founder decision was consumed once;
+21. Wave-2 run started;
+22. nine-hour deadline is recorded and in the future;
+23. current queue exists;
+24. current job or valid between-job state exists;
+25. next-safe-action exists;
+26. heartbeat is current;
+27. lease is valid when a worker is active;
+28. no material drift exists.
+
+Write the result atomically to:
+
+.foundergate/supervisor/handoff.json
+
+Required successful content:
+
+{
+  "result": "SAFE_TO_LEAVE_UNATTENDED",
+  "mode": "USER_SESSION_DETACHED",
+  "survives_terminal_closure": true,
+  "survives_logout": false,
+  "survives_reboot": false
+}
+
+If any predicate fails, write:
+
+NOT_SAFE_TO_LEAVE_UNATTENDED
+
+with the exact failed predicates.
+
+The founder-facing launcher output must be plain English.
+
+Successful output:
+
+FounderGate is running autonomously.
+You may close this Terminal.
+The run will stop at the displayed deadline.
+Logout and reboot survival are not enabled.
+
+Failure output:
+
+FounderGate did not enter unattended mode.
+This Terminal may still be required.
+No unsafe permission or credential fallback was used.
+
+Do not ask the founder to inspect logs.
+
+PHASE 9 — EVIDENCE AND INVESTOR RECORD
+
+Ledger:
+
+- directive capture;
+- launcher version and digest;
+- environment discovery;
+- detachment mechanism;
+- preflight;
+- singleton acquisition;
+- helper exit;
+- supervisor survival;
+- heartbeat sequence;
+- auth probe;
+- writable probe;
+- worker termination;
+- watchdog recovery;
+- relaunch;
+- duplicate prevention;
+- FGRI interception;
+- lane parking;
+- unrelated continuation;
+- stop rejection;
+- decision consumption;
+- Wave-2 start;
+- deadline;
+- current exact SHA;
+- tests;
+- checker;
+- Advisor;
+- CI;
+- PR and merge;
+- proof capsule.
+
+Update the sanitized investor evidence index.
+
+Exclude credentials, secrets, raw private paths and sensitive internal logs.
+
+FINAL OUTPUT
+
+Return:
+
+1. Host.
+2. Directive digest.
+3. Starting and final main.
+4. Launcher paths.
+5. Double-clickable launcher path.
+6. Exact one-line Terminal command.
+7. Detachment mechanisms discovered.
+8. Selected mechanism.
+9. Singleton result.
+10. Current PAES/FGRI states.
+11. Activation decision state.
+12. ARE blueprint and manifest readiness.
+13. Nine-hour queue readiness.
+14. Local test totals.
+15. Mutation totals.
+16. Checker verdict.
+17. Advisor verdict.
+18. Exact-SHA CI.
+19. Merge result.
+20. Founder action required.
+21. Expected successful launcher message.
+22. Expected failed launcher message.
+23. Handoff result path.
+24. Emergency-stop path.
+25. Evidence-index path.
+26. Proof-capsule path and digest.
+27. Remaining limitations.
+
+Required exact statements:
+
+PAES-STARTER-1 CAPTURED AND VERIFIED ITS COMPLETE DIRECTIVE BODY BEFORE EXECUTION.
+
+THE STARTER REQUIRES ONE FOUNDER ACTION FROM THE NORMAL MACOS USER SESSION BECAUSE THE HARVEST SANDBOX CANNOT PROVE PROCESS SURVIVAL AFTER ITS OWN SESSION ENDS.
+
+THE STARTER DOES NOT USE LAUNCHD, AN API KEY, A COPIED OAUTH TOKEN OR DANGEROUS PERMISSION BYPASS.
+
+THE REAL ACTIVATION DECISION IS NOT CONSUMED UNTIL LIVE DETACHMENT, HEARTBEAT, WORKER RECOVERY AND GATE-ROUTING QUALIFICATION PASS.
+
+A DUPLICATE OR STALE SUPERVISOR CANNOT SILENTLY START.
+
+SAFE_TO_LEAVE_UNATTENDED IS WRITTEN ONLY AFTER THE COMPLETE LIVE HANDOFF BARRIER PASSES.
+
+THE ACTIVE PERSISTENCE MODE IS USER_SESSION_DETACHED AND IS NOT CLAIMED TO SURVIVE LOGOUT OR REBOOT.
+
+Finish with exactly one verdict:
+
+PAES-STARTER1: READY-FOR-ONE-COMMAND-FOUNDER-LAUNCH
+PAES-STARTER1: CHECKER-FINDINGS
+PAES-STARTER1: HOLD-CORRECTABLE-FINDINGS
+PAES-STARTER1: UNRESOLVED-CRITICAL-BLOCKER
+PAES-STARTER1: SELF-CAPTURE-FAILED
+PAES-STARTER1: REJECT
+PAES-STARTER1: INSUFFICIENT-EVIDENCE
