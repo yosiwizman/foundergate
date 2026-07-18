@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+# FounderGate PAES Wave-2 one-command launcher (founder-safe).
+# Run from an ordinary macOS Terminal (or via the .command file). Discovers its
+# own environment, runs a fail-closed preflight, starts the detached session
+# supervisor, qualifies the live handoff, and — only if everything passes —
+# consumes the founder activation decision once and starts the real Wave-2 run.
+# No launchd. No API key. No copied credential. No dangerous permission bypass.
+set -uo pipefail
+
+say() { printf '%s\n' "$*"; }
+fail_out() {
+  say ""; say "FounderGate did not enter unattended mode."
+  say "This Terminal may still be required."
+  say "No unsafe permission or credential fallback was used."
+  exit 1
+}
+
+# ---- environment discovery (no assumptions) ----
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+NODE_BIN="$(command -v node || true)"
+CLAUDE_BIN="$(command -v claude || true)"
+HAVE_SETSID="$(command -v setsid >/dev/null 2>&1 && echo yes || echo no)"
+SUP="$REPO/.foundergate/supervisor"
+LOCK="$SUP/singleton.lock"
+LOGDIR="$SUP/logs"; mkdir -p "$LOGDIR" "$SUP/worker-results"
+
+# ---- fail-closed preflight (Phase 3) ----
+gov() { "$NODE_BIN" -e "try{process.exit(JSON.parse(require('fs').readFileSync('$REPO/.foundergate/governance/'+process.argv[1]))['status']==='ACTIVE'?0:1)}catch(e){process.exit(1)}" "$1"; }
+pf() { if eval "$2"; then say "  [ok] $1"; else say "  [BLOCK] $1"; PREFLIGHT_OK=0; fi; }
+PREFLIGHT_OK=1
+say "FounderGate autonomous run — preflight"
+pf "host is Mac Mini Pro" '[ "$(sysctl -n hw.model)" = "Mac16,11" ]'
+pf "node found"   '[ -n "$NODE_BIN" ]'
+pf "claude found" '[ -n "$CLAUDE_BIN" ]'
+pf "repo is FounderGate" '[ -d "$REPO/.foundergate/governance" ]'
+pf "DCL active"  'gov durable_directive_control.json'
+pf "ARLC active" 'gov autonomous_repository_lifecycle.json'
+pf "ARE active"  'gov autonomous_run_envelope.json'
+pf "FGRI active" 'gov gate_routing.json'
+pf "Autonomy Policy Envelope active" 'gov autonomy_policy_envelope.json'
+pf "PANIC_STOP absent" '[ "$("$NODE_BIN" -e "try{process.stdout.write(String(!!JSON.parse(require(\"fs\").readFileSync(\"$SUP/stop.json\")).panic_stop))}catch(e){process.stdout.write(\"false\")}")" = "false" ]'
+pf "PAES supervisor-session present" '[ -f "$SCRIPT_DIR/supervisor-session" ]'
+pf "narrow allowlist has no dangerous bypass" '! grep -q "dangerously-skip-permissions" "$SCRIPT_DIR/supervisor-session"'
+pf "activation decision present + unconsumed" '"$NODE_BIN" -e "const fs=require(\"fs\");const g=fs.readdirSync(\"$REPO/.foundergate/gates/resolutions\").find(f=>f.endsWith(\".json\"));const r=JSON.parse(fs.readFileSync(\"$REPO/.foundergate/gates/resolutions/\"+g));process.exit(r.selected_option===\"ACTIVATE_SAFE_NARROW_ALLOWLIST\"&&r.consumed===false?0:1)"'
+[ "$PREFLIGHT_OK" = "1" ] || { say ""; say "Preflight blocked. FounderGate did not start."; fail_out; }
+
+# ---- singleton: refuse duplicate; if healthy supervisor exists, show status + exit ----
+DETACH="nohup"; [ "$HAVE_SETSID" = "yes" ] && DETACH="setsid+nohup"
+EXISTING_STATUS="$("$NODE_BIN" "$SCRIPT_DIR/singleton-check.mjs" "$LOCK" 2>/dev/null || echo "free")"
+if [ "$EXISTING_STATUS" = "healthy" ]; then
+  say ""; say "FounderGate is already running autonomously."; bash "$SCRIPT_DIR/status-wave2-session" 2>/dev/null || true; exit 0
+fi
+
+# ---- create the real ARE Wave-2 run + 9h deadline + operational queue ----
+"$NODE_BIN" "$SCRIPT_DIR/create-wave2-run.mjs" "$REPO" || { say "Could not create the Wave-2 run."; fail_out; }
+
+# ---- launch detached supervisor (macOS: nohup + disown; setsid if present) ----
+export FG_CLAUDE_BIN="$CLAUDE_BIN"
+if [ "$HAVE_SETSID" = "yes" ]; then
+  setsid nohup "$NODE_BIN" "$SCRIPT_DIR/supervisor-session" </dev/null >"$LOGDIR/supervisor.out.log" 2>&1 &
+else
+  nohup "$NODE_BIN" "$SCRIPT_DIR/supervisor-session" </dev/null >"$LOGDIR/supervisor.out.log" 2>&1 &
+fi
+SUP_PID=$!; disown 2>/dev/null || true
+say ""; say "Started supervisor (pid $SUP_PID, detachment: $DETACH). Qualifying live handoff..."
+
+# ---- live handoff qualification (heartbeat survival, auth, worker recovery, gate routing) ----
+"$NODE_BIN" "$SCRIPT_DIR/qualify-handoff.mjs" "$REPO" "$SUP_PID"
+QUAL_RC=$?
+
+if [ "$QUAL_RC" = "0" ]; then
+  # consume the decision exactly once (ONLY after qualification) + start Wave-2
+  "$NODE_BIN" "$SCRIPT_DIR/consume-and-start.mjs" "$REPO" "$SUP_PID"
+  DEADLINE="$("$NODE_BIN" -e "process.stdout.write(new Date(JSON.parse(require('fs').readFileSync('$SUP/current-cycle.json')).deadline*1000).toString())" 2>/dev/null)"
+  say ""; say "FounderGate is running autonomously."
+  say "You may close this Terminal."
+  say "The run will stop at: $DEADLINE"
+  say "Logout and reboot survival are not enabled."
+  exit 0
+else
+  fail_out
+fi

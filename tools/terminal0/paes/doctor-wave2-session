@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+REPO="$(cd "$(dirname "$0")/../../.." && pwd)"
+echo "host: $(sysctl -n hw.model)"
+echo "node: $(command -v node || echo MISSING)"
+echo "claude: $(command -v claude || echo MISSING)"
+echo "setsid: $(command -v setsid >/dev/null 2>&1 && echo present || echo 'absent (nohup fallback)')"
+echo "detachment mechanism: $(command -v setsid >/dev/null 2>&1 && echo 'setsid+nohup' || echo 'nohup+disown')"
+for p in durable_directive_control autonomous_repository_lifecycle autonomous_run_envelope gate_routing autonomy_policy_envelope; do
+  echo "$p: $(node -e "try{console.log(JSON.parse(require('fs').readFileSync('$REPO/.foundergate/governance/$p.json')).status)}catch{console.log('MISSING')}")"
+done
+echo "launchd PAES: $(launchctl list 2>/dev/null | grep foundergate.paes || echo 'not loaded (correct)')"

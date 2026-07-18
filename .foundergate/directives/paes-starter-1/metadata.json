@@ -1,0 +1,32 @@
+{
+  "directive_id": "paes-starter-1",
+  "title": "FOUNDERGATE PAES-STARTER-1 \u2014 FOUNDER-SAFE ONE-COMMAND SESSION LAUNCHER, LIVE HANDOFF QUALIFICATION, AND V8-B WAVE-2 START",
+  "version": 1,
+  "issuer": "founder",
+  "source_line": 22912,
+  "source_type": "user",
+  "sha256": "90690e42355e27c88565734c5949c6f46b1820ef510046bc8e34c6b01b695ee1",
+  "stored_sha256": "90690e42355e27c88565734c5949c6f46b1820ef510046bc8e34c6b01b695ee1",
+  "digest_equal": true,
+  "byte_count": 15743,
+  "line_count": 579,
+  "required_sections_present": {
+    "AUTHORITY": true,
+    "PURPOSE": true,
+    "PHASE 0": true,
+    "PHASE 3 \u2014 STARTER TRANSACTION": true,
+    "PHASE 5 \u2014 REAL-TERMINAL HANDOFF QUALIFICATION": true,
+    "PHASE 8 \u2014 SUCCESS BARRIER": true,
+    "FINAL OUTPUT": true,
+    "PAES-STARTER1: SELF-CAPTURE-FAILED": true
+  },
+  "depends_on": [
+    "dcl-1",
+    "arlc-1",
+    "are-1",
+    "fgri-1",
+    "paes-1",
+    "paes-session-1"
+  ],
+  "current_state": "DIGEST_VERIFIED"
+}

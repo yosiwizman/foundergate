@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+REPO="$(cd "$(dirname "$0")/../../.." && pwd)"; SUP="$REPO/.foundergate/supervisor"
+NODE="$(command -v node)"
+"$NODE" -e '
+const fs=require("fs");const SUP=process.argv[1];
+const r=(f)=>{try{return JSON.parse(fs.readFileSync(SUP+"/"+f))}catch{return null}};
+const hb=r("heartbeat.json"),cy=r("current-cycle.json"),ho=r("handoff.json");
+const now=Math.floor(Date.now()/1000);
+console.log("FounderGate run:",cy?cy.run_id:"none");
+console.log("state:",ho?ho.result:"unknown");
+console.log("heartbeat age:",hb?(now-hb.ts)+"s":"none");
+console.log("deadline:",cy?new Date(cy.deadline*1000).toString():"none");
+' "$SUP"
