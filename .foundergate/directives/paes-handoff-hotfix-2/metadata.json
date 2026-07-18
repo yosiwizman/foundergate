@@ -1,0 +1,8 @@
+{
+  "directive_id": "paes-handoff-hotfix-2",
+  "sha256": "ee9e0f608b742d2288995f63ace0c3eac8f6fdec576d66ebead2f14395cf82a5",
+  "stored_sha256": "ee9e0f608b742d2288995f63ace0c3eac8f6fdec576d66ebead2f14395cf82a5",
+  "digest_equal": true,
+  "byte_count": 16422,
+  "current_state": "DIGEST_VERIFIED"
+}

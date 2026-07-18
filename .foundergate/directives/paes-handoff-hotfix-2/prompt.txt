@@ -1,0 +1,571 @@
+FOUNDERGATE PAES-HANDOFF-HOTFIX-2 — HEARTBEAT QUALIFICATION ROOT CAUSE, FAILED-ATTEMPT RECONCILIATION, AND LIVE DETACHMENT REQUALIFICATION
+
+PURPOSE
+
+The founder retried the qualified PAES launcher.
+
+All preflight checks passed.
+
+The launcher created provisional run:
+
+v8b-wave-2-1784400404
+
+with 13 wide-safe jobs and a provisional nine-hour deadline, started supervisor PID 71549 using nohup, and entered live-handoff qualification.
+
+Qualification failed with:
+
+QUAL FAIL: only 1 advancing heartbeats (need >=3)
+
+The launcher then stopped the supervisor cleanly and reported:
+
+Activation decision remains unconsumed.
+FounderGate did not enter unattended mode.
+No unsafe permission or credential fallback was used.
+
+Determine mechanically whether:
+
+1. the supervisor was healthy but the qualification observation window was shorter than the configured heartbeat cadence;
+2. the supervisor emitted one heartbeat and then exited;
+3. heartbeat writes were not advancing or were read incorrectly;
+4. process or detachment identity was misclassified;
+5. another actual defect prevented three qualifying heartbeats.
+
+Correct only the proven cause.
+
+Do not weaken the requirement for at least three strictly advancing post-detachment heartbeats.
+
+Do not start the real nine-hour Wave-2 run during this directive.
+
+AUTHORITY
+
+This directive adds no new authority.
+
+Continue under the existing:
+
+ACTIVATE_SAFE_NARROW_ALLOWLIST
+
+decision and current DCL, ARLC, ARE, FGRI, PAES and ORC controls.
+
+Do not consume the founder decision.
+
+Continue to refuse:
+
+- full autonomy;
+- dangerously-skip-permissions;
+- automatic permission escalation;
+- direct push to main;
+- copied or exported credentials;
+- new API credentials;
+- M1 contact;
+- AKIOR access;
+- customer or private repositories;
+- production data;
+- public deployment;
+- payments;
+- external sends;
+- live-provider activation;
+- OpenSandbox adoption;
+- VB3 live action;
+- 48-hour qualification;
+- V8-C, V8-D or V8-E implementation.
+
+OPERATING MODE
+
+MAC MINI PRO ONLY
+DCL-LOCKED
+ARLC-GOVERNED
+ARE-GOVERNED
+FGRI-GOVERNED
+PAES-GOVERNED
+ORC-GOVERNED
+NARROW-SENSITIVE HANDOFF FIX
+ONE PRIMARY BUILDER
+ONE INDEPENDENT CHECKER
+ONE SEPARATE READ-ONLY ADVISOR
+TERMINAL-0 SOLE MERGE SHERIFF
+DISK-FIRST
+APPEND-ONLY
+FAIL-CLOSED
+NO REAL LAUNCH
+NO DECISION CONSUMPTION
+NO SECOND SUPERVISOR
+NO LOWERED HEARTBEAT THRESHOLD
+NO SYNTHETIC OR FABRICATED HEARTBEATS
+NO SILENT DEADLINE RESET
+NO DIRECT MAIN PUSH
+
+PHASE 0 — DCL SELF-CAPTURE
+
+Before material work:
+
+1. Locate this exact directive in the active Harvest transcript.
+2. Capture the complete exact body.
+3. Verify the exact title:
+
+FOUNDERGATE PAES-HANDOFF-HOTFIX-2 — HEARTBEAT QUALIFICATION ROOT CAUSE, FAILED-ATTEMPT RECONCILIATION, AND LIVE DETACHMENT REQUALIFICATION
+
+4. Verify that the body contains:
+   - PURPOSE;
+   - AUTHORITY;
+   - PHASE 0;
+   - PHASE 1 — FAILED ATTEMPT RECONCILIATION;
+   - PHASE 2 — HEARTBEAT ROOT-CAUSE AUDIT;
+   - PHASE 4 — LIVE SYNTHETIC HANDOFF QUALIFICATION;
+   - PHASE 6 — INDEPENDENT REVIEW;
+   - FINAL OUTPUT;
+   - the complete verdict list.
+5. Verify it is complete and untruncated.
+6. Compute SHA-256, byte count, line count and boundary anchors.
+7. Persist it through DCL.
+8. Require exact transcript-to-disk digest equality.
+9. Create state, queue, dependencies, events, recovery and next-safe-action.
+10. Transition:
+
+RECEIVED
+→ CAPTURED
+→ DIGEST_VERIFIED
+→ QUEUED
+→ READY
+→ RUNNING
+
+If capture fails:
+
+PAES-HANDOFF-HOTFIX: SELF-CAPTURE-FAILED
+
+PHASE 1 — FAILED ATTEMPT RECONCILIATION
+
+Mechanically inspect and record the launcher attempt involving:
+
+- provisional run ID v8b-wave-2-1784400404;
+- supervisor PID 71549;
+- detachment mode nohup;
+- provisional queue containing 13 jobs;
+- checkpoint;
+- current-run record;
+- provisional start;
+- provisional deadline;
+- action journal;
+- heartbeat records;
+- lease;
+- singleton;
+- process group;
+- supervisor events;
+- launcher qualification logs;
+- stop evidence;
+- activation decision;
+- decision consumption events;
+- current runtime processes;
+- PANIC_STOP.
+
+Treat the values named above as orientation only and resolve them from disk.
+
+Classify the attempt append-only as:
+
+PREFLIGHT_PASSED
+PROVISIONAL_RUN_CREATED
+SUPERVISOR_STARTED
+HANDOFF_QUALIFICATION_FAILED
+SUPERVISOR_STOPPED
+ACTIVATION_DECISION_NOT_CONSUMED
+UNATTENDED_MODE_NOT_ENTERED
+REAL_NINE_HOUR_RUN_NOT_STARTED
+
+Verify from disk that:
+
+- supervisor is no longer alive;
+- watchdog is not alive;
+- no worker remains alive;
+- no valid live lease remains;
+- no live singleton remains;
+- activation decision remains consumed:false;
+- no activation-consumption event exists;
+- the provisional deadline is not represented as an active nine-hour run;
+- none of the 13 jobs was executed as a real Wave-2 job.
+
+Preserve the provisional run, deadline, queue and heartbeat evidence.
+
+Do not delete or rewrite them.
+
+Seal the provisional run as:
+
+FAILED_PRE_ACTIVATION_QUALIFICATION
+
+Any incomplete action remains UNCERTAIN until reconciled.
+
+PHASE 2 — HEARTBEAT ROOT-CAUSE AUDIT
+
+Inspect the actual current implementations of:
+
+- tools/terminal0/paes/start-wave2-session
+- tools/terminal0/paes/supervisor-session
+- qualification helper or function;
+- heartbeat writer;
+- heartbeat reader;
+- supervisor loop;
+- detachment wrapper;
+- process-identity validation;
+- lease and singleton validation;
+- relevant configuration.
+
+Mechanically determine:
+
+- configured heartbeat interval;
+- first-heartbeat timing;
+- qualification polling interval;
+- qualification timeout;
+- required post-helper-exit heartbeat count;
+- whether initial heartbeat is incorrectly counted;
+- whether timestamp resolution permits distinct values;
+- whether atomic replacement changes inode or read behavior;
+- whether the qualification checks the correct heartbeat file;
+- whether the supervisor PID and process group remain alive;
+- whether nohup receives the correct environment;
+- whether the supervisor exited, and its exit reason;
+- whether the launcher stopped a healthy supervisor only because the observation period was too short.
+
+Produce a timestamp timeline including:
+
+- launcher start;
+- run creation;
+- supervisor spawn;
+- helper exit or return boundary;
+- every observed heartbeat;
+- qualification timeout;
+- supervisor stop request;
+- supervisor exit.
+
+Do not infer the cause from source constants alone.
+
+Reconcile source, logs and timestamps.
+
+Return exactly one root-cause classification:
+
+QUALIFICATION_WINDOW_TOO_SHORT
+SUPERVISOR_EXITED_EARLY
+HEARTBEAT_WRITER_DEFECT
+HEARTBEAT_READER_DEFECT
+DETACHMENT_DEFECT
+PROCESS_IDENTITY_DEFECT
+MULTIPLE_CAUSES
+INSUFFICIENT_EVIDENCE
+
+PHASE 3 — NARROW CORRECTION
+
+Create one isolated hotfix branch and worktree from mechanically resolved current main.
+
+Write a narrow-sensitive lane contract.
+
+Do not create another launcher, supervisor, heartbeat authority, lease system or detachment path.
+
+Correct only the mechanically proven cause.
+
+Required law:
+
+- at least three strictly increasing heartbeat timestamps must be observed after the launcher helper or parent startup stage has completed;
+- a static heartbeat file is not sufficient;
+- process existence alone is not sufficient;
+- status JSON alone is not sufficient;
+- qualification duration must be derived from the configured heartbeat cadence plus bounded startup and scheduling grace;
+- the launcher must not assume a fixed observation period shorter than the required heartbeat sequence;
+- qualification must have a finite timeout;
+- failure must stop the supervisor cleanly;
+- qualification failure must not consume the decision;
+- qualification failure must not activate the real queue;
+- the threshold must remain at least three advancing heartbeats.
+
+If the cause is early supervisor exit, correct the exit cause rather than extending the timeout.
+
+If the cause is a reader or timestamp defect, correct that defect rather than manufacturing additional writes.
+
+PHASE 4 — LIVE SYNTHETIC HANDOFF QUALIFICATION
+
+Run a real bounded qualification using the actual production:
+
+- launcher handoff logic;
+- supervisor-session executable;
+- nohup detachment path;
+- heartbeat writer;
+- heartbeat reader;
+- singleton;
+- lease;
+- process identity;
+- stop path.
+
+Use a synthetic isolated run and queue.
+
+Do not use the real founder activation decision.
+
+Do not activate the real 13-job Wave-2 queue.
+
+Do not create a real nine-hour run.
+
+The qualification must prove:
+
+1. launcher starts exactly one supervisor;
+2. launcher startup/helper stage completes;
+3. supervisor remains alive afterward;
+4. at least three strictly increasing heartbeats occur after that boundary;
+5. heartbeat cadence matches configured expectations;
+6. lease remains current;
+7. singleton identifies the actual live supervisor;
+8. a second launch is rejected;
+9. no duplicate supervisor appears;
+10. status reports USER_SESSION_DETACHED;
+11. credentials are not copied or serialized;
+12. narrow allowlist remains active;
+13. no dangerous bypass exists;
+14. no direct main push is available;
+15. controlled stop terminates supervisor and process group;
+16. no watchdog or worker remains;
+17. lease and singleton become historical or released;
+18. synthetic queue actions are not duplicated;
+19. the real activation decision remains unconsumed;
+20. the real Wave-2 queue remains inactive.
+
+Do not call the result reboot-survival, logout-survival or customer proof.
+
+PHASE 5 — TESTING
+
+Add regression tests that would fail under the original condition.
+
+Tests must cover:
+
+- heartbeat cadence versus qualification timeout;
+- three strictly advancing post-boundary heartbeats;
+- only one heartbeat causes qualification failure;
+- static heartbeat causes failure;
+- supervisor early exit causes failure;
+- wrong PID causes failure;
+- stale heartbeat causes failure;
+- duplicate supervisor rejection;
+- stop cleanup;
+- decision not consumed on qualification failure;
+- real queue not activated on qualification failure;
+- provisional deadline not called an active run;
+- failed-attempt reconciliation;
+- successful synthetic live handoff;
+- threshold cannot be reduced below three.
+
+Run:
+
+- shell syntax validation;
+- Node module-load validation;
+- launcher integration tests;
+- supervisor tests;
+- singleton tests;
+- lease tests;
+- heartbeat tests;
+- recovery tests;
+- negative tests;
+- mutation tests;
+- full repository selftests;
+- secret scan;
+- credential scan;
+- forbidden-artifact scan;
+- exact-SHA CI.
+
+Required mutations include:
+
+- shorten qualification below three heartbeat intervals;
+- count initial heartbeat as all required evidence;
+- accept equal timestamps;
+- ignore supervisor exit;
+- consume the decision before qualification success;
+- leave the supervisor running after qualification failure;
+- activate the real queue after qualification failure.
+
+Each mutation must fail.
+
+PHASE 6 — INDEPENDENT REVIEW
+
+Commission one independent checker that did not build the correction.
+
+The checker must verify:
+
+- failed attempt was reconciled honestly;
+- real nine-hour run remains NOT_STARTED;
+- activation decision remains unconsumed;
+- exact root cause is supported by timestamps and source;
+- correction addresses the cause without lowering the threshold;
+- the live synthetic qualification uses the actual production path;
+- three advancing post-boundary heartbeats were observed;
+- supervisor survival was genuine;
+- duplicate launch was rejected;
+- cleanup was complete;
+- no credential or permission weakening occurred;
+- real queue and decision were untouched.
+
+Allowed checker verdicts:
+
+PAES-HANDOFF-CHECKER: CLEAN
+PAES-HANDOFF-CHECKER: FINDINGS
+PAES-HANDOFF-CHECKER: REJECT
+PAES-HANDOFF-CHECKER: INSUFFICIENT_EVIDENCE
+
+After checker CLEAN, commission a separate read-only Advisor.
+
+The Advisor must independently verify:
+
+- exact candidate;
+- root-cause evidence;
+- bounded correction;
+- live synthetic handoff evidence;
+- activation-decision state;
+- launch readiness;
+- merge safety.
+
+Allowed Advisor verdicts:
+
+PAES-HANDOFF-ADVISOR: READY-TO-INTEGRATE
+PAES-HANDOFF-ADVISOR: HOLD-CORRECTABLE-FINDINGS
+PAES-HANDOFF-ADVISOR: REJECT
+PAES-HANDOFF-ADVISOR: INSUFFICIENT_EVIDENCE
+
+Checker and Advisor must be distinct agent invocations.
+
+Allow up to three bounded correction cycles.
+
+PHASE 7 — INTEGRATION AND FINAL-HEAD REVIEW
+
+Merge only through ARLC after:
+
+- checker CLEAN;
+- separate Advisor READY;
+- exact-SHA CI green;
+- no post-review executable drift;
+- no secret;
+- no credential;
+- no authority expansion.
+
+Do not push directly to main.
+
+After merge:
+
+1. resolve final main mechanically;
+2. run post-merge tests and CI;
+3. verify executable files match the reviewed candidate;
+4. verify activation decision consumed:false;
+5. verify no supervisor is active;
+6. verify real Wave-2 is NOT_STARTED;
+7. create a narrow append-only decision re-binding if executable drift makes the prior binding stale;
+8. do not consume the decision.
+
+If executable or decision-binding files changed, run:
+
+- one independent final-head checker;
+- one separate final-head Advisor.
+
+PHASE 8 — RETRY READINESS
+
+Do not run the real launcher.
+
+Before returning READY-TO-RETRY require:
+
+- main clean and synchronized;
+- no open integration PR;
+- failed provisional run sealed;
+- no live supervisor, watchdog or worker;
+- qualification root cause proven;
+- correction merged;
+- real synthetic production-path qualification passed;
+- at least three advancing post-boundary heartbeats proven;
+- checker CLEAN;
+- separate Advisor READY;
+- exact-SHA CI green;
+- final-head review complete where required;
+- activation decision valid;
+- activation decision consumed:false;
+- activation decision unexpired;
+- PANIC_STOP absent;
+- real nine-hour run NOT_STARTED.
+
+Resolve the retry command from current disk.
+
+FINAL OUTPUT
+
+Return:
+
+1. Host identity.
+2. Directive digest.
+3. Starting main SHA.
+4. Failed provisional run ID.
+5. Provisional run start.
+6. Provisional deadline.
+7. Provisional queue size.
+8. Failed-attempt classification.
+9. Activation consumed state.
+10. Supervisor-stop result.
+11. Remaining process result.
+12. Journal reconciliation.
+13. Root-cause classification.
+14. Heartbeat interval.
+15. Qualification polling interval.
+16. Original qualification timeout.
+17. Original observed heartbeat timestamps.
+18. Corrected qualification timeout or mechanism.
+19. Corrected files.
+20. Regression-test paths.
+21. Synthetic qualification run ID.
+22. Synthetic detachment method.
+23. Helper-exit boundary.
+24. Post-boundary heartbeat timestamps.
+25. Advancing heartbeat count.
+26. Supervisor-survival result.
+27. Duplicate-supervisor result.
+28. Lease result.
+29. Singleton result.
+30. Controlled-stop result.
+31. Residual-process result.
+32. Real decision untouched result.
+33. Real queue untouched result.
+34. Local tests.
+35. Mutation tests.
+36. Full repository tests.
+37. Independent checker identity and verdict.
+38. Separate Advisor identity and verdict.
+39. Candidate exact-SHA CI.
+40. Merge result.
+41. Final main SHA.
+42. Post-merge result.
+43. Decision binding.
+44. Decision consumed state.
+45. Decision expiry.
+46. Current runtime state.
+47. Real nine-hour run state.
+48. Exact retry launcher path.
+49. Exact retry command.
+50. Expected success message.
+51. Expected failure message.
+52. Evidence paths.
+53. Remaining limitations.
+54. Exact next founder action.
+55. Final verdict.
+
+Required exact statements:
+
+THE FAILED HANDOFF ATTEMPT WAS SEALED AS FAILED_PRE_ACTIVATION_QUALIFICATION AND WAS NOT PRESENTED AS A STARTED NINE-HOUR RUN.
+
+THE ACTIVATION DECISION REMAINED UNCONSUMED.
+
+THE THREE-ADVANCING-HEARTBEAT REQUIREMENT WAS NOT LOWERED OR BYPASSED.
+
+THE ROOT CAUSE WAS ESTABLISHED FROM PROCESS, TIMESTAMP, SOURCE AND LOG EVIDENCE.
+
+THE ACTUAL PRODUCTION DETACHMENT AND HEARTBEAT PATH PRODUCED AT LEAST THREE STRICTLY ADVANCING POST-BOUNDARY HEARTBEATS DURING SYNTHETIC QUALIFICATION.
+
+QUALIFICATION FAILURE STOPS THE SUPERVISOR AND CANNOT ACTIVATE THE REAL QUEUE OR CONSUME THE DECISION.
+
+THE REAL NINE-HOUR WAVE-2 RUN REMAINS NOT_STARTED.
+
+Finish with exactly one verdict:
+
+PAES-HANDOFF-HOTFIX: READY-TO-RETRY
+PAES-HANDOFF-HOTFIX: CHECKER-FINDINGS
+PAES-HANDOFF-HOTFIX: ADVISOR-FINDINGS
+PAES-HANDOFF-HOTFIX: HOLD-CORRECTABLE-FINDINGS
+PAES-HANDOFF-HOTFIX: RUNTIME-CONFLICT
+PAES-HANDOFF-HOTFIX: ACTIVATION-BINDING-FAILED
+PAES-HANDOFF-HOTFIX: UNRESOLVED-CRITICAL-BLOCKER
+PAES-HANDOFF-HOTFIX: SELF-CAPTURE-FAILED
+PAES-HANDOFF-HOTFIX: REJECT
+PAES-HANDOFF-HOTFIX: INSUFFICIENT-EVIDENCE

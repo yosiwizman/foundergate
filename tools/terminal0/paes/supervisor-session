@@ -22,6 +22,9 @@ const ALLOWLIST = ["Read", "Edit", "Write", "Grep", "Glob",
   "Bash(git add:*)", "Bash(git commit:*)", "Bash(git status:*)", "Bash(git diff:*)",
   "Bash(node scripts/run-selftests.mjs)"];
 const CYCLE_SLEEP_MS = Number(process.env.FG_CYCLE_SLEEP_MS || 8000);
+const HEARTBEAT_INTERVAL_MS = Number(process.env.FG_HEARTBEAT_INTERVAL_MS || 1000);
+const WARMUP_BEATS = Number(process.env.FG_WARMUP_BEATS || 5);
+let hbSeq = 0;
 const MAX_CYCLES = Number(process.env.FG_MAX_CYCLES || 0); // 0 = until deadline
 
 const LOCK = join(SUP, "singleton.lock");
@@ -31,7 +34,10 @@ const wj = (p, o) => { const f = join(SUP, p); const t = f + ".tmp"; writeFileSy
 const led = (e) => appendFileSync(join(SUP, "events.jsonl"), JSON.stringify({ ...e, ts: nowS() }) + "\n");
 // Heartbeat also refreshes the singleton lock's last_heartbeat so staleness works.
 const beat = () => {
-  wj("heartbeat.json", { ts: nowS(), pid: process.pid, mode: "USER_SESSION_DETACHED" });
+  // ms resolution + a strictly-increasing seq so consecutive beats are always
+  // distinct/advancing (seconds-resolution ts collides for sub-second beats).
+  hbSeq += 1;
+  wj("heartbeat.json", { ts: Date.now(), seq: hbSeq, pid: process.pid, mode: "USER_SESSION_DETACHED" });
   // Atomic (temp+rename) so a crash mid-beat cannot truncate/corrupt the lock.
   try { const l = JSON.parse(_rf(LOCK, "utf8")); if (l.pid === process.pid) { l.last_heartbeat = nowS(); const t = LOCK + ".tmp"; writeFileSync(t, JSON.stringify(l, null, 2) + "\n"); renameSync(t, LOCK); } } catch { /* */ }
 };
@@ -96,6 +102,12 @@ async function main() {
   if (!gate.ok) { wj("state.json", { state: "HOLD_CORRECTABLE", missing: gate.missing }); led({ evt: "precondition_block", missing: gate.missing }); return; }
   wj("state.json", { state: "RUNNING", mode: "USER_SESSION_DETACHED", updated_at: new Date(nowS() * 1000).toISOString() });
 
+  // Startup heartbeat warmup: emit strictly-advancing heartbeats at a regular
+  // cadence before any blocking worker, so qualification can observe liveness.
+  led({ evt: "warmup_start", warmup_beats: WARMUP_BEATS, interval_ms: HEARTBEAT_INTERVAL_MS });
+  for (let k = 0; k < WARMUP_BEATS; k++) { beat(); await sleep(HEARTBEAT_INTERVAL_MS); }
+  led({ evt: "warmup_complete", beats: WARMUP_BEATS });
+
   let cycles = 0;
   for (;;) {
     beat();
@@ -109,16 +121,21 @@ async function main() {
     const stop = evaluateStop(ctx);
     if (stop.stop) { wj("state.json", { state: stop.state, mode: "USER_SESSION_DETACHED" }); led({ evt: "session_supervisor_stop", state: stop.state, reason: stop.reason }); break; }
     if (ds === "DRAINING") { wj("state.json", { state: "DRAINING" }); led({ evt: "draining" }); break; }
-    if (ready.length) {
+    // Gate real work on activation: the launcher writes handoff.json ONLY after
+    // live qualification passes and the decision is consumed. Until then the
+    // supervisor holds (beating), so no job runs before qualification.
+    const activated = existsSync(join(SUP, "handoff.json"));
+    if (ready.length && activated) {
       const job = ready[0];
       const res = runWorker(job);
       const jobs = q.jobs.map((j) => j.job_id === job.job_id ? { ...j, state: res.ok ? "DONE" : "FAILED", restart_count: (j.restart_count || 0) + (res.ok ? 0 : 1) } : j);
       wj("queue.json", { ...q, jobs });
     } else {
-      led({ evt: "idle_cycle", note: "no ready job; heartbeat continues" });
+      led({ evt: activated ? "idle_cycle" : "awaiting_activation", note: activated ? "no ready job; heartbeat continues" : "jobs gated until activation; heartbeat continues" });
     }
     if (MAX_CYCLES && cycles >= MAX_CYCLES) { led({ evt: "max_cycles_reached", cycles }); break; }
-    await sleep(CYCLE_SLEEP_MS);
+    // Before activation, keep a tight heartbeat cadence so liveness stays fresh.
+    await sleep(existsSync(join(SUP, "handoff.json")) ? CYCLE_SLEEP_MS : HEARTBEAT_INTERVAL_MS);
   }
 }
 main().catch((e) => { led({ evt: "session_supervisor_error", error: String(e) }); process.exit(1); });

@@ -1,0 +1,8 @@
+{"evt":"session_supervisor_start","pid":80399,"mode":"USER_SESSION_DETACHED","deadline":1784408466,"singleton":"acquired","ts":1784401344}
+{"evt":"warmup_start","warmup_beats":5,"interval_ms":1000,"ts":1784401344}
+{"evt":"warmup_complete","beats":5,"ts":1784401349}
+{"evt":"awaiting_activation","note":"jobs gated until activation; heartbeat continues","ts":1784401349}
+{"evt":"awaiting_activation","note":"jobs gated until activation; heartbeat continues","ts":1784401350}
+{"evt":"awaiting_activation","note":"jobs gated until activation; heartbeat continues","ts":1784401351}
+{"evt":"awaiting_activation","note":"jobs gated until activation; heartbeat continues","ts":1784401352}
+{"evt":"awaiting_activation","note":"jobs gated until activation; heartbeat continues","ts":1784401353}
