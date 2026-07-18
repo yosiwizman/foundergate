@@ -1,0 +1,366 @@
+FOUNDERGATE ORC-LAUNCH-CLOSURE-1 — SEPARATE CHECKER, SEPARATE ADVISOR, FINAL LAUNCH AUTHORIZATION
+
+PURPOSE
+
+Close the single remaining ORC launch-readiness defect:
+
+The current ORC product was independently checked and independently advised before integration, but the post-merge checker and Advisor roles were combined in one agent, and the final evidence-only decision-record descendant did not receive two separate independent reviews.
+
+Do not rebuild ORC.
+
+Do not modify product, launcher, recovery, permission, policy, schema or execution code.
+
+Do not start PAES.
+
+Do not run the launcher.
+
+Do not consume the founder activation decision.
+
+This directive adds no new authority.
+
+OPERATING MODE
+
+MAC MINI PRO ONLY
+STRICT NARROW REVIEW CLOSURE
+DISK-FIRST
+APPEND-ONLY EVIDENCE
+CURRENT-MAIN EXACT-SHA BINDING
+ONE INDEPENDENT CHECKER
+ONE SEPARATE INDEPENDENT ADVISOR
+CHECKER MUST FINISH BEFORE ADVISOR STARTS
+NO COMBINED CHECKER-ADVISOR AGENT
+NO BUILDER SELF-REVIEW
+NO PRODUCT CHANGE
+NO MAIN ADVANCEMENT
+NO LAUNCH
+NO DECISION CONSUMPTION
+
+PHASE 0 — DCL CAPTURE
+
+Before any material action:
+
+1. Locate this exact directive in the active Harvest transcript.
+2. Capture its complete exact body.
+3. Verify the title:
+
+FOUNDERGATE ORC-LAUNCH-CLOSURE-1 — SEPARATE CHECKER, SEPARATE ADVISOR, FINAL LAUNCH AUTHORIZATION
+
+4. Verify the body contains:
+   - PURPOSE;
+   - PHASE 0;
+   - PHASE 2 — INDEPENDENT CHECKER;
+   - PHASE 3 — SEPARATE INDEPENDENT ADVISOR;
+   - PHASE 5 — FINAL LAUNCH READINESS;
+   - FINAL OUTPUT;
+   - final verdict list.
+5. Verify it is complete and untruncated.
+6. Compute SHA-256, byte count, line count and boundary anchors.
+7. Persist it through the active DCL mechanism.
+8. Require transcript-to-disk digest equality.
+9. Create state, dependencies, queue, append-only events, recovery and next-safe-action.
+10. Transition:
+   RECEIVED
+   → CAPTURED
+   → DIGEST_VERIFIED
+   → QUEUED
+   → READY
+   → RUNNING
+
+If capture fails:
+
+ORC-LAUNCH-CLOSURE: SELF-CAPTURE-FAILED
+
+PHASE 1 — FREEZE CURRENT REVIEW TARGET
+
+Mechanically resolve:
+
+- authorized host;
+- FounderGate repository;
+- local main SHA;
+- remote-main SHA;
+- ahead and behind counts;
+- main worktree cleanliness;
+- open PRs;
+- current product-reviewed SHA;
+- current evidence-only descendant SHA;
+- activation gate and resolution;
+- decision consumed state;
+- decision expiry;
+- PANIC_STOP;
+- supervisor, watchdog and worker state;
+- current nine-hour run state.
+
+Freeze the current main SHA as:
+
+ORC_LAUNCH_REVIEW_TARGET
+
+Do not use a SHA copied from this prompt or prior narrative.
+
+Require:
+
+- local main equals remote main;
+- main is clean;
+- no product writer is active;
+- no PAES runtime is active;
+- real nine-hour run is NOT_STARTED;
+- activation decision is consumed:false;
+- activation decision is unexpired;
+- PANIC_STOP is absent.
+
+During this directive, main must not advance.
+
+If main changes at any point:
+
+- invalidate both reviews;
+- stop;
+- return ORC-LAUNCH-CLOSURE: TARGET-DRIFT.
+
+PHASE 2 — INDEPENDENT CHECKER
+
+Commission one independent read-only checker.
+
+The checker must:
+
+- be a separate agent from the builder;
+- not be the prior combined post-merge reviewer;
+- perform no writes;
+- bind its work to ORC_LAUNCH_REVIEW_TARGET;
+- inspect the actual Git ancestry and actual file diff;
+- inspect the actual activation validator and launcher;
+- inspect the actual founder decision records.
+
+The checker must verify:
+
+1. current main descends from the independently reviewed ORC product head;
+2. the entire descendant delta is decision/evidence records only;
+3. no product code changed;
+4. no launcher code changed;
+5. no recovery code changed;
+6. no permission or execution code changed;
+7. no active policy or schema weakened;
+8. the activation decision selects ACTIVATE_SAFE_NARROW_ALLOWLIST;
+9. full autonomy, dangerous permission bypass, automatic escalation and direct-main push remain refused;
+10. the decision is valid for the current two-SHA state;
+11. the decision is one-time, unconsumed and unexpired;
+12. the launcher exists and is executable;
+13. the launcher consumes the decision only after live qualification succeeds;
+14. no supervisor, watchdog, worker or real Wave-2 run is active;
+15. the Phase-7.1 dirty evidence remains preserved;
+16. no hidden scope drift exists.
+
+Allowed checker verdicts:
+
+ORC-LAUNCH-CHECKER: CLEAN
+ORC-LAUNCH-CHECKER: FINDINGS
+ORC-LAUNCH-CHECKER: REJECT
+ORC-LAUNCH-CHECKER: INSUFFICIENT_EVIDENCE
+
+The checker must finish before the Advisor is commissioned.
+
+Seal the exact checker output with:
+
+- checker identity;
+- target SHA;
+- timestamp;
+- report digest;
+- inspected evidence;
+- verdict.
+
+Terminal-0 may persist and seal the checker output, but must not alter its substance.
+
+Do not modify main.
+
+If the checker is not CLEAN, do not commission the Advisor.
+
+PHASE 3 — SEPARATE INDEPENDENT ADVISOR
+
+Only after the checker report is sealed as CLEAN, commission a separate read-only Advisor.
+
+The Advisor must:
+
+- be a new and distinct agent invocation;
+- not be the checker;
+- not share a combined role with the checker;
+- not implement or modify the work;
+- independently inspect the disk and Git evidence;
+- bind its review to the identical ORC_LAUNCH_REVIEW_TARGET;
+- read the sealed checker report only as one input, not as a substitute for independent inspection.
+
+The Advisor must determine:
+
+1. whether the two-SHA evidence-descendant structure is valid;
+2. whether the evidence-only delta creates any hidden authority expansion;
+3. whether the activation decision remains valid for current main;
+4. whether review separation is now satisfied;
+5. whether the launcher may safely be presented to the founder;
+6. whether any true founder gate remains before running the already-authorized launcher.
+
+Allowed Advisor verdicts:
+
+ORC-LAUNCH-ADVISOR: READY-TO-LAUNCH
+ORC-LAUNCH-ADVISOR: HOLD-CORRECTABLE-FINDINGS
+ORC-LAUNCH-ADVISOR: REJECT
+ORC-LAUNCH-ADVISOR: INSUFFICIENT_EVIDENCE
+
+Seal the exact Advisor output with:
+
+- Advisor identity;
+- target SHA;
+- timestamp;
+- report digest;
+- inspected evidence;
+- verdict.
+
+The Advisor and checker identities must be distinct.
+
+Do not modify main.
+
+PHASE 4 — DURABLE REVIEW EVIDENCE
+
+Persist the checker and Advisor reports without advancing main.
+
+Use the existing governed evidence convention.
+
+Permitted:
+
+- append-only runtime evidence;
+- a dedicated evidence-only branch;
+- a sealed proof-capsule location already authorized by current disk law.
+
+Not permitted:
+
+- product changes;
+- launcher changes;
+- recovery changes;
+- a new main commit;
+- altering historical reports;
+- combining the two reports;
+- changing the founder decision;
+- consuming the founder decision.
+
+Create a review-separation record containing:
+
+- review target SHA;
+- product-reviewed ancestor SHA;
+- evidence-only descendant classification;
+- checker identity and report digest;
+- Advisor identity and report digest;
+- checker completion time;
+- Advisor start and completion time;
+- confirmation that the Advisor began after checker completion;
+- confirmation that agents were distinct;
+- confirmation that main did not change;
+- activation-decision state;
+- final readiness result.
+
+PHASE 5 — FINAL LAUNCH READINESS
+
+After both reports are sealed, mechanically recheck:
+
+1. current main still equals ORC_LAUNCH_REVIEW_TARGET;
+2. local and remote main remain synchronized;
+3. main remains clean;
+4. checker verdict is CLEAN;
+5. Advisor verdict is READY-TO-LAUNCH;
+6. checker and Advisor are separate;
+7. Advisor started after checker completion;
+8. two-SHA binding remains valid;
+9. no product, launcher or recovery drift occurred;
+10. activation decision remains valid;
+11. activation decision remains consumed:false;
+12. activation decision remains unexpired;
+13. no PAES supervisor is already active;
+14. PANIC_STOP is absent;
+15. real nine-hour Wave-2 remains NOT_STARTED;
+16. launcher exists and is executable.
+
+Resolve the exact launcher command from current disk.
+
+Do not copy it from conversational memory.
+
+If all predicates pass, return:
+
+LAUNCH_NOW: YES
+
+If any predicate fails, return:
+
+LAUNCH_NOW: NO
+
+with the exact failed predicate.
+
+FINAL OUTPUT
+
+Return:
+
+1. Host identity.
+2. Directive digest.
+3. Review target SHA.
+4. Product-reviewed ancestor SHA.
+5. Current final main SHA.
+6. Main synchronization result.
+7. Main cleanliness.
+8. Two-SHA descendant classification.
+9. Files in the descendant delta.
+10. Product-drift result.
+11. Checker identity.
+12. Checker target SHA.
+13. Checker report digest.
+14. Checker verdict.
+15. Checker completion time.
+16. Advisor identity.
+17. Advisor target SHA.
+18. Advisor report digest.
+19. Advisor verdict.
+20. Advisor start and completion time.
+21. Proof checker and Advisor were separate.
+22. Proof Advisor began after checker completion.
+23. Review-separation result.
+24. Activation gate ID.
+25. Activation decision.
+26. Activation consumed state.
+27. Activation expiry.
+28. Activation-binding result.
+29. Launcher path.
+30. Launcher executable state.
+31. Exact launcher command from disk.
+32. Supervisor state.
+33. Watchdog state.
+34. Worker state.
+35. Real nine-hour run state.
+36. PANIC_STOP state.
+37. Main-unchanged result.
+38. Durable review-evidence path.
+39. Review-evidence digest.
+40. LAUNCH_NOW result.
+41. Exact next founder action.
+42. Remaining limitations.
+43. Final verdict.
+
+Required exact statements:
+
+ORC-LAUNCH-CLOSURE-1 CAPTURED AND VERIFIED ITS COMPLETE DIRECTIVE BODY BEFORE EXECUTION.
+
+THE FINAL ORC LAUNCH TARGET RECEIVED ONE INDEPENDENT READ-ONLY CHECKER REVIEW AND ONE SEPARATE INDEPENDENT READ-ONLY ADVISOR REVIEW.
+
+THE CHECKER AND ADVISOR WERE DISTINCT AGENT INVOCATIONS AND THE ADVISOR BEGAN ONLY AFTER THE CHECKER COMPLETED.
+
+THE REVIEW TARGET DID NOT CHANGE DURING THE TWO REVIEWS.
+
+THE DESCENDANT DELTA CONTAINS DECISION OR EVIDENCE RECORDS ONLY AND NO UNREVIEWED PRODUCT, LAUNCHER, RECOVERY, PERMISSION OR EXECUTION CHANGE.
+
+THE ACTIVATION DECISION REMAINS VALID, UNCONSUMED AND UNEXPIRED.
+
+THE REAL NINE-HOUR WAVE-2 RUN HAS NOT STARTED.
+
+Finish with exactly one verdict:
+
+ORC-LAUNCH-CLOSURE: READY-TO-LAUNCH
+ORC-LAUNCH-CLOSURE: CHECKER-FINDINGS
+ORC-LAUNCH-CLOSURE: ADVISOR-FINDINGS
+ORC-LAUNCH-CLOSURE: REVIEW-SEPARATION-FAILED
+ORC-LAUNCH-CLOSURE: TARGET-DRIFT
+ORC-LAUNCH-CLOSURE: ACTIVATION-BINDING-FAILED
+ORC-LAUNCH-CLOSURE: RUNTIME-CONFLICT
+ORC-LAUNCH-CLOSURE: SELF-CAPTURE-FAILED
+ORC-LAUNCH-CLOSURE: REJECT
+ORC-LAUNCH-CLOSURE: INSUFFICIENT-EVIDENCE

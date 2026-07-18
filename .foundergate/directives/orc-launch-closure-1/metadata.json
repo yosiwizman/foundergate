@@ -1,0 +1,19 @@
+{
+  "directive_id": "orc-launch-closure-1",
+  "title": "FOUNDERGATE ORC-LAUNCH-CLOSURE-1 \u2014 SEPARATE CHECKER, SEPARATE ADVISOR, FINAL LAUNCH AUTHORIZATION",
+  "sha256": "db2f98ec1f00394f2086a3fbde0530766f4bd1305c7760804a52e2cd1d2246eb",
+  "stored_sha256": "db2f98ec1f00394f2086a3fbde0530766f4bd1305c7760804a52e2cd1d2246eb",
+  "digest_equal": true,
+  "byte_count": 10441,
+  "line_count": 366,
+  "required_sections_present": {
+    "PURPOSE": true,
+    "PHASE 0": true,
+    "PHASE 2 \u2014 INDEPENDENT CHECKER": true,
+    "PHASE 3 \u2014 SEPARATE INDEPENDENT ADVISOR": true,
+    "PHASE 5 \u2014 FINAL LAUNCH READINESS": true,
+    "FINAL OUTPUT": true,
+    "ORC-LAUNCH-CLOSURE: SELF-CAPTURE-FAILED": true
+  },
+  "current_state": "DIGEST_VERIFIED"
+}

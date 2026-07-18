@@ -1,0 +1,23 @@
+{
+  "agent": "ORC-LAUNCH-ADVISOR",
+  "role": "separate independent read-only Advisor",
+  "target_sha": "8e3bc0995aa802cd2db16f2b3e533dc553dbe714",
+  "started_after_checker": true,
+  "completed_at": "2026-07-18T18:13:10Z",
+  "verdict": "ORC-LAUNCH-ADVISOR: READY-TO-LAUNCH",
+  "inspected": [
+    "ancestry+delta (evidence-only)",
+    "rebinding no authority expansion",
+    "verifyDecision valid:true unconsumed unexpired",
+    "review separation satisfied",
+    "launcher fail-closed",
+    "no live runtime; run NOT_STARTED"
+  ],
+  "residual": [
+    "founder runs the one command (true founder gate)",
+    "ORC-1C controlled reboot qual planned/not-performed",
+    "USER_SESSION_DETACHED only (no logout/reboot survival)",
+    "decision window expires 2026-07-19T17:53Z"
+  ],
+  "report_digest": "sha256:3718421f7507489ad3b34ffc04de8737447687c595bbc74d1253c93e678820a7"
+}

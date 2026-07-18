@@ -1,0 +1,27 @@
+{
+  "schema": "orc-review-separation-1",
+  "review_target_sha": "8e3bc0995aa802cd2db16f2b3e533dc553dbe714",
+  "product_reviewed_ancestor": "88e1a51",
+  "evidence_only_descendant": "VALID_EVIDENCE_ONLY_DESCENDANT (delta = .foundergate/gates/* decision records only)",
+  "checker": {
+    "identity": "ORC-LAUNCH-CHECKER",
+    "digest": "sha256:a471de0dbfd9d9d3acc72ceb87daf3fa63c96b6b1d48cddbadb23b288b28d55f",
+    "verdict": "ORC-LAUNCH-CHECKER: CLEAN",
+    "completed_at": "2026-07-18T18:10:13Z"
+  },
+  "advisor": {
+    "identity": "ORC-LAUNCH-ADVISOR",
+    "digest": "sha256:3718421f7507489ad3b34ffc04de8737447687c595bbc74d1253c93e678820a7",
+    "verdict": "ORC-LAUNCH-ADVISOR: READY-TO-LAUNCH",
+    "completed_at": "2026-07-18T18:13:10Z"
+  },
+  "advisor_began_after_checker_completion": true,
+  "agents_distinct": true,
+  "main_unchanged": true,
+  "activation_decision": {
+    "consumed": false,
+    "valid": true
+  },
+  "final_readiness": "READY-TO-LAUNCH",
+  "record_digest": "sha256:35ee3ce8ef686d049371b57259552a99da7763de9cea90355c8b4d0fc97bfbb8"
+}
