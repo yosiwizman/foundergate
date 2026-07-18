@@ -10,10 +10,10 @@
   ],
   "deciding_authority": "founder",
   "decision_source": "founder_directive_FGRI-1",
-  "request_digest": "sha256:2a1909a2db6aca5b8687448b94cfa6adfc7e5e2b46a7a8b1e50c75aab0412fae",
+  "request_digest": "sha256:3b3a3f6ae804294eaf2446589e835120fbe4778face41582224040fcec4576c2",
   "policy_digest": "sha256:a32acfa6dfd8390eefddd2049b8ed4fcf40d4e4bc43402f818e2bde024acddd0",
   "timestamp": 1784355114,
-  "expiry": 1784502564,
+  "expiry": 1784504128,
   "one_time_use": true,
   "anti_replay_nonce": "paes-act-4c257074c3c0",
   "action": "activate_paes_narrow_allowlist",
@@ -23,9 +23,10 @@
   ],
   "consumed": false,
   "note": "KEEP_IDLE refusal applies ONLY to this gate; future gates may still use KEEP_PAUSED safe default",
-  "resolution_digest": "sha256:0a1e80484f1d0a7de618f12a0b03c9cb71300aeb8c982d50b4bec5058abee7d0",
+  "resolution_digest": "sha256:40b71b52992cf57103a7f18310279e4d26ef442db0a3552dbfe1ac198fc6420c",
   "rebinding_ref": ".foundergate/gates/rebindings/gate-1784355114-paesact-orc1r.json",
-  "active_target_sha": "e5b77d0e56726af5354dcc64478bfab2d2345c1b",
+  "active_target_sha": "94d441b92eea61b2415e49a58b9202af05f50d4d",
   "hotfix_rebinding_ref": ".foundergate/gates/rebindings/gate-1784355114-paesact-hotfix.json",
-  "handoff_hotfix2_rebinding_ref": ".foundergate/gates/rebindings/gate-1784355114-paesact-handoff-hotfix-2.json"
+  "handoff_hotfix2_rebinding_ref": ".foundergate/gates/rebindings/gate-1784355114-paesact-handoff-hotfix-2.json",
+  "hb_independence_rebinding_ref": ".foundergate/gates/rebindings/gate-1784355114-paesact-hb-independence.json"
 }

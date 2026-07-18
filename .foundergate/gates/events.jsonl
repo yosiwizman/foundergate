@@ -5,3 +5,4 @@
 {"evt":"activation_rebound","gate_id":"gate-1784355114-paesact","rebound_to_sha":"88e1a511d55ef376adc4d792e80df27319ecc153","renewed_expiry":1784483602,"consumed":false,"ts":1784397202}
 {"evt":"activation_rebound_hotfix","gate_id":"gate-1784355114-paesact","rebound_to_sha":"2b76f1b8c52c6b712b7ac4bfb4d17523e0710523","consumed":false,"ts":1784399566}
 {"evt":"decision_rebound","gate_id":"gate-1784355114-paesact","authorized_by":"PAES-HANDOFF-HOTFIX-2","rebound_to_sha":"e5b77d0e56726af5354dcc64478bfab2d2345c1b","consumed":false,"ts":1784416164}
+{"evt":"decision_rebound","gate_id":"gate-1784355114-paesact","authorized_by":"PAES-LAUNCH-SAFETY-HB-INDEPENDENCE","rebound_to_sha":"94d441b92eea61b2415e49a58b9202af05f50d4d","consumed":false,"ts":1784417728}

@@ -27,7 +27,7 @@
   "safe_default": "PARK_AFFECTED_LANE_AND_CONTINUE_OTHERS",
   "unrelated_work_may_continue": true,
   "created_at": 1784355114,
-  "expires_at": 1784502564,
+  "expires_at": 1784504128,
   "anti_replay_nonce": "paes-act-4c257074c3c0",
   "current_state": "AWAITING_DECISION",
   "next_safe_action": "apply founder resolution"
