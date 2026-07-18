@@ -20,12 +20,18 @@ export function digest(obj) {
 
 // ---- Phase 4: interactive-question detection in worker output ----
 const QUESTION_SIGNALS = [
-  /AskUserQuestion/i, /\bplease (select|choose|pick)\b/i, /\btype your (answer|choice|notes)\b/i,
+  /AskUserQuestion/i, /\bplease (select|choose|pick|confirm)\b/i, /\btype your (answer|choice|notes)\b/i,
   /\bpress (enter|any key)\b/i, /\b(option|choice) \d+\b.*\?/i, /\bwaiting for (input|keyboard|your)\b/i,
-  /\bwhich (option|would you|do you want)\b.*\?/i, /\benter your\b/i, /\[y\/n\]/i,
+  /\bwhich (option|would you|do you want)\b/i, /\benter your\b/i,
+  // confirm forms: [y/n], (y/N), (yes/no), y/n prompts
+  /[([]\s*y\s*\/\s*n\s*[)\]]/i, /[([]\s*yes\s*\/\s*no\s*[)\]]/i, /\benter y\b/i, /\breply\s+\d/i, /\btype\s+\d\s+(for|to)\b/i,
+  // yes/no & confirmation questions
+  /\bshould i (proceed|continue|deploy|merge|push)\b/i, /\bdo you want (me )?to\b/i, /\bwould you like (me )?to\b/i,
+  /\bproceed with .*\?/i, /\bconfirm .*\?/i, /\bselect an option\b/i, /\bawait(ing)? (your )?(confirmation|input|decision|approval)\b/i,
+  /\bi('| wi)ll wait for (your )?(input|confirmation|decision)\b/i, /\?\s*\(y\/?n?\)?\s*$/im,
 ];
 // A final answer that contains an UNRESOLVED authority request also counts.
-const AUTHORITY_SIGNALS = [/\bneed(s)? (your )?(permission|authorization|approval)\b/i, /\bmissing authority\b/i, /\brequires broader permission\b/i, /\bhow should I proceed\b/i];
+const AUTHORITY_SIGNALS = [/\bneed(s)? (your )?(permission|authorization|approval)\b/i, /\bmissing authority\b/i, /\brequires broader permission\b/i, /\bhow should i proceed\b/i, /\bpermission (denied|required)\b/i];
 
 export function detectInteractiveQuestion(workerOutput) {
   const text = typeof workerOutput === "string" ? workerOutput : JSON.stringify(workerOutput || "");
@@ -42,10 +48,11 @@ export function classifyGate(request) {
   const t = request.declared_type;
   if (GATE_TYPES.includes(t) && t !== "UNKNOWN") return t;
   // Derive from requested authority; unknown -> fail closed to a founder gate.
-  const auth = String(request.requested_authority || "").toLowerCase();
+  const auth = String(request.requested_authority || "").trim().toLowerCase();
   if (/provider|production|customer|private|payment|public.release|akior|m1|live.action|token|external/.test(auth)) return "TRUE_FOUNDER_GATE";
   if (/legal|security.boundary|ip|expert/.test(auth)) return "HUMAN_EXPERT_GATE";
-  if (auth === "" || auth === "unknown") return "TRUE_FOUNDER_GATE"; // UNKNOWN fails closed
+  // Empty/whitespace/unknown -> fail closed to a founder gate.
+  if (auth === "" || auth === "unknown") return "TRUE_FOUNDER_GATE";
   return "OPERATIONAL_AUTONOMOUS";
 }
 
@@ -89,11 +96,19 @@ export function verifyDecision(request, resolution, ctx = {}) {
   if (!resolution) return { valid: false, problems: ["missing decision"] };
   if (resolution.request_digest !== digest(request)) problems.push("altered request (digest mismatch)");
   if (resolution.gate_id !== request.gate_id) problems.push("wrong gate id");
-  if (ctx.exact_sha && resolution.exact_sha && resolution.exact_sha !== ctx.exact_sha) problems.push("wrong SHA");
-  if (ctx.expected_action && resolution.action && resolution.action !== ctx.expected_action) problems.push("wrong action");
+  // Fail closed on SHA binding: the resolution MUST carry an exact_sha and it
+  // must equal the request's pinned SHA (and ctx SHA when supplied). A missing
+  // exact_sha is a rejection, not a skip.
+  if (!resolution.exact_sha) problems.push("missing exact_sha binding");
+  else {
+    if (request.exact_sha && resolution.exact_sha !== request.exact_sha) problems.push("wrong SHA (does not match request)");
+    if (ctx.exact_sha && resolution.exact_sha !== ctx.exact_sha) problems.push("wrong SHA (does not match active state)");
+  }
+  if (ctx.expected_action && resolution.action !== ctx.expected_action) problems.push("wrong action");
   if (ctx.now !== undefined && request.expires_at !== undefined && ctx.now > request.expires_at) problems.push("expired decision");
   if (resolution.anti_replay_nonce !== request.anti_replay_nonce) problems.push("replayed decision (nonce mismatch)");
-  if (resolution.one_time_use && ctx.already_consumed) problems.push("duplicate consumption");
+  // One-time-use is the DEFAULT; only an explicit one_time_use:false disables it.
+  if (resolution.one_time_use !== false && ctx.already_consumed) problems.push("duplicate consumption");
   if (resolution.decision_source === "generated" || resolution.deciding_authority === "builder") problems.push("generated/builder decision rejected");
   if (AUTO_REFUSED_OPTIONS.includes(resolution.selected_option)) problems.push(`unsafe option auto-refused: ${resolution.selected_option}`);
   return { valid: problems.length === 0, problems };

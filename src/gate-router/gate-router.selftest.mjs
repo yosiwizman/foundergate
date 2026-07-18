@@ -66,6 +66,28 @@ ok("38b null request -> UNKNOWN", classifyGate(null) === "UNKNOWN");
 ok("39 production authority -> founder gate", classifyGate({ requested_authority: "production deployment" }) === "TRUE_FOUNDER_GATE");
 ok("40 operational authority stays autonomous", classifyGate({ requested_authority: "run repo selftests" }) === "OPERATIONAL_AUTONOMOUS");
 
+// ---- Regression: FGRI1-CHECKER findings (F1, F2, F3) ----
+// F1: common interactive prompt forms must intercept (were slipping through).
+for (const s of ["Deploy to production? (y/N)", "Proceed with force-push to main? (yes/no)",
+  "Confirm deletion of customer data? (y/n)", "Should I proceed?", "Do you want me to continue?",
+  "Enter y to continue:", "Type 1 for prod, 2 for staging:", "Select an option below:",
+  "Awaiting your confirmation.", "I'll wait for your input.", "Reply 1 or 2:"]) {
+  ok(`F1 intercepts: ${JSON.stringify(s).slice(0, 34)}`, detectInteractiveQuestion(s).intercepted === true);
+}
+ok("F1 handler parks the prod-deploy confirm (was slipping)", handleWorkerOutput("Deploy to production? (y/N)", { lane: "prod" }).action === "park_and_route");
+ok("F1 normal success still NOT intercepted", detectInteractiveQuestion("committed changes; 93/93 tests pass; done").intercepted === false);
+// F2: whitespace authority fails closed.
+for (const ws of ["   ", "\n", "\t\t"]) ok(`F2 whitespace authority '${JSON.stringify(ws)}' -> founder gate`, classifyGate({ requested_authority: ws }) === "TRUE_FOUNDER_GATE");
+// F3: SHA binding + one-time default enforced.
+const req3 = buildGateRequest({ lane: "L", action: "a", requested_authority: "x", exact_sha: "SHA_A" }, 1000, "nn");
+const resNoSha = { gate_id: req3.gate_id, request_digest: digest(req3), anti_replay_nonce: "nn", selected_option: "ACTIVATE_SAFELY", action: "a" };
+ok("F3 resolution missing exact_sha rejected", verifyDecision(req3, resNoSha, { now: 1010 }).valid === false);
+const resWrongSha = { ...resNoSha, exact_sha: "SHA_B" };
+ok("F3 resolution wrong exact_sha rejected", verifyDecision(req3, resWrongSha, { now: 1010 }).valid === false);
+const resNoOneTime = { ...resNoSha, exact_sha: "SHA_A" }; // no one_time_use field
+ok("F3 one-time default-on: consumed rejected even without flag", verifyDecision(req3, resNoOneTime, { now: 1010, already_consumed: true }).valid === false);
+ok("F3 correct SHA + fresh accepted", verifyDecision(req3, { ...resNoSha, exact_sha: "SHA_A" }, { now: 1010, exact_sha: "SHA_A" }).valid === true);
+
 console.log(`\nFGRI-1 GATE-ROUTER SELFTEST: ${n - fails.length}/${n} passed`);
 if (fails.length) { console.log("FAILED:", fails.join(", ")); process.exit(1); }
 process.exit(0);
