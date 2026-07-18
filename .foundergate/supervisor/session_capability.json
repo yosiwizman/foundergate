@@ -1,0 +1,19 @@
+{
+  "schema": "paes-session-capability-1",
+  "DETACHED_SESSION_AUTH": "PROVEN",
+  "evidence": "session-detached supervisor (run_in_background) ran 3 real claude workers that authenticated under the narrow allowlist, completed jobs, wrote files; cost ledgered $0.31; 17 advancing heartbeat timestamps",
+  "disproves": "the launchd AUTHENTICATION_NOT_AVAILABLE gap is NOT a universal host failure \u2014 a session-context detached process retains keychain access",
+  "bugs_fixed": [
+    "--allowedTools must be separate argv elements (Bash(git add:*) has an internal space)",
+    "prompt must precede the variadic --allowedTools or it is consumed as a tool value"
+  ],
+  "SURVIVES_TERMINAL_CLOSURE": "NOT_PROVABLE_IN_SANDBOX",
+  "sandbox_finding": "genuine OS detachment (setsid+nohup+disown+&) is REAPED by this sandbox when the launching tool call ends (0 heartbeats); the only persistence available (run_in_background) is harness/Harvest-session-managed",
+  "SURVIVES_HARVEST_EXIT": "NOT_PROVEN (sandbox reaps detached processes; run_in_background is session-bound)",
+  "SURVIVES_LOGOUT": "NOT CLAIMED",
+  "SURVIVES_REBOOT": "NOT CLAIMED",
+  "PRODUCT_READY_BACKGROUND_SERVICE": "NOT CLAIMED",
+  "handoff": "The USER_SESSION_DETACHED supervisor is BUILT + qualified (workers authenticate + run). Genuine unattended operation requires launching it from the founder's real macOS Terminal (nohup setsid), where such a process survives terminal close \u2014 which cannot be done from inside this sandbox.",
+  "launch_command_for_founder": "cd <repo> && FG_CLAUDE_BIN=$(command -v claude) nohup setsid node tools/terminal0/paes/supervisor-session </dev/null >.foundergate/supervisor/logs/supervisor.out.log 2>&1 &",
+  "credential_safety": "no credential copied/serialized/logged; workers use existing session keychain auth"
+}

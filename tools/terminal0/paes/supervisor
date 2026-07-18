@@ -20,7 +20,7 @@ const SUP = join(REPO, ".foundergate", "supervisor");
 // classes only — NO broad Bash(node:*) wildcard, NO git push, NO gh merge, NO
 // skip-permissions. Terminal-0 alone pushes/merges. The one test command is
 // pinned to the repo's selftest runner, not an arbitrary node invocation.
-const WORKER_ALLOWLIST = "Read Edit Write Grep Glob Bash(git add:*) Bash(git commit:*) Bash(git status:*) Bash(git diff:*) Bash(node scripts/run-selftests.mjs)";
+const WORKER_ALLOWLIST = ["Read","Edit","Write","Grep","Glob","Bash(git add:*)","Bash(git commit:*)","Bash(git status:*)","Bash(git diff:*)","Bash(node scripts/run-selftests.mjs)"];
 
 const nowS = () => Math.floor(Date.now() / 1000);
 const rj = (p, d) => { const f = join(SUP, p); return existsSync(f) ? JSON.parse(readFileSync(f, "utf8")) : d; };
@@ -66,9 +66,9 @@ function runWorker(job, cycle) {
   const prompt = existsSync(promptFile) ? readFileSync(promptFile, "utf8") : (job.prompt || 'Return {"noop":true}');
   // Prefer session RESUME after the first invocation (cost control).
   const sess = rj(`worker-results/${job.job_id}.session`, null);
-  const base = ["-p", "--output-format", "json", "--allowedTools", WORKER_ALLOWLIST];
-  const args = sess && sess.session_id ? ["--resume", sess.session_id, ...base, prompt] : [...base, prompt];
-  ledger({ evt: "worker_invocation", job_id: job.job_id, mode: sess ? "resume" : "fresh", allowlist: WORKER_ALLOWLIST });
+  const tail = ["--output-format", "json", "--allowedTools", ...WORKER_ALLOWLIST];
+  const args = sess && sess.session_id ? ["--resume", sess.session_id, "-p", prompt, ...tail] : ["-p", prompt, ...tail];
+  ledger({ evt: "worker_invocation", job_id: job.job_id, mode: sess ? "resume" : "fresh", allowlist: WORKER_ALLOWLIST.join(" ") });
   const CLAUDE = process.env.FG_CLAUDE_BIN || "claude";
   const r = spawnSync(CLAUDE, args, { cwd: REPO, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
   let cost = null, sid = null, ok = false;
@@ -83,7 +83,7 @@ function main() {
   const cfg = rj("config.json", { deadline_hours: 9 });
   const cycle = rj("current-cycle.json", null) || { start: nowS(), deadline: nowS() + (cfg.deadline_hours || 9) * 3600 };
   wj("current-cycle.json", cycle);
-  ledger({ evt: "supervisor_start", pid: process.pid, deadline: cycle.deadline, allowlist: WORKER_ALLOWLIST });
+  ledger({ evt: "supervisor_start", pid: process.pid, deadline: cycle.deadline, allowlist: WORKER_ALLOWLIST.join(" ") });
 
   const gate = canEnterRunning(preconditions());
   if (!gate.ok) { wj("state.json", { state: "HOLD_CORRECTABLE", missing: gate.missing }); ledger({ evt: "precondition_block", missing: gate.missing }); return; }

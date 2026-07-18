@@ -1,0 +1,480 @@
+FOUNDERGATE PAES-SESSION-1 — AUTHENTICATED USER-SESSION DETACHED SUPERVISOR QUALIFICATION AND WAVE-2 HANDOFF
+
+AUTHORITY
+
+This is a technical recovery under the existing founder decision:
+
+ACTIVATE_SAFE_NARROW_ALLOWLIST
+
+It adds no new authority.
+
+Do not use:
+
+- launchd;
+- ANTHROPIC_API_KEY;
+- ANTHROPIC_AUTH_TOKEN;
+- copied or serialized OAuth credentials;
+- apiKeyHelper;
+- new paid accounts;
+- --dangerously-skip-permissions;
+- automatic permission escalation;
+- direct push to main;
+- M1 access;
+- AKIOR access;
+- customer or private repositories;
+- production data;
+- payments;
+- external sends;
+- live providers;
+- VB3 live action;
+- the 48-hour qualification;
+- V8-C, V8-D or V8-E implementation.
+
+PURPOSE
+
+The previous qualification proved that Claude Code works from the authenticated interactive user session but fails authentication from a launchd-clean background context.
+
+That proves a launchd authentication gap.
+
+It does not prove that a process started from the authenticated macOS user session cannot detach from its parent shell and continue safely.
+
+Test that remaining path mechanically.
+
+If it succeeds, activate PAES in a bounded USER_SESSION_DETACHED mode and start the real nine-hour V8-B Wave-2 run.
+
+If it fails, preserve the evidence and stop honestly. Do not request, copy or invent credentials.
+
+PHASE 0 — DCL SELF-CAPTURE
+
+Before any material action:
+
+1. Locate this exact directive in the active Harvest transcript.
+2. Extract the complete exact body.
+3. Verify the exact title:
+   FOUNDERGATE PAES-SESSION-1 — AUTHENTICATED USER-SESSION DETACHED SUPERVISOR QUALIFICATION AND WAVE-2 HANDOFF
+4. Verify the body contains:
+   - AUTHORITY;
+   - PURPOSE;
+   - PHASE 0;
+   - PHASE 3 — DETACHED SESSION QUALIFICATION;
+   - PHASE 5 — UNATTENDED HANDOFF BARRIER;
+   - FINAL OUTPUT;
+   - final verdict list.
+5. Verify the message is complete and not truncated.
+6. Compute SHA-256, byte count, line count and boundary anchors.
+7. Persist the immutable body through DCL.
+8. Re-read and recompute the stored digest.
+9. Require transcript-to-disk digest equality.
+10. Create complete metadata, state, dependencies, queue, events, recovery, completion predicates, stop predicates and next-safe-action.
+11. Transition:
+   RECEIVED
+   → CAPTURED
+   → DIGEST_VERIFIED
+   → QUEUED
+   → READY
+   → RUNNING
+
+If capture fails:
+
+PAES-SESSION1: SELF-CAPTURE-FAILED
+
+PHASE 1 — CURRENT-STATE RECONCILIATION
+
+Mechanically resolve:
+
+- host identity;
+- repository and origin;
+- current local and remote main;
+- open PRs;
+- branches and worktrees;
+- dirty state;
+- active locks;
+- active processes;
+- active VMs;
+- DCL state;
+- ARLC state;
+- ARE state;
+- FGRI state;
+- PAES state;
+- Autonomy Policy Envelope;
+- Founder Decision Inbox;
+- PANIC_STOP;
+- current activation decision;
+- decision consumption state;
+- launchd auth-gap evidence;
+- current operational queue;
+- founder queue;
+- human-expert queue;
+- current completion matrix.
+
+Confirm:
+
+- FGRI is active;
+- PAES code is merged;
+- LaunchAgent is not loaded;
+- no live PAES supervisor exists;
+- activation decision remains unconsumed;
+- launchd failure evidence is preserved.
+
+Do not recreate completed work.
+
+Do not modify historical failure evidence.
+
+PHASE 2 — DETACHED USER-SESSION DESIGN
+
+Create or reconcile a bounded PAES user-session mode.
+
+It must:
+
+- be launched from the currently authenticated user session;
+- detach completely from its launching helper shell;
+- close stdin;
+- redirect stdout and stderr to governed logs;
+- create a new process group where supported;
+- write PID, heartbeat, lease, queue, recovery and stop state;
+- use the existing Claude executable discovered mechanically;
+- use only the current narrow allowlist;
+- use structured non-interactive output;
+- remain independent of the Harvest Claude conversation after activation;
+- have a hard nine-hour deadline;
+- have a maximum of three restarts per job;
+- stop on PANIC_STOP;
+- never execute after its deadline.
+
+Use the safest available built-in user-session detachment mechanism.
+
+Acceptable mechanisms include:
+
+- a properly detached nohup-based child with closed stdin and durable PID evidence;
+- an already-installed user-session multiplexer only if it is mechanically proven safer and requires no new installation.
+
+Do not install a new dependency merely for detachment.
+
+Do not use launchd.
+
+Do not place credentials into:
+
+- command arguments;
+- environment files;
+- plist files;
+- logs;
+- queue files;
+- recovery files.
+
+Classify this mode explicitly:
+
+PERSISTENCE_MODE:
+USER_SESSION_DETACHED
+
+SURVIVES_TERMINAL_CLOSURE:
+NOT_PROVEN until qualified
+
+SURVIVES_LOGOUT:
+NOT CLAIMED
+
+SURVIVES_REBOOT:
+NOT CLAIMED
+
+PRODUCT_READY_BACKGROUND_SERVICE:
+NOT CLAIMED
+
+PHASE 3 — DETACHED SESSION QUALIFICATION
+
+Use a short-lived helper shell as the initiating parent.
+
+Do not close the founder’s current Harvest terminal during qualification.
+
+Qualification sequence:
+
+1. Create a synthetic read-only PAES job.
+2. Start the candidate supervisor from the short-lived helper shell.
+3. Record the helper-shell PID.
+4. Record the supervisor PID and process group.
+5. Require the helper shell to exit completely.
+6. Prove the supervisor remains alive after the parent exits.
+7. Wait for at least three heartbeat intervals.
+8. Prove heartbeat timestamps continue advancing.
+9. From the detached supervisor, invoke the actual Claude executable using:
+   - non-interactive print mode;
+   - structured JSON output;
+   - bounded turns;
+   - narrow allowlist;
+   - closed stdin.
+10. Require Claude authentication to succeed after the helper shell has exited.
+11. Require the synthetic job to return a structured result.
+12. Verify:
+   - no API key variable was supplied;
+   - no OAuth token was copied;
+   - no credential was serialized;
+   - no credential appeared in logs;
+   - no repository mutation occurred from the read-only probe.
+13. Start a synthetic writable branch-isolated job.
+14. Deliberately terminate its worker.
+15. Prove watchdog detection.
+16. Prove lease recovery.
+17. Prove automatic worker relaunch.
+18. Prove no duplicate execution.
+19. Prove the synthetic job completes.
+20. Inject a synthetic interactive authority question.
+21. Prove FGRI intercepts it.
+22. Prove only the affected lane parks.
+23. Prove an unrelated synthetic lane continues.
+24. Resolve the synthetic gate through a test-only bound resolution.
+25. Prove one-time lane resumption.
+26. Prove replay rejection.
+27. Attempt a queue-nonempty stop.
+28. Prove STOP_REJECTED_QUEUE_NONEMPTY.
+29. Verify the supervisor remains alive and healthy after every initiating helper process has ended.
+
+If detached Claude authentication fails, classify:
+
+DETACHED_SESSION_AUTH:
+NOT_PROVEN
+
+Preserve the exact evidence and stop with:
+
+PAES-SESSION1: SESSION-DETACH-AUTH-GAP
+
+Do not attempt another authentication mechanism.
+
+PHASE 4 — INDEPENDENT REVIEW AND ACTIVATION
+
+If Phase 3 passes:
+
+1. Run all PAES and FGRI tests.
+2. Run mutation and negative tests.
+3. Run secret and forbidden-artifact scans.
+4. Run exact-SHA CI.
+5. Commission an independent PAES-session checker.
+6. Allow up to three bounded correction cycles.
+7. After any material correction, require a fresh checker.
+8. After checker-clean, commission a fresh read-only Advisor.
+
+The checker must verify:
+
+- actual parent-shell exit;
+- detached supervisor survival;
+- advancing heartbeat;
+- valid leases;
+- authenticated Claude execution after detachment;
+- no copied credentials;
+- narrow permissions;
+- worker recovery;
+- duplicate-execution prevention;
+- queue refill;
+- stop rejection;
+- gate routing;
+- deadline enforcement;
+- PANIC_STOP;
+- exact evidence.
+
+Do not activate based on builder statements.
+
+After checker-clean and Advisor-ready:
+
+- activate PAES user-session mode;
+- consume the existing ACTIVATE_SAFE_NARROW_ALLOWLIST decision exactly once;
+- bind consumption to the activated exact SHA and mode;
+- preserve launchd as disabled;
+- write the active PAES pointer;
+- write the activation event.
+
+PHASE 5 — UNATTENDED HANDOFF BARRIER
+
+Do not return a successful answer until all are true:
+
+1. This directive is captured and digest-verified.
+2. FGRI is active.
+3. PAES user-session mode is active.
+4. Existing activation decision is consumed once.
+5. Launchd remains disabled.
+6. The helper shell that launched the supervisor has exited.
+7. Supervisor remains alive.
+8. Watchdog remains alive.
+9. Heartbeat has advanced at least three times after parent exit.
+10. A detached Claude invocation authenticated successfully.
+11. No credential was copied, serialized or logged.
+12. Controlled worker termination and relaunch passed.
+13. Duplicate execution prevention passed.
+14. Interactive-question interception passed.
+15. Lane-local parking passed.
+16. Unrelated-lane continuation passed.
+17. Queue-nonempty stop rejection passed.
+18. Independent checker is CLEAN.
+19. Final Advisor is READY.
+20. Exact-SHA CI is green.
+21. The real Wave-2 run has started.
+22. The nine-hour deadline is recorded and in the future.
+23. Current job, queue, lease, heartbeat and next-safe-action exist on disk.
+24. Bounded user-level sleep prevention is active where mechanically available and expires no later than the run deadline.
+25. No material drift exists.
+
+A status JSON claiming RUNNING is not sufficient.
+
+Require live process and advancing-heartbeat evidence.
+
+PHASE 6 — START REAL V8-B WAVE-2
+
+After the handoff barrier, start or resume the real ARE-governed V8-B Wave-2 queue.
+
+Continue remaining authorized wide-safe work, including where still incomplete:
+
+- Bench v1;
+- Founder Hand-Burden;
+- Playwright evidence system;
+- Evidence Viewer;
+- integration cards;
+- cost display;
+- Release Label Ladder;
+- Spec Card Engine;
+- anti-repeat register;
+- License/IP register;
+- data-classification reconciliation;
+- SCL-1 mock and synthetic runtime;
+- machine qualification;
+- completion matrix;
+- proof capsule.
+
+Keep parked:
+
+- VB2 founder acceptance;
+- VB3 live action;
+- live provider adoption;
+- 48-hour qualification;
+- V8-C/D/E implementation.
+
+Record:
+
+- run ID;
+- blueprint digest;
+- manifest digest;
+- starting main SHA;
+- UTC start;
+- nine-hour deadline;
+- drain start;
+- heartbeat;
+- lease;
+- queue;
+- current job;
+- next-safe-action;
+- modeled cost;
+- actual billable-spend classification.
+
+A completed worker response is not global completion.
+
+A parked gate in one lane is not global completion.
+
+The detached PAES supervisor owns continuation after Harvest returns.
+
+PHASE 7 — EVIDENCE
+
+Write all material actions to durable disk evidence:
+
+- directive body and digest;
+- detachment command class;
+- parent PID;
+- parent exit;
+- supervisor PID;
+- process group;
+- heartbeat sequence;
+- lease sequence;
+- Claude invocation record;
+- authentication result;
+- credential-safety scan;
+- worker kill;
+- watchdog detection;
+- lease recovery;
+- relaunch;
+- duplicate-execution result;
+- FGRI interception;
+- lane parking;
+- unrelated continuation;
+- decision resolution;
+- stop rejection;
+- tests;
+- checker;
+- Advisor;
+- CI;
+- activation;
+- decision consumption;
+- Wave-2 start;
+- deadline;
+- exact SHAs;
+- proof capsule.
+
+Update the investor-safe evidence index.
+
+Exclude credentials, secrets, raw sensitive logs and private account information.
+
+FINAL OUTPUT
+
+Return:
+
+1. Host identity.
+2. Directive digest.
+3. Starting and final main.
+4. Detachment mechanism.
+5. Helper-shell PID and exit proof.
+6. Supervisor PID and survival proof.
+7. Watchdog state.
+8. Heartbeat path and timestamps.
+9. Lease path and validity.
+10. Detached Claude authentication result.
+11. Credential-safety result.
+12. Controlled worker-kill result.
+13. Automatic relaunch result.
+14. Duplicate-execution result.
+15. Interactive-question interception result.
+16. Lane-parking result.
+17. Unrelated-lane continuation result.
+18. Queue-nonempty stop-rejection result.
+19. Checker verdict.
+20. Advisor verdict.
+21. Exact-SHA CI.
+22. Activation decision consumption.
+23. PAES active mode.
+24. Launchd disabled state.
+25. Wave-2 run ID.
+26. Wave-2 start.
+27. Nine-hour deadline.
+28. Current heartbeat freshness.
+29. Current job.
+30. Current queue.
+31. Current next-safe-action.
+32. Persistence limitations.
+33. Evidence paths.
+34. Investor-safe index.
+35. Proof-capsule path and digest.
+36. Unattended handoff barrier result.
+
+Required exact statements:
+
+PAES-SESSION-1 CAPTURED AND VERIFIED ITS COMPLETE DIRECTIVE BODY BEFORE EXECUTION.
+
+THE PRIOR FAILURE PROVED A LAUNCHD AUTHENTICATION GAP, NOT A UNIVERSAL HOST AUTONOMY FAILURE.
+
+THE DETACHED SUPERVISOR WAS LAUNCHED FROM THE AUTHENTICATED USER SESSION AND SURVIVED THE EXIT OF ITS INITIATING HELPER SHELL, OR THAT CAPABILITY WAS REJECTED HONESTLY.
+
+NO API KEY, AUTH TOKEN OR OAUTH CREDENTIAL WAS COPIED, SERIALIZED OR LOGGED.
+
+LAUNCHD REMAINED DISABLED.
+
+FULL-PERMISSION BYPASS, AUTOMATIC PERMISSION ESCALATION AND DIRECT PUSH TO MAIN REMAINED REFUSED.
+
+THE ACTIVE MODE IS USER_SESSION_DETACHED AND IS NOT CLAIMED TO SURVIVE LOGOUT OR REBOOT.
+
+A WORKER EXIT OR TERMINAL CLOSURE IS NOT GLOBAL PROGRAM COMPLETION.
+
+THE REAL V8-B WAVE-2 RUN HAS A RECORDED START, DEADLINE, HEARTBEAT, QUEUE AND NEXT SAFE ACTION, OR IT WAS NOT CLAIMED TO HAVE STARTED.
+
+Finish with exactly one verdict:
+
+PAES-SESSION1: SAFE-TO-LEAVE-UNATTENDED
+PAES-SESSION1: SESSION-DETACH-AUTH-GAP
+PAES-SESSION1: QUALIFICATION-FAILED
+PAES-SESSION1: CHECKER-FINDINGS
+PAES-SESSION1: HOLD-CORRECTABLE-FINDINGS
+PAES-SESSION1: UNRESOLVED-CRITICAL-BLOCKER
+PAES-SESSION1: SELF-CAPTURE-FAILED
+PAES-SESSION1: REJECT
+PAES-SESSION1: INSUFFICIENT-EVIDENCE
