@@ -3,6 +3,12 @@ import { createHash } from "node:crypto";
 const REPO = process.argv[2]; const SUP = REPO + "/.foundergate/supervisor";
 const now = Math.floor(Date.now()/1000);
 mkdirSync(SUP + "/worker-results", { recursive: true });
+// A freshly-created run is NOT yet activated: clear any stale activation marker
+// so the supervisor starts GATED and cannot run jobs until THIS run's live
+// qualification passes and consume-and-start writes a new handoff.json. Without
+// this a leftover marker would let a fresh supervisor execute jobs
+// pre-qualification (the exact pre-qual-worker orphan the gating prevents).
+try { rmSync(SUP + "/handoff.json", { force: true }); } catch {}
 // wide-safe incomplete items from the completion matrix -> operational jobs
 let matrix = {}; try { matrix = JSON.parse(readFileSync(REPO + "/docs/status/V8B_COMPLETION_MATRIX.json")); } catch {}
 const wideSafe = (matrix.rows || []).filter(r => r.class === "wide" && ["NOT BUILT","PARTIAL"].includes(r.state));
