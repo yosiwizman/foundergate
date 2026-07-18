@@ -1,4 +1,8 @@
 {
-  "state": "STOPPED_EXHAUSTED",
-  "mode": "USER_SESSION_DETACHED"
+  "state": "INACTIVE",
+  "mode": "USER_SESSION_DETACHED",
+  "reconciled": true,
+  "reconciliation_ref": ".foundergate/recovery/reconciliation.json",
+  "note": "reconciled post-outage: no live supervisor",
+  "updated_at": "2026-07-18T17:34:50Z"
 }

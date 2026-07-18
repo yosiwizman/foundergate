@@ -1,0 +1,20 @@
+{
+  "schema": "orc-evidence-index-1",
+  "generated_at": "2026-07-18T17:38:20Z",
+  "sanitized": true,
+  "excludes": [
+    "credentials",
+    "secrets",
+    "private account info",
+    "raw private machine paths",
+    "sensitive raw logs",
+    "exploit detail"
+  ],
+  "entries": [
+    "reconciliation.json",
+    "dirty-worktree-preservation.json",
+    "outages.jsonl",
+    "reuse-map.json",
+    "action-journal.jsonl"
+  ]
+}

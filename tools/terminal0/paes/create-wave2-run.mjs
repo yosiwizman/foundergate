@@ -13,4 +13,10 @@ const runId = "v8b-wave-2-" + now;
 const blueprintDigest = "sha256:" + createHash("sha256").update(JSON.stringify(jobs)).digest("hex");
 writeFileSync(SUP + "/queue.json", JSON.stringify({ schema: "supervisor-queue", run_id: runId, jobs, updated_at: new Date(now*1000).toISOString() }, null, 2) + "\n");
 writeFileSync(SUP + "/current-cycle.json", JSON.stringify({ run_id: runId, start: now, deadline: now + 9*3600, drain_start: now + 8*3600 + 45*60, blueprint_digest: blueprintDigest }, null, 2) + "\n");
-console.log("created run", runId, "with", jobs.length, "wide-safe jobs; deadline in 9h");
+// ORC-1R: write the immutable recovery checkpoint + original deadline; init journal; clear clean-stop.
+const REC = REPO + "/.foundergate/recovery"; try { require("fs").mkdirSync(REC,{recursive:true}); } catch {}
+writeFileSync(REC + "/checkpoint.json", JSON.stringify({ schema:"recovery-checkpoint-1", run_id: runId, original_deadline: now + 9*3600, last_safe_checkpoint:"run_start", boot_id: String(now), created_at: new Date(now*1000).toISOString() }, null, 2) + "\n");
+writeFileSync(REC + "/current-run.json", JSON.stringify({ schema:"orc-current-run-1", run_id: runId, status:"READY_NOT_STARTED", original_deadline: now + 9*3600 }, null, 2) + "\n");
+try { require("fs").rmSync(REC + "/clean-stop.marker",{force:true}); } catch {}
+if (!require("fs").existsSync(REC + "/action-journal.jsonl")) writeFileSync(REC + "/action-journal.jsonl","");
+console.log("created run", runId, "with", jobs.length, "wide-safe jobs; deadline in 9h; recovery checkpoint written");

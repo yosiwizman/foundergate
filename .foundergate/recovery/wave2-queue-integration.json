@@ -1,0 +1,46 @@
+{
+  "schema": "orc-wave2-queue-1",
+  "updated_at": "2026-07-18T17:38:20Z",
+  "registered": [
+    {
+      "lane": "ORC-1A",
+      "title": "Minimum Outage Recovery Floor",
+      "status": "BUILT+CHECKER-CLEAN+ADVISOR-READY+MERGED (this directive)"
+    },
+    {
+      "lane": "ORC-1B",
+      "title": "Founder Recovery UI and login experience",
+      "queue_position": "FIRST authorized wide-safe Wave-2 lane"
+    },
+    {
+      "lane": "ORC-1C",
+      "title": "Controlled reboot and outage qualification",
+      "status": "PLANNED / NOT STARTED / requires controlled test contract"
+    }
+  ],
+  "remaining_authorized_queue": [
+    "Bench v1",
+    "Founder Hand-Burden",
+    "Playwright evidence system",
+    "Evidence Viewer",
+    "integration cards",
+    "cost display",
+    "Release Label Ladder",
+    "Spec Card Engine",
+    "anti-repeat register",
+    "License/IP register",
+    "data-classification reconciliation",
+    "SCL-1 mock+synthetic",
+    "machine qualification",
+    "completion-matrix updates",
+    "final proof capsule"
+  ],
+  "parked": [
+    "VB2 founder acceptance",
+    "VB3 live action",
+    "live-provider adoption",
+    "48-hour qualification",
+    "V8-C/D/E implementation"
+  ],
+  "nine_hour_run": "NOT_STARTED (this directive does not start Wave-2)"
+}

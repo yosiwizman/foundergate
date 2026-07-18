@@ -1,0 +1,16 @@
+{
+  "schema": "orc-dirty-worktree-preservation-1",
+  "recorded_at": "2026-07-18T17:34:50Z",
+  "preserved": [
+    {
+      "worktree": "/Users/yosiwizman/Projects/foundergate-wt-safety-check-phase7-1",
+      "branch": "integration/founder-safety-check-evidence-pack-phase7-1",
+      "dirty_file": "docs/testing/evidence/playwright-results.json",
+      "change": "modified (regenerated Playwright evidence)",
+      "unique": "regenerated test output; committed baseline is in main",
+      "action": "PRESERVED EXACTLY — no reset/clean/checkout/delete/overwrite; excluded from ORC writer paths",
+      "no_loss_proof_required_before_cleanup": true
+    }
+  ],
+  "rule": "ORC writers must not touch this path; cleanup requires a separate no-loss proof"
+}

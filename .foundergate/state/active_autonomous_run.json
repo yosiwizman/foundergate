@@ -1,9 +1,12 @@
 {
   "schema": "are1-active-run-1",
   "run_id": "v8b-nightshift",
-  "status": "RUNNING",
+  "status": "INACTIVE",
   "envelope": "ACTIVE",
   "activation_main_sha": "28531940537a0945e97c6471eea56eb8ea1083b6",
   "activation_time": "2026-07-18T04:06:22Z",
-  "note": "pre-envelope work reconstructed retrospectively; not backdated"
+  "note": "reconciled post-outage: prior RUNNING was a dead runtime; real 9h Wave-2 NOT_STARTED",
+  "reconciled": true,
+  "reconciliation_ref": ".foundergate/recovery/reconciliation.json",
+  "reconciled_at": "2026-07-18T17:34:50Z"
 }
