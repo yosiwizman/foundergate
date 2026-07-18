@@ -2,3 +2,4 @@
 {"evt": "gate_classified", "gate_id": "gate-1784355114-paesact", "type": "TRUE_FOUNDER_GATE", "ts": 1784355114}
 {"evt": "notification", "gate_id": "gate-1784355114-paesact", "ts": 1784355114}
 {"evt": "gate_resolved", "gate_id": "gate-1784355114-paesact", "decision": "ACTIVATE_SAFE_NARROW_ALLOWLIST", "ts": 1784355114}
+{"evt":"activation_rebound","gate_id":"gate-1784355114-paesact","rebound_to_sha":"88e1a511d55ef376adc4d792e80df27319ecc153","renewed_expiry":1784483602,"consumed":false,"ts":1784397202}
