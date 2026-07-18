@@ -165,6 +165,21 @@ const emptyStr = fullBlueprint(); emptyStr.spending_limits = "";
 ok("F5 empty-string risk field -> BLUEPRINT_INVALID", validateBlueprint(emptyStr).state === "BLUEPRINT_INVALID");
 ok("F5 empty-array risk field still valid (explicit none)", validateBlueprint(fullBlueprint()).state === "BLUEPRINT_ACCEPTED");
 
+// ---- Regression: ARE1-RECHECKER residual findings (R1, R2) ----
+// R1: sensitive-data fails CLOSED — unknown data classes are founder gates; only allowlist is routine.
+for (const dc of ["biometric_data", "genetic", "geolocation", "fingerprint", "dna", "immigration_status", "religion"]) {
+  ok(`R1 data '${dc}' -> founder gate (fail closed)`, mk({ data_classes: [dc] }).true_founder_gates.includes("FR-Q"));
+}
+ok("R1 allowlisted data 'public' stays operational", classifyRequirementGate({ data_classes: ["public"] }, null) === "OPERATIONAL_AUTONOMOUS");
+ok("R1 allowlisted data 'synthetic_fixture' stays operational", classifyRequirementGate({ data_classes: ["synthetic_fixture"] }, null) === "OPERATIONAL_AUTONOMOUS");
+// R2: PASS cannot skip the SoD-guarded states — EVIDENCE_SEALING requires RUNNING prior.
+const mkT = (prior, next, extra = {}) => ({ prior_state: prior, next_state: next, reason_code: "r", actor: "SOLO", authority_source: "p", exact_sha: "s", blueprint_digest: "d", manifest_digest: "m", evidence_paths: ["e"], timestamp: "t", idempotency_key: "k", recovery_action: "n", ...extra });
+ok("R2 BLUEPRINT_ACCEPTED->EVIDENCE_SEALING rejected (must come from RUNNING)", validateTransition(mkT("BLUEPRINT_ACCEPTED", "EVIDENCE_SEALING")).valid === false);
+ok("R2 RUNNING->EVIDENCE_SEALING valid", validateTransition(mkT("RUNNING", "EVIDENCE_SEALING")).valid === true);
+ok("R2 READY_TO_RUN requires PLAN_CHECKED prior", validateTransition(mkT("BLUEPRINT_ACCEPTED", "READY_TO_RUN")).valid === false);
+ok("R2 ADVISOR_REQUIRED must come from EVIDENCE_SEALING", validateTransition(mkT("CHECKER_REQUIRED", "ADVISOR_REQUIRED")).valid === false);
+ok("R2 solo-actor cannot reach RUNNING (checker_actor==actor still blocked)", validateTransition(mkT("READY_TO_RUN", "RUNNING", { checker_actor: "SOLO" })).valid === false);
+
 rmSync(tmp, { recursive: true, force: true });
 console.log(`\nARE-1 SELFTEST: ${n - fails.length}/${n} passed`);
 if (fails.length) { console.log("FAILED:", fails.join(", ")); process.exit(1); }

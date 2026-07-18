@@ -24,7 +24,10 @@ function loadArlcClasses(repoRoot) {
 // action, NO provider need, and NO sensitive data class. Any authority-bearing
 // need routes to a founder/human gate. If the ARLC policy is unavailable we
 // cannot verify against the source of truth, so we still fail closed.
-const SENSITIVE_DATA = ["customer", "pii", "health", "private", "secret", "personal", "financial"];
+// Data classes fail CLOSED: a class is treated as routine ONLY if it explicitly
+// matches a known non-sensitive allowlist. Any other declared data class
+// (including unknown ones like biometric/genetic/geolocation) is a founder gate.
+const KNOWN_NONSENSITIVE_DATA = ["public", "none", "synthetic", "fixture", "test", "anonymous_aggregate", "non_personal"];
 
 export function classifyRequirementGate(req, arlcClasses) {
   if (req.legal === true || req.security_boundary === true) return "HUMAN_EXPERT_GATE";
@@ -34,7 +37,8 @@ export function classifyRequirementGate(req, arlcClasses) {
   const providers = (req.provider_needs || []).map((s) => String(s).toLowerCase());
   const data = (req.data_classes || []).map((s) => String(s).toLowerCase());
   const hasAuthorityNeed = external.length > 0 || providers.length > 0;
-  const sensitiveData = data.some((d) => SENSITIVE_DATA.some((k) => d.includes(k)));
+  // Fail closed: any data class not on the non-sensitive allowlist is sensitive.
+  const sensitiveData = data.some((d) => !KNOWN_NONSENSITIVE_DATA.some((k) => d.includes(k)));
 
   // Delegate: derive founder-gate keywords from ARLC's TRUE_FOUNDER_GATE examples
   // (so the classification tracks the ARLC policy, not a private copy).
@@ -49,8 +53,11 @@ export function classifyRequirementGate(req, arlcClasses) {
   // Hardening synonyms for common phrasings the examples may not spell out.
   ["prod", "pii", "card", "charge", "live", "ship", "public", "health", "customer",
    "private", "akior", "payment", "deploy", "release", "provider", "adopt"].forEach((k) => founderKeywords.add(k));
-  const text = [...external, ...providers, ...data].join(" ");
-  const matchesFounder = [...founderKeywords].some((k) => text.includes(k));
+  // Keyword matching applies to ACTIONS (external/provider) only; data classes
+  // are classified separately by the non-sensitive allowlist (sensitiveData),
+  // so a non-sensitive "public" data class is not confused with "public_release".
+  const actionText = [...external, ...providers].join(" ");
+  const matchesFounder = [...founderKeywords].some((k) => actionText.includes(k));
 
   if (matchesFounder || sensitiveData) return "TRUE_FOUNDER_GATE";
   // Fail closed: any remaining authority-bearing need is a founder gate even if
