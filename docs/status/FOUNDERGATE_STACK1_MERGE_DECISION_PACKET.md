@@ -1,6 +1,6 @@
 # STACK-1 Merge Decision Packet
 - **Merging PR:** #162 (cumulative), retargeted to main, kept draft.
-- **Exact head:** 20136202e0c354049158b03302c08494d42f1012 · **Exact base:** main e1ca1989d2397297a450893f7890dbe7fc21e494.
+- **Exact head:** 224688e747d5e79d66e3c8a826ce58ece9c422b2 (current cumulative tip; re-resolve at authorized merge) · **Exact base:** main e1ca1989d2397297a450893f7890dbe7fc21e494.
 - **Merge method:** MERGE COMMIT (preserves exact phase SHAs in main ancestry).
 - **Included prior PRs:** #151–#161 (all ancestors; superseded by the cumulative head).
 - **Founder acceptance:** ACCEPT WITNESS CANDIDATE (Phase 7.1 human-perception witness) — sealed.
