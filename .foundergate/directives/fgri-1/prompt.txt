@@ -1,0 +1,1170 @@
+FOUNDERGATE FGRI-1 — GATE ROUTER, FOUNDER DECISION INBOX, AUTONOMY POLICY ENVELOPE, AND PAES CONTINUATION
+
+FOUNDER DECISION AND AUTHORITY
+
+The founder resolves the currently parked PAES activation decision as follows:
+
+CURRENT DECISION:
+ACTIVATE_SAFE_NARROW_ALLOWLIST
+
+EXPLICITLY REFUSED:
+FULL_AUTONOMY
+DANGEROUSLY_SKIP_PERMISSIONS
+DIRECT_PUSH_TO_MAIN
+AUTOMATIC_PERMISSION_ESCALATION
+
+The narrow allowlist must use only the minimum tools and command classes required for authorized FounderGate repository work.
+
+The implementation must mechanically derive the installed Claude Code tool names and invocation syntax from the current executable and local help output.
+
+Do not invent tool names or flags from memory.
+
+The worker may never use:
+
+--dangerously-skip-permissions
+
+If an authorized job cannot complete under the narrow allowlist:
+
+- park only that job;
+- create a structured decision request;
+- continue unrelated authorized work;
+- never escalate permissions automatically.
+
+This directive authorizes the implementation, qualification and activation of:
+
+1. the permanent Gate Router;
+2. the Founder Decision Inbox;
+3. the Autonomy Policy Envelope;
+4. non-interactive gate handling;
+5. the current narrow-allowlist PAES activation;
+6. continuation of the remaining authorized V8-B Wave-2 work after qualification.
+
+It does not authorize any capability listed in the HARD BOUNDARIES section.
+
+PURPOSE
+
+FounderGate must not require a non-developer founder to monitor a backend terminal.
+
+The current PAES implementation correctly detected a material cost-and-permission decision, but it surfaced that gate through an interactive Terminal question.
+
+That behavior is not acceptable as a FounderGate product workflow.
+
+The permanent product rule is:
+
+A BACKEND WORKER MAY NEVER ASK AN INTERACTIVE TERMINAL QUESTION DURING AN AUTONOMOUS RUN.
+
+When a worker encounters uncertainty or missing authority, it must do exactly one of the following:
+
+1. resolve the issue mechanically from existing disk authority;
+2. apply the documented safe default and continue;
+3. park only the affected lane, create a structured Founder Decision Inbox request, and continue every unrelated authorized lane.
+
+The Gate Router must sit between all autonomous backend workers and founder authority.
+
+Terminal output is operational evidence.
+
+It is not the founder decision interface.
+
+OPERATING MODE
+
+MAC MINI PRO ONLY
+DCL-LOCKED
+ARLC-GOVERNED
+ARE-GOVERNED
+PAES-INTEGRATED
+TEST-BEFORE-FOUNDER
+FOREGROUND FOUNDER-SURFACE LAW
+DISK-FIRST
+APPEND-ONLY
+ATOMIC RECOVERY
+ONE PRIMARY ROUTER WRITER
+ONE PRIMARY PAES WRITER
+NO OVERLAPPING SENSITIVE WRITERS
+INDEPENDENT CHECKER
+FRESH CHECKER AFTER MATERIAL CORRECTION
+FINAL READ-ONLY ADVISOR
+TERMINAL-0 SOLE MERGE SHERIFF
+ONE CUMULATIVE FGRI/PAES INTEGRATION LINE
+NO LONG PR STACK
+NO INTERACTIVE BACKEND QUESTIONS
+
+HARD BOUNDARIES
+
+NO --dangerously-skip-permissions
+NO FULL-PERMISSION MODE
+NO AUTOMATIC PERMISSION ESCALATION
+NO DIRECT PUSH TO MAIN
+NO UNRECORDED MERGE
+NO NEW PAID API ACCOUNT
+NO NEW PAY-AS-YOU-GO COMMITMENT
+NO CREDENTIAL COPYING
+NO CREDENTIAL SERIALIZATION
+NO CREDENTIAL LOGGING
+NO M1 CONTACT
+NO AKIOR REPOSITORY ACCESS
+NO CUSTOMER CODE
+NO PRIVATE REPOSITORY
+NO PRODUCTION DATA
+NO PUBLIC DEPLOYMENT
+NO PAYMENT
+NO EXTERNAL SEND
+NO OPENSANDBOX ADOPTION
+NO DEFAULT PROVIDER
+NO LIVE PROVIDER RUN WITHOUT SEPARATE EXACT AUTHORITY
+NO DIRECT HOST FALLBACK
+NO VB3 LIVE ACTION
+NO REAL TOKEN
+NO REAL EXTERNAL MUTATION
+NO 48-HOUR QUALIFICATION START
+NO V8-C, V8-D OR V8-E IMPLEMENTATION
+NO FOUNDER SIGNATURE FABRICATION
+NO FOUNDER WITNESS FABRICATION
+NO BUILDER SELF-CHECK
+NO CHECKER EXECUTING THE WORK IT CHECKS
+NO SILENT POLICY WEAKENING
+NO SILENT GATE DISMISSAL
+NO TERMINAL-ONLY FOUNDER DECISION
+NO EXECUTION OF A DECISION THAT IS MISSING, STALE, REPLAYED OR UNVERIFIED
+
+PHASE 0 — DCL SELF-CAPTURE
+
+Before performing any new material action:
+
+1. Locate this exact directive in the active Harvest transcript.
+2. Extract the complete exact body.
+3. Verify its first title line is exactly:
+
+FOUNDERGATE FGRI-1 — GATE ROUTER, FOUNDER DECISION INBOX, AUTONOMY POLICY ENVELOPE, AND PAES CONTINUATION
+
+4. Verify that it contains:
+   - FOUNDER DECISION AND AUTHORITY;
+   - PURPOSE;
+   - HARD BOUNDARIES;
+   - PHASE 0;
+   - PHASE 4 — NO-INTERACTIVE-QUESTION ENFORCEMENT;
+   - PHASE 5 — AUTONOMY POLICY ENVELOPE;
+   - PHASE 12 — PAES RESUMPTION;
+   - FINAL OUTPUT;
+   - the final verdict list.
+5. Verify that the body is complete and not truncated.
+6. Compute:
+   - SHA-256;
+   - byte count;
+   - line count;
+   - beginning anchor;
+   - ending anchor.
+7. Persist the immutable exact body through the active DCL convention.
+8. Re-read the stored body.
+9. Recompute its SHA-256.
+10. Require transcript-to-disk digest equality.
+11. Create:
+    - directive metadata;
+    - dependency record;
+    - queue record;
+    - append-only event record;
+    - atomic recovery state;
+    - next-safe-action;
+    - completion predicates;
+    - stop predicates.
+12. Transition:
+
+RECEIVED
+→ CAPTURED
+→ DIGEST_VERIFIED
+→ QUEUED
+→ READY
+→ RUNNING
+
+Do not continue if capture fails.
+
+Return:
+
+FGRI1: SELF-CAPTURE-FAILED
+
+PHASE 1 — CURRENT-STATE RECONCILIATION
+
+Mechanically resolve:
+
+1. host identity;
+2. repository and origin;
+3. local main;
+4. remote main;
+5. open PRs;
+6. branches and worktrees;
+7. dirty worktrees;
+8. active writer locks;
+9. active Claude processes;
+10. active FounderGate processes;
+11. PAES branch, worktree, candidate SHA and current paused state;
+12. PAES capability-probe evidence;
+13. PAES core tests;
+14. current LaunchAgent state;
+15. DCL version, digest and state;
+16. ARLC version, digest and state;
+17. ARE version, digest and state;
+18. TBF version and digest;
+19. FFS version and digest;
+20. current operational queue;
+21. current founder queue;
+22. current human-expert queue;
+23. current cost records;
+24. current permission findings;
+25. current PANIC_STOP state;
+26. any existing gate-router, decision-inbox or autonomy-envelope implementation.
+
+Do not duplicate valid existing work.
+
+Do not discard the current PAES implementation.
+
+Do not load PAES before the gate-routing mechanism is qualified.
+
+If an active atomic PAES write is in progress, allow it to reach a safe boundary before taking the overlapping writer lock.
+
+PHASE 2 — RECORD THE CURRENT FOUNDER DECISION
+
+Create a durable founder decision request and resolution for the PAES activation gate.
+
+The request must include:
+
+- gate ID;
+- directive ID;
+- request type;
+- title;
+- plain-English reason;
+- affected lane;
+- unaffected lanes;
+- evidence paths;
+- measured facts;
+- modeled facts;
+- unknown facts;
+- available options;
+- recommended option;
+- safe default;
+- risk classifications;
+- requested authority;
+- forbidden authority;
+- creation time;
+- expiry;
+- anti-replay nonce;
+- exact repository SHA;
+- policy digests;
+- current state.
+
+The current gate ID must be mechanically allocated under the active gate-ID namespace.
+
+Do not invent a conflicting ID.
+
+The resolved decision must record:
+
+DECISION:
+ACTIVATE_SAFE_NARROW_ALLOWLIST
+
+REFUSED:
+KEEP_IDLE
+FULL_AUTONOMY
+DANGEROUSLY_SKIP_PERMISSIONS
+AUTOMATIC_PERMISSION_ESCALATION
+DIRECT_PUSH_TO_MAIN
+
+The refusal of KEEP_IDLE applies only to this current PAES activation decision.
+
+Future gates may still use KEEP_PAUSED as a safe default.
+
+Bind the decision to:
+
+- this directive digest;
+- the current PAES candidate;
+- the current repository;
+- the current Autonomy Policy Envelope version;
+- the exact requested action;
+- one-time use;
+- expiration;
+- append-only resolution event.
+
+A decision for one gate must not authorize another gate.
+
+PHASE 3 — PERMANENT GATE ROUTER
+
+Create or reconcile the permanent Gate Router.
+
+Use the active repository conventions, but the durable system must include equivalents of:
+
+.foundergate/governance/gate_routing.json
+.foundergate/pointers/active_gate_routing.json
+.foundergate/gates/requests/
+.foundergate/gates/resolutions/
+.foundergate/gates/events.jsonl
+.foundergate/gates/index.json
+.foundergate/gates/recovery.json
+.foundergate/gates/notifications.jsonl
+.foundergate/founder-inbox/index.json
+.foundergate/founder-inbox/state.json
+.foundergate/schemas/gate-request.schema.json
+.foundergate/schemas/gate-resolution.schema.json
+.foundergate/schemas/autonomy-policy-envelope.schema.json
+.foundergate/schemas/founder-inbox-card.schema.json
+
+Do not modify a frozen policy path without current authority.
+
+Use governance and pointer paths consistent with current disk law.
+
+Implement gate classifications:
+
+TRUE_FOUNDER_GATE
+HUMAN_EXPERT_GATE
+OPERATIONAL_AUTONOMOUS
+HOLD_CORRECTABLE
+BLOCKED
+UNKNOWN
+
+Implement gate states:
+
+DETECTED
+CLASSIFIED
+ROUTED
+NOTIFIED
+PARKED
+AWAITING_DECISION
+RESOLVED
+EXPIRED
+REJECTED
+SUPERSEDED
+RESUMED
+CLOSED
+
+Each request must include:
+
+- gate_id;
+- gate_type;
+- title;
+- plain_language_summary;
+- affected_lane;
+- affected_action;
+- why_authority_is_missing;
+- evidence;
+- exact_sha;
+- directive_digest;
+- blueprint_digest;
+- run_manifest_digest;
+- policy_digests;
+- risk;
+- options;
+- recommended_option;
+- safe_default;
+- unrelated_work_may_continue;
+- created_at;
+- expires_at;
+- anti_replay_nonce;
+- current_state;
+- next_safe_action.
+
+Each resolution must include:
+
+- gate_id;
+- selected_option;
+- deciding_authority;
+- decision_source;
+- exact request digest;
+- exact policy digest;
+- timestamp;
+- expiry;
+- one_time_use;
+- anti_replay_nonce;
+- resolution digest;
+- evidence;
+- consumed state.
+
+Reject:
+
+- missing decision;
+- altered request;
+- stale decision;
+- expired decision;
+- wrong gate ID;
+- wrong repository;
+- wrong SHA;
+- wrong action;
+- wrong policy;
+- replayed decision;
+- duplicate consumption;
+- generated founder decision;
+- builder-created acceptance.
+
+PHASE 4 — NO-INTERACTIVE-QUESTION ENFORCEMENT
+
+Implement this invariant in executable code:
+
+A BACKEND WORKER MAY NEVER ASK AN INTERACTIVE TERMINAL QUESTION DURING AN AUTONOMOUS RUN.
+
+All PAES worker invocations must:
+
+- use proven non-interactive Claude invocation;
+- have no interactive TTY dependency;
+- receive no founder input through stdin;
+- use a closed or controlled stdin;
+- use structured output;
+- have bounded timeouts;
+- have governed logs;
+- write a terminal exit record;
+- write a next-safe-action record.
+
+The worker prompt contract must explicitly prohibit:
+
+- AskUserQuestion;
+- interactive option menus;
+- waiting for keyboard input;
+- asking the terminal operator to select an option;
+- asking the terminal operator to type notes;
+- pausing the whole run because one lane needs authority.
+
+If a worker produces a question, option menu, missing-authority statement or attempted interactive pause:
+
+1. capture the complete worker output;
+2. classify the underlying request;
+3. create a structured gate request;
+4. park only the affected lane;
+5. select the safe default where policy permits;
+6. notify the Founder Decision Inbox once;
+7. continue unrelated authorized work;
+8. record:
+
+INTERACTIVE_QUESTION_INTERCEPTED
+LANE_PARKED
+DECISION_ROUTED
+UNRELATED_WORK_CONTINUED
+
+The worker must not remain blocked waiting for terminal input.
+
+Implement a mechanically enforced detection layer for:
+
+- explicit question requests;
+- option-selection menus;
+- input prompts;
+- stdin reads;
+- interactive process state;
+- unstructured authority requests;
+- final answers that contain an unresolved gate.
+
+A false positive may park a lane.
+
+It may not silently grant authority.
+
+PHASE 5 — AUTONOMY POLICY ENVELOPE
+
+Create a versioned, digest-pinned Autonomy Policy Envelope.
+
+Use these initial founder-approved values:
+
+MAX_UNATTENDED_DURATION_MINUTES:
+540
+
+DRAIN_START_MINUTES:
+525
+
+MAX_LOCAL_CODE_WRITERS:
+2
+
+MAX_SENSITIVE_CORE_WRITERS:
+1
+
+MAX_RESTARTS_PER_JOB:
+3
+
+DIRECT_PUSH_TO_MAIN:
+DENIED
+
+DANGEROUSLY_SKIP_PERMISSIONS:
+DENIED
+
+AUTOMATIC_PERMISSION_ESCALATION:
+DENIED
+
+NEW_PAID_ACCOUNT:
+DENIED
+
+NEW_PAY_AS_YOU_GO_COMMITMENT:
+DENIED
+
+NEW_BILLABLE_SPEND_WITHOUT_GATE_USD:
+0
+
+MODELED_COST_WARNING_USD:
+15
+
+MODELED_COST_FOUNDER_GATE_USD:
+25
+
+AUTOMATIC_PR_CREATION:
+ALLOWED_FOR_QUALIFIED_INTERNAL_LANES
+
+ROUTINE_ARLC_MERGE:
+ALLOWED_ONLY_WHEN_CURRENT_ACTIVE_ARLC PREDICATES PASS
+
+PRODUCTION_DEPLOYMENT:
+DENIED
+
+PRIVATE_REPOSITORY:
+DENIED
+
+CUSTOMER_DATA:
+DENIED
+
+LIVE_PROVIDER_ACTIVATION:
+DENIED
+
+OPENSANDBOX_ADOPTION:
+DENIED
+
+VB3_LIVE_ACTION:
+DENIED
+
+M1_CONTACT:
+DENIED
+
+AKIOR_ACCESS:
+DENIED
+
+NOTIFICATION_MODE:
+ONE_NOTIFICATION_PER_UNRESOLVED_GATE_VERSION
+
+SAFE_DEFAULT:
+PARK_AFFECTED_LANE_AND_CONTINUE_OTHERS
+
+UNKNOWN_AUTHORITY:
+FAIL_CLOSED_AND_ROUTE_GATE
+
+FULL_PERMISSION_REQUEST:
+AUTOMATIC_REFUSAL
+
+The cost mechanism must distinguish:
+
+- modeled token cost;
+- subscription usage;
+- actual billable spend;
+- unknown spend.
+
+Do not treat a model-generated cost estimate as proof of a bill.
+
+Do not silently exceed a current account or usage limit.
+
+When modeled cost reaches $15:
+
+- write a warning event;
+- continue if no actual billable commitment exists.
+
+When modeled cost reaches $25:
+
+- park new LLM-heavy jobs;
+- create a founder decision request;
+- continue non-LLM mechanical work;
+- do not purchase or create a new paid account.
+
+Any actual new billable spend requires a separate founder decision.
+
+The envelope must define:
+
+- allowed tool classes;
+- denied tool classes;
+- allowed command classes;
+- denied command classes;
+- path boundaries;
+- merge boundaries;
+- time boundary;
+- cost boundary;
+- restart boundary;
+- gate-routing rules;
+- notification rules;
+- safe defaults;
+- policy-change authority.
+
+A future weakening requires:
+
+- founder authority;
+- independent checker;
+- mutation proof;
+- exact-SHA CI;
+- durable governance record.
+
+PHASE 6 — NARROW TOOL ALLOWLIST
+
+Mechanically inspect the installed Claude Code executable and current supported tool names.
+
+Create the narrowest functional allowlist for authorized FounderGate work.
+
+Allowed capability categories may include only what is required for:
+
+- repository file reading;
+- bounded file creation and editing inside an assigned worktree;
+- search within the FounderGate repository;
+- local tests;
+- approved build commands;
+- Git status, diff, log, branch and worktree operations;
+- branch commit and push;
+- GitHub PR creation and status inspection;
+- Terminal-0 qualified merge through the sanctioned ARLC path;
+- evidence hashing and sealing;
+- checker and Advisor read-only operation.
+
+Denied capability categories must include:
+
+- root or sudo;
+- system-wide service installation;
+- credential-store access;
+- credential export;
+- secret extraction;
+- direct push to main;
+- forced push;
+- destructive Git history rewrite;
+- deletion outside assigned worktrees;
+- M1 access;
+- AKIOR access;
+- private/customer repositories;
+- production deployment;
+- payment;
+- external sends;
+- provider activation;
+- arbitrary network targets;
+- live external action;
+- permission bypass.
+
+Do not use a broad wildcard when a narrower supported value exists.
+
+If required operation cannot be expressed safely:
+
+- do not broaden automatically;
+- park that job;
+- route a gate;
+- continue other work.
+
+PHASE 7 — FOUNDER DECISION INBOX BACKEND
+
+Build a read-only-by-default Founder Decision Inbox backend.
+
+It must provide:
+
+- unresolved requests;
+- resolved requests;
+- expired requests;
+- rejected requests;
+- superseded requests;
+- evidence links;
+- risk summaries;
+- recommendation;
+- safe default;
+- affected lane;
+- unaffected work;
+- current backend continuation state;
+- decision history;
+- policy envelope;
+- cost state;
+- notification status.
+
+The backend must never expose:
+
+- raw credentials;
+- secret values;
+- raw permission flags as founder choices;
+- arbitrary terminal commands;
+- merge commands;
+- provider credentials;
+- internal chain-of-thought.
+
+The founder-facing choices for a permission gate must be plain English:
+
+ACTIVATE SAFELY
+KEEP PAUSED
+REVIEW DETAILS
+
+Do not offer:
+
+FULL AUTONOMY
+SKIP PERMISSIONS
+DANGEROUS MODE
+
+An unsafe option should be automatically refused by policy, not presented as a normal founder choice.
+
+Decision resolution must be:
+
+- explicit;
+- one gate at a time;
+- bound to the exact request;
+- anti-replay protected;
+- written to disk before lane resumption;
+- appended to the evidence ledger.
+
+PHASE 8 — FOUNDER DECISION INBOX UI
+
+Build a local founder-facing Decision Inbox surface.
+
+Bind only to:
+
+127.0.0.1
+
+The UI must show one plain-English card per unresolved gate.
+
+For the current PAES gate, the card must communicate:
+
+TITLE:
+Autonomous execution
+
+SUMMARY:
+FounderGate can continue unattended using a restricted tool set. Estimated usage may increase. Full permission bypass is prohibited.
+
+RECOMMENDATION:
+Activate safely with restricted permissions and the current spending envelope.
+
+DOES NOT AUTHORIZE:
+Direct pushes to main, production access, customer data, private repositories, live providers, payments, external sends, AKIOR or M1 access.
+
+BUTTONS:
+Activate safely
+Keep paused
+Review details
+
+Because this directive already records the founder's current decision as ACTIVATE_SAFE_NARROW_ALLOWLIST, mark the current card RESOLVED after mechanically binding the decision.
+
+Do not require the founder to repeat the same decision through the UI.
+
+Future cards must use the UI flow.
+
+The UI must also show:
+
+- gate type;
+- affected lane;
+- whether unrelated work continues;
+- recommendation;
+- safe default;
+- cost classification;
+- permission classification;
+- expiry;
+- evidence;
+- decision status;
+- next safe action.
+
+No terminal language.
+
+No code.
+
+No raw flags.
+
+No fake green state.
+
+PHASE 9 — NOTIFICATION AND CONTINUATION
+
+Implement one notification event per unresolved gate version.
+
+Do not repeatedly interrupt the founder.
+
+Notifications must be deduplicated by:
+
+- gate ID;
+- request digest;
+- request version.
+
+The backend must continue unrelated work after notification.
+
+The supervisor may stop the full run only if:
+
+- the unresolved gate blocks every remaining authorized safe job;
+- a critical integrity failure exists;
+- PANIC_STOP is active;
+- deadline is reached;
+- all safe work is exhausted.
+
+A founder gate in one lane is not a global stop.
+
+A human-expert gate in one lane is not a global stop.
+
+PHASE 10 — LEDGERED EVIDENCE
+
+Every gate and decision action must produce durable evidence.
+
+Required evidence includes:
+
+- original triggering worker output;
+- interception event;
+- gate-classification result;
+- request JSON;
+- request digest;
+- policy-envelope digest;
+- evidence links;
+- notification event;
+- UI card snapshot;
+- founder resolution;
+- resolution digest;
+- anti-replay value;
+- resolution-consumed event;
+- lane-park event;
+- unrelated-lane continuation event;
+- lane-resume event;
+- exact SHA;
+- tests;
+- checker result;
+- Advisor result;
+- CI result;
+- merge result;
+- current recovery state.
+
+Maintain:
+
+- append-only events;
+- immutable request versions;
+- immutable resolution records;
+- artifact hashes;
+- evidence index;
+- proof capsule;
+- exact-SHA binding.
+
+Do not replace evidence with narrative.
+
+Do not rewrite a denied, expired or unresolved decision into an approval.
+
+Investor-facing evidence generation must use sanitized indexes derived from sealed records.
+
+Do not expose credentials, private machine paths or sensitive logs in investor exports.
+
+PHASE 11 — TESTING AND MUTATION PROOF
+
+Required tests include at least:
+
+1. worker attempts interactive terminal question;
+2. worker produces an option-selection menu;
+3. worker reads stdin;
+4. worker waits for keyboard input;
+5. worker emits an unresolved authority request in its final answer;
+6. affected lane parks;
+7. unrelated lane continues;
+8. gate request written to disk;
+9. one notification emitted;
+10. duplicate notification rejected;
+11. safe default applied;
+12. full permission request automatically refused;
+13. dangerous-permission flag rejected;
+14. direct-main-push request rejected;
+15. missing decision rejected;
+16. stale decision rejected;
+17. expired decision rejected;
+18. wrong-gate decision rejected;
+19. wrong-SHA decision rejected;
+20. altered request rejected;
+21. replayed decision rejected;
+22. duplicate consumption rejected;
+23. generated founder decision rejected;
+24. builder self-approval rejected;
+25. valid one-time resolution accepted;
+26. resolved lane resumes;
+27. UI unavailable but gate remains durable;
+28. terminal closes while unrelated work continues;
+29. supervisor restart reloads unresolved gates;
+30. cost-warning threshold records event;
+31. cost-gate threshold parks LLM-heavy work;
+32. modeled cost does not falsely claim actual billing;
+33. actual new billable spend requires founder gate;
+34. gate expiry works;
+35. supersession preserves history;
+36. policy weakening fails;
+37. unsafe option absent from founder UI;
+38. UNKNOWN fails closed;
+39. notification deduplication survives restart;
+40. investor evidence index excludes sensitive material.
+
+Run:
+
+- schemas;
+- unit tests;
+- integration tests;
+- negative tests;
+- mutation tests;
+- restart recovery;
+- queue continuation;
+- UI browser tests;
+- accessibility;
+- keyboard-only;
+- 200% zoom;
+- reduced motion;
+- mobile viewport;
+- foreground Google Chrome qualification;
+- exact-SHA CI;
+- secret scan;
+- forbidden-artifact scan.
+
+PHASE 12 — PAES RESUMPTION
+
+After FGRI-1 is:
+
+- DCL-captured;
+- implementation-complete;
+- tests green;
+- mutation-clean;
+- UI machine-qualified;
+- independent-checker-clean;
+- final-Advisor-ready;
+- exact-SHA CI green;
+- merged through ARLC;
+- active on disk;
+
+resume the current PAES program.
+
+Record:
+
+PAES_PERMISSION_MODE:
+NARROW_ALLOWLIST
+
+PAES_INTERACTIVE_QUESTIONS:
+PROHIBITED
+
+PAES_GATE_ROUTER:
+ACTIVE
+
+PAES_FOUNDER_INBOX:
+ACTIVE
+
+PAES_AUTONOMY_POLICY_ENVELOPE:
+ACTIVE
+
+PAES_DIRECT_MAIN_PUSH:
+DENIED
+
+PAES_DANGEROUS_PERMISSION_BYPASS:
+DENIED
+
+PAES_MAX_DURATION_MINUTES:
+540
+
+PAES_MAX_RESTARTS_PER_JOB:
+3
+
+PAES_MAX_CODE_WRITERS:
+2
+
+PAES_MAX_SENSITIVE_WRITERS:
+1
+
+Start the PAES controlled kill-and-recovery qualification.
+
+Prove:
+
+- worker starts;
+- worker is killed;
+- watchdog detects it;
+- lease is recovered;
+- worker relaunches;
+- duplicate execution does not occur;
+- terminal closure does not stop PAES;
+- heartbeat remains current;
+- gate router handles an injected synthetic decision;
+- affected lane parks;
+- unrelated lane continues;
+- decision inbox receives the card;
+- safe resolution resumes the lane;
+- no interactive terminal question appears.
+
+After qualification:
+
+- obtain PAES checker-clean;
+- obtain PAES Advisor-ready;
+- activate the bounded Wave-2 run;
+- record the real start and deadline;
+- continue the remaining authorized V8-B queue.
+
+Do not stop after FGRI implementation.
+
+Do not stop after PAES qualification.
+
+Do not stop after one lane, one checker, one PR or one merge.
+
+Continue until:
+
+- the nine-hour PAES deadline;
+- all authorized safe work is proven exhausted;
+- a critical stop condition occurs.
+
+PHASE 13 — INDEPENDENT REVIEW
+
+Commission an independent FGRI checker that did not implement the router.
+
+The checker must verify:
+
+- no interactive questions;
+- no stdin wait;
+- correct gate classification;
+- lane-local parking;
+- unrelated-lane continuation;
+- request durability;
+- decision integrity;
+- anti-replay;
+- expiry;
+- safe defaults;
+- policy envelope;
+- cost classification;
+- permission refusal;
+- notification deduplication;
+- UI truthfulness;
+- evidence completeness;
+- restart recovery;
+- PAES integration.
+
+Allowed checker verdicts:
+
+FGRI1-CHECKER-CLEAN
+FGRI1-CHECKER-FINDINGS
+FGRI1-CHECKER-REJECT
+FGRI1-CHECKER-INSUFFICIENT_EVIDENCE
+
+Allow up to three bounded correction cycles.
+
+After every material correction:
+
+- freeze a new candidate;
+- rerun affected tests;
+- rerun exact-SHA CI;
+- obtain a fresh checker.
+
+After checker-clean, commission a fresh read-only Advisor.
+
+Allowed Advisor verdicts:
+
+FGRI1-ADVISOR: READY-TO-ACTIVATE
+FGRI1-ADVISOR: HOLD-CORRECTABLE-FINDINGS
+FGRI1-ADVISOR: REJECT
+FGRI1-ADVISOR: INSUFFICIENT_EVIDENCE
+
+Do not activate if founder-facing code changes after final attestation.
+
+PHASE 14 — INTEGRATION AND RECOVERY
+
+Use one cumulative FGRI-1/PAES integration line.
+
+Terminal-0 remains sole merge sheriff.
+
+Before merge require:
+
+- exact base;
+- exact head;
+- complete evidence;
+- checker-clean;
+- Advisor-ready;
+- exact-SHA CI;
+- no post-review product drift;
+- no secret;
+- no forbidden artifact;
+- no policy weakening;
+- no hidden founder gate.
+
+After merge:
+
+- verify main ancestry;
+- verify post-merge CI;
+- activate governance pointers;
+- update DCL recovery;
+- update ARLC recovery;
+- update ARE recovery;
+- update PAES recovery;
+- close superseded internal PRs;
+- remove branches and worktrees only after no-loss proof;
+- preserve evidence branches;
+- resume the PAES queue.
+
+FINAL OUTPUT
+
+Return:
+
+1. Host identity.
+2. Directive ID and digest.
+3. Starting main SHA.
+4. Final main SHA.
+5. FGRI version and digest.
+6. Autonomy Policy Envelope version and digest.
+7. Gate request schema path.
+8. Gate resolution schema path.
+9. Inbox schema path.
+10. Gate request directory.
+11. Resolution directory.
+12. Events ledger.
+13. Recovery state.
+14. Current PAES gate ID.
+15. Current founder decision.
+16. Narrow allowlist evidence.
+17. Dangerous-permission refusal proof.
+18. Direct-main-push refusal proof.
+19. No-interactive-question enforcement proof.
+20. Stdin-closure proof.
+21. Question-interception proof.
+22. Lane-parking proof.
+23. Unrelated-lane-continuation proof.
+24. Notification deduplication proof.
+25. Decision anti-replay proof.
+26. Expiry proof.
+27. Safe-default proof.
+28. Cost-warning proof.
+29. Cost-gate proof.
+30. Modeled-versus-actual-cost proof.
+31. Founder Decision Inbox URL.
+32. UI screenshot index.
+33. UI video and trace.
+34. Accessibility result.
+35. Foreground Chrome result.
+36. Local test totals.
+37. Mutation totals.
+38. Exact-SHA CI.
+39. Independent checker verdict.
+40. Final Advisor verdict.
+41. FGRI activation state.
+42. PAES qualification state.
+43. Controlled worker-kill result.
+44. Automatic relaunch result.
+45. Terminal-closure survival result.
+46. PAES activation state.
+47. PAES start time.
+48. PAES deadline.
+49. Current operational queue.
+50. Current founder queue.
+51. Current human-expert queue.
+52. Work merged.
+53. Work remaining.
+54. Proof-capsule path and digest.
+55. Exact next safe action.
+
+Required exact statements:
+
+FGRI-1 CAPTURED AND VERIFIED ITS COMPLETE DIRECTIVE BODY BEFORE EXECUTION.
+
+A BACKEND WORKER MAY NOT ASK AN INTERACTIVE TERMINAL QUESTION DURING AN AUTONOMOUS RUN.
+
+AN UNRESOLVED AUTHORITY QUESTION PARKS ONLY THE AFFECTED LANE, CREATES A STRUCTURED FOUNDER DECISION REQUEST, AND DOES NOT STOP UNRELATED AUTHORIZED WORK.
+
+THE FOUNDER DECISION INBOX, NOT THE BACKEND TERMINAL, IS THE FOUNDER AUTHORITY INTERFACE.
+
+EVERY GATE REQUEST, NOTIFICATION, DECISION, CONSUMPTION EVENT, LANE PARK AND LANE RESUMPTION IS WRITTEN TO THE APPEND-ONLY EVIDENCE RECORD.
+
+THE CURRENT PAES DECISION IS ACTIVATE_SAFE_NARROW_ALLOWLIST.
+
+FULL-PERMISSION BYPASS, AUTOMATIC PERMISSION ESCALATION AND DIRECT PUSH TO MAIN ARE REFUSED.
+
+MODELED COST IS NOT PRESENTED AS ACTUAL BILLABLE SPEND.
+
+THE AUTONOMY POLICY ENVELOPE DEFINES TIME, COST, PERMISSION, RESTART, MERGE, DATA AND PROVIDER BOUNDARIES.
+
+A FOUNDER GATE IN ONE LANE DOES NOT STOP INDEPENDENT AUTHORIZED WORK.
+
+NO M1, AKIOR, CUSTOMER, PRIVATE-REPOSITORY, PRODUCTION, PAYMENT OR EXTERNAL-SEND AUTHORITY WAS CREATED.
+
+OPENSANDBOX REMAINS CANDIDATE, NOT ADOPTED AND NOT DEFAULT.
+
+VB3’S ACT EDGE REMAINS FROZEN.
+
+THE 48-HOUR QUALIFICATION WAS NOT STARTED FROM THE PRO.
+
+Finish with exactly one verdict:
+
+FGRI1-PAES: ACTIVE-AND-WAVE2-RUNNING
+FGRI1-PAES: ROUTER-ACTIVE-PAES-QUALIFYING
+FGRI1-PAES: ROUTER-ACTIVE-PAES-HELD-CORRECTABLE
+FGRI1-PAES: ROUTER-ACTIVE-PAES-AUTONOMY-CAPABILITY-GAP
+FGRI1-PAES: TRUE-FOUNDER-GATE-WITH-INDEPENDENT-WORK-CONTINUING
+FGRI1-PAES: HUMAN-EXPERT-GATE-WITH-INDEPENDENT-WORK-CONTINUING
+FGRI1-PAES: HOLD-CORRECTABLE-FINDINGS
+FGRI1-PAES: UNRESOLVED-CRITICAL-BLOCKER
+FGRI1-PAES: SELF-CAPTURE-FAILED
+FGRI1-PAES: REJECT
+FGRI1-PAES: INSUFFICIENT-EVIDENCE

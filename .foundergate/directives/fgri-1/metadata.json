@@ -1,0 +1,31 @@
+{
+  "directive_id": "fgri-1",
+  "title": "FOUNDERGATE FGRI-1 \u2014 GATE ROUTER, FOUNDER DECISION INBOX, AUTONOMY POLICY ENVELOPE, AND PAES CONTINUATION",
+  "version": 1,
+  "issuer": "founder",
+  "source_line": 22418,
+  "source_type": "attachment",
+  "sha256": "5d02529188d2012361de9b7b80c2305ea9c13d6cdc862f167ddfc220c3662954",
+  "stored_sha256": "5d02529188d2012361de9b7b80c2305ea9c13d6cdc862f167ddfc220c3662954",
+  "digest_equal": true,
+  "byte_count": 27928,
+  "line_count": 1170,
+  "required_sections_present": {
+    "FOUNDER DECISION AND AUTHORITY": true,
+    "PURPOSE": true,
+    "HARD BOUNDARIES": true,
+    "PHASE 0": true,
+    "PHASE 4 \u2014 NO-INTERACTIVE-QUESTION ENFORCEMENT": true,
+    "PHASE 5 \u2014 AUTONOMY POLICY ENVELOPE": true,
+    "PHASE 12 \u2014 PAES RESUMPTION": true,
+    "FINAL OUTPUT": true,
+    "FGRI1: SELF-CAPTURE-FAILED": true
+  },
+  "depends_on": [
+    "dcl-1",
+    "arlc-1",
+    "are-1",
+    "paes-1"
+  ],
+  "current_state": "DIGEST_VERIFIED"
+}

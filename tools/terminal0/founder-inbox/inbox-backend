@@ -1,0 +1,47 @@
+#!/usr/bin/env node
+// FGRI-1 Founder Decision Inbox backend — read-only, 127.0.0.1 ONLY.
+// Serves plain-English decision cards. NEVER exposes credentials, secrets, raw
+// permission flags, merge commands, or unsafe options. Terminal output is
+// operational evidence; THIS is the founder authority interface.
+import { createServer } from "node:http";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
+const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+const GATES = join(REPO, ".foundergate", "gates");
+const UNSAFE = ["FULL_AUTONOMY", "DANGEROUSLY_SKIP_PERMISSIONS", "SKIP_PERMISSIONS", "DANGEROUS_MODE", "DIRECT_PUSH_TO_MAIN", "AUTOMATIC_PERMISSION_ESCALATION", "KEEP_IDLE"];
+
+function cards() {
+  const reqDir = join(GATES, "requests");
+  if (!existsSync(reqDir)) return [];
+  return readdirSync(reqDir).filter((f) => f.endsWith(".json")).map((f) => {
+    const r = JSON.parse(readFileSync(join(reqDir, f)));
+    const resPath = join(GATES, "resolutions", f);
+    const resolved = existsSync(resPath) ? JSON.parse(readFileSync(resPath)) : null;
+    return {
+      gate_id: r.gate_id, title: r.title, summary: r.plain_language_summary,
+      recommendation: "Activate safely with restricted permissions and the current spending envelope.",
+      does_not_authorize: "Direct pushes to main, production access, customer data, private repositories, live providers, payments, external sends, AKIOR or M1 access.",
+      // Founder-facing choices only; unsafe options and raw flags are NEVER shown.
+      buttons: ["Activate safely", "Keep paused", "Review details"],
+      gate_type: r.gate_type, affected_lane: r.affected_lane,
+      unrelated_work_continues: r.unrelated_work_may_continue === true,
+      safe_default: r.safe_default, expires_at: r.expires_at,
+      status: resolved ? "RESOLVED" : r.current_state,
+      decision: resolved ? resolved.selected_option : null,
+      cost_classification: "modeled usage only; not actual billing",
+      permission_classification: "narrow allowlist; full bypass prohibited",
+    };
+  });
+}
+
+const server = createServer((req, res) => {
+  const data = { interface: "Founder Decision Inbox (read-only)", note: "the backend terminal is NOT the founder decision interface",
+    unsafe_options_shown: false, cards: cards() };
+  // Defensive: strip any accidental unsafe token from the served payload.
+  const safe = JSON.parse(JSON.stringify(data).replace(new RegExp(UNSAFE.join("|"), "g"), "[withheld]"));
+  res.writeHead(200, { "content-type": "application/json" });
+  res.end(JSON.stringify(safe, null, 2));
+});
+server.listen(4795, "127.0.0.1", () => console.log("Founder Decision Inbox (read-only) on http://127.0.0.1:4795"));

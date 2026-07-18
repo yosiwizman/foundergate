@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "gate-resolution",
+  "type": "object",
+  "required": [
+    "gate_id",
+    "selected_option",
+    "deciding_authority",
+    "decision_source",
+    "request_digest",
+    "timestamp",
+    "one_time_use",
+    "anti_replay_nonce"
+  ],
+  "properties": {
+    "gate_id": {},
+    "selected_option": {},
+    "deciding_authority": {},
+    "decision_source": {},
+    "request_digest": {},
+    "timestamp": {},
+    "one_time_use": {},
+    "anti_replay_nonce": {}
+  }
+}

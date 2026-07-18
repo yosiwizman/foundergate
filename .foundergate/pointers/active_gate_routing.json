@@ -1,0 +1,6 @@
+{
+  "active": ".foundergate/governance/gate_routing.json",
+  "autonomy_policy_envelope": ".foundergate/governance/autonomy_policy_envelope.json",
+  "envelope_digest": "sha256:a32acfa6dfd8390eefddd2049b8ed4fcf40d4e4bc43402f818e2bde024acddd0",
+  "status": "ACTIVE"
+}
