@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Autonomous Merge Authority",
+  "type": "object",
+  "required": [
+    "policy_id",
+    "version",
+    "permit_when_all_true",
+    "deny_when_any_true"
+  ],
+  "properties": {
+    "policy_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "permit_when_all_true": {
+      "type": "array"
+    },
+    "deny_when_any_true": {
+      "type": "array"
+    },
+    "does_not_authorize": {
+      "type": "array"
+    }
+  }
+}

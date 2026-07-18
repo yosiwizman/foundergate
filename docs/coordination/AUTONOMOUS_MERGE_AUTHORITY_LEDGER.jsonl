@@ -1,0 +1,1 @@
+{"schema":"amauth-ledger/1","ts":"2026-07-18T03:30:06Z","event":"STANDING_AUTONOMOUS_MERGE_AUTHORITY_RECORDED","note":"Founder standing rule: qualified cumulative merges are Terminal-0 operational actions, not founder gates. Predicates enforced; no new authority created by merge."}
