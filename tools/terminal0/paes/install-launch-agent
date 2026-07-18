@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Generates the user-level LaunchAgent plist with EMBEDDED absolute node + a PATH
+# that includes node and claude dirs (launchd has a minimal PATH). Does NOT load.
+set -euo pipefail
+REPO="$(cd "$(dirname "$0")/../../.." && pwd)"
+LABEL="com.software4all.foundergate.paes-supervisor.v1"
+NODE_ABS="/Users/yosiwizman/.nvm/versions/node/v24.13.1/bin/node"
+PATHENV="/Users/yosiwizman/.nvm/versions/node/v24.13.1/bin:/Users/yosiwizman/.local/bin:/usr/local/bin:/usr/bin:/bin"
+DEST="$HOME/Library/LaunchAgents/$LABEL.plist"
+cat > "/tmp/$LABEL.plist" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>$LABEL</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$NODE_ABS</string>
+    <string>$REPO/tools/terminal0/paes/supervisor</string>
+  </array>
+  <key>WorkingDirectory</key><string>$REPO</string>
+  <key>RunAtLoad</key><false/>
+  <key>KeepAlive</key><false/>
+  <key>ProcessType</key><string>Background</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key><string>$PATHENV</string>
+    <key>FG_PAES_DEADLINE_HOURS</key><string>9</string>
+    <key>FG_CLAUDE_BIN</key><string>/Users/yosiwizman/.local/bin/claude</string>
+  </dict>
+  <key>StandardOutPath</key><string>$REPO/.foundergate/supervisor/logs/supervisor.out.log</string>
+  <key>StandardErrorPath</key><string>$REPO/.foundergate/supervisor/logs/supervisor.err.log</string>
+</dict>
+</plist>
+PLIST
+echo "generated $/tmp/$LABEL.plist (embedded node=$NODE_ABS). NOT loaded."

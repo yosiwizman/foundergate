@@ -1,0 +1,841 @@
+FOUNDERGATE FGRI-PAES-RECOVERY-1 — COMPLETE, QUALIFY, MERGE, ACTIVATE, AND HAND OFF TO PERSISTENT EXECUTION
+
+AUTHORITY SCOPE
+
+This is a recovery and completion directive under the founder authority already durably recorded by FGRI-1.
+
+The existing founder decision is:
+
+ACTIVATE_SAFE_NARROW_ALLOWLIST
+
+This directive adds no new authority.
+
+It does not authorize:
+
+- FULL_AUTONOMY;
+- --dangerously-skip-permissions;
+- automatic permission escalation;
+- direct push to main;
+- new paid accounts;
+- new pay-as-you-go commitments;
+- M1 contact;
+- AKIOR access;
+- customer or private repositories;
+- production data;
+- public deployment;
+- payments;
+- external sends;
+- live provider activation;
+- OpenSandbox adoption;
+- VB3 live action;
+- real external mutation;
+- V8-C, V8-D or V8-E implementation;
+- the 48-hour qualification.
+
+PURPOSE
+
+The read-only night audit established:
+
+- the complete PAES-1 directive is captured and DIGEST_VERIFIED;
+- the complete FGRI-1 directive is captured and DIGEST_VERIFIED;
+- the founder decision ACTIVATE_SAFE_NARROW_ALLOWLIST is correctly bound but consumed:false;
+- PAES implementation exists in an isolated worktree;
+- FGRI implementation exists in an isolated worktree;
+- neither PAES nor FGRI is merged and active;
+- no PAES LaunchAgent, live supervisor, watchdog, heartbeat or lease is evidenced;
+- persistent unattended execution is therefore not yet active.
+
+Recover the current work without loss.
+
+Finish FGRI and PAES.
+
+Qualify them adversarially.
+
+Merge and activate them through the sanctioned ARLC path.
+
+Consume the existing founder decision exactly once.
+
+Start the actual bounded nine-hour V8-B Wave-2 run.
+
+Do not return a final answer until the UNATTENDED HANDOFF BARRIER in this directive has been satisfied or a genuine critical blocker has been mechanically proven.
+
+OPERATING MODE
+
+MAC MINI PRO ONLY
+DCL-LOCKED
+ARLC-GOVERNED
+ARE-GOVERNED
+TEST-BEFORE-FOUNDER
+FOREGROUND FOUNDER-SURFACE LAW
+DISK-FIRST
+APPEND-ONLY
+ATOMIC RECOVERY
+TERMINAL-0 SOLE MERGE SHERIFF
+MAXIMUM TWO CODE WRITERS
+MAXIMUM ONE SENSITIVE-CORE WRITER
+INDEPENDENT CHECKERS
+FRESH CHECKER AFTER MATERIAL CORRECTION
+FINAL READ-ONLY ADVISOR
+NARROW TOOL ALLOWLIST
+NO INTERACTIVE BACKEND QUESTIONS
+NO RECREATION OF VALID EXISTING WORK
+NO STOP AFTER BUILD, TEST, PR, CHECKER OR MERGE
+NO FINAL REPORT BEFORE HANDOFF BARRIER
+
+PHASE 0 — SELF-CAPTURE AND DCL LOCK
+
+Before any new material action:
+
+1. Locate this exact directive in the active Harvest transcript.
+2. Extract its complete exact body.
+3. Verify that the first title line is exactly:
+
+FOUNDERGATE FGRI-PAES-RECOVERY-1 — COMPLETE, QUALIFY, MERGE, ACTIVATE, AND HAND OFF TO PERSISTENT EXECUTION
+
+4. Verify that the body contains:
+   - AUTHORITY SCOPE;
+   - PURPOSE;
+   - PHASE 0;
+   - PHASE 3 — FGRI COMPLETION;
+   - PHASE 4 — PAES COMPLETION;
+   - PHASE 6 — CONTROLLED QUALIFICATION;
+   - PHASE 10 — UNATTENDED HANDOFF BARRIER;
+   - FINAL OUTPUT;
+   - the complete final verdict list.
+5. Verify the message is complete and not truncated.
+6. Compute:
+   - SHA-256;
+   - byte count;
+   - line count;
+   - beginning anchor;
+   - ending anchor.
+7. Persist the immutable body through DCL.
+8. Re-read the stored body.
+9. Recompute its digest.
+10. Require exact transcript-to-disk equality.
+11. Create complete per-directive:
+    - metadata;
+    - state;
+    - dependencies;
+    - queue record;
+    - append-only events;
+    - recovery state;
+    - next-safe-action;
+    - completion predicates;
+    - stop predicates.
+12. Transition:
+
+RECEIVED
+→ CAPTURED
+→ DIGEST_VERIFIED
+→ QUEUED
+→ READY
+→ RUNNING
+
+If capture fails, stop with:
+
+FGRI-PAES-RECOVERY: SELF-CAPTURE-FAILED
+
+PHASE 1 — MECHANICAL RECOVERY
+
+Resolve current state mechanically.
+
+Do not bind SHAs from this prompt.
+
+Inspect:
+
+- current host;
+- repository and origin;
+- local main;
+- remote main;
+- open PRs;
+- current branches;
+- current worktrees;
+- dirty files;
+- writer locks;
+- current Harvest session;
+- DCL state;
+- ARLC state;
+- ARE state;
+- TBF state;
+- FFS state;
+- PANIC_STOP;
+- current directive queue;
+- operational queue;
+- founder queue;
+- human-expert queue;
+- existing PAES worktree and branch;
+- existing FGRI worktree and branch;
+- all committed and uncommitted PAES work;
+- all committed and uncommitted FGRI work;
+- current PAES capability-probe evidence;
+- current gate request and resolution;
+- any existing checkers, reports, CI results or proof capsules.
+
+Preserve all unique work.
+
+Do not reset, overwrite or discard either worktree.
+
+If an active atomic write exists, allow that write to reach a safe boundary.
+
+Detect path collisions before assigning writers.
+
+PHASE 2 — REPAIR DCL RECORD COMPLETENESS
+
+The audit reported that PAES-1 and FGRI-1 directive directories may contain prompt.txt and metadata.json but lack complete per-directive state, dependency and event records.
+
+Mechanically verify this.
+
+Where missing, add the required records without altering the immutable prompt bodies.
+
+For each of:
+
+- PAES-1;
+- FGRI-1;
+- FGRI-PAES-RECOVERY-1;
+
+require:
+
+- immutable prompt body;
+- digest;
+- byte count;
+- line count;
+- source transcript reference;
+- state.json;
+- dependencies.json;
+- queue linkage;
+- recovery.json;
+- append-only events.jsonl;
+- current next-safe-action;
+- completion predicates;
+- stop predicates;
+- supersession or continuation linkage where applicable.
+
+Do not backdate events.
+
+Do not claim an earlier state transition happened if no evidence proves it.
+
+Use corrective events recorded at the current time.
+
+PHASE 3 — FGRI COMPLETION
+
+Recover the existing FGRI implementation.
+
+Do not rebuild it blindly.
+
+Complete and verify:
+
+1. Gate Router.
+2. Gate request schema.
+3. Gate resolution schema.
+4. Founder Inbox card schema.
+5. Autonomy Policy Envelope schema.
+6. Durable request directory.
+7. Durable resolution directory.
+8. Append-only gate event ledger.
+9. Gate index.
+10. Notification ledger.
+11. Recovery state.
+12. Decision anti-replay.
+13. Expiry.
+14. One-time consumption.
+15. Wrong-gate rejection.
+16. Wrong-action rejection.
+17. Wrong-SHA rejection.
+18. Wrong-policy rejection.
+19. Builder-created founder-decision rejection.
+20. Generated founder-acceptance rejection.
+21. Lane-local parking.
+22. Unrelated-lane continuation.
+23. Safe-default selection.
+24. Notification deduplication.
+25. Founder Decision Inbox backend.
+26. Local Founder Decision Inbox UI.
+27. Investor-safe evidence indexing.
+
+Mechanically enforce:
+
+A BACKEND WORKER MAY NEVER ASK AN INTERACTIVE TERMINAL QUESTION DURING AN AUTONOMOUS RUN.
+
+Every unattended worker must:
+
+- use non-interactive invocation;
+- have closed or controlled stdin;
+- use structured output;
+- use bounded timeouts;
+- write governed output;
+- write an exit record;
+- write next-safe-action;
+- never call or rely on AskUserQuestion;
+- never display an option menu and wait;
+- never pause the global run for one unresolved lane.
+
+If worker output contains an authority question or option menu:
+
+1. preserve the original output;
+2. classify the request;
+3. create a structured gate request;
+4. park the affected lane;
+5. apply a policy-approved safe default where permitted;
+6. write one deduplicated notification;
+7. continue unrelated work;
+8. ledger every event.
+
+The unsafe choices:
+
+- FULL AUTONOMY;
+- SKIP PERMISSIONS;
+- DANGEROUS MODE;
+- DIRECT PUSH TO MAIN;
+
+must not appear as ordinary founder-facing UI choices.
+
+They must be refused by policy.
+
+PHASE 4 — PAES COMPLETION
+
+Recover the existing PAES implementation.
+
+Verify and complete:
+
+1. supervisor executable;
+2. worker executable;
+3. watchdog executable;
+4. status executable;
+5. doctor executable;
+6. installer;
+7. uninstaller;
+8. user-level LaunchAgent template;
+9. machine-local generated plist;
+10. supervisor state;
+11. queue;
+12. events ledger;
+13. heartbeat;
+14. lease;
+15. recovery;
+16. current cycle;
+17. cost and usage state;
+18. stop state;
+19. worker results;
+20. logs;
+21. supervisor schemas;
+22. status surface;
+23. recovery runbook;
+24. uninstall runbook;
+25. PANIC_STOP handling.
+
+Use only a user-level LaunchAgent.
+
+Do not install a root or system daemon.
+
+The service must be managed by launchd independently of the Harvest conversation.
+
+The supervisor and watchdog must not depend on the current terminal remaining open.
+
+The unattended Claude invocation must use:
+
+- the existing authenticated Claude installation;
+- a mechanically derived supported non-interactive invocation;
+- a narrow allowlist;
+- no copied token;
+- no serialized credential;
+- no credential in a plist;
+- no credential in an environment file;
+- no --dangerously-skip-permissions.
+
+Use the narrowest functional allowlist supported by the installed executable.
+
+Do not invent tool names from memory.
+
+If an operation cannot be completed under the allowlist:
+
+- park the affected job;
+- route a structured gate if authority is genuinely missing;
+- continue unrelated work;
+- never broaden automatically.
+
+Terminal-0 remains the sole merge sheriff.
+
+Workers may not directly push to main.
+
+PHASE 5 — CURRENT DECISION CONSUMPTION
+
+Locate the existing PAES activation gate and founder resolution.
+
+Verify that it records:
+
+ACTIVATE_SAFE_NARROW_ALLOWLIST
+
+Verify explicit refusal of:
+
+- FULL_AUTONOMY;
+- DANGEROUSLY_SKIP_PERMISSIONS;
+- AUTOMATIC_PERMISSION_ESCALATION;
+- DIRECT_PUSH_TO_MAIN.
+
+Require exact binding to:
+
+- gate ID;
+- request digest;
+- FGRI directive digest;
+- policy digest;
+- repository;
+- requested action;
+- applicable PAES candidate;
+- anti-replay nonce;
+- one-time use;
+- bounded validity.
+
+Do not consume the decision before FGRI and PAES qualification predicates pass.
+
+After qualification and activation:
+
+- consume it once;
+- write a resolution-consumed event;
+- reject second consumption;
+- bind the consumption to the activated exact SHA;
+- update the gate state to RESOLVED and CLOSED;
+- update the affected PAES lane to RESUMED.
+
+PHASE 6 — CONTROLLED QUALIFICATION
+
+Before merge and activation run:
+
+- schema validation;
+- unit tests;
+- integration tests;
+- negative tests;
+- mutation tests;
+- recovery tests;
+- exact-SHA CI;
+- secret scan;
+- forbidden-artifact scan;
+- wrong-host rejection;
+- wrong-worktree rejection;
+- duplicate-supervisor rejection;
+- duplicate-worker rejection;
+- duplicate-writer rejection;
+- atomic lease tests;
+- heartbeat tests;
+- false-stale tests;
+- restart-limit tests;
+- deadline tests;
+- no-restart-after-deadline;
+- PANIC_STOP tests;
+- no-credential-in-logs tests;
+- no-interactive-question tests;
+- stdin-closure tests;
+- gate-routing tests;
+- lane-parking tests;
+- unrelated-continuation tests;
+- notification-deduplication tests;
+- anti-replay tests;
+- policy-weakening tests;
+- investor-index sanitization tests.
+
+Perform a controlled persistent-runtime qualification:
+
+1. Install the candidate user LaunchAgent.
+2. Load the candidate service.
+3. Confirm launchd owns the persistent supervisor lifecycle.
+4. Record supervisor process evidence.
+5. Record watchdog process evidence.
+6. Start a synthetic safe job.
+7. Record worker process evidence.
+8. Record heartbeat.
+9. Record valid lease.
+10. Deliberately terminate the synthetic worker.
+11. Prove the watchdog detects the stale or exited worker.
+12. Prove the stale lease is safely recovered.
+13. Prove a new worker is launched automatically.
+14. Prove no duplicate execution occurred.
+15. Prove the synthetic job completes after restart.
+16. Inject a synthetic authority question.
+17. Prove no terminal question is displayed or awaited.
+18. Prove a structured gate request is created.
+19. Prove only the affected lane parks.
+20. Prove an unrelated synthetic lane continues.
+21. Resolve the synthetic gate through a bound test resolution.
+22. Prove the affected lane resumes once.
+23. Prove replay is rejected.
+24. Simulate the initiating shell or terminal process ending.
+25. Prove supervisor and watchdog remain alive under launchd.
+26. Observe at least two later heartbeats.
+27. Prove queue-nonempty STOP is rejected.
+28. Stop the synthetic qualification cleanly.
+29. Prove no residual synthetic worker remains.
+30. Preserve all successful and failed evidence.
+
+Do not use production, customer, private, AKIOR, M1 or live-provider work in qualification.
+
+PHASE 7 — INDEPENDENT CHECKING
+
+Commission an independent FGRI checker that did not implement FGRI.
+
+Commission an independent PAES checker that did not implement PAES.
+
+The FGRI checker must verify:
+
+- no interactive backend questions;
+- controlled stdin;
+- gate classification;
+- request durability;
+- lane-local parking;
+- unrelated continuation;
+- safe defaults;
+- notification deduplication;
+- anti-replay;
+- expiry;
+- UI truthfulness;
+- investor-safe evidence index.
+
+The PAES checker must verify:
+
+- launchd independence;
+- narrow permissions;
+- no dangerous mode;
+- credential safety;
+- supervisor lifecycle;
+- watchdog lifecycle;
+- heartbeat;
+- lease;
+- crash recovery;
+- no duplicate execution;
+- queue refill;
+- stop rejection;
+- deadline;
+- restart limit;
+- PANIC_STOP;
+- Terminal-0 merge boundary.
+
+Allow up to three bounded correction cycles per material failure.
+
+After any material correction:
+
+- freeze a new exact candidate;
+- rerun affected tests;
+- rerun exact-SHA CI;
+- commission a fresh checker.
+
+After both checkers are CLEAN, commission one fresh read-only final Advisor across the integrated FGRI/PAES candidate.
+
+Do not activate based on builder statements.
+
+PHASE 8 — INTEGRATION AND ACTIVATION
+
+Use one cumulative integration line.
+
+Before merge require:
+
+- exact base;
+- exact head;
+- no unresolved collision;
+- complete test evidence;
+- mutation evidence;
+- checker-clean;
+- Advisor-ready;
+- exact-SHA CI green;
+- no post-review product drift;
+- secret scan clean;
+- forbidden-artifact scan clean;
+- no policy weakening;
+- no hidden founder gate.
+
+Merge through the sanctioned ARLC route.
+
+No direct push to main.
+
+After merge:
+
+1. verify main ancestry;
+2. run post-merge CI;
+3. activate FGRI governance pointers;
+4. activate the Autonomy Policy Envelope;
+5. activate the Founder Decision Inbox;
+6. install and load PAES from the merged exact SHA;
+7. consume the existing activation decision once;
+8. verify the resolution-consumed event;
+9. verify the active PAES pointer;
+10. close superseded PRs;
+11. clean branches and worktrees only after no-loss proof;
+12. preserve all evidence.
+
+PHASE 9 — START THE REAL WAVE-2 RUN
+
+After activation, compile or resume the real ARE blueprint for the remaining authorized V8-B work.
+
+The run must use the current completion matrix and operational queue.
+
+It must include remaining authorized work such as, where still incomplete:
+
+- Bench v1;
+- Founder Hand-Burden metrics;
+- Playwright evidence system;
+- Evidence Viewer;
+- integration cards;
+- cost display;
+- Release Label Ladder;
+- Spec Card Engine;
+- anti-repeat register;
+- License/IP register;
+- data-classification reconciliation;
+- SCL-1 mock and synthetic runtime;
+- SCL negative tests;
+- machine qualification of new founder surfaces;
+- completion-matrix updates;
+- evidence sealing.
+
+Keep parked:
+
+- VB2 founder acceptance;
+- VB3 live action;
+- live provider adoption;
+- 48-hour qualification;
+- V8-C/D/E implementation.
+
+Record:
+
+- run ID;
+- blueprint digest;
+- manifest digest;
+- starting main SHA;
+- actual UTC start;
+- absolute nine-hour deadline;
+- drain-start time;
+- current job;
+- queue;
+- heartbeat;
+- lease;
+- next-safe-action;
+- modeled cost;
+- actual billable-spend classification;
+- policy digests.
+
+Use the persistent PAES service, not the Harvest conversation, as the executor.
+
+PHASE 10 — UNATTENDED HANDOFF BARRIER
+
+Harvest may not return a successful final response before all of these are true:
+
+1. PAES-1 directive is complete and digest-verified.
+2. FGRI-1 directive is complete and digest-verified.
+3. This recovery directive is complete and digest-verified.
+4. Missing DCL per-directive records are repaired honestly.
+5. FGRI is merged and active.
+6. PAES is merged and active.
+7. Autonomy Policy Envelope is active.
+8. Founder Decision Inbox is active.
+9. The existing activation decision is consumed exactly once.
+10. User LaunchAgent is installed and loaded.
+11. Supervisor is alive.
+12. Watchdog is alive.
+13. Worker is alive or between jobs with a healthy supervisor.
+14. Heartbeat is current.
+15. Lease is valid when a worker is active.
+16. Controlled worker termination and automatic relaunch passed.
+17. Duplicate execution rejection passed.
+18. Terminal or initiating-shell independence passed.
+19. Queue-nonempty stop rejection passed.
+20. Interactive-question interception passed.
+21. Affected-lane parking passed.
+22. Unrelated-lane continuation passed.
+23. Checkers are CLEAN.
+24. Final Advisor is READY.
+25. Exact-SHA CI is green.
+26. Actual Wave-2 start is recorded.
+27. Actual nine-hour deadline is recorded and in the future.
+28. At least two post-activation heartbeats have been observed.
+29. Current queue and next-safe-action are durable.
+30. No material drift exists.
+
+A status file saying RUNNING is not sufficient.
+
+Require live service evidence plus current heartbeat and lease evidence.
+
+If the barrier is not met, do not claim safe unattended operation.
+
+PHASE 11 — CONTINUATION AFTER HARVEST EXITS
+
+After the handoff barrier:
+
+- PAES owns continuation;
+- Harvest may return its final report;
+- closing or ending the Harvest conversation must not stop PAES;
+- PAES reloads queue, policy, lease, heartbeat, recovery and next-safe-action from disk;
+- worker final answers are treated as job outputs, not global completion;
+- gates park lanes and route to the Founder Decision Inbox;
+- safe lanes refill automatically;
+- the run continues until the nine-hour deadline, proven exhaustion or a genuine critical stop.
+
+At the deadline:
+
+- drain safely;
+- persist state;
+- reconcile Git and GitHub;
+- update the completion matrix;
+- seal evidence;
+- produce the Wave-2 proof capsule;
+- leave PAES installed but idle;
+- do not continue past the deadline.
+
+PHASE 12 — LEDGERED AND INVESTOR-SAFE EVIDENCE
+
+Every action must be written to durable evidence.
+
+Require:
+
+- all directive bodies and digests;
+- state transitions;
+- dependencies;
+- queue claims;
+- process-launch records;
+- command records;
+- output records;
+- exit codes;
+- tool allowlist;
+- permission denials;
+- modeled costs;
+- actual billable-spend classification;
+- heartbeats;
+- leases;
+- restarts;
+- crashes;
+- recovery;
+- tests;
+- mutations;
+- checker reports;
+- Advisor report;
+- CI;
+- gate requests;
+- notifications;
+- decisions;
+- consumption;
+- lane parking;
+- lane continuation;
+- lane resumption;
+- PRs;
+- merges;
+- exact SHAs;
+- artifact hashes;
+- completion matrix;
+- proof capsule.
+
+Create a sanitized investor evidence index derived from sealed records.
+
+It must exclude:
+
+- credentials;
+- secrets;
+- raw private machine paths;
+- private account data;
+- sensitive internal logs;
+- internal security details that should not be public.
+
+Do not replace disk evidence with terminal narrative.
+
+FINAL OUTPUT
+
+Return:
+
+1. Audit/recovery start time.
+2. Host identity.
+3. Recovery directive digest.
+4. Starting main SHA.
+5. Final main SHA.
+6. PAES directive integrity.
+7. FGRI directive integrity.
+8. Repaired DCL records.
+9. Founder activation gate ID.
+10. Founder decision.
+11. Decision consumption result.
+12. FGRI exact merged SHA.
+13. PAES exact merged SHA.
+14. FGRI active pointer.
+15. PAES active pointer.
+16. Autonomy Policy Envelope digest.
+17. Narrow allowlist evidence.
+18. Dangerous-permission refusal evidence.
+19. Direct-main-push refusal evidence.
+20. LaunchAgent identifier.
+21. LaunchAgent state.
+22. Supervisor process evidence.
+23. Watchdog process evidence.
+24. Worker process evidence.
+25. Heartbeat path, timestamp and freshness.
+26. Lease path and validity.
+27. Controlled worker-kill result.
+28. Automatic worker-relaunch result.
+29. Duplicate-execution result.
+30. Terminal-independence result.
+31. Queue-nonempty stop-rejection result.
+32. Interactive-question interception result.
+33. Lane-parking result.
+34. Unrelated-lane continuation result.
+35. Gate-resumption result.
+36. FGRI checker verdict.
+37. PAES checker verdict.
+38. Final Advisor verdict.
+39. Exact-SHA CI result.
+40. Post-merge CI result.
+41. Actual Wave-2 run ID.
+42. Blueprint digest.
+43. Manifest digest.
+44. Actual Wave-2 start.
+45. Actual nine-hour deadline.
+46. Current elapsed duration.
+47. Current job.
+48. Current queue.
+49. Current next-safe-action.
+50. Founder queue.
+51. Human-expert queue.
+52. Modeled-cost state.
+53. Actual billable-spend classification.
+54. Evidence ledger paths.
+55. Investor-safe evidence-index path.
+56. Proof-capsule path and digest.
+57. Remaining limitations.
+58. Exact emergency-stop and uninstall script paths.
+59. UNATTENDED HANDOFF BARRIER result.
+60. Final verdict.
+
+Required exact statements:
+
+PAES-1, FGRI-1 AND FGRI-PAES-RECOVERY-1 ARE CAPTURED AND DIGEST-VERIFIED ON DISK.
+
+THE CURRENT FOUNDER DECISION IS ACTIVATE_SAFE_NARROW_ALLOWLIST AND WAS CONSUMED EXACTLY ONCE.
+
+FGRI IS ACTIVE AND BACKEND INTERACTIVE QUESTIONS ARE ROUTED TO THE FOUNDER DECISION INBOX.
+
+PAES IS MANAGED BY A USER-LEVEL LAUNCHAGENT AND DOES NOT DEPEND ON THE HARVEST CONVERSATION REMAINING OPEN.
+
+SUPERVISOR, WATCHDOG, HEARTBEAT, LEASE, QUEUE AND RECOVERY STATE ARE DURABLE AND CURRENT.
+
+A CONTROLLED WORKER TERMINATION WAS RECOVERED WITHOUT DUPLICATE EXECUTION.
+
+A QUEUE-NONEMPTY STOP ATTEMPT WAS REJECTED.
+
+A GATE IN ONE LANE PARKED THAT LANE WITHOUT STOPPING UNRELATED AUTHORIZED WORK.
+
+FULL-PERMISSION BYPASS, AUTOMATIC PERMISSION ESCALATION AND DIRECT PUSH TO MAIN REMAIN REFUSED.
+
+EVERY MATERIAL ACTION IS WRITTEN TO THE APPEND-ONLY EVIDENCE RECORD AND BOUND TO AN EXACT SHA.
+
+THE INVESTOR EVIDENCE INDEX IS DERIVED FROM SEALED RECORDS AND EXCLUDES CREDENTIALS AND SENSITIVE INTERNAL MATERIAL.
+
+THE REAL V8-B WAVE-2 RUN HAS A RECORDED START, DEADLINE, CURRENT HEARTBEAT AND NEXT SAFE ACTION.
+
+Finish with exactly one verdict:
+
+FGRI-PAES-RECOVERY: SAFE-TO-LEAVE-UNATTENDED
+FGRI-PAES-RECOVERY: ACTIVE-RUNNING-BARRIER-NOT-YET-COMPLETE
+FGRI-PAES-RECOVERY: FGRI-CHECKER-FINDINGS
+FGRI-PAES-RECOVERY: PAES-CHECKER-FINDINGS
+FGRI-PAES-RECOVERY: QUALIFICATION-FAILED
+FGRI-PAES-RECOVERY: AUTONOMY-CAPABILITY-GAP
+FGRI-PAES-RECOVERY: HOLD-CORRECTABLE-FINDINGS
+FGRI-PAES-RECOVERY: TRUE-FOUNDER-GATE
+FGRI-PAES-RECOVERY: HUMAN-EXPERT-GATE
+FGRI-PAES-RECOVERY: UNRESOLVED-CRITICAL-BLOCKER
+FGRI-PAES-RECOVERY: SELF-CAPTURE-FAILED
+FGRI-PAES-RECOVERY: REJECT
+FGRI-PAES-RECOVERY: INSUFFICIENT-EVIDENCE

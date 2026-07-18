@@ -1,0 +1,969 @@
+FOUNDERGATE PAES-1 — PERSISTENT AUTONOMOUS EXECUTION SUPERVISOR AND V8-B WAVE-2
+
+FOUNDER AUTHORIZATION
+
+I authorize FounderGate to build, qualify and activate one bounded user-level Persistent Autonomous Execution Supervisor on the Mac Mini Pro.
+
+The supervisor may use only the existing authenticated Claude Code installation and existing GitHub authentication.
+
+It may resume or relaunch FounderGate execution for no longer than nine hours from activation.
+
+It may operate no more than:
+
+- two simultaneous local code-writing workers;
+- one sensitive-core writer;
+- one Terminal-0 integration sheriff;
+- multiple disjoint read-only test and checker workers.
+
+It may execute only work currently permitted by FounderGate disk authority.
+
+This authorization permits:
+
+- a user-level macOS launchd agent;
+- local supervisor and watchdog processes;
+- local worker subprocesses;
+- durable queue processing;
+- automatic recovery after process exit, context compaction, terminal closure or worker crash;
+- bounded routine merges already allowed by active ARLC authority;
+- local read-only supervisor status endpoints;
+- synthetic crash-and-recovery qualification;
+- the remaining authorized wide-safe V8-B work.
+
+This authorization does not permit:
+
+- creating or exporting Claude, GitHub or other credentials;
+- creating a new paid API account;
+- purchasing additional usage;
+- bypassing existing account limits;
+- M1 contact;
+- AKIOR repository access;
+- customer code;
+- private repositories;
+- production data;
+- production deployment;
+- external sends;
+- payments;
+- OpenSandbox adoption or default-provider selection;
+- live SCL provider execution without separate authority;
+- VB3 live action;
+- real token creation;
+- real external mutation;
+- V8-C, V8-D or V8-E implementation;
+- the 48-hour qualification;
+- founder-signature fabrication;
+- founder-witness fabrication.
+
+The service must shut down automatically at its bounded deadline, PANIC_STOP, policy failure, unrecoverable repository corruption or proven exhaustion of all authorized work.
+
+PURPOSE
+
+The prior V8-B wave stopped after approximately 39 minutes because Claude completed one conversational turn and returned a final report.
+
+DCL preserved its instruction.
+ARLC preserved repository lifecycle state.
+ARE preserved the run model.
+
+None of those mechanisms independently kept an executor alive after the Claude turn ended.
+
+PAES-1 must add the missing persistent execution layer.
+
+A terminal response, Claude final answer, context compaction, closed browser, closed terminal window or worker-process exit must no longer be treated as completion of the autonomous program.
+
+The execution service must continue from disk until:
+
+1. the real nine-hour deadline is reached;
+2. all authorized safe work is proven complete or mechanically blocked;
+3. a critical stop condition is reached.
+
+OPERATING MODE
+
+MAC MINI PRO ONLY
+DCL-LOCKED
+ARLC-GOVERNED
+ARE-GOVERNED
+TEST-BEFORE-FOUNDER
+FOREGROUND FOUNDER-SURFACE LAW WHERE APPLICABLE
+DISK-FIRST
+APPEND-ONLY
+ATOMIC RECOVERY
+USER-LEVEL SERVICE ONLY
+NO ROOT SERVICE
+NO SYSTEM-WIDE DAEMON
+TERMINAL-0 SOLE MERGE SHERIFF
+MAXIMUM TWO CODE WRITERS
+MAXIMUM ONE SENSITIVE-CORE WRITER
+INDEPENDENT CHECKERS
+FRESH CHECKER AFTER MATERIAL CORRECTION
+FINAL READ-ONLY ADVISOR FOR SUPERVISOR ACTIVATION
+ONE WAVE-2 INTEGRATION LINE
+NO LONG PR STACK
+
+HARD BOUNDARIES
+
+NO M1 CONTACT
+NO AKIOR ACCESS
+NO CUSTOMER CODE
+NO PRIVATE REPOSITORY
+NO PRODUCTION DATA
+NO PUBLIC DEPLOYMENT
+NO PAYMENT
+NO EXTERNAL SEND
+NO CREDENTIAL COPYING
+NO CREDENTIAL SERIALIZATION
+NO CREDENTIAL LOGGING
+NO NEW PAID API ACCOUNT
+NO OPENSANDBOX ADOPTION
+NO DEFAULT PROVIDER
+NO DIRECT HOST FALLBACK
+NO LIVE PROVIDER RUN WITHOUT SEPARATE AUTHORITY
+NO VB3 ACT EDGE
+NO REAL TOKEN
+NO REAL EXTERNAL MUTATION
+NO 48-HOUR QUALIFICATION
+NO V8-C/D/E IMPLEMENTATION
+NO FOUNDER SIGNATURE FABRICATION
+NO FOUNDER WITNESS FABRICATION
+NO BUILDER SELF-CHECK
+NO CHECKER EXECUTING ITS OWN CHECKED WORK
+NO UNRECORDED MERGE
+NO SILENT POLICY WEAKENING
+NO UNBOUNDED RESTART LOOP
+NO EXECUTION AFTER DEADLINE
+
+PHASE 0 — DCL SELF-CAPTURE
+
+Before any other material action:
+
+1. Locate this exact directive in the active Harvest transcript.
+2. Extract the complete exact body.
+3. Verify that its first title line is:
+
+FOUNDERGATE PAES-1 — PERSISTENT AUTONOMOUS EXECUTION SUPERVISOR AND V8-B WAVE-2
+
+4. Verify that it contains:
+   - FOUNDER AUTHORIZATION;
+   - PURPOSE;
+   - HARD BOUNDARIES;
+   - PHASE 0;
+   - PHASE 2 — UNATTENDED EXECUTOR CAPABILITY;
+   - PHASE 5 — MECHANICAL CONTINUATION LAW;
+   - PHASE 11 — V8-B EXECUTION;
+   - FINAL OUTPUT;
+   - the final verdict list.
+5. Verify that the message is complete and not truncated.
+6. Compute:
+   - SHA-256;
+   - byte count;
+   - line count;
+   - beginning anchor;
+   - ending anchor.
+7. Persist the exact immutable body under the active DCL convention.
+8. Re-read the stored body.
+9. Recompute its digest.
+10. Require exact transcript-to-disk equality.
+11. Create:
+   - metadata;
+   - queue entry;
+   - dependency record;
+   - event ledger;
+   - atomic recovery state;
+   - next-safe-action;
+   - completion predicates;
+   - stop predicates.
+12. Transition:
+
+RECEIVED
+→ CAPTURED
+→ DIGEST_VERIFIED
+→ QUEUED
+→ READY
+→ RUNNING
+
+If exact capture fails:
+
+PAES1: SELF-CAPTURE-FAILED
+
+Do not continue.
+
+PHASE 1 — CURRENT-STATE RECONCILIATION
+
+Mechanically resolve:
+
+- host model and architecture;
+- repository and origin;
+- local main;
+- remote main;
+- open PRs;
+- branches;
+- worktrees;
+- dirty worktrees;
+- current writer locks;
+- active Claude processes;
+- active FounderGate processes;
+- active ports;
+- active VMs;
+- DCL version, digest and state;
+- ARLC version, digest and state;
+- ARE version, digest and state;
+- TBF version and digest;
+- FFS version and digest;
+- current directive queue;
+- operational queue;
+- founder queue;
+- human-expert queue;
+- current V8-B completion matrix;
+- current cost or usage controls;
+- current PANIC_STOP state;
+- current evidence branches;
+- any existing supervisor, launch agent, watchdog or worker implementation.
+
+Do not create a second supervisor if a valid current one exists.
+
+Do not kill an unknown process.
+
+Do not discard unique work.
+
+PHASE 2 — UNATTENDED EXECUTOR CAPABILITY
+
+Before building or activating the supervisor, prove whether the installed Claude Code environment supports a safe unattended invocation.
+
+Mechanically locate the actual Claude Code executable.
+
+Inspect its current documented local help output and supported invocation modes.
+
+Do not assume command-line flags from memory.
+
+Determine whether it supports a bounded noninteractive invocation, continuation or session-resume mode suitable for a user-level background process.
+
+Requirements:
+
+- uses the existing authenticated installation;
+- requires no copied credential;
+- requires no plaintext token;
+- requires no credential in environment files;
+- requires no interactive terminal after startup;
+- supports a bounded prompt loaded from a disk file;
+- returns a meaningful exit code;
+- writes output to a governed log;
+- can operate in the exact FounderGate repository;
+- can be terminated cleanly;
+- does not access AKIOR or the M1.
+
+Create a synthetic read-only probe directive that:
+
+- reads one harmless FounderGate status file;
+- writes no repository file;
+- performs no Git or GitHub mutation;
+- returns one structured JSON result;
+- exits.
+
+Run the probe through the proposed unattended mechanism.
+
+Verify:
+
+- process started;
+- authentication succeeded without credential copying;
+- correct repository was used;
+- structured output was produced;
+- exit code was captured;
+- process terminated;
+- no child process remained;
+- no repository file changed;
+- no credential appeared in logs.
+
+Allowed capability results:
+
+UNATTENDED_EXECUTOR: PROVEN
+UNATTENDED_EXECUTOR: NOT_SUPPORTED
+UNATTENDED_EXECUTOR: AUTHENTICATION_NOT_AVAILABLE
+UNATTENDED_EXECUTOR: UNSAFE_CREDENTIAL_REQUIREMENT
+UNATTENDED_EXECUTOR: INSUFFICIENT_EVIDENCE
+
+If the result is not PROVEN:
+
+1. do not claim persistent autonomous execution;
+2. do not install a worker that cannot relaunch Claude;
+3. preserve all capability evidence;
+4. build only the non-active supervisor design and UI shell where safe;
+5. return:
+
+PAES1: AUTONOMY-CAPABILITY-GAP
+
+A prompt cannot compensate for a missing unattended executor.
+
+PHASE 3 — SUPERVISOR ARCHITECTURE
+
+Only after UNATTENDED_EXECUTOR: PROVEN, create or reconcile:
+
+.foundergate/supervisor/
+.foundergate/supervisor/config.json
+.foundergate/supervisor/state.json
+.foundergate/supervisor/queue.json
+.foundergate/supervisor/events.jsonl
+.foundergate/supervisor/heartbeat.json
+.foundergate/supervisor/lease.json
+.foundergate/supervisor/recovery.json
+.foundergate/supervisor/current-cycle.json
+.foundergate/supervisor/budget.json
+.foundergate/supervisor/stop.json
+.foundergate/supervisor/worker-results/
+.foundergate/supervisor/logs/
+.foundergate/schemas/supervisor-config.schema.json
+.foundergate/schemas/supervisor-state.schema.json
+.foundergate/schemas/supervisor-job.schema.json
+.foundergate/schemas/supervisor-event.schema.json
+tools/terminal0/paes/supervisor
+tools/terminal0/paes/worker
+tools/terminal0/paes/watchdog
+tools/terminal0/paes/status
+tools/terminal0/paes/install-launch-agent
+tools/terminal0/paes/uninstall-launch-agent
+tools/terminal0/paes/doctor
+docs/contracts/PERSISTENT_AUTONOMOUS_EXECUTION_SUPERVISOR.md
+docs/status/PAES1_STATUS.md
+docs/runbooks/PAES1_RECOVERY.md
+docs/runbooks/PAES1_UNINSTALL.md
+
+Commit a launchd template.
+
+Generate the machine-local plist from that template.
+
+Install only as a user-level LaunchAgent under the current user.
+
+Do not install a system daemon.
+
+The local service identifier must be versioned and unique to FounderGate.
+
+The service must launch no more than:
+
+- one supervisor;
+- one watchdog;
+- two code workers.
+
+PHASE 4 — SUPERVISOR STATE MACHINE
+
+Implement:
+
+DISABLED
+INSTALLING
+INSTALLED
+QUALIFYING
+READY
+STARTING
+RUNNING
+WAITING_ON_DEPENDENCY
+WAITING_ON_CHECKER
+CORRECTING
+PARKED_AT_FOUNDER_GATE
+PARKED_AT_HUMAN_EXPERT_GATE
+DRAINING
+STOPPING
+STOPPED_DEADLINE
+STOPPED_EXHAUSTED
+STOPPED_PANIC
+HOLD_CORRECTABLE
+FAILED
+RECOVERING
+AUTONOMY_CAPABILITY_GAP
+
+Every transition must contain:
+
+- prior state;
+- next state;
+- reason;
+- directive digest;
+- blueprint digest;
+- run-manifest digest;
+- exact repository SHA;
+- active job;
+- worker ID;
+- lease ID;
+- timestamp;
+- evidence;
+- next safe action;
+- idempotency key.
+
+No state may transition to RUNNING unless:
+
+- DCL capture verifies;
+- ARE manifest verifies;
+- ARLC is active;
+- TBF is active;
+- unattended executor is proven;
+- user-level service is installed;
+- one-writer lock is available;
+- deadline has not passed;
+- PANIC_STOP is not active;
+- an authorized job exists.
+
+PHASE 5 — MECHANICAL CONTINUATION LAW
+
+Implement this law in executable code, not only documentation:
+
+A worker exit is not program completion.
+
+A Claude final answer is not program completion.
+
+A terminal window closing is not program completion.
+
+Context compaction is not program completion.
+
+A PR merge is not program completion.
+
+A checker finishing is not program completion.
+
+A lane being parked at a founder gate is not program completion.
+
+The supervisor may enter a terminal STOPPED state only when one of these machine predicates is true:
+
+1. deadline reached and active atomic work safely drained;
+2. all authorized safe jobs are terminal and no refill candidate exists;
+3. PANIC_STOP is active;
+4. DCL integrity failure;
+5. ARLC integrity failure;
+6. ARE integrity failure;
+7. repository corruption;
+8. unresolved writer collision;
+9. unattended executor capability lost;
+10. restart limit exhausted for a materially failing job and no unrelated safe job remains.
+
+Before every attempted stop:
+
+- reload the operational queue from disk;
+- reload the completion matrix;
+- discover eligible safe work;
+- inspect parked gates;
+- inspect retry limits;
+- inspect deadline;
+- inspect current leases.
+
+If eligible safe work exists, STOP is rejected and the next job must be claimed.
+
+Record:
+
+STOP_REJECTED_QUEUE_NONEMPTY
+
+A report-generation action may not set the supervisor to STOPPED.
+
+PHASE 6 — LEASE, HEARTBEAT AND WATCHDOG
+
+Use atomic lease acquisition.
+
+Each worker lease must contain:
+
+- worker ID;
+- job ID;
+- exact SHA;
+- allowed paths;
+- started time;
+- heartbeat time;
+- lease expiration;
+- process ID;
+- restart count;
+- recovery action.
+
+Worker heartbeat interval:
+
+no longer than 60 seconds.
+
+A worker becomes stale only when:
+
+- the process is absent or unresponsive;
+- heartbeat is older than the configured stale interval;
+- lease expiration has passed.
+
+The watchdog must:
+
+1. verify the worker is actually stale;
+2. preserve its logs and recovery state;
+3. release the stale lease atomically;
+4. increment the restart count;
+5. resume from next-safe-action;
+6. never repeat an already committed or sealed action;
+7. never start a duplicate writer.
+
+Default bounded restart policy:
+
+- maximum three restarts per job;
+- exponential delay;
+- no restart after deadline;
+- no restart after PANIC_STOP;
+- no restart of a true founder-gated action;
+- no restart that would repeat a live or external action.
+
+After three failures:
+
+- park the job;
+- preserve all evidence;
+- continue unrelated safe work.
+
+PHASE 7 — DEADLINE AND USAGE GUARDS
+
+The execution deadline begins only when PAES enters RUNNING after qualification.
+
+Record:
+
+- UTC start;
+- monotonic-process start where available;
+- absolute stop deadline;
+- drain-start time at eight hours and forty-five minutes.
+
+At eight hours and forty-five minutes:
+
+- stop claiming new large jobs;
+- continue current atomic actions;
+- complete tests and checker work where practical;
+- persist all recovery state.
+
+At nine hours:
+
+- finish the current safe atomic boundary;
+- stop claiming new work;
+- seal the proof capsule;
+- unload the active Wave-2 worker;
+- leave PAES installed but idle unless disk authority says otherwise.
+
+Do not run indefinitely.
+
+Do not bypass current plan or account limits.
+
+Do not create new paid credentials or services.
+
+If existing usage limits block work:
+
+- record the exact limitation;
+- preserve recovery state;
+- continue non-LLM mechanical tests and reconciliation where possible;
+- never fabricate completion.
+
+PHASE 8 — READ-ONLY OPERATOR STATUS SURFACE
+
+Build a local read-only supervisor status surface suitable for a future non-technical operator.
+
+Bind only to:
+
+127.0.0.1
+
+It must display:
+
+- supervisor state;
+- current run;
+- actual elapsed time;
+- deadline;
+- heartbeat freshness;
+- current lane;
+- current action;
+- current exact SHA;
+- active workers;
+- active leases;
+- queued jobs;
+- parked founder gates;
+- parked human-expert gates;
+- completed jobs;
+- correction cycles;
+- last checker result;
+- last Advisor result;
+- last CI result;
+- last merge;
+- next safe action;
+- last error;
+- restart count;
+- evidence links;
+- proof-capsule link.
+
+Allowed statuses:
+
+RUNNING
+WAITING
+CHECKING
+CORRECTING
+RECOVERING
+DRAINING
+STOPPED
+GATED
+BLOCKED
+UNKNOWN
+STALE
+CONFLICT
+
+No false green.
+
+No live-action control.
+
+No provider activation control.
+
+No merge button.
+
+No founder-acceptance button.
+
+A status UI is not proof that the supervisor is running; heartbeat and process evidence remain authoritative.
+
+PHASE 9 — SUPERVISOR QUALIFICATION
+
+Before activation, run:
+
+1. schema validation;
+2. unit tests;
+3. integration tests;
+4. mutation tests;
+5. exact-SHA CI;
+6. secret scan;
+7. forbidden-artifact scan;
+8. user-level LaunchAgent load/unload test;
+9. duplicate-supervisor rejection;
+10. duplicate-worker rejection;
+11. atomic lease test;
+12. stale-heartbeat test;
+13. false-stale prevention;
+14. worker crash test;
+15. supervisor crash test;
+16. watchdog crash test;
+17. terminal-window closure simulation;
+18. worker-final-answer simulation;
+19. context-compaction recovery simulation;
+20. queue-nonempty stop rejection;
+21. parked-founder-gate continuation;
+22. parked-human-expert-gate continuation;
+23. unrelated-lane continuation after three failures;
+24. deadline drain;
+25. deadline hard stop;
+26. PANIC_STOP;
+27. restart limit;
+28. no-restart-after-deadline;
+29. no-restart-of-live-action;
+30. no credential in logs;
+31. exact repository identity;
+32. wrong-worktree rejection;
+33. wrong-host rejection;
+34. no M1 contact;
+35. no AKIOR access.
+
+Perform one controlled qualification:
+
+- enqueue synthetic wide-safe jobs;
+- start PAES;
+- prove at least one worker invocation;
+- kill the worker process deliberately;
+- prove watchdog detection;
+- prove lease recovery;
+- prove automatic worker relaunch;
+- prove completion of the synthetic job after restart;
+- close the initiating terminal;
+- prove PAES remains alive;
+- reopen status read-only;
+- prove heartbeat is current;
+- stop the synthetic qualification cleanly;
+- prove no residual worker remains.
+
+This qualification may use only synthetic repository-local tasks.
+
+It may not perform live provider work.
+
+PHASE 10 — INDEPENDENT REVIEW AND ACTIVATION
+
+Commission an independent checker that did not implement PAES-1.
+
+The checker must verify:
+
+- unattended invocation;
+- credential safety;
+- DCL binding;
+- ARE binding;
+- ARLC binding;
+- queue claiming;
+- stop rejection;
+- lease correctness;
+- heartbeat correctness;
+- watchdog recovery;
+- terminal-closure survival;
+- deadline enforcement;
+- PANIC_STOP;
+- restart limits;
+- one-writer rule;
+- UI truthfulness.
+
+Allowed:
+
+PAES1-CHECKER-CLEAN
+PAES1-CHECKER-FINDINGS
+PAES1-CHECKER-REJECT
+PAES1-CHECKER-INSUFFICIENT_EVIDENCE
+
+Correct bounded findings for up to three cycles.
+
+After each material correction:
+
+- freeze a new candidate;
+- rerun affected tests;
+- run exact-SHA CI;
+- commission a fresh checker.
+
+After checker-clean, commission a fresh read-only Advisor.
+
+Allowed:
+
+PAES1-ADVISOR: READY-TO-ACTIVATE
+PAES1-ADVISOR: HOLD-CORRECTABLE-FINDINGS
+PAES1-ADVISOR: REJECT
+PAES1-ADVISOR: INSUFFICIENT_EVIDENCE
+
+Activate PAES only after:
+
+- unattended executor proven;
+- qualification passed;
+- checker-clean;
+- Advisor-ready;
+- exact-SHA CI green;
+- no post-review product drift.
+
+PHASE 11 — V8-B EXECUTION
+
+After PAES activation, compile a real ARE blueprint:
+
+FOUNDERGATE-V8B-WAVE2-PERSISTENT-COMPLETION
+
+Derive its requirements from:
+
+- current Roadmap V8.11 V8-B contract;
+- current completion matrix;
+- current operational queue;
+- active DCL, ARLC, ARE, TBF and FFS policies.
+
+Required remaining work includes, where still incomplete:
+
+1. Bench v1.
+2. Founder Hand-Burden metrics.
+3. Playwright evidence-system completion.
+4. Evidence Viewer.
+5. GitHub and integration cards.
+6. Cost display.
+7. Release Label Ladder.
+8. Spec Card Engine completion.
+9. Anti-repeat register.
+10. Minimal License/IP register.
+11. Data-classification reconciliation.
+12. SCL-1 provider-neutral mock and synthetic runtime.
+13. SCL-1 negative tests.
+14. Machine qualification for new founder-facing surfaces.
+15. V8-B completion-matrix updates.
+16. Proof capsule and final recovery state.
+
+Every job must contain:
+
+- blueprint requirement IDs;
+- exact base SHA;
+- branch;
+- worktree;
+- allowed paths;
+- forbidden paths;
+- risk class;
+- tests;
+- evidence;
+- checker;
+- correction limit;
+- merge predicate;
+- next safe action.
+
+VB2 founder acceptance remains parked.
+
+VB3 implementation remains parked unless current disk authority explicitly permits it.
+
+VB3 act edge remains FROZEN.
+
+OpenSandbox remains:
+
+CANDIDATE
+NOT ADOPTED
+NOT DEFAULT
+
+SCL-1 may use only fake providers and synthetic fixtures unless separate current disk authority explicitly permits a live fixed fixture.
+
+PHASE 12 — CONTINUOUS REFILL
+
+After every job terminal event:
+
+- persist result;
+- seal evidence;
+- update Bench;
+- update completion matrix;
+- merge if qualified;
+- clean after no-loss proof;
+- select the next eligible safe job.
+
+The supervisor must not wait for a human to paste another continuation prompt while authorized safe work remains.
+
+A true founder gate affects only the gated job.
+
+A human-expert gate affects only the gated job.
+
+The remaining queue continues.
+
+PHASE 13 — INTEGRATION
+
+Use one cumulative PAES/Wave-2 integration line.
+
+Routine qualified merges may proceed under current ARLC authority.
+
+Before each merge require:
+
+- exact base and head;
+- complete evidence;
+- independent checker;
+- Advisor where required;
+- exact-SHA CI;
+- no secret;
+- no forbidden artifact;
+- no policy weakening;
+- no post-checker product drift;
+- no hidden founder gate.
+
+After each merge:
+
+- verify main ancestry;
+- verify post-merge CI;
+- update supervisor state;
+- update ARE state;
+- update DCL state;
+- update ARLC state;
+- close superseded internal PRs;
+- remove branches and worktrees only after no-loss proof;
+- refill the queue.
+
+PHASE 14 — FINAL RECONCILIATION
+
+At deadline or proven safe-work exhaustion, verify:
+
+- actual elapsed time;
+- supervisor state;
+- LaunchAgent state;
+- watchdog state;
+- worker state;
+- heartbeat;
+- leases;
+- queue;
+- recovery;
+- local main;
+- remote main;
+- open PRs;
+- branches;
+- worktrees;
+- active processes;
+- active VMs;
+- CI;
+- completion matrix;
+- founder queue;
+- human-expert queue;
+- evidence branches;
+- proof capsule;
+- uninstall instructions.
+
+No unfinished job may be described as complete.
+
+No runnable job may be omitted from the operational queue.
+
+FINAL OUTPUT
+
+Return:
+
+1. Host identity.
+2. Directive ID and digest.
+3. Starting main SHA.
+4. Final main SHA.
+5. Unattended executor capability result.
+6. Exact unattended invocation mechanism.
+7. Credential-safety result.
+8. Supervisor version and digest.
+9. LaunchAgent identifier.
+10. LaunchAgent state.
+11. Supervisor process state.
+12. Watchdog process state.
+13. Worker limit.
+14. Run start time.
+15. Run deadline.
+16. Actual elapsed duration.
+17. Heartbeat path and freshness.
+18. Lease path and state.
+19. Queue path and counts.
+20. Recovery path and next safe action.
+21. Controlled worker-kill result.
+22. Automatic relaunch result.
+23. Terminal-closure survival result.
+24. Queue-nonempty stop-rejection result.
+25. Deadline-stop result.
+26. PANIC_STOP result.
+27. Duplicate-worker rejection.
+28. Restart-limit result.
+29. Independent checker verdict.
+30. Final Advisor verdict.
+31. PAES activation status.
+32. Status-surface URL and state.
+33. ARE blueprint ID and digest.
+34. Run-manifest ID and digest.
+35. V8-B matrix before and after.
+36. Bench result.
+37. Founder Hand-Burden result.
+38. Evidence-system result.
+39. Evidence Viewer result.
+40. Integration-card result.
+41. Cost-display result.
+42. Release Label Ladder result.
+43. Spec Card result.
+44. Anti-repeat result.
+45. License/IP result.
+46. Data-classification result.
+47. SCL-1 mock/synthetic result.
+48. OpenSandbox status.
+49. VB2 status.
+50. VB3 status.
+51. Local test totals.
+52. Exact-SHA CI.
+53. Work merged.
+54. Work remaining.
+55. Operational queue.
+56. Founder queue.
+57. Human-expert queue.
+58. Evidence branches preserved.
+59. Proof-capsule path and digest.
+60. Exact uninstall or emergency-stop command path.
+
+Required exact statements:
+
+PAES-1 CAPTURED AND VERIFIED ITS COMPLETE DIRECTIVE BODY BEFORE EXECUTION.
+
+THE PRIOR STOP WAS CAUSED BY THE ABSENCE OF A PERSISTENT EXECUTION SUPERVISOR, NOT BY COMPLETION OF THE AUTHORIZED V8-B QUEUE.
+
+A CLAUDE FINAL ANSWER, TERMINAL CLOSURE, CONTEXT COMPACTION OR WORKER EXIT IS NOT TREATED AS PROGRAM COMPLETION.
+
+THE SUPERVISOR RELOADS ITS QUEUE, LEASE, RECOVERY STATE AND NEXT SAFE ACTION FROM DISK.
+
+A STOP REQUEST IS REJECTED WHILE AN AUTHORIZED SAFE JOB REMAINS READY.
+
+THE UNATTENDED EXECUTOR WAS PROVEN THROUGH A CONTROLLED LOCAL PROBE WITHOUT COPYING OR SERIALIZING CREDENTIALS, OR THE CAPABILITY GAP WAS REPORTED HONESTLY.
+
+THE SUPERVISOR SURVIVED A CONTROLLED WORKER TERMINATION AND RESUMED THE SYNTHETIC JOB WITHOUT DUPLICATE EXECUTION.
+
+THE ACTIVE RUN IS BOUNDED BY A RECORDED NINE-HOUR DEADLINE AND CANNOT RESTART AFTER THAT DEADLINE.
+
+A PARKED FOUNDER OR HUMAN-EXPERT GATE DID NOT STOP INDEPENDENT SAFE WORK.
+
+NO M1, AKIOR, CUSTOMER, PRIVATE-REPOSITORY, PRODUCTION, PAYMENT OR EXTERNAL-SEND AUTHORITY WAS CREATED.
+
+OPENSANDBOX REMAINED CANDIDATE, NOT ADOPTED AND NOT DEFAULT.
+
+VB3’S ACT EDGE REMAINED FROZEN.
+
+THE 48-HOUR QUALIFICATION WAS NOT STARTED FROM THE PRO.
+
+Finish with exactly one verdict:
+
+PAES1-WAVE2: SUPERVISOR-ACTIVE-RUNNING
+PAES1-WAVE2: NINE-HOUR-CHECKPOINT-COMPLETE
+PAES1-WAVE2: ALL-AUTHORIZED-SAFE-WORK-EXHAUSTED
+PAES1-WAVE2: AUTONOMY-CAPABILITY-GAP
+PAES1-WAVE2: TRUE-FOUNDER-GATE-WITH-INDEPENDENT-WORK-EXHAUSTED
+PAES1-WAVE2: HUMAN-EXPERT-GATE-WITH-INDEPENDENT-WORK-EXHAUSTED
+PAES1-WAVE2: HOLD-CORRECTABLE-FINDINGS
+PAES1-WAVE2: UNRESOLVED-CRITICAL-BLOCKER
+PAES1-WAVE2: SELF-CAPTURE-FAILED
+PAES1-WAVE2: REJECT
+PAES1-WAVE2: INSUFFICIENT-EVIDENCE

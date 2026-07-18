@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "autonomy-policy-envelope",
+  "type": "object",
+  "required": [
+    "policy_id",
+    "version",
+    "status",
+    "MAX_UNATTENDED_DURATION_MINUTES",
+    "DIRECT_PUSH_TO_MAIN",
+    "DANGEROUSLY_SKIP_PERMISSIONS",
+    "SAFE_DEFAULT",
+    "UNKNOWN_AUTHORITY"
+  ],
+  "properties": {
+    "policy_id": {},
+    "version": {},
+    "status": {},
+    "MAX_UNATTENDED_DURATION_MINUTES": {},
+    "DIRECT_PUSH_TO_MAIN": {},
+    "DANGEROUSLY_SKIP_PERMISSIONS": {},
+    "SAFE_DEFAULT": {},
+    "UNKNOWN_AUTHORITY": {}
+  }
+}

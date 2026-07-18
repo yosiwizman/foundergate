@@ -1,0 +1,13 @@
+{
+  "label": "com.software4all.foundergate.paes-supervisor.v1",
+  "deadline_hours": 9,
+  "max_code_workers": 2,
+  "max_sensitive_core_writers": 1,
+  "repo": "/Users/yosiwizman/Projects/foundergate",
+  "unattended_mechanism": "claude -p --output-format json --allowedTools <allowlist>",
+  "activation": "NOT_ACTIVATED",
+  "worker_allowlist": "Read Edit Write Grep Glob Bash(git add:*) Bash(git commit:*) Bash(git status:*) Bash(git diff:*) Bash(node scripts/run-selftests.mjs)",
+  "dangerously_skip_permissions": "DENIED",
+  "direct_push_to_main": "DENIED",
+  "automatic_permission_escalation": "DENIED"
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "founder-inbox-card",
+  "type": "object",
+  "required": [
+    "gate_id",
+    "title",
+    "summary",
+    "recommendation",
+    "options",
+    "status"
+  ],
+  "properties": {
+    "gate_id": {},
+    "title": {},
+    "summary": {},
+    "recommendation": {},
+    "options": {},
+    "status": {}
+  }
+}

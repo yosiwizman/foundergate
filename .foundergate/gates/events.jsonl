@@ -1,0 +1,4 @@
+{"evt": "gate_detected", "gate_id": "gate-1784355114-paesact", "ts": 1784355114}
+{"evt": "gate_classified", "gate_id": "gate-1784355114-paesact", "type": "TRUE_FOUNDER_GATE", "ts": 1784355114}
+{"evt": "notification", "gate_id": "gate-1784355114-paesact", "ts": 1784355114}
+{"evt": "gate_resolved", "gate_id": "gate-1784355114-paesact", "decision": "ACTIVATE_SAFE_NARROW_ALLOWLIST", "ts": 1784355114}

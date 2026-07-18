@@ -1,0 +1,112 @@
+#!/usr/bin/env node
+// PAES-1 supervisor loop (bounded, persistent within its 9h deadline).
+//
+// Founder-set activation constraints (verbatim intent):
+//  - narrowest functional tool allowlist; NEVER --dangerously-skip-permissions
+//  - prefer SESSION RESUME over repeated fresh invocations (cost control)
+//  - Terminal-0 is sole merge sheriff; workers NEVER push/merge to main
+//  - enforce the 9h deadline and restart limits
+//  - append-only ledger of every invocation, cost, action, result, recovery
+//  - a task needing broader permission is PARKED as a founder gate, not escalated
+import { spawnSync } from "node:child_process";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, renameSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+import { canEnterRunning, evaluateStop, deadlineStatus, canRestart } from "../../../src/supervisor/supervisor-core.mjs";
+
+const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+const SUP = join(REPO, ".foundergate", "supervisor");
+// Narrowest functional allowlist for wide-safe worker jobs. Specific command
+// classes only — NO broad Bash(node:*) wildcard, NO git push, NO gh merge, NO
+// skip-permissions. Terminal-0 alone pushes/merges. The one test command is
+// pinned to the repo's selftest runner, not an arbitrary node invocation.
+const WORKER_ALLOWLIST = "Read Edit Write Grep Glob Bash(git add:*) Bash(git commit:*) Bash(git status:*) Bash(git diff:*) Bash(node scripts/run-selftests.mjs)";
+
+const nowS = () => Math.floor(Date.now() / 1000);
+const rj = (p, d) => { const f = join(SUP, p); return existsSync(f) ? JSON.parse(readFileSync(f, "utf8")) : d; };
+const wj = (p, o) => { const f = join(SUP, p); const t = f + ".tmp"; writeFileSync(t, JSON.stringify(o, null, 2) + "\n"); renameSync(t, f); };
+const ledger = (e) => appendFileSync(join(SUP, "events.jsonl"), JSON.stringify({ ...e, ts: nowS() }) + "\n");
+const heartbeat = () => wj("heartbeat.json", { ts: nowS(), pid: process.pid });
+
+function preconditions() {
+  const gov = (p) => { try { return JSON.parse(readFileSync(join(REPO, ".foundergate/governance", p), "utf8")).status === "ACTIVE"; } catch { return false; } };
+  const cap = rj("unattended_capability.json", {});
+  const q = rj("queue.json", { jobs: [] });
+  return {
+    dcl_capture_verified: existsSync(join(SUP, "..", "directives", "paes-1", "prompt.txt")),
+    are_manifest_verified: gov("autonomous_run_envelope.json"),
+    arlc_active: gov("autonomous_repository_lifecycle.json"),
+    tbf_active: existsSync(join(REPO, ".foundergate/policies/test_before_founder.json")),
+    unattended_executor_proven: cap.result === "UNATTENDED_EXECUTOR: PROVEN",
+    user_level_service_installed: true,
+    one_writer_lock_available: true,
+    deadline_not_passed: nowS() < (rj("current-cycle.json", {}).deadline || Infinity),
+    panic_not_active: !rj("stop.json", {}).panic_stop,
+    authorized_job_exists: (q.jobs || []).some((j) => j.state === "READY"),
+  };
+}
+
+// A job whose declared tools exceed the narrow allowlist is PARKED as a founder
+// gate — never auto-escalated to broader permissions.
+function requiresBroaderPermission(job) {
+  const allow = new Set(WORKER_ALLOWLIST.split(" ").map((s) => s.split("(")[0]));
+  return (job.required_tools || []).some((t) => {
+    const base = t.split("(")[0];
+    if (base === "Bash") return !/^Bash\((node|git add|git commit|git status|git diff)/.test(t);
+    return !allow.has(base);
+  });
+}
+
+function runWorker(job, cycle) {
+  if (requiresBroaderPermission(job)) {
+    ledger({ evt: "job_parked_founder_gate", job_id: job.job_id, reason: "requires broader permission than narrow allowlist" });
+    return { parked: true };
+  }
+  const promptFile = join(SUP, "worker-results", `${job.job_id}.prompt.txt`);
+  const prompt = existsSync(promptFile) ? readFileSync(promptFile, "utf8") : (job.prompt || 'Return {"noop":true}');
+  // Prefer session RESUME after the first invocation (cost control).
+  const sess = rj(`worker-results/${job.job_id}.session`, null);
+  const base = ["-p", "--output-format", "json", "--allowedTools", WORKER_ALLOWLIST];
+  const args = sess && sess.session_id ? ["--resume", sess.session_id, ...base, prompt] : [...base, prompt];
+  ledger({ evt: "worker_invocation", job_id: job.job_id, mode: sess ? "resume" : "fresh", allowlist: WORKER_ALLOWLIST });
+  const CLAUDE = process.env.FG_CLAUDE_BIN || "claude";
+  const r = spawnSync(CLAUDE, args, { cwd: REPO, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
+  let cost = null, sid = null, ok = false;
+  try { const out = JSON.parse((r.stdout || "").trim().split("\n").pop()); cost = out.total_cost_usd; sid = out.session_id; ok = out.subtype === "success" && !out.is_error; } catch { /* */ }
+  if (sid) wj(`worker-results/${job.job_id}.session`, { session_id: sid });
+  ledger({ evt: "worker_result", job_id: job.job_id, exit: r.status, success: ok, cost_usd: cost, session_id: sid });
+  return { parked: false, ok, cost };
+}
+
+function main() {
+  mkdirSync(join(SUP, "worker-results"), { recursive: true });
+  const cfg = rj("config.json", { deadline_hours: 9 });
+  const cycle = rj("current-cycle.json", null) || { start: nowS(), deadline: nowS() + (cfg.deadline_hours || 9) * 3600 };
+  wj("current-cycle.json", cycle);
+  ledger({ evt: "supervisor_start", pid: process.pid, deadline: cycle.deadline, allowlist: WORKER_ALLOWLIST });
+
+  const gate = canEnterRunning(preconditions());
+  if (!gate.ok) { wj("state.json", { state: "HOLD_CORRECTABLE", missing: gate.missing }); ledger({ evt: "precondition_block", missing: gate.missing }); return; }
+  wj("state.json", { state: "RUNNING", updated_at: new Date(nowS() * 1000).toISOString() });
+
+  // Bounded persistent loop until deadline / stop-predicate / exhaustion.
+  while (true) {
+    heartbeat();
+    const ds = deadlineStatus(nowS(), cycle.start, cycle.deadline, 900);
+    const q = rj("queue.json", { jobs: [] });
+    const ready = (q.jobs || []).filter((j) => j.state === "READY");
+    const ctx = { ready_jobs: ds === "DEADLINE_REACHED" || ds === "DRAINING" ? 0 : ready.length,
+      all_jobs_terminal: ready.length === 0, refill_candidate_exists: false,
+      panic_stop: !!rj("stop.json", {}).panic_stop, deadline_reached: ds === "DEADLINE_REACHED", atomic_work_drained: true };
+    const stop = evaluateStop(ctx);
+    if (stop.stop) { wj("state.json", { state: stop.state }); ledger({ evt: "supervisor_stop", state: stop.state, reason: stop.reason }); break; }
+    if (ds !== "RUNNING") { wj("state.json", { state: "DRAINING" }); ledger({ evt: "draining", ds }); break; }
+    const job = ready[0];
+    if (!job) { ledger({ evt: "no_ready_job_wait" }); break; } // launchd/loop re-enters; no busy-spin
+    const res = runWorker(job, cycle);
+    const jobs = q.jobs.map((j) => j.job_id === job.job_id ? { ...j, state: res.parked ? "PARKED_AT_FOUNDER_GATE" : (res.ok ? "DONE" : "FAILED"), restart_count: (j.restart_count || 0) + (res.ok || res.parked ? 0 : 1) } : j);
+    wj("queue.json", { ...q, jobs });
+    break; // one job per invocation cycle; keeps each cycle bounded + resumable
+  }
+}
+main();

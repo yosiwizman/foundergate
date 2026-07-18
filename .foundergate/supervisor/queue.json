@@ -1,0 +1,16 @@
+{
+  "schema": "supervisor-queue",
+  "jobs": [
+    {
+      "job_id": "qual1",
+      "state": "FAILED",
+      "prompt": "Use the Write tool to create the file .foundergate/supervisor/worker-results/qual1.result.json containing exactly {\"ok\":true,\"synthetic\":true}. Then reply with {\"done\":true}. Do not modify any other file. Do not run git push or any merge.",
+      "required_tools": [
+        "Write"
+      ],
+      "risk_class": "wide_safe",
+      "restart_count": 1
+    }
+  ],
+  "updated_at": "live2"
+}

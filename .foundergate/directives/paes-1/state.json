@@ -1,0 +1,7 @@
+{
+  "directive_id": "paes-1",
+  "current_state": "RUNNING",
+  "updated_at": "2026-07-18T06:24:28Z",
+  "corrective_record": true,
+  "note": "state record added by recovery-1 DCL repair; prompt body unchanged"
+}

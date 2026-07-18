@@ -1,0 +1,27 @@
+{
+  "gate_id": "gate-1784355114-paesact",
+  "selected_option": "ACTIVATE_SAFE_NARROW_ALLOWLIST",
+  "refused": [
+    "KEEP_IDLE",
+    "FULL_AUTONOMY",
+    "DANGEROUSLY_SKIP_PERMISSIONS",
+    "AUTOMATIC_PERMISSION_ESCALATION",
+    "DIRECT_PUSH_TO_MAIN"
+  ],
+  "deciding_authority": "founder",
+  "decision_source": "founder_directive_FGRI-1",
+  "request_digest": "sha256:04429d060ba32d22574061df5d8ad85308bbe51e1abf64d70e285fe1a15eabec",
+  "policy_digest": "sha256:a32acfa6dfd8390eefddd2049b8ed4fcf40d4e4bc43402f818e2bde024acddd0",
+  "timestamp": 1784355114,
+  "expiry": 1784441514,
+  "one_time_use": true,
+  "anti_replay_nonce": "paes-act-4c257074c3c0",
+  "action": "activate_paes_narrow_allowlist",
+  "exact_sha": "2e3c06091bd07fafde974ca14f360f69f8115fd7",
+  "evidence": [
+    ".foundergate/gates/requests/gate-1784355114-paesact.json"
+  ],
+  "consumed": false,
+  "note": "KEEP_IDLE refusal applies ONLY to this gate; future gates may still use KEEP_PAUSED safe default",
+  "resolution_digest": "sha256:df8db1880fb17522627dcd66f21158531c1ec00e9e700fe324a611b12188e20f"
+}

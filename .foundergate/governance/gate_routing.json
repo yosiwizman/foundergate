@@ -1,0 +1,17 @@
+{
+  "policy_id": "gate_routing",
+  "version": "1.0.0",
+  "status": "ACTIVE",
+  "invariant": "A BACKEND WORKER MAY NEVER ASK AN INTERACTIVE TERMINAL QUESTION DURING AN AUTONOMOUS RUN.",
+  "gate_types": [
+    "TRUE_FOUNDER_GATE",
+    "HUMAN_EXPERT_GATE",
+    "OPERATIONAL_AUTONOMOUS",
+    "HOLD_CORRECTABLE",
+    "BLOCKED",
+    "UNKNOWN"
+  ],
+  "unknown_disposition": "FAIL_CLOSED_AND_ROUTE_GATE",
+  "router": "src/gate-router/gate-router.mjs",
+  "founder_interface": "Founder Decision Inbox (NOT the backend terminal)"
+}
