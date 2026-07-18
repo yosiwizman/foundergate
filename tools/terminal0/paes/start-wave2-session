@@ -45,6 +45,16 @@ pf "narrow allowlist has no dangerous bypass" '! grep -q "dangerously-skip-permi
 pf "activation decision present + unconsumed" '"$NODE_BIN" -e "const fs=require(\"fs\");const g=fs.readdirSync(\"$REPO/.foundergate/gates/resolutions\").find(f=>f.endsWith(\".json\"));const r=JSON.parse(fs.readFileSync(\"$REPO/.foundergate/gates/resolutions/\"+g));process.exit(r.selected_option===\"ACTIVATE_SAFE_NARROW_ALLOWLIST\"&&r.consumed===false?0:1)"'
 [ "$PREFLIGHT_OK" = "1" ] || { say ""; say "Preflight blocked. FounderGate did not start."; fail_out; }
 
+# ---- ORC-1R: detect an interrupted run and route to RECOVERY before START_NEW_RUN ----
+REC="$REPO/.foundergate/recovery"
+if [ -f "$REC/checkpoint.json" ] && [ -n "$("$NODE_BIN" -e "try{process.stdout.write(String(JSON.parse(require(\"fs\").readFileSync(\"$REC/checkpoint.json\")).run_id||\"\"))}catch(e){}")" ]; then
+  RV="$("$NODE_BIN" "$SCRIPT_DIR/recover-run.mjs" "$REPO")"
+  if echo "$RV" | grep -q "\"interrupted\":true"; then
+    say ""; say "Unexpected shutdown detected. Recovering the previous run from disk..."; "$NODE_BIN" -e "const c=require(\"fs\").readFileSync(\"$REC/founder-recovery-card.json\",\"utf8\");const o=JSON.parse(c);console.log(\"  Work preserved: \"+o.work_preserved);console.log(\"  Recovery verdict: \"+o.recovery_verdict);console.log(\"  Founder action: \"+o.founder_action_required)" 2>/dev/null || true
+    say "(This directive does not auto-start Wave-2; the recovery verdict is recorded for your one decision.)"; exit 0
+  fi
+fi
+
 # ---- singleton: refuse duplicate; if healthy supervisor exists, show status + exit ----
 DETACH="nohup"; [ "$HAVE_SETSID" = "yes" ] && DETACH="setsid+nohup"
 EXISTING_STATUS="$("$NODE_BIN" "$SCRIPT_DIR/singleton-check.mjs" "$LOCK" 2>/dev/null || echo "free")"

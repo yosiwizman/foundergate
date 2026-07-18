@@ -1,0 +1,98 @@
+{
+  "schema": "orc-reconciliation-1",
+  "reconciled_at": "2026-07-18T17:34:50Z",
+  "at_main_sha": "acaad2695c85d547e2a2ed14ccf65c48f6615b01",
+  "method": "append-only; originals preserved verbatim below; no backdating; live runtime never described as RUNNING",
+  "classifications": {
+    "LIVE_PAES_RUNTIME": "INACTIVE (no supervisor process; verified)",
+    "REAL_NINE_HOUR_WAVE2": "NOT_STARTED",
+    "HISTORICAL_SYNTHETIC_RUNS": "PRESERVED",
+    "STALE_HEARTBEAT_AND_LEASE": "RECONCILED_NOT_DELETED",
+    "SUPERSEDED_RUN_IDENTITIES": "HISTORICAL_ONLY"
+  },
+  "conflicts": [
+    {
+      "id": "active_autonomous_run",
+      "file": ".foundergate/state/active_autonomous_run.json",
+      "original": {
+        "schema": "are1-active-run-1",
+        "run_id": "v8b-nightshift",
+        "status": "RUNNING",
+        "envelope": "ACTIVE",
+        "activation_main_sha": "28531940537a0945e97c6471eea56eb8ea1083b6",
+        "activation_time": "2026-07-18T04:06:22Z",
+        "note": "pre-envelope work reconstructed retrospectively; not backdated"
+      },
+      "observed": "no live supervisor process; pid dead post-reboot",
+      "superseding": "LIVE_PAES_RUNTIME: INACTIVE",
+      "reason": "status RUNNING recorded before the outage; runtime is dead",
+      "next_safe_action": "treat as historical/stale; do not resume; a new authorized run starts a fresh manifest"
+    },
+    {
+      "id": "supervisor_state",
+      "file": ".foundergate/supervisor/state.json",
+      "original": {
+        "state": "STOPPED_EXHAUSTED",
+        "mode": "USER_SESSION_DETACHED"
+      },
+      "observed": "no live supervisor",
+      "superseding": "STOPPED_EXHAUSTED is a stale synthetic-qual terminal; runtime INACTIVE",
+      "reason": "leftover from pre-reboot synthetic qualification",
+      "next_safe_action": "treat as historical/stale; do not resume; a new authorized run starts a fresh manifest"
+    },
+    {
+      "id": "supervisor_heartbeat",
+      "file": ".foundergate/supervisor/heartbeat.json",
+      "original": {
+        "ts": 1784387375,
+        "pid": 63024,
+        "mode": "USER_SESSION_DETACHED"
+      },
+      "observed": "pid 63024 not alive",
+      "superseding": "STALE_HEARTBEAT: RECONCILED_NOT_DELETED",
+      "reason": "heartbeat from a dead pre-reboot supervisor",
+      "next_safe_action": "treat as historical/stale; do not resume; a new authorized run starts a fresh manifest"
+    },
+    {
+      "id": "supervisor_lease",
+      "file": ".foundergate/supervisor/lease.json",
+      "original": {
+        "supervisor_pid": 63024,
+        "mode": "USER_SESSION_DETACHED",
+        "started": 1784387348,
+        "pgid": 63024
+      },
+      "observed": "pid 63024 not alive",
+      "superseding": "STALE_LEASE: RECONCILED_NOT_DELETED",
+      "reason": "lease held by a dead pre-reboot supervisor",
+      "next_safe_action": "treat as historical/stale; do not resume; a new authorized run starts a fresh manifest"
+    },
+    {
+      "id": "autonomous_run_recovery",
+      "file": ".foundergate/state/autonomous_run_recovery.json",
+      "original": {
+        "schema": "are1-recovery-1",
+        "run_id": "V8B-AUTONOMOUS-WAVE-1",
+        "updated_at": "2026-07-18T05:08:03Z",
+        "envelope": "ACTIVE",
+        "last_next_safe_action": "wide-safe V8-B builds (operational queue); founder gates parked",
+        "main_sha": "83e86f4e377abc0e6396eea742aa35102991b7e4"
+      },
+      "observed": "no live run",
+      "superseding": "HISTORICAL_ONLY (V8B-AUTONOMOUS-WAVE-1 synthetic)",
+      "reason": "stale recovery record from a prior synthetic wave",
+      "next_safe_action": "treat as historical/stale; do not resume; a new authorized run starts a fresh manifest"
+    },
+    {
+      "id": "directive_states_running",
+      "file": "multiple .foundergate/directives/*/state.json",
+      "original": {
+        "note": "fgri-1, paes-1, fgri-paes-recovery-1 state.json say RUNNING"
+      },
+      "observed": "those directives are COMPLETED/MERGED (in main history)",
+      "superseding": "COMPLETED (superseded by merge)",
+      "reason": "DCL corrective records left current_state RUNNING",
+      "next_safe_action": "treat as historical/stale; do not resume; a new authorized run starts a fresh manifest"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "recovery-action",
+  "type": "object",
+  "required": [
+    "run_id",
+    "action_id",
+    "effect_class",
+    "lifecycle",
+    "exact_sha",
+    "ts"
+  ],
+  "properties": {
+    "run_id": {},
+    "action_id": {},
+    "effect_class": {},
+    "lifecycle": {},
+    "exact_sha": {},
+    "ts": {}
+  }
+}

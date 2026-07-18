@@ -1,0 +1,8 @@
+{
+  "schema": "recovery-checkpoint-1",
+  "run_id": null,
+  "original_deadline": null,
+  "last_safe_checkpoint": null,
+  "note": "no active run",
+  "updated_at": "2026-07-18T17:38:20Z"
+}

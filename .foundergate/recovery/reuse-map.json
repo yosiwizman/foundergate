@@ -1,0 +1,52 @@
+{
+  "schema": "orc-reuse-map-1",
+  "generated_at": "2026-07-18T17:38:20Z",
+  "at_main_sha": "acaad2695c85d547e2a2ed14ccf65c48f6615b01",
+  "reused": [
+    {
+      "capability": "atomic singleton + stale reconciliation + PID liveness",
+      "source": "src/supervisor/singleton.mjs",
+      "tests": "singleton.selftest 34/34",
+      "integration": "ORC recovery reads/reconciles the SAME singleton.lock; no second singleton"
+    },
+    {
+      "capability": "lease + heartbeat + deadline + drain + restart limits + stop-rejection",
+      "source": "src/supervisor/supervisor-core.mjs",
+      "tests": "supervisor-core.selftest 42/42",
+      "integration": "ORC journal records against the SAME deadline; no second deadline authority"
+    },
+    {
+      "capability": "held-action fail-closed external boundary",
+      "source": "src/held-actions (existing)",
+      "tests": "existing",
+      "integration": "recovery-law routes ALL external effects through the existing held-action sink; no alternate executor"
+    },
+    {
+      "capability": "append-only directive events + DCL",
+      "source": ".foundergate/directives/*/events.jsonl",
+      "tests": "dcl 32/32",
+      "integration": "ORC appends; never rewrites"
+    },
+    {
+      "capability": "PAES Starter",
+      "source": "tools/terminal0/paes/start-wave2-session",
+      "tests": "singleton 34/34",
+      "integration": "ORC EXTENDS the same starter (START_NEW_RUN/RECOVER_INTERRUPTED_RUN); no second launcher"
+    },
+    {
+      "capability": "Founder Decision Inbox + Autonomy Policy Envelope",
+      "source": "src/gate-router/gate-router.mjs + governance",
+      "tests": "gate-router 70/70",
+      "integration": "recovery gates route through the existing inbox"
+    }
+  ],
+  "must_not_create": [
+    "second singleton",
+    "second lease authority",
+    "second heartbeat authority",
+    "second deadline authority",
+    "second external-action sink",
+    "second supervisor authority",
+    "alternate retry executor"
+  ]
+}

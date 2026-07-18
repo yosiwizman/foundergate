@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "recovery-checkpoint",
+  "type": "object",
+  "required": [
+    "schema",
+    "run_id",
+    "original_deadline"
+  ],
+  "properties": {
+    "schema": {},
+    "run_id": {},
+    "original_deadline": {}
+  }
+}

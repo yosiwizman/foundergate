@@ -1,0 +1,935 @@
+FOUNDERGATE ORC-1R — CORRECTED OUTAGE RECOVERY FLOOR, STATE RECONCILIATION, PAES STARTER REBINDING, AND WAVE-2 QUEUE INTEGRATION
+
+FOUNDER AUTHORITY
+
+This directive replaces the previously drafted ORC-1 instruction.
+
+Do not execute the earlier ORC-1 version.
+
+The existing founder decision remains:
+
+ACTIVATE_SAFE_NARROW_ALLOWLIST
+
+This directive authorizes:
+
+1. append-only reconciliation of stale and conflicting FounderGate runtime records;
+2. implementation and integration of the minimum Outage Recovery Floor;
+3. reuse and extension of existing FounderGate recovery primitives;
+4. preservation of all unique dirty-worktree evidence;
+5. re-binding the same narrow activation authority to the final mechanically resolved, qualified and merged product head;
+6. renewal of that one-time activation authority until 24 hours after successful ORC-1R integration.
+
+This directive does not authorize consuming or executing the activation decision.
+
+The activation decision must remain:
+
+consumed: false
+
+until the founder later runs the updated launcher and the live handoff qualification passes.
+
+Explicitly refused:
+
+FULL_AUTONOMY
+DANGEROUSLY_SKIP_PERMISSIONS
+AUTOMATIC_PERMISSION_ESCALATION
+DIRECT_PUSH_TO_MAIN
+NEW_PAID_ACCOUNT
+NEW_PAY_AS_YOU_GO_COMMITMENT
+M1_ACCESS
+AKIOR_ACCESS
+CUSTOMER_OR_PRIVATE_REPOSITORY
+PRODUCTION_DATA
+PUBLIC_DEPLOYMENT
+PAYMENT
+EXTERNAL_SEND
+LIVE_PROVIDER_ACTIVATION
+OPENSANDBOX_ADOPTION
+VB3_LIVE_ACTION
+48_HOUR_QUALIFICATION
+V8_C_D_E_IMPLEMENTATION
+
+PURPOSE
+
+The PAES founder launcher is built and merged, but the real nine-hour run has not started.
+
+The real electrical outage demonstrated that FounderGate preserved work but still required a technical operator to:
+
+- find the repository;
+- identify the correct worktree;
+- locate the last proven commit;
+- identify the interrupted checker;
+- reconcile Git and process state;
+- resume the correct Claude session;
+- select the next safe action.
+
+The current disk audit also found stale and conflicting runtime records that must be reconciled before any outage-recovery implementation or launcher activation.
+
+ORC-1R must:
+
+1. reconcile current state honestly and append-only;
+2. preserve all historical and dirty-worktree evidence;
+3. reuse existing singleton, lease, heartbeat, deadline, held-action and PANIC_STOP controls;
+4. add the missing generalized recovery journal and effect-aware recovery law;
+5. integrate recovery into the same founder launcher;
+6. re-bind but not consume the narrow activation decision;
+7. place the Founder recovery UI as the first real Wave-2 lane;
+8. return one refreshed launcher action;
+9. not start the real nine-hour run.
+
+OPERATING MODE
+
+MAC MINI PRO ONLY
+DCL-LOCKED
+ARLC-GOVERNED
+ARE-GOVERNED
+FGRI-GOVERNED
+PAES-INTEGRATED
+DISK-FIRST
+APPEND-ONLY
+ATOMIC RECOVERY
+TEST-BEFORE-FOUNDER
+TERMINAL-0 SOLE MERGE SHERIFF
+ONE PRIMARY RECOVERY WRITER
+ONE INDEPENDENT CHECKER
+FRESH CHECKER AFTER MATERIAL CORRECTION
+FRESH POST-MERGE CHECKER
+FRESH POST-MERGE READ-ONLY ADVISOR
+NO LIVE PAES ACTIVATION
+NO ACTIVATION-DECISION CONSUMPTION
+NO NINE-HOUR RUN START
+NO LOSS OF DIRTY WORKTREE EVIDENCE
+NO DUPLICATION OF EXISTING RECOVERY PRIMITIVES
+NO SILENT STATE REWRITE
+NO BACKDATING
+
+PHASE 0 — DCL SELF-CAPTURE
+
+Before any new material action:
+
+1. Locate this exact directive in the active Harvest transcript.
+2. Extract its complete exact body.
+3. Verify the exact title:
+
+FOUNDERGATE ORC-1R — CORRECTED OUTAGE RECOVERY FLOOR, STATE RECONCILIATION, PAES STARTER REBINDING, AND WAVE-2 QUEUE INTEGRATION
+
+4. Verify that it contains:
+   - FOUNDER AUTHORITY;
+   - PURPOSE;
+   - PHASE 0;
+   - PHASE 2 — APPEND-ONLY STATE RECONCILIATION;
+   - PHASE 3 — REUSE EXISTING PRIMITIVES;
+   - PHASE 6 — EFFECT-AWARE RECOVERY LAW;
+   - PHASE 8 — ACTIVATION DECISION REBINDING;
+   - PHASE 12 — FINAL REVIEW BOUND TO INTEGRATED HEAD;
+   - FINAL OUTPUT;
+   - the complete final verdict list.
+5. Verify that it is complete and not truncated.
+6. Compute:
+   - SHA-256;
+   - byte count;
+   - line count;
+   - beginning anchor;
+   - ending anchor.
+7. Store the immutable exact body through DCL.
+8. Re-read and recompute its digest.
+9. Require exact transcript-to-disk equality.
+10. Create complete:
+    - metadata;
+    - state;
+    - dependencies;
+    - queue entry;
+    - append-only events;
+    - recovery state;
+    - next-safe-action;
+    - completion predicates;
+    - stop predicates.
+11. Transition:
+
+RECEIVED
+→ CAPTURED
+→ DIGEST_VERIFIED
+→ QUEUED
+→ READY
+→ RUNNING
+
+If self-capture fails, stop:
+
+ORC1R: SELF-CAPTURE-FAILED
+
+PHASE 1 — MECHANICAL CURRENT-STATE AUDIT
+
+Resolve mechanically:
+
+- host identity and whether this is the authorized Mac Mini Pro;
+- repository root and origin;
+- local main;
+- remote main;
+- ahead and behind counts;
+- open PRs;
+- branches;
+- linked worktrees;
+- dirty worktrees;
+- untracked files;
+- unpushed commits;
+- writer locks;
+- supervisor processes;
+- watchdog processes;
+- worker processes;
+- heartbeats;
+- leases;
+- singleton records;
+- LaunchAgent state;
+- PANIC_STOP;
+- DCL state;
+- ARLC state;
+- ARE state;
+- FGRI state;
+- PAES state;
+- PAES Starter state;
+- activation gate;
+- activation-decision expiry;
+- activation-decision consumption state;
+- current completion matrix;
+- current operational queue;
+- current founder queue;
+- current human-expert queue;
+- exact outage and recovery evidence.
+
+Do not bind any SHA from this directive.
+
+Resolve every SHA from current disk, Git or GitHub.
+
+If the host is not mechanically confirmed as the authorized FounderGate build host, stop:
+
+ORC1R: WRONG-HOST
+
+PHASE 2 — APPEND-ONLY STATE RECONCILIATION
+
+Before writing product code, reconcile all current stale or conflicting state.
+
+The prior read-only audit reported orientation-only conflicts involving:
+
+- an active_autonomous_run record stating RUNNING while no live supervisor exists;
+- a historical or superseded v8b-nightshift identity;
+- a recovery directive marked RUNNING while the active directive pointer names another directive;
+- stale heartbeat and lease records;
+- a supervisor state of STOPPED_EXHAUSTED;
+- an activation decision bound to an older product head.
+
+Mechanically verify each conflict.
+
+For every verified conflict:
+
+1. preserve the original file and historical evidence;
+2. append a reconciliation event at the current time;
+3. identify:
+   - original state;
+   - current observed state;
+   - reason for conflict;
+   - evidence;
+   - superseding state;
+   - next safe action.
+4. never rewrite the historical event as if it never occurred;
+5. never backdate reconciliation;
+6. never describe a dead runtime as RUNNING;
+7. never describe the real nine-hour Wave-2 run as started.
+
+Required current classifications after reconciliation:
+
+LIVE_PAES_RUNTIME:
+INACTIVE unless live process plus advancing heartbeat proves otherwise
+
+REAL_NINE_HOUR_WAVE2:
+NOT_STARTED
+
+HISTORICAL_SYNTHETIC_RUNS:
+PRESERVED
+
+STALE_HEARTBEAT_AND_LEASE:
+RECONCILED_NOT_DELETED
+
+SUPERSEDED_RUN_IDENTITIES:
+HISTORICAL_ONLY
+
+Unresolved state disagreement blocks ORC integration.
+
+PHASE 3 — REUSE EXISTING PRIMITIVES
+
+Do not independently rebuild mechanisms already present and qualified.
+
+Mechanically locate and reuse the current implementations of:
+
+- atomic singleton acquisition;
+- duplicate-supervisor rejection;
+- stale singleton reconciliation;
+- PID liveness checking;
+- lease storage;
+- lease expiry;
+- heartbeat generation;
+- heartbeat freshness;
+- watchdog logic;
+- deadline computation;
+- deadline draining;
+- restart limits;
+- PANIC_STOP;
+- stop state;
+- held-action fail-closed sink;
+- append-only directive events;
+- PAES Starter;
+- Founder Decision Inbox;
+- Autonomy Policy Envelope.
+
+Create a reuse map containing:
+
+- capability;
+- exact source path;
+- exact current SHA;
+- current tests;
+- current limitations;
+- ORC integration method.
+
+ORC may extend these components through stable interfaces.
+
+ORC must not create:
+
+- a second singleton system;
+- a second lease authority;
+- a second heartbeat authority;
+- a second deadline authority;
+- a second external-action sink;
+- a second supervisor authority;
+- an alternate retry executor.
+
+Any required change to an existing primitive must:
+
+- be narrowly scoped;
+- retain its current tests;
+- add ORC regression tests;
+- receive independent checking.
+
+PHASE 4 — PRESERVE UNIQUE DIRTY-WORKTREE EVIDENCE
+
+The earlier audit reported orientation-only evidence of a linked Phase-7.1 worktree containing an uncommitted Playwright evidence file.
+
+Mechanically inspect every linked worktree.
+
+For every dirty worktree:
+
+1. identify the exact branch, base, modified files and purpose;
+2. determine whether changes are unique;
+3. create a no-loss preservation record;
+4. do not reset, clean, checkout over, delete or overwrite the worktree;
+5. do not incorporate unrelated dirty changes into ORC;
+6. exclude the path from ORC writer permissions;
+7. record the worktree in the recovery inventory.
+
+If the reported Phase-7.1 evidence file remains dirty, preserve it exactly.
+
+No cleanup may occur until a separate no-loss proof authorizes it.
+
+PHASE 5 — HISTORICAL OUTAGE CASE
+
+Create a structured historical incident record referencing the existing append-only outage evidence.
+
+Do not rewrite the original event.
+
+Record:
+
+- incident ID;
+- outage type;
+- observation time;
+- prior boot/session evidence if available;
+- interrupted activity;
+- interrupted checker;
+- last proven candidate;
+- exact branch and worktree;
+- repository state after reboot;
+- worktree state after reboot;
+- stale-process result;
+- stale-lock result;
+- local-versus-remote result;
+- preserved uncommitted work;
+- tests rerun;
+- checker rerun;
+- Advisor rerun;
+- merge result;
+- founder burden;
+- next-safe-action;
+- limitations;
+- source-evidence links.
+
+Required classification:
+
+REAL_INTERNAL_OUTAGE_RECOVERY_CASE
+RECOVERY_OBSERVED
+MANUAL_TECHNICAL_RECOVERY
+NOT_AUTOMATIC_PRODUCT_PROOF
+NOT_CUSTOMER_PROOF
+NOT_REBOOT_SURVIVAL_PROOF
+
+PHASE 6 — EFFECT-AWARE RECOVERY LAW
+
+Every recoverable action must carry exactly one effect class:
+
+READ_ONLY
+REVERSIBLE_LOCAL
+REPOSITORY_MUTATION
+EXTERNAL_IDEMPOTENT
+EXTERNAL_UNCERTAIN
+IRREVERSIBLE
+
+Create a single authoritative effect-class registry or schema integrated with the existing PAES, ARE and held-action path.
+
+Rules:
+
+READ_ONLY:
+- may rerun after state validation.
+
+REVERSIBLE_LOCAL:
+- may resume or rerun only after rollback and duplicate checks.
+
+REPOSITORY_MUTATION:
+- must reconcile worktree, branch, commit, remote ancestry, PR and evidence before retry.
+
+EXTERNAL_IDEMPOTENT:
+- may retry only when:
+  - a valid idempotency key exists;
+  - external-state reconciliation proves the effect is absent or safely repeatable;
+  - current authority permits the action.
+
+EXTERNAL_UNCERTAIN:
+- must park;
+- must route a Founder Decision Inbox gate;
+- must not retry automatically.
+
+IRREVERSIBLE:
+- must never retry automatically;
+- must route a founder or human-expert gate.
+
+UNKNOWN OR MISSING EFFECT CLASS:
+FAIL_CLOSED
+PARK_ACTION
+ROUTE_GATE
+
+The existing held-action sink remains the only authorized external-action boundary.
+
+No alternate executor, retry path, recovery helper or worker may bypass it.
+
+Required negative proof:
+
+- unknown class cannot execute;
+- external-uncertain cannot retry;
+- irreversible cannot retry;
+- a worker cannot relabel an effect to avoid the gate;
+- a completed action cannot execute twice;
+- a missing idempotency key blocks external-idempotent retry.
+
+PHASE 7 — RECOVERY JOURNAL AND CHECKPOINT
+
+Create or reconcile durable equivalents of:
+
+.foundergate/recovery/current-run.json
+.foundergate/recovery/checkpoint.json
+.foundergate/recovery/action-journal.jsonl
+.foundergate/recovery/outages.jsonl
+.foundergate/recovery/reconciliation.json
+.foundergate/recovery/resume-decision.json
+.foundergate/recovery/evidence-index.json
+.foundergate/schemas/recovery-checkpoint.schema.json
+.foundergate/schemas/recovery-action.schema.json
+.foundergate/schemas/recovery-verdict.schema.json
+docs/contracts/OUTAGE_RECOVERY_COORDINATOR.md
+docs/status/ORC1_STATUS.md
+docs/runbooks/OUTAGE_RECOVERY.md
+
+Every material action must record:
+
+- run ID;
+- directive digest;
+- blueprint digest;
+- manifest digest;
+- exact repository SHA;
+- branch;
+- worktree;
+- lane;
+- worker;
+- action ID;
+- effect class;
+- authority source;
+- idempotency key where applicable;
+- INTENT_RECORDED time;
+- ACTION_STARTED time;
+- ACTION_COMPLETED time;
+- EVIDENCE_SEALED time;
+- last safe checkpoint;
+- incomplete action;
+- next safe action;
+- original deadline;
+- heartbeat;
+- lease;
+- gate state;
+- evidence.
+
+Required lifecycle:
+
+INTENT_RECORDED
+→ ACTION_STARTED
+→ ACTION_COMPLETED
+→ EVIDENCE_SEALED
+
+After an outage:
+
+- ACTION_STARTED without ACTION_COMPLETED is UNCERTAIN;
+- ACTION_COMPLETED without EVIDENCE_SEALED is COMPLETED_EVIDENCE_UNSEALED;
+- EVIDENCE_SEALED is terminal and cannot execute twice.
+
+Use atomic writes and append-only events.
+
+Handle truncated final journal lines without discarding prior valid records.
+
+PHASE 8 — ACTIVATION DECISION REBINDING
+
+Locate the existing founder activation gate and resolution mechanically.
+
+Verify:
+
+- selected option remains ACTIVATE_SAFE_NARROW_ALLOWLIST;
+- one-time use remains true;
+- consumed remains false;
+- forbidden alternatives remain explicitly refused;
+- the original resolution is historically preserved.
+
+The existing resolution may be bound to a superseded product SHA.
+
+Do not alter or overwrite that historical binding.
+
+Create an append-only re-binding record authorized by this directive.
+
+The re-binding may target only:
+
+- the final ORC-integrated main head;
+- the same repository;
+- the same action:
+  activate_paes_narrow_allowlist;
+- the same Autonomy Policy Envelope;
+- the same restricted permission scope;
+- one-time use;
+- no authority expansion.
+
+Require before re-binding:
+
+1. ORC implementation complete;
+2. candidate checker-clean;
+3. candidate Advisor-ready;
+4. exact-SHA CI green;
+5. ARLC merge complete;
+6. post-merge CI green;
+7. exact final main mechanically resolved;
+8. fresh post-merge checker and Advisor on the final main head;
+9. no material scope expansion;
+10. no hidden live authority.
+
+The renewed re-binding expires 24 hours after successful ORC integration.
+
+Do not consume it.
+
+If the existing decision is already consumed, altered or inconsistent, stop at a true founder gate.
+
+PHASE 9 — STARTER RECOVERY INTEGRATION
+
+Modify the current PAES starter rather than creating a second launcher.
+
+The same starter must support:
+
+START_NEW_RUN
+RECOVER_INTERRUPTED_RUN
+
+Before a new run it must:
+
+- write the initial checkpoint;
+- write the original deadline immutably;
+- initialize the action journal;
+- initialize the clean-stop marker;
+- record the boot/session identifier;
+- record the next safe action.
+
+After an unexpected stop it must:
+
+1. detect missing clean-stop evidence or a changed boot/session identity;
+2. load the original run manifest;
+3. preserve the original deadline;
+4. locate the last safe checkpoint;
+5. reconcile repository, worktree, commit, PR and evidence state;
+6. reconcile PID, singleton, lease and heartbeat;
+7. classify the incomplete action;
+8. apply the effect-aware recovery law;
+9. prevent duplicate action IDs;
+10. produce one recovery verdict.
+
+Allowed verdicts:
+
+RECOVERED_AUTOMATICALLY
+RECOVERED_WITH_LIMITATIONS
+ONE_DECISION_REQUIRED
+RECOVERY_BLOCKED
+POSSIBLE_EXTERNAL_ACTION_CONFLICT
+RUN_DEADLINE_EXPIRED
+INSUFFICIENT_EVIDENCE
+
+A reboot must never silently create a new nine-hour deadline.
+
+If the original deadline expired:
+
+- do not resume execution;
+- seal the interrupted run;
+- leave remaining work queued for a new authorized run.
+
+PHASE 10 — FOUNDER RECOVERY EXPERIENCE
+
+Add the minimum founder-facing recovery experience to the existing starter.
+
+After user login and one launcher action, show:
+
+Unexpected shutdown detected
+Work preserved: YES / NO / UNKNOWN
+Last safe checkpoint
+Incomplete action
+Repository state
+Recovery verdict
+Founder action required
+Current next action
+
+Primary choices:
+
+RESUME SAFELY
+KEEP PAUSED
+REVIEW DETAILS
+
+Do not show raw:
+
+- shell commands;
+- PIDs;
+- worktree paths;
+- session IDs;
+- JSON;
+- raw logs;
+- internal security details.
+
+Do not offer:
+
+FORCE RESUME
+IGNORE EVIDENCE
+SKIP CHECKS
+RETRY IRREVERSIBLE ACTION
+
+This minimum floor may use the existing `.command` launcher.
+
+Do not claim zero-click restart recovery.
+
+The initial post-reboot experience may require one founder click after login.
+
+PHASE 11 — WAVE-2 QUEUE INTEGRATION
+
+Update the ARE Wave-2 blueprint and pending operational queue.
+
+Register:
+
+ORC-1A — MINIMUM OUTAGE RECOVERY FLOOR
+Required current target:
+BUILT
+CHECKER-CLEAN
+ADVISOR-READY
+MERGED
+
+ORC-1B — FOUNDER RECOVERY UI AND LOGIN EXPERIENCE
+Required queue position:
+FIRST AUTHORIZED WIDE-SAFE WAVE-2 LANE
+
+ORC-1C — CONTROLLED REBOOT AND OUTAGE QUALIFICATION
+Status:
+PLANNED
+NOT STARTED
+REQUIRES CONTROLLED TEST CONTRACT
+
+Preserve the remaining authorized queue:
+
+- Bench v1;
+- Founder Hand-Burden;
+- Playwright evidence system;
+- Evidence Viewer;
+- integration cards;
+- cost display;
+- Release Label Ladder;
+- Spec Card Engine;
+- anti-repeat register;
+- License/IP register;
+- data-classification reconciliation;
+- SCL-1 mock and synthetic runtime;
+- machine qualification;
+- completion-matrix updates;
+- final proof capsule.
+
+Keep parked:
+
+- VB2 founder acceptance;
+- VB3 live action;
+- live-provider adoption;
+- 48-hour qualification;
+- V8-C/D/E implementation.
+
+Do not start Wave-2 during this directive.
+
+PHASE 12 — TESTING AND FINAL REVIEW BOUND TO INTEGRATED HEAD
+
+Required tests:
+
+1. clean shutdown;
+2. missing clean-stop marker;
+3. abrupt worker termination;
+4. abrupt supervisor termination;
+5. Terminal closure;
+6. boot/session change;
+7. partial journal write;
+8. truncated journal line;
+9. stale PID;
+10. PID reuse;
+11. stale singleton;
+12. stale lease;
+13. valid live lease;
+14. dirty worktree preservation;
+15. untracked-file preservation;
+16. uncommitted-change preservation;
+17. unpushed-commit preservation;
+18. open-PR reconciliation;
+19. interrupted checker;
+20. interrupted Advisor;
+21. interrupted tests;
+22. interrupted merge preparation;
+23. merge already completed;
+24. action completed but evidence unsealed;
+25. evidence sealed before outage;
+26. duplicate action;
+27. original deadline active;
+28. original deadline expired;
+29. authentication unavailable;
+30. network unavailable;
+31. unknown effect class;
+32. read-only retry;
+33. reversible-local retry;
+34. repository-mutation reconciliation;
+35. external-idempotent reconciliation;
+36. external-uncertain refusal;
+37. irreversible refusal;
+38. alternate held-action bypass attempt;
+39. FGRI gate routing;
+40. founder UI unavailable;
+41. second consecutive outage;
+42. historical replay of the real outage;
+43. activation-decision duplicate consumption;
+44. activation-decision stale-SHA handling;
+45. investor evidence sanitization.
+
+Run:
+
+- schema tests;
+- unit tests;
+- integration tests;
+- negative tests;
+- mutation tests;
+- journal atomicity tests;
+- idempotency tests;
+- duplicate-prevention tests;
+- secret scan;
+- credential scan;
+- forbidden-artifact scan;
+- exact-SHA CI.
+
+Commission an independent ORC checker on the frozen candidate.
+
+Allow up to three bounded correction cycles.
+
+After a material correction:
+
+- freeze a new candidate;
+- rerun affected tests;
+- rerun exact-SHA CI;
+- commission a fresh checker.
+
+After candidate checker-clean, commission a candidate read-only Advisor.
+
+Merge only through ARLC after candidate checker-clean, Advisor-ready and exact-SHA CI green.
+
+After merge:
+
+1. resolve the exact final main head mechanically;
+2. run post-merge CI on that exact head;
+3. commission a fresh post-merge read-only checker on the exact final head;
+4. commission a fresh post-merge read-only Advisor on the exact final head;
+5. confirm the merged product tree matches the reviewed candidate or report every difference;
+6. if product files differ, rerun full affected testing and review;
+7. only then create the activation-decision re-binding record.
+
+The current starter is not trusted for activation until this exact-head review completes.
+
+PHASE 13 — INVESTOR-SAFE EVIDENCE
+
+Ledger:
+
+- directive body and digest;
+- state reconciliation;
+- stale-run findings;
+- supersession records;
+- reused-primitive map;
+- dirty-worktree preservation;
+- outage incident;
+- checkpoints;
+- journal events;
+- effect classes;
+- retry refusals;
+- deadline preservation;
+- duplicate prevention;
+- tests;
+- mutations;
+- checker reports;
+- Advisor reports;
+- CI;
+- PR;
+- merge;
+- post-merge exact-head review;
+- decision re-binding;
+- queue integration;
+- exact SHAs.
+
+Create a sanitized outage-recovery evidence index.
+
+It must exclude:
+
+- credentials;
+- secrets;
+- private account information;
+- raw private machine paths;
+- sensitive raw logs;
+- internal exploit detail inappropriate for investor disclosure.
+
+The investor-facing classification must remain:
+
+REAL INTERNAL OUTAGE RECOVERY CASE
+MANUAL RECOVERY OBSERVED
+AUTOMATIC RECOVERY FLOOR BUILT
+CONTROLLED REBOOT QUALIFICATION NOT YET PERFORMED
+CUSTOMER PROOF NOT CLAIMED
+
+FINAL OUTPUT
+
+Return:
+
+1. Host identity.
+2. Directive digest.
+3. Starting main SHA.
+4. Final main SHA.
+5. Main synchronization.
+6. Open PRs.
+7. Worktree inventory.
+8. Dirty-worktree preservation result.
+9. Stale-state conflicts found.
+10. Append-only reconciliation result.
+11. Historical runtime classification.
+12. DCL result.
+13. ARLC result.
+14. ARE result.
+15. FGRI result.
+16. PAES Starter result.
+17. Reused-primitives map.
+18. Recovery checkpoint path.
+19. Recovery journal path.
+20. Effect-class registry path.
+21. Clean-stop mechanism.
+22. Boot/session detection.
+23. Original-deadline preservation.
+24. Duplicate-action prevention.
+25. Repository reconciliation.
+26. Interrupted-checker reconciliation.
+27. Interrupted-merge reconciliation.
+28. External-idempotent reconciliation.
+29. External-uncertain refusal.
+30. Irreversible-action refusal.
+31. Held-action bypass result.
+32. Founder recovery experience.
+33. One-click resume result.
+34. Historical outage record.
+35. Historical outage replay.
+36. Local tests.
+37. Mutation tests.
+38. Candidate checker verdict.
+39. Candidate Advisor verdict.
+40. Candidate exact-SHA CI.
+41. Merge result.
+42. Post-merge CI.
+43. Final-main checker verdict.
+44. Final-main Advisor verdict.
+45. Activation gate ID.
+46. Historical activation binding.
+47. New exact-head re-binding.
+48. Re-binding expiry.
+49. Decision consumed state.
+50. ORC-1A status.
+51. ORC-1B queue position.
+52. ORC-1C status.
+53. Updated Wave-2 blueprint digest.
+54. Nine-hour run status.
+55. Updated launcher path.
+56. Exact one-line launcher action.
+57. Expected normal-start message.
+58. Expected post-outage recovery message.
+59. Emergency-stop path.
+60. Recovery evidence index.
+61. Investor-safe evidence index.
+62. Proof-capsule path and digest.
+63. Remaining limitations.
+64. Exact next founder action.
+65. Final verdict.
+
+Required exact statements:
+
+ORC-1R CAPTURED AND VERIFIED ITS COMPLETE DIRECTIVE BODY BEFORE EXECUTION.
+
+STALE AND CONFLICTING RUNTIME RECORDS WERE RECONCILED APPEND-ONLY AND WERE NOT SILENTLY REWRITTEN.
+
+THE EXISTING SINGLETON, LEASE, HEARTBEAT, DEADLINE, PANIC-STOP AND HELD-ACTION PRIMITIVES WERE REUSED RATHER THAN DUPLICATED.
+
+UNIQUE DIRTY-WORKTREE EVIDENCE WAS PRESERVED WITHOUT RESET, CLEAN OR OVERWRITE.
+
+FOUNDERGATE RECOVERY AUTHORITY COMES FROM THE RUN MANIFEST, ACTION JOURNAL, EXACT SHA, EVIDENCE AND NEXT SAFE ACTION — NOT CLAUDE CONVERSATIONAL MEMORY.
+
+AN ACTION LEFT AT ACTION_STARTED AFTER AN OUTAGE IS UNCERTAIN UNTIL RECONCILED.
+
+UNKNOWN, EXTERNAL-UNCERTAIN AND IRREVERSIBLE ACTIONS FAIL CLOSED AND CANNOT BYPASS THE HELD-ACTION BOUNDARY.
+
+COMPLETED ACTIONS ARE NOT SILENTLY REPEATED.
+
+A REBOOT DOES NOT SILENTLY EXTEND THE ORIGINAL RUN DEADLINE.
+
+THE SAME FOUNDER LAUNCHER SUPPORTS NEW-RUN START AND SAFE INTERRUPTED-RUN RECOVERY.
+
+THE REAL ELECTRICAL OUTAGE REMAINS A HISTORICAL INTERNAL RECOVERY CASE AND IS NOT PRESENTED AS GENERAL CUSTOMER PROOF.
+
+THE NARROW ACTIVATION DECISION WAS REBOUND APPEND-ONLY TO THE FINAL QUALIFIED HEAD WITHOUT EXPANDING ITS AUTHORITY.
+
+THE ACTIVATION DECISION REMAINS UNCONSUMED.
+
+THE REAL NINE-HOUR WAVE-2 RUN HAS NOT STARTED.
+
+ORC-1B IS FIRST IN THE PENDING AUTHORIZED WAVE-2 QUEUE.
+
+Finish with exactly one verdict:
+
+ORC1R-STARTER: READY-FOR-ONE-COMMAND-FOUNDER-LAUNCH
+ORC1R-STARTER: CHECKER-FINDINGS
+ORC1R-STARTER: POST-MERGE-REVIEW-FINDINGS
+ORC1R-STARTER: HOLD-CORRECTABLE-FINDINGS
+ORC1R-STARTER: TRUE-FOUNDER-GATE
+ORC1R-STARTER: UNRESOLVED-CRITICAL-BLOCKER
+ORC1R-STARTER: WRONG-HOST
+ORC1R-STARTER: SELF-CAPTURE-FAILED
+ORC1R-STARTER: REJECT
+ORC1R-STARTER: INSUFFICIENT-EVIDENCE

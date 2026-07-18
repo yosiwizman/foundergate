@@ -1,0 +1,36 @@
+{
+  "directive_id": "orc-1r",
+  "title": "FOUNDERGATE ORC-1R \u2014 CORRECTED OUTAGE RECOVERY FLOOR, STATE RECONCILIATION, PAES STARTER REBINDING, AND WAVE-2 QUEUE INTEGRATION",
+  "version": 1,
+  "issuer": "founder",
+  "source_line": 23383,
+  "source_type": "user",
+  "sha256": "0a6437ebc0fa009e6f97000e6af61bc39c4e35cdac8a112fd9154b18ffba62ef",
+  "stored_sha256": "0a6437ebc0fa009e6f97000e6af61bc39c4e35cdac8a112fd9154b18ffba62ef",
+  "digest_equal": true,
+  "byte_count": 24663,
+  "line_count": 935,
+  "required_sections_present": {
+    "FOUNDER AUTHORITY": true,
+    "PURPOSE": true,
+    "PHASE 0": true,
+    "PHASE 2 \u2014 APPEND-ONLY STATE RECONCILIATION": true,
+    "PHASE 3 \u2014 REUSE EXISTING PRIMITIVES": true,
+    "PHASE 6 \u2014 EFFECT-AWARE RECOVERY LAW": true,
+    "PHASE 8 \u2014 ACTIVATION DECISION REBINDING": true,
+    "PHASE 12 \u2014 FINAL REVIEW BOUND TO INTEGRATED HEAD": true,
+    "FINAL OUTPUT": true,
+    "ORC1R: SELF-CAPTURE-FAILED": true
+  },
+  "depends_on": [
+    "dcl-1",
+    "arlc-1",
+    "are-1",
+    "fgri-1",
+    "paes-1",
+    "paes-session-1",
+    "paes-starter-1"
+  ],
+  "supersedes": "ORC-1 (earlier draft; do not execute)",
+  "current_state": "DIGEST_VERIFIED"
+}
