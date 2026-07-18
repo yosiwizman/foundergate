@@ -79,5 +79,15 @@ if [ "$QUAL_RC" = "0" ]; then
   say "Logout and reboot survival are not enabled."
   exit 0
 else
+  # Qualification FAILED: tear down the supervisor we started so it is NOT left
+  # orphaned running unattended. Set PANIC (stops on next cycle) AND kill the pid;
+  # the supervisor releases its singleton lock on exit. Decision stays unconsumed.
+  say ""; say "Live handoff qualification failed — stopping the supervisor cleanly..."
+  echo '{"panic_stop":true,"reason":"handoff qualification failed"}' > "$SUP/stop.json"
+  kill "$SUP_PID" 2>/dev/null || true
+  sleep 1
+  kill -9 "$SUP_PID" 2>/dev/null || true
+  rm -f "$LOCK" 2>/dev/null || true
+  say "Supervisor stopped. Activation decision remains unconsumed."
   fail_out
 fi

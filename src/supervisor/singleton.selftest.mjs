@@ -43,6 +43,22 @@ const a4 = acquireSingleton(lp, { pid: 400, run_id: "R4", exact_sha: "s", nonce:
 const content = JSON.stringify(a4.lock);
 ok("15 lock file carries no credential material", !/ghp_|sk-|oauth|token|ANTHROPIC|password|secret/i.test(content));
 
+// ---- WIRING guards (regression for PAES-STARTER-CHECKER F1/F2): the singleton
+// must be actually CALLED on the live path, and the launcher must tear down the
+// supervisor on qualification failure. ----
+import { readFileSync as rf } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join as pj } from "node:path";
+const HERE = dirname(fileURLToPath(import.meta.url));
+const supSession = rf(pj(HERE, "../../tools/terminal0/paes/supervisor-session"), "utf8");
+const starter = rf(pj(HERE, "../../tools/terminal0/paes/start-wave2-session"), "utf8");
+ok("16 supervisor-session actually calls acquireSingleton (wired, not dead code)", /acquireSingleton\(/.test(supSession));
+ok("17 supervisor-session exits when singleton not acquired", /!acq\.acquired/.test(supSession) && /process\.exit\(0\)/.test(supSession));
+ok("18 supervisor-session refreshes lock heartbeat", /last_heartbeat = nowS\(\)/.test(supSession));
+ok("19 supervisor-session releases lock on exit", /releaseSingleton\(/.test(supSession) && /process\.on\("exit"/.test(supSession));
+ok("20 launcher tears down supervisor on qualification failure", /kill "\$SUP_PID"/.test(starter) && /panic_stop":true/.test(starter));
+ok("21 launcher does NOT consume decision on failure path", starter.indexOf("consume-and-start") < starter.indexOf("Live handoff qualification failed"));
+
 rmSync(tmp, { recursive: true, force: true });
 console.log(`\nPAES SINGLETON SELFTEST: ${n - fails.length}/${n} passed`);
 if (fails.length) { console.log("FAILED:", fails.join(", ")); process.exit(1); }
