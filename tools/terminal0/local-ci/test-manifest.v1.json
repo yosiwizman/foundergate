@@ -66,10 +66,11 @@
   },
   "pr183": {
     "REQUIRED_MAC_AND_DOCKER": "src/observability/status-core.selftest.mjs (24 checks) + module-load of status-core.mjs, status-wave2-session, supervisor-session",
-    "REQUIRED_MAC_ONLY": "src/supervisor/supervisor-deadline-integration.selftest.mjs (pgrep host-process inspection) — PR-relevant (supervisor-session changed), executed green on Mac",
+    "REQUIRED_MAC_ONLY": "src/supervisor/supervisor-deadline-integration.selftest.mjs (pgrep host-process inspection) - PR-relevant (supervisor-session changed), executed green on Mac",
     "REQUIRED_DOCKER_ONLY": "none",
     "NOT_APPLICABLE_TO_THIS_PR": "all other repository selftests (executed in Layer A on Mac)",
     "unclassified": 0
   },
-  "digest": "sha256:bd63b97cd24292e90c3f2cc3953634927f5346450d23ab0e3a37a3a8146bb5a5"
+  "digest_canonicalization": "sha256(JSON.stringify(object minus its own digest field), UTF-8, keys in insertion order; content is ASCII-only so UTF-8 and ascii-escaped forms are byte-identical)",
+  "digest": "sha256:4966aafc68dd40a8730d11f81a904841d87f164505b44f937739f2d8d0b548ac"
 }

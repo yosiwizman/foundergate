@@ -12,7 +12,7 @@
   "docker_source_fingerprint": "0fdbb63ea2423a97735e6af7f4f53891d3c04d73",
   "same_source_archive": true,
   "test_manifest_version": "HYBRID_LOCAL_EXACT_SHA_CI_PROFILE_V1",
-  "test_manifest_digest": "sha256:bd63b97cd24292e90c3f2cc3953634927f5346450d23ab0e3a37a3a8146bb5a5",
+  "test_manifest_digest": "sha256:4966aafc68dd40a8730d11f81a904841d87f164505b44f937739f2d8d0b548ac",
   "mac_commands": [
     "git worktree add --detach <disposable> e31153c60faeca528316d39af5a31ecacb56b11a",
     "node scripts/run-selftests.mjs"
@@ -67,5 +67,6 @@
     "DOCKER EXCLUSIONS WERE LIMITED TO MECHANICALLY PROVEN HOST-DEPENDENT TESTS THAT EXECUTED ON THE MAC.",
     "A PASS REQUIRES BOTH THE MAC AND DOCKER LAYERS TO PASS."
   ],
-  "packet_sha256": "sha256:31e412fa669dd6744f6388cc458baee0766b4dc1834819b9a246d12aed299346"
+  "digest_canonicalization": "sha256(JSON.stringify(object minus its own digest field), UTF-8, keys in insertion order; content is ASCII-only so UTF-8 and ascii-escaped forms are byte-identical)",
+  "packet_sha256": "sha256:b1b255dbd9b14a2d8344e7a286c7f17c0d3cd69acb291187035cbdf9b7d84043"
 }
