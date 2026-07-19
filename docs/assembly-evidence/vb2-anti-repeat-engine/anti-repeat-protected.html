@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Anti-repeat — FounderGate</title>
+  <style>
+    :root{
+      --bg:#0d1117;--panel:#161c26;--panel2:#1b2230;--line:#2a3344;
+      --text:#e6ebf2;--muted:#93a0b4;--dim:#6b7789;
+      --blue:#3b82f6;--green:#22c55e;--amber:#f5b83d;--purple:#a78bfa;--red:#f26d6d;--radius:12px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);
+      font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+    .fg-wrap{max-width:920px;margin:0 auto;padding:32px 20px 56px}
+    .fg-eyebrow{color:var(--purple);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+    h1{font-size:27px;margin:.2em 0 .1em}
+    h2{font-size:16px;margin:0 0 4px}
+    .fg-sub{color:var(--muted);margin:0 0 24px}
+    .fg-law{color:var(--text);background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--purple);
+      border-radius:8px;padding:10px 14px;margin:0 0 20px;font-style:italic}
+    .fg-note{color:var(--muted);font-size:12.5px;margin:.4em 0 0}
+    .fg-note strong{color:var(--text)}
+    .fg-note.fg-warn,.fg-warn{color:var(--amber)}
+    .fg-note.fg-ok,.fg-ok{color:var(--green)}
+    .fg-meta{color:var(--dim);font-size:12px;margin:.3em 0 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .fg-body{margin:.5em 0 0}
+    section{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+      padding:18px 20px;margin:0 0 20px}
+    .fg-head-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+    .fg-chip{font-size:11.5px;border-radius:999px;padding:1px 9px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+    .fg-tone-ok{color:var(--green);border-color:rgba(34,197,94,.4)}
+    .fg-tone-bad{color:var(--red);border-color:rgba(242,109,109,.5)}
+    .fg-tone-warn{color:var(--amber);border-color:rgba(245,184,61,.45)}
+    .fg-tone-info{color:var(--blue);border-color:rgba(59,130,246,.4)}
+    .fg-tone-muted{color:var(--muted)}
+    .fg-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+    .fg-list li{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 13px}
+    .fg-warn-list li{border-color:rgba(245,184,61,.35)}
+    .fg-empty{color:var(--muted);margin:.5em 0 0}
+    .fg-stages{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+    .fg-stage{display:flex;align-items:center;gap:12px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 13px}
+    .fg-stage-mark{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;width:1.2em;text-align:center}
+    .fg-stage-on{border-color:rgba(34,197,94,.35)}
+    .fg-stage-on .fg-stage-mark{color:var(--green)}
+    .fg-stage-off{opacity:.7}
+    .fg-stage-off .fg-stage-mark{color:var(--amber)}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--text)}
+    .fg-foot{color:var(--dim);font-size:12.5px;margin-top:8px;text-align:center}
+  </style>
+</head>
+<body>
+  <div class="fg-wrap">
+    <div class="fg-eyebrow">READ-ONLY SURFACE</div>
+    <h1>Anti-repeat</h1>
+    <p class="fg-sub">Did a caught bug become an automated check that will catch it again? A defect is shown as <em>protected — never again</em> only when a regression check is authored, wired into a suite that actually runs, and proven to reproduce the defect. Anything less is said out loud as <em>not yet protected — can recur</em>; a missing part is never invented. This surface only shows the conversion; it authors, wires, and runs nothing.</p>
+    <p class="fg-law">Every bug the founder personally catches becomes a new automated check — the system may be wrong, but never wrong the same way twice.</p>
+    <div class="fg-head-row"><span class="fg-chip fg-tone-muted">Fixture (committed sample — not live)</span></div>
+  <section class="fg-header" aria-readonly="true">
+    <div class="fg-head-row"><h2>Two ports appeared to serve the same page</h2><span class="fg-chip fg-tone-ok">protected — never again</span><span class="fg-chip fg-tone-info">caught by founder</span></div>
+    <p class="fg-meta">Defect <code>BUG-RUN4-PORTS</code> · caught at 2026-07-10</p>
+    <p class="fg-note fg-ok"><strong>regression check wired and proven — this exact failure is now caught automatically (the system may still be wrong a new way)</strong></p>
+  </section>
+  <section aria-readonly="true">
+    <h2>What went wrong</h2>
+    <p class="fg-note">The defect as caught. Shown verbatim; nothing is added.</p>
+    <p class="fg-body">During Run 4 the founder saw two ports appearing to serve the same page (the Project Guide was not visibly on :4500). The launcher printed &#39;ready&#39; after any 200, never checking each port served its OWN app.</p>
+    <p class="fg-meta">Where: scripts/start-stranger-test.mjs · Kind: wrong-output</p>
+    <p class="fg-meta">Evidence: founder observation during the Run-4 stranger test</p>
+  </section>
+  <section aria-readonly="true">
+    <div class="fg-head-row"><h2>The failure pattern</h2><span class="fg-chip fg-tone-ok">generalized</span></div>
+    <p class="fg-note">Derived from the defect's own structure (area · failure kind · symptom). The signature is a one-way hash — safe to show even when the symptom is redacted.</p>
+    <p class="fg-meta">Signature: <code>c4217480</code></p>
+    <p class="fg-note">Names an area and a failure kind — a variant sharing them is described, not just this one instance.</p>
+  </section>
+  <section aria-readonly="true">
+    <div class="fg-head-row"><h2>The regression check</h2><span class="fg-chip fg-tone-ok">wired</span><span class="fg-chip fg-tone-ok">proven</span></div>
+    <p class="fg-meta">Check <code>CHK-LAUNCHER-HEALTH</code></p>
+    <p class="fg-body">The launcher config must have distinct ports, distinct per-app identity markers, distinct port env vars, and the launcher must verify each port serves its own app (marker), not merely return 200.</p>
+    <p class="fg-note">Home: <code>src/tools/launcher-health.selftest.mjs</code></p>
+    <p class="fg-note">Wired (actually runs): <strong>yes</strong></p>
+    <p class="fg-note">Proven (reproduces the defect): <strong>yes</strong></p>
+    <p class="fg-meta">by harness · at 2026-07-10 · self-test header: &quot;anti-repeat for the Run-4 session defect&quot;</p>
+  </section>
+  <section aria-readonly="true">
+    <div class="fg-head-row"><h2>Defect → pattern → regression pipeline</h2><span class="fg-chip fg-tone-ok">5 of 5 present</span></div>
+    <p class="fg-note">Each stage is marked present or absent from the conversion alone; a missing stage is shown, never assumed done.</p>
+    <ul class="fg-stages">
+      <li class="fg-stage fg-stage-on"><span class="fg-stage-mark">✓</span><span>Defect captured — what went wrong, and where</span></li>
+      <li class="fg-stage fg-stage-on"><span class="fg-stage-mark">✓</span><span>Failure pattern generalized — the class of bug, not one instance</span></li>
+      <li class="fg-stage fg-stage-on"><span class="fg-stage-mark">✓</span><span>Regression check authored — a test that would catch it</span></li>
+      <li class="fg-stage fg-stage-on"><span class="fg-stage-mark">✓</span><span>Check wired into a suite that actually runs</span></li>
+      <li class="fg-stage fg-stage-on"><span class="fg-stage-mark">✓</span><span>Check proven to reproduce the defect (red on the bug, green on the fix)</span></li>
+    </ul>
+  </section>
+    <p class="fg-foot">Read-only view · never-again is earned by a wired, proven check, never asserted · a missing pattern/check/proof is never invented · authoring and wiring a check is a later, separately-owned act, not wired here.</p>
+  </div>
+</body>
+</html>
