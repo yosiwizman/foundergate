@@ -1,0 +1,32 @@
+{
+  "schema": "paes-hotfix-rebinding-1",
+  "gate_id": "gate-1784355114-paesact",
+  "authorized_by": "PAES-WORKER-DEADLINE-HOTFIX-3",
+  "created_at": "2026-07-19T00:18:16.000Z",
+  "reason": "supervisor-session + worker helper (executables) changed: hard run deadline, bounded worker execution, process-tree termination; re-bind narrow authority to corrected product head",
+  "preserved_prior": {
+    "prior_target": "94d441b92eea61b2415e49a58b9202af05f50d4d",
+    "prior_expiry": 1784504128,
+    "historical_exact_sha": "2e3c06091bd07fafde974ca14f360f69f8115fd7",
+    "prior_rebinding_refs": [
+      ".foundergate/gates/rebindings/gate-1784355114-paesact-orc1r.json",
+      ".foundergate/gates/rebindings/gate-1784355114-paesact-hotfix.json",
+      ".foundergate/gates/rebindings/gate-1784355114-paesact-handoff-hotfix-2.json",
+      ".foundergate/gates/rebindings/gate-1784355114-paesact-hb-independence.json"
+    ]
+  },
+  "rebound_to_sha": "b1c5596fed71baa282fac2a9e4540a2f6dad986c",
+  "action": "activate_paes_narrow_allowlist",
+  "permission_scope": "narrow allowlist (unchanged)",
+  "one_time_use": true,
+  "consumed": false,
+  "renewed_expiry": 1784506696,
+  "renewed_expiry_iso": "2026-07-20T00:18:16.000Z",
+  "does_not_authorize": [
+    "consumption",
+    "execution",
+    "9h run start",
+    "authority expansion",
+    "PAES start"
+  ]
+}
