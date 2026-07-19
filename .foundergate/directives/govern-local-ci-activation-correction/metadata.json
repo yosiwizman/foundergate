@@ -1,0 +1,10 @@
+{
+  "directive_id": "govern-local-ci-activation-correction",
+  "sha256": "d935a1eac9ab6addf1aff908a07690bf67fc8e6da01d4b4e2efbbb683156c473",
+  "stored_sha256": "d935a1eac9ab6addf1aff908a07690bf67fc8e6da01d4b4e2efbbb683156c473",
+  "digest_equal": true,
+  "byte_count": 3446,
+  "current_state": "DIGEST_VERIFIED",
+  "authorizes": "one-time task-scoped PR#185 activation-semantics correction only",
+  "preserves": "original founder clarification text + DCL digest 89bea2ac unchanged"
+}

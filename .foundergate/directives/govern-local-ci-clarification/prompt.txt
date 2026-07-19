@@ -1,0 +1,46 @@
+I clarify FounderGate governance as follows:
+
+The ARLC prohibition on "self-hosted runners" applies to:
+
+* runners registered with GitHub Actions;
+* persistent runner daemons or services;
+* reusable agents waiting for externally dispatched CI work;
+* long-lived runner credentials;
+* externally triggered execution on founder-controlled hardware without a separate founder-controlled gate.
+
+The prohibition does not apply to ephemeral founder-controlled local exact-SHA verification when all of the following controls are satisfied:
+
+* execution is manually initiated through Terminal-0;
+* no runner is registered with GitHub Actions;
+* no persistent background runner or service exists;
+* no externally dispatched job intake is accepted;
+* the source is acquired from a mechanically verified exact commit SHA;
+* Mac and Docker verification layers use the same canonical source archive and fingerprint;
+* Mac source directories and workspaces are disposable;
+* Docker containers are automatically removed;
+* Docker networking is disabled unless separately authorized and proven necessary;
+* no home directory, secrets, credentials, Docker socket, production data, or customer data are exposed;
+* all affected tests are classified in a machine-readable manifest;
+* no test is silently excluded;
+* mechanically justified host-dependent tests execute on the authorized Mac;
+* test results and evidence identifiers are sealed in reproducible evidence packets;
+* one independent checker and one separate read-only Advisor review the exact head and evidence;
+* Terminal-0 remains the sole merge sheriff;
+* every pull request receives its own founder merge gate.
+
+Under this clarification, qualifying ephemeral local exact-SHA verification may satisfy the `exact_sha_ci_green` evidence predicate.
+
+This clarification does not:
+
+* make Hybrid Local Exact-SHA CI the default provider;
+* authorize any merge;
+* accept the Wave-2 generated features;
+* modify PR #182, PR #183, or PR #184;
+* authorize GitHub billing or spending changes;
+* authorize a registered or persistent self-hosted runner;
+* authorize a PAES rerun;
+* authorize Phase 7.1;
+* authorize AKIOR access;
+* authorize M1 access.
+
+This clarification becomes active repository governance only after it is durably captured through DCL, reviewed by an independent checker and separate read-only Advisor, approved through a separate founder governance merge gate, and merged through Terminal-0.

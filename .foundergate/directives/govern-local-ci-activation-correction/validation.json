@@ -1,0 +1,34 @@
+{
+  "schema": "govclarify-activation-correction-validation-1",
+  "correction_directive_sha256": "d935a1eac9ab6addf1aff908a07690bf67fc8e6da01d4b4e2efbbb683156c473",
+  "corrected_record": ".foundergate/governance/local_exact_sha_ci_clarification.json",
+  "version_before": "1.0.0",
+  "version_after": "1.1.0",
+  "checks": {
+    "json_valid": true,
+    "substantive_clarification_unchanged": {
+      "self_hosted_runner_prohibition_applies_to": "IDENTICAL",
+      "ephemeral_local_ci_exception_17_controls": "IDENTICAL",
+      "does_not": "IDENTICAL",
+      "does_not_supersede": "IDENTICAL",
+      "clarified_fields": "IDENTICAL"
+    },
+    "original_founder_clarification_text_unchanged": true,
+    "original_founder_clarification_dcl_sha256": "89bea2acb55a477905747ac3d8101973b6f33c7e9f46ebdb6cd74d15dc02adaf",
+    "scope_only_record_and_correction_directive": true,
+    "no_arlc_or_loader_or_product_or_supervisor_or_test_change": true
+  },
+  "activation_semantics_fix": {
+    "old_status": "PENDING_FOUNDER_GOVERNANCE_MERGE_GATE (would remain stale on main post-merge -> required a follow-up flip)",
+    "new_status": "ACTIVE_IFF_PRESENT_ON_PROTECTED_MAIN (rule-based; byte-identical record is correct on lane=inactive and on main=active)",
+    "merge_is_complete_and_sufficient_activation_event": true,
+    "no_post_merge_status_flip_required": true,
+    "no_followup_activation_mutation_required": true,
+    "branch_worktree_pr_chat_transcript_presence_non_authoritative": true
+  },
+  "negative_validation": {
+    "does_not_claim_active_pre_merge": true,
+    "does_not_reinterpret_substantive_clarification": true,
+    "does_not_authorize_any_merge_or_product_acceptance": true
+  }
+}

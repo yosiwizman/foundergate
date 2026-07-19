@@ -1,0 +1,50 @@
+I authorize execution of the already-approved Harvest Terminal prompt titled:
+
+FOUNDERGATE PR #185 — NARROW ACTIVATION-SEMANTICS CORRECTION, FINAL-HEAD FREEZE, NON-RECURSIVE INDEPENDENT REVIEW, AND GOVERNANCE-GATE PREPARATION
+
+This is a one-time, task-scoped authorization limited to PR #185's activation-semantics correction.
+
+Harvest / Terminal-0 may:
+
+* mechanically reverify current machine, repository, Git, GitHub, process, PR, and anti-replay state;
+* preserve the original founder clarification text unchanged;
+* preserve the original founder clarification DCL digest exactly;
+* capture this correction authorization through a separate DCL record;
+* modify only the approved governance-only activation-semantics record and directly related correction metadata and validation evidence;
+* make branch, worktree, open-PR, chat, and transcript presence explicitly non-authoritative;
+* define the exact founder-authorized Terminal-0 merge of the exact reviewed PR #185 head into protected main as the complete activation event;
+* make that exact merge sufficient without a later status flip or follow-up activation mutation;
+* complete all governance-record, evidence, validation, PR-title, and PR-body changes before final review begins;
+* run the approved governance validation, negative validation, scope checks, and relevant selftests;
+* finish all commits and PR metadata before freezing the final review candidate;
+* freeze one exact final PR #185 head and tree;
+* obtain one independent checker bound to that frozen head, tree, and evidence identifiers;
+* after checker CLEAN, obtain one separate read-only Advisor bound to the same unchanged head, tree, and evidence identifiers;
+* store review reports externally and bind them by digest without creating a recursive post-review evidence commit;
+* leave PR #185 open and unmerged;
+* return the exact reviewed candidate for a later, separate founder governance merge gate.
+
+This authorization does not permit Harvest / Terminal-0 to:
+
+* merge PR #185;
+* push directly to protected main;
+* change PR #185 after final review begins without invalidating and restarting both reviews;
+* alter the original founder clarification text or its original DCL digest;
+* broaden, narrow, or reinterpret the substantive local exact-SHA CI clarification;
+* rewrite existing ARLC policy;
+* modify a governance loader, merge engine, product, provider, runtime, supervisor, or test source;
+* modify or merge PR #182, PR #183, or PR #184;
+* accept the 13 Wave-2 generated features;
+* make Hybrid Local Exact-SHA CI the default provider;
+* change GitHub billing, spending limits, Actions policy, runner registration, or repository settings;
+* register or operate a persistent self-hosted runner;
+* start or rerun PAES;
+* reuse the consumed Wave-2 activation decision;
+* begin Phase 7.1;
+* access AKIOR;
+* access or contact the M1;
+* claim that the clarification is active before its later exact founder-authorized Terminal-0 merge to protected main.
+
+Any current-state conflict, original-DCL mismatch, required scope expansion, validation failure, checker finding, Advisor finding, final-head drift, or insufficient evidence must fail closed under the statuses defined in the approved Harvest prompt.
+
+This authorization is permission to execute the approved correction and review process only. It is not merge authority, governance activation, product acceptance, or approval of any other pull request.

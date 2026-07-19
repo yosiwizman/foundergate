@@ -1,0 +1,10 @@
+{
+  "directive_id": "govern-local-ci-clarification",
+  "sha256": "89bea2acb55a477905747ac3d8101973b6f33c7e9f46ebdb6cd74d15dc02adaf",
+  "stored_sha256": "89bea2acb55a477905747ac3d8101973b6f33c7e9f46ebdb6cd74d15dc02adaf",
+  "digest_equal": true,
+  "byte_count": 2444,
+  "line_count": 47,
+  "current_state": "DIGEST_VERIFIED",
+  "captures": "founder governance clarification on self-hosted-runner scope + ephemeral local exact-SHA CI exception"
+}
