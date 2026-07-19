@@ -1,0 +1,11 @@
+{
+  "directive_id": "wave2-post-run-reconciliation",
+  "title_verified": true,
+  "sha256": "ff6e8fef84ab772b0aa772e2310437149b5ba6d9c8c438a73ef32286902f541f",
+  "stored_sha256": "ff6e8fef84ab772b0aa772e2310437149b5ba6d9c8c438a73ef32286902f541f",
+  "digest_equal": true,
+  "byte_count": 12156,
+  "line_count": 436,
+  "required_sections_present": true,
+  "current_state": "DIGEST_VERIFIED"
+}

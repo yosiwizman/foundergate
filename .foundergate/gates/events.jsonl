@@ -7,3 +7,5 @@
 {"evt":"decision_rebound","gate_id":"gate-1784355114-paesact","authorized_by":"PAES-HANDOFF-HOTFIX-2","rebound_to_sha":"e5b77d0e56726af5354dcc64478bfab2d2345c1b","consumed":false,"ts":1784416164}
 {"evt":"decision_rebound","gate_id":"gate-1784355114-paesact","authorized_by":"PAES-LAUNCH-SAFETY-HB-INDEPENDENCE","rebound_to_sha":"94d441b92eea61b2415e49a58b9202af05f50d4d","consumed":false,"ts":1784417728}
 {"evt":"decision_rebound","gate_id":"gate-1784355114-paesact","authorized_by":"PAES-WORKER-DEADLINE-HOTFIX-3","rebound_to_sha":"b1c5596fed71baa282fac2a9e4540a2f6dad986c","consumed":false,"ts":1784420296}
+{"evt":"resolution_consumed","gate_id":"gate-1784355114-paesact","reconstructed":true,"run_id":"v8b-wave-2-1784421259","consumed_at":1784421297,"ts":1784469356}
+{"evt":"anti_replay_sealed","gate_id":"gate-1784355114-paesact","outcome":["CONSUMED_ONCE_RECONCILED","REPLAY_BLOCKED","RUN_CLOSED"],"ts":1784469356}

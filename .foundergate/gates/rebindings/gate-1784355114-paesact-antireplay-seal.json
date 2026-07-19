@@ -1,0 +1,30 @@
+{
+  "schema": "paes-antireplay-seal-1",
+  "gate_id": "gate-1784355114-paesact",
+  "authorized_by": "WAVE2-POST-RUN-RECONCILIATION",
+  "created_at": "2026-07-19T13:55:56.000Z",
+  "reconstruction_sources": [
+    "handoff.json",
+    "run_id v8b-wave-2-1784421259",
+    "handoff ts 1784421297",
+    "supervisor events.jsonl (survived)",
+    "queue.json (13 DONE)",
+    "read-only post-run audit"
+  ],
+  "statements": {
+    "decision_consumption_occurred_exactly_once": true,
+    "consumption_belongs_to_run": "v8b-wave-2-1784421259",
+    "decision_may_not_be_consumed_again": true,
+    "false_consumed_false_caused_by_mid_run_checkout": true,
+    "no_new_expiry_or_authorization_window_created": true,
+    "completed_run_remains_closed": true,
+    "rerun_requires_new_founder_gate_and_new_decision": true
+  },
+  "outcome": [
+    "CONSUMED_ONCE_RECONCILED",
+    "REPLAY_BLOCKED",
+    "RUN_CLOSED"
+  ],
+  "preserved_expiry": 1784506696,
+  "preserved_expiry_iso": "2026-07-20T00:18:16.000Z"
+}

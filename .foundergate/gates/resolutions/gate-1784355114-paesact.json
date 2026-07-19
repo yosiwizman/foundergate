@@ -21,13 +21,32 @@
   "evidence": [
     ".foundergate/gates/requests/gate-1784355114-paesact.json"
   ],
-  "consumed": false,
+  "consumed": true,
   "note": "KEEP_IDLE refusal applies ONLY to this gate; future gates may still use KEEP_PAUSED safe default",
-  "resolution_digest": "sha256:25f5e8bf926cc0499b502c861b96e7989bd9f35d142e1b4a4629a8e214e810fc",
+  "resolution_digest": "sha256:523939fa3ec32e34c4c08d148b6bda0453ce47d03f2061c50f800807fb857b55",
   "rebinding_ref": ".foundergate/gates/rebindings/gate-1784355114-paesact-orc1r.json",
   "active_target_sha": "b1c5596fed71baa282fac2a9e4540a2f6dad986c",
   "hotfix_rebinding_ref": ".foundergate/gates/rebindings/gate-1784355114-paesact-hotfix.json",
   "handoff_hotfix2_rebinding_ref": ".foundergate/gates/rebindings/gate-1784355114-paesact-handoff-hotfix-2.json",
   "hb_independence_rebinding_ref": ".foundergate/gates/rebindings/gate-1784355114-paesact-hb-independence.json",
-  "worker_deadline_hotfix3_rebinding_ref": ".foundergate/gates/rebindings/gate-1784355114-paesact-worker-deadline-hotfix-3.json"
+  "worker_deadline_hotfix3_rebinding_ref": ".foundergate/gates/rebindings/gate-1784355114-paesact-worker-deadline-hotfix-3.json",
+  "consumed_at": 1784421297,
+  "consumed_bound": {
+    "run_id": "v8b-wave-2-1784421259",
+    "mode": "USER_SESSION_DETACHED",
+    "activated_sha": "b1c5596fed71baa282fac2a9e4540a2f6dad986c",
+    "note": "consumption reconstructed from handoff.json after mid-run checkout reverted the working-tree marker"
+  },
+  "anti_replay_seal": {
+    "sealed_by": "WAVE2-POST-RUN-RECONCILIATION",
+    "sealed_at": 1784469356,
+    "outcome": [
+      "CONSUMED_ONCE_RECONCILED",
+      "REPLAY_BLOCKED",
+      "RUN_CLOSED"
+    ],
+    "new_expiry_created": false,
+    "new_authority_created": false,
+    "rerun_requires": "a NEW founder gate and a NEW decision"
+  }
 }

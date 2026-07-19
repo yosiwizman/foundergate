@@ -1,0 +1,10 @@
+{
+  "result": "SAFE_TO_LEAVE_UNATTENDED",
+  "mode": "USER_SESSION_DETACHED",
+  "survives_terminal_closure": true,
+  "survives_logout": false,
+  "survives_reboot": false,
+  "run_id": "v8b-wave-2-1784421259",
+  "deadline": 1784453659,
+  "ts": 1784421297
+}
