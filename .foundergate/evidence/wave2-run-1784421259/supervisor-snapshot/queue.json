@@ -1,0 +1,124 @@
+{
+  "schema": "supervisor-queue",
+  "run_id": "v8b-wave-2-1784421259",
+  "jobs": [
+    {
+      "job_id": "w2-1-cto-queue",
+      "state": "DONE",
+      "requirement": "CTO queue",
+      "risk_class": "wide_safe",
+      "prompt": "FounderGate Wave-2 job for requirement \"CTO queue\". Work only under your assigned lane branch; commit locally; do NOT push or merge (Terminal-0 owns merges). If you need broader permission, stop and report it (do not ask an interactive question).",
+      "last_outcome": "SUCCESS",
+      "restart_count": 0
+    },
+    {
+      "job_id": "w2-2-lane-routing",
+      "state": "DONE",
+      "requirement": "Lane routing",
+      "risk_class": "wide_safe",
+      "prompt": "FounderGate Wave-2 job for requirement \"Lane routing\". Work only under your assigned lane branch; commit locally; do NOT push or merge (Terminal-0 owns merges). If you need broader permission, stop and report it (do not ask an interactive question).",
+      "last_outcome": "SUCCESS",
+      "restart_count": 0
+    },
+    {
+      "job_id": "w2-3-bench-v1",
+      "state": "DONE",
+      "requirement": "Bench v1",
+      "risk_class": "wide_safe",
+      "prompt": "FounderGate Wave-2 job for requirement \"Bench v1\". Work only under your assigned lane branch; commit locally; do NOT push or merge (Terminal-0 owns merges). If you need broader permission, stop and report it (do not ask an interactive question).",
+      "last_outcome": "SUCCESS",
+      "restart_count": 0
+    },
+    {
+      "job_id": "w2-4-project-bench",
+      "state": "DONE",
+      "requirement": "Project Bench",
+      "risk_class": "wide_safe",
+      "prompt": "FounderGate Wave-2 job for requirement \"Project Bench\". Work only under your assigned lane branch; commit locally; do NOT push or merge (Terminal-0 owns merges). If you need broader permission, stop and report it (do not ask an interactive question).",
+      "last_outcome": "SUCCESS",
+      "restart_count": 0
+    },
+    {
+      "job_id": "w2-5-founder-hand-burden-score",
+      "state": "DONE",
+      "requirement": "Founder Hand-Burden score",
+      "risk_class": "wide_safe",
+      "prompt": "FounderGate Wave-2 job for requirement \"Founder Hand-Burden score\". Work only under your assigned lane branch; commit locally; do NOT push or merge (Terminal-0 owns merges). If you need broader permission, stop and report it (do not ask an interactive question).",
+      "last_outcome": "SUCCESS",
+      "restart_count": 0
+    },
+    {
+      "job_id": "w2-6-playwright-evidence-system",
+      "state": "DONE",
+      "requirement": "Playwright evidence system",
+      "risk_class": "wide_safe",
+      "prompt": "FounderGate Wave-2 job for requirement \"Playwright evidence system\". Work only under your assigned lane branch; commit locally; do NOT push or merge (Terminal-0 owns merges). If you need broader permission, stop and report it (do not ask an interactive question).",
+      "last_outcome": "SUCCESS",
+      "restart_count": 0
+    },
+    {
+      "job_id": "w2-7-evidence-viewer",
+      "state": "DONE",
+      "requirement": "Evidence Viewer",
+      "risk_class": "wide_safe",
+      "prompt": "FounderGate Wave-2 job for requirement \"Evidence Viewer\". Work only under your assigned lane branch; commit locally; do NOT push or merge (Terminal-0 owns merges). If you need broader permission, stop and report it (do not ask an interactive question).",
+      "last_outcome": "SUCCESS",
+      "restart_count": 0
+    },
+    {
+      "job_id": "w2-8-github-links-integration-cards",
+      "state": "DONE",
+      "requirement": "GitHub links / integration cards",
+      "risk_class": "wide_safe",
+      "prompt": "FounderGate Wave-2 job for requirement \"GitHub links / integration cards\". Work only under your assigned lane branch; commit locally; do NOT push or merge (Terminal-0 owns merges). If you need broader permission, stop and report it (do not ask an interactive question).",
+      "last_outcome": "SUCCESS",
+      "restart_count": 0
+    },
+    {
+      "job_id": "w2-9-cost-display",
+      "state": "DONE",
+      "requirement": "Cost display",
+      "risk_class": "wide_safe",
+      "prompt": "FounderGate Wave-2 job for requirement \"Cost display\". Work only under your assigned lane branch; commit locally; do NOT push or merge (Terminal-0 owns merges). If you need broader permission, stop and report it (do not ask an interactive question).",
+      "last_outcome": "SUCCESS",
+      "restart_count": 0
+    },
+    {
+      "job_id": "w2-10-release-label-ladder",
+      "state": "DONE",
+      "requirement": "Release Label Ladder",
+      "risk_class": "wide_safe",
+      "prompt": "FounderGate Wave-2 job for requirement \"Release Label Ladder\". Work only under your assigned lane branch; commit locally; do NOT push or merge (Terminal-0 owns merges). If you need broader permission, stop and report it (do not ask an interactive question).",
+      "last_outcome": "SUCCESS",
+      "restart_count": 0
+    },
+    {
+      "job_id": "w2-11-spec-card-engine",
+      "state": "DONE",
+      "requirement": "Spec Card Engine",
+      "risk_class": "wide_safe",
+      "prompt": "FounderGate Wave-2 job for requirement \"Spec Card Engine\". Work only under your assigned lane branch; commit locally; do NOT push or merge (Terminal-0 owns merges). If you need broader permission, stop and report it (do not ask an interactive question).",
+      "last_outcome": "SUCCESS",
+      "restart_count": 0
+    },
+    {
+      "job_id": "w2-12-anti-repeat-system",
+      "state": "DONE",
+      "requirement": "Anti-repeat system",
+      "risk_class": "wide_safe",
+      "prompt": "FounderGate Wave-2 job for requirement \"Anti-repeat system\". Work only under your assigned lane branch; commit locally; do NOT push or merge (Terminal-0 owns merges). If you need broader permission, stop and report it (do not ask an interactive question).",
+      "last_outcome": "SUCCESS",
+      "restart_count": 0
+    },
+    {
+      "job_id": "w2-13-minimal-license-ip-register",
+      "state": "DONE",
+      "requirement": "Minimal License/IP register",
+      "risk_class": "wide_safe",
+      "prompt": "FounderGate Wave-2 job for requirement \"Minimal License/IP register\". Work only under your assigned lane branch; commit locally; do NOT push or merge (Terminal-0 owns merges). If you need broader permission, stop and report it (do not ask an interactive question).",
+      "last_outcome": "SUCCESS",
+      "restart_count": 0
+    }
+  ],
+  "updated_at": "2026-07-19T00:34:19.000Z"
+}

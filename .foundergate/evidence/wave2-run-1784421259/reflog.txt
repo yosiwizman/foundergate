@@ -1,0 +1,776 @@
+dfc614f HEAD@{2026-07-18 22:35:09 -0400}: commit: w2-13-minimal-license-ip-register: standalone License/IP register engine + surface
+d4fa42c HEAD@{2026-07-18 22:22:09 -0400}: commit: w2-12-anti-repeat-system: standalone defect→pattern→regression anti-repeat engine + surface
+7b3877c HEAD@{2026-07-18 22:09:15 -0400}: commit: w2-11-spec-card-engine: standalone plain-English spec-card engine + surface
+817e1a5 HEAD@{2026-07-18 21:56:38 -0400}: commit: w2-10-release-label-ladder: label + transition-history surface for the release ladder
+c065601 HEAD@{2026-07-18 21:47:45 -0400}: commit: w2-9-cost-display: per-run / quota / cost-per-PR display surface
+0e77070 HEAD@{2026-07-18 21:39:11 -0400}: commit: w2-8-github-cards: read-only GitHub repo/PR/branch/file integration cards
+76eb824 HEAD@{2026-07-18 21:30:23 -0400}: commit: w2-7-evidence-viewer: readable per-bundle Evidence Viewer surface
+8ad70d8 HEAD@{2026-07-18 21:20:35 -0400}: commit: w2-6-playwright-evidence-index: generalized, surface-agnostic Playwright evidence indexer
+f8ee02c HEAD@{2026-07-18 21:11:05 -0400}: commit: w2-5-founder-hand-burden-score: live scoring surface for founder hand-burden
+5e86eda HEAD@{2026-07-18 21:02:43 -0400}: commit: w2-4-project-bench: Project Bench — per-project result ledger derived from run timeline
+9341db8 HEAD@{2026-07-18 20:54:02 -0400}: commit: w2-3-bench: Bench v1 — component+project result ledger + founder hand-burden surface
+242fc8a HEAD@{2026-07-18 20:45:53 -0400}: commit: w2-2-lane-routing: unified read-only router across ARLC/ARE queues + end-to-end routing evidence
+38f35ad HEAD@{2026-07-18 20:36:04 -0400}: checkout: moving from main to lane/w2-cto-queue-surface
+16957f1 HEAD@{2026-07-18 20:20:07 -0400}: merge origin/main: Fast-forward
+b1c5596 HEAD@{2026-07-18 20:17:10 -0400}: merge origin/main: Fast-forward
+8437793 HEAD@{2026-07-18 19:36:57 -0400}: merge origin/main: Fast-forward
+94d441b HEAD@{2026-07-18 19:34:41 -0400}: merge origin/main: Fast-forward
+cca1bc6 HEAD@{2026-07-18 19:11:02 -0400}: merge origin/main: Fast-forward
+e5b77d0 HEAD@{2026-07-18 19:06:48 -0400}: merge origin/main: Fast-forward
+4118eaf HEAD@{2026-07-18 15:22:40 -0400}: checkout: moving from lane/w2-cto-queue-surface to main
+38f35ad HEAD@{2026-07-18 14:53:33 -0400}: commit: w2-1-cto-queue: dedicated read-only CTO queue surface + live UI evidence
+4118eaf HEAD@{2026-07-18 14:49:56 -0400}: checkout: moving from main to lane/w2-cto-queue-surface
+4118eaf HEAD@{2026-07-18 14:33:42 -0400}: pull -q origin main: Fast-forward
+2b76f1b HEAD@{2026-07-18 14:33:42 -0400}: checkout: moving from main to main
+2b76f1b HEAD@{2026-07-18 14:31:36 -0400}: pull -q origin main: Fast-forward
+8e3bc09 HEAD@{2026-07-18 14:31:35 -0400}: checkout: moving from main to main
+8e3bc09 HEAD@{2026-07-18 13:54:54 -0400}: pull -q origin main: Fast-forward
+88e1a51 HEAD@{2026-07-18 13:54:53 -0400}: checkout: moving from main to main
+88e1a51 HEAD@{2026-07-18 13:49:25 -0400}: pull -q origin main: Fast-forward
+acaad26 HEAD@{2026-07-18 13:49:24 -0400}: checkout: moving from main to main
+acaad26 HEAD@{2026-07-18 13:08:50 -0400}: pull -q origin main: Fast-forward
+b7f3826 HEAD@{2026-07-18 13:08:50 -0400}: checkout: moving from main to main
+b7f3826 HEAD@{2026-07-18 11:14:06 -0400}: pull -q origin main: Fast-forward
+c798dbd HEAD@{2026-07-18 11:14:06 -0400}: checkout: moving from main to main
+c798dbd HEAD@{2026-07-18 02:37:44 -0400}: pull -q origin main: Fast-forward
+2e3c060 HEAD@{2026-07-18 02:37:44 -0400}: checkout: moving from main to main
+2e3c060 HEAD@{2026-07-18 01:09:19 -0400}: pull -q origin main: Fast-forward
+83e86f4 HEAD@{2026-07-18 01:09:18 -0400}: checkout: moving from main to main
+83e86f4 HEAD@{2026-07-18 01:06:49 -0400}: pull -q origin main: Fast-forward
+accb75e HEAD@{2026-07-18 01:06:48 -0400}: checkout: moving from main to main
+accb75e HEAD@{2026-07-18 00:39:11 -0400}: pull -q origin main: Fast-forward
+7e3e963 HEAD@{2026-07-18 00:39:11 -0400}: checkout: moving from main to main
+7e3e963 HEAD@{2026-07-18 00:27:09 -0400}: pull -q origin main: Fast-forward
+2853194 HEAD@{2026-07-18 00:27:09 -0400}: checkout: moving from main to main
+2853194 HEAD@{2026-07-17 23:59:42 -0400}: pull -q origin main: Fast-forward
+e4f69db HEAD@{2026-07-17 23:59:42 -0400}: checkout: moving from main to main
+e4f69db HEAD@{2026-07-17 23:36:15 -0400}: pull -q origin main: Fast-forward
+e1ca198 HEAD@{2026-07-17 23:36:14 -0400}: checkout: moving from main to main
+e1ca198 HEAD@{2026-07-17 03:57:18 -0400}: checkout: moving from main to main
+e1ca198 HEAD@{2026-07-17 03:57:17 -0400}: pull --ff-only origin main: Fast-forward
+b9af1de HEAD@{2026-07-17 03:57:16 -0400}: checkout: moving from registry-ride-along-0718 to main
+24a28d9 HEAD@{2026-07-17 03:56:31 -0400}: commit: ADVISOR_REGISTRY ride-along 2026-07-18: statuses + SA1/SA2 + template fixes + honesty rule
+b9af1de HEAD@{2026-07-17 03:53:29 -0400}: checkout: moving from main to registry-ride-along-0718
+b9af1de HEAD@{2026-07-17 03:53:28 -0400}: checkout: moving from main to main
+b9af1de HEAD@{2026-07-17 01:30:01 -0400}: checkout: moving from main to main
+b9af1de HEAD@{2026-07-17 01:30:01 -0400}: pull --ff-only origin main: Fast-forward
+cfdcf7f HEAD@{2026-07-17 01:30:00 -0400}: checkout: moving from lane-a-vb2-build to main
+f08eda4 HEAD@{2026-07-17 01:29:26 -0400}: commit: Lane A VB2 build: independent adversarial checker CLEAN + mutation proofs (evidence)
+827b790 HEAD@{2026-07-17 01:29:26 -0400}: checkout: moving from main to lane-a-vb2-build
+cfdcf7f HEAD@{2026-07-17 01:26:51 -0400}: checkout: moving from main to main
+cfdcf7f HEAD@{2026-07-17 01:26:50 -0400}: pull --ff-only origin main: Fast-forward
+e55735c HEAD@{2026-07-17 01:26:50 -0400}: checkout: moving from lane-b-vb3-spec to main
+4578cb8 HEAD@{2026-07-17 01:26:18 -0400}: commit: Lane B VB3 spec: apply checker EC-1/EC-2 tightenings + checker CLEAN (evidence)
+3c90416 HEAD@{2026-07-17 01:25:42 -0400}: checkout: moving from main to lane-b-vb3-spec
+e55735c HEAD@{2026-07-17 01:25:19 -0400}: checkout: moving from main to main
+e55735c HEAD@{2026-07-17 01:25:19 -0400}: pull --ff-only origin main: Fast-forward
+068276e HEAD@{2026-07-17 01:25:18 -0400}: checkout: moving from lane-c-d1-catalog to main
+d46961c HEAD@{2026-07-17 01:24:46 -0400}: commit: Lane C D1 catalog: independent adversarial check CLEAN (evidence)
+fe92241 HEAD@{2026-07-17 01:22:01 -0400}: commit: D1 Checker Shortcut Catalog DRAFT (authorizes nothing)
+068276e HEAD@{2026-07-17 01:21:05 -0400}: checkout: moving from main to lane-c-d1-catalog
+068276e HEAD@{2026-07-17 01:21:05 -0400}: checkout: moving from lane-b-vb3-spec to main
+3c90416 HEAD@{2026-07-17 01:21:04 -0400}: commit: VB3 build-spec + acceptance-criteria DRAFT (authorizes nothing)
+068276e HEAD@{2026-07-17 01:19:58 -0400}: checkout: moving from main to lane-b-vb3-spec
+068276e HEAD@{2026-07-17 01:19:58 -0400}: checkout: moving from lane-a-vb2-build to main
+827b790 HEAD@{2026-07-17 01:18:57 -0400}: commit: VB2 build: ClassifiedObjectStore per spec (released by G-VB2-BUILD-RELEASE)
+068276e HEAD@{2026-07-17 01:12:52 -0400}: checkout: moving from main to lane-a-vb2-build
+068276e HEAD@{2026-07-17 01:12:09 -0400}: checkout: moving from main to main
+068276e HEAD@{2026-07-17 01:12:09 -0400}: pull --ff-only origin main: Fast-forward
+389b3cd HEAD@{2026-07-17 01:12:08 -0400}: checkout: moving from vb2-release-d3-sign-gates to main
+bd2f709 HEAD@{2026-07-17 01:11:36 -0400}: commit: Founder gates: G-VB2-BUILD-RELEASE (①) + G-D3-SIGN (②)
+389b3cd HEAD@{2026-07-17 01:10:51 -0400}: checkout: moving from main to vb2-release-d3-sign-gates
+389b3cd HEAD@{2026-07-17 01:04:25 -0400}: checkout: moving from main to main
+389b3cd HEAD@{2026-07-17 01:04:25 -0400}: pull --ff-only origin main: Fast-forward
+bc48f93 HEAD@{2026-07-17 01:04:24 -0400}: checkout: moving from h4-status-law-extension to main
+703848c HEAD@{2026-07-17 01:03:50 -0400}: commit: ADVISOR_REGISTRY: H4 status update + CURRENT-RUN-SUPERSEDES law (registered)
+bc48f93 HEAD@{2026-07-17 01:01:59 -0400}: checkout: moving from main to h4-status-law-extension
+bc48f93 HEAD@{2026-07-17 01:01:58 -0400}: checkout: moving from main to main
+bc48f93 HEAD@{2026-07-17 00:57:57 -0400}: checkout: moving from main to main
+bc48f93 HEAD@{2026-07-17 00:57:56 -0400}: pull --ff-only origin main: Fast-forward
+df0a366 HEAD@{2026-07-17 00:57:56 -0400}: checkout: moving from lane5-hygiene-governance to main
+8671e58 HEAD@{2026-07-17 00:57:06 -0400}: commit: Lane 5(c): refresh ADVISOR_REGISTRY — P1/D3/W1-H1 released 2026-07-17 + VB1 ACCEPTED
+42fcfe9 HEAD@{2026-07-17 00:55:48 -0400}: merge main: Merge made by the 'ort' strategy.
+e7140bf HEAD@{2026-07-17 00:55:48 -0400}: checkout: moving from main to lane5-hygiene-governance
+df0a366 HEAD@{2026-07-17 00:55:48 -0400}: checkout: moving from main to main
+df0a366 HEAD@{2026-07-17 00:55:47 -0400}: pull --ff-only origin main: Fast-forward
+61b6feb HEAD@{2026-07-17 00:55:47 -0400}: checkout: moving from lane3-component-classification to main
+673ff36 HEAD@{2026-07-17 00:55:02 -0400}: commit: Lane 3 D3: independent adversarial check r1 NOT-CLEAN -> r2 CLEAN (evidence)
+fa9c986 HEAD@{2026-07-17 00:54:38 -0400}: checkout: moving from lane5-hygiene-governance to lane3-component-classification
+e7140bf HEAD@{2026-07-17 00:54:38 -0400}: commit: Lane 5 (partial): commit blank Run-5 sheet w/ provenance + Advisor Tracker v8
+61b6feb HEAD@{2026-07-17 00:53:21 -0400}: checkout: moving from main to lane5-hygiene-governance
+61b6feb HEAD@{2026-07-17 00:53:20 -0400}: checkout: moving from lane3-component-classification to main
+fa9c986 HEAD@{2026-07-17 00:52:34 -0400}: commit: D3 round-2: close §4 completeness gap (mechanical criterion + expanded inventory)
+6e4d434 HEAD@{2026-07-17 00:51:39 -0400}: checkout: moving from main to lane3-component-classification
+61b6feb HEAD@{2026-07-17 00:51:26 -0400}: checkout: moving from main to main
+61b6feb HEAD@{2026-07-17 00:51:25 -0400}: pull --ff-only origin main: Fast-forward
+e491f20 HEAD@{2026-07-17 00:51:25 -0400}: checkout: moving from w1h1-accumulator-label to main
+3f558f0 HEAD@{2026-07-17 00:50:51 -0400}: commit: Lane 4 W1-H1: independent adversarial checker CLEAN + mutation proof (evidence)
+325eee3 HEAD@{2026-07-17 00:50:51 -0400}: checkout: moving from main to w1h1-accumulator-label
+e491f20 HEAD@{2026-07-17 00:50:51 -0400}: checkout: moving from main to main
+e491f20 HEAD@{2026-07-17 00:50:50 -0400}: pull --ff-only origin main: Fast-forward
+4f2ec97 HEAD@{2026-07-17 00:50:50 -0400}: checkout: moving from lane2-vb2-build-spec to main
+a08980a HEAD@{2026-07-17 00:49:59 -0400}: commit: Lane 2 VB2 build-spec: independent adversarial check CLEAN (evidence)
+11612ff HEAD@{2026-07-17 00:49:57 -0400}: checkout: moving from main to lane2-vb2-build-spec
+4f2ec97 HEAD@{2026-07-17 00:48:33 -0400}: pull --ff-only origin main -q: Fast-forward
+e1cee56 HEAD@{2026-07-17 00:48:32 -0400}: checkout: moving from main to main
+e1cee56 HEAD@{2026-07-17 00:47:30 -0400}: checkout: moving from lane3-component-classification to main
+6e4d434 HEAD@{2026-07-17 00:45:49 -0400}: commit: D3 Component Classification Doctrine (keystone) DRAFT
+e1cee56 HEAD@{2026-07-17 00:44:55 -0400}: checkout: moving from main to lane3-component-classification
+e1cee56 HEAD@{2026-07-17 00:44:55 -0400}: checkout: moving from lane2-vb2-build-spec to main
+11612ff HEAD@{2026-07-17 00:44:44 -0400}: commit: VB2 build-spec DRAFT: resolve W2 three must-fix items + integrated-soak criterion
+e1cee56 HEAD@{2026-07-17 00:43:41 -0400}: checkout: moving from main to lane2-vb2-build-spec
+e1cee56 HEAD@{2026-07-17 00:42:48 -0400}: checkout: moving from w1h1-accumulator-label to main
+325eee3 HEAD@{2026-07-17 00:42:09 -0400}: commit: W1-H1: label the soak accumulator's availability+duration sub-result
+e1cee56 HEAD@{2026-07-17 00:39:53 -0400}: checkout: moving from main to w1h1-accumulator-label
+e1cee56 HEAD@{2026-07-17 00:37:35 -0400}: checkout: moving from p1-backup-dr to main
+fe25ba6 HEAD@{2026-07-17 00:37:10 -0400}: commit: P1 Backup/DR: tested encrypted backups of both repos + raw soak reports
+e1cee56 HEAD@{2026-07-17 00:37:08 -0400}: checkout: moving from main to p1-backup-dr
+e1cee56 HEAD@{2026-07-17 00:26:26 -0400}: checkout: moving from main to main
+e1cee56 HEAD@{2026-07-17 00:26:26 -0400}: pull --ff-only origin main: Fast-forward
+9b1ad23 HEAD@{2026-07-17 00:26:25 -0400}: checkout: moving from vb1-acceptance-signature to main
+886e028 HEAD@{2026-07-17 00:25:31 -0400}: commit: G4-B-VB1: founder signature — VB1 ACCEPTED at 9b1ad23 (audited tree cba621e)
+9b1ad23 HEAD@{2026-07-17 00:24:26 -0400}: checkout: moving from main to vb1-acceptance-signature
+9b1ad23 HEAD@{2026-07-17 00:13:06 -0400}: checkout: moving from main to main
+9b1ad23 HEAD@{2026-07-17 00:13:05 -0400}: pull --ff-only origin main: Fast-forward
+c09b247 HEAD@{2026-07-17 00:13:05 -0400}: checkout: moving from vb1-remediation-presig to main
+9def9fe HEAD@{2026-07-17 00:12:07 -0400}: commit: VB1 re-audit: ACCEPTANCE-READY (independent, read-only) — evidence
+7b6d824 HEAD@{2026-07-17 00:08:17 -0400}: commit: VB1 remediation + §12 pre-signature audit artifact
+c09b247 HEAD@{2026-07-17 00:06:36 -0400}: checkout: moving from main to vb1-remediation-presig
+c09b247 HEAD@{2026-07-17 00:06:36 -0400}: checkout: moving from main to main
+c09b247 HEAD@{2026-07-17 00:01:14 -0400}: checkout: moving from main to main
+c09b247 HEAD@{2026-07-17 00:01:14 -0400}: pull --ff-only origin main: Fast-forward
+b904366 HEAD@{2026-07-17 00:01:13 -0400}: checkout: moving from vb1-acceptance-audits to main
+1afcaad HEAD@{2026-07-17 00:00:35 -0400}: commit: VB1 acceptance-readiness: two independent audit reports (evidence) + bind-SHA mismatch record
+b904366 HEAD@{2026-07-16 23:59:37 -0400}: checkout: moving from main to vb1-acceptance-audits
+b904366 HEAD@{2026-07-16 23:41:03 -0400}: checkout: moving from main to main
+b904366 HEAD@{2026-07-16 23:41:03 -0400}: pull --ff-only origin main: Fast-forward
+de90295 HEAD@{2026-07-16 23:41:02 -0400}: checkout: moving from registry-fs1-infra-positioning to main
+d224ca7 HEAD@{2026-07-16 23:40:22 -0400}: commit: ADVISOR_REGISTRY: FS1 infra model + PN1-PN6 positioning notes (two-layer LAW)
+de90295 HEAD@{2026-07-16 23:16:12 -0400}: checkout: moving from main to registry-fs1-infra-positioning
+de90295 HEAD@{2026-07-16 23:15:33 -0400}: checkout: moving from main to main
+de90295 HEAD@{2026-07-16 22:58:17 -0400}: checkout: moving from main to main
+de90295 HEAD@{2026-07-16 22:58:17 -0400}: pull --ff-only origin main: Fast-forward
+8b9d957 HEAD@{2026-07-16 22:58:16 -0400}: checkout: moving from registry-fs1-future-stage to main
+70478f3 HEAD@{2026-07-16 22:57:25 -0400}: commit: ADVISOR_REGISTRY: register FS1 Customer Soak-as-a-Feature (future stage)
+8b9d957 HEAD@{2026-07-16 22:55:49 -0400}: checkout: moving from main to registry-fs1-future-stage
+8b9d957 HEAD@{2026-07-16 22:55:24 -0400}: checkout: moving from main to main
+8b9d957 HEAD@{2026-07-16 22:43:13 -0400}: checkout: moving from main to main
+8b9d957 HEAD@{2026-07-16 22:43:13 -0400}: pull --ff-only origin main: Fast-forward
+01b026f HEAD@{2026-07-16 22:43:12 -0400}: checkout: moving from stamp-24h-pass-ledger to main
+8212a66 HEAD@{2026-07-16 22:42:20 -0400}: commit: Stamp EVIDENCE_LEDGER: VB1-SOAK-24H-PASS (§29 endurance COMPLETE)
+01b026f HEAD@{2026-07-16 22:41:22 -0400}: checkout: moving from main to stamp-24h-pass-ledger
+01b026f HEAD@{2026-07-16 22:40:44 -0400}: pull --ff-only origin main -q: Fast-forward
+de9c458 HEAD@{2026-07-16 22:40:43 -0400}: checkout: moving from main to main
+de9c458 HEAD@{2026-07-16 22:39:40 -0400}: checkout: moving from _preview_24h to main
+5d2e271 HEAD@{2026-07-16 22:39:31 -0400}: merge origin/soak-evidence-vb1-24h: Merge made by the 'ort' strategy.
+de9c458 HEAD@{2026-07-16 22:39:31 -0400}: checkout: moving from main to _preview_24h
+de9c458 HEAD@{2026-07-16 22:39:30 -0400}: checkout: moving from main to main
+de9c458 HEAD@{2026-07-16 17:40:46 -0400}: checkout: moving from main to main
+de9c458 HEAD@{2026-07-16 17:40:46 -0400}: pull --ff-only origin main: Fast-forward
+879fc02 HEAD@{2026-07-16 17:40:45 -0400}: checkout: moving from registry-h4-d1-amend to main
+e0f636e HEAD@{2026-07-16 17:39:53 -0400}: commit: ADVISOR_REGISTRY: register H4 No-Split-Brain-UI contract + D1 shortcut #12
+879fc02 HEAD@{2026-07-16 17:38:26 -0400}: checkout: moving from main to registry-h4-d1-amend
+879fc02 HEAD@{2026-07-16 17:36:47 -0400}: checkout: moving from main to main
+879fc02 HEAD@{2026-07-16 11:03:18 -0400}: checkout: moving from main to main
+879fc02 HEAD@{2026-07-16 11:03:17 -0400}: pull --ff-only origin main: Fast-forward
+0cd51f8 HEAD@{2026-07-16 11:03:16 -0400}: checkout: moving from mismatch-host-role-violation to main
+e95f291 HEAD@{2026-07-16 11:02:19 -0400}: commit: MISMATCH-EVENTS: record 2026-07-15 host-role violation (M1 moved main)
+0cd51f8 HEAD@{2026-07-16 11:01:43 -0400}: checkout: moving from main to mismatch-host-role-violation
+0cd51f8 HEAD@{2026-07-16 11:01:24 -0400}: pull --ff-only origin main -q: Fast-forward
+9a3c3f1 HEAD@{2026-07-16 11:01:24 -0400}: checkout: moving from main to main
+9a3c3f1 HEAD@{2026-07-15 21:04:24 -0400}: checkout: moving from main to main
+9a3c3f1 HEAD@{2026-07-15 21:04:24 -0400}: pull --ff-only origin main: Fast-forward
+69fa3e4 HEAD@{2026-07-15 21:04:23 -0400}: checkout: moving from stamp-run2-pass-ledger to main
+dd9338f HEAD@{2026-07-15 21:03:23 -0400}: commit: Stamp EVIDENCE_LEDGER: VB1-SOAK-RUN2-PASS (8-9h leg of §29 satisfied)
+69fa3e4 HEAD@{2026-07-15 21:02:07 -0400}: checkout: moving from main to stamp-run2-pass-ledger
+69fa3e4 HEAD@{2026-07-15 21:01:24 -0400}: checkout: moving from main to main
+69fa3e4 HEAD@{2026-07-15 21:01:23 -0400}: pull --ff-only origin main: Fast-forward
+c8fd6f6 HEAD@{2026-07-15 21:01:22 -0400}: checkout: moving from sheriff-merge-run2-evidence to main
+4bd2f8e HEAD@{2026-07-15 21:00:15 -0400}: checkout: moving from _preview_landing to sheriff-merge-run2-evidence
+9cf2a99 HEAD@{2026-07-15 20:59:57 -0400}: merge sheriff-merge-run2-evidence: Merge made by the 'ort' strategy.
+c8fd6f6 HEAD@{2026-07-15 20:59:57 -0400}: checkout: moving from sheriff-merge-run2-evidence to _preview_landing
+4bd2f8e HEAD@{2026-07-15 20:59:05 -0400}: commit: Remove 0-byte intervention-log.jsonl per founder ruling (option b)
+3665c13 HEAD@{2026-07-15 20:59:05 -0400}: checkout: moving from main to sheriff-merge-run2-evidence
+c8fd6f6 HEAD@{2026-07-15 10:19:24 -0400}: checkout: moving from main to main
+c8fd6f6 HEAD@{2026-07-15 10:19:23 -0400}: pull --ff-only origin main: Fast-forward
+97bae2d HEAD@{2026-07-15 10:19:22 -0400}: checkout: moving from sd-1-driver-intervention-sentinel to main
+edbb108 HEAD@{2026-07-15 10:18:08 -0400}: commit: SD-1: open §29 interventions log at run start with a sentinel line
+97bae2d HEAD@{2026-07-15 10:17:32 -0400}: checkout: moving from main to sd-1-driver-intervention-sentinel
+97bae2d HEAD@{2026-07-15 09:46:57 -0400}: reset: moving to 97bae2df638a8d43a56a1bf5d8e7c0c2332440b5
+97bae2d HEAD@{2026-07-15 09:46:22 -0400}: reset: moving to 97bae2df638a8d43a56a1bf5d8e7c0c2332440b5
+ecf6229 HEAD@{2026-07-15 09:44:34 -0400}: merge origin/soak-evidence-vb1-8h-run2: Merge made by the 'ort' strategy.
+97bae2d HEAD@{2026-07-14 23:56:58 -0400}: pull -q: Fast-forward
+3434ee5 HEAD@{2026-07-14 23:56:57 -0400}: checkout: moving from main to main
+3434ee5 HEAD@{2026-07-14 23:53:08 -0400}: pull -q: Fast-forward
+5981b76 HEAD@{2026-07-14 23:53:07 -0400}: checkout: moving from main to main
+5981b76 HEAD@{2026-07-14 23:52:29 -0400}: checkout: moving from lane-b-ledger-wording to main
+73149d0 HEAD@{2026-07-14 23:51:29 -0400}: commit: Lane B fix: drop truncated git-SHA token from the clarified parenthetical (guard-safe)
+df431bf HEAD@{2026-07-14 23:51:02 -0400}: checkout: moving from main to lane-b-ledger-wording
+5981b76 HEAD@{2026-07-14 23:50:27 -0400}: checkout: moving from lane-b-ledger-wording to main
+df431bf HEAD@{2026-07-14 23:50:25 -0400}: checkout: moving from main to lane-b-ledger-wording
+5981b76 HEAD@{2026-07-14 23:48:43 -0400}: checkout: moving from lane-b-ledger-wording to main
+df431bf HEAD@{2026-07-14 23:47:29 -0400}: commit: Lane B: clarify VB1-SOAK ledger anchor wording (parenthetical only; no field changed)
+5981b76 HEAD@{2026-07-14 23:47:05 -0400}: checkout: moving from main to lane-b-ledger-wording
+5981b76 HEAD@{2026-07-14 23:47:05 -0400}: checkout: moving from main to main
+5981b76 HEAD@{2026-07-14 23:45:44 -0400}: pull -q: Fast-forward
+a5e81c2 HEAD@{2026-07-14 23:45:44 -0400}: checkout: moving from stamp-w3-signature to main
+dd2bf22 HEAD@{2026-07-14 23:45:04 -0400}: commit: GATE 0: stamp founder signature — W3 dispatcher final-authority SIGNED (authorizes no build)
+a5e81c2 HEAD@{2026-07-14 23:44:34 -0400}: checkout: moving from main to stamp-w3-signature
+a5e81c2 HEAD@{2026-07-14 23:34:04 -0400}: pull -q: Fast-forward
+c37faa8 HEAD@{2026-07-14 23:34:03 -0400}: checkout: moving from main to main
+c37faa8 HEAD@{2026-07-14 23:32:41 -0400}: pull -q: Fast-forward
+5bff3f2 HEAD@{2026-07-14 23:32:41 -0400}: checkout: moving from main to main
+5bff3f2 HEAD@{2026-07-14 23:28:23 -0400}: pull -q: Fast-forward
+3ec3f2d HEAD@{2026-07-14 23:28:23 -0400}: checkout: moving from lane-d-hygiene to main
+f6be43b HEAD@{2026-07-14 23:27:29 -0400}: commit: Lane D: evidence hygiene sweep (run 2) — CLEAN
+3ec3f2d HEAD@{2026-07-14 23:27:29 -0400}: checkout: moving from main to lane-d-hygiene
+3ec3f2d HEAD@{2026-07-14 23:26:14 -0400}: pull -q: Fast-forward
+0a48a14 HEAD@{2026-07-14 23:26:13 -0400}: checkout: moving from lane-c-mismatch to main
+956f8ac HEAD@{2026-07-14 23:25:22 -0400}: commit: Lane C: append-only MISMATCH-EVENTS record — 2026-07-14 late (wave-1 M1-soak assertion)
+0a48a14 HEAD@{2026-07-14 23:24:54 -0400}: checkout: moving from main to lane-c-mismatch
+0a48a14 HEAD@{2026-07-14 23:22:54 -0400}: pull -q: Fast-forward
+490440d HEAD@{2026-07-14 23:22:53 -0400}: checkout: moving from stamp-w1-w2-signatures to main
+f91a215 HEAD@{2026-07-14 23:22:03 -0400}: commit: GATE 0: stamp two founder signatures — W1 + W2 authorities SIGNED (authorize no build)
+490440d HEAD@{2026-07-14 23:21:24 -0400}: checkout: moving from main to stamp-w1-w2-signatures
+490440d HEAD@{2026-07-14 21:36:26 -0400}: pull -q: Fast-forward
+50c1096 HEAD@{2026-07-14 21:36:25 -0400}: checkout: moving from main to main
+50c1096 HEAD@{2026-07-14 21:18:48 -0400}: pull -q: Fast-forward
+bf7c905 HEAD@{2026-07-14 21:18:47 -0400}: checkout: moving from wide-rechecks-run2 to main
+8de07d1 HEAD@{2026-07-14 21:17:53 -0400}: commit: Wide-lane independent RE-CHECKS (run 2): W1/W2/W3 CLEAN, W4/#105 CONSISTENT, W5 STALE
+bf7c905 HEAD@{2026-07-14 21:16:44 -0400}: checkout: moving from main to wide-rechecks-run2
+bf7c905 HEAD@{2026-07-14 20:59:54 -0400}: pull -q: Fast-forward
+be116b5 HEAD@{2026-07-14 20:59:53 -0400}: checkout: moving from stamp-soak-vb1-notpassed to main
+c990c98 HEAD@{2026-07-14 20:58:55 -0400}: commit: Stamp Evidence Ledger: VB1 soak VERIFIED-NOT-PASSED (evidence a8200fe merged #115)
+be116b5 HEAD@{2026-07-14 20:57:53 -0400}: checkout: moving from main to stamp-soak-vb1-notpassed
+be116b5 HEAD@{2026-07-14 20:57:53 -0400}: pull -q: Fast-forward
+c22b86a HEAD@{2026-07-14 20:57:52 -0400}: checkout: moving from main to main
+c22b86a HEAD@{2026-07-13 19:09:36 -0400}: pull -q: Fast-forward
+5f3a1d2 HEAD@{2026-07-13 19:09:35 -0400}: checkout: moving from stamp-l1-l4 to main
+22b7abc HEAD@{2026-07-13 19:08:48 -0400}: commit: Stamp Evidence Ledger: L1-L4 evidence-integrity infrastructure merged (gate every §29 soak)
+5f3a1d2 HEAD@{2026-07-13 19:08:20 -0400}: checkout: moving from main to stamp-l1-l4
+5f3a1d2 HEAD@{2026-07-13 19:07:36 -0400}: pull -q: Fast-forward
+69a312b HEAD@{2026-07-13 19:07:35 -0400}: checkout: moving from main to main
+69a312b HEAD@{2026-07-13 19:05:16 -0400}: pull -q: Fast-forward
+a9f0deb HEAD@{2026-07-13 19:05:16 -0400}: checkout: moving from main to main
+a9f0deb HEAD@{2026-07-13 19:02:46 -0400}: pull -q: Fast-forward
+490477a HEAD@{2026-07-13 19:02:46 -0400}: checkout: moving from main to main
+490477a HEAD@{2026-07-13 18:59:20 -0400}: pull -q: Fast-forward
+e3eb4be HEAD@{2026-07-13 18:59:20 -0400}: checkout: moving from main to main
+e3eb4be HEAD@{2026-07-13 18:36:07 -0400}: pull -q: Fast-forward
+2e75c8d HEAD@{2026-07-13 18:36:06 -0400}: checkout: moving from main to main
+2e75c8d HEAD@{2026-07-13 18:32:47 -0400}: pull -q: Fast-forward
+765a1a9 HEAD@{2026-07-13 18:32:46 -0400}: checkout: moving from main to main
+765a1a9 HEAD@{2026-07-13 18:31:59 -0400}: pull -q: Fast-forward
+e7a7608 HEAD@{2026-07-13 18:31:58 -0400}: checkout: moving from stamp-shwl-acceptance to main
+4032170 HEAD@{2026-07-13 18:30:50 -0400}: commit: Founder ACCEPTANCE: SHWL build accepted (G-SHWL-BUILD); steps I/J HELD
+e7a7608 HEAD@{2026-07-13 18:30:21 -0400}: checkout: moving from main to stamp-shwl-acceptance
+e7a7608 HEAD@{2026-07-13 13:29:05 -0400}: pull -q: Fast-forward
+29411dd HEAD@{2026-07-13 13:29:04 -0400}: checkout: moving from main to main
+29411dd HEAD@{2026-07-13 13:00:28 -0400}: pull -q: Fast-forward
+628bb11 HEAD@{2026-07-13 13:00:28 -0400}: checkout: moving from stamp-shwl-build to main
+ea6672f HEAD@{2026-07-13 12:59:40 -0400}: commit: Stamp Evidence Ledger: SHWL BUILD merged (#106 628bb11); ACCEPTANCE pending founder gate
+628bb11 HEAD@{2026-07-13 12:59:16 -0400}: checkout: moving from main to stamp-shwl-build
+628bb11 HEAD@{2026-07-13 12:58:50 -0400}: pull -q: Fast-forward
+a9a2897 HEAD@{2026-07-13 12:58:49 -0400}: checkout: moving from main to main
+a9a2897 HEAD@{2026-07-13 12:04:01 -0400}: pull -q: Fast-forward
+52ae349 HEAD@{2026-07-13 12:04:00 -0400}: checkout: moving from main to main
+52ae349 HEAD@{2026-07-13 11:33:59 -0400}: pull -q: Fast-forward
+6a4488d HEAD@{2026-07-13 11:33:58 -0400}: checkout: moving from stamp-shwl-signature to main
+4570928 HEAD@{2026-07-13 11:32:11 -0400}: commit: Ledger stamp: founder SIGNED + MERGED SHWL authority @ 9ef4fa0 (PR #97); BUILD HELD
+6a4488d HEAD@{2026-07-13 11:30:56 -0400}: checkout: moving from main to stamp-shwl-signature
+6a4488d HEAD@{2026-07-13 11:30:25 -0400}: pull -q: Fast-forward
+ecba6a7 HEAD@{2026-07-13 11:30:24 -0400}: checkout: moving from shwl-authority to main
+9ef4fa0 HEAD@{2026-07-13 11:06:58 -0400}: commit: SHWL authority: apply all founder amendments a-h (one commit, new SHA)
+7c7088e HEAD@{2026-07-12 11:19:34 -0400}: commit: Advisor authority (DRAFT, PENDING approval): Shared Host Workload Lease
+ecba6a7 HEAD@{2026-07-12 11:16:27 -0400}: checkout: moving from main to shwl-authority
+ecba6a7 HEAD@{2026-07-12 10:26:33 -0400}: checkout: moving from main to main
+ecba6a7 HEAD@{2026-07-12 10:26:33 -0400}: pull --ff-only origin main: Fast-forward
+81ad7c3 HEAD@{2026-07-12 10:26:32 -0400}: checkout: moving from stamp-lanes-abcd to main
+503e673 HEAD@{2026-07-12 10:25:36 -0400}: commit: Stamp Evidence Ledger: parallel wide-safe lanes A/B/C/D (each own PR, sheriff-merged)
+81ad7c3 HEAD@{2026-07-12 10:24:47 -0400}: checkout: moving from main to stamp-lanes-abcd
+81ad7c3 HEAD@{2026-07-12 10:24:23 -0400}: pull -q: Fast-forward
+8359249 HEAD@{2026-07-12 10:24:23 -0400}: checkout: moving from main to main
+8359249 HEAD@{2026-07-12 10:14:33 -0400}: pull --ff-only origin main: Fast-forward
+ddafb6d HEAD@{2026-07-12 10:14:33 -0400}: checkout: moving from stamp-vb1-merge to main
+0395939 HEAD@{2026-07-12 10:13:25 -0400}: commit: Stamp Evidence Ledger: VB1 safety core merged (#90 ddafb6d), acceptance HELD for §29 soak
+ddafb6d HEAD@{2026-07-12 10:11:23 -0400}: checkout: moving from main to stamp-vb1-merge
+ddafb6d HEAD@{2026-07-12 10:11:22 -0400}: checkout: moving from main to main
+ddafb6d HEAD@{2026-07-12 10:10:46 -0400}: pull --ff-only origin main: Fast-forward
+321888e HEAD@{2026-07-12 10:10:46 -0400}: checkout: moving from vb1-run-launcher to main
+1293f25 HEAD@{2026-07-12 10:09:05 -0400}: commit: VB1: track session-token.mjs (was silently caught by the *token* secret-ignore glob)
+2c008cc HEAD@{2026-07-12 10:06:46 -0400}: commit: VB1: round-2 checker CLEAN (all 7 findings CLOSED) + track NEW-1/NEW-2/LOW-2 into VB3
+283b6c3 HEAD@{2026-07-12 09:58:53 -0400}: commit: VB1: close ALL round-1 checker findings (2 HIGH, 3 MEDIUM, 2 LOW)
+ec8d165 HEAD@{2026-07-12 09:45:37 -0400}: commit: VB1: §29 soak runner (drives the accumulator over real wall-clock) + soak plan
+a2c4a10 HEAD@{2026-07-12 09:43:17 -0400}: commit: VB1 safety core: session-token + rollback + single-executor containment (act-edge gated)
+321888e HEAD@{2026-07-12 09:37:50 -0400}: checkout: moving from main to vb1-run-launcher
+321888e HEAD@{2026-07-12 09:15:50 -0400}: checkout: moving from main to main
+321888e HEAD@{2026-07-12 09:15:49 -0400}: pull --ff-only origin main: Fast-forward
+e5c614b HEAD@{2026-07-12 09:15:48 -0400}: checkout: moving from stamp-harvest to main
+1976157 HEAD@{2026-07-12 09:15:16 -0400}: commit: stamp: AKIOR-HARVEST ledger + completion report (#88); tighten claim detection
+e5c614b HEAD@{2026-07-12 09:13:57 -0400}: checkout: moving from main to stamp-harvest
+e5c614b HEAD@{2026-07-12 09:13:56 -0400}: checkout: moving from main to main
+e5c614b HEAD@{2026-07-12 09:13:56 -0400}: pull --ff-only origin main: Fast-forward
+105e7ab HEAD@{2026-07-12 09:13:55 -0400}: checkout: moving from akior-harvest to main
+b9b64b0 HEAD@{2026-07-12 09:13:01 -0400}: commit: AKIOR-HARVEST: adopt-now wide-safe (PART A) + pattern-authority citations (PART B)
+105e7ab HEAD@{2026-07-12 09:09:13 -0400}: checkout: moving from main to akior-harvest
+105e7ab HEAD@{2026-07-12 09:07:18 -0400}: checkout: moving from main to main
+105e7ab HEAD@{2026-07-12 09:07:18 -0400}: pull --ff-only origin main: Fast-forward
+f3757be HEAD@{2026-07-12 09:07:17 -0400}: checkout: moving from vb0-accept-and-residuals to main
+19fd2f7 HEAD@{2026-07-12 09:06:44 -0400}: commit: G3-B-VB0 ACCEPTED — first V8-B sub-system accepted + record 2 residuals in contract
+f3757be HEAD@{2026-07-12 09:06:15 -0400}: checkout: moving from main to vb0-accept-and-residuals
+f3757be HEAD@{2026-07-11 17:12:53 -0400}: checkout: moving from main to main
+f3757be HEAD@{2026-07-11 17:12:53 -0400}: pull --ff-only origin main: Fast-forward
+0d35713 HEAD@{2026-07-11 17:12:52 -0400}: checkout: moving from fix-provenance-bold to main
+9f72f24 HEAD@{2026-07-11 17:12:20 -0400}: commit: fix(report-provenance): a **bold** prose line is not a list-item claim
+0d35713 HEAD@{2026-07-11 17:12:20 -0400}: checkout: moving from main to fix-provenance-bold
+0d35713 HEAD@{2026-07-11 17:11:02 -0400}: checkout: moving from main to main
+0d35713 HEAD@{2026-07-11 17:11:02 -0400}: pull --ff-only origin main: Fast-forward
+041c80d HEAD@{2026-07-11 17:11:01 -0400}: checkout: moving from stamp-vb0 to main
+490e17a HEAD@{2026-07-11 17:10:28 -0400}: commit: stamp: Evidence Ledger + VB0 completion report (#84) with AUTHORITY
+041c80d HEAD@{2026-07-11 17:09:57 -0400}: checkout: moving from main to stamp-vb0
+041c80d HEAD@{2026-07-11 17:09:21 -0400}: pull -q: Fast-forward
+b442734 HEAD@{2026-07-11 17:09:20 -0400}: checkout: moving from main to main
+b442734 HEAD@{2026-07-11 17:08:54 -0400}: checkout: moving from vb0-attach-registry to main
+08613ca HEAD@{2026-07-11 17:08:50 -0400}: commit: VB0: commit Terminal Advisor pre-signature audit (verbatim) + CTO disposition
+808dda4 HEAD@{2026-07-11 17:02:40 -0400}: commit: VB0 — Attached Projects Registry (persistent attach): sensitive foundation
+b442734 HEAD@{2026-07-11 16:38:32 -0400}: checkout: moving from main to vb0-attach-registry
+b442734 HEAD@{2026-07-11 16:23:51 -0400}: checkout: moving from main to main
+b442734 HEAD@{2026-07-11 16:23:50 -0400}: pull --ff-only origin main: Fast-forward
+8211993 HEAD@{2026-07-11 16:23:50 -0400}: checkout: moving from stamp-hd to main
+39ae140 HEAD@{2026-07-11 16:23:18 -0400}: commit: stamp: Evidence Ledger + HD completion report (#82) with AUTHORITY (full SHA)
+8211993 HEAD@{2026-07-11 16:22:25 -0400}: checkout: moving from main to stamp-hd
+8211993 HEAD@{2026-07-11 16:22:24 -0400}: checkout: moving from main to main
+8211993 HEAD@{2026-07-11 16:22:24 -0400}: pull --ff-only origin main: Fast-forward
+39b8a8b HEAD@{2026-07-11 16:22:23 -0400}: checkout: moving from honest-duration to main
+bbf251c HEAD@{2026-07-11 16:21:28 -0400}: commit: HONEST-DURATION & SOAK-PROOF LAW (Assembly Manual §29) + soak guard
+39b8a8b HEAD@{2026-07-11 16:21:27 -0400}: checkout: moving from main to honest-duration
+39b8a8b HEAD@{2026-07-11 16:11:41 -0400}: checkout: moving from main to main
+39b8a8b HEAD@{2026-07-11 16:11:40 -0400}: pull --ff-only origin main: Fast-forward
+5770f57 HEAD@{2026-07-11 16:11:40 -0400}: checkout: moving from stamp-refinements to main
+6bed8a4 HEAD@{2026-07-11 16:11:07 -0400}: commit: stamp: Evidence Ledger + completion report for post-accept refinements (#80) with AUTHORITY
+5770f57 HEAD@{2026-07-11 16:10:53 -0400}: checkout: moving from main to stamp-refinements
+5770f57 HEAD@{2026-07-11 16:10:25 -0400}: checkout: moving from main to main
+5770f57 HEAD@{2026-07-11 16:10:25 -0400}: pull --ff-only origin main: Fast-forward
+e2af468 HEAD@{2026-07-11 16:10:24 -0400}: checkout: moving from post-accept-refinements to main
+720b36c HEAD@{2026-07-11 16:09:39 -0400}: commit: Post-acceptance refinements: VBDAG (V8-B contract LIVE + VB0) + M1 + M2
+e2af468 HEAD@{2026-07-11 16:07:46 -0400}: checkout: moving from main to post-accept-refinements
+e2af468 HEAD@{2026-07-11 15:36:16 -0400}: checkout: moving from main to main
+e2af468 HEAD@{2026-07-11 15:36:15 -0400}: pull --ff-only origin main: Fast-forward
+c7b9b4a HEAD@{2026-07-11 15:36:15 -0400}: checkout: moving from stamp-wal-row to main
+40d74b0 HEAD@{2026-07-11 15:35:44 -0400}: commit: stamp: Evidence Ledger WAL row (#78) with AUTHORITY — living-ledger maintenance
+c7b9b4a HEAD@{2026-07-11 15:35:42 -0400}: checkout: moving from main to stamp-wal-row
+c7b9b4a HEAD@{2026-07-11 15:34:41 -0400}: checkout: moving from main to main
+c7b9b4a HEAD@{2026-07-11 15:34:40 -0400}: pull --ff-only origin main: Fast-forward
+b4bc352 HEAD@{2026-07-11 15:34:40 -0400}: checkout: moving from written-authority-law to main
+fc770fe HEAD@{2026-07-11 15:33:36 -0400}: commit: THE WRITTEN-AUTHORITY LAW — authority must resolve on disk before its work
+b4bc352 HEAD@{2026-07-11 15:33:16 -0400}: checkout: moving from main to written-authority-law
+b4bc352 HEAD@{2026-07-11 15:24:02 -0400}: checkout: moving from main to main
+b4bc352 HEAD@{2026-07-11 15:24:02 -0400}: pull --ff-only origin main: Fast-forward
+5e7fef3 HEAD@{2026-07-11 15:24:01 -0400}: checkout: moving from v8a-accepted to main
+36c75ab HEAD@{2026-07-11 15:23:22 -0400}: commit: V8-A ACCEPTED (whole product) + Advisor FD audit committed verbatim
+5e7fef3 HEAD@{2026-07-11 15:23:04 -0400}: checkout: moving from main to v8a-accepted
+5e7fef3 HEAD@{2026-07-11 15:09:17 -0400}: checkout: moving from main to main
+5e7fef3 HEAD@{2026-07-11 15:09:17 -0400}: pull --ff-only origin main: Fast-forward
+5425343 HEAD@{2026-07-11 15:09:16 -0400}: checkout: moving from run7-passed to main
+37dd9d7 HEAD@{2026-07-11 15:08:36 -0400}: commit: Stranger Test Run 7 — PASSED (7/7 unaided) + post-acceptance queue
+5425343 HEAD@{2026-07-11 15:08:21 -0400}: checkout: moving from main to run7-passed
+5425343 HEAD@{2026-07-11 14:41:25 -0400}: checkout: moving from main to main
+5425343 HEAD@{2026-07-11 14:41:25 -0400}: pull --ff-only origin main: Fast-forward
+85a59f9 HEAD@{2026-07-11 14:41:24 -0400}: checkout: moving from fd-witness-stamp to main
+02967bd HEAD@{2026-07-11 14:40:53 -0400}: commit: stamp: FD-IMPLEMENT WITNESSED & MERGED + commit design package + FD evidence
+85a59f9 HEAD@{2026-07-11 14:40:32 -0400}: checkout: moving from main to fd-witness-stamp
+85a59f9 HEAD@{2026-07-11 14:38:55 -0400}: checkout: moving from main to main
+85a59f9 HEAD@{2026-07-11 14:38:34 -0400}: pull --ff-only origin main: Fast-forward
+0414887 HEAD@{2026-07-11 14:38:33 -0400}: checkout: moving from fd-implement to main
+610075e HEAD@{2026-07-11 12:08:01 -0400}: commit: FD-IMPLEMENT: resolve the L0 critical-path parked note (embed now grows)
+e2a570d HEAD@{2026-07-11 12:06:20 -0400}: commit: FD-IMPLEMENT: pixel-faithful founder design v2 across all four apps
+0414887 HEAD@{2026-07-11 12:05:59 -0400}: checkout: moving from main to fd-implement
+0414887 HEAD@{2026-07-11 11:28:56 -0400}: checkout: moving from main to main
+0414887 HEAD@{2026-07-11 11:28:56 -0400}: pull --ff-only origin main: Fast-forward
+f771296 HEAD@{2026-07-11 11:28:55 -0400}: checkout: moving from va-harness-truth to main
+493932a HEAD@{2026-07-11 11:28:02 -0400}: commit: harness-truth: mechanical fixes for the three Run-6 accountability defects
+f771296 HEAD@{2026-07-11 11:20:04 -0400}: checkout: moving from main to va-harness-truth
+f771296 HEAD@{2026-07-11 11:18:23 -0400}: checkout: moving from main to main
+f771296 HEAD@{2026-07-11 11:18:22 -0400}: pull --ff-only origin main: Fast-forward
+8e488f5 HEAD@{2026-07-11 11:18:22 -0400}: checkout: moving from docs/run6-abort-diagnosis to main
+b848ead HEAD@{2026-07-11 11:16:11 -0400}: commit: docs: record Run-6 abort + machine-accountability defect
+8e488f5 HEAD@{2026-07-11 11:15:59 -0400}: checkout: moving from main to docs/run6-abort-diagnosis
+8e488f5 HEAD@{2026-07-11 09:31:42 -0400}: checkout: moving from main to main
+8e488f5 HEAD@{2026-07-11 09:25:56 -0400}: checkout: moving from main to main
+8e488f5 HEAD@{2026-07-11 09:25:55 -0400}: pull --ff-only origin main: Fast-forward
+a9d6ca4 HEAD@{2026-07-11 09:25:55 -0400}: checkout: moving from va-l3-filecabinet to main
+0384fb7 HEAD@{2026-07-11 09:25:23 -0400}: commit: VA L3: File Cabinet readability — List/Reading views, sort, search, dim-prefix
+a9d6ca4 HEAD@{2026-07-11 09:24:57 -0400}: checkout: moving from main to va-l3-filecabinet
+a9d6ca4 HEAD@{2026-07-11 08:00:13 -0400}: checkout: moving from main to main
+a9d6ca4 HEAD@{2026-07-11 08:00:12 -0400}: pull --ff-only origin main: Fast-forward
+65462f7 HEAD@{2026-07-11 08:00:12 -0400}: checkout: moving from ledger-rewitness4 to main
+012f3cb HEAD@{2026-07-11 07:59:40 -0400}: commit: ledgers: record G-VA-REWITNESS-4 (Run 5 authorized)
+65462f7 HEAD@{2026-07-11 07:59:39 -0400}: checkout: moving from main to ledger-rewitness4
+65462f7 HEAD@{2026-07-11 02:14:22 -0400}: checkout: moving from main to main
+65462f7 HEAD@{2026-07-11 02:14:22 -0400}: pull --ff-only origin main: Fast-forward
+00a407a HEAD@{2026-07-11 02:14:21 -0400}: checkout: moving from ledger-va-repair4 to main
+59fb366 HEAD@{2026-07-11 02:13:51 -0400}: commit: ledgers: record Run 4 + VA-REPAIR-4 (PR #66)
+00a407a HEAD@{2026-07-11 02:13:50 -0400}: checkout: moving from main to ledger-va-repair4
+00a407a HEAD@{2026-07-11 02:12:59 -0400}: checkout: moving from main to main
+00a407a HEAD@{2026-07-11 02:12:58 -0400}: pull --ff-only origin main: Fast-forward
+0ab45e2 HEAD@{2026-07-11 02:12:58 -0400}: checkout: moving from va-repair4 to main
+640b70e HEAD@{2026-07-11 02:12:26 -0400}: commit: VA-REPAIR-4: design-system consolidation + Run-4 findings (J0/J1/J2/J4/J5/J6)
+0ab45e2 HEAD@{2026-07-11 02:10:30 -0400}: checkout: moving from main to va-repair4
+0ab45e2 HEAD@{2026-07-11 01:52:49 -0400}: checkout: moving from main to main
+0ab45e2 HEAD@{2026-07-11 01:52:49 -0400}: pull --ff-only origin main: Fast-forward
+bbd282a HEAD@{2026-07-11 01:52:48 -0400}: checkout: moving from va-run4-evidence to main
+6d8d9ac HEAD@{2026-07-11 01:52:16 -0400}: commit: VA: record Stranger Test Run 4 — NOT PASSED (best run yet; visual-coherence findings)
+bbd282a HEAD@{2026-07-11 01:52:16 -0400}: checkout: moving from main to va-run4-evidence
+bbd282a HEAD@{2026-07-10 23:57:21 -0400}: checkout: moving from main to main
+bbd282a HEAD@{2026-07-10 23:57:20 -0400}: pull --ff-only origin main: Fast-forward
+de1d87d HEAD@{2026-07-10 23:57:20 -0400}: checkout: moving from va-visual-law to main
+fe25976 HEAD@{2026-07-10 23:56:48 -0400}: commit: VA-VISUAL-LAW: fix tall-viewport dashboard void + adopt THE VISUAL SELF-REVIEW LAW
+de1d87d HEAD@{2026-07-10 23:56:21 -0400}: checkout: moving from main to va-visual-law
+de1d87d HEAD@{2026-07-10 23:33:46 -0400}: checkout: moving from main to main
+de1d87d HEAD@{2026-07-10 23:33:46 -0400}: pull --ff-only origin main: Fast-forward
+0b41bcd HEAD@{2026-07-10 23:33:45 -0400}: checkout: moving from va-launcher-health to main
+1cceb9e HEAD@{2026-07-10 23:33:14 -0400}: commit: VA session fix: launcher health-checks each port serves its OWN app (Run-4 defect)
+0b41bcd HEAD@{2026-07-10 23:32:52 -0400}: checkout: moving from main to va-launcher-health
+0b41bcd HEAD@{2026-07-10 23:23:14 -0400}: checkout: moving from main to main
+0b41bcd HEAD@{2026-07-10 23:19:00 -0400}: checkout: moving from main to main
+0b41bcd HEAD@{2026-07-10 23:18:59 -0400}: pull --ff-only origin main: Fast-forward
+55545a9 HEAD@{2026-07-10 23:18:59 -0400}: checkout: moving from ledger-fixture-harden to main
+afd74c3 HEAD@{2026-07-10 23:18:33 -0400}: commit: ledgers: record VA-FIXTURE-HARDEN (PR #61)
+55545a9 HEAD@{2026-07-10 23:18:32 -0400}: checkout: moving from main to ledger-fixture-harden
+55545a9 HEAD@{2026-07-10 23:18:26 -0400}: checkout: moving from main to main
+55545a9 HEAD@{2026-07-10 23:18:26 -0400}: pull --ff-only origin main: Fast-forward
+9f32758 HEAD@{2026-07-10 23:18:25 -0400}: checkout: moving from va-fixture-harden to main
+8856d84 HEAD@{2026-07-10 23:17:19 -0400}: checkout: moving from main to va-fixture-harden
+8856d84 HEAD@{2026-07-10 23:16:37 -0400}: commit: VA-FIXTURE-HARDEN: servers default to a throwaway fixture copy (writes now impossible)
+9f32758 HEAD@{2026-07-10 23:05:42 -0400}: checkout: moving from main to main
+9f32758 HEAD@{2026-07-10 23:05:41 -0400}: pull --ff-only origin main: Fast-forward
+3f80afd HEAD@{2026-07-10 23:05:41 -0400}: checkout: moving from ledger-va-repair3 to main
+84dbbdf HEAD@{2026-07-10 23:05:09 -0400}: commit: ledgers: record Run 3 + VA-REPAIR-3 (PR #59)
+3f80afd HEAD@{2026-07-10 23:05:08 -0400}: checkout: moving from main to ledger-va-repair3
+3f80afd HEAD@{2026-07-10 23:04:35 -0400}: checkout: moving from main to main
+3f80afd HEAD@{2026-07-10 23:04:34 -0400}: pull --ff-only origin main: Fast-forward
+612b1ec HEAD@{2026-07-10 23:04:34 -0400}: checkout: moving from va-repair3 to main
+3cb2dd8 HEAD@{2026-07-10 23:04:06 -0400}: commit: VA-REPAIR-3: research-grounded identity-first 3-layer dashboard + realistic Luna Café demo
+612b1ec HEAD@{2026-07-10 22:52:34 -0400}: checkout: moving from main to va-repair3
+612b1ec HEAD@{2026-07-10 22:50:47 -0400}: checkout: moving from main to main
+612b1ec HEAD@{2026-07-10 22:50:47 -0400}: pull --ff-only origin main: Fast-forward
+7c7f34a HEAD@{2026-07-10 22:50:46 -0400}: checkout: moving from va-run3-evidence to main
+8b0c62a HEAD@{2026-07-10 22:50:16 -0400}: commit: VA: record Stranger Test Run 3 — FAILED (acceptance candidate; name regression + density + skeletal demo)
+7c7f34a HEAD@{2026-07-10 22:50:16 -0400}: checkout: moving from main to va-run3-evidence
+7c7f34a HEAD@{2026-07-10 21:33:28 -0400}: checkout: moving from main to main
+7c7f34a HEAD@{2026-07-10 21:33:27 -0400}: pull --ff-only origin main: Fast-forward
+f077d2d HEAD@{2026-07-10 21:33:27 -0400}: checkout: moving from va-audit-provenance to main
+4e21510 HEAD@{2026-07-10 21:32:46 -0400}: commit: docs: provenance note on the pre-acceptance audit (subagent-run, not the Advisor lane)
+f077d2d HEAD@{2026-07-10 21:32:41 -0400}: checkout: moving from main to va-audit-provenance
+f077d2d HEAD@{2026-07-10 21:30:11 -0400}: checkout: moving from main to main
+f077d2d HEAD@{2026-07-10 21:30:11 -0400}: pull --ff-only origin main: Fast-forward
+689eb44 HEAD@{2026-07-10 21:30:10 -0400}: checkout: moving from va-audit-tidy to main
+049917d HEAD@{2026-07-10 21:29:31 -0400}: commit: VA: commit independent pre-acceptance audit + fix its two non-blocking findings
+689eb44 HEAD@{2026-07-10 21:29:31 -0400}: checkout: moving from main to va-audit-tidy
+689eb44 HEAD@{2026-07-10 21:13:10 -0400}: checkout: moving from main to main
+689eb44 HEAD@{2026-07-10 21:13:09 -0400}: pull --ff-only origin main: Fast-forward
+2dd7c95 HEAD@{2026-07-10 21:13:09 -0400}: checkout: moving from ledger-honesty to main
+3a236df HEAD@{2026-07-10 21:12:37 -0400}: commit: ledgers: record VA-HONESTY-RESTORE (PR #54)
+2dd7c95 HEAD@{2026-07-10 21:12:37 -0400}: checkout: moving from main to ledger-honesty
+2dd7c95 HEAD@{2026-07-10 21:12:04 -0400}: checkout: moving from main to main
+2dd7c95 HEAD@{2026-07-10 21:12:04 -0400}: pull --ff-only origin main: Fast-forward
+36ff835 HEAD@{2026-07-10 21:12:03 -0400}: checkout: moving from va-honesty-restore to main
+e9a8afe HEAD@{2026-07-10 21:11:36 -0400}: commit: VA-HONESTY-RESTORE: relocate dropped A1 honesty translations; model-derive Safety chip
+36ff835 HEAD@{2026-07-10 21:11:36 -0400}: checkout: moving from main to va-honesty-restore
+36ff835 HEAD@{2026-07-10 20:44:06 -0400}: checkout: moving from main to main
+36ff835 HEAD@{2026-07-10 20:44:06 -0400}: pull --ff-only origin main: Fast-forward
+bcaa632 HEAD@{2026-07-10 20:44:05 -0400}: checkout: moving from ledger-va-repair2 to main
+a9f33d8 HEAD@{2026-07-10 20:43:34 -0400}: commit: ledgers: record Run 2 + VA-REPAIR-2 (PR #52)
+bcaa632 HEAD@{2026-07-10 20:43:20 -0400}: checkout: moving from main to ledger-va-repair2
+bcaa632 HEAD@{2026-07-10 20:42:43 -0400}: checkout: moving from main to main
+bcaa632 HEAD@{2026-07-10 20:42:43 -0400}: pull --ff-only origin main: Fast-forward
+c864736 HEAD@{2026-07-10 20:42:42 -0400}: checkout: moving from va-repair2-dashboard to main
+99f5b2c HEAD@{2026-07-10 20:42:12 -0400}: commit: VA-REPAIR-2: friendly dashboard redesign (Run-2 findings F1/F2/F3)
+c864736 HEAD@{2026-07-10 20:31:43 -0400}: checkout: moving from main to va-repair2-dashboard
+c864736 HEAD@{2026-07-10 20:30:45 -0400}: checkout: moving from main to main
+c864736 HEAD@{2026-07-10 20:30:44 -0400}: pull --ff-only origin main: Fast-forward
+fa8152e HEAD@{2026-07-10 20:30:43 -0400}: checkout: moving from va-run2-evidence to main
+628ac1b HEAD@{2026-07-10 20:30:05 -0400}: commit: VA: record Stranger Test Run 2 — NOT PASSED (major improvement, 3 findings)
+fa8152e HEAD@{2026-07-10 20:30:05 -0400}: checkout: moving from main to va-run2-evidence
+fa8152e HEAD@{2026-07-10 14:57:01 -0400}: checkout: moving from main to main
+fa8152e HEAD@{2026-07-10 14:57:01 -0400}: pull --ff-only origin main: Fast-forward
+bec9e01 HEAD@{2026-07-10 14:57:00 -0400}: checkout: moving from ledger-va-locks to main
+00be80c HEAD@{2026-07-10 14:56:14 -0400}: commit: ledgers: record VA-LOCKS (PR #49) — Evidence Ledger + Where-Am-I
+bec9e01 HEAD@{2026-07-10 14:55:58 -0400}: checkout: moving from main to ledger-va-locks
+bec9e01 HEAD@{2026-07-10 14:55:29 -0400}: checkout: moving from main to main
+bec9e01 HEAD@{2026-07-10 14:55:29 -0400}: pull --ff-only origin main: Fast-forward
+bba9f36 HEAD@{2026-07-10 14:55:28 -0400}: checkout: moving from va-locks to main
+2ea6e35 HEAD@{2026-07-10 14:54:59 -0400}: commit: VA-LOCKS: permanent controls closing two Run-1 incident classes
+bba9f36 HEAD@{2026-07-10 14:52:35 -0400}: checkout: moving from main to va-locks
+bba9f36 HEAD@{2026-07-10 14:33:45 -0400}: checkout: moving from main to main
+bba9f36 HEAD@{2026-07-10 14:33:45 -0400}: pull --ff-only origin main: Fast-forward
+9db6b43 HEAD@{2026-07-10 14:33:44 -0400}: checkout: moving from va-repair-close to main
+cdeab23 HEAD@{2026-07-10 14:33:04 -0400}: commit: VA-REPAIR close: before/after evidence + ledgers (5 fixes, all guard-locked)
+9db6b43 HEAD@{2026-07-10 14:33:03 -0400}: checkout: moving from main to va-repair-close
+9db6b43 HEAD@{2026-07-10 14:30:48 -0400}: pull -q origin main: Fast-forward
+95ee7b0 HEAD@{2026-07-10 14:30:47 -0400}: checkout: moving from main to main
+95ee7b0 HEAD@{2026-07-10 14:30:42 -0400}: pull -q origin main: Fast-forward
+1556620 HEAD@{2026-07-10 14:30:41 -0400}: checkout: moving from main to main
+1556620 HEAD@{2026-07-10 14:30:35 -0400}: checkout: moving from main to main
+1556620 HEAD@{2026-07-10 14:30:34 -0400}: pull --ff-only origin main: Fast-forward
+b1ef0e2 HEAD@{2026-07-10 14:30:34 -0400}: checkout: moving from va-d1-d5-final to main
+3db9932 HEAD@{2026-07-10 14:29:23 -0400}: checkout: moving from va-d1-d5 to va-d1-d5-final
+3db9932 HEAD@{2026-07-10 14:28:58 -0400}: commit (amend): VA-REPAIR D1+D5: dashboard scanability + raised do-not-touch (stranger Run-1)
+90e3b37 HEAD@{2026-07-10 14:28:35 -0400}: commit: VA-REPAIR D1+D5: dashboard scanability + raised do-not-touch (stranger Run-1)
+b1ef0e2 HEAD@{2026-07-10 14:23:06 -0400}: checkout: moving from main to va-d1-d5
+b1ef0e2 HEAD@{2026-07-10 14:23:06 -0400}: checkout: moving from main to main
+b1ef0e2 HEAD@{2026-07-10 14:19:22 -0400}: checkout: moving from main to main
+b1ef0e2 HEAD@{2026-07-10 14:19:21 -0400}: pull --ff-only origin main: Fast-forward
+e900773 HEAD@{2026-07-10 14:19:21 -0400}: checkout: moving from va-fix-fixture to main
+d5d77c5 HEAD@{2026-07-10 14:17:55 -0400}: commit: VA fix: restore fixture corrupted by the live session; harden launcher
+e900773 HEAD@{2026-07-10 14:16:45 -0400}: checkout: moving from main to va-fix-fixture
+e900773 HEAD@{2026-07-10 14:14:19 -0400}: checkout: moving from main to main
+e900773 HEAD@{2026-07-10 14:14:18 -0400}: pull --ff-only origin main: Fast-forward
+691b2e2 HEAD@{2026-07-10 14:14:18 -0400}: checkout: moving from va-run1-evidence to main
+388da41 HEAD@{2026-07-10 14:13:49 -0400}: commit: VA: record Stranger Test Run 1 — FAILED (V8-A acceptance stays PENDING)
+691b2e2 HEAD@{2026-07-10 14:13:49 -0400}: checkout: moving from main to va-run1-evidence
+691b2e2 HEAD@{2026-07-10 12:13:37 -0400}: checkout: moving from main to main
+691b2e2 HEAD@{2026-07-10 12:13:37 -0400}: pull --ff-only origin main: Fast-forward
+bc37136 HEAD@{2026-07-10 12:13:36 -0400}: checkout: moving from ledger-va-prep to main
+2ea9e3d HEAD@{2026-07-10 12:13:04 -0400}: commit: ledgers: record VA-PREP+WIDE (PR #41, CI c167641)
+bc37136 HEAD@{2026-07-10 12:13:01 -0400}: checkout: moving from main to ledger-va-prep
+bc37136 HEAD@{2026-07-10 12:12:08 -0400}: checkout: moving from main to main
+bc37136 HEAD@{2026-07-10 12:12:07 -0400}: pull --ff-only origin main: Fast-forward
+4746243 HEAD@{2026-07-10 12:12:06 -0400}: checkout: moving from g4a4-va-start to main
+c167641 HEAD@{2026-07-10 12:11:32 -0400}: commit: VA-PREP+WIDE: Stranger Test kit + V8-B draft + Archive v5; record G4-A4/VA-START
+4746243 HEAD@{2026-07-10 12:05:03 -0400}: checkout: moving from main to g4a4-va-start
+4746243 HEAD@{2026-07-10 12:01:59 -0400}: checkout: moving from main to main
+4746243 HEAD@{2026-07-10 12:01:58 -0400}: pull --ff-only origin main: Fast-forward
+67dbb99 HEAD@{2026-07-10 12:01:58 -0400}: checkout: moving from a4-close to main
+95dbbd3 HEAD@{2026-07-10 12:01:19 -0400}: commit: A4-CLOSE: V8-A4 Project Guide — G2-A4 PASSED, raw-verified; G4-A3 amendment
+67dbb99 HEAD@{2026-07-10 11:58:54 -0400}: checkout: moving from main to a4-close
+67dbb99 HEAD@{2026-07-10 11:36:21 -0400}: checkout: moving from main to main
+67dbb99 HEAD@{2026-07-10 11:36:21 -0400}: pull --ff-only origin main: Fast-forward
+a957b01 HEAD@{2026-07-10 11:36:20 -0400}: checkout: moving from ledger-a4-build to main
+e4cbd64 HEAD@{2026-07-10 11:35:49 -0400}: commit: ledgers: stamp V8-A4 build (PR #38, product-final a957b01, CI 29104173885)
+a957b01 HEAD@{2026-07-10 11:35:02 -0400}: checkout: moving from main to ledger-a4-build
+a957b01 HEAD@{2026-07-10 11:34:23 -0400}: checkout: moving from main to main
+a957b01 HEAD@{2026-07-10 11:34:23 -0400}: pull --ff-only origin main: Fast-forward
+b854308 HEAD@{2026-07-10 11:34:22 -0400}: checkout: moving from a4-pg-core to main
+bc8af7d HEAD@{2026-07-10 11:33:39 -0400}: commit: P-A4-BUILD: V8-A4 Project Guide (PG-CORE + PG-UI + AC) — checker round-2 PASS
+b854308 HEAD@{2026-07-10 11:07:26 -0400}: checkout: moving from main to a4-pg-core
+b854308 HEAD@{2026-07-10 11:07:26 -0400}: checkout: moving from main to main
+b854308 HEAD@{2026-07-10 10:58:40 -0400}: checkout: moving from main to main
+b854308 HEAD@{2026-07-10 10:58:40 -0400}: pull --ff-only origin main: Fast-forward
+74894bc HEAD@{2026-07-10 10:58:39 -0400}: checkout: moving from ledger-a4-packet to main
+91b2b69 HEAD@{2026-07-10 10:57:45 -0400}: commit: ledgers: record A4-PACKET+WIDE (PR #36, CI b0e0761)
+74894bc HEAD@{2026-07-10 10:57:42 -0400}: checkout: moving from main to ledger-a4-packet
+74894bc HEAD@{2026-07-10 10:57:07 -0400}: checkout: moving from main to main
+74894bc HEAD@{2026-07-10 10:57:07 -0400}: pull --ff-only origin main: Fast-forward
+b5bbfd8 HEAD@{2026-07-10 10:57:06 -0400}: checkout: moving from a4-packet-wide to main
+b0e0761 HEAD@{2026-07-10 10:56:26 -0400}: commit: A4-PACKET+WIDE: V8-A4 build contract + wide-safe lanes; record G4-A3/G1-A4
+b5bbfd8 HEAD@{2026-07-10 10:52:15 -0400}: Branch: renamed refs/heads/g4a3-g1a4-gates to refs/heads/a4-packet-wide
+b5bbfd8 HEAD@{2026-07-10 10:51:41 -0400}: checkout: moving from main to g4a3-g1a4-gates
+b5bbfd8 HEAD@{2026-07-10 10:45:02 -0400}: checkout: moving from main to main
+b5bbfd8 HEAD@{2026-07-10 10:45:01 -0400}: pull --ff-only origin main: Fast-forward
+224b3ea HEAD@{2026-07-10 10:45:01 -0400}: checkout: moving from a3-close to main
+2626cb1 HEAD@{2026-07-10 10:44:20 -0400}: commit: A3-CLOSE: V8-A3 File Cabinet CLOSED — G2-A3 PASSED, raw-verified
+224b3ea HEAD@{2026-07-10 10:33:44 -0400}: checkout: moving from main to a3-close
+224b3ea HEAD@{2026-07-10 10:03:50 -0400}: checkout: moving from main to main
+224b3ea HEAD@{2026-07-10 10:03:49 -0400}: pull --ff-only origin main: Fast-forward
+7ba126e HEAD@{2026-07-10 10:03:49 -0400}: checkout: moving from ledger-a3-parallel to main
+dfca0a9 HEAD@{2026-07-10 10:03:05 -0400}: commit: ledgers: record A3-PARALLEL wide lanes (PR #33, CI 823fa4b)
+7ba126e HEAD@{2026-07-10 10:03:04 -0400}: checkout: moving from main to ledger-a3-parallel
+7ba126e HEAD@{2026-07-10 10:01:44 -0400}: checkout: moving from main to main
+7ba126e HEAD@{2026-07-10 10:01:43 -0400}: pull --ff-only origin main: Fast-forward
+bc0607b HEAD@{2026-07-10 10:01:42 -0400}: checkout: moving from a3-parallel-wide-lanes to main
+823fa4b HEAD@{2026-07-10 10:00:55 -0400}: commit: A3-PARALLEL: 4 wide-safe lanes during G2-A3 witness window
+bc0607b HEAD@{2026-07-10 10:00:55 -0400}: checkout: moving from main to a3-parallel-wide-lanes
+bc0607b HEAD@{2026-07-10 09:44:35 -0400}: commit: Fix A3 evidence stamp: literal final SHA e92f8b9 (prior stamp lost the shell var)
+4309f33 HEAD@{2026-07-10 09:43:16 -0400}: commit: A3-FC-UI+AC evidence maintenance: stamp final SHA e92f8b9 + exact-SHA CI
+e92f8b9 HEAD@{2026-07-10 09:42:29 -0400}: checkout: moving from main to main
+e92f8b9 HEAD@{2026-07-10 09:42:28 -0400}: pull --ff-only origin main: Fast-forward
+a7ff525 HEAD@{2026-07-10 09:42:28 -0400}: checkout: moving from a3-fc-ui to main
+b45ad7b HEAD@{2026-07-10 09:41:38 -0400}: commit: Fix: remove unstamped placeholder tokens from V8-A3 acceptance packet
+320ab10 HEAD@{2026-07-10 09:40:21 -0400}: commit: A3-BUILD Phase FC-UI + AC — File Cabinet browse/preview + acceptance (GREEN)
+a7ff525 HEAD@{2026-07-10 09:33:35 -0400}: checkout: moving from main to a3-fc-ui
+a7ff525 HEAD@{2026-07-10 09:33:17 -0400}: commit: A3-FC-CLASS evidence maintenance: stamp PR #31 (checker-approved)
+b549716 HEAD@{2026-07-10 09:33:15 -0400}: checkout: moving from main to main
+b549716 HEAD@{2026-07-10 09:33:14 -0400}: pull --ff-only origin main: Fast-forward
+15d2c37 HEAD@{2026-07-10 09:33:14 -0400}: checkout: moving from a3-fc-class-build to main
+3bdf687 HEAD@{2026-07-10 09:32:10 -0400}: commit: A3-BUILD Phase FC-CLASS — File Cabinet classification+access (checker-approved, GREEN)
+15d2c37 HEAD@{2026-07-10 09:17:08 -0400}: checkout: moving from main to a3-fc-class-build
+15d2c37 HEAD@{2026-07-10 09:17:08 -0400}: checkout: moving from main to main
+15d2c37 HEAD@{2026-07-10 09:17:07 -0400}: pull --ff-only origin main: Fast-forward
+6a86d2f HEAD@{2026-07-10 09:17:07 -0400}: checkout: moving from a3-fc-class to main
+fd3e4bd HEAD@{2026-07-10 09:16:21 -0400}: commit: Anti-repeat: permanent CI evidence-integrity guard + safe stamp helper
+6a86d2f HEAD@{2026-07-10 09:13:16 -0400}: checkout: moving from main to a3-fc-class
+6a86d2f HEAD@{2026-07-10 09:13:14 -0400}: commit: Record G1-A3-IMPL APPROVED — authorizes P-A3-BUILD to G2-A3
+bb1543e HEAD@{2026-07-10 09:09:45 -0400}: commit: Fix: restore two evidence files corrupted by a buggy stamp (docs-only)
+46ab5b5 HEAD@{2026-07-10 09:07:10 -0400}: checkout: moving from main to main
+46ab5b5 HEAD@{2026-07-08 13:57:06 -0400}: commit: A3-PACKET evidence maintenance: stamp PR #29 + merge SHA (docs-only)
+aa8fcc1 HEAD@{2026-07-08 13:57:05 -0400}: checkout: moving from main to main
+aa8fcc1 HEAD@{2026-07-08 13:57:05 -0400}: pull --ff-only origin main: Fast-forward
+3fbca45 HEAD@{2026-07-08 13:57:04 -0400}: checkout: moving from a3-lane-packet to main
+b19c244 HEAD@{2026-07-08 13:56:22 -0400}: commit: Bundle A3-PACKET — V8-A3 Build Contract + Lane Packet (docs-only, no code)
+3fbca45 HEAD@{2026-07-08 13:54:41 -0400}: checkout: moving from main to a3-lane-packet
+3fbca45 HEAD@{2026-07-08 13:51:18 -0400}: commit: Record G4-A2 ACCEPTED (V8-A2 complete) + G1-A3 APPROVED (V8-A3 start only)
+3053584 HEAD@{2026-07-08 13:40:16 -0400}: commit: A3 evidence maintenance: stamp PR #28 + merge SHA (docs-only)
+5e6d867 HEAD@{2026-07-08 13:40:15 -0400}: checkout: moving from main to main
+5e6d867 HEAD@{2026-07-08 13:40:15 -0400}: pull --ff-only origin main: Fast-forward
+cb09bc7 HEAD@{2026-07-08 13:40:14 -0400}: checkout: moving from a3-proposal to main
+a9d939c HEAD@{2026-07-08 13:39:30 -0400}: commit: Bundle A3-PROPOSAL — V8-A3 File Cabinet proposal only (docs-only, no code)
+cb09bc7 HEAD@{2026-07-08 13:38:23 -0400}: checkout: moving from main to a3-proposal
+cb09bc7 HEAD@{2026-07-08 13:37:48 -0400}: commit: V8-A2 close: stamp evidence-tip in acceptance packet (docs-only)
+5d082c1 HEAD@{2026-07-08 13:37:47 -0400}: checkout: moving from main to main
+5d082c1 HEAD@{2026-07-08 13:37:47 -0400}: pull --ff-only origin main: Fast-forward
+a6bcf5b HEAD@{2026-07-08 13:37:46 -0400}: checkout: moving from a2-close to main
+5b61fdf HEAD@{2026-07-08 13:36:52 -0400}: commit: V8-A2 CLOSE — G2-A2 PASSED, acceptance packet finalized (docs-only)
+a6bcf5b HEAD@{2026-07-08 13:35:34 -0400}: checkout: moving from main to a2-close
+a6bcf5b HEAD@{2026-07-08 13:19:39 -0400}: commit: A2-AC evidence maintenance: stamp final SHA dba8720 + exact-SHA CI; awaiting G2-A2
+dba8720 HEAD@{2026-07-08 13:18:47 -0400}: checkout: moving from main to main
+dba8720 HEAD@{2026-07-08 13:18:46 -0400}: pull --ff-only origin main: Fast-forward
+171b54f HEAD@{2026-07-08 13:18:46 -0400}: checkout: moving from a2-acceptance to main
+72a3ec5 HEAD@{2026-07-08 13:17:59 -0400}: commit: A2-BUILD Phase AC — acceptance (cannot-invent-state + V8-A2 acceptance packet)
+171b54f HEAD@{2026-07-08 13:16:19 -0400}: checkout: moving from main to a2-acceptance
+171b54f HEAD@{2026-07-08 13:15:53 -0400}: commit: A2-BC evidence maintenance: stamp PR #25 + merge SHA
+270719d HEAD@{2026-07-08 13:15:51 -0400}: checkout: moving from main to main
+270719d HEAD@{2026-07-08 13:15:51 -0400}: pull --ff-only origin main: Fast-forward
+3bc2fac HEAD@{2026-07-08 13:15:50 -0400}: checkout: moving from a2-bug-collector to main
+671e563 HEAD@{2026-07-08 13:14:58 -0400}: commit: A2-BUILD Phase BC — Bug Collector (BC1–BC6, wide-safe, GREEN)
+3bc2fac HEAD@{2026-07-08 13:12:55 -0400}: checkout: moving from main to a2-bug-collector
+3bc2fac HEAD@{2026-07-08 13:12:30 -0400}: commit: A2-PA evidence maintenance: stamp PR #24 + merge SHA (checker-approved)
+89c7c86 HEAD@{2026-07-08 13:12:28 -0400}: checkout: moving from main to main
+89c7c86 HEAD@{2026-07-08 13:12:27 -0400}: pull --ff-only origin main: Fast-forward
+5e007e2 HEAD@{2026-07-08 13:12:26 -0400}: checkout: moving from a2-preview-bay to main
+4f789b9 HEAD@{2026-07-08 13:11:12 -0400}: commit: A2-BUILD Phase PA — Preview Bay (PA1–PA7, checker-approved, GREEN)
+5e007e2 HEAD@{2026-07-08 12:50:27 -0400}: checkout: moving from main to a2-preview-bay
+5e007e2 HEAD@{2026-07-08 12:50:26 -0400}: commit: Record G1-A2 APPROVED — authorizes P-A2-BUILD to G2-A2
+57691d3 HEAD@{2026-07-08 12:38:47 -0400}: commit: B5 evidence maintenance: stamp PR #23 + merge SHA (docs-only)
+5048355 HEAD@{2026-07-08 12:38:47 -0400}: checkout: moving from main to main
+5048355 HEAD@{2026-07-08 12:38:46 -0400}: pull --ff-only origin main: Fast-forward
+750ada3 HEAD@{2026-07-08 12:38:46 -0400}: checkout: moving from b5-v8a2-contract to main
+49ae883 HEAD@{2026-07-08 12:38:05 -0400}: commit: Bundle B5 — V8-A2 Build Contract + Lane Packet (docs-only, no code)
+750ada3 HEAD@{2026-07-08 12:36:33 -0400}: checkout: moving from main to b5-v8a2-contract
+750ada3 HEAD@{2026-07-08 12:35:51 -0400}: commit: Record G4 APPROVED (V8-A2 start only) — V8-A1 workflow complete
+a6c2b69 HEAD@{2026-07-08 12:00:24 -0400}: commit: B4 evidence maintenance: stamp PR #22 + merge SHA (docs-only)
+bd582d3 HEAD@{2026-07-08 12:00:23 -0400}: checkout: moving from main to main
+bd582d3 HEAD@{2026-07-08 12:00:23 -0400}: pull --ff-only origin main: Fast-forward
+7dec411 HEAD@{2026-07-08 12:00:22 -0400}: checkout: moving from b4-v8a2-proposal to main
+0189236 HEAD@{2026-07-08 11:59:29 -0400}: commit: Bundle B4 — V8-A2 Proposal Only (A30; docs-only, no code)
+7dec411 HEAD@{2026-07-08 11:58:16 -0400}: checkout: moving from main to b4-v8a2-proposal
+7dec411 HEAD@{2026-07-08 11:58:15 -0400}: commit: Record G3 APPROVED in Founder Gate Ledger
+43a1a9e HEAD@{2026-07-08 01:12:46 -0400}: commit: G3 close: stamp evidence-tip SHA in A28 FINAL STATE NOTE (docs-only)
+a0fedef HEAD@{2026-07-08 01:12:46 -0400}: checkout: moving from main to main
+a0fedef HEAD@{2026-07-08 01:12:45 -0400}: pull --ff-only origin main: Fast-forward
+816533a HEAD@{2026-07-08 01:12:45 -0400}: checkout: moving from g3-close-verification to main
+38879a1 HEAD@{2026-07-08 01:11:50 -0400}: commit: G3 close-out — Advisor findings closed + raw verification evidence (docs-only)
+816533a HEAD@{2026-07-08 01:08:54 -0400}: checkout: moving from main to g3-close-verification
+816533a HEAD@{2026-07-08 01:08:37 -0400}: checkout: moving from main to main
+816533a HEAD@{2026-07-07 18:16:37 -0400}: commit: Copy-polish evidence maintenance: stamp PR #20 + final SHA acd2b04 + true-stranger
+acd2b04 HEAD@{2026-07-07 18:15:37 -0400}: checkout: moving from main to main
+acd2b04 HEAD@{2026-07-07 18:15:37 -0400}: pull --ff-only origin main: Fast-forward
+010dbef HEAD@{2026-07-07 18:15:36 -0400}: checkout: moving from stranger-copy-polish to main
+9755489 HEAD@{2026-07-07 18:15:00 -0400}: commit: True-stranger evidence + bounded copy-polish (visible copy only; DoD #15 → PASS)
+010dbef HEAD@{2026-07-07 18:09:58 -0400}: checkout: moving from main to stranger-copy-polish
+010dbef HEAD@{2026-07-07 18:09:58 -0400}: reset: moving to HEAD
+010dbef HEAD@{2026-07-07 17:29:39 -0400}: commit: B3 evidence maintenance: stamp final SHA 2991308 + exact-SHA CI (no new code)
+2991308 HEAD@{2026-07-07 17:29:01 -0400}: checkout: moving from main to main
+2991308 HEAD@{2026-07-07 17:29:01 -0400}: pull --ff-only origin main: Fast-forward
+59d2829 HEAD@{2026-07-07 17:29:00 -0400}: checkout: moving from b3-acceptance-packet to main
+bc72e8b HEAD@{2026-07-07 17:28:12 -0400}: commit: Bundle B3 — Final CI + Acceptance Packet (A27, A28; docs-only)
+59d2829 HEAD@{2026-07-07 17:27:00 -0400}: checkout: moving from main to b3-acceptance-packet
+59d2829 HEAD@{2026-07-07 17:07:14 -0400}: commit: B12 UX-repair evidence maintenance: stamp PR #18 + merge SHA (no new code)
+170196f HEAD@{2026-07-07 17:06:50 -0400}: checkout: moving from main to main
+170196f HEAD@{2026-07-07 17:06:49 -0400}: pull --ff-only origin main: Fast-forward
+4517a4f HEAD@{2026-07-07 17:06:49 -0400}: checkout: moving from b2-ux-repair to main
+c095af4 HEAD@{2026-07-07 17:05:46 -0400}: commit: B12 UX repair — app-shell dashboard after G2 attempt #1 (GREEN standalone)
+4517a4f HEAD@{2026-07-07 16:58:57 -0400}: checkout: moving from main to b2-ux-repair
+4517a4f HEAD@{2026-07-07 16:58:57 -0400}: checkout: moving from main to main
+4517a4f HEAD@{2026-07-07 14:58:14 -0400}: commit: B2 evidence maintenance: stamp PR #17 + merge SHA + CI; B12 -> awaiting G2
+d2ad415 HEAD@{2026-07-07 14:57:45 -0400}: checkout: moving from main to main
+d2ad415 HEAD@{2026-07-07 14:57:45 -0400}: pull --ff-only origin main: Fast-forward
+3d44c07 HEAD@{2026-07-07 14:57:44 -0400}: checkout: moving from b2-truth-dashboard to main
+27060a5 HEAD@{2026-07-07 14:57:12 -0400}: commit: B12 phase B2 — Truth Dashboard V8-A1 UI (A11–A24, GREEN standalone)
+3d44c07 HEAD@{2026-07-07 14:50:19 -0400}: checkout: moving from main to b2-truth-dashboard
+3d44c07 HEAD@{2026-07-07 14:50:11 -0400}: commit: B1 evidence maintenance: stamp PR #16 + merge SHA + CI (no new code)
+d6f06cf HEAD@{2026-07-07 14:49:33 -0400}: checkout: moving from main to main
+d6f06cf HEAD@{2026-07-07 14:49:32 -0400}: pull --ff-only origin main: Fast-forward
+c61c27b HEAD@{2026-07-07 14:49:32 -0400}: checkout: moving from b1-schema-foundation to main
+9187cf1 HEAD@{2026-07-07 14:48:55 -0400}: commit: B12 phase B1 — Schema Foundation (A4–A10, GREEN standalone)
+c61c27b HEAD@{2026-07-07 14:41:40 -0400}: checkout: moving from main to b1-schema-foundation
+c61c27b HEAD@{2026-07-07 14:41:39 -0400}: commit: B12 preflight + G1 recorded (evidence scaffolding)
+690bb7e HEAD@{2026-07-07 14:03:27 -0400}: commit: B0 ledger maintenance: stamp PR #15 + merge SHA (no new content)
+6273b38 HEAD@{2026-07-07 14:02:50 -0400}: checkout: moving from main to main
+6273b38 HEAD@{2026-07-07 14:02:50 -0400}: pull --ff-only origin main: Fast-forward
+1c519ea HEAD@{2026-07-07 14:02:49 -0400}: checkout: moving from bundle-b0-roadmap-manual-landing to main
+52afc7a HEAD@{2026-07-07 14:02:01 -0400}: commit: Bundle B0 — Roadmap + Manual Landing (docs-only, A0–A2)
+1c519ea HEAD@{2026-07-07 13:59:17 -0400}: checkout: moving from main to bundle-b0-roadmap-manual-landing
+1c519ea HEAD@{2026-07-07 13:59:17 -0400}: checkout: moving from main to main
+1c519ea HEAD@{2026-07-07 00:26:09 -0400}: checkout: moving from main to main
+1c519ea HEAD@{2026-07-07 00:26:09 -0400}: pull --ff-only origin main: Fast-forward
+85f85ed HEAD@{2026-07-07 00:26:08 -0400}: checkout: moving from checkpoint-2026-07-07 to main
+20cea97 HEAD@{2026-07-07 00:25:45 -0400}: commit: Checkpoint 2026-07-07 — 10 components green, all doc missions done (docs only)
+85f85ed HEAD@{2026-07-07 00:25:02 -0400}: checkout: moving from main to checkpoint-2026-07-07
+85f85ed HEAD@{2026-07-07 00:24:18 -0400}: checkout: moving from main to main
+85f85ed HEAD@{2026-07-07 00:24:17 -0400}: pull --ff-only origin main: Fast-forward
+6a82fa0 HEAD@{2026-07-07 00:24:17 -0400}: checkout: moving from extract-adapters-registry to main
+14e3846 HEAD@{2026-07-07 00:23:46 -0400}: commit: Extract component 10 — adapters + registry (GREEN standalone)
+6a82fa0 HEAD@{2026-07-07 00:17:25 -0400}: checkout: moving from main to extract-adapters-registry
+6a82fa0 HEAD@{2026-07-07 00:16:28 -0400}: checkout: moving from main to main
+6a82fa0 HEAD@{2026-07-07 00:16:28 -0400}: pull --ff-only origin main: Fast-forward
+1420c86 HEAD@{2026-07-07 00:16:27 -0400}: checkout: moving from extract-github-collector to main
+150fb2e HEAD@{2026-07-07 00:15:56 -0400}: commit: Extract component 9 — github-collector (GREEN standalone)
+1420c86 HEAD@{2026-07-07 00:15:04 -0400}: checkout: moving from main to extract-github-collector
+1420c86 HEAD@{2026-07-07 00:14:07 -0400}: checkout: moving from main to main
+1420c86 HEAD@{2026-07-07 00:14:07 -0400}: pull --ff-only origin main: Fast-forward
+c792693 HEAD@{2026-07-07 00:14:06 -0400}: checkout: moving from extract-swarm-metrics to main
+34a8f60 HEAD@{2026-07-07 00:13:35 -0400}: commit: Extract component 8 — swarm coordinator + metrics (GREEN standalone)
+c792693 HEAD@{2026-07-07 00:10:22 -0400}: checkout: moving from main to extract-swarm-metrics
+c792693 HEAD@{2026-07-07 00:09:18 -0400}: checkout: moving from main to main
+c792693 HEAD@{2026-07-07 00:09:18 -0400}: pull --ff-only origin main: Fast-forward
+3efb535 HEAD@{2026-07-07 00:09:17 -0400}: checkout: moving from extract-cage-escape-model to main
+bde4f08 HEAD@{2026-07-07 00:08:45 -0400}: commit: Fix: track secrets-absent test fixture (gitignore swallowed it)
+edc1ccd HEAD@{2026-07-07 00:06:44 -0400}: commit: Extract component 7 — cage-escape-model (GREEN standalone)
+3efb535 HEAD@{2026-07-07 00:05:59 -0400}: checkout: moving from main to extract-cage-escape-model
+3efb535 HEAD@{2026-07-07 00:05:38 -0400}: checkout: moving from main to main
+3efb535 HEAD@{2026-07-07 00:05:37 -0400}: pull --ff-only origin main: Fast-forward
+51f8db3 HEAD@{2026-07-07 00:05:37 -0400}: checkout: moving from extract-held-action to main
+74b4d33 HEAD@{2026-07-07 00:05:02 -0400}: commit: Extract component 6 — held-action sink (GREEN standalone)
+51f8db3 HEAD@{2026-07-07 00:03:32 -0400}: checkout: moving from main to extract-held-action
+51f8db3 HEAD@{2026-07-07 00:02:44 -0400}: checkout: moving from main to main
+51f8db3 HEAD@{2026-07-07 00:02:44 -0400}: pull --ff-only origin main: Fast-forward
+f82a936 HEAD@{2026-07-07 00:02:43 -0400}: checkout: moving from extract-mock-providers to main
+359b307 HEAD@{2026-07-07 00:02:21 -0400}: commit: Extract component 5 — mock-providers + network tripwire (GREEN standalone)
+f82a936 HEAD@{2026-07-07 00:01:42 -0400}: checkout: moving from main to extract-mock-providers
+f82a936 HEAD@{2026-07-07 00:01:22 -0400}: checkout: moving from main to main
+f82a936 HEAD@{2026-07-07 00:01:21 -0400}: pull --ff-only origin main: Fast-forward
+3543ffb HEAD@{2026-07-07 00:01:21 -0400}: checkout: moving from extract-cage-evidence-ledger to main
+5dd5c3d HEAD@{2026-07-07 00:00:41 -0400}: commit: Extract component 4 — cage-evidence-ledger (GREEN standalone)
+3543ffb HEAD@{2026-07-06 23:58:33 -0400}: checkout: moving from main to extract-cage-evidence-ledger
+3543ffb HEAD@{2026-07-06 23:56:55 -0400}: checkout: moving from main to main
+3543ffb HEAD@{2026-07-06 23:56:55 -0400}: pull --ff-only origin main: Fast-forward
+2a94c24 HEAD@{2026-07-06 23:56:54 -0400}: checkout: moving from mission4-doctrine to main
+1d0d9e3 HEAD@{2026-07-06 23:56:11 -0400}: commit: Mission 4 — doctrine import (docs only)
+2a94c24 HEAD@{2026-07-06 23:49:50 -0400}: checkout: moving from main to mission4-doctrine
+2a94c24 HEAD@{2026-07-06 23:49:14 -0400}: checkout: moving from main to main
+2a94c24 HEAD@{2026-07-06 23:49:14 -0400}: pull --ff-only origin main: Fast-forward
+bf010ac HEAD@{2026-07-06 23:49:13 -0400}: checkout: moving from extract-proof-package to main
+1c70149 HEAD@{2026-07-06 23:48:30 -0400}: commit: Extract component 3 — proof-package builder (GREEN standalone)
+bf010ac HEAD@{2026-07-06 23:45:39 -0400}: checkout: moving from main to extract-proof-package
+bf010ac HEAD@{2026-07-06 23:43:48 -0400}: checkout: moving from main to main
+bf010ac HEAD@{2026-07-06 23:43:48 -0400}: pull --ff-only origin main: Fast-forward
+0e1ce4e HEAD@{2026-07-06 23:43:47 -0400}: checkout: moving from extract-prepush-checker to main
+94bd623 HEAD@{2026-07-06 23:42:52 -0400}: commit: Extract component 2 — prepush checker (GREEN standalone)
+0e1ce4e HEAD@{2026-07-06 23:41:53 -0400}: checkout: moving from main to extract-prepush-checker
+0e1ce4e HEAD@{2026-07-06 23:40:55 -0400}: checkout: moving from main to main
+0e1ce4e HEAD@{2026-07-06 23:40:55 -0400}: pull --ff-only origin main: Fast-forward
+abde3c9 HEAD@{2026-07-06 23:40:54 -0400}: checkout: moving from mission2-extraction-map to main
+db0c91a HEAD@{2026-07-06 23:40:01 -0400}: commit: Mission 2 — docs/EXTRACTION_MAP.md (docs only)
+abde3c9 HEAD@{2026-07-06 23:39:00 -0400}: checkout: moving from main to mission2-extraction-map
+abde3c9 HEAD@{2026-07-06 23:38:38 -0400}: checkout: moving from main to main
+abde3c9 HEAD@{2026-07-06 23:38:37 -0400}: pull --ff-only origin main: Fast-forward
+20d022a HEAD@{2026-07-06 23:38:37 -0400}: checkout: moving from extract-evidence-bus to main
+983d42c HEAD@{2026-07-06 23:37:49 -0400}: commit: Extract component 1 — evidence bus (GREEN standalone)
+20d022a HEAD@{2026-07-06 23:35:00 -0400}: checkout: moving from main to extract-evidence-bus
+20d022a HEAD@{2026-07-06 23:33:07 -0400}: checkout: moving from main to main
+20d022a HEAD@{2026-07-06 23:33:07 -0400}: pull --ff-only origin main: Fast-forward
+58db755 HEAD@{2026-07-06 23:33:06 -0400}: checkout: moving from mission1-foundation-records to main
+f29a20d HEAD@{2026-07-06 23:32:19 -0400}: commit: Mission 1 — foundation records (docs only)
+58db755 HEAD@{2026-07-06 23:30:57 -0400}: checkout: moving from main to mission1-foundation-records
+58db755 HEAD@{2026-07-06 23:30:11 -0400}: commit (initial): Bootstrap FounderGate product scaffolding

@@ -1,0 +1,435 @@
+FOUNDERGATE V8-B WAVE-2 — GOVERNED POST-RUN RECONCILIATION, DECISION ANTI-REPLAY SEAL, AUTHORIZED-BASE RECOVERY, AND INDEPENDENT REVIEW PREPARATION
+
+PURPOSE
+
+The read-only post-run audit completed with:
+
+RUNTIME: PASS-WITH-CORRECTABLE-FINDINGS
+GENERATED-WORK: RECONCILIATION-REQUIRED
+OBSERVABILITY: FAIL-CORRECTABLE
+MERGE: NOT-AUTHORIZED-PENDING-CHECKS
+
+The completed run:
+
+- run_id: v8b-wave-2-1784421259
+- executed all 13 queued jobs;
+- reported all 13 worker outcomes as SUCCESS;
+- stopped through STOPPED_EXHAUSTED;
+- stopped before the immutable nine-hour deadline;
+- left no live supervisor, worker or descendant;
+- did not merge work.
+
+However, a worker performed a mid-run checkout onto a pre-existing orphan branch based on an unauthorized historical head.
+
+This caused:
+
+- all 13 generated commits to accumulate on the wrong base;
+- tracked governance/runtime files to revert;
+- durable activation-consumption evidence to disappear from the working tree;
+- the working-tree decision record to falsely appear consumed:false;
+- the recovery checkpoint to revert to NO_ACTIVE_RUN;
+- stale handoff state to mask final lifecycle state;
+- status heartbeat unit mismatch;
+- unscoped historical and current events.
+
+Preserve the run evidence and reconcile these defects without rerunning PAES or merging generated work.
+
+AUTHORITY
+
+This directive authorizes only:
+
+- append-only post-run reconciliation;
+- safe restoration of the repository checkout to mechanically verified current main;
+- anti-replay sealing of the consumed decision;
+- isolated analysis and re-homing of the 13 generated commits;
+- isolated correction of the three observability defects;
+- tests, independent checker review and separate Advisor review;
+- preparation of merge candidates.
+
+This directive does not authorize:
+
+- PAES rerun;
+- new autonomous run;
+- activation-decision reuse;
+- direct push to main;
+- merge of generated work;
+- Phase 7.1 execution;
+- AKIOR access;
+- M1 contact;
+- private or customer repositories;
+- production data;
+- external sends;
+- live providers;
+- public deployment;
+- payments;
+- broader autonomy.
+
+OPERATING MODE
+
+MAC MINI PRO ONLY
+TERMINAL-0 SOLE MERGE SHERIFF
+DISK-FIRST
+APPEND-ONLY
+FAIL-CLOSED
+ANTI-REPLAY
+NO LAUNCH
+NO SUPERVISOR
+NO DECISION REUSE
+NO DIRECT MAIN PUSH
+NO GENERATED-WORK MERGE
+ONE PRIMARY RECONCILIATION BUILDER
+INDEPENDENT CHECKER REQUIRED
+SEPARATE READ-ONLY ADVISOR REQUIRED
+ISOLATED WORKTREES
+PRESERVE ORIGINAL ORPHAN BRANCH
+PRESERVE ALL RUN EVIDENCE
+
+PHASE 0 — CURRENT STATE AND DCL CAPTURE
+
+Before mutation:
+
+1. Capture this directive through DCL.
+2. Verify exact transcript-to-disk digest equality.
+3. Resolve mechanically:
+   - host;
+   - repo;
+   - current branch;
+   - current HEAD;
+   - local main;
+   - origin/main;
+   - worktrees;
+   - open PRs;
+   - working-tree modifications;
+   - run runtime files;
+   - generated branch;
+   - generated commit chain;
+   - current decision records;
+   - current gate ledger;
+   - current recovery state.
+4. Confirm no supervisor, worker or descendant remains alive.
+5. Confirm PANIC_STOP is absent.
+6. Preserve a complete immutable inventory of the pre-reconciliation state.
+
+If runtime is active or ambiguous:
+
+POST-RUN-RECONCILIATION: RUNTIME-CONFLICT
+
+PHASE 1 — PRESERVE THE COMPLETED RUN
+
+Create an immutable evidence inventory for:
+
+- run_id v8b-wave-2-1784421259;
+- start;
+- stop;
+- deadline;
+- queue;
+- heartbeat;
+- state;
+- handoff;
+- events;
+- worker results;
+- session identifiers;
+- costs;
+- generated branch;
+- reflog evidence;
+- commit chain;
+- decision files;
+- gate files;
+- recovery files;
+- singleton;
+- lease;
+- process audit;
+- read-only post-run audit.
+
+Do not delete, rewrite, truncate or normalize the original files.
+
+Record that:
+
+- the decision was consumed once;
+- handoff qualification passed;
+- the supervisor stopped through queue exhaustion;
+- no replay is authorized;
+- the working-tree consumed:false state is a reverted artifact and not operational truth.
+
+PHASE 2 — DECISION ANTI-REPLAY RECONCILIATION
+
+Mechanically reconstruct the activation event from:
+
+- handoff.json;
+- run ID;
+- handoff timestamp;
+- launcher evidence;
+- event evidence that survived;
+- audit report;
+- process and queue evidence;
+- immutable deadline.
+
+Append a new reconciliation record that states:
+
+- decision consumption occurred exactly once;
+- consumption belongs to run v8b-wave-2-1784421259;
+- the decision may not be consumed again;
+- the false consumed:false working-tree state resulted from the mid-run checkout;
+- no new expiry or authorization window is created;
+- the completed run remains closed;
+- PAES rerun requires a new founder gate and a new decision.
+
+Do not silently edit history.
+
+Do not convert the old decision into reusable authority.
+
+Required anti-replay outcome:
+
+CONSUMED_ONCE_RECONCILED
+REPLAY_BLOCKED
+RUN_CLOSED
+
+PHASE 3 — RESTORE AUTHORIZED REPOSITORY CHECKOUT
+
+Resolve current protected main mechanically.
+
+Preserve:
+
+lane/w2-cto-queue-surface
+38f35ad through dfc614f
+the complete reflog and audit evidence
+
+Then restore the primary FounderGate worktree to the current protected main using the established governed recovery method.
+
+Do not:
+
+- delete the orphan branch;
+- force-reset the orphan branch;
+- lose runtime evidence;
+- copy unreviewed source directly into main;
+- discard modified/untracked runtime evidence.
+
+The primary worktree must end clean and synchronized with current main after evidence has been safely preserved and runtime artifacts have been reconciled through the accepted append-only process.
+
+PHASE 4 — GENERATED-WORK RECONCILIATION
+
+Create an isolated reconciliation worktree from mechanically resolved current main.
+
+Do not rebase or merge the orphan branch wholesale.
+
+Inspect each of the 13 job commits independently:
+
+1. w2-1-cto-queue
+2. w2-2-lane-routing
+3. w2-3-bench-v1
+4. w2-4-project-bench
+5. w2-5-founder-hand-burden-score
+6. w2-6-playwright-evidence-system
+7. w2-7-evidence-viewer
+8. w2-8-github-links-integration-cards
+9. w2-9-cost-display
+10. w2-10-release-label-ladder
+11. w2-11-spec-card-engine
+12. w2-12-anti-repeat-system
+13. w2-13-minimal-license-ip-register
+
+For each commit classify:
+
+- CLEANLY_REUSABLE
+- REQUIRES_PORT
+- REQUIRES_REBUILD
+- DUPLICATE_HISTORICAL_WORK
+- OUT_OF_SCOPE
+- REJECT
+
+Special handling for w2-1:
+
+- 38f35ad existed before the real run;
+- do not falsely call it newly generated by this run;
+- determine whether its content remains valid against current main;
+- port or rebuild only if justified.
+
+For every accepted feature:
+
+- transplant or reconstruct onto the current authorized base;
+- preserve one feature per bounded commit or clearly governed grouping;
+- remove no current safety/hotfix behavior;
+- preserve exact-SHA deadline, heartbeat, qualification and anti-replay controls;
+- do not import reverted governance/runtime files from the orphan branch.
+
+PHASE 5 — OBSERVABILITY CORRECTION LANE
+
+Use a separate isolated lane from current main.
+
+Correct exactly these defects:
+
+A. STATUS_HEARTBEAT_UNIT_MISMATCH
+
+- detect and normalize timestamp units explicitly;
+- support milliseconds and seconds safely;
+- malformed or impossible values display UNKNOWN;
+- add regression tests for negative-age prevention.
+
+B. FINAL_LIFECYCLE_STATE_NOT_RECONCILED
+
+- lifecycle state must come from final runtime state, not merely handoff result;
+- STOPPED_EXHAUSTED must display as completed/queue exhausted;
+- handoff success must remain historical launch evidence;
+- completed, failed, held, deadline-stopped and unknown states must remain distinct.
+
+C. RUN_EVENT_SCOPE_CONTAMINATION
+
+- all new events must carry run_id;
+- current timeline must filter by active or selected run_id;
+- historical events remain available but separated;
+- legacy unscoped events must display as historical/unknown rather than current.
+
+D. BRANCH ACTIVITY LIMITATION
+
+- do not use branch timestamps as the primary liveness signal;
+- display branch activity as evidence only.
+
+Do not build the full Live Run Console in this lane.
+
+This lane provides the minimum trustworthy status foundation required before the larger console.
+
+PHASE 6 — TESTING
+
+For the reconciled generated work:
+
+- run each committed selftest;
+- run module-load and syntax validation;
+- run affected integration tests;
+- run full repository selftests;
+- record exact results;
+- run secret and credential scans;
+- verify no runtime or governance regression.
+
+For observability:
+
+- seconds heartbeat;
+- milliseconds heartbeat;
+- malformed heartbeat;
+- stale heartbeat;
+- no heartbeat;
+- active run;
+- STOPPED_EXHAUSTED;
+- deadline stop;
+- failed run;
+- held run;
+- historical handoff with completed lifecycle;
+- current-run event filtering;
+- legacy unscoped event behavior;
+- no fake progress;
+- UNKNOWN on missing sources.
+
+Do not call committed selftest files evidence until they are actually executed.
+
+PHASE 7 — INDEPENDENT CHECKING
+
+Commission one independent checker that did not perform reconciliation.
+
+The checker must attempt to falsify:
+
+- decision anti-replay seal;
+- consumed-once reconstruction;
+- current-main restoration;
+- preservation of original evidence;
+- orphan-branch preservation;
+- authorized-base compatibility;
+- removal of reverted governance files;
+- feature correctness;
+- test honesty;
+- exact-SHA binding;
+- heartbeat normalization;
+- final lifecycle precedence;
+- run-ID event scoping;
+- claim discipline.
+
+Allowed checker verdicts:
+
+WAVE2-RECONCILIATION-CHECKER: CLEAN
+WAVE2-RECONCILIATION-CHECKER: FINDINGS
+WAVE2-RECONCILIATION-CHECKER: REJECT
+WAVE2-RECONCILIATION-CHECKER: INSUFFICIENT_EVIDENCE
+
+After checker CLEAN, commission a separate read-only Advisor.
+
+Allowed Advisor verdicts:
+
+WAVE2-RECONCILIATION-ADVISOR: READY-FOR-CI-AND-PR-PREPARATION
+WAVE2-RECONCILIATION-ADVISOR: HOLD-CORRECTABLE-FINDINGS
+WAVE2-RECONCILIATION-ADVISOR: REJECT
+WAVE2-RECONCILIATION-ADVISOR: INSUFFICIENT_EVIDENCE
+
+Checker and Advisor must be distinct invocations.
+
+PHASE 8 — CI AND PR PREPARATION
+
+Only after checker CLEAN and Advisor READY:
+
+- push candidate lanes;
+- open PRs;
+- run exact-SHA CI;
+- keep generated-work and observability corrections separable where practical;
+- do not merge;
+- return the PRs and exact review evidence to the founder/advisor.
+
+No merge authority is granted by this directive.
+
+FINAL OUTPUT
+
+Return:
+
+1. host;
+2. directive digest;
+3. starting primary-worktree branch and SHA;
+4. protected main SHA;
+5. original orphan branch and final SHA;
+6. evidence preservation paths;
+7. completed run state;
+8. decision-consumption reconciliation;
+9. anti-replay result;
+10. primary-worktree restoration result;
+11. generated-work classification for all 13 jobs;
+12. accepted features;
+13. rejected or rebuilt features;
+14. authorized-base candidate SHA;
+15. observability corrected files;
+16. heartbeat-unit result;
+17. lifecycle-precedence result;
+18. event run-ID result;
+19. local test results;
+20. full-suite result;
+21. security/credential scan;
+22. independent checker verdict;
+23. separate Advisor verdict;
+24. CI result;
+25. PR result;
+26. merge status;
+27. remaining limitations;
+28. exact next founder decision;
+29. final verdict.
+
+Required exact statements:
+
+THE COMPLETED RUN WILL NOT BE REPLAYED UNDER THE CONSUMED ACTIVATION DECISION.
+
+THE ORIGINAL ORPHAN BRANCH AND RUN EVIDENCE WERE PRESERVED.
+
+THE PRIMARY WORKTREE WAS RESTORED TO THE MECHANICALLY VERIFIED PROTECTED MAIN WITHOUT MERGING UNREVIEWED GENERATED WORK.
+
+WORKER SUCCESS WAS TREATED AS UNREVIEWED OUTPUT, NOT ACCEPTANCE.
+
+THE THIRTEEN JOB OUTPUTS WERE RECONCILED AGAINST THE AUTHORIZED CURRENT BASE BEFORE TESTING.
+
+THE FOUNDER-FACING STATUS NOW DISTINGUISHES HISTORICAL HANDOFF SUCCESS FROM FINAL LIFECYCLE STATE.
+
+NO RUN-GENERATED WORK WAS MERGED UNDER THIS DIRECTIVE.
+
+Finish with exactly one:
+
+POST-RUN-RECONCILIATION: READY-FOR-FOUNDER-MERGE-REVIEW
+POST-RUN-RECONCILIATION: CHECKER-FINDINGS
+POST-RUN-RECONCILIATION: ADVISOR-FINDINGS
+POST-RUN-RECONCILIATION: CI-FINDINGS
+POST-RUN-RECONCILIATION: RECONCILIATION-REQUIRED
+POST-RUN-RECONCILIATION: RUNTIME-CONFLICT
+POST-RUN-RECONCILIATION: ANTI-REPLAY-FAILED
+POST-RUN-RECONCILIATION: REJECT
+POST-RUN-RECONCILIATION: INSUFFICIENT-EVIDENCE

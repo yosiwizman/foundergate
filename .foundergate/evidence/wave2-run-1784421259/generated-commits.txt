@@ -1,0 +1,13 @@
+dfc614f w2-13-minimal-license-ip-register: standalone License/IP register engine + surface
+d4fa42c w2-12-anti-repeat-system: standalone defect→pattern→regression anti-repeat engine + surface
+7b3877c w2-11-spec-card-engine: standalone plain-English spec-card engine + surface
+817e1a5 w2-10-release-label-ladder: label + transition-history surface for the release ladder
+c065601 w2-9-cost-display: per-run / quota / cost-per-PR display surface
+0e77070 w2-8-github-cards: read-only GitHub repo/PR/branch/file integration cards
+76eb824 w2-7-evidence-viewer: readable per-bundle Evidence Viewer surface
+8ad70d8 w2-6-playwright-evidence-index: generalized, surface-agnostic Playwright evidence indexer
+f8ee02c w2-5-founder-hand-burden-score: live scoring surface for founder hand-burden
+5e86eda w2-4-project-bench: Project Bench — per-project result ledger derived from run timeline
+9341db8 w2-3-bench: Bench v1 — component+project result ledger + founder hand-burden surface
+242fc8a w2-2-lane-routing: unified read-only router across ARLC/ARE queues + end-to-end routing evidence
+38f35ad w2-1-cto-queue: dedicated read-only CTO queue surface + live UI evidence
