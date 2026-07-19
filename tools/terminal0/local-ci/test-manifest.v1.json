@@ -1,0 +1,75 @@
+{
+  "schema": "hybrid-local-ci-test-manifest-1",
+  "profile_version": "HYBRID_LOCAL_EXACT_SHA_CI_PROFILE_V1",
+  "created_for": [
+    "PR#182",
+    "PR#183"
+  ],
+  "classes": [
+    "REQUIRED_MAC_AND_DOCKER",
+    "REQUIRED_MAC_ONLY",
+    "REQUIRED_DOCKER_ONLY",
+    "NOT_APPLICABLE_TO_THIS_PR"
+  ],
+  "layer_model": "Layer A (Mac) runs the COMPLETE repository suite; Layer B (Docker) runs the PR-relevant PORTABLE subset. A test relevant to the PR that cannot run in Linux Docker is REQUIRED_MAC_ONLY with a mechanical host-dependency justification and a proven Mac result.",
+  "host_coupled_tests_reevaluated": {
+    "src/activation-path/launcher-failclose.selftest.mjs": {
+      "class": "REQUIRED_MAC_ONLY_if_PR_relevant_else_NA",
+      "host_dependency": "macOS sysctl hw.model (hardware identity) + host process (claude) inspection",
+      "legit": true,
+      "ran_on_mac": true
+    },
+    "src/safety_check/canonical-identity.selftest.mjs": {
+      "class": "NOT_APPLICABLE_TO_THIS_PR",
+      "note": "safety_check infra, not PR #182/#183 code; writable-tree need is not a legit Mac-only reason but the test is out of the PRs' Docker scope; executes green on Mac",
+      "ran_on_mac": true
+    },
+    "src/safety_check/service.selftest.mjs": {
+      "class": "NOT_APPLICABLE_TO_THIS_PR",
+      "ran_on_mac": true
+    },
+    "src/**/evidence-integrity.selftest.mjs": {
+      "class": "NOT_APPLICABLE_TO_THIS_PR",
+      "host_dependency": "git history/provenance inspection",
+      "ran_on_mac": true
+    },
+    "src/**/cross-project-matrix.selftest.mjs": {
+      "class": "NOT_APPLICABLE_TO_THIS_PR",
+      "ran_on_mac": true
+    },
+    "src/**/identity.selftest.mjs": {
+      "class": "NOT_APPLICABLE_TO_THIS_PR",
+      "ran_on_mac": true
+    },
+    "src/**/report-provenance.selftest.mjs": {
+      "class": "NOT_APPLICABLE_TO_THIS_PR",
+      "host_dependency": "git",
+      "ran_on_mac": true
+    },
+    "src/**/hold-action.selftest.mjs": {
+      "class": "NOT_APPLICABLE_TO_THIS_PR",
+      "ran_on_mac": true
+    },
+    "src/supervisor/supervisor-deadline-integration.selftest.mjs": {
+      "class": "REQUIRED_MAC_ONLY_for_PR183",
+      "host_dependency": "pgrep host-process inspection for residual-process verification",
+      "legit": true,
+      "ran_on_mac": true
+    }
+  },
+  "pr182": {
+    "REQUIRED_MAC_AND_DOCKER": "16 src/v8b2/*.selftest.mjs feature suites + 16 module-load checks (pure Node, portable)",
+    "REQUIRED_MAC_ONLY": "none (all PR #182 code is portable)",
+    "REQUIRED_DOCKER_ONLY": "none",
+    "NOT_APPLICABLE_TO_THIS_PR": "all non-v8b2 repository selftests (executed in Layer A on Mac; not PR #182 code)",
+    "unclassified": 0
+  },
+  "pr183": {
+    "REQUIRED_MAC_AND_DOCKER": "src/observability/status-core.selftest.mjs (24 checks) + module-load of status-core.mjs, status-wave2-session, supervisor-session",
+    "REQUIRED_MAC_ONLY": "src/supervisor/supervisor-deadline-integration.selftest.mjs (pgrep host-process inspection) — PR-relevant (supervisor-session changed), executed green on Mac",
+    "REQUIRED_DOCKER_ONLY": "none",
+    "NOT_APPLICABLE_TO_THIS_PR": "all other repository selftests (executed in Layer A on Mac)",
+    "unclassified": 0
+  },
+  "digest": "sha256:bd63b97cd24292e90c3f2cc3953634927f5346450d23ab0e3a37a3a8146bb5a5"
+}
