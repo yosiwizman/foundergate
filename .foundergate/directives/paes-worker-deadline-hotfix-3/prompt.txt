@@ -1,0 +1,550 @@
+FOUNDERGATE PAES-WORKER-DEADLINE-HOTFIX-3 — HARD RUN DEADLINE, BOUNDED WORKER EXECUTION, PROCESS-TREE TERMINATION, AND FINAL RETRY READINESS
+
+PURPOSE
+
+The post-activation heartbeat-starvation defect is closed and integrated.
+
+Current main is mechanically reported as synchronized and clean, the activation decision remains valid and unconsumed, and the real nine-hour Wave-2 run has not started.
+
+One launch-safety defect remains:
+
+The asynchronous worker now continues emitting healthy heartbeats while Claude runs, but there is no enforced worker timeout and the original run deadline is checked only between workers.
+
+Therefore, a wedged or indefinitely running worker could continue beyond the authorized nine-hour deadline while appearing healthy.
+
+Close this defect before the real launcher is retried.
+
+The original run deadline must be a hard execution boundary, including while a worker child process is active.
+
+Do not start PAES during this directive.
+
+Do not consume the activation decision.
+
+Do not begin the Phase 7.1 future-adoption reinforcement.
+
+AUTHORITY
+
+This directive adds no new operational authority.
+
+Continue under the existing:
+
+ACTIVATE_SAFE_NARROW_ALLOWLIST
+
+authority and all active DCL, ARLC, ARE, FGRI, PAES and ORC restrictions.
+
+Continue to refuse:
+
+FULL_AUTONOMY
+DANGEROUSLY_SKIP_PERMISSIONS
+AUTOMATIC_PERMISSION_ESCALATION
+DIRECT_PUSH_TO_MAIN
+M1_ACCESS
+AKIOR_ACCESS
+PRIVATE_OR_CUSTOMER_REPOSITORIES
+PRODUCTION_DATA
+PUBLIC_DEPLOYMENT
+PAYMENTS
+EXTERNAL_SENDS
+LIVE_PROVIDER_ACTIVATION
+OPENSANDBOX_ADOPTION
+VB3_LIVE_ACTION
+48_HOUR_QUALIFICATION
+V8_C_D_E_IMPLEMENTATION
+PHASE7_1_FUTURE_ADOPTION_EXECUTION
+
+OPERATING MODE
+
+MAC MINI PRO ONLY
+DCL-LOCKED
+ARLC-GOVERNED
+ARE-GOVERNED
+FGRI-GOVERNED
+PAES-GOVERNED
+ORC-GOVERNED
+NARROW-SENSITIVE WORKER-DEADLINE FIX
+ONE PRIMARY BUILDER
+ONE INDEPENDENT CHECKER
+ONE SEPARATE READ-ONLY ADVISOR
+TERMINAL-0 SOLE MERGE SHERIFF
+DISK-FIRST
+APPEND-ONLY
+FAIL-CLOSED
+NO REAL LAUNCH
+NO DECISION CONSUMPTION
+NO DEADLINE EXTENSION
+NO DETACHED ORPHAN WORKER
+NO FALSE SUCCESS
+NO DIRECT MAIN PUSH
+
+PHASE 0 — DCL SELF-CAPTURE
+
+Before material work:
+
+1. Locate this exact directive in the active Harvest transcript.
+2. Capture its complete exact body.
+3. Verify the exact title:
+
+FOUNDERGATE PAES-WORKER-DEADLINE-HOTFIX-3 — HARD RUN DEADLINE, BOUNDED WORKER EXECUTION, PROCESS-TREE TERMINATION, AND FINAL RETRY READINESS
+
+4. Verify the body contains:
+   - PURPOSE;
+   - AUTHORITY;
+   - PHASE 0;
+   - PHASE 2 — HARD DEADLINE LAW;
+   - PHASE 4 — PRODUCTION-PATH RUNTIME QUALIFICATION;
+   - PHASE 6 — INDEPENDENT REVIEW;
+   - FINAL OUTPUT;
+   - the complete verdict list.
+5. Verify it is complete and untruncated.
+6. Compute SHA-256, byte count, line count and boundary anchors.
+7. Persist it through DCL.
+8. Require transcript-to-disk digest equality.
+9. Create state, queue, dependencies, events, recovery state and next-safe-action.
+10. Transition:
+
+RECEIVED
+→ CAPTURED
+→ DIGEST_VERIFIED
+→ QUEUED
+→ READY
+→ RUNNING
+
+If capture fails:
+
+PAES-WORKER-DEADLINE-HOTFIX: SELF-CAPTURE-FAILED
+
+PHASE 1 — CURRENT-STATE RECONCILIATION
+
+Mechanically verify:
+
+- authorized host;
+- repository root and origin;
+- local main;
+- remote main;
+- synchronization;
+- main cleanliness;
+- open PRs;
+- worktrees;
+- current activation gate;
+- current decision binding;
+- decision consumed state;
+- decision expiry;
+- supervisor state;
+- watchdog state;
+- worker state;
+- singleton;
+- heartbeat;
+- lease;
+- handoff;
+- PANIC_STOP;
+- real Wave-2 run state.
+
+Do not bind any SHA from this prompt.
+
+Require before implementation:
+
+- main clean and synchronized;
+- no live supervisor;
+- no live worker;
+- no active handoff;
+- activation decision consumed:false;
+- real nine-hour run NOT_STARTED.
+
+If any live or ambiguous runtime exists, stop and reconcile it before modifying code.
+
+PHASE 2 — HARD DEADLINE LAW
+
+The original run deadline is immutable.
+
+For every worker invocation, compute:
+
+remaining_run_time =
+original_run_deadline - current_time
+
+Required law:
+
+1. If remaining_run_time is zero or negative:
+   - do not spawn a worker;
+   - classify the run as RUN_DEADLINE_EXPIRED;
+   - stop scheduling;
+   - preserve remaining jobs as queued or held;
+   - begin governed shutdown.
+
+2. If the job has an authorized job-specific timeout:
+   effective_worker_timeout =
+   minimum(job-specific timeout, remaining_run_time)
+
+3. If the job has no authorized job-specific timeout:
+   effective_worker_timeout =
+   remaining_run_time
+
+4. No environment variable, queue field, adapter or worker may increase effective_worker_timeout beyond remaining_run_time.
+
+5. Recovery or restart must reuse the original deadline.
+
+6. A restart, retry or resume must never create a fresh nine-hour window for the same run.
+
+7. Deadline expiry while a worker is active must terminate that worker and its descendants.
+
+8. A deadline-terminated worker must never be marked successful or DONE.
+
+Required worker outcomes:
+
+SUCCESS
+FAILED
+WORKER_TIMEOUT
+RUN_DEADLINE_EXPIRED
+OUTPUT_OVERFLOW
+SPAWN_ERROR
+TERMINATED_BY_STOP
+UNKNOWN_FAILURE
+
+UNKNOWN must fail closed.
+
+PHASE 3 — PROCESS-TREE TERMINATION
+
+Extend the current asynchronous worker helper rather than introducing a second worker authority.
+
+Required behavior:
+
+- spawn the worker in a controllable process group or equivalent governed process-tree boundary;
+- continue genuine heartbeats while the worker is alive;
+- schedule a monotonic timeout against effective_worker_timeout;
+- on timeout:
+  1. record timeout intent;
+  2. send graceful termination;
+  3. wait a bounded grace period;
+  4. send forced termination if still alive;
+  5. verify the child and known descendants are gone;
+  6. stop the worker heartbeat interval;
+  7. record the exact outcome.
+
+Do not:
+
+- leave a detached orphan;
+- mark termination complete based only on sending a signal;
+- continue heartbeats after the worker process is gone;
+- classify timeout as ordinary failure without recording the timeout cause;
+- start another job after the run deadline.
+
+If process-tree termination cannot be proven, return a blocker.
+
+PHASE 4 — PRODUCTION-PATH RUNTIME QUALIFICATION
+
+Use the actual production:
+
+- supervisor-session;
+- asynchronous worker helper;
+- heartbeat writer;
+- run deadline;
+- queue transition logic;
+- termination path.
+
+Use isolated synthetic runtime state.
+
+Do not use the real activation decision.
+
+Do not start the real Wave-2 queue.
+
+Required runtime scenarios:
+
+1. Worker completes before timeout:
+   - result SUCCESS;
+   - heartbeat advances while running;
+   - no residual process.
+
+2. Worker exceeds an authorized job-specific timeout:
+   - graceful termination attempted;
+   - forced termination used if needed;
+   - result WORKER_TIMEOUT;
+   - no residual process;
+   - job not marked DONE.
+
+3. Original run deadline expires while worker is running:
+   - worker and descendants terminated;
+   - result RUN_DEADLINE_EXPIRED;
+   - no next job starts;
+   - run enters deadline stop or drain state;
+   - original deadline remains unchanged.
+
+4. Deadline already expired before spawn:
+   - worker never starts.
+
+5. Worker creates a child process:
+   - both parent and child are terminated at timeout;
+   - no orphan remains.
+
+6. Worker ignores graceful termination:
+   - forced termination succeeds;
+   - exact escalation is recorded.
+
+7. Supervisor stop occurs during a worker:
+   - worker process tree terminates;
+   - result TERMINATED_BY_STOP;
+   - no residual process.
+
+8. Output overflow:
+   - worker terminates;
+   - result OUTPUT_OVERFLOW;
+   - no residual process.
+
+9. Spawn error:
+   - result SPAWN_ERROR;
+   - no false heartbeat or success.
+
+10. Worker heartbeat:
+   - advances while process is alive;
+   - stops after process termination;
+   - cannot keep a dead worker appearing alive.
+
+PHASE 5 — TESTING
+
+Add deterministic tests for:
+
+- immutable original deadline;
+- remaining-time calculation;
+- job timeout capped by remaining run time;
+- no worker spawn after deadline;
+- worker completes before timeout;
+- worker timeout;
+- run-deadline timeout;
+- graceful termination;
+- forced termination;
+- process-tree cleanup;
+- child-process cleanup;
+- heartbeat during execution;
+- heartbeat stops after execution;
+- job not marked DONE on timeout;
+- no second job after deadline;
+- restart does not extend deadline;
+- recovery uses original deadline;
+- malformed or missing deadline fails closed;
+- environment cannot enlarge timeout;
+- duplicate termination is idempotent;
+- no decision consumption during tests;
+- real queue untouched.
+
+Run:
+
+- shell syntax validation;
+- Node module-load validation;
+- worker-helper tests;
+- supervisor integration tests;
+- heartbeat tests;
+- singleton tests;
+- lease tests;
+- deadline tests;
+- stop tests;
+- recovery tests;
+- negative tests;
+- mutation tests;
+- full repository selftests;
+- secret scan;
+- credential scan;
+- forbidden-artifact scan;
+- exact-SHA CI.
+
+Required mutations must fail:
+
+- remove the worker timer;
+- permit timeout beyond remaining deadline;
+- create a fresh deadline on restart;
+- mark timeout as DONE;
+- fail to kill descendants;
+- continue heartbeat after termination;
+- start the next job after deadline;
+- ignore forced-termination failure.
+
+PHASE 6 — INDEPENDENT REVIEW
+
+Commission one independent checker that did not implement the correction.
+
+The checker must verify:
+
+- the original deadline is immutable;
+- active workers cannot cross the run deadline;
+- no worker starts after expiry;
+- timeout is capped by remaining run time;
+- process tree is terminated;
+- no child process survives;
+- timeout jobs are not marked successful;
+- heartbeats stop after worker termination;
+- the real activation decision remains unconsumed;
+- the real queue remains inactive;
+- no authority or permission was expanded.
+
+Allowed checker verdicts:
+
+PAES-WORKER-DEADLINE-CHECKER: CLEAN
+PAES-WORKER-DEADLINE-CHECKER: FINDINGS
+PAES-WORKER-DEADLINE-CHECKER: REJECT
+PAES-WORKER-DEADLINE-CHECKER: INSUFFICIENT_EVIDENCE
+
+After checker CLEAN, commission one separate read-only Advisor.
+
+The Advisor must independently inspect:
+
+- exact candidate;
+- timeout law;
+- process-tree evidence;
+- deadline enforcement;
+- tests and mutations;
+- activation-decision state;
+- merge safety;
+- final launcher readiness.
+
+Allowed Advisor verdicts:
+
+PAES-WORKER-DEADLINE-ADVISOR: READY-TO-INTEGRATE
+PAES-WORKER-DEADLINE-ADVISOR: HOLD-CORRECTABLE-FINDINGS
+PAES-WORKER-DEADLINE-ADVISOR: REJECT
+PAES-WORKER-DEADLINE-ADVISOR: INSUFFICIENT_EVIDENCE
+
+Checker and Advisor must be separate agent invocations.
+
+Allow up to three bounded correction cycles.
+
+PHASE 7 — INTEGRATION AND FINAL-HEAD REVIEW
+
+Merge only through ARLC after:
+
+- checker CLEAN;
+- separate Advisor READY;
+- exact-SHA CI green;
+- no post-review executable drift;
+- no secret;
+- no credential;
+- no authority expansion.
+
+After merge:
+
+1. resolve final main mechanically;
+2. run post-merge tests and CI;
+3. verify executable files match the reviewed candidate;
+4. verify activation decision remains consumed:false;
+5. verify real Wave-2 remains NOT_STARTED;
+6. verify no worker or supervisor is alive;
+7. append-only rebind the same narrow activation decision if required;
+8. renew the bounded expiry;
+9. do not consume the decision.
+
+Because worker execution code changes, require:
+
+- one independent final-head checker;
+- one separate final-head Advisor.
+
+PHASE 8 — FINAL RETRY READINESS
+
+Do not run the launcher.
+
+Before returning READY-TO-RETRY require:
+
+- main clean and synchronized;
+- no open integration PR;
+- no live supervisor, watchdog or worker;
+- hard original-deadline enforcement merged;
+- process-tree termination proven;
+- runtime timeout qualification passed;
+- full suite green;
+- mutations killed;
+- checker CLEAN;
+- separate Advisor READY;
+- final-head review complete;
+- activation decision valid;
+- activation decision consumed:false;
+- activation decision unexpired;
+- PANIC_STOP absent;
+- real nine-hour run NOT_STARTED.
+
+Resolve the exact retry command from current disk.
+
+FINAL OUTPUT
+
+Return:
+
+1. Host identity.
+2. Directive digest.
+3. Starting main SHA.
+4. Current decision consumed state.
+5. Current real-run state.
+6. Original worker behavior.
+7. Root risk.
+8. Corrected files.
+9. Deadline source.
+10. Deadline immutability result.
+11. Remaining-time calculation.
+12. Job-timeout policy.
+13. Effective-timeout cap.
+14. Process-group mechanism.
+15. Graceful-termination result.
+16. Forced-termination result.
+17. Descendant-cleanup result.
+18. Heartbeat-during-worker result.
+19. Heartbeat-after-termination result.
+20. Completed-worker result.
+21. Job-timeout result.
+22. Run-deadline result.
+23. Pre-expired-deadline result.
+24. Child-process timeout result.
+25. Stop-during-worker result.
+26. Overflow result.
+27. Spawn-error result.
+28. No-next-job-after-deadline result.
+29. Restart deadline-preservation result.
+30. Recovery deadline-preservation result.
+31. Local test result.
+32. Mutation result.
+33. Full repository result.
+34. Independent checker identity and verdict.
+35. Separate Advisor identity and verdict.
+36. Candidate exact-SHA CI.
+37. Merge result.
+38. Final main SHA.
+39. Final-head checker verdict.
+40. Final-head Advisor verdict.
+41. Decision binding.
+42. Decision consumed state.
+43. Decision expiry.
+44. Current supervisor state.
+45. Current worker state.
+46. Current real-run state.
+47. Exact launcher path.
+48. Exact retry command.
+49. Expected success message.
+50. Expected failure message.
+51. Evidence paths.
+52. Remaining limitations.
+53. Exact next founder action.
+54. Final verdict.
+
+Required exact statements:
+
+THE ORIGINAL NINE-HOUR RUN DEADLINE IS A HARD EXECUTION BOUNDARY, INCLUDING WHILE A WORKER PROCESS IS ACTIVE.
+
+NO WORKER MAY START OR CONTINUE BEYOND THE ORIGINAL RUN DEADLINE.
+
+A WORKER TIMEOUT CANNOT BE MARKED SUCCESSFUL OR DONE.
+
+WORKER TERMINATION INCLUDES GOVERNED PROCESS-TREE CLEANUP AND VERIFICATION THAT NO DESCENDANT REMAINS.
+
+HEARTBEATS ADVANCE ONLY WHILE THE WORKER IS ALIVE AND STOP AFTER TERMINATION.
+
+A RESTART OR RECOVERY CANNOT CREATE A FRESH DEADLINE FOR THE SAME RUN.
+
+THE ACTIVATION DECISION REMAINS UNCONSUMED.
+
+THE REAL NINE-HOUR WAVE-2 RUN REMAINS NOT_STARTED.
+
+Finish with exactly one verdict:
+
+PAES-WORKER-DEADLINE-HOTFIX: READY-TO-RETRY
+PAES-WORKER-DEADLINE-HOTFIX: CHECKER-FINDINGS
+PAES-WORKER-DEADLINE-HOTFIX: ADVISOR-FINDINGS
+PAES-WORKER-DEADLINE-HOTFIX: HOLD-CORRECTABLE-FINDINGS
+PAES-WORKER-DEADLINE-HOTFIX: RUNTIME-CONFLICT
+PAES-WORKER-DEADLINE-HOTFIX: ACTIVATION-BINDING-FAILED
+PAES-WORKER-DEADLINE-HOTFIX: PROCESS-TREE-CLEANUP-FAILED
+PAES-WORKER-DEADLINE-HOTFIX: UNRESOLVED-CRITICAL-BLOCKER
+PAES-WORKER-DEADLINE-HOTFIX: SELF-CAPTURE-FAILED
+PAES-WORKER-DEADLINE-HOTFIX: REJECT
+PAES-WORKER-DEADLINE-HOTFIX: INSUFFICIENT-EVIDENCE

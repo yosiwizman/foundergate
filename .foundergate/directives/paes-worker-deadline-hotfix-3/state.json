@@ -1,0 +1,57 @@
+{
+  "directive_id": "paes-worker-deadline-hotfix-3",
+  "lifecycle": [
+    "RECEIVED",
+    "CAPTURED",
+    "DIGEST_VERIFIED",
+    "QUEUED",
+    "READY",
+    "RUNNING"
+  ],
+  "current_state": "RUNNING",
+  "queue": [
+    {
+      "phase": 2,
+      "name": "HARD_DEADLINE_LAW"
+    },
+    {
+      "phase": 3,
+      "name": "PROCESS_TREE_TERMINATION"
+    },
+    {
+      "phase": 4,
+      "name": "RUNTIME_QUALIFICATION"
+    },
+    {
+      "phase": 5,
+      "name": "TESTING"
+    },
+    {
+      "phase": 6,
+      "name": "INDEPENDENT_REVIEW"
+    },
+    {
+      "phase": 7,
+      "name": "INTEGRATION"
+    },
+    {
+      "phase": 8,
+      "name": "RETRY_READINESS"
+    }
+  ],
+  "dependencies": [
+    "ACTIVATE_SAFE_NARROW_ALLOWLIST(consumed:false)",
+    "supervisor-session",
+    "worker-heartbeat.mjs",
+    "ORC original_deadline"
+  ],
+  "next_safe_action": "implement hard deadline law + process-tree termination (no real launch, no decision consumption)",
+  "constraints": [
+    "NO_REAL_LAUNCH",
+    "NO_DECISION_CONSUMPTION",
+    "NO_DEADLINE_EXTENSION",
+    "NO_DETACHED_ORPHAN_WORKER",
+    "NO_FALSE_SUCCESS",
+    "NO_DIRECT_MAIN_PUSH"
+  ]
+}
