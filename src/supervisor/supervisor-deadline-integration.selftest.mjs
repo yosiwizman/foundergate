@@ -49,9 +49,12 @@ function runScenario({ deadlineOffsetS, stubSleepS = 0, jobTimeoutS = null, drai
   const events = existsSync(join(SUP, "events.jsonl"))
     ? readFileSync(join(SUP, "events.jsonl"), "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l)) : [];
   const queue = JSON.parse(readFileSync(join(SUP, "queue.json"), "utf8"));
-  // any residual stub process referencing this root?
+  // any residual stub worker process referencing this root? The bracket trick
+  // (stub-cla[u]de) prevents pgrep from matching its OWN command line / the sh -c
+  // wrapper (which both contain the pattern string) — a portable self-match guard
+  // that bit on the Linux CI runner but not on macOS.
   let residual = "";
-  try { residual = execSync(`pgrep -f "${root}" || true`, { encoding: "utf8" }).trim(); } catch { residual = ""; }
+  try { residual = execSync(`pgrep -f "${root}/stub-cla[u]de" || true`, { encoding: "utf8" }).trim(); } catch { residual = ""; }
   rmSync(root, { recursive: true, force: true });
   return { events, queue, jobState: queue.jobs[0].state, jobOutcome: queue.jobs[0].last_outcome, residual, stdout: r.stdout, stderr: r.stderr };
 }
