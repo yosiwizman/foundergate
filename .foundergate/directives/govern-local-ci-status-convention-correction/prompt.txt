@@ -1,0 +1,389 @@
+MACHINE: Mac Mini Pro — Harvest Terminal / Terminal-0
+
+WHEN: NOW, provided no other FounderGate mutation operation is active
+
+FOUNDERGATE PR #185 — FINAL STATUS-CONVENTION CORRECTION, PARSER-AMBIGUITY ELIMINATION, FRESH EXACT-HEAD REVIEW, AND GOVERNANCE-GATE PREPARATION
+
+FOUNDER AUTHORIZATION
+
+I authorize one final, narrow, governance-only correction to PR #185.
+
+The correction is limited to resolving the mismatch between:
+
+1. the repository's established exact active-governance convention:
+   status: "ACTIVE"
+
+and:
+
+2. the current PR #185 custom token:
+   status: "ACTIVE_IFF_PRESENT_ON_PROTECTED_MAIN"
+
+This authorization does not authorize merging PR #185.
+
+PURPOSE
+
+Correct the status representation so PR #185:
+
+- uses the exact repository convention `status: "ACTIVE"`;
+- explicitly and structurally grants no authority to a feature branch, worktree, open PR, chat, transcript, detached object, or any non-protected-main location;
+- becomes authoritative only when the exact reviewed PR #185 head is founder-authorized and merged through Terminal-0 into protected main;
+- requires no follow-up status mutation;
+- cannot be misclassified through prefix-based status parsing;
+- remains governance-only and unmerged.
+
+HISTORICAL ORIENTATION — REVERIFY BEFORE RELYING ON IT
+
+The last reported state was:
+
+- protected main:
+  17ab4c749c00c0b904aee49fcdb52c5ff097d9bc
+- PR #185:
+  open and unmerged
+- PR #185 head:
+  d22bcd12218752e7540e19071abc3b49b6bd9868
+- PR #185 tree:
+  bcc9d066...
+- original founder clarification digest:
+  89bea2acb55a477905747ac3d8101973b6f33c7e9f46ebdb6cd74d15dc02adaf
+- prior correction directive digest:
+  d935a1eac9ab6addf1aff908a07690bf67fc8e6da01d4b4e2efbbb683156c473
+- current custom status:
+  ACTIVE_IFF_PRESENT_ON_PROTECTED_MAIN
+- PRs #182, #183, and #184:
+  open, unmerged, and untouched
+- Wave-2 decision:
+  consumed and replay-blocked
+- PAES:
+  inactive
+
+Treat all values as historical until mechanically reverified.
+
+OPERATING CLASSIFICATION
+
+NARROW-SENSITIVE GOVERNANCE CORRECTION
+ONE GOVERNANCE WRITER
+DCL-CAPTURED
+EXACT-SHA-BOUND
+CHECKER-SEPARATED
+SEPARATE READ-ONLY ADVISOR
+NO PRODUCT MUTATION
+NO LOADER MUTATION
+NO MERGE
+FAIL-CLOSED
+
+PHASE 0 — CURRENT-STATE PREFLIGHT
+
+Mechanically verify:
+
+1. Host identity is the Mac Mini Pro.
+2. The FounderGate repository path.
+3. Protected main current full SHA.
+4. Primary repository cleanliness.
+5. PR #185 remains open and unmerged.
+6. PR #185 current full head and tree.
+7. PR #185 base and merge state.
+8. PR #185 current title and body.
+9. PR #185 complete changed-file list.
+10. The original clarification file and digest remain unchanged.
+11. The current record still uses:
+    ACTIVE_IFF_PRESENT_ON_PROTECTED_MAIN.
+12. PRs #182, #183, and #184 remain open, unmerged, and outside scope.
+13. No active writer or competing operation is modifying PR #185.
+14. No PAES supervisor, worker, or descendant is active.
+15. The Wave-2 decision remains consumed and replay-blocked.
+
+Stop without mutation if state materially differs:
+
+PR185-STATUS-CONVENTION-CORRECTION: CURRENT-STATE-CONFLICT
+
+Do not rebase, reset, force-push, overwrite, or silently reconcile unexpected state.
+
+PHASE 1 — MECHANICAL STATUS-CONSUMER AUDIT
+
+Before editing, mechanically search the repository for all governance-status consumers and comparisons, including:
+
+- exact comparisons with "ACTIVE";
+- prefix comparisons such as startsWith("ACTIVE");
+- substring or regex comparisons involving ACTIVE;
+- generic scans of .foundergate/governance/*.json;
+- any direct read of local_exact_sha_ci_clarification.json;
+- any code that scans feature branches, worktrees, PR heads, or arbitrary Git objects as governance authority.
+
+Record:
+
+- file;
+- line;
+- comparison behavior;
+- source ref or location read;
+- whether it can see non-protected-main copies;
+- whether the current custom token can be misclassified;
+- whether exact ACTIVE plus protected-main-only authority is compatible.
+
+Required result:
+
+- No current consumer may treat a non-main copy as active authority merely because its status begins with ACTIVE.
+- If an existing consumer requires modification to make the correction safe, stop with:
+
+PR185-STATUS-CONVENTION-CORRECTION: LOADER-OR-CONSUMER-CHANGE-REQUIRED
+
+Do not modify the consumer under this authorization.
+
+PHASE 2 — DCL CAPTURE
+
+Create a separate directive directory:
+
+.foundergate/directives/govern-local-ci-status-convention-correction/
+
+Write:
+
+- prompt.txt containing this complete authorization;
+- metadata.json;
+- SHA-256 digest;
+- transcript-to-disk digest equality;
+- starting PR #185 head and tree.
+
+Do not modify either prior founder directive:
+
+- .foundergate/directives/govern-local-ci-clarification/
+- .foundergate/directives/govern-local-ci-activation-correction/
+
+Recompute both prior directive digests and require equality.
+
+PHASE 3 — ALLOWED SCOPE
+
+ALLOWED PERSISTENT CHANGES
+
+- new status-convention correction DCL directory;
+- .foundergate/governance/local_exact_sha_ci_clarification.json;
+- directly related validation evidence;
+- PR #185 title and body, completed before final review.
+
+FORBIDDEN CHANGES
+
+Do not modify:
+
+- original founder clarification text or metadata;
+- prior activation-correction directive or metadata;
+- existing ARLC policy;
+- any governance loader or status consumer;
+- merge engine;
+- product code;
+- provider code;
+- supervisor or runtime code;
+- test source unrelated to this governance validation;
+- PR #182;
+- PR #183;
+- PR #184;
+- GitHub workflows;
+- repository settings;
+- branch protection;
+- billing;
+- runner configuration;
+- AKIOR;
+- M1 state.
+
+PHASE 4 — EXACT STATUS-CONVENTION CORRECTION
+
+Update only the governance record and directly related metadata.
+
+Required correction:
+
+1. Replace:
+
+   "status": "ACTIVE_IFF_PRESENT_ON_PROTECTED_MAIN"
+
+   with exactly:
+
+   "status": "ACTIVE"
+
+2. Bump the governance-record patch version from 1.1.0 to 1.1.1, but only if current mechanical state confirms 1.1.0. Otherwise stop with CURRENT-STATE-CONFLICT.
+
+3. Preserve every substantive clarification field exactly:
+
+   - clarified_fields;
+   - self_hosted_runner_prohibition_applies_to;
+   - all 17 controls;
+   - does_not;
+   - does_not_supersede;
+   - original authority basis;
+   - original founder clarification digest.
+
+4. Replace the prior custom-status explanation with a structured authority model containing, at minimum, these machine-readable facts:
+
+   - status_convention: "ACTIVE"
+   - active_when_authoritative: true
+   - pre_merge_authority: false
+   - feature_branch_authority: false
+   - worktree_authority: false
+   - open_pr_authority: false
+   - chat_authority: false
+   - transcript_authority: false
+   - detached_git_object_authority: false
+   - authoritative_ref: "refs/heads/main"
+   - activation_requires_exact_reviewed_head: true
+   - activation_requires_founder_governance_gate: true
+   - activation_requires_terminal0_merge: true
+   - activation_event:
+     "The exact reviewed PR #185 head becomes authoritative only when founder-authorized and merged through Terminal-0 into refs/heads/main."
+   - followup_activation_mutation_required: false
+   - post_merge_status_flip_required: false
+
+5. State plainly that status: "ACTIVE" expresses the record's protected-main governance classification. It does not grant authority to non-authoritative copies.
+
+6. Remove the custom token and every claim that relies on interpreting a status value through startsWith, prefix logic, or prose alone.
+
+7. Preserve the rule that merge of the exact reviewed candidate is complete and sufficient activation, with no second status edit.
+
+8. Do not add a new loader or enforcement engine.
+
+If these semantics cannot be represented honestly without modifying a loader or existing ARLC policy, stop with:
+
+PR185-STATUS-CONVENTION-CORRECTION: SCOPE-EXPANSION-REQUIRED
+
+PHASE 5 — VALIDATION
+
+Mechanically prove:
+
+1. JSON is valid.
+2. Status equals exactly ACTIVE.
+3. No ACTIVE_IFF_PRESENT_ON_PROTECTED_MAIN token remains.
+4. No status value uses an ACTIVE prefix variant.
+5. Original clarification bytes and digest are unchanged.
+6. Prior activation-correction directive bytes and digest are unchanged.
+7. All 5 prohibition scopes remain unchanged.
+8. All 17 controls remain unchanged.
+9. All 10 does-not restrictions remain unchanged.
+10. does_not_supersede remains unchanged.
+11. Candidate-branch authority is false.
+12. Open-PR authority is false.
+13. Worktree authority is false.
+14. Chat and transcript authority are false.
+15. Protected main is the only authoritative ref.
+16. Founder gate and Terminal-0 merge are both required.
+17. Exact reviewed-head binding is required.
+18. No follow-up activation mutation is required.
+19. No current parser can misclassify the candidate through prefix matching.
+20. No forbidden file changed.
+21. PRs #182, #183, and #184 remain untouched.
+22. Protected main remains unchanged.
+
+Run all applicable governance validation and existing relevant selftests.
+
+Do not modify unrelated tests merely to obtain green.
+
+Allow at most one bounded correction cycle within the authorized files.
+
+PHASE 6 — PR METADATA
+
+Before final review, update PR #185 title and body so they:
+
+- remove the custom status-token language;
+- state that the record uses the exact ACTIVE governance convention;
+- state that the unmerged PR has no active authority;
+- state that only the exact founder-authorized Terminal-0 merge to protected main activates authority;
+- state that no follow-up mutation is needed;
+- state that no other PR or product work is authorized;
+- state that PR #185 remains unmerged.
+
+Complete all metadata changes before final checker review.
+
+PHASE 7 — FINAL CONTENT COMPLETION AND FREEZE
+
+Before final review:
+
+1. Finish every record change.
+2. Finish every DCL record.
+3. Finish validation evidence.
+4. Finish all commits.
+5. Push the PR #185 branch only.
+6. Finish PR title and body.
+7. Verify the complete changed-file list.
+8. Verify tests and validation.
+9. Verify PR #185 remains open and unmerged.
+10. Verify PRs #182-#184 remain untouched.
+
+Freeze:
+
+- final full head SHA;
+- final tree SHA;
+- original clarification digest;
+- prior correction-directive digest;
+- new status-convention directive digest;
+- governance-record digest;
+- validation-evidence digest;
+- changed-file-list digest;
+- PR title digest;
+- PR body digest.
+
+Store the freeze tuple externally and durably.
+
+PHASE 8 — FRESH INDEPENDENT CHECKER
+
+Commission one checker that did not implement the correction.
+
+Bind it to the frozen exact head, tree, and all listed digests.
+
+The checker must attempt to falsify:
+
+- exact ACTIVE convention compliance;
+- non-main non-authority;
+- prefix-parser safety;
+- protected-main-only authority;
+- exact-head founder-gate requirement;
+- no-follow-up-mutation result;
+- original clarification preservation;
+- narrow scope;
+- PR #182/#183/#184 non-interference;
+- no loader or ARLC mutation.
+
+Allowed verdicts:
+
+PR185-STATUS-CHECKER: CLEAN
+
+PR185-STATUS-CHECKER: FINDINGS
+
+PR185-STATUS-CHECKER: INSUFFICIENT-EVIDENCE
+
+Proceed only after CLEAN.
+
+PHASE 9 — SEPARATE READ-ONLY ADVISOR
+
+After checker CLEAN, commission a separate read-only Advisor bound to the exact same unchanged head, tree, and digests.
+
+The Advisor must specifically answer:
+
+1. Does the record now use exact status: "ACTIVE"?
+2. Is branch/open-PR/worktree authority structurally false?
+3. Is protected-main reachability required?
+4. Is the exact founder-authorized Terminal-0 merge the complete activation event?
+5. Is any second status mutation required?
+6. Can any current status consumer misclassify the candidate?
+7. Were all substantive clarification terms preserved?
+8. Is PR #185 ready for a separate founder governance merge gate?
+
+Allowed verdicts:
+
+PR185-STATUS-ADVISOR: READY-FOR-FOUNDER-GOVERNANCE-GATE
+
+PR185-STATUS-ADVISOR: HOLD-CORRECTABLE-FINDINGS
+
+PR185-STATUS-ADVISOR: REJECT
+
+PR185-STATUS-ADVISOR: INSUFFICIENT-EVIDENCE
+
+PHASE 10 — NON-RECURSIVE FINAL STATE
+
+After final review begins:
+
+- no commit;
+- no amend;
+- no push;
+- no PR metadata change;
+- no evidence change;
+- no record change.
+
+Any change invalidates both reviews and requires complete restart on the new head.
+
+Do not commit checker or Advisor reports into the reviewed PR.
+
+Leave PR #185 open and unmerged.

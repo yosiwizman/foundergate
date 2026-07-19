@@ -1,0 +1,12 @@
+{
+  "directive_id": "govern-local-ci-status-convention-correction",
+  "sha256": "e81c9b27e35a6049e297abbb78ba100051c54b7031365f920e581f7b5a0c9ea0",
+  "stored_sha256": "e81c9b27e35a6049e297abbb78ba100051c54b7031365f920e581f7b5a0c9ea0",
+  "digest_equal": true,
+  "byte_count": 12278,
+  "current_state": "DIGEST_VERIFIED",
+  "starting_pr185_head": "d22bcd12218752e7540e19071abc3b49b6bd9868",
+  "starting_pr185_tree": "bcc9d066fd3c0abeedb3181d05dd40d9d9a11ddb",
+  "authorizes": "status token ACTIVE_IFF_PRESENT_ON_PROTECTED_MAIN -> exact ACTIVE convention + structured authority model; governance-only; no merge",
+  "preserves": "original clarification DCL 89bea2ac + prior activation-correction DCL d935a1ea + substantive clarification"
+}
