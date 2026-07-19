@@ -1,14 +1,37 @@
 {
   "policy_id": "local_exact_sha_ci_clarification",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Governance Clarification: self-hosted-runner scope + ephemeral local exact-SHA CI exception",
   "clarifies": "autonomous_repository_lifecycle (ARLC-1)",
   "clarified_fields": ["does_not_authorize: 'self-hosted runners'", "merge_eligibility fact: exact_sha_ci_green"],
-  "status": "PENDING_FOUNDER_GOVERNANCE_MERGE_GATE",
+  "status": "ACTIVE_IFF_PRESENT_ON_PROTECTED_MAIN",
   "authority_basis": {
     "founder_clarification_directive": ".foundergate/directives/govern-local-ci-clarification/prompt.txt",
     "directive_sha256": "89bea2acb55a477905747ac3d8101973b6f33c7e9f46ebdb6cd74d15dc02adaf",
-    "note": "Captured verbatim from the founder. Becomes ACTIVE only after the activation_requirements below are met."
+    "note": "Substantive clarification captured verbatim from the founder (text + DCL digest above preserved exactly). Activation is governed by the activation_model below."
+  },
+  "activation_model": {
+    "rule": "This record is ACTIVE if and only if this exact file is present on protected main (origin/main) as the result of the founder-authorized Terminal-0 merge of the exact reviewed PR #185 head. That merge is the COMPLETE and SUFFICIENT activation event.",
+    "no_followup_activation_mutation_required": true,
+    "no_post_merge_status_flip_required": true,
+    "authoritative_presence": "protected main (origin/main) reached via the founder-authorized Terminal-0 governance merge gate",
+    "non_authoritative_presence": [
+      "a feature or lane branch",
+      "any git worktree",
+      "an open or unmerged pull request",
+      "chat or conversation",
+      "a session transcript",
+      "any location other than protected main"
+    ],
+    "pre_merge_state": "NOT ACTIVE — this record is not on protected main until the founder-authorized Terminal-0 merge",
+    "status_token_is_a_rule_not_a_mutable_state": "The same byte-identical record is correct on the lane (not on protected main -> NOT active) and on protected main (present via the founder gate -> ACTIVE). No status edit is performed before or after merge."
+  },
+  "correction_provenance": {
+    "correction_authorization_directive": ".foundergate/directives/govern-local-ci-activation-correction/prompt.txt",
+    "correction_directive_sha256": "d935a1eac9ab6addf1aff908a07690bf67fc8e6da01d4b4e2efbbb683156c473",
+    "scope": "activation semantics ONLY — the self-hosted-runner prohibition scope, the 17 ephemeral-local-CI controls, the does_not list, and does_not_supersede are UNCHANGED from v1.0.0",
+    "original_clarification_text_preserved": true,
+    "original_clarification_dcl_sha256": "89bea2acb55a477905747ac3d8101973b6f33c7e9f46ebdb6cd74d15dc02adaf"
   },
   "self_hosted_runner_prohibition_applies_to": [
     "runners registered with GitHub Actions",
@@ -59,6 +82,7 @@
     "approved through a separate founder governance merge gate",
     "merged through Terminal-0"
   ],
+  "activation_completion": "The founder-authorized Terminal-0 merge of the exact reviewed PR #185 head into protected main is the FINAL and COMPLETING activation requirement. Upon that merge, every item in activation_requirements_all_required is satisfied and this record is ACTIVE by the activation_model rule (presence on protected main). No later status flip or follow-up activation mutation is required or authorized.",
   "does_not_supersede": [
     "Hard safety floor (non-weakenable invariants)",
     "Evidence / checker / Advisor requirements",
