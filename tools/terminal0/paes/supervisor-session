@@ -34,13 +34,17 @@ const WARMUP_BEATS = Number(process.env.FG_WARMUP_BEATS || 5);
 // deadline-during-worker behaviour is testable without a 15-minute wait.
 const DRAIN_MARGIN_S = Number(process.env.FG_DRAIN_MARGIN_S || 900);
 let hbSeq = 0;
+// WAVE2 observability: stamp every emitted event with the active run_id so the
+// founder status can scope the timeline by run (legacy unscoped events read as
+// historical). Additive metadata only — does not change any runtime behaviour.
+let RUN_ID = null;
 const MAX_CYCLES = Number(process.env.FG_MAX_CYCLES || 0); // 0 = until deadline
 
 const LOCK = join(SUP, "singleton.lock");
 const nowS = () => Math.floor(Date.now() / 1000);
 const rj = (p, d) => { const f = join(SUP, p); return existsSync(f) ? JSON.parse(readFileSync(f, "utf8")) : d; };
 const wj = (p, o) => { const f = join(SUP, p); const t = f + ".tmp"; writeFileSync(t, JSON.stringify(o, null, 2) + "\n"); renameSync(t, f); };
-const led = (e) => appendFileSync(join(SUP, "events.jsonl"), JSON.stringify({ ...e, ts: nowS() }) + "\n");
+const led = (e) => appendFileSync(join(SUP, "events.jsonl"), JSON.stringify({ ...e, run_id: RUN_ID, ts: nowS() }) + "\n");
 // Heartbeat also refreshes the singleton lock's last_heartbeat so staleness works.
 const beat = () => {
   // ms resolution + a strictly-increasing seq so consecutive beats are always
@@ -128,6 +132,7 @@ async function main() {
   mkdirSync(join(SUP, "logs"), { recursive: true });
   const cfg = rj("config.json", { deadline_hours: 9 });
   const cycle = rj("current-cycle.json", null) || { start: nowS(), deadline: nowS() + (cfg.deadline_hours || 9) * 3600 };
+  RUN_ID = cycle.run_id || null; // scope all subsequent events to this run
   wj("current-cycle.json", cycle);
 
   // ATOMIC SINGLETON: refuse to start if a healthy supervisor already holds the

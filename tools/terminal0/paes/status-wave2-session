@@ -1,13 +1,30 @@
-#!/usr/bin/env bash
-REPO="$(cd "$(dirname "$0")/../../.." && pwd)"; SUP="$REPO/.foundergate/supervisor"
-NODE="$(command -v node)"
-"$NODE" -e '
-const fs=require("fs");const SUP=process.argv[1];
-const r=(f)=>{try{return JSON.parse(fs.readFileSync(SUP+"/"+f))}catch{return null}};
-const hb=r("heartbeat.json"),cy=r("current-cycle.json"),ho=r("handoff.json");
-const now=Math.floor(Date.now()/1000);
-console.log("FounderGate run:",cy?cy.run_id:"none");
-console.log("state:",ho?ho.result:"unknown");
-console.log("heartbeat age:",hb?(now-hb.ts)+"s":"none");
-console.log("deadline:",cy?new Date(cy.deadline*1000).toString():"none");
-' "$SUP"
+#!/usr/bin/env node
+// Founder-facing PAES run status. Uses the WAVE2 observability corrections so the
+// display is trustworthy: lifecycle comes from the supervisor's FINAL state (not the
+// handoff launch marker), heartbeat age is unit-normalized (never a huge negative),
+// and the timeline is scoped to the active run (legacy unscoped events are historical).
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+import { normalizeHeartbeatAge, resolveLifecycle, scopeEvents, BRANCH_ACTIVITY_NOTE } from "../../../src/observability/status-core.mjs";
+
+const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+const SUP = process.env.FG_SUP_DIR || join(REPO, ".foundergate", "supervisor");
+const r = (f) => { try { return JSON.parse(readFileSync(join(SUP, f), "utf8")); } catch { return null; } };
+const rlines = (f) => { try { return readFileSync(join(SUP, f), "utf8").trim().split("\n").filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean); } catch { return []; } };
+
+const cy = r("current-cycle.json"), st = r("state.json"), hb = r("heartbeat.json"), ho = r("handoff.json");
+const events = rlines("events.jsonl");
+const activeRunId = cy && cy.run_id ? cy.run_id : null;
+
+const life = resolveLifecycle({ state: st, handoff: ho });
+const beat = normalizeHeartbeatAge(hb, Date.now());
+const scope = scopeEvents(events, activeRunId);
+
+console.log("FounderGate run:", activeRunId || "none");
+console.log("lifecycle state:", life.lifecycle_display, life.source === "state.json" ? "" : "(no final state on disk)");
+console.log("heartbeat:", beat.status === "NONE" ? "none" : beat.status === "UNKNOWN" ? "UNKNOWN (malformed/impossible timestamp)" : `${beat.ageSeconds}s ago (${beat.status}, ${beat.unit})`);
+console.log("deadline:", cy && cy.deadline ? new Date(cy.deadline * 1000).toString() : "none");
+console.log("historical launch marker:", life.historical_launch_evidence || "none", "(launch-time evidence, NOT the live/final state)");
+console.log("timeline (active run):", scope.current.length, "events |", scope.historical.length, "historical/legacy (", scope.legacy_unscoped, "unscoped )");
+console.log("note:", BRANCH_ACTIVITY_NOTE);
