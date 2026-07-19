@@ -81,7 +81,7 @@ export function runBeatingChild({
         killTree(child, "SIGKILL");
         emit({ evt: "worker_signal", signal: "SIGKILL", reason, escalated: true });
         // bounded verification that the group is actually gone
-        const deadline = graceMs > 0 ? verifyMs : verifyMs;
+        const deadline = verifyMs;
         let waited = 0; const step = Math.max(25, Math.min(200, stopPollMs));
         while (isTreeAlive(child) && waited < deadline) { await sleepFn(step); waited += step; }
       }
