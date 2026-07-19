@@ -1,0 +1,69 @@
+{
+  "policy_id": "local_exact_sha_ci_clarification",
+  "version": "1.0.0",
+  "title": "Governance Clarification: self-hosted-runner scope + ephemeral local exact-SHA CI exception",
+  "clarifies": "autonomous_repository_lifecycle (ARLC-1)",
+  "clarified_fields": ["does_not_authorize: 'self-hosted runners'", "merge_eligibility fact: exact_sha_ci_green"],
+  "status": "PENDING_FOUNDER_GOVERNANCE_MERGE_GATE",
+  "authority_basis": {
+    "founder_clarification_directive": ".foundergate/directives/govern-local-ci-clarification/prompt.txt",
+    "directive_sha256": "89bea2acb55a477905747ac3d8101973b6f33c7e9f46ebdb6cd74d15dc02adaf",
+    "note": "Captured verbatim from the founder. Becomes ACTIVE only after the activation_requirements below are met."
+  },
+  "self_hosted_runner_prohibition_applies_to": [
+    "runners registered with GitHub Actions",
+    "persistent runner daemons or services",
+    "reusable agents waiting for externally dispatched CI work",
+    "long-lived runner credentials",
+    "externally triggered execution on founder-controlled hardware without a separate founder-controlled gate"
+  ],
+  "ephemeral_local_ci_exception": {
+    "description": "The self-hosted-runner prohibition does NOT apply to ephemeral founder-controlled local exact-SHA verification when ALL of the following controls are satisfied.",
+    "controls_all_required": [
+      "execution is manually initiated through Terminal-0",
+      "no runner is registered with GitHub Actions",
+      "no persistent background runner or service exists",
+      "no externally dispatched job intake is accepted",
+      "the source is acquired from a mechanically verified exact commit SHA",
+      "Mac and Docker verification layers use the same canonical source archive and fingerprint",
+      "Mac source directories and workspaces are disposable",
+      "Docker containers are automatically removed",
+      "Docker networking is disabled unless separately authorized and proven necessary",
+      "no home directory, secrets, credentials, Docker socket, production data, or customer data are exposed",
+      "all affected tests are classified in a machine-readable manifest",
+      "no test is silently excluded",
+      "mechanically justified host-dependent tests execute on the authorized Mac",
+      "test results and evidence identifiers are sealed in reproducible evidence packets",
+      "one independent checker and one separate read-only Advisor review the exact head and evidence",
+      "Terminal-0 remains the sole merge sheriff",
+      "every pull request receives its own founder merge gate"
+    ],
+    "effect_when_all_controls_satisfied": "qualifying ephemeral local exact-SHA verification MAY satisfy the `exact_sha_ci_green` evidence predicate"
+  },
+  "does_not": [
+    "make Hybrid Local Exact-SHA CI the default provider",
+    "authorize any merge",
+    "accept the Wave-2 generated features",
+    "modify PR #182, PR #183, or PR #184",
+    "authorize GitHub billing or spending changes",
+    "authorize a registered or persistent self-hosted runner",
+    "authorize a PAES rerun",
+    "authorize Phase 7.1",
+    "authorize AKIOR access",
+    "authorize M1 access"
+  ],
+  "activation_requirements_all_required": [
+    "durably captured through DCL",
+    "reviewed by an independent checker",
+    "reviewed by a separate read-only Advisor",
+    "approved through a separate founder governance merge gate",
+    "merged through Terminal-0"
+  ],
+  "does_not_supersede": [
+    "Hard safety floor (non-weakenable invariants)",
+    "Evidence / checker / Advisor requirements",
+    "Terminal-0 sole merge authority",
+    "Per-PR founder merge gate",
+    "All other ARLC merge-readiness predicates (exact_sha_ci_green is necessary, never sufficient)"
+  ]
+}
