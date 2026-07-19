@@ -35,7 +35,7 @@
     "status_convention_correction_directive": ".foundergate/directives/govern-local-ci-status-convention-correction/prompt.txt",
     "status_convention_correction_directive_sha256": "e81c9b27e35a6049e297abbb78ba100051c54b7031365f920e581f7b5a0c9ea0",
     "v1_1_0_scope": "activation semantics only (status made presence-based)",
-    "v1_1_1_scope": "status token corrected to the exact repository ACTIVE convention + structured authority_model (protected-main-only, prefix-parse ambiguity removed); the custom ACTIVE_IFF_* token is removed",
+    "v1_1_1_scope": "status token corrected to the exact repository ACTIVE convention + structured authority_model (protected-main-only, prefix-parse ambiguity removed); the prior custom presence-based status token is removed",
     "substantive_clarification_unchanged": "the self-hosted-runner prohibition scope (5), the 17 ephemeral-local-CI controls, the does_not list (10), and does_not_supersede are UNCHANGED from v1.0.0",
     "original_clarification_text_preserved": true,
     "original_clarification_dcl_sha256": "89bea2acb55a477905747ac3d8101973b6f33c7e9f46ebdb6cd74d15dc02adaf"

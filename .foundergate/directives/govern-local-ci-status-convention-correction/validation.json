@@ -5,22 +5,34 @@
   "record_version_after": "1.1.1",
   "checks_all_pass": true,
   "status_now": "ACTIVE",
-  "custom_token_removed": "ACTIVE_IFF_PRESENT_ON_PROTECTED_MAIN no longer present",
+  "custom_token_removed": "ACTIVE_IFF_PRESENT_ON_PROTECTED_MAIN removed; no ACTIVE_IFF literal remains anywhere in the record (provenance prose reworded)",
   "no_active_prefix_variant": true,
   "structured_authority_model": {
     "authoritative_ref": "refs/heads/main",
-    "feature_branch_authority": false, "worktree_authority": false, "open_pr_authority": false,
-    "chat_authority": false, "transcript_authority": false, "pre_merge_authority": false, "detached_git_object_authority": false,
-    "activation_requires_exact_reviewed_head": true, "activation_requires_founder_governance_gate": true, "activation_requires_terminal0_merge": true,
-    "followup_activation_mutation_required": false, "post_merge_status_flip_required": false
+    "feature_branch_authority": false,
+    "worktree_authority": false,
+    "open_pr_authority": false,
+    "chat_authority": false,
+    "transcript_authority": false,
+    "pre_merge_authority": false,
+    "detached_git_object_authority": false,
+    "activation_requires_exact_reviewed_head": true,
+    "activation_requires_founder_governance_gate": true,
+    "activation_requires_terminal0_merge": true,
+    "followup_activation_mutation_required": false,
+    "post_merge_status_flip_required": false
   },
   "preserved": {
     "original_clarification_dcl_sha256": "89bea2acb55a477905747ac3d8101973b6f33c7e9f46ebdb6cd74d15dc02adaf",
     "prior_activation_correction_dcl_sha256": "d935a1eac9ab6addf1aff908a07690bf67fc8e6da01d4b4e2efbbb683156c473",
-    "prohibition_scopes_5_unchanged": true, "controls_17_unchanged": true, "does_not_10_unchanged": true, "does_not_supersede_unchanged": true
+    "prohibition_scopes_5_unchanged": true,
+    "controls_17_unchanged": true,
+    "does_not_10_unchanged": true,
+    "does_not_supersede_unchanged": true
   },
   "status_consumer_audit": "no prefix/startsWith/regex on status anywhere; the only status===ACTIVE consumers (supervisor-session, supervisor, start-wave2-session gov()) read governance files BY EXPLICIT NAME (ARLC/DCL/ARE/gate_routing/autonomy_policy_envelope) and do NOT read local_exact_sha_ci_clarification.json; no generic .foundergate/governance scan exists; so no consumer can misclassify a non-main copy",
   "scope_only_record_and_new_dcl": true,
   "no_arlc_loader_product_supervisor_test_change": true,
-  "full_suite": "ALL GREEN 102/102"
+  "full_suite": "ALL GREEN 102/102",
+  "no_active_iff_literal_anywhere": true
 }
