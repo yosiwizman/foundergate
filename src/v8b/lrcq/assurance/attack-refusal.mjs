@@ -5,6 +5,7 @@
 // privacy controls remain PRE_CUSTOMER and are intentionally out of scope here.
 import { validateActivationV3, validateLease, canWrite } from "./assurance-core.mjs";
 import { canDispatch, reconcile } from "../reconciliation/transaction.mjs";
+import { gateDecision } from "./provider-change-gate.mjs";
 
 // The only trusted instruction source is the founder via chat. Anything else is data.
 export const TRUSTED_INSTRUCTION_SOURCE = "founder_chat";
@@ -84,5 +85,22 @@ export function refuseStaleReplayEvent(replayStream, activeRunId, event) {
 //     trusted founder channel; observed content can never promote itself to durable memory.
 export function refuseMemoryPromotion(request) {
   if (!request || request.source !== TRUSTED_INSTRUCTION_SOURCE) return { refused: true, reason: "durable-memory promotion requested by untrusted source; refused" };
+  return { refused: false };
+}
+
+// 11. Tool output CLAIMS success but there is no external confirmation. Worker/tool self-report
+//     is not proof — without a definitive externally-observed result the success is refused.
+export function refuseUnconfirmedToolSuccess(observation) {
+  const claimsSuccess = observation && (observation.claims_success === true || /success|done|completed|passed/i.test(observation.text || ""));
+  const confirmed = observation && (observation.externally_confirmed === true || observation.definitive_result === true);
+  if (claimsSuccess && !confirmed) return { refused: true, reason: "tool/worker claimed success without external confirmation; treated as UNVERIFIED, not success" };
+  return { refused: false };
+}
+
+// 12. Provider/model identity drift from the founder-approved fingerprint. Any drift fails closed
+//     (delegates to the B20 provider-change gate).
+export function refuseProviderIdentityDrift(approvedFingerprint, currentFingerprint, opts = {}) {
+  const d = gateDecision(approvedFingerprint, currentFingerprint, opts);
+  if (!d.allowed) return { refused: true, reason: "provider/model drift: " + d.refusals.join(";"), gate: d };
   return { refused: false };
 }
