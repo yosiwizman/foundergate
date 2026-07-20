@@ -26,3 +26,7 @@ h2 { font-size:14px; margin:0 0 10px; color:var(--mut); text-transform:uppercase
 details summary { cursor:pointer; color:var(--mut); }
 pre { overflow-x:auto; background:#0b0e12; padding:12px; border-radius:8px; max-height:320px; }
 :focus-visible { outline:2px solid #6ea8fe; outline-offset:2px; }
+table.inbox { width:100%; border-collapse:collapse; font-size:13px; }
+table.inbox th, table.inbox td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); }
+table.inbox th { color:var(--mut); text-transform:uppercase; font-size:11px; letter-spacing:.04em; }
+td.req { color:#ffdede; font-weight:600; }

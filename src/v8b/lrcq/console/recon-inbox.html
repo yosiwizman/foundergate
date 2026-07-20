@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FounderGate — Reconciliation Inbox</title>
+<link rel="stylesheet" href="./console.css" />
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <div class="brand">FounderGate</div>
+  <div class="witness-flag" role="note">Reconciliation Inbox — witness candidate, not an accepted product surface</div>
+  <div class="run-id">run <span id="run-id">—</span></div>
+</header>
+<main id="main" tabindex="-1">
+  <div id="founder-banner" class="banner" role="alert" aria-live="assertive" hidden>
+    <strong>Founder action required</strong> — <span id="pending-count"></span> uncertain side-effect(s) held for reconciliation.
+  </div>
+  <section class="card" aria-labelledby="stmt-h"><h2 id="stmt-h">Reconciliation policy</h2>
+    <ul class="small" id="statements"></ul></section>
+  <section class="card" aria-labelledby="inbox-h"><h2 id="inbox-h">Uncertain-action queue</h2>
+    <table class="inbox" id="inbox-table" aria-describedby="inbox-h">
+      <thead><tr><th>Job</th><th>Transaction</th><th>Dispatch</th><th>Process</th><th>Result</th><th>Classification</th><th>Recommendation</th><th>Founder action</th></tr></thead>
+      <tbody id="inbox-body"></tbody>
+    </table>
+  </section>
+</main>
+<script src="./recon-inbox.js"></script>
+</body>
+</html>
