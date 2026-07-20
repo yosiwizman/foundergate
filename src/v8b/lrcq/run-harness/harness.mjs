@@ -46,7 +46,11 @@ async function governedDispatch(cfg, job, intent, lease, budget, usage, txByKey,
   const jobLease = { ...lease, job_id: job.job_id, branch: job.branch, worktree: job.worktree, role: "builder" };
   const lv = validateLease(jobLease, { ...bindings, run_id: cfg.run_id, job_id: job.job_id, role: "builder", branch: job.branch, worktree: job.worktree });
   if (!lv.valid) return { dispatched: false, refused: "lease invalid at dispatch: " + lv.refusals.join(";") };
-  const ex = blastExceeded(budget, usage);
+  // Check PROJECTED usage — the record this dispatch will seal (max_records +1) must fit the
+  // budget. Checking projected (not current) usage means budget N allows exactly N completions,
+  // never N+1. Any already-exceeded dimension also refuses.
+  const projected = { ...usage, max_records: (usage.max_records || 0) + 1 };
+  const ex = blastExceeded(budget, projected);
   if (ex.length) return { dispatched: false, refused: "blast budget exceeded: " + ex.join(";") };
   // mark dispatched in the registry BEFORE the provider call — a crash after this point is
   // an uncertain dispatch that reconciliation must NOT re-fire.

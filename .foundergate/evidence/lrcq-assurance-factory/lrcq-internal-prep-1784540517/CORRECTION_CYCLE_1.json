@@ -1,0 +1,9 @@
+{
+  "trigger": "LRCQ-INTERNAL-RUN-CHECKER: FINDINGS (F1 LOW, confirmed)",
+  "finding": "blast-radius max_records off-by-one: usage>budget checked pre-dispatch but max_records incremented post-seal -> budget N allowed N+1 completions",
+  "correction": "harness.governedDispatch now checks PROJECTED usage (usage.max_records+1) against the budget -> budget N allows exactly N completions",
+  "prose_fix": "PR body summary reworded: does not claim all 15 BLOCKERs BUILT; points to per-item machine-readable status",
+  "requalified": ["harness.selftest 44/44", "orchestrated-shadow 26/26", "full suite 114/114"],
+  "bounded": "single correction; no scope expansion",
+  "reviews_reset": "prior checker FINDINGS is now stale; new frozen candidate requires fresh checker + advisor"
+}

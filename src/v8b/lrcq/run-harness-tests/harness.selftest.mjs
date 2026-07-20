@@ -81,7 +81,8 @@ const base = (over = {}) => ({
 // ============ BLAST ============
 { const r = await runHarness(base({ blast_budget: null })); ok("17 absent blast budget refused", !r.ready && r.refused.stage === "validate_blast_budget"); }
 { const b = blast(); delete b.max_files; const r = await runHarness(base({ blast_budget: b })); ok("18 missing blast dim refused", !r.ready && r.refused.reasons.includes("missing max_files")); }
-{ const b = blast(); b.max_records = 1; const jobs = [job("a"), job("b"), job("c")]; const r = await runHarness(base({ backlog: jobs, blast_budget: b })); const parked = Object.values(r.jobResults).filter((x) => x.state === "PARKED"); ok("19 cumulative blast budget caps records -> excess job parked (blast)", r.completed_count === 2 && parked.length === 1 && /blast/.test(parked[0].reason || "")); }
+{ const b = blast(); b.max_records = 1; const jobs = [job("a"), job("b"), job("c")]; const r = await runHarness(base({ backlog: jobs, blast_budget: b })); const parked = Object.values(r.jobResults).filter((x) => x.state === "PARKED"); ok("19 budget N allows EXACTLY N completions (no N+1) -> excess parked (blast)", r.completed_count === 1 && parked.length === 2 && /blast/.test(parked[0].reason || "")); }
+{ const b = blast(); b.max_records = 2; const jobs = [job("a"), job("b"), job("c")]; const r = await runHarness(base({ backlog: jobs, blast_budget: b })); ok("19b budget 2 -> exactly 2 completed, 1 parked (off-by-one fixed)", r.completed_count === 2 && Object.values(r.jobResults).filter((x) => x.state === "PARKED").length === 1); }
 
 // ============ BRANCH / WORKTREE ============
 { const r = await runHarness(base({ backlog: [job("m", { branch: "main" })] })); ok("20 protected-main branch job parked (never dispatched to)", r.jobResults.m.state === "PARKED"); }
