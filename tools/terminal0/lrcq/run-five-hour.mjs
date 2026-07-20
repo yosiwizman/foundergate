@@ -30,7 +30,7 @@ import { composeAdapterActivation, composeCheckerActivation } from "../../../src
 import { validateActivation } from "../../../src/v8b/lrcq/provider/activation-schema.mjs";
 import { validateLease } from "../../../src/v8b/lrcq/assurance/assurance-core.mjs";
 import { mintBuilderLease } from "../../../src/v8b/lrcq/run-harness/harness.mjs";
-import { validateCheckerOutput } from "../../../src/v8b/lrcq/provider/provider-output.mjs";
+import { validateCheckerOutput, validateBuilderOutput } from "../../../src/v8b/lrcq/provider/provider-output.mjs";
 import { execMachineVerifier } from "../../../src/v8b/lrcq/run-harness/machine-verifier-exec.mjs";
 import { readFileSync as _rf, mkdirSync, writeFileSync } from "node:fs";
 import * as SEAMS from "../../../src/v8b/lrcq/run-harness/real-seams.mjs";
@@ -131,6 +131,7 @@ function buildRealCfg(activation, bindings, manifest, loaded, root, counters) {
     deadlineEpoch: activation.hard_deadline_epoch, maxWidth: manifest.max_parallel_width, master_digest: bindings.assurance_control_backlog_digest,
     lease_digest: activation.capability_lease_digest, blast_digest: activation.blast_radius_budget_digest, evidenceDir: resolve(root, manifest.evidence_root),
     provider_version: manifest.provider_version, provider_identity: manifest.provider_executable_identity, runManifest: manifest,
+    builderOutputValidator: validateBuilderOutput,
     backlog: backlogJobs, lease, blast_budget: blast, setupChecks,
     lockManager: SEAMS.fileLockManager(resolve(root, manifest.run_lock_path)),
     liveClock: SEAMS.systemClock(),

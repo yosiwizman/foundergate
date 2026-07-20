@@ -190,6 +190,14 @@ async function runJobLifecycle(cfg, job, lease, budget, usage, txByKey, replay, 
       ledger.push({ job: job.job_id, stage: "reconciliation", reconciliation: rec.state, recommend: rec.recommend, resumable });
       return { job_id: job.job_id, state: resumable ? "SAFE_TO_RESUME_HELD" : "HELD_RECONCILE", reconciliation: rec.state, recommend: rec.recommend, resumed: false, resumable };
     }
+    // ---- FG-LRCQ-ACT-009/Phase-4: validate builder output BEFORE machine verification. Invalid or
+    // unbound output is HELD_BUILDER_OUTPUT_INVALID and NEVER reaches MV / checker / completion. ----
+    if (cfg.builderOutputValidator && prov.ok === true) {
+      const bind = { run_id: cfg.run_id, job_id: job.job_id, attempt, session_id: builderSession.session_id, prompt_digest: builderSession.prompt_digest };
+      const bv = cfg.builderOutputValidator(prov.parsed_output, bind);
+      if (!bv || bv.valid !== true) { w.evidence({ job: job.job_id, stage: "builder_output_invalid", attempt, refusals: bv && bv.refusals }); w.nextSafeAction("HELD_BUILDER_OUTPUT_INVALID " + job.job_id + " — builder output failed validation before machine verification"); return { job_id: job.job_id, state: "HELD_BUILDER_OUTPUT_INVALID", reason: "builder output invalid: " + (bv && bv.refusals ? bv.refusals.join(";") : "absent") }; }
+      w.evidence({ job: job.job_id, stage: "builder_output_valid", attempt });
+    }
     // ---- FG-LRCQ-ACT-007: provider process tree MUST be confirmed gone. A false/contradictory
     // teardown blocks completion, becomes HELD_TEARDOWN_DEFECT, and stops the whole run. (undefined
     // tree_gone is only permitted in DETERMINISTIC_TEST unit cfgs that don't model teardown.) ----

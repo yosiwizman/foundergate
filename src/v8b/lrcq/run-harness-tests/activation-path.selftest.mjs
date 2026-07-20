@@ -94,6 +94,18 @@ ok("11 wrong-worktree lease refused", validateLease(mintBuilderLease(cfg, job("j
 { let t = NOW; const r = await runHarness(base({ backlog: [job("d1"), job("d2")], liveClock: () => (t += 5_000_000) }));
   ok("29 controlled deadline stop labeled CONTROLLED_DEADLINE_STOP (not VERIFIED)", r.outcome_status === "CONTROLLED_DEADLINE_STOP" && r.verified_productive_run === false); }
 
+// ---- FG-LRCQ-ACT-009/Phase-4: builder-output validation BEFORE machine verification ----
+{ const { validateBuilderOutput } = await import("../provider/provider-output.mjs");
+  const goodOut = (jid) => ({ schema: "lrcq-builder-output-1", role: "builder", run_id: "run-X", job_id: jid, attempt: 1, session_id: "builder:run-X:" + jid, prompt_digest: "bpd:" + jid, outcome: "SUCCESS", changed_files: ["src/x/" + jid + ".mjs"], tests_requested: [] });
+  let mvCalled = 0;
+  const bad = await runHarness(base({ backlog: [job("bo1", { max_attempts: 1 })], builderOutputValidator: validateBuilderOutput, machineVerifier: async () => { mvCalled++; return { pass: true }; }, dispatch: async () => ({ ok: true, parsed_output: { schema: "wrong" } }) }));
+  ok("30 malformed builder output -> HELD_BUILDER_OUTPUT_INVALID (never reaches MV)", bad.jobResults.bo1.state === "HELD_BUILDER_OUTPUT_INVALID" && mvCalled === 0);
+  const good = await runHarness(base({ backlog: [job("bo2")], builderOutputValidator: validateBuilderOutput, dispatch: async (j) => ({ ok: true, parsed_output: goodOut(j.job_id) }) }));
+  ok("31 valid bound builder output -> proceeds to completion", good.jobResults.bo2.state === "COMPLETED");
+  // identity mismatch (wrong run_id) is held before MV
+  const drift = await runHarness(base({ backlog: [job("bo3", { max_attempts: 1 })], builderOutputValidator: validateBuilderOutput, dispatch: async (j) => ({ ok: true, parsed_output: { ...goodOut(j.job_id), run_id: "OTHER" } }) }));
+  ok("32 builder output run_id drift -> HELD_BUILDER_OUTPUT_INVALID", drift.jobResults.bo3.state === "HELD_BUILDER_OUTPUT_INVALID"); }
+
 console.log("\nLRCQ ACTIVATION-PATH SELFTEST: " + (n - fails.length) + "/" + n + " passed");
 if (fails.length) { console.log("FAILED: " + fails.join(", ")); process.exit(1); }
 process.exit(0);
