@@ -1,0 +1,39 @@
+  ok   01 seconds heartbeat -> correct positive age
+  ok   02 MILLISECONDS heartbeat -> correct age (NOT negative) [the exact bug]
+  ok   03 the run's raw ms ts never yields a negative age
+  ok   04 malformed heartbeat (non-number) -> UNKNOWN
+  ok   05 malformed heartbeat (<=0) -> UNKNOWN
+  ok   06 stale heartbeat (>120s, seconds) -> STALE
+  ok   07 stale heartbeat (ms) -> STALE
+  ok   08 no heartbeat -> NONE
+  ok   09 future/impossible timestamp -> UNKNOWN (never a huge negative)
+  ok   10 age is never negative for any input
+  ok   11 STOPPED_EXHAUSTED -> COMPLETED (queue exhausted)
+  ok   12 the run's masking case: lifecycle from state.json, handoff is HISTORICAL only
+  ok   13 SAFE_TO_LEAVE_UNATTENDED is NOT shown as the lifecycle state
+  ok   14 RUNNING active run distinct + not final
+  ok   15 deadline stop distinct
+  ok   16 failed + held distinct
+  ok   17 missing state.json -> UNKNOWN (not handoff)
+  ok   18 historical handoff success + completed lifecycle coexist without masking
+  ok   19 current timeline = only active run_id events
+  ok   20 legacy unscoped events -> historical, NOT current (no fake progress)
+  ok   21 other-run events -> historical, not current
+  ok   22 no active run id -> nothing counted as current (fail closed, no fake progress)
+  ok   23 empty/missing events -> empty scopes
+  ok   24 branch activity is never a liveness signal
+  ok   25 NaN heartbeat ts -> UNKNOWN (not OK, not negative)
+  ok   26 Infinity/-Infinity heartbeat ts -> UNKNOWN
+  ok   27 ms value cannot be read as seconds (unit detected at 1e11 boundary)
+  ok   28 panic -> STOPPED (panic), distinct + final
+  ok   29 malformed events (null/non-object) -> historical, never current
+  ok   30 duplicate active-run events counted as events, no job-count field emitted
+  ok   31 STOPPED_EXHAUSTED never displays ACCEPTED/MERGED/PRODUCTION/SAFE
+  ok   32 lifecycle/scope outputs expose no acceptance/merge inference
+  ok   33 UNKNOWN heartbeat status is never OK
+  ok   34 STALE is a distinct status, never OK/current
+  ok   35 HELD lifecycle never renders as accepted
+
+WAVE2 OBSERVABILITY STATUS-CORE SELFTEST: 35/35 passed
+PORTABLE_MODULES 1
+PORTABLE_RESULT pass=1 fail=0
