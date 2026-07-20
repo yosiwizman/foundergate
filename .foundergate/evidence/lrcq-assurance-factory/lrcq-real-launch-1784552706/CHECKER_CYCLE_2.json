@@ -1,0 +1,9 @@
+{
+  "trigger": "LRCQ-REAL-LAUNCH-CHECKER: FINDINGS on 864e5b3",
+  "CF1": {"severity": "MAJOR", "finding": "disclosure was broken/overclaimed: packet lacked real_run_capability_disclosure and REAL_RUN_CAPABILITY_DISCLOSURE.json was the literal string 'undefined' (I ran the standalone extractor against a packet generated BEFORE the disclosure field was added, without regenerating first), yet the commit/ADVISOR_CYCLE_1 claimed it was added", "correction": "regenerated the packet (now carries real_run_capability_disclosure); wrote the standalone file from the regenerated packet (1031 bytes, 3 honest keys); added regression tests CF1/CF1b asserting both artifacts exist and are real objects"},
+  "CF2": {"severity": "MINOR", "finding": "realMachineVerifier's own check-aggregation was not unit-tested (M4 always-pass mutation survived)", "correction": "added CF2a-e unit tests via injected gitRunner: MV PASSES only when branch+allowed-files+forbidden+line-budget+tests all satisfy; FAILS on wrong branch / outside-allowed / forbidden / over-budget"},
+  "honesty_note": "The checker correctly caught my own overclaim (CF1). Corrected the artifacts and the narrative; the disclosure is now genuinely present and honest.",
+  "requalified": ["real-launch 61/61", "full suite 115/115", "preflight SIGNATURE-REQUIRED zero-invocation"],
+  "bounded": "one correction wave (disclosure artifact + MV test); no scope expansion",
+  "reviews_reset": "checker FINDINGS on 864e5b3 -> new frozen candidate requires fresh checker + advisor"
+}

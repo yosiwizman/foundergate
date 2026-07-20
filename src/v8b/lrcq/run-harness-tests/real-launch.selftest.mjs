@@ -149,6 +149,29 @@ ok("32 real lease + blast are non-null in REAL happy path", (await runHarness(re
   ok("F2c checker route with no session configured -> INSUFFICIENT_EVIDENCE (fail-closed)", (await route2(job("y"), { session_id: "b", prompt_digest: "bp" }, 1)).result === "INSUFFICIENT_EVIDENCE");
 }
 
+// ---- CF2: realMachineVerifier's OWN check-aggregation (mutation to always-pass must break these) ----
+{ const mkGit = (branch, changed, numstat) => (args) => { const k = args.join(" "); if (k.includes("--abbrev-ref")) return branch; if (k === "diff --name-only HEAD") return changed.join("\n"); if (k === "diff --numstat HEAD") return numstat; return ""; };
+  const j = { job_id: "mv", branch: "lane/mv", worktree: "/wt/mv", allowed_files: ["src/x/"], forbidden_files: ["secrets"], max_changed_lines: 100, tests: ["t"], required_evidence: [] };
+  const pass = SEAMS.realMachineVerifier({ gitRunner: mkGit("lane/mv", ["src/x/mv.mjs"], "3\t1\tsrc/x/mv.mjs"), exists: () => true });
+  ok("CF2a real MV PASSES when branch+files+lines+tests all satisfy", (await pass(j, {}, {})).pass === true);
+  const wrongBranch = SEAMS.realMachineVerifier({ gitRunner: mkGit("main", ["src/x/mv.mjs"], "3\t1\tsrc/x/mv.mjs"), exists: () => true });
+  ok("CF2b real MV FAILS on wrong branch", (await wrongBranch(j, {}, {})).pass === false);
+  const outsideAllowed = SEAMS.realMachineVerifier({ gitRunner: mkGit("lane/mv", ["src/OTHER/z.mjs"], "3\t1\tsrc/OTHER/z.mjs"), exists: () => true });
+  ok("CF2c real MV FAILS on change outside allowed boundary", (await outsideAllowed(j, {}, {})).pass === false);
+  const forbidden = SEAMS.realMachineVerifier({ gitRunner: mkGit("lane/mv", ["src/x/secrets"], "3\t1\tsrc/x/secrets"), exists: () => true });
+  ok("CF2d real MV FAILS on forbidden file touched", (await forbidden(j, {}, {})).pass === false);
+  const overBudget = SEAMS.realMachineVerifier({ gitRunner: mkGit("lane/mv", ["src/x/mv.mjs"], "900\t900\tsrc/x/mv.mjs"), exists: () => true });
+  ok("CF2e real MV FAILS over changed-line budget", (await overBudget(j, {}, {})).pass === false);
+}
+// disclosure artifact must exist + be honest (regression for CF1)
+{ const dp = new URL("../../../../.foundergate/evidence/lrcq-assurance-factory/REAL_RUN_CAPABILITY_DISCLOSURE.json", import.meta.url);
+  let d = null; try { d = JSON.parse(readFileSync(dp, "utf8")); } catch { /* */ }
+  ok("CF1 disclosure file exists + is a real object (not the string 'undefined')", d && typeof d === "object" && typeof d.NOT_proven_in_preparation === "string" && /not.*(proven|exercised)/i.test(d.NOT_proven_in_preparation));
+  const pk = new URL("../../../../.foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json", import.meta.url);
+  let p = null; try { p = JSON.parse(readFileSync(pk, "utf8")); } catch { /* */ }
+  ok("CF1b packet carries real_run_capability_disclosure", p && p.real_run_capability_disclosure && typeof p.real_run_capability_disclosure.NOT_proven_in_preparation === "string");
+}
+
 console.log("\nLRCQ REAL-LAUNCH SELFTEST: " + (n - fails.length) + "/" + n + " passed");
 if (fails.length) { console.log("FAILED: " + fails.join(", ")); process.exit(1); }
 process.exit(0);
