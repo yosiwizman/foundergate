@@ -117,5 +117,8 @@
   ],
   "confers_no_authority": true,
   "would_validate_when_signed": true,
-  "dry_run_refusals": []
+  "dry_run_refusals": [],
+  "__status": "STALE-INTERMEDIATE-CANDIDATE",
+  "__superseded_by": "UNSIGNED_ACTIVATION_MATERIAL_PACKET.json",
+  "__reason": "binds obsolete SHA + carried founder-fill placeholders (FG-LRCQ-P189-REAL-008/009); replaced by placeholder-free material packet"
 }
