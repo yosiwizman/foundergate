@@ -6,8 +6,8 @@
   "lrcq_base_tree": "7d44473b63f524f3a3891f059f3e315622fdae30",
   "provider_candidate_sha": "50e18e55863b4abc0f0c2ef036b790ef15001ac5",
   "provider_candidate_tree": "4092da7b192ab085ccbc41e4aedad9da7229e6cd",
-  "run_harness_candidate_sha": "FINAL_HEAD_PLACEHOLDER_REPLACED_AT_FREEZE",
-  "run_harness_candidate_tree": "FINAL_TREE_PLACEHOLDER_REPLACED_AT_FREEZE",
+  "run_harness_candidate_sha": "4fb679b90fed6fcee327c00ac14a77a109a686dc",
+  "run_harness_candidate_tree": "b685ec35a909719f6426793bce12b6bd007a47f2",
   "assurance_control_backlog_digest": "sha256:beae0e727f1502803587a36b302ea0c7d09198bbdaac4b31ffba005a38af5412",
   "first_real_run_backlog_digest": "sha256:0057b1b61bf5ef04ec22bef515a39ca44b1ff7ff4049a802667e5e6ddcbc442d",
   "run_manifest_path": ".foundergate/run-materials/first-internal-5h/run-manifest.json",
@@ -59,5 +59,6 @@
     "proven_in_preparation": "The run machinery is fully WIRED and FAIL-CLOSED, verified with ZERO provider/builder/checker invocation (preflight SIGNATURE-REQUIRED). The signed V3 record composes a valid V2 adapter-activation (dispatch route reachable); the independent checker routes a distinct read-only session through the SAME provider adapter; undefined checker output -> INSUFFICIENT_EVIDENCE (never CLEAN).",
     "NOT_proven_in_preparation": "Actual productive work (a real builder session producing changes, and a real checker session returning CLEAN) is NOT exercised or proven here, because that requires invoking the real provider (Claude), which is forbidden during preparation. The FIRST place real productive capability is exercised is the founder-signed run itself.",
     "founder_must_accept": "Signing authorizes the first internal run to invoke the real provider through this wired, fail-closed machinery. Whether jobs actually COMPLETE depends on real builder + checker behavior, first observed under signature."
-  }
+  },
+  "candidate_binding_note": "Binds code commit H_A=4fb679b90fed6fcee327c00ac14a77a109a686dc; frozen head differs only by this packet file."
 }
