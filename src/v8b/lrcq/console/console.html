@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FounderGate — Live Run Console</title>
+<link rel="stylesheet" href="./console.css" />
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <div class="brand">FounderGate</div>
+  <div class="witness-flag" role="note">Live Run Console — witness candidate, not an accepted product surface</div>
+  <div class="run-id">run <span id="run-id">—</span></div>
+</header>
+
+<main id="main" tabindex="-1">
+  <div id="founder-banner" class="banner" role="alert" aria-live="assertive" hidden>
+    <strong>Founder action required</strong> — <span id="founder-reason"></span>
+  </div>
+
+  <section class="card" aria-labelledby="status-h">
+    <h2 id="status-h">Overall run status</h2>
+    <p id="lifecycle" class="status-line" role="status" aria-live="polite">—</p>
+    <p class="small" id="historical-label" hidden></p>
+    <div class="chips" id="status-chips"></div>
+  </section>
+
+  <div class="grid">
+    <section class="card" aria-labelledby="work-h"><h2 id="work-h">Current work</h2>
+      <p class="small">Current job: <strong id="current-job">—</strong></p>
+      <p class="small">Running: <span id="running"></span></p></section>
+    <section class="card" aria-labelledby="queue-h"><h2 id="queue-h">Queue summary</h2>
+      <ul class="small kv" id="queue-summary"></ul></section>
+    <section class="card" aria-labelledby="progress-h"><h2 id="progress-h">Progress summary</h2>
+      <ul class="small kv" id="progress-summary"></ul></section>
+  </div>
+
+  <div class="grid">
+    <section class="card" aria-labelledby="time-h"><h2 id="time-h">Time &amp; deadline</h2>
+      <ul class="small kv" id="time-summary"></ul></section>
+    <section class="card" aria-labelledby="hb-h"><h2 id="hb-h">Heartbeat &amp; freshness</h2>
+      <p class="small" id="heartbeat">—</p></section>
+    <section class="card" aria-labelledby="cost-h"><h2 id="cost-h">Cost &amp; limits</h2>
+      <ul class="small kv" id="cost-summary"></ul></section>
+  </div>
+
+  <section class="card" aria-labelledby="stop-h"><h2 id="stop-h">Stop reason &amp; next safe action</h2>
+    <p class="small">Stop reason: <strong id="stop-reason">—</strong></p>
+    <p class="small">Next safe action: <strong id="next-safe">—</strong></p></section>
+
+  <section class="card" aria-labelledby="accept-h"><h2 id="accept-h">Acceptance boundary</h2>
+    <ul class="small kv" id="accept-flags"></ul>
+    <ul class="small" id="accept-boundary"></ul></section>
+
+  <section class="card" aria-labelledby="bw-h"><h2 id="bw-h">Branches &amp; worktrees</h2>
+    <p class="small" id="branch-worktrees">—</p></section>
+
+  <details class="card" id="evidence"><summary>Evidence drawer</summary>
+    <p class="small" id="evidence-links">—</p>
+    <pre id="evidence-json" class="mono small">—</pre></details>
+
+  <section class="card" aria-labelledby="tl-h"><h2 id="tl-h">Current vs historical timeline</h2>
+    <p class="small">Current (this run): <strong id="cur-events">—</strong> · Historical/legacy: <strong id="hist-events">—</strong> (<span id="legacy-events">—</span> unscoped)</p></section>
+</main>
+<script src="./console.js"></script>
+</body>
+</html>

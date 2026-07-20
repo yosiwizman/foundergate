@@ -1,0 +1,28 @@
+:root { --bg:#0f1216; --card:#171b21; --line:#262c35; --fg:#e7ebf0; --mut:#9aa4b2;
+  --green:#2f7d46; --amber:#8a6d20; --red:#8a2f2f; --blue:#274b7a; --gray:#3a424e; --held:#6b4a86; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif; }
+.skip { position:absolute; left:-999px; } .skip:focus { left:8px; top:8px; background:#fff; color:#000; padding:6px; z-index:10; }
+.topbar { display:flex; align-items:center; gap:16px; padding:12px 20px; border-bottom:1px solid var(--line); }
+.brand { font-weight:700; } .witness-flag { background:#3a3410; color:#e8dfb0; padding:4px 10px; border-radius:999px; font-size:12px; }
+.run-id { margin-left:auto; color:var(--mut); font-family:ui-monospace,monospace; font-size:13px; }
+main { max-width:1100px; margin:0 auto; padding:20px; }
+.banner { background:#5a2020; border:1px solid #8a3a3a; color:#ffdede; padding:12px 16px; border-radius:10px; margin-bottom:16px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:16px; }
+.grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+@media (max-width:820px){ .grid { grid-template-columns:1fr; } }
+h2 { font-size:14px; margin:0 0 10px; color:var(--mut); text-transform:uppercase; letter-spacing:.04em; }
+.status-line { font-size:22px; font-weight:600; margin:0 0 10px; }
+.small { font-size:13px; } .mono { font-family:ui-monospace,monospace; }
+.kv { list-style:none; padding:0; margin:0; } .kv li { display:flex; justify-content:space-between; padding:2px 0; border-bottom:1px dashed var(--line); }
+.kv .k { color:var(--mut); } .kv .v { font-family:ui-monospace,monospace; }
+.chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+.chip { padding:4px 10px; border-radius:999px; font-size:12px; font-weight:600; }
+.chip-observed { background:var(--green); } .chip-running { background:var(--blue); }
+.chip-held { background:var(--held); } .chip-failed { background:var(--red); }
+.chip-stopped { background:var(--gray); } .chip-unknown { background:var(--gray); color:#cbd3dd; }
+.chip-stale { background:var(--amber); } .chip-notproven { background:var(--amber); } .chip-neutral { background:var(--gray); }
+#historical-label { color:#e8dfb0; background:#3a3410; padding:8px 10px; border-radius:8px; }
+details summary { cursor:pointer; color:var(--mut); }
+pre { overflow-x:auto; background:#0b0e12; padding:12px; border-radius:8px; max-height:320px; }
+:focus-visible { outline:2px solid #6ea8fe; outline-offset:2px; }
