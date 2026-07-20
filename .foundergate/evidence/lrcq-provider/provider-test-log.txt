@@ -1,0 +1,66 @@
+  ok   01 valid v2 activation passes
+  ok   02 wrong schema_version refused
+  ok   03 missing provider_candidate_sha refused
+  ok   04 provider_candidate_sha mismatch refused
+  ok   05 provider_candidate_tree mismatch refused
+  ok   06 lrcq_base_sha mismatch refused
+  ok   07 provider identity mismatch refused
+  ok   08 missing max_budget_usd refused
+  ok   09 zero budget refused
+  ok   10 negative budget refused
+  ok   11 NaN budget refused
+  ok   12 Infinity budget refused
+  ok   13 non-positive width refused
+  ok   14 non-finite timeout refused
+  ok   15 expiry not later than issue refused
+  ok   16 issued in the future refused
+  ok   17 expired refused
+  ok   18 deny-list missing git push detected
+  ok   19 full deny-list has no gaps
+  ok   20 empty denied_tools refused
+  ok   21 permission-bypass mode refused
+  ok   22 --allowedTools followed by INDIVIDUAL entries
+  ok   23 --disallowedTools present with individual entries
+  ok   24 mandatory --max-budget-usd with the exact value
+  ok   25 permission-mode manual; bypass token only in the deny segment (never an active flag)
+  ok   26 env scrub keeps PATH/HOME, drops secrets + unlisted
+  ok   27 correct registered worktree accepted
+  ok   28 plain (non-git) directory refused
+  ok   29 wrong repository refused
+  ok   30 wrong actual branch refused
+  ok   31 detached worktree refused
+  ok   32 main worktree refused
+  ok   33 metadata branch differing from actual branch refused
+  ok   34 runJob refuses a non-git worktree (ACTIVATION_REFUSED)
+  ok   35 success -> SUCCESS and tree_gone true
+  ok   36 nonzero exit -> FAILED
+  ok   37 malformed on exit0 -> FAILED (not success)
+  ok   38 no output on exit0 -> UNKNOWN_FAILURE
+  ok   39 per-job timeout -> WORKER_TIMEOUT killed + tree_gone
+  ok   40 ignored SIGTERM -> SIGKILL escalation + tree_gone
+  ok   41 needs SIGKILL -> escalated + tree_gone
+  ok   42 output overflow -> OUTPUT_OVERFLOW + truncated
+  ok   43 grandchild PID recorded
+  ok   44 child+grandchild both gone (OS liveness, not a self-reported bool)
+  ok   45 hard deadline during worker -> RUN_DEADLINE_EXPIRED (exact)
+  ok   46 stale activation refused
+  ok   47 wrong candidate sha refused
+  ok   48 backlog digest mismatch refused
+  ok   49 worktree outside root refused
+  ok   50 path traversal refused
+  ok   51 allowed_file overlapping forbidden refused
+  ok   52 branch outside allowed prefix refused
+  ok   53 active run refused
+  ok   54 unresolved recovery refused
+  ok   55 NARROW job refused at adapter
+  ok   56 founder-gate job refused at adapter
+  ok   57 live-action job refused at adapter
+  ok   58 pause before spawn -> TERMINATED_BY_PAUSE
+  ok   59 controller REAL stepReal completes via adapter
+  ok   60 evidence sealed BEFORE job_completed (REAL)
+  ok   61 no accept/merge inference
+  ok   62 founder gate before spawn blocks the adapter (not completed)
+  ok   63 NARROW job HELD at load
+  ok   64 step() refuses in REAL mode (single route is stepReal)
+
+LRCQ REAL-PROVIDER SELFTEST: 64/64 passed

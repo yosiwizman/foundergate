@@ -1,0 +1,19 @@
+{
+  "schema": "lrcq-provider-finding-register-1",
+  "source": "external independent audit of PR #188 (pre-correction head ffa54f37ad72e97f40542b7d49a9a97697e25ec2)",
+  "prior_reviews_status": "STALE — the prior LRCQ-PROVIDER-CHECKER: CLEAN and LRCQ-PROVIDER-ADVISOR: READY are invalidated by these material findings and are NOT reused.",
+  "findings": [
+    { "id": "FG-LRCQ-P188-001", "defect": "activation not clearly bound to the final provider candidate SHA/tree (only PR#187 base bound)", "resolution": "added lrcq_base_sha/tree + provider_candidate_sha/tree + provider_executable_identity; validator refuses on absence/mismatch of each" },
+    { "id": "FG-LRCQ-P188-002", "defect": "test 05 was a hardcoded true assertion", "resolution": "removed; real per-job timeout outcome asserted (05b)" },
+    { "id": "FG-LRCQ-P188-003", "defect": "test 27 was a hardcoded true assertion", "resolution": "replaced with a real controller founder-gate-before-spawn test" },
+    { "id": "FG-LRCQ-P188-004", "defect": "test 28 contained || true", "resolution": "removed; deadline test asserts exactly RUN_DEADLINE_EXPIRED" },
+    { "id": "FG-LRCQ-P188-005", "defect": "child/grandchild test did not prove the grandchild exited", "resolution": "stub writes grandchild PID to an evidence file; test verifies both PIDs gone via OS kill(pid,0)" },
+    { "id": "FG-LRCQ-P188-006", "defect": "production tree_gone defaulted to true without a liveness check", "resolution": "verifyTreeGone() does a real OS liveness check of pgid + recorded descendant PIDs; true/false/UNKNOWN; teardown-false -> not SUCCESS" },
+    { "id": "FG-LRCQ-P188-007", "defect": "allowed_repository not mechanically enforced", "resolution": "worktree identity check resolves the git common dir and requires it to belong to activation.allowed_repository" },
+    { "id": "FG-LRCQ-P188-008", "defect": "actual registered git worktree and actual current branch not checked", "resolution": "gitWorktreeIdentity() verifies registered worktree, toplevel==assigned, actual branch==job.branch, not detached, not main; refuses otherwise" },
+    { "id": "FG-LRCQ-P188-009", "defect": "overall run deadline not enforced during a running worker", "resolution": "run-deadline monitor during execution; earlier of per-job-timeout / hard-deadline wins; deadline-during-worker -> RUN_DEADLINE_EXPIRED" },
+    { "id": "FG-LRCQ-P188-010", "defect": "real CLI allow/deny tool argument parsing not established", "resolution": "argv now passes INDIVIDUAL tool entries (variadic <tools...>), proven to parse via read-only --help/--version smoke (cli-parser-smoke-A.out); no model request" },
+    { "id": "FG-LRCQ-P188-011", "defect": "max_budget_usd was optional", "resolution": "max_budget_usd now REQUIRED, finite, > 0; missing/zero/negative/NaN/Infinity refused; subscription_only is an additional condition, not a replacement" },
+    { "id": "FG-LRCQ-P188-012", "defect": "denied command/tool boundaries not semantically validated", "resolution": "validator requires the deny-list to semantically cover git push, git merge, protected-main checkout/switch, gh pr merge, destructive reset, and permission bypass" }
+  ]
+}

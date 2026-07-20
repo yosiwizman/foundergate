@@ -1,0 +1,18 @@
+{
+  "schema": "lrcq-provider-hardening-evidence-index-1",
+  "pr187_base": "3794ec1a6f0d83b72a823bbd36622b1210b1a4c5",
+  "findings_resolved": "FG-LRCQ-P188-001..012 (see finding-register.json)",
+  "activation_schema": "lrcq-activation-2 (combined candidate binding + mandatory bounded numerics + semantic deny-list)",
+  "activation_schema_digest": "sha256:1d46c90cb358988bf1b88434fdbb6eca8ada55d13969c21001a168109863055d",
+  "provider_adapter_digest": "sha256:1e82b8d1a61d08dc781ac3ecf9add7f9ab12f7d895519b8a20f823679cdc53d3",
+  "cli_parser_smoke": "cli-parser-smoke.out (read-only --help/--version + exact allow/deny layout; exit 0; no model request)",
+  "tool_arg_encoding": "individual variadic <tools...> entries (proven to parse)",
+  "cost_ceiling": "max_budget_usd REQUIRED finite>0; missing/0/negative/NaN/Infinity refused",
+  "git_worktree_identity": "gitWorktreeIdentity() verifies registered worktree, repo, actual branch, not-detached, not-main",
+  "run_deadline_during_worker": "in-run monitor; earlier of per-job-timeout / hard-deadline wins -> RUN_DEADLINE_EXPIRED",
+  "process_tree_verification": "verifyTreeGone() real OS liveness of pgid + recorded grandchild PID; teardown-false -> TEARDOWN_FAILED, never SUCCESS",
+  "tests": "provider 64/64 (no || true, no tautologies), controller 66/66, shadow-sim 19/19, full suite 107/107",
+  "single_route": "only production spawner is real-provider.mjs",
+  "no_model_request": true,
+  "next_safe_action": "fresh independent checker + separate advisor bound to the frozen post-correction head; stop at founder five-hour activation gate."
+}

@@ -2,7 +2,7 @@
 // Deterministic Claude-CLI STUB for LRCQ provider tests. Reproduces CLI process
 // behaviour WITHOUT any model request. Mode is read from ./stub-mode in the cwd
 // (the adapter sets cwd = the job worktree), so no env leakage is needed.
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, writeFileSync } from "node:fs";
 import { spawn } from "node:child_process";
 const mode = existsSync("stub-mode") ? readFileSync("stub-mode", "utf8").trim() : "success";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -17,7 +17,7 @@ async function main() {
     case "timeout": await sleep(60000); return process.exit(0);
     case "ignore-term": process.on("SIGTERM", () => {}); await sleep(60000); return process.exit(0);
     case "needs-kill": process.on("SIGTERM", () => {}); process.on("SIGINT", () => {}); await sleep(60000); return process.exit(0);
-    case "child": { const gc = spawn(process.execPath, ["-e", "setTimeout(()=>{},60000)"], { stdio: "ignore", detached: false }); await sleep(60000); gc.kill(); return process.exit(0); }
+    case "child": { const gc = spawn(process.execPath, ["-e", "setTimeout(()=>{},60000)"], { stdio: "ignore", detached: false }); try { writeFileSync("grandchild.pid", String(gc.pid) + "\n"); } catch {} await sleep(60000); gc.kill(); return process.exit(0); }
     default: process.stdout.write(JSON.stringify({ result: "ok" })); return process.exit(0);
   }
 }
