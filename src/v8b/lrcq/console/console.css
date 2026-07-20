@@ -30,3 +30,20 @@ table.inbox { width:100%; border-collapse:collapse; font-size:13px; }
 table.inbox th, table.inbox td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); }
 table.inbox th { color:var(--mut); text-transform:uppercase; font-size:11px; letter-spacing:.04em; }
 td.req { color:#ffdede; font-weight:600; }
+
+/* ---- run-states view ---- */
+ul.states { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.state-item { border: 1px solid #d4d7dd; border-left-width: 5px; border-radius: 6px; padding: 10px 12px; background: #fff; }
+.state-item:focus { outline: 3px solid #2b6cb0; outline-offset: 2px; }
+.state-item h3 { margin: 0 0 4px; font-size: 15px; }
+.tone-held { border-left-color: #b7791f; background: #fffaf0; }
+.tone-stopped { border-left-color: #718096; background: #f7fafc; }
+.tone-warn { border-left-color: #dd6b20; }
+.tone-running { border-left-color: #3182ce; }
+.tone-neutral { border-left-color: #38a169; }
+.chip-held { background: #b7791f; color: #fff; }
+.chip-stopped { background: #718096; color: #fff; }
+.chip-warn { background: #dd6b20; color: #fff; }
+.chip-running { background: #3182ce; color: #fff; }
+.stale { font-size: 11px; color: #b7791f; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+.req { font-size: 11px; color: #fff; background: #c53030; padding: 1px 6px; border-radius: 3px; font-weight: 600; }

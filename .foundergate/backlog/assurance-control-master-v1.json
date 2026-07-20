@@ -63,7 +63,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "BLOCKER"
     },
     {
       "control_id": "A02",
@@ -125,7 +126,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "BLOCKER"
     },
     {
       "control_id": "A03",
@@ -187,7 +189,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "BLOCKER"
     },
     {
       "control_id": "A04",
@@ -249,7 +252,8 @@
       "limitations": [
         "real third-party timestamping / write-once storage / production keys HELD"
       ],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "BLOCKER"
     },
     {
       "control_id": "A05",
@@ -310,7 +314,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "BLOCKER"
     },
     {
       "control_id": "A06",
@@ -372,7 +377,8 @@
       "limitations": [
         "no vulnerability completeness claim; no SLSA claim"
       ],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "PRE_CUSTOMER"
     },
     {
       "control_id": "A07",
@@ -434,7 +440,8 @@
       "limitations": [
         "no OWASP certification claim"
       ],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "BLOCKER"
     },
     {
       "control_id": "A08",
@@ -494,7 +501,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "BLOCKER"
     },
     {
       "control_id": "A09",
@@ -556,7 +564,8 @@
       "limitations": [
         "real credentials/provider/production store/customer data HELD"
       ],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "PRE_CUSTOMER"
     },
     {
       "control_id": "A10",
@@ -618,7 +627,8 @@
       "limitations": [
         "no production DR claim"
       ],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "BLOCKER"
     },
     {
       "control_id": "A11",
@@ -680,7 +690,8 @@
       "limitations": [
         "no MFA/encryption deployment claim"
       ],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "SUPPORTING"
     },
     {
       "control_id": "A12",
@@ -736,7 +747,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "EXTERNAL_PROOF"
     },
     {
       "control_id": "B13",
@@ -796,7 +808,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "BLOCKER"
     },
     {
       "control_id": "B14",
@@ -856,7 +869,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "BLOCKER"
     },
     {
       "control_id": "B15",
@@ -916,7 +930,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "PRE_CUSTOMER"
     },
     {
       "control_id": "B16",
@@ -976,7 +991,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "BLOCKER"
     },
     {
       "control_id": "B17",
@@ -1038,7 +1054,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "BLOCKER"
     },
     {
       "control_id": "B18",
@@ -1098,7 +1115,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "SUPPORTING"
     },
     {
       "control_id": "B19",
@@ -1160,7 +1178,8 @@
       "limitations": [
         "production monitoring HELD; no OTel dependency"
       ],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "PRE_CUSTOMER"
     },
     {
       "control_id": "B20",
@@ -1220,7 +1239,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "BLOCKER"
     },
     {
       "control_id": "B21",
@@ -1280,7 +1300,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "BLOCKER"
     },
     {
       "control_id": "B22",
@@ -1340,7 +1361,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "SUPPORTING"
     },
     {
       "control_id": "B23",
@@ -1400,7 +1422,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "SUPPORTING"
     },
     {
       "control_id": "B24",
@@ -1460,7 +1483,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "PRE_CUSTOMER"
     },
     {
       "control_id": "B25",
@@ -1522,7 +1546,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "BLOCKER"
     },
     {
       "control_id": "C01",
@@ -1578,7 +1603,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     },
     {
       "control_id": "C02",
@@ -1634,7 +1660,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "PRE_CUSTOMER"
     },
     {
       "control_id": "C03",
@@ -1690,7 +1717,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     },
     {
       "control_id": "C04",
@@ -1746,7 +1774,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     },
     {
       "control_id": "C05",
@@ -1802,7 +1831,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     },
     {
       "control_id": "C06",
@@ -1858,7 +1888,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     },
     {
       "control_id": "C07",
@@ -1914,7 +1945,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     },
     {
       "control_id": "C08",
@@ -1970,7 +2002,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     },
     {
       "control_id": "C09",
@@ -2026,7 +2059,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "PRE_CUSTOMER"
     },
     {
       "control_id": "C10",
@@ -2082,7 +2116,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     },
     {
       "control_id": "C11",
@@ -2138,7 +2173,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     },
     {
       "control_id": "C12",
@@ -2194,7 +2230,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "PRE_CUSTOMER"
     },
     {
       "control_id": "C13",
@@ -2250,7 +2287,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     },
     {
       "control_id": "C14",
@@ -2306,7 +2344,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     },
     {
       "control_id": "C15",
@@ -2362,7 +2401,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     },
     {
       "control_id": "C16",
@@ -2418,7 +2458,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     },
     {
       "control_id": "C17",
@@ -2474,7 +2515,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     },
     {
       "control_id": "C18",
@@ -2530,7 +2572,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     },
     {
       "control_id": "C19",
@@ -2586,7 +2629,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     },
     {
       "control_id": "C20",
@@ -2642,7 +2686,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     },
     {
       "control_id": "C21",
@@ -2698,7 +2743,8 @@
       "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible"
+      "next_safe_action": "schedule when eligible",
+      "first_internal_5h_requirement": "ENTERPRISE_LATER"
     }
   ]
 }

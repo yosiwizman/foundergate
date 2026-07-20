@@ -1,0 +1,6 @@
+QUALIFICATION SCANS (lrcq-internal-prep-1784540517) 2026-07-20T09:57:31Z
+full suite: ALL GREEN: 114/114 self-test(s) passed.
+false-green: NONE   secret: NONE   forbidden-path: IN SCOPE
+single provider spawn: real-provider.mjs runJob only (spawn of activation.provider_executable_path)
+single launcher: tools/terminal0/lrcq/run-five-hour.mjs
+candidate head: 18ff73f127012e9ce6df7f845e17702a2610f981  tree: bfeea482d299761f4b25aeace6f7cb1d8e64f445
