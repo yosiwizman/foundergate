@@ -48,6 +48,19 @@ ok("19 founder-gated job not auto-eligible", validateExecutableJob(goodJob("j1",
   ok("22 dependency cycle refused", v.refusals.some((r) => /cycle/.test(r))); }
 { const p1 = [resolveRunPlan(goodJob("a"), "R", manifest)]; ok("23 run-plan digest is stable + sha256", runPlanDigest(p1) === runPlanDigest(p1) && runPlanDigest(p1).startsWith("sha256:")); }
 
+// ---- FG-LRCQ-ACT-010: the FROZEN executable backlog v2 validates all-25 against the real manifest ----
+{ const { readFileSync } = await import("node:fs"); const { execFileSync } = await import("node:child_process");
+  const { fileURLToPath } = await import("node:url"); const { resolve, dirname } = await import("node:path");
+  const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../../../..");
+  const bl = JSON.parse(readFileSync(resolve(REPO, ".foundergate/backlog/first-real-five-hour-run-v2.json"), "utf8"));
+  const man = JSON.parse(readFileSync(resolve(REPO, ".foundergate/run-materials/first-internal-5h/run-manifest.json"), "utf8"));
+  const exists = (t) => { try { execFileSync("test", ["-e", resolve(REPO, t)]); return true; } catch { return false; } };
+  const v = validateAll25(bl, man, { exists });
+  ok("24 FROZEN backlog v2 has exactly 25 jobs", (bl.jobs || []).length === 25);
+  ok("25 FROZEN backlog v2 validates all-25 against the real manifest + immutable verifier", v.valid === true && v.count === 25);
+  ok("26 FROZEN backlog v2 has NO incompatible schema (no lane/frr, no /wt, no bare-string tests)", !JSON.stringify(bl).match(/lane\/frr-|"\/wt\/|"tests":/) && (bl.jobs || []).every((j) => Array.isArray(j.test_commands[0])));
+  ok("27 FROZEN backlog v2 is all-endurance-fixture (not product completion)", (bl.jobs || []).every((j) => j.classification === "ENDURANCE_FIXTURE")); }
+
 console.log("\nLRCQ FULL-MATERIAL SELFTEST: " + (n - fails.length) + "/" + n + " passed");
 if (fails.length) { console.log("FAILED: " + fails.join(", ")); process.exit(1); }
 process.exit(0);

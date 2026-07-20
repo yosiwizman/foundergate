@@ -1,0 +1,17 @@
+{
+  "operation": "LRCQ-FULL-MATERIAL-CLOSURE continuation",
+  "candidate_before": "f3854941201a82de3056dca89ceb2e55ddb7a11b",
+  "host": "AKIOR-Mac-mini (Mac16,11) verified Mac Mini Pro",
+  "state": "TURN-ENDED-WORK-REMAINS (not a founder gate; not READY)",
+  "reviews": "ALL prior checker/advisor verdicts STALE",
+  "progress_this_turn": {
+    "FG-LRCQ-ACT-010": "ADVANCED PARTIAL->BUILT: executable backlog v2 frozen (.foundergate/backlog/first-real-five-hour-run-v2.json, digest sha256:0d55ef2f2e475b17aa76bbad6ad186e3c939bfecfc09df377aed78982ad970ab, 25 ENDURANCE_FIXTURE jobs) + immutable verifier (tools/terminal0/lrcq/verifiers/fixture-verifier.mjs) + all-25 validated against the real manifest + regression tests (full-material.selftest 24-27). Manifest/activation-material NOT yet rebound to the v2 digest.",
+    "FG-LRCQ-ACT-012": "BUILT+TESTED (budget-ledger.mjs, full-material.selftest 01-08); NOT wired into the launcher.",
+    "FG-LRCQ-ACT-009": "OPEN — identity envelope rendered into real prompts + builder-output validation before MV not built.",
+    "FG-LRCQ-ACT-011": "OPEN — real setup/worktree manager not built.",
+    "FG-LRCQ-ACT-013": "OPEN — full 25-job real-materials rehearsal (the READY gate) not built."
+  },
+  "next_executable_action": "Rebind the run manifest + activation-material generator to the backlog-v2 digest (sha256:0d55ef2f2e475b17aa76bbad6ad186e3c939bfecfc09df377aed78982ad970ab); then build the canonical identity envelope rendered into real builder/checker prompts (drop identity.json), a CLI transport-envelope parser, builder-output validation before MV (HELD_BUILDER_OUTPUT_INVALID), the real setup/worktree manager (mechanical 25-branch/25-worktree create + rollback), wire budget-ledger into the launcher (reserve/commit, CONTROLLED_BUDGET_STOP), then the full 25-job production-equivalent rehearsal + negatives + mutation campaign; then freeze + fresh checker + separate advisor.",
+  "full_suite": "124/124", "full_material_selftest": "27/27",
+  "constraints": "no real provider; no five-hour run; no signature; no merge; PR187/188 byte-unchanged; PR182/186 untouched; queued post-run items not implemented"
+}
