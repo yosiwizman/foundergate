@@ -50,6 +50,26 @@ ok("23 empty/missing events -> empty scopes", scopeEvents(undefined, "r").curren
 // --- D. BRANCH ACTIVITY IS EVIDENCE, NOT LIVENESS ---
 ok("24 branch activity is never a liveness signal", branchActivityIsLiveness() === false && /EVIDENCE/.test(BRANCH_ACTIVITY_NOTE));
 
+// --- E. ADDED FALSE-GREEN / ADVERSARIAL COVERAGE (Phase 4 completion) ---
+// NaN / Infinity heartbeat timestamps must fail safe (typeof number but not finite).
+ok("25 NaN heartbeat ts -> UNKNOWN (not OK, not negative)", (() => { const r = normalizeHeartbeatAge({ ts: NaN }, NOW_MS); return r.status === "UNKNOWN" && r.status !== "OK" && r.ageSeconds === null; })());
+ok("26 Infinity/-Infinity heartbeat ts -> UNKNOWN", normalizeHeartbeatAge({ ts: Infinity }, NOW_MS).status === "UNKNOWN" && normalizeHeartbeatAge({ ts: -Infinity }, NOW_MS).status === "UNKNOWN");
+ok("27 ms value cannot be read as seconds (unit detected at 1e11 boundary)", (() => { const r = normalizeHeartbeatAge({ ts: RUN_HB_MS }, NOW_MS); return r.unit === "ms" && r.ageSeconds >= 0 && r.ageSeconds < 1e6; })());
+// Panic must remain a distinct final state.
+ok("28 panic -> STOPPED (panic), distinct + final", (() => { const r = resolveLifecycle({ state: { state: "STOPPED_PANIC" } }); return r.lifecycle_display === "STOPPED (panic)" && r.is_final === true; })());
+// Malformed events cannot produce fake current progress.
+ok("29 malformed events (null/non-object) -> historical, never current", (() => { const s = scopeEvents([null, 5, "x", { run_id: "r" }], "r"); return s.current.length === 1 && s.historical.length === 3; })());
+// Duplicate events are counted as EVENTS (not silently deduped into inflated job totals);
+// the display labels scope.current as "events", never as accepted/merged jobs.
+ok("30 duplicate active-run events counted as events, no job-count field emitted", (() => { const d = { run_id: "r", evt: "worker_result", job: "j1" }; const s = scopeEvents([d, d], "r"); return s.current.length === 2 && !("jobs_done" in s) && !("accepted" in s) && !("merged" in s); })());
+// Worker/queue completion must never imply acceptance, merge, or production readiness.
+ok("31 STOPPED_EXHAUSTED never displays ACCEPTED/MERGED/PRODUCTION/SAFE", (() => { const disp = resolveLifecycle({ state: { state: "STOPPED_EXHAUSTED" }, handoff: { result: "SAFE_TO_LEAVE_UNATTENDED" } }).lifecycle_display; return disp === "COMPLETED (queue exhausted)" && !/ACCEPT|MERGE|PRODUCTION|READY|SAFE/i.test(disp); })());
+ok("32 lifecycle/scope outputs expose no acceptance/merge inference", (() => { const l = resolveLifecycle({ state: { state: "STOPPED_EXHAUSTED" } }); const s = scopeEvents([{ run_id: "r" }], "r"); const keys = Object.keys(l).concat(Object.keys(s)).join(","); return !/accept|merged|production|feature_accepted/i.test(keys); })());
+// UNKNOWN can never read as green/OK; STALE can never read as current/OK; HELD never accepted.
+ok("33 UNKNOWN heartbeat status is never OK", ["x", 0, NaN, Infinity].every(t => normalizeHeartbeatAge({ ts: t }, NOW_MS).status !== "OK"));
+ok("34 STALE is a distinct status, never OK/current", (() => { const r = normalizeHeartbeatAge({ ts: Math.floor(NOW_MS/1000) - 500 }, NOW_MS); return r.status === "STALE" && r.status !== "OK"; })());
+ok("35 HELD lifecycle never renders as accepted", (() => { const disp = resolveLifecycle({ state: { state: "HOLD_CORRECTABLE" } }).lifecycle_display; return /HELD/.test(disp) && !/ACCEPT/i.test(disp); })());
+
 console.log(`\nWAVE2 OBSERVABILITY STATUS-CORE SELFTEST: ${n - fails.length}/${n} passed`);
 if (fails.length) { console.log("FAILED:", fails.join(", ")); process.exit(1); }
 process.exit(0);
