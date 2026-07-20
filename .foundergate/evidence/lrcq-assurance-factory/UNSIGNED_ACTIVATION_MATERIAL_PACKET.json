@@ -6,8 +6,8 @@
   "lrcq_base_tree": "7d44473b63f524f3a3891f059f3e315622fdae30",
   "provider_candidate_sha": "50e18e55863b4abc0f0c2ef036b790ef15001ac5",
   "provider_candidate_tree": "4092da7b192ab085ccbc41e4aedad9da7229e6cd",
-  "run_harness_candidate_sha": "ffdbb81b4ae6ae1c584c76bb54e6962b6a1583f7",
-  "run_harness_candidate_tree": "f8a529e78208d093e872ddd4997023b5195600c7",
+  "run_harness_candidate_sha": "FINAL_HEAD_PLACEHOLDER_REPLACED_AT_FREEZE",
+  "run_harness_candidate_tree": "FINAL_TREE_PLACEHOLDER_REPLACED_AT_FREEZE",
   "assurance_control_backlog_digest": "sha256:beae0e727f1502803587a36b302ea0c7d09198bbdaac4b31ffba005a38af5412",
   "first_real_run_backlog_digest": "sha256:0057b1b61bf5ef04ec22bef515a39ca44b1ff7ff4049a802667e5e6ddcbc442d",
   "run_manifest_path": ".foundergate/run-materials/first-internal-5h/run-manifest.json",
@@ -21,7 +21,7 @@
   "policy_version": "lrcq-policy-v1",
   "capability_lease_manifest_digest": "sha256:3d221aa11cc74582d5d34cb46a1f35ee87ab821e23ebdb790c8f5afd725919e5",
   "blast_budget_manifest_digest": "sha256:d7e380418002f5a0187475f5580cbc8f998e4230c518d8bc67a5fec6252cdc18",
-  "launcher_digest": "sha256:3dda35f76632d4c2887180fb497cac09ebe3438251d4cde86c2066a6dc434631",
+  "launcher_digest": "sha256:b49f8ae07bfc6c3c34d2ef396a3d9fc43bd7744a9251850d532642d6d9948e4f",
   "orchestrator_digest": "sha256:aa49c4d904580008aa07f5917e8c0aedec25cf1c6139ad7bc59663172b841441",
   "provider_adapter_digest": "sha256:b39ec55365901ec97049ae98a97bf2b09af999013b8c55a0d725ede0f46d7e67",
   "run_manifest_module_digest": "sha256:d103b66abfdd072fd2fa06a04386a910a0013ab31ae631456d6c47a69f587a3e",
@@ -54,6 +54,5 @@
     "hard_deadline_epoch",
     "founder_signature",
     "run_harness_candidate_sha/tree (filled at final freeze — a commit cannot embed its own hash)"
-  ],
-  "candidate_binding_note": "Binds the code commit H_A=ffdbb81b4ae6ae1c584c76bb54e6962b6a1583f7. The packet-carrying commit (frozen head) differs from H_A ONLY by this packet file + stale marker; harness/launcher/manifest code is byte-identical (orchestrator_digest matches). A commit cannot embed its own hash."
+  ]
 }

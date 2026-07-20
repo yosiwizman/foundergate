@@ -1,0 +1,9 @@
+{
+  "trigger": "LRCQ-REAL-LAUNCH-ADVISOR: HOLD-CORRECTABLE-FINDINGS on ce82c3b",
+  "F1": {"finding": "harness validates activation V3; provider adapter validates V2 with different required fields; realDispatch passed the same V3 record to both and composed nothing -> every dispatch ACTIVATION_REFUSED -> no builder ever spawns", "correction": "added compose-adapter-activation.mjs; realDispatch composes a valid V2 adapter-activation from the signed V3 record + verified manifest (semantic deny-list, boundaries, bounded numerics); tested composed record PASSES validateActivation (dispatch reachable), incomplete V3 fails closed"},
+  "F2": {"finding": "buildRealCfg wired the checker's second session as a stub returning INSUFFICIENT_EVIDENCE -> no job can ever seal", "correction": "checker session now routes a distinct read-only checker activation through the SAME provider adapter (makeCheckerSessionDispatch), verdict read from the checker session's durable verdict file; undefined/non-success -> INSUFFICIENT_EVIDENCE (never invented CLEAN)"},
+  "disclosure": "Added real_run_capability_disclosure to the packet + REAL_RUN_CAPABILITY_DISCLOSURE.json: prep proves the machinery WIRED + FAIL-CLOSED with zero invocation; actual productive completion (real builder + checker CLEAN) requires the founder-signed run and is NOT proven in prep.",
+  "requalified": ["real-launch 54/54", "full suite (below)", "preflight SIGNATURE-REQUIRED zero-invocation"],
+  "bounded": "one correction wave addressing both linked findings (real dispatch + checker route composition) + honest disclosure; no scope expansion",
+  "reviews_reset": "checker CLEAN + advisor HOLD on ce82c3b now stale; new frozen candidate requires fresh checker + advisor"
+}

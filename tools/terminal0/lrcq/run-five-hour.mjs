@@ -26,6 +26,8 @@ import { runHarness, RUNTIME_KIND } from "../../../src/v8b/lrcq/run-harness/harn
 import { runJob } from "../../../src/v8b/lrcq/provider/real-provider.mjs";
 import { loadAndVerifyManifest, activationBindsManifest, sha256File } from "../../../src/v8b/lrcq/run-harness/run-manifest.mjs";
 import { standardChecks } from "../../../src/v8b/lrcq/run-harness/setup-pipeline.mjs";
+import { composeAdapterActivation, composeCheckerActivation } from "../../../src/v8b/lrcq/run-harness/compose-adapter-activation.mjs";
+import { readFileSync as _rf } from "node:fs";
 import * as SEAMS from "../../../src/v8b/lrcq/run-harness/real-seams.mjs";
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
@@ -59,9 +61,29 @@ function loadManifest(activation) {
 }
 
 // The ONE governed provider route. Reachable only AFTER the harness accepts a signed activation.
-async function realDispatch(job, { activation, bindings }) {
-  const outcome = await runJob(activation, job, bindings, {});
-  return { ok: outcome.outcome === "SUCCESS", uncertain: outcome.outcome === "UNKNOWN_FAILURE" || outcome.outcome === "TEARDOWN_FAILED", obs: { dispatch_exists: true, process_alive: false, definitive_result: outcome.outcome === "SUCCESS" }, provider_outcome: outcome };
+// F1: the harness validates the V3 signed record; the provider adapter validates a V2 record.
+// realDispatch COMPOSES the V2 adapter-activation from the signed V3 record + verified manifest
+// (never hand-filled) so a signed run genuinely reaches the single provider spawn route.
+function makeRealDispatch(manifest, loaded, evidenceRoot) {
+  return async function realDispatch(job, { activation, bindings }) {
+    const adapterActivation = composeAdapterActivation(activation, manifest, loaded, { evidence_root: evidenceRoot });
+    const outcome = await runJob(adapterActivation, job, { ...bindings, provider_path: manifest.provider_executable_path, provider_version: manifest.provider_version, provider_identity: manifest.provider_executable_identity, backlog_digest: activation.first_real_run_backlog_digest }, {});
+    return { ok: outcome.outcome === "SUCCESS", uncertain: outcome.outcome === "UNKNOWN_FAILURE" || outcome.outcome === "TEARDOWN_FAILED", obs: { dispatch_exists: true, process_alive: false, definitive_result: outcome.outcome === "SUCCESS" }, provider_outcome: outcome };
+  };
+}
+
+// F2: the independent checker's second session routes through the SAME single provider adapter
+// (a distinct read-only checker activation), and its verdict is read from the checker session's
+// durably-written verdict file — NOT a hardcoded stub. Invoked only under a founder signature.
+function makeCheckerSessionDispatch(manifest, loaded, evidenceRoot) {
+  return async function dispatchCheckerSession(job, checkerLease, session) {
+    const checkerActivation = composeCheckerActivation(job.__signed_activation || {}, manifest, loaded, { evidence_root: evidenceRoot });
+    const outcome = await runJob(checkerActivation, { ...job, _checker_session: session.session_id }, { provider_path: manifest.provider_executable_path, provider_identity: manifest.provider_executable_identity }, {});
+    if (outcome.outcome !== "SUCCESS") return { verdict: "INSUFFICIENT_EVIDENCE" };
+    // the checker session writes {verdict: CLEAN|FINDINGS} to its evidence path; read it (never invent CLEAN)
+    try { const vp = resolve(evidenceRoot, job.job_id, "checker-verdict.json"); const v = JSON.parse(_rf(vp, "utf8")); return { verdict: (v && v.verdict) || "INSUFFICIENT_EVIDENCE" }; }
+    catch { return { verdict: "INSUFFICIENT_EVIDENCE" }; }
+  };
 }
 
 // Build a fully-wired REAL cfg from a verified manifest. `counters` wrap the never-in-preflight
@@ -90,8 +112,8 @@ function buildRealCfg(activation, bindings, manifest, loaded, root, counters) {
     evidenceWriter: SEAMS.durableEvidenceWriter(paths), recoveryWriter: SEAMS.durableRecoveryWriter(paths),
     transactionWriter: SEAMS.durableTransactionWriter(paths), replayWriter: SEAMS.durableReplayWriter(paths),
     machineVerifier: counters.wrap("machineVerifier", SEAMS.realMachineVerifier()),
-    checker: counters.wrap("checker", SEAMS.realIndependentCheckerRoute({ dispatchCheckerSession: counters.wrap("checkerSession", async () => ({ verdict: "INSUFFICIENT_EVIDENCE" })) })),
-    dispatch: counters.wrap("dispatch", realDispatch),
+    checker: counters.wrap("checker", SEAMS.realIndependentCheckerRoute({ dispatchCheckerSession: counters.wrap("checkerSession", makeCheckerSessionDispatch(manifest, loaded, resolve(root, manifest.evidence_root))) })),
+    dispatch: counters.wrap("dispatch", makeRealDispatch(manifest, loaded, resolve(root, manifest.evidence_root))),
     teardownVerifier: SEAMS.realTeardownVerifier(),
   };
 }

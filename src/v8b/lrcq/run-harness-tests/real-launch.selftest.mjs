@@ -124,6 +124,31 @@ function pad(m) { const base = { job_count: 1, estimated_minutes: 5, repository_
 ok("31 real backlog is non-null in REAL happy path", (await runHarness(realBase())).completed_count === 1);
 ok("32 real lease + blast are non-null in REAL happy path", (await runHarness(realBase())).ready === true);
 
+// ---- F1: V3->V2 adapter-activation composition reaches the provider adapter ----
+{ const { composeAdapterActivation, composeCheckerActivation } = await import("../run-harness/compose-adapter-activation.mjs");
+  const { validateActivation } = await import("../provider/activation-schema.mjs");
+  const man = { max_parallel_width: 2, per_job_timeout_s: 2700, termination_grace_s: 30, output_cap_bytes: 10485760, max_cost_usd: 10, repository_root: "/repo", branch_prefix: "lane/", permitted_worktree_root: "/wt", evidence_root: "/ev", provider_executable_path: "/approved/claude", provider_version: "2.1.215", provider_executable_identity: "sha256:" + "9".repeat(64) };
+  const loaded = { allowed_tools_manifest_path: { builder: ["Read", "Write", "Edit", "Grep"], checker: ["Read", "Grep"] } };
+  const v3 = { founder_signature: "SIGNED", issued_epoch: 1000, expiry_epoch: 9_999_999, hard_deadline_epoch: 9_000_000, lrcq_base_sha: "L", lrcq_base_tree: "LT", provider_candidate_sha: "P", provider_candidate_tree: "PT", first_real_run_backlog_digest: "FD", run_id: "run-X", max_parallel_width: 2, max_budget_usd: 5 };
+  const b = { lrcq_base_sha: "L", lrcq_base_tree: "LT", provider_candidate_sha: "P", provider_candidate_tree: "PT", backlog_digest: "FD", provider_path: "/approved/claude", provider_version: "2.1.215", provider_identity: "sha256:" + "9".repeat(64), now_epoch: 2000, active_run: false, recovery_resolved: true };
+  const rec = composeAdapterActivation(v3, man, loaded);
+  const av = validateActivation(rec, b);
+  ok("F1 composed V2 adapter-activation PASSES the provider adapter validator (dispatch reachable)", av.valid === true);
+  ok("F1b incomplete signed V3 composes to a FAIL-CLOSED V2 (never silent pass)", validateActivation(composeAdapterActivation({ ...v3, founder_signature: null }, man, loaded), b).valid === false);
+  ok("F1c denied_tools semantically cover all prohibited classes", (await import("../provider/activation-schema.mjs")).denyListSemanticGaps(rec.denied_tools).length === 0);
+  const crec = composeCheckerActivation(v3, man, loaded);
+  ok("F2 checker activation is read-only (no Write/Edit) + validates", !crec.allowed_tools.includes("Write") && !crec.allowed_tools.includes("Edit") && validateActivation(crec, b).valid === true);
+}
+// F2b: the real independent checker route returns INSUFFICIENT_EVIDENCE (never invented CLEAN)
+// when its routed session does not yield a definitive CLEAN verdict.
+{ const { realIndependentCheckerRoute } = SEAMS;
+  const route = realIndependentCheckerRoute({ dispatchCheckerSession: async () => ({ verdict: "INSUFFICIENT_EVIDENCE" }) });
+  const r = await route(job("x"), { session_id: "b", prompt_digest: "bp" }, 1);
+  ok("F2b checker route -> INSUFFICIENT_EVIDENCE when session non-CLEAN (never invents CLEAN)", r.result === "INSUFFICIENT_EVIDENCE");
+  const route2 = realIndependentCheckerRoute({}); // no session configured -> fail closed
+  ok("F2c checker route with no session configured -> INSUFFICIENT_EVIDENCE (fail-closed)", (await route2(job("y"), { session_id: "b", prompt_digest: "bp" }, 1)).result === "INSUFFICIENT_EVIDENCE");
+}
+
 console.log("\nLRCQ REAL-LAUNCH SELFTEST: " + (n - fails.length) + "/" + n + " passed");
 if (fails.length) { console.log("FAILED: " + fails.join(", ")); process.exit(1); }
 process.exit(0);

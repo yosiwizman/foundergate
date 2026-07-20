@@ -1,0 +1,17 @@
+{
+  "run_id": "lrcq-real-launch-1784552706",
+  "starting_pr189": {"sha": "d873f27c67b41c2dfb7aac820ddafb20d9304e28", "tree": "ce847f83dc9e4f8a32460ad8f80fb57879cfda44"},
+  "final_frozen_pr189": {"sha": "ce82c3ba17fa69152ef70fae57d457130b5bcd33", "tree": "d7b546de66394e3ab18c3fc8241e6a4cf20f46fa"},
+  "code_commit_H_A": "ffdbb81b4ae6ae1c584c76bb54e6962b6a1583f7",
+  "H_A_to_H_B_diff": "only UNSIGNED_ACTIVATION_MATERIAL_PACKET.json + UNSIGNED_GATE_PACKET.json (stale marker); all code byte-identical",
+  "findings_all_resolved": "FG-LRCQ-P189-REAL-001..009",
+  "full_suite": "115/115",
+  "real_launch_matrix": "48/48",
+  "preflight": "LRCQ-REAL-LAUNCH-PREFLIGHT: SIGNATURE-REQUIRED (zero provider/builder/checker invocation)",
+  "run_manifest_path": ".foundergate/run-materials/first-internal-5h/run-manifest.json",
+  "run_manifest_digest": "sha256:3f6f82c5a4744fe720f554e962fc4f70c25e710895eb1b2ce763fbb871b7ce12",
+  "material_packet": ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json",
+  "prior_reviews": "d873f27 checker CLEAN + advisor READY -> STALE (real-launcher defects)",
+  "pr187": "3794ec1 unchanged", "pr188": "50e18e5 unchanged", "pr182": "e31153c OPEN", "pr186": "be3209d OPEN", "protected_main": "ba7d654 unchanged",
+  "founder_signature": null, "merged": false, "real_provider_invoked": false
+}

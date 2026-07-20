@@ -118,6 +118,11 @@ const packet = {
   issued_epoch: null, expiry_epoch: null, hard_deadline_epoch: null,
   confers_no_authority: true,
   unresolved_before_signature: ["issued_epoch", "expiry_epoch", "hard_deadline_epoch", "founder_signature", "run_harness_candidate_sha/tree (filled at final freeze — a commit cannot embed its own hash)"],
+  real_run_capability_disclosure: {
+    proven_in_preparation: "The run machinery is fully WIRED and FAIL-CLOSED, verified with ZERO provider/builder/checker invocation (preflight SIGNATURE-REQUIRED). The signed V3 record composes a valid V2 adapter-activation (dispatch route reachable); the independent checker routes a distinct read-only session through the SAME provider adapter; undefined checker output -> INSUFFICIENT_EVIDENCE (never CLEAN).",
+    NOT_proven_in_preparation: "Actual productive work (a real builder session producing changes, and a real checker session returning CLEAN) is NOT exercised or proven here, because that requires invoking the real provider (Claude), which is forbidden during preparation. The FIRST place real productive capability is exercised is the founder-signed run itself.",
+    founder_must_accept: "Signing authorizes the first internal run to invoke the real provider through this wired, fail-closed machinery. Whether jobs actually COMPLETE depends on real builder + checker behavior, first observed under signature.",
+  },
 };
 const packetRel = ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json";
 write(packetRel, packet);
