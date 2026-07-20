@@ -1,0 +1,57 @@
+{
+  "evaluated_sha": "53e63e1a1978b1952b2f7a0071f856c22edcd81b",
+  "FG-LRCQ-ACT-009": {
+    "status": "BUILT",
+    "evidence": [
+      "src/v8b/lrcq/provider/identity-envelope.mjs",
+      "src/v8b/lrcq/provider/transport-envelope.mjs",
+      "provider-tests/protocol.selftest (17)",
+      "run-harness-tests/protocol-route.selftest (8)"
+    ],
+    "proof": "identity rendered into real prompt (no identity.json); transport parsed strictly; route-level via runJob",
+    "limitations": []
+  },
+  "FG-LRCQ-ACT-010": {
+    "status": "BUILT",
+    "evidence": [
+      ".foundergate/backlog/first-real-five-hour-run-v2.json",
+      "run-harness/run-plan.mjs",
+      "full-material.selftest (27)"
+    ],
+    "proof": "25 executable jobs frozen + validateAll25 25/25 + resolver",
+    "limitations": [
+      "run-manifest not rebound to v2 (rehearsal binds it directly; a signed run rebind is a mechanical follow-up)"
+    ]
+  },
+  "FG-LRCQ-ACT-011": {
+    "status": "BUILT",
+    "evidence": [
+      "run-harness/setup-manager.mjs",
+      "setup-manager.selftest (14)"
+    ],
+    "proof": "real 25-worktree create+verify+rollback+teardown; eligibility+collision refusal; no asserted booleans",
+    "limitations": []
+  },
+  "FG-LRCQ-ACT-012": {
+    "status": "BUILT",
+    "evidence": [
+      "run-harness/budget-ledger.mjs",
+      "full-material.selftest (8)",
+      "full-rehearsal.selftest (cost accrual)"
+    ],
+    "proof": "run-wide $10 ledger; reserve/commit both roles; never exceeds $10; exercised in the 25-job rehearsal",
+    "limitations": [
+      "not yet auto-wired into the signed-run launcher scheduler loop (rehearsal wires it explicitly)"
+    ]
+  },
+  "FG-LRCQ-ACT-013": {
+    "status": "BUILT",
+    "evidence": [
+      "run-harness-tests/full-rehearsal.selftest (13)"
+    ],
+    "proof": "exact frozen 25-job backlog-v2 through setup-manager->identity->transport->builder-output-validation->execMachineVerifier->checker->budget->teardown; all 25 completed; cost>0 and <=$10",
+    "limitations": [
+      "deterministic protocol-faithful stub (NOT real Claude — real provider productivity first observed under signature)"
+    ]
+  }
+}

@@ -29,6 +29,7 @@ ok("08 every required binding value is present in the rendered prompt", (() => {
   const r = parseTransport(wrapped);
   ok("09 supported transport parses -> payload + cost separated", r.ok === true && r.payload.role === "builder" && r.cost_usd === 0.2 && r.payload_digest !== r.transport_digest);
   ok("10 unknown envelope type refused", parseTransport(JSON.stringify({ type: "assistant", result: "{}" })).ok === false);
+  ok("10b unknown envelope type refused EVEN WITH valid cost (isolates the type guard)", parseTransport(JSON.stringify({ type: "assistant", result: "{}", total_cost_usd: 0.1 })).ok === false);
   ok("11 ambiguous (array) transport refused", parseTransport(JSON.stringify([{ type: "result", result: "{}" }])).ok === false);
   ok("12 non-JSON transport refused", parseTransport("not json").ok === false);
   ok("13 error transport refused", parseTransport(JSON.stringify({ type: "result", is_error: true, result: "{}", total_cost_usd: 0 })).ok === false);
