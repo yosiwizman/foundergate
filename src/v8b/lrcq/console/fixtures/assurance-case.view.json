@@ -1,0 +1,37 @@
+{
+  "valid": true,
+  "candidate": {
+    "sha": "FROZEN-HEAD",
+    "tree": "FROZEN-TREE"
+  },
+  "gate_state": "HELD_FOUNDER_GATE",
+  "recovery_state": "disk-recoverable (recovery-completeness 12/12)",
+  "checker": "CLEAN",
+  "machine_verified": true,
+  "claims": [
+    {
+      "statement": "Exactly one sanctioned REAL execution route (stepReal collapsed)",
+      "supported_by": "1 evidence link(s)",
+      "asserts": "supporting"
+    },
+    {
+      "statement": "Machinery wired + fail-closed; preflight SIGNATURE-REQUIRED, zero invocation",
+      "supported_by": "1 evidence link(s)",
+      "asserts": "supporting"
+    },
+    {
+      "statement": "Evidence is portable + offline-verifiable + tamper-evident",
+      "supported_by": "1 evidence link(s)",
+      "asserts": "supporting"
+    },
+    {
+      "statement": "Full deterministic self-test suite green",
+      "supported_by": "1 evidence link(s)",
+      "asserts": "supporting"
+    }
+  ],
+  "unresolved_limitations": [
+    "productive completion (real builder + checker CLEAN) NOT proven until the founder-signed run",
+    "external evidence anchoring HELD (no third-party timestamp/key/storage)"
+  ]
+}

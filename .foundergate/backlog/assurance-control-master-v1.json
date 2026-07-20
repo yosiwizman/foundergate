@@ -10,7 +10,7 @@
       "objective": "Control/Execution/Evidence/Identity-Capability/Reconciliation planes with the no-single-component-writes-all invariant",
       "rationale": "",
       "done_meaning": "",
-      "status": "BUILT",
+      "status": "PROVEN",
       "claim_status": "CHECKER-CLEAN-PENDING",
       "risk_class": "NARROW_SENSITIVE",
       "effect_class": "LOCAL_FS",
@@ -40,11 +40,11 @@
       "collision_set": [],
       "expected_outputs": [],
       "tests": [
-        "assurance-core.selftest authorityViolations()"
+        "assurance-core 55/55"
       ],
       "negative_tests": [],
       "required_evidence": [
-        "assurance-tests log"
+        "src/v8b/lrcq/assurance-tests/assurance-core.selftest.mjs"
       ],
       "checker_requirement": "independent-lane-checker",
       "checker_diversity_requirement": "deterministic-static+property",
@@ -60,11 +60,11 @@
       "capability_lease_required": false,
       "started_at": null,
       "completed_at": null,
-      "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible",
-      "first_internal_5h_requirement": "BLOCKER"
+      "next_safe_action": "present at founder gate",
+      "first_internal_5h_requirement": "BLOCKER",
+      "evaluated_sha": "dec4bedce6b8d9d1e549c5e85d6f8725ee7ef60e"
     },
     {
       "control_id": "A02",
@@ -73,7 +73,7 @@
       "objective": "PLANNED->INTENT_RECORDED->AUTHORIZED->DISPATCHED->EXTERNALLY_OBSERVED->RECONCILED->SEALED + exceptional states",
       "rationale": "",
       "done_meaning": "",
-      "status": "BUILT",
+      "status": "PROVEN",
       "claim_status": "TESTED",
       "risk_class": "NARROW_SENSITIVE",
       "effect_class": "LOCAL_FS",
@@ -105,10 +105,12 @@
       "collision_set": [],
       "expected_outputs": [],
       "tests": [
-        "reconciliation selftest"
+        "transaction/reconciliation covered"
       ],
       "negative_tests": [],
-      "required_evidence": [],
+      "required_evidence": [
+        "src/v8b/lrcq/reconciliation-tests/inbox-recovery.selftest.mjs"
+      ],
       "checker_requirement": "independent-lane-checker",
       "checker_diversity_requirement": "deterministic-static+property",
       "estimated_minutes": 45,
@@ -123,11 +125,11 @@
       "capability_lease_required": false,
       "started_at": null,
       "completed_at": null,
-      "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible",
-      "first_internal_5h_requirement": "BLOCKER"
+      "next_safe_action": "present at founder gate",
+      "first_internal_5h_requirement": "BLOCKER",
+      "evaluated_sha": "dec4bedce6b8d9d1e549c5e85d6f8725ee7ef60e"
     },
     {
       "control_id": "A03",
@@ -136,7 +138,7 @@
       "objective": "Per-worker lease binding run/job/role/stack/branch/worktree/files/tools/effect/limits + single-use/expiry/revocation",
       "rationale": "",
       "done_meaning": "",
-      "status": "BUILT",
+      "status": "PROVEN",
       "claim_status": "TESTED",
       "risk_class": "NARROW_SENSITIVE",
       "effect_class": "LOCAL_FS",
@@ -168,10 +170,12 @@
       "collision_set": [],
       "expected_outputs": [],
       "tests": [
-        "lease validator selftest"
+        "lease validator in assurance-core 55/55"
       ],
       "negative_tests": [],
-      "required_evidence": [],
+      "required_evidence": [
+        "src/v8b/lrcq/assurance-tests/assurance-core.selftest.mjs"
+      ],
       "checker_requirement": "independent-lane-checker",
       "checker_diversity_requirement": "deterministic-static+property",
       "estimated_minutes": 40,
@@ -186,11 +190,11 @@
       "capability_lease_required": true,
       "started_at": null,
       "completed_at": null,
-      "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible",
-      "first_internal_5h_requirement": "BLOCKER"
+      "next_safe_action": "present at founder gate",
+      "first_internal_5h_requirement": "BLOCKER",
+      "evaluated_sha": "dec4bedce6b8d9d1e549c5e85d6f8725ee7ef60e"
     },
     {
       "control_id": "A04",
@@ -199,8 +203,8 @@
       "objective": "Signed-manifest + hash-chained ledger + offline verifier interface + tamper tests (design only; external anchor HELD)",
       "rationale": "",
       "done_meaning": "",
-      "status": "PLANNED",
-      "claim_status": "SLSA-COMPATIBLE-DESIGN-ONLY",
+      "status": "BUILT",
+      "claim_status": "TESTED-EXTERNAL-HELD",
       "risk_class": "WIDE_SAFE",
       "effect_class": "LOCAL_FS",
       "authority_plane": "evidence",
@@ -230,9 +234,14 @@
       "worktree": "assurance",
       "collision_set": [],
       "expected_outputs": [],
-      "tests": [],
+      "tests": [
+        "evidence 30/30 (chain/tamper/insertion/write-once/witness-slot)"
+      ],
       "negative_tests": [],
-      "required_evidence": [],
+      "required_evidence": [
+        "src/v8b/lrcq/evidence/evidence-anchor.mjs",
+        "src/v8b/lrcq/evidence-tests/evidence.selftest.mjs"
+      ],
       "checker_requirement": "independent-lane-checker",
       "checker_diversity_requirement": "deterministic-static+property",
       "estimated_minutes": 50,
@@ -247,13 +256,15 @@
       "capability_lease_required": false,
       "started_at": null,
       "completed_at": null,
-      "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [
-        "real third-party timestamping / write-once storage / production keys HELD"
+        "external timestamp service HELD",
+        "production signing key HELD",
+        "external write-once storage HELD"
       ],
-      "next_safe_action": "schedule when eligible",
-      "first_internal_5h_requirement": "BLOCKER"
+      "next_safe_action": "present at founder gate",
+      "first_internal_5h_requirement": "BLOCKER",
+      "evaluated_sha": "dec4bedce6b8d9d1e549c5e85d6f8725ee7ef60e"
     },
     {
       "control_id": "A05",
@@ -262,8 +273,8 @@
       "objective": "Claim-evidence graph proving 'this exact candidate is ready for the stated founder review'; JSON + HTML; unsupported-claim detection",
       "rationale": "",
       "done_meaning": "",
-      "status": "PLANNED",
-      "claim_status": "PLANNED",
+      "status": "BUILT",
+      "claim_status": "TESTED",
       "risk_class": "WIDE_SAFE",
       "effect_class": "LOCAL_FS",
       "authority_plane": "evidence",
@@ -294,9 +305,16 @@
       "worktree": "assurance",
       "collision_set": [],
       "expected_outputs": [],
-      "tests": [],
+      "tests": [
+        "blocker-controls A05 7/7 + browser+a11y"
+      ],
       "negative_tests": [],
-      "required_evidence": [],
+      "required_evidence": [
+        "src/v8b/lrcq/assurance-case/assurance-case.mjs",
+        "src/v8b/lrcq/assurance-tests/blocker-controls.selftest.mjs",
+        "src/v8b/lrcq/console/assurance-case.html",
+        ".foundergate/evidence/lrcq-assurance-factory/blocker-closure/screenshots/assurance-case.jpg"
+      ],
       "checker_requirement": "independent-lane-checker",
       "checker_diversity_requirement": "deterministic-static+property",
       "estimated_minutes": 40,
@@ -311,11 +329,11 @@
       "capability_lease_required": false,
       "started_at": null,
       "completed_at": null,
-      "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible",
-      "first_internal_5h_requirement": "BLOCKER"
+      "next_safe_action": "present at founder gate",
+      "first_internal_5h_requirement": "BLOCKER",
+      "evaluated_sha": "dec4bedce6b8d9d1e549c5e85d6f8725ee7ef60e"
     },
     {
       "control_id": "A06",
@@ -387,8 +405,8 @@
       "objective": "Permanent fixtures: policy rewrite, secret request, tool-desc authority change, poisoned memory, privilege expansion, indirect forbidden tool, unauthorized delegation, arg-change-after-approval, cross-SHA evidence, gate self-mod, false success, stale approval replay, wrong machine, duplicate launch, missing checker, altered policy, cost exceeded, corrupt checkpoint",
       "rationale": "",
       "done_meaning": "",
-      "status": "PARTIAL",
-      "claim_status": "PARTIAL",
+      "status": "BUILT",
+      "claim_status": "TESTED-INTERNAL",
       "risk_class": "WIDE_SAFE",
       "effect_class": "LOCAL_FS",
       "authority_plane": "control",
@@ -418,9 +436,14 @@
       "worktree": "assurance",
       "collision_set": [],
       "expected_outputs": [],
-      "tests": [],
+      "tests": [
+        "attack-refusal 24/24 (12 classes incl unconfirmed-success + provider-drift)"
+      ],
       "negative_tests": [],
-      "required_evidence": [],
+      "required_evidence": [
+        "src/v8b/lrcq/assurance/attack-refusal.mjs",
+        "src/v8b/lrcq/assurance-tests/attack-refusal.selftest.mjs"
+      ],
       "checker_requirement": "independent-lane-checker",
       "checker_diversity_requirement": "deterministic-static+property",
       "estimated_minutes": 60,
@@ -435,13 +458,13 @@
       "capability_lease_required": false,
       "started_at": null,
       "completed_at": null,
-      "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [
-        "no OWASP certification claim"
+        "broader customer/MCP attack surface remains PRE_CUSTOMER"
       ],
-      "next_safe_action": "schedule when eligible",
-      "first_internal_5h_requirement": "BLOCKER"
+      "next_safe_action": "present at founder gate",
+      "first_internal_5h_requirement": "BLOCKER",
+      "evaluated_sha": "dec4bedce6b8d9d1e549c5e85d6f8725ee7ef60e"
     },
     {
       "control_id": "A08",
@@ -450,8 +473,8 @@
       "objective": "Separate immutable laws / trusted config / verified evidence / untrusted repo content / user notes / model summaries / chat; provenance+classification+expiry+explicit promotion; no silent promotion",
       "rationale": "",
       "done_meaning": "",
-      "status": "PLANNED",
-      "claim_status": "PLANNED",
+      "status": "BUILT",
+      "claim_status": "TESTED",
       "risk_class": "WIDE_SAFE",
       "effect_class": "LOCAL_FS",
       "authority_plane": "control",
@@ -481,9 +504,14 @@
       "worktree": "assurance",
       "collision_set": [],
       "expected_outputs": [],
-      "tests": [],
+      "tests": [
+        "blocker-controls A08 10/10 (classification/promotion/prompt-quarantine/diff)"
+      ],
       "negative_tests": [],
-      "required_evidence": [],
+      "required_evidence": [
+        "src/v8b/lrcq/memory-quarantine/memory-quarantine.mjs",
+        "src/v8b/lrcq/assurance-tests/blocker-controls.selftest.mjs"
+      ],
       "checker_requirement": "independent-lane-checker",
       "checker_diversity_requirement": "deterministic-static+property",
       "estimated_minutes": 50,
@@ -498,11 +526,11 @@
       "capability_lease_required": false,
       "started_at": null,
       "completed_at": null,
-      "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible",
-      "first_internal_5h_requirement": "BLOCKER"
+      "next_safe_action": "present at founder gate",
+      "first_internal_5h_requirement": "BLOCKER",
+      "evaluated_sha": "dec4bedce6b8d9d1e549c5e85d6f8725ee7ef60e"
     },
     {
       "control_id": "A09",
@@ -574,8 +602,8 @@
       "objective": "Deterministic fault injection (process death, interrupted write, unavailable stores, corrupt checkpoint, disk-full, partial deletion, stale lock, duplicate supervisor, restart during builder/checker, restart after ACTION_FIRED)",
       "rationale": "",
       "done_meaning": "",
-      "status": "PARTIAL",
-      "claim_status": "PARTIAL",
+      "status": "BUILT",
+      "claim_status": "TESTED-INTERNAL",
       "risk_class": "NARROW_SENSITIVE",
       "effect_class": "LOCAL_FS",
       "authority_plane": "control",
@@ -605,9 +633,14 @@
       "worktree": "assurance",
       "collision_set": [],
       "expected_outputs": [],
-      "tests": [],
+      "tests": [
+        "recovery-completeness 12/12 + inbox-recovery 15/15"
+      ],
       "negative_tests": [],
-      "required_evidence": [],
+      "required_evidence": [
+        "src/v8b/lrcq/reconciliation-tests/recovery-completeness.selftest.mjs",
+        "src/v8b/lrcq/reconciliation-tests/inbox-recovery.selftest.mjs"
+      ],
       "checker_requirement": "independent-lane-checker",
       "checker_diversity_requirement": "deterministic-static+property",
       "estimated_minutes": 60,
@@ -622,13 +655,13 @@
       "capability_lease_required": false,
       "started_at": null,
       "completed_at": null,
-      "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [
-        "no production DR claim"
+        "production disaster recovery / customer backups / formal RPO-RTO NOT PROVEN"
       ],
-      "next_safe_action": "schedule when eligible",
-      "first_internal_5h_requirement": "BLOCKER"
+      "next_safe_action": "present at founder gate",
+      "first_internal_5h_requirement": "BLOCKER",
+      "evaluated_sha": "dec4bedce6b8d9d1e549c5e85d6f8725ee7ef60e"
     },
     {
       "control_id": "A11",
@@ -757,8 +790,8 @@
       "objective": "FounderGate Evidence Spec v1: subject/source/tree/policy/tools/provider-model/actions/refusals/tests/checker/findings/limitations/gate/signatures + canonicalization + sample + tests + HTML",
       "rationale": "",
       "done_meaning": "",
-      "status": "PLANNED",
-      "claim_status": "PLANNED",
+      "status": "BUILT",
+      "claim_status": "TESTED",
       "risk_class": "WIDE_SAFE",
       "effect_class": "LOCAL_FS",
       "authority_plane": "evidence",
@@ -788,9 +821,14 @@
       "worktree": "assurance",
       "collision_set": [],
       "expected_outputs": [],
-      "tests": [],
+      "tests": [
+        "evidence 30/30 (canonicalization/validation/unsupported-claim)"
+      ],
       "negative_tests": [],
-      "required_evidence": [],
+      "required_evidence": [
+        "src/v8b/lrcq/evidence/evidence-spec.mjs",
+        "src/v8b/lrcq/evidence-tests/evidence.selftest.mjs"
+      ],
       "checker_requirement": "independent-lane-checker",
       "checker_diversity_requirement": "deterministic-static+property",
       "estimated_minutes": 50,
@@ -805,11 +843,11 @@
       "capability_lease_required": false,
       "started_at": null,
       "completed_at": null,
-      "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible",
-      "first_internal_5h_requirement": "BLOCKER"
+      "next_safe_action": "present at founder gate",
+      "first_internal_5h_requirement": "BLOCKER",
+      "evaluated_sha": "dec4bedce6b8d9d1e549c5e85d6f8725ee7ef60e"
     },
     {
       "control_id": "B14",
@@ -818,8 +856,8 @@
       "objective": "offline `foundergate verify <package>`; accepted builders/checkers/policies/providers/min-test-classes/attestations/expiry/SHA-binding/signatures; valid/tampered/wrong-SHA/unknown-builder/unknown-checker/stale/missing-test/altered-policy/invalid-sig tests",
       "rationale": "",
       "done_meaning": "",
-      "status": "PLANNED",
-      "claim_status": "PLANNED",
+      "status": "BUILT",
+      "claim_status": "TESTED",
       "risk_class": "WIDE_SAFE",
       "effect_class": "LOCAL_FS",
       "authority_plane": "evidence",
@@ -849,9 +887,14 @@
       "worktree": "assurance",
       "collision_set": [],
       "expected_outputs": [],
-      "tests": [],
+      "tests": [
+        "evidence 30/30 (offline verify/tamper/wrong-SHA/missing-test/stale)"
+      ],
       "negative_tests": [],
-      "required_evidence": [],
+      "required_evidence": [
+        "src/v8b/lrcq/evidence/evidence-verifier.mjs",
+        "src/v8b/lrcq/evidence-tests/evidence.selftest.mjs"
+      ],
       "checker_requirement": "independent-lane-checker",
       "checker_diversity_requirement": "deterministic-static+property",
       "estimated_minutes": 55,
@@ -866,11 +909,13 @@
       "capability_lease_required": false,
       "started_at": null,
       "completed_at": null,
-      "evaluated_sha": null,
       "evidence_sha": null,
-      "limitations": [],
-      "next_safe_action": "schedule when eligible",
-      "first_internal_5h_requirement": "BLOCKER"
+      "limitations": [
+        "deterministic test keys only; no production key or external certification"
+      ],
+      "next_safe_action": "present at founder gate",
+      "first_internal_5h_requirement": "BLOCKER",
+      "evaluated_sha": "dec4bedce6b8d9d1e549c5e85d6f8725ee7ef60e"
     },
     {
       "control_id": "B15",
@@ -971,9 +1016,13 @@
       "worktree": "assurance",
       "collision_set": [],
       "expected_outputs": [],
-      "tests": [],
+      "tests": [
+        "proof register present"
+      ],
       "negative_tests": [],
-      "required_evidence": [],
+      "required_evidence": [
+        ".foundergate/claims/commercial-readiness-proof-register-v1.json"
+      ],
       "checker_requirement": "independent-lane-checker",
       "checker_diversity_requirement": "deterministic-static+property",
       "estimated_minutes": 35,
@@ -988,11 +1037,11 @@
       "capability_lease_required": false,
       "started_at": null,
       "completed_at": null,
-      "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible",
-      "first_internal_5h_requirement": "BLOCKER"
+      "next_safe_action": "present at founder gate",
+      "first_internal_5h_requirement": "BLOCKER",
+      "evaluated_sha": "dec4bedce6b8d9d1e549c5e85d6f8725ee7ef60e"
     },
     {
       "control_id": "B17",
@@ -1001,8 +1050,8 @@
       "objective": "founder surface for uncertain effects: action/intent/idempotency/target/dispatch-time/process-state/external-result/reconciliation-status/safe-retry/RESUME-BRANCH-ABANDON; 'will not retry until reconciled'",
       "rationale": "",
       "done_meaning": "",
-      "status": "PLANNED",
-      "claim_status": "PLANNED",
+      "status": "BUILT",
+      "claim_status": "TESTED",
       "risk_class": "NARROW_SENSITIVE",
       "effect_class": "LOCAL_FS",
       "authority_plane": "reconciliation",
@@ -1034,9 +1083,16 @@
       "worktree": "assurance",
       "collision_set": [],
       "expected_outputs": [],
-      "tests": [],
+      "tests": [
+        "inbox-recovery 15/15 + browser+a11y (10 states)"
+      ],
       "negative_tests": [],
-      "required_evidence": [],
+      "required_evidence": [
+        "src/v8b/lrcq/reconciliation/inbox.mjs",
+        "src/v8b/lrcq/console/recon-inbox.html",
+        "src/v8b/lrcq/reconciliation-tests/inbox-recovery.selftest.mjs",
+        ".foundergate/evidence/lrcq-assurance-factory/BROWSER_A11Y_EVIDENCE.json"
+      ],
       "checker_requirement": "independent-lane-checker",
       "checker_diversity_requirement": "deterministic-static+property",
       "estimated_minutes": 50,
@@ -1051,11 +1107,11 @@
       "capability_lease_required": false,
       "started_at": null,
       "completed_at": null,
-      "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible",
-      "first_internal_5h_requirement": "BLOCKER"
+      "next_safe_action": "present at founder gate",
+      "first_internal_5h_requirement": "BLOCKER",
+      "evaluated_sha": "dec4bedce6b8d9d1e549c5e85d6f8725ee7ef60e"
     },
     {
       "control_id": "B18",
@@ -1188,8 +1244,8 @@
       "objective": "record provider/model/CLI-version/exe-identity/context/tools/system-prompt-digest/policy; material change stales approvals + regression probes + canary + refusal-compare; stop on regression",
       "rationale": "",
       "done_meaning": "",
-      "status": "PARTIAL",
-      "claim_status": "PARTIAL",
+      "status": "BUILT",
+      "claim_status": "TESTED",
       "risk_class": "WIDE_SAFE",
       "effect_class": "LOCAL_FS",
       "authority_plane": "control",
@@ -1219,9 +1275,14 @@
       "worktree": "assurance",
       "collision_set": [],
       "expected_outputs": [],
-      "tests": [],
+      "tests": [
+        "blocker-controls B20 8/8 (fingerprint/drift/stale/expiry fail-closed)"
+      ],
       "negative_tests": [],
-      "required_evidence": [],
+      "required_evidence": [
+        "src/v8b/lrcq/assurance/provider-change-gate.mjs",
+        "src/v8b/lrcq/assurance-tests/blocker-controls.selftest.mjs"
+      ],
       "checker_requirement": "independent-lane-checker",
       "checker_diversity_requirement": "deterministic-static+property",
       "estimated_minutes": 40,
@@ -1236,11 +1297,13 @@
       "capability_lease_required": false,
       "started_at": null,
       "completed_at": null,
-      "evaluated_sha": null,
       "evidence_sha": null,
-      "limitations": [],
-      "next_safe_action": "schedule when eligible",
-      "first_internal_5h_requirement": "BLOCKER"
+      "limitations": [
+        "no real provider/model canary executed in preparation (fail-closed on drift)"
+      ],
+      "next_safe_action": "present at founder gate",
+      "first_internal_5h_requirement": "BLOCKER",
+      "evaluated_sha": "dec4bedce6b8d9d1e549c5e85d6f8725ee7ef60e"
     },
     {
       "control_id": "B21",
@@ -1249,7 +1312,7 @@
       "objective": "per-job max files/lines/branches/worktrees/external-calls/recipients/dollars/records/time/delegation/output; exceed -> stop before further work",
       "rationale": "",
       "done_meaning": "",
-      "status": "BUILT",
+      "status": "PROVEN",
       "claim_status": "TESTED",
       "risk_class": "NARROW_SENSITIVE",
       "effect_class": "LOCAL_FS",
@@ -1280,9 +1343,13 @@
       "worktree": "assurance",
       "collision_set": [],
       "expected_outputs": [],
-      "tests": [],
+      "tests": [
+        "blast budget exactly-N in harness 46/46"
+      ],
       "negative_tests": [],
-      "required_evidence": [],
+      "required_evidence": [
+        "src/v8b/lrcq/run-harness-tests/harness.selftest.mjs"
+      ],
       "checker_requirement": "independent-lane-checker",
       "checker_diversity_requirement": "deterministic-static+property",
       "estimated_minutes": 40,
@@ -1297,11 +1364,11 @@
       "capability_lease_required": false,
       "started_at": null,
       "completed_at": null,
-      "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible",
-      "first_internal_5h_requirement": "BLOCKER"
+      "next_safe_action": "present at founder gate",
+      "first_internal_5h_requirement": "BLOCKER",
+      "evaluated_sha": "dec4bedce6b8d9d1e549c5e85d6f8725ee7ef60e"
     },
     {
       "control_id": "B22",
@@ -1493,7 +1560,7 @@
       "objective": "permanent refusal corpus (wrong SHA/tree, stale approval, missing evidence, unknown side-effect, unauthorized tool, altered policy, untrusted repo instruction, cost exceeded, corrupt checkpoint, wrong machine, duplicate launch, missing checker, expired lease, wrong worktree/branch, protected main, cross-candidate evidence, changed args, provider/model drift)",
       "rationale": "",
       "done_meaning": "",
-      "status": "BUILT",
+      "status": "PROVEN",
       "claim_status": "TESTED",
       "risk_class": "WIDE_SAFE",
       "effect_class": "LOCAL_FS",
@@ -1526,9 +1593,13 @@
       "worktree": "assurance",
       "collision_set": [],
       "expected_outputs": [],
-      "tests": [],
+      "tests": [
+        "attack-refusal 24/24"
+      ],
       "negative_tests": [],
-      "required_evidence": [],
+      "required_evidence": [
+        "src/v8b/lrcq/assurance-tests/attack-refusal.selftest.mjs"
+      ],
       "checker_requirement": "independent-lane-checker",
       "checker_diversity_requirement": "deterministic-static+property",
       "estimated_minutes": 60,
@@ -1543,11 +1614,11 @@
       "capability_lease_required": false,
       "started_at": null,
       "completed_at": null,
-      "evaluated_sha": null,
       "evidence_sha": null,
       "limitations": [],
-      "next_safe_action": "schedule when eligible",
-      "first_internal_5h_requirement": "BLOCKER"
+      "next_safe_action": "present at founder gate",
+      "first_internal_5h_requirement": "BLOCKER",
+      "evaluated_sha": "dec4bedce6b8d9d1e549c5e85d6f8725ee7ef60e"
     },
     {
       "control_id": "C01",

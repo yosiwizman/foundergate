@@ -107,6 +107,13 @@ const packet = {
   launcher_digest: digestOf("tools/terminal0/lrcq/run-five-hour.mjs"), orchestrator_digest: digestOf("src/v8b/lrcq/run-harness/harness.mjs"),
   provider_adapter_digest: digestOf("src/v8b/lrcq/provider/real-provider.mjs"), run_manifest_module_digest: digestOf("src/v8b/lrcq/run-harness/run-manifest.mjs"),
   real_seams_digest: digestOf("src/v8b/lrcq/run-harness/real-seams.mjs"),
+  // FG-LRCQ-FINAL blocker-closure digests
+  controller_authority_digest: digestOf("src/v8b/lrcq/controller.mjs"),
+  blocker_matrix_digest: "sha256:" + createHash("sha256").update(JSON.stringify(JSON.parse(readFileSync(P(".foundergate/backlog/assurance-control-master-v1.json"), "utf8")).items.filter((i) => i.first_internal_5h_requirement === "BLOCKER").map((i) => [i.control_id, i.status, i.evaluated_sha]).sort())).digest("hex"),
+  evidence_spec_digest: digestOf("src/v8b/lrcq/evidence/evidence-spec.mjs"), evidence_anchor_digest: digestOf("src/v8b/lrcq/evidence/evidence-anchor.mjs"), evidence_verifier_digest: digestOf("src/v8b/lrcq/evidence/evidence-verifier.mjs"),
+  assurance_case_digest: digestOf("src/v8b/lrcq/assurance-case/assurance-case.mjs"), memory_quarantine_digest: digestOf("src/v8b/lrcq/memory-quarantine/memory-quarantine.mjs"),
+  provider_change_gate_digest: digestOf("src/v8b/lrcq/assurance/provider-change-gate.mjs"), recovery_policy_digest: digestOf("src/v8b/lrcq/reconciliation/transaction.mjs"),
+  attack_refusal_digest: digestOf("src/v8b/lrcq/assurance/attack-refusal.mjs"),
   // bounded numerics (exact)
   run_duration_s: 18000, max_parallel_width: 2, per_job_timeout_s: 2700, termination_grace_s: 30, max_output_bytes: 10485760, max_budget_usd: 10, delegation_depth: 1, external_calls: 0, recipients: 0,
   // every no-action flag true
