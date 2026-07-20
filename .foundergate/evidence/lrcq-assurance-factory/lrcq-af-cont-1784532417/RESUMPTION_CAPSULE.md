@@ -1,34 +1,46 @@
-# Continuation Resumption Capsule (lrcq-af-cont-1784532417)
+# Continuation Resumption Capsule (lrcq-af-cont-1784532417) — TURN-ENDED-RECOVERABLE
 
 ```
 {
   "continuation_run_id": "lrcq-af-cont-1784532417",
-  "continuation_start_epoch": 1784532417,
-  "measured_now_epoch": 1784533083,
-  "measured_elapsed_seconds": 666,
+  "measured_elapsed_working_seconds": 1953,
   "hard_deadline_epoch": 1784550417,
-  "build_window_end_epoch": 1784547717,
-  "candidate_head": "a4048580dbfa47382c314bb6bed99856506f672c",
-  "tier1_built_tested": [
-    "setup pipeline (25 ordered steps, fail-stop)",
-    "builder/checker separation (worker-exit!=complete; independent read-only checker; park)",
-    "append-only hash-chained replay (tamper+insert detected)",
-    "unsigned activation packet (would-validate-when-signed)",
-    "deterministic 25-job shadow run"
+  "now_epoch": 1784534370,
+  "candidate_head": "456b9762abc57143a25bf690d93e89ccee3b054a",
+  "checker": "LRCQ-ASSURANCE-FACTORY-CHECKER: CLEAN (bound to 456b976; 19/19 + 155/155 adversarial; verifies the BUILT subset is correct+fail-closed and classification is honest)",
+  "advisor": "NOT COMMISSIONED — endpoint is a recoverable partial (READY requires ALL activation blockers complete; they are not).",
+  "built_and_checker_clean": [
+    "A01 five-plane",
+    "A02 side-effect txn",
+    "A03 leases",
+    "A10 reconciliation + inbox model + inbox UI",
+    "B21 blast",
+    "activation v3",
+    "live-clock",
+    "setup pipeline",
+    "builder/checker separation",
+    "replay stream",
+    "unsigned packet",
+    "25-job shadow run",
+    "fs crash-recovery",
+    "browser+accessibility (recon inbox)"
   ],
-  "tier1_remaining": [
-    "Reconciliation Inbox localhost UI",
-    "full recovery-triad crash-injection with real fs",
-    "browser+accessibility proof",
-    "endurance rehearsal",
-    "fresh checker+advisor"
+  "remaining_activation_blockers": [
+    "single unattended run-harness ORCHESTRATOR (wire launcher->setup->controller REAL->adapter(stub)->separation->replay end-to-end)",
+    "complete recovery triad with more crash points",
+    "full 10-state browser+accessibility coverage (active/checker-pending/finding/deadline/exhaustion/gate)",
+    "evidence format + offline verifier (B13/B14)",
+    "threat/memory/supply-chain/policy/privacy lanes",
+    "then re-freeze + fresh checker + separate advisor on the COMPLETED set"
   ],
-  "wide_safe_remaining": [
-    "evidence spec/verifier",
-    "threat/memory/supply-chain/policy/privacy lanes"
-  ],
-  "tests": "assurance-core 55/55, run-harness 22/22, shadow-run 16/16, provider 64/64, full suite 110/110",
-  "honest_status": "Genuine continuation: built + tested the core remaining Tier-1 chain this turn (setup/separation/replay/packet/shadow). Terminal-0 executes in discrete turns and cannot occupy a continuous 5h wall-clock window in one response; heartbeat + caffeinate are REAL background processes. Measured elapsed 666s (<18000). NOT DEADLINE-REACHED (clock not elapsed). NOT READY (reconciliation inbox UI, real crash-injection, browser/accessibility, and a fresh checker+advisor remain). Resume from this capsule.",
-  "next_safe_action": "Continue single-writer: Reconciliation Inbox UI + real fs crash-injection recovery triad + browser/accessibility, then fresh independent checker + separate advisor bound to the frozen head; only then assert READY. No provider activation, no real-run backlog, no merge."
+  "final_state": "TURN-ENDED-RECOVERABLE",
+  "next_phase": "Wire the single run-harness orchestrator (harness.mjs) tying the proven modules end-to-end with the stub provider + a harness test matrix; then complete recovery triad + full browser coverage + evidence verifier; then re-freeze and commission a fresh checker + separate advisor on the completed activation-blocker set. Only then is READY assertable. No provider activation, no real-run backlog, no merge.",
+  "prs_unchanged": {
+    "main": "ba7d654",
+    "pr187": "3794ec1",
+    "pr188": "50e18e5"
+  },
+  "no_real_provider_invocation": true,
+  "no_merge": true
 }
 ```
