@@ -87,6 +87,22 @@ ok("19 disjoint files do not collide", !jobsCollide(J("a", { files: ["src/x/a.mj
   c.refill();
   ok("23 branch collision -> only one runs", c.jobs.filter((j) => j.status === "RUNNING").length === 1);
 }
+{
+  // RUNTIME directory-overlap enforcement (checker finding): "src/z/" dir vs "src/z/deep.mjs"
+  const c1 = new Controller({ run_id: "t", now: 1, maxWidth: 3 });
+  c1.load([J("dir", { files: ["src/z/"], branch: "lane/dir", worktree: "/wt/dir" }), J("file", { files: ["src/z/deep.mjs"], branch: "lane/file", worktree: "/wt/file" })]);
+  c1.refill();
+  ok("23b dir-overlap collision serialized at RUNTIME (only 1 runs)", c1.jobs.filter((j) => j.status === "RUNNING").length === 1);
+  c1.runToCompletion();
+  ok("23c both dir-overlap jobs complete serially", status(c1).dir === "COMPLETED" && status(c1).file === "COMPLETED");
+  // and the reverse ordering (file locked first, dir candidate)
+  const c2 = new Controller({ run_id: "t", now: 1, maxWidth: 1 });
+  c2.load([J("file", { files: ["src/z/deep.mjs"], branch: "lane/file", worktree: "/wt/file" }), J("dir", { files: ["src/z/"], branch: "lane/dir", worktree: "/wt/dir" })]);
+  c2.refill();
+  const running = c2.jobs.find((j) => j.status === "RUNNING");
+  const held = c2.jobs.find((j) => j.status !== "RUNNING");
+  ok("23d reverse dir-overlap also held", eligibilityReason(held, c2.ctx()).startsWith("HELD_COLLISION"));
+}
 
 // ---------- REFILL / WIDTH ----------
 {

@@ -32,12 +32,12 @@ export function eligibilityReason(job, ctx) {
     if (!dep) return "BLOCKED:missing-dep:" + d;
     if (dep.status !== "COMPLETED") return "BLOCKED:dep-not-complete:" + d;
   }
-  // file collision with any currently-active (RUNNING) lane?
+  // file collision with any currently-active (RUNNING) lane? Directory-overlap aware:
+  // a locked "src/a/" conflicts with a candidate "src/a/b.mjs" and vice-versa.
   const owners = ctx.activeFileOwners || new Map();
   for (const f of job.allowed_files) {
-    for (const p of expandPaths(f)) {
-      const owner = owners.get(p);
-      if (owner && owner !== job.job_id) return "HELD_COLLISION:file:" + p + ":owned-by:" + owner;
+    for (const [locked, owner] of owners) {
+      if (owner && owner !== job.job_id && pathsOverlap(f, locked)) return "HELD_COLLISION:file:" + f + ":overlaps:" + locked + ":owned-by:" + owner;
     }
   }
   // branch/worktree isolation
@@ -47,24 +47,22 @@ export function eligibilityReason(job, ctx) {
 }
 export function isEligible(job, ctx) { return eligibilityReason(job, ctx) === "ELIGIBLE"; }
 
-// Directory-overlap-aware path expansion: a file path collides with itself and any
-// ancestor directory prefix, so "src/a/" and "src/a/b.mjs" are detected as overlapping.
-export function expandPaths(f) {
-  const out = [f];
-  if (f.endsWith("/")) out.push(f.slice(0, -1)); // dir marker
-  return out;
-}
-// Two jobs collide if their allowed_files sets share a file OR one's dir contains the other's file.
-export function jobsCollide(a, b) {
+// Directory-overlap-aware path comparison: two paths overlap if identical, or one is a
+// directory prefix of the other. A path with no "." is treated as a directory. This is the
+// SINGLE overlap authority used by BOTH the static collision matrix and the runtime lock.
+export function pathsOverlap(a, b) {
+  if (a === b) return true;
   const norm = (p) => (p.endsWith("/") ? p : p + (p.includes(".") ? "" : "/"));
-  for (const fa of a.allowed_files) for (const fb of b.allowed_files) {
-    if (fa === fb) return true;
-    const da = norm(fa), db = norm(fb);
-    if (fa.endsWith("/") && fb.startsWith(fa)) return true;
-    if (fb.endsWith("/") && fa.startsWith(fb)) return true;
-    if (da !== fa && fb.startsWith(da)) return true;
-    if (db !== fb && fa.startsWith(db)) return true;
-  }
+  const da = norm(a), db = norm(b);
+  if (a.endsWith("/") && b.startsWith(a)) return true;
+  if (b.endsWith("/") && a.startsWith(b)) return true;
+  if (da !== a && b.startsWith(da)) return true; // a is a dir (no dot) containing b
+  if (db !== b && a.startsWith(db)) return true; // b is a dir (no dot) containing a
+  return false;
+}
+// Two jobs collide if any of their allowed_files overlap (exact or directory-prefix).
+export function jobsCollide(a, b) {
+  for (const fa of a.allowed_files) for (const fb of b.allowed_files) if (pathsOverlap(fa, fb)) return true;
   return false;
 }
 // Full collision matrix over a job list.
@@ -179,8 +177,8 @@ export class Controller {
     while (this.runningCount() < this.maxWidth) {
       const cand = this.eligibleNow()[0];
       if (!cand) break;
-      // acquire locks
-      for (const f of cand.allowed_files) for (const p of expandPaths(f)) this.locks.set(p, cand.job_id);
+      // acquire locks (raw allowed_files; overlap tested via pathsOverlap at check time)
+      for (const f of cand.allowed_files) this.locks.set(f, cand.job_id);
       if (cand.branch) this.activeBranches.set(cand.branch, cand.job_id);
       if (cand.worktree) this.activeWorktrees.set(cand.worktree, cand.job_id);
       cand.status = "RUNNING"; cand.started_at = this.now; cand.attempts += 1;
@@ -191,7 +189,7 @@ export class Controller {
     return { refilled: n };
   }
   releaseLocks(job) {
-    for (const f of job.allowed_files) for (const p of expandPaths(f)) if (this.locks.get(p) === job.job_id) this.locks.delete(p);
+    for (const f of job.allowed_files) if (this.locks.get(f) === job.job_id) this.locks.delete(f);
     if (job.branch && this.activeBranches.get(job.branch) === job.job_id) this.activeBranches.delete(job.branch);
     if (job.worktree && this.activeWorktrees.get(job.worktree) === job.job_id) this.activeWorktrees.delete(job.worktree);
   }
