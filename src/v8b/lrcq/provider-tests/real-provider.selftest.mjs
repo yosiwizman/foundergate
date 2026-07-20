@@ -120,14 +120,14 @@ ok("58 pause before spawn -> TERMINATED_BY_PAUSE", (await run(ACT(), JOB("a58", 
 // ===== CONTROLLER INTEGRATION =====
 const CJOB = (id, wtBranch) => ({ job_id: id, title: "t", objective: "o", done_meaning: "d", source: "s", risk_class: "WIDE_SAFE", effect_class: "LOCAL_FS", dependencies: [], allowed_files: ["src/x/" + id + ".mjs"], forbidden_files: [], branch: wtBranch, worktree: mkGitWt(id, wtBranch, "success"), expected_outputs: ["x"], tests: ["t"], required_evidence: ["e"], checker_requirement: "ind", gate_trigger: "NONE", estimated_minutes: 5, max_attempts: 3, correction_cycle: 0, status: "PENDING" });
 { const c = new Controller({ run_id: "rc", now: 2000, maxWidth: 1, mode: MODE.REAL }); c.load([CJOB("rj", "lane/rj")]); c.refill();
-  await c.stepReal("rj", ACT(), BIND(), { env: { PATH: process.env.PATH, HOME: process.env.HOME } });
+  const r = await c.stepReal("rj", ACT(), BIND(), { env: { PATH: process.env.PATH, HOME: process.env.HOME } });
   const evs = c.events.filter((e) => e.job_id === "rj").map((e) => e.event_type);
-  ok("59 controller REAL stepReal completes via adapter", c.byId.get("rj").status === "COMPLETED");
-  ok("60 evidence sealed BEFORE job_completed (REAL)", evs.indexOf("evidence_sealed") < evs.indexOf("job_completed"));
+  ok("59 controller stepReal REFUSES real execution (authority-route collapse FG-LRCQ-FINAL-001)", r.ok === false && r.reason === "REAL_EXECUTION_REQUIRES_RUN_HARNESS");
+  ok("60 stepReal invokes NO provider + seals/completes NOTHING", r.invoked_provider === false && r.completed === false && r.sealed === false && c.byId.get("rj").status !== "COMPLETED" && !evs.includes("evidence_sealed"));
   ok("61 no accept/merge inference", c.snapshot().merged === false && c.snapshot().accepted === false); }
 { const c = new Controller({ run_id: "rcg", now: 2000, maxWidth: 1, mode: MODE.REAL }); c.load([CJOB("gj", "lane/gj")]); c.refill(); c.raiseGate("FOUNDER_GATE", "founder review", "spawn", "founder decides");
   const r = await c.stepReal("gj", ACT(), BIND(), { env: { PATH: process.env.PATH, HOME: process.env.HOME } });
-  ok("62 founder gate before spawn blocks the adapter (not completed)", r.ok === false && c.byId.get("gj").status !== "COMPLETED"); }
+  ok("62 founder-gated job still not completed via controller", r.ok === false && c.byId.get("gj").status !== "COMPLETED"); }
 { const c = new Controller({ run_id: "rc2", now: 2000, maxWidth: 1, mode: MODE.REAL });
   c.load([{ job_id: "nj", title: "t", objective: "o", done_meaning: "d", source: "s", risk_class: "NARROW_SENSITIVE", effect_class: "LOCAL_FS", dependencies: [], allowed_files: ["src/x/nj.mjs"], forbidden_files: [], branch: "lane/nj", worktree: "/wt/nj", expected_outputs: ["x"], tests: ["t"], required_evidence: ["e"], checker_requirement: "ind", gate_trigger: "NONE", estimated_minutes: 5, max_attempts: 3, correction_cycle: 0, status: "PENDING" }]);
   ok("63 NARROW job HELD at load", c.byId.get("nj").status === "HELD");
