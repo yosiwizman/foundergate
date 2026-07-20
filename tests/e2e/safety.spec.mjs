@@ -25,7 +25,7 @@ test("Run creates a new run id, shows stages, result bound to run and repository
   await expect(page.locator("#commit")).toContainText("621e4974");
   await expect(page.locator("#r-repo")).toContainText("pypa/sampleproject");
   await expect(page.locator("#run-when")).toContainText(runId.trim());
-  await expect(page.locator("#result")).toContainText("Compileability observed");
+  await expect(page.locator("#result")).toContainText("Source parsing observed");
 });
 
 test("build/tests/security/production remain not proven", async ({ page }) => {

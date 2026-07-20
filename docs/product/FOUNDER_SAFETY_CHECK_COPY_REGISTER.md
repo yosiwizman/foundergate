@@ -8,7 +8,7 @@
 | ports | Internal ports were not publicly exposed. | GUARD_PASS |
 | docker | The check had no access to Docker controls. | SOCKET_ABSENT |
 | net | Internet access was blocked during the check. | default-deny egress |
-| result | Compileability observed | compileall exit 0 |
+| result | Source parsing observed | compileall exit 0 |
 | build/tests/security/prod | Build/Tests/Security/Production readiness not proven | not run |
 | held | HELD — general public-repository execution not yet authorized | fixed-fixture |
 | held_busy | HELD — one Safety Check is already running | single-job lock |
