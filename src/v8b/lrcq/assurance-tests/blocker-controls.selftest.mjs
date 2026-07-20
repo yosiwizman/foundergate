@@ -22,6 +22,10 @@ ok("A08-02 repository content is quarantined (no authority)", MQ.carriesAuthorit
 ok("A08-03 model_summary + historical_chat quarantined", MQ.isQuarantined({ source: "model_summary" }) && MQ.isQuarantined({ source: "prior_session" }));
 ok("A08-04 unknown provenance fails restricted (untrusted_repo)", MQ.classify({ source: "??" }) === "untrusted_repo");
 ok("A08-05 untrusted content cannot self-promote to durable memory", MQ.canPromoteToDurable({ source: "repository_file", key: "k" }, ["k"], { request_source: "repository_file" }).allowed === false);
+// isolate the quarantine guard: even via the founder channel + an allowlisted key, a QUARANTINED
+// class item is refused specifically for being quarantined (so removing isQuarantine turns RED).
+{ const res = MQ.canPromoteToDurable({ source: "repository_file", key: "k" }, ["k"], { request_source: "founder_chat" });
+  ok("A08-05b quarantined class refused even via founder channel + allowlist (quarantine guard isolated)", res.allowed === false && res.refusals.some((r) => /quarantined/.test(r))); }
 ok("A08-06 durable promotion needs founder channel + allowlist", MQ.canPromoteToDurable({ source: "project_config", key: "k" }, ["k"], { request_source: "founder_chat" }).allowed === true);
 ok("A08-07 promotion off-allowlist refused", MQ.canPromoteToDurable({ source: "project_config", key: "x" }, ["k"], { request_source: "founder_chat" }).refusals.some((r) => /allowlist/.test(r)));
 ok("A08-08 expired item refused / dropped", MQ.canPromoteToDurable({ source: "project_config", key: "k", expiry_epoch: 100 }, ["k"], { request_source: "founder_chat", now_epoch: 200 }).allowed === false);
