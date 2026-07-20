@@ -1,0 +1,16 @@
+{
+  "schema": "lrcq-blast-budget-1",
+  "budget": {
+    "max_files": 200,
+    "max_changed_lines": 9000,
+    "max_branches": 60,
+    "max_worktrees": 60,
+    "max_external_calls": 0,
+    "max_recipients": 0,
+    "max_dollars": 10,
+    "max_records": 25,
+    "max_execution_s": 18000,
+    "max_delegation_depth": 1,
+    "max_output_bytes": 10485760
+  }
+}

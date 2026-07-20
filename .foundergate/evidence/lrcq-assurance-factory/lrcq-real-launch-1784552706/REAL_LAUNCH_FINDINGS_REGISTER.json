@@ -1,0 +1,57 @@
+{
+  "register": "FG-LRCQ-P189-REAL",
+  "opened_against": "d873f27c67b41c2dfb7aac820ddafb20d9304e28",
+  "source": "independent external inspection of the actual regular-terminal launcher",
+  "prior_reviews_marked_stale": {
+    "checker_d873f27": "LRCQ-INTERNAL-RUN-CHECKER: CLEAN -> STALE (inspected imported modules; did not fully exercise the real launcher-to-orchestrator integration)",
+    "advisor_d873f27": "LRCQ-INTERNAL-RUN-ADVISOR: READY -> STALE (same reason)",
+    "note": "Historical CLEAN/READY reports preserved verbatim, NOT rewritten; superseded by this correction."
+  },
+  "findings": {
+    "FG-LRCQ-P189-REAL-001": {
+      "defect": "launcher passes lease:null, blast_budget:null, backlog:[]; no signed run manifest loaded",
+      "status": "RESOLVED",
+      "disposition": "RESOLVED: launcher loads real manifest -> real backlog(25)/lease/blast; null/null/[] deleted; REAL mode refuses if absent"
+    },
+    "FG-LRCQ-P189-REAL-002": {
+      "defect": "no independent checker callback; orchestrator defaults clean=provider.checker_clean!==false -> implicit CLEAN",
+      "status": "RESOLVED",
+      "disposition": "RESOLVED: checker mandatory in REAL; undefined output -> INSUFFICIENT_EVIDENCE (never CLEAN); real independent checker route wired"
+    },
+    "FG-LRCQ-P189-REAL-003": {
+      "defect": "launcher maps provider SUCCESS -> machine_verified:true; no separate machine-verification stage",
+      "status": "RESOLVED",
+      "disposition": "RESOLVED: separate machineVerifier stage; provider SUCCESS never sets machine_verified in REAL"
+    },
+    "FG-LRCQ-P189-REAL-004": {
+      "defect": "no setupChecks supplied; orchestrator treats missing setup as READY",
+      "status": "RESOLVED",
+      "disposition": "RESOLVED: launcher builds setupChecks from setup-contract; REAL refuses if absent"
+    },
+    "FG-LRCQ-P189-REAL-005": {
+      "defect": "no lockManager; run-lock acquisition skipped",
+      "status": "RESOLVED",
+      "disposition": "RESOLVED: fileLockManager wired; REAL refuses if absent; active lock refused"
+    },
+    "FG-LRCQ-P189-REAL-006": {
+      "defect": "no advancing scheduler clock / live control reader; pause/stop/deadline/time-progression not wired through real path",
+      "status": "RESOLVED",
+      "disposition": "RESOLVED: systemClock + fileControlReader wired; pause/stop/deadline observed between AND during jobs"
+    },
+    "FG-LRCQ-P189-REAL-007": {
+      "defect": "no durable ledger/transaction/replay/recovery/evidence-index/checkpoint/next-safe-action writers; real path returns in-memory structures",
+      "status": "RESOLVED",
+      "disposition": "RESOLVED: durable ledger/tx/replay/recovery/evidence-index/next-safe-action writers wired; disk-recoverable"
+    },
+    "FG-LRCQ-P189-REAL-008": {
+      "defect": "unsigned gate packet binds obsolete run_harness SHA 23590b17 not d873f27",
+      "status": "RESOLVED",
+      "disposition": "RESOLVED: new packet binds current candidate material (filled to final head at freeze); obsolete-SHA packet refused by validator"
+    },
+    "FG-LRCQ-P189-REAL-009": {
+      "defect": "unsigned packet has founder-fill placeholders for provider path/version/identity + lease/blast digests; a nontechnical founder must never resolve these",
+      "status": "RESOLVED",
+      "disposition": "RESOLVED: provider path/version/identity + lease/blast digests mechanically resolved (real sha256); no founder-fill placeholders"
+    }
+  }
+}

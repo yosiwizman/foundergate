@@ -1,0 +1,10 @@
+{
+  "schema": "lrcq-denied-tools-1",
+  "all": [
+    "Bash",
+    "WebFetch",
+    "Push",
+    "Merge",
+    "Deploy"
+  ]
+}

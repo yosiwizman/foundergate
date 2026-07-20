@@ -1,0 +1,6 @@
+{
+  "schema": "lrcq-setup-contract-1",
+  "host_model": "Mac16,11",
+  "requires_all_25_steps": true,
+  "note": "The launcher binds the real validators to these 25 steps; a failed step blocks all later; a missing verifier fails closed."
+}

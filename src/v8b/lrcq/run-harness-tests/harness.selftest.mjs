@@ -48,7 +48,7 @@ const stub = async (j) => {
 };
 
 const base = (over = {}) => ({
-  run_id: "run-X", activation: activation(), bindings, now: NOW, deadlineEpoch: DEADLINE, maxWidth: 2,
+  run_id: "run-X", runtime_kind: "DETERMINISTIC_TEST", activation: activation(), bindings, now: NOW, deadlineEpoch: DEADLINE, maxWidth: 2,
   master_digest: "MD", lease_digest: "ld", blast_digest: "bd", lease: lease(), blast_budget: blast(),
   setupChecks: setupChecks(), setupCtx: {}, backlog: [job("j1")], dispatch: stub, ...over,
 });
