@@ -1,0 +1,49 @@
+{
+  "run_id": "lrcq-af-1784530327",
+  "start_iso": "2026-07-20T06:52:07Z",
+  "hard_deadline_iso": "2026-07-20T11:52:07Z",
+  "protected_main": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423",
+  "pr187": "3794ec1a6f0d83b72a823bbd36622b1210b1a4c5",
+  "pr188": "50e18e55863b4abc0f0c2ef036b790ef15001ac5",
+  "assurance_branch": "lane/v8b-lrcq-assurance-factory-50e18e5",
+  "first_real_run_backlog_digest": "sha256:d6a80dd382a0a858490b4695fad7325521c187d01908b9bf352bff510ceaa93a",
+  "built_tested_tonight": [
+    "A01 five-plane authority",
+    "A02 side-effect transaction",
+    "A03 capability leases",
+    "A10 reconciliation state machine",
+    "B21 blast-radius budgets",
+    "activation schema v3 (three-layer)",
+    "intrinsic live-clock fix",
+    "B16 proof-coverage (design)"
+  ],
+  "tests": "assurance-core 55/55; provider 64/64; full suite 108/108",
+  "planned_not_built": [
+    "deterministic setup pipeline",
+    "single unattended run harness",
+    "builder/checker-separation runtime",
+    "replay stream",
+    "recovery triad (partial)",
+    "Reconciliation Inbox",
+    "unsigned activation packet",
+    "evidence format/verifier",
+    "threat-model corpus expansion",
+    "memory quarantine",
+    "supply-chain",
+    "policy simulator",
+    "privacy/redaction",
+    "shadow run",
+    "endurance",
+    "browser/accessibility"
+  ],
+  "held_external_enterprise": [
+    "A12 outside-operator (EXTERNAL-PROOF)",
+    "A09 real secret broker (FOUNDER/HUMAN gate)",
+    "C01-C21 enterprise (HUMAN-EXPERT)",
+    "all PRODUCTION+BUSINESS proof rows (EXTERNAL-PROOF)"
+  ],
+  "final_state": "DEADLINE-REACHED (bounded preparation partial; genuine tested Tier-1 subset built; remainder honestly PLANNED/HELD on disk; NO fresh checker/advisor run; NOT READY)",
+  "no_real_provider_invocation": true,
+  "prs_unchanged": true,
+  "next_safe_action": "Resume from disk: build TIER-1 items 9-15 (deterministic setup pipeline -> single run harness -> builder/checker separation -> replay -> recovery triad -> reconciliation inbox -> unsigned activation packet), each single-writer + tested; then WIDE-SAFE lanes; then fresh independent checker + separate advisor bound to the frozen candidate; only then is READY-FOR-FIVE-HOUR-FOUNDER-ACTIVATION-GATE assertable. Do NOT activate the provider, run the first-real-run backlog, sign the activation, or merge any PR."
+}

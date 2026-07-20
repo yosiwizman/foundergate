@@ -1,0 +1,38 @@
+{
+  "schema": "af-control-status-1",
+  "BUILT_TESTED": [
+    "A01 five-plane authority",
+    "A02 side-effect transaction",
+    "A03 capability leases",
+    "A10 reconciliation state machine",
+    "B21 blast-radius budgets",
+    "activation schema v3 (three-layer)",
+    "intrinsic live-clock fix",
+    "B16 proof-coverage (design)"
+  ],
+  "PLANNED": [
+    "deterministic setup pipeline",
+    "single unattended run harness",
+    "builder/checker-separation runtime",
+    "replay stream",
+    "recovery triad (partial)",
+    "Reconciliation Inbox",
+    "unsigned activation packet",
+    "evidence format/verifier",
+    "threat-model corpus expansion",
+    "memory quarantine",
+    "supply-chain",
+    "policy simulator",
+    "privacy/redaction",
+    "shadow run",
+    "endurance",
+    "browser/accessibility"
+  ],
+  "HELD_EXTERNAL_ENTERPRISE": [
+    "A12 outside-operator (EXTERNAL-PROOF)",
+    "A09 real secret broker (FOUNDER/HUMAN gate)",
+    "C01-C21 enterprise (HUMAN-EXPERT)",
+    "all PRODUCTION+BUSINESS proof rows (EXTERNAL-PROOF)"
+  ],
+  "note": "BUILT+TESTED = synthetic proof only, not CHECKER-CLEAN, not PRODUCTION, not ACCEPTED"
+}

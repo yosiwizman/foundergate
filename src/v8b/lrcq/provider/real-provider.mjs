@@ -99,7 +99,11 @@ export async function runJob(activation, job, bindings, opts = {}) {
   const evidence = { pid: null, pgid: null, outcome: null, exit_code: null, stdout_bytes: 0, stderr_bytes: 0, killed: false, kill_escalated: false, tree_gone: null, tree_alive: null, descendant_pids: [], started: false };
   const seal = (outcome, extra) => ({ ...evidence, outcome, ...(extra || {}) });
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-  const nowS = () => (opts.nowProvider ? opts.nowProvider() : (typeof bindings.now_epoch === "number" ? bindings.now_epoch : Math.floor(Date.now() / 1000)));
+  // INTRINSIC LIVE CLOCK: the running-worker clock is the REAL system clock by default.
+  // opts.nowProvider is a DETERMINISTIC-TEST injector ONLY. The frozen activation
+  // validation timestamp (bindings.now_epoch) is used only for pre-spawn validation and
+  // must never become the running-worker deadline clock.
+  const nowS = () => (opts.nowProvider ? opts.nowProvider() : Math.floor(Date.now() / 1000));
 
   const av = validateActivation(activation, bindings);
   if (!av.valid) return seal("ACTIVATION_REFUSED", { refusals: av.refusals });
