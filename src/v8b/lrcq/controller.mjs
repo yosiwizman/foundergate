@@ -9,6 +9,10 @@
 //
 // Real provider execution requires an activation record NOT created here.
 import { validateBacklog, findCycle, RUNTIME_STATES } from "./schemas.mjs";
+// The ONE sanctioned real-Claude route. Imported so REAL mode has a single adapter
+// entry point; SIMULATION_ONLY never touches it.
+import { runJob as providerRunJob } from "./provider/real-provider.mjs";
+import { validateActivation } from "./provider/activation-schema.mjs";
 
 export const MODE = { SIMULATION_ONLY: "SIMULATION_ONLY", REAL: "REAL" };
 
@@ -193,13 +197,10 @@ export class Controller {
     if (job.branch && this.activeBranches.get(job.branch) === job.job_id) this.activeBranches.delete(job.branch);
     if (job.worktree && this.activeWorktrees.get(job.worktree) === job.job_id) this.activeWorktrees.delete(job.worktree);
   }
-  // Complete a running job via the fake provider; handle correction cycles / parking.
-  step(job_id) {
-    const j = this.byId.get(job_id);
-    if (!j || j.status !== "RUNNING") return { ok: false, reason: "not running" };
-    const res = this.mode === MODE.SIMULATION_ONLY ? fakeProvider(j, j.attempts) : { ok: false, reason: "REAL mode requires activation — not performed" };
-    if (res.ok) {
-      // seal evidence BEFORE final state (recovery-safe ordering)
+  // Shared outcome handler: seal+complete on success, else bounded retry / park.
+  // NEVER marks work accepted or merged; seals evidence BEFORE the final state.
+  _applyOutcome(j, ok, reason) {
+    if (ok) {
       this.sealed.add(j.job_id);
       this.emit(j.job_id, "evidence_sealed", "OK");
       j.status = "COMPLETED"; j.completed_at = this.now;
@@ -207,18 +208,41 @@ export class Controller {
       this.releaseLocks(j);
     } else {
       j.correction_cycle = (j.correction_cycle || 0) + 1;
-      this.emit(j.job_id, "job_failed", "FAILED", res.reason);
+      this.emit(j.job_id, "job_failed", "FAILED", reason);
       if (j.correction_cycle >= (j.max_attempts || 3)) {
-        j.status = "PARKED"; j.status_reason = "parked after " + j.correction_cycle + " failed cycles: " + res.reason;
+        j.status = "PARKED"; j.status_reason = "parked after " + j.correction_cycle + " failed cycles: " + reason;
         this.emit(j.job_id, "job_parked", "PARKED");
         this.releaseLocks(j);
-      } else {
-        // bounded retry: back to PENDING to be re-refilled
-        j.status = "PENDING";
-        this.releaseLocks(j);
-      }
+      } else { j.status = "PENDING"; this.releaseLocks(j); }
     }
     return { ok: true, status: j.status };
+  }
+  // SIMULATION_ONLY: complete a running job via the deterministic fake provider.
+  step(job_id) {
+    const j = this.byId.get(job_id);
+    if (!j || j.status !== "RUNNING") return { ok: false, reason: "not running" };
+    if (this.mode !== MODE.SIMULATION_ONLY) return { ok: false, reason: "step() is SIMULATION_ONLY; REAL mode must use stepReal() with an activation record" };
+    const res = fakeProvider(j, j.attempts);
+    return this._applyOutcome(j, res.ok, res.reason);
+  }
+  // REAL mode: complete a running job through the ONE governed provider adapter.
+  // Revalidates the activation record before the worker starts; only WIDE_SAFE jobs
+  // reach the adapter; deadline/pause/gate all block. Maps the structured outcome onto
+  // the same seal/complete or cycle/park logic. NEVER marks work accepted/merged.
+  async stepReal(job_id, activation, bindings, opts = {}) {
+    const j = this.byId.get(job_id);
+    if (!j || j.status !== "RUNNING") return { ok: false, reason: "not running" };
+    if (this.mode !== MODE.REAL) return { ok: false, reason: "stepReal requires REAL mode" };
+    // revalidate activation immediately before the worker starts
+    const av = validateActivation(activation, bindings);
+    if (!av.valid) return { ok: false, reason: "ACTIVATION_REFUSED", refusals: av.refusals };
+    if (j.risk_class !== "WIDE_SAFE" || (j.gate_trigger && j.gate_trigger !== "NONE")) return { ok: false, reason: "only WIDE_SAFE ungated jobs may reach the adapter" };
+    if (this.gate || this.paused) return { ok: false, reason: "gate/pause active" };
+    if (this.deadlineEpoch && this.now >= this.deadlineEpoch) return { ok: false, reason: "deadline" };
+    const outcome = await providerRunJob(activation, j, bindings, opts);
+    this.emit(j.job_id, "provider_outcome", outcome.outcome, outcome.refusals ? outcome.refusals.join(";") : null);
+    const ok = outcome.outcome === "SUCCESS";
+    return { ...this._applyOutcome(j, ok, outcome.outcome), provider_outcome: outcome };
   }
   pause() { this.paused = true; this.runtime_state = "PAUSED"; this.emit(null, "pause_requested", "PAUSED"); }
   resume() { this.paused = false; if (this.runtime_state === "PAUSED") this.runtime_state = "RUNNING"; }

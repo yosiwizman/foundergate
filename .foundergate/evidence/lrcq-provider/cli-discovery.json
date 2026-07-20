@@ -1,0 +1,25 @@
+{
+  "schema": "lrcq-cli-discovery-1",
+  "discovered_read_only": true,
+  "no_model_request_made": true,
+  "executable_path": "/Users/yosiwizman/.local/bin/claude",
+  "resolved_target": "/Users/yosiwizman/.local/share/claude/versions/2.1.215",
+  "version": "2.1.215 (Claude Code)",
+  "enforcement_flags": {
+    "non_interactive": "-p / --print",
+    "allowed_tools": "--allowedTools / --allowed-tools <tools...> (scoped, e.g. \"Bash(git *)\" \"Edit\")",
+    "denied_tools": "--disallowedTools / --disallowed-tools <tools...>",
+    "permission_mode": "--permission-mode <manual|acceptEdits|auto|dontAsk|plan|bypassPermissions>  (adapter uses a non-bypass mode; bypassPermissions is REJECTED)",
+    "permission_bypass_flags_REJECTED": ["--dangerously-skip-permissions", "--allow-dangerously-skip-permissions", "--permission-mode bypassPermissions"],
+    "output_format": "--output-format json (single result; machine-parseable)",
+    "cost_ceiling": "--max-budget-usd <amount> (with --print)",
+    "dir_scope": "--add-dir <directories...>",
+    "model": "--model <alias|full-name>",
+    "bare_minimal": "--bare (skip hooks/plugins/keychain; strict auth)"
+  },
+  "max_turns_flag": "NOT PRESENT in 2.1.215 — turn count is not a CLI flag; bounded instead by adapter wall-clock timeout + --max-budget-usd. Disclosed limitation, not a boundary insufficiency (allow/deny tools + permission-mode + budget + timeout are enforceable).",
+  "tool_boundary_sufficient": true,
+  "working_directory_behavior": "child process cwd = the exact assigned job worktree (adapter sets spawn cwd); --add-dir bounds additional access",
+  "session_behavior": "--print single-shot non-interactive; no interactive session created",
+  "auth_note": "authentication (subscription/OAuth/keychain or ANTHROPIC_API_KEY) is the user's existing local login; adapter NEVER reads, prints, or changes credentials; --bare enforces strict auth if a subscription-only condition requires it"
+}
