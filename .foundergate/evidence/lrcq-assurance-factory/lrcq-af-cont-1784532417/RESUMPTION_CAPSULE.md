@@ -1,0 +1,34 @@
+# Continuation Resumption Capsule (lrcq-af-cont-1784532417)
+
+```
+{
+  "continuation_run_id": "lrcq-af-cont-1784532417",
+  "continuation_start_epoch": 1784532417,
+  "measured_now_epoch": 1784533083,
+  "measured_elapsed_seconds": 666,
+  "hard_deadline_epoch": 1784550417,
+  "build_window_end_epoch": 1784547717,
+  "candidate_head": "a4048580dbfa47382c314bb6bed99856506f672c",
+  "tier1_built_tested": [
+    "setup pipeline (25 ordered steps, fail-stop)",
+    "builder/checker separation (worker-exit!=complete; independent read-only checker; park)",
+    "append-only hash-chained replay (tamper+insert detected)",
+    "unsigned activation packet (would-validate-when-signed)",
+    "deterministic 25-job shadow run"
+  ],
+  "tier1_remaining": [
+    "Reconciliation Inbox localhost UI",
+    "full recovery-triad crash-injection with real fs",
+    "browser+accessibility proof",
+    "endurance rehearsal",
+    "fresh checker+advisor"
+  ],
+  "wide_safe_remaining": [
+    "evidence spec/verifier",
+    "threat/memory/supply-chain/policy/privacy lanes"
+  ],
+  "tests": "assurance-core 55/55, run-harness 22/22, shadow-run 16/16, provider 64/64, full suite 110/110",
+  "honest_status": "Genuine continuation: built + tested the core remaining Tier-1 chain this turn (setup/separation/replay/packet/shadow). Terminal-0 executes in discrete turns and cannot occupy a continuous 5h wall-clock window in one response; heartbeat + caffeinate are REAL background processes. Measured elapsed 666s (<18000). NOT DEADLINE-REACHED (clock not elapsed). NOT READY (reconciliation inbox UI, real crash-injection, browser/accessibility, and a fresh checker+advisor remain). Resume from this capsule.",
+  "next_safe_action": "Continue single-writer: Reconciliation Inbox UI + real fs crash-injection recovery triad + browser/accessibility, then fresh independent checker + separate advisor bound to the frozen head; only then assert READY. No provider activation, no real-run backlog, no merge."
+}
+```
