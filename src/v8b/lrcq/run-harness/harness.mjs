@@ -22,6 +22,27 @@ import { runSetup } from "./setup-pipeline.mjs";
 import { SeparationJob } from "./separation.mjs";
 import { ReplayStream } from "./replay.mjs";
 import { validateIntent, canDispatch, reconcile, mayResume } from "../reconciliation/transaction.mjs";
+import { createHash } from "node:crypto";
+
+// Deterministic digest of a lease (stable key order).
+export function leaseDigest(lease) { return "sha256:" + createHash("sha256").update(JSON.stringify(Object.keys(lease).sort().map((k) => [k, lease[k]]))).digest("hex"); }
+
+// Mint a fresh, per-job, per-ATTEMPT, SINGLE-USE builder lease (FG-LRCQ-ACT-001). The harness
+// ALWAYS mints single_use:true / uses_remaining:1 with a unique lease_id, regardless of any
+// permissive template — a run-level reusable lease can never grant authority to a dispatch.
+export function mintBuilderLease(cfg, job, attempt) {
+  const t = cfg.lease || {};
+  return {
+    lease_id: "lease:builder:" + cfg.run_id + ":" + job.job_id + ":" + attempt,
+    run_id: cfg.run_id, job_id: job.job_id, attempt, role: "builder",
+    candidate_stack: (cfg.bindings && cfg.bindings.candidate_stack) || t.candidate_stack || "stack",
+    branch: job.branch, worktree: job.worktree,
+    allowed_files: job.allowed_files || t.allowed_files || ["src/"], allowed_tools: t.allowed_tools || ["Read"], denied_tools: t.denied_tools || ["Bash"],
+    effect_class: t.effect_class || job.effect_class || "LOCAL_FS", deadline_epoch: cfg.deadlineEpoch || 9e12, max_cost_usd: t.max_cost_usd ?? 5,
+    max_files: t.max_files ?? 10, max_changed_lines: t.max_changed_lines ?? 500, max_external_calls: t.max_external_calls ?? 0, max_delegation_depth: t.max_delegation_depth ?? 1,
+    evidence_dir: cfg.evidenceDir || t.evidence_dir || "/ev", single_use: true, uses_remaining: 1, expiry_epoch: t.expiry_epoch ?? 9e12, revoked: false,
+  };
+}
 
 export const RUNTIME_KIND = { REAL: "REAL", DETERMINISTIC_TEST: "DETERMINISTIC_TEST" };
 
@@ -81,10 +102,15 @@ async function machineVerify(cfg, job, prov, ctx) {
 
 // Independent checker stage. Undefined output -> INSUFFICIENT_EVIDENCE, NEVER CLEAN. In REAL
 // there is no provider-derived fallback; the checker seam is mandatory.
-async function runChecker(cfg, job, builderSession, attempt) {
+async function runChecker(cfg, job, builderSession, attempt, governedContext) {
   let raw, defaultSession = { session_id: "checker:" + cfg.run_id + ":" + job.job_id + ":" + attempt, prompt_digest: "cpd:" + job.job_id + ":" + attempt, read_only: true };
-  if (cfg.runtime_kind === RUNTIME_KIND.REAL) raw = await cfg.checker(job, builderSession, attempt);
-  else if (typeof cfg.checker === "function") raw = await cfg.checker(job, builderSession, attempt);
+  // REAL mode: the signed activation MUST be present in the governed context before any checker
+  // spawn — an absent/incomplete activation is INSUFFICIENT_EVIDENCE, never CLEAN (FG-LRCQ-ACT-002).
+  if (cfg.runtime_kind === RUNTIME_KIND.REAL && (!governedContext || !governedContext.signed_activation || typeof governedContext.signed_activation !== "object" || Object.keys(governedContext.signed_activation).length === 0)) {
+    return { result: CHECKER_RESULTS.INSUFFICIENT_EVIDENCE, clean: false, session: defaultSession };
+  }
+  if (cfg.runtime_kind === RUNTIME_KIND.REAL) raw = await cfg.checker(job, builderSession, attempt, governedContext);
+  else if (typeof cfg.checker === "function") raw = await cfg.checker(job, builderSession, attempt, governedContext);
   else raw = { result: cfg.__syntheticCheckerClean === false ? "FINDINGS" : "CLEAN", session: defaultSession };
   // normalize: accept {result} (real) or {clean} (legacy test). Undefined -> INSUFFICIENT_EVIDENCE.
   let result;
@@ -94,22 +120,27 @@ async function runChecker(cfg, job, builderSession, attempt) {
   return { result, clean: result === CHECKER_RESULTS.CLEAN, session: (raw && raw.session) || defaultSession };
 }
 
-async function governedDispatch(cfg, job, intent, lease, budget, usage, txByKey, bindings, w) {
+async function governedDispatch(cfg, job, intent, lease, budget, usage, txByKey, bindings, w, consumed) {
   const cd = canDispatch(intent, txByKey);
   if (!cd.ok) return { dispatched: false, refused: cd.reason, duplicate: !!cd.duplicate };
-  const jobLease = { ...lease, job_id: job.job_id, branch: job.branch, worktree: job.worktree, role: "builder" };
-  const lv = validateLease(jobLease, { ...bindings, run_id: cfg.run_id, job_id: job.job_id, role: "builder", branch: job.branch, worktree: job.worktree });
+  // the exact per-attempt single-use lease is revalidated at the dispatch boundary against THIS job
+  const lv = validateLease(lease, { ...bindings, run_id: cfg.run_id, job_id: job.job_id, role: "builder", branch: job.branch, worktree: job.worktree });
   if (!lv.valid) return { dispatched: false, refused: "lease invalid at dispatch: " + lv.refusals.join(";") };
+  // a consumed lease can NEVER be re-used for a dispatch (FG-LRCQ-ACT-001)
+  if (consumed && consumed.has(lease.lease_id)) return { dispatched: false, refused: "lease already consumed: " + lease.lease_id };
   const projected = { ...usage, max_records: (usage.max_records || 0) + 1 };
   const ex = blastExceeded(budget, projected);
   if (ex.length) return { dispatched: false, refused: "blast budget exceeded: " + ex.join(";") };
-  // durable: mark DISPATCHED (in registry AND on disk) BEFORE the provider call — a crash after
-  // this point is an uncertain dispatch that reconciliation must NOT re-fire.
-  txByKey[intent.idempotency_key] = { state: "DISPATCHED", job_id: job.job_id };
-  w.tx(intent.idempotency_key, "DISPATCHED", { job_id: job.job_id, transaction_id: intent.transaction_id });
-  if (lease.single_use) lease.uses_remaining -= 1;
+  // ATOMICALLY + DURABLY consume the single-use lease BEFORE the provider call, recording the
+  // full consumption record; then mark DISPATCHED. A crash after this is an uncertain dispatch
+  // that reconciliation must NOT re-fire, and the lease is already spent (cannot re-mint/retry).
+  const preUses = lease.uses_remaining;
+  lease.uses_remaining = 0; if (consumed) consumed.add(lease.lease_id);
+  w.tx("lease:" + lease.lease_id, "CONSUMED", { lease_id: lease.lease_id, lease_digest: leaseDigest(lease), job_id: job.job_id, attempt: job.__attempt || intent.attempt, consumed_epoch: cfg.now || 0, pre_uses_remaining: preUses, post_uses_remaining: 0, dispatch_transaction_id: intent.transaction_id });
+  txByKey[intent.idempotency_key] = { state: "DISPATCHED", job_id: job.job_id, lease_id: lease.lease_id };
+  w.tx(intent.idempotency_key, "DISPATCHED", { job_id: job.job_id, transaction_id: intent.transaction_id, lease_id: lease.lease_id });
   const out = await cfg.dispatch(job, { activation: cfg.activation, bindings });
-  return { dispatched: true, provider: out };
+  return { dispatched: true, provider: out, lease_id: lease.lease_id };
 }
 
 async function runJobLifecycle(cfg, job, lease, budget, usage, txByKey, replay, bindings, ledger, controller, w) {
@@ -132,10 +163,16 @@ async function runJobLifecycle(cfg, job, lease, budget, usage, txByKey, replay, 
     };
     const iv = validateIntent(intent);
     if (!iv.valid) { ledger.push({ job: job.job_id, stage: "seal_intent", refused: iv.refusals }); return { job_id: job.job_id, state: "PARKED", reason: "intent invalid" }; }
-    w.tx(intent.idempotency_key, "AUTHORIZED", { job_id: job.job_id, attempt });
+    // ---- mint + validate the exact per-attempt SINGLE-USE builder lease BEFORE intent authorization ----
+    const attemptLease = mintBuilderLease(cfg, job, attempt);
+    const preLv = validateLease(attemptLease, { ...bindings, run_id: cfg.run_id, job_id: job.job_id, role: "builder", branch: job.branch, worktree: job.worktree });
+    if (!preLv.valid) { ledger.push({ job: job.job_id, stage: "mint_lease", refused: preLv.refusals }); return { job_id: job.job_id, state: "PARKED", reason: "minted lease invalid: " + preLv.refusals.join(";") }; }
+    w.tx("lease:" + attemptLease.lease_id, "MINTED", { lease_id: attemptLease.lease_id, lease_digest: leaseDigest(attemptLease), job_id: job.job_id, attempt, single_use: true, uses_remaining: 1 });
+    job.__attempt = attempt;
+    w.tx(intent.idempotency_key, "AUTHORIZED", { job_id: job.job_id, attempt, lease_id: attemptLease.lease_id });
     sep.startBuilder(builderSession);
-    // ---- single governed dispatch route ----
-    const d = await governedDispatch(cfg, job, intent, lease, budget, usage, txByKey, bindings, w);
+    // ---- single governed dispatch route (validates + atomically consumes the single-use lease) ----
+    const d = await governedDispatch(cfg, job, intent, attemptLease, budget, usage, txByKey, bindings, w, cfg.__consumedLeases);
     if (!d.dispatched) return { job_id: job.job_id, state: "PARKED", reason: "dispatch refused: " + d.refused, duplicate: d.duplicate };
     const prov = d.provider || {};
     // ---- uncertain-effect: reconcile; NEVER re-fire ----
@@ -161,7 +198,15 @@ async function runJobLifecycle(cfg, job, lease, budget, usage, txByKey, replay, 
     if (sep.state === "PARKED") { const ev = replayEvent(cfg, job, attempt, "DISPATCHED", "n/a"); replay.append(ev); w.replayW(ev); return { job_id: job.job_id, state: "PARKED", reason: "parked after repeated machine-verification failure" }; }
     if (sep.state === "CORRECTION_PENDING") { ledger.push({ job: job.job_id, stage: "machine_verification", result: "fail->correction", attempt }); continue; }
     // ---- independent read-only checker (mandatory; undefined -> INSUFFICIENT_EVIDENCE) ----
-    const chk = await runChecker(cfg, job, builderSession, attempt);
+    // Build an IMMUTABLE governed context that explicitly carries the signed activation to the
+    // checker (FG-LRCQ-ACT-002) — no hidden mutable job property transports authority.
+    const governedContext = Object.freeze({
+      signed_activation: cfg.activation, bindings, run_manifest: cfg.runManifest || null,
+      builder_transaction_id: intent.transaction_id, builder_session: builderSession, builder_prompt_digest: builderSession.prompt_digest,
+      machine_verifier_report_digest: leaseDigest(mv.report || { pass: mv.pass }), job_id: job.job_id, attempt,
+      branch: job.branch, worktree: job.worktree, evidence_dir: cfg.evidenceDir || "/ev",
+    });
+    const chk = await runChecker(cfg, job, builderSession, attempt, governedContext);
     w.evidence({ job: job.job_id, stage: "independent_checker", attempt, result: chk.result });
     sep.startChecker(chk.session); // throws if not independent / not read-only
     sep.checkerResult(chk.clean === true);
@@ -233,6 +278,7 @@ export async function runHarness(cfg) {
   if ((cfg.backlog || []).length === 0 && cfg.activation.intentional_empty_run !== true) return refuse("controller_real_init", ["empty backlog not signed as an intentional empty run"]);
   const replay = new ReplayStream(cfg.run_id);
   const txByKey = cfg.txByKey || {};
+  cfg.__consumedLeases = cfg.__consumedLeases || new Set(); // run-scoped consumed single-use leases
   const usage = { ...zeroUsage() };
   const jobResults = {};
   const teardown = { locks_released: [], processes_accounted: [], teardown_verified: [] };

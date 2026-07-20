@@ -64,9 +64,21 @@ ok("11-16 required real seams enforced (see seam-presence loop above)", REQUIRED
 { let sameThrew = false; try { await runHarness(realBase({ backlog: [job("s1")], checker: async () => ({ result: "CLEAN", session: { session_id: "builder:run-X:s1", prompt_digest: "x", read_only: true } }) })); } catch (e) { sameThrew = /independent|builder/.test(e.message); }
   const r2 = await runHarness(realBase({ backlog: [job("s2")] }));
   ok("22 builder/checker sessions differ (shared -> throws; distinct -> completes)", sameThrew && r2.jobResults.s2.state === "COMPLETED"); }
-// 23. checker lease read-only + single-use (real checker route)
-{ const route = SEAMS.realIndependentCheckerRoute({ dispatchCheckerSession: async (j, cl) => { return { verdict: cl.read_only === true && cl.single_use === true ? "CLEAN" : "FINDINGS" }; } });
-  const res = await route(job("cl"), { session_id: "b", prompt_digest: "bp" }, 1); ok("23 checker lease is read-only + single-use", res.result === "CLEAN" && res.session.read_only === true); }
+// 23. checker lease read-only + single-use, minted from the governed context (real checker route)
+{ const gc = { signed_activation: activation(), bindings, job_id: "cl", attempt: 1, branch: "lane/cl", worktree: "/wt/cl", evidence_dir: "/ev", builder_session: { session_id: "b" }, builder_prompt_digest: "bp" };
+  const route = SEAMS.realIndependentCheckerRoute({ dispatchCheckerSession: async (j, cl) => ({ verdict: cl.role === "checker" && cl.read_only === true && cl.single_use === true && cl.uses_remaining === 0 && cl.denied_tools.includes("Write") ? "CLEAN" : "FINDINGS" }) });
+  const res = await route(job("cl"), { session_id: "b", prompt_digest: "bp" }, 1, gc);
+  ok("23 checker lease minted read-only + single-use + consumed from governed context", res.result === "CLEAN" && res.session.read_only === true && typeof res.checker_lease_id === "string"); }
+// 23b: checker route refuses when the governed context lacks a signed activation
+{ const route = SEAMS.realIndependentCheckerRoute({ dispatchCheckerSession: async () => ({ verdict: "CLEAN" }) });
+  const res = await route(job("na"), { session_id: "b", prompt_digest: "bp" }, 1, { job_id: "na", attempt: 1 });
+  ok("23b checker route -> INSUFFICIENT_EVIDENCE without signed activation (never CLEAN)", res.result === "INSUFFICIENT_EVIDENCE"); }
+// 23c: reused checker lease refused
+{ const consumed = new Set(); const gc = { signed_activation: activation(), bindings, job_id: "re", attempt: 1, branch: "lane/re", worktree: "/wt/re", evidence_dir: "/ev", builder_session: { session_id: "b" }, builder_prompt_digest: "bp" };
+  const route = SEAMS.realIndependentCheckerRoute({ consumed, dispatchCheckerSession: async () => ({ verdict: "CLEAN" }) });
+  const r1 = await route(job("re"), { session_id: "b", prompt_digest: "bp" }, 1, gc);
+  const r2 = await route(job("re"), { session_id: "b", prompt_digest: "bp" }, 1, gc); // same lease_id -> reuse
+  ok("23c reused checker lease refused (single-use)", r1.result === "CLEAN" && r2.result === "INSUFFICIENT_EVIDENCE"); }
 // 24-27. pause/stop/deadline observed live (between/during jobs)
 ok("24 pause observed between jobs", (await runHarness(realBase({ backlog: [job("p1"), job("p2")], controlReader: () => ({ pause: true, stop: false }) }))).final_state === "PAUSED");
 ok("25 stop observed between jobs", (await runHarness(realBase({ backlog: [job("s1"), job("s2")], controlReader: () => ({ pause: false, stop: true }) }))).final_state === "STOPPED_BY_STOP");

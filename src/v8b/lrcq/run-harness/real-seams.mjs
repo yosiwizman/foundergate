@@ -6,6 +6,7 @@
 import { existsSync, appendFileSync, writeFileSync, renameSync, readFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { execFileSync } from "node:child_process";
+import { validateLease } from "../assurance/assurance-core.mjs";
 
 const ensureDir = (p) => { try { mkdirSync(dirname(p), { recursive: true }); } catch { /* exists */ } };
 
@@ -96,18 +97,43 @@ export function realMachineVerifier(opts = {}) {
 // prompt digest) through the ONE provider adapter, AFTER machine verification, and durably write
 // its verdict before completion. It NEVER edits/pushes/merges/reuses the builder transaction and
 // NEVER invents CLEAN. Undefined provider output -> INSUFFICIENT_EVIDENCE.
+// Mint a distinct, per-attempt, read-only, single-use CHECKER lease bound to the governed context.
+export function mintCheckerLease(gc, session) {
+  return {
+    lease_id: "lease:checker:" + gc.job_id + ":" + gc.attempt, run_id: (gc.signed_activation && gc.signed_activation.run_id) || "run", job_id: gc.job_id, attempt: gc.attempt, role: "checker",
+    candidate_stack: (gc.bindings && gc.bindings.run_harness_candidate_sha) || "stack", branch: gc.branch, worktree: gc.worktree,
+    allowed_files: ["src/"], allowed_tools: ["Read", "Grep"], denied_tools: ["Write", "Edit", "Bash", "Push", "Merge"], effect_class: "READ_ONLY",
+    deadline_epoch: (gc.signed_activation && gc.signed_activation.hard_deadline_epoch) || 9e12, max_cost_usd: 1, max_files: 0, max_changed_lines: 0, max_external_calls: 0, max_delegation_depth: 0,
+    evidence_dir: gc.evidence_dir, session_id: session.session_id, prompt_digest: session.prompt_digest, read_only: true, single_use: true, uses_remaining: 1, expiry_epoch: 9e12, revoked: false,
+  };
+}
+
 export function realIndependentCheckerRoute(opts = {}) {
-  const dispatchCheckerSession = opts.dispatchCheckerSession; // (checkerJob, checkerLease, session) => provider result
-  return async (job, builderSession, attempt) => {
-    const session = { session_id: "checker:" + job.job_id + ":" + attempt + ":" + Math.floor(Date.now() / 1000), prompt_digest: "checker-prompt:" + job.job_id + ":" + attempt, read_only: true };
-    if (session.session_id === builderSession.session_id || session.prompt_digest === builderSession.prompt_digest) return { result: "INSUFFICIENT_EVIDENCE", session };
+  const dispatchCheckerSession = opts.dispatchCheckerSession; // (job, checkerLease, session, governedContext) => { verdict }
+  const consumed = opts.consumed || new Set();
+  const record = typeof opts.recordLease === "function" ? opts.recordLease : () => {};
+  // (job, builderSession, attempt, governedContext) — governedContext carries the SIGNED activation.
+  return async (job, builderSession, attempt, governedContext) => {
+    const gc = governedContext || { job_id: job.job_id, attempt };
+    const session = { session_id: "checker:" + job.job_id + ":" + attempt + ":" + (gc.builder_transaction_id || "s"), prompt_digest: "checker-prompt:" + job.job_id + ":" + attempt, read_only: true };
+    // distinct from the builder session/prompt/transaction
+    if (session.session_id === builderSession.session_id || session.prompt_digest === builderSession.prompt_digest) return { result: "INSUFFICIENT_EVIDENCE", session, reason: "checker not independent of builder" };
+    // REAL: the signed activation MUST be present before spawn
+    if (!gc.signed_activation || typeof gc.signed_activation !== "object" || Object.keys(gc.signed_activation).length === 0) return { result: "INSUFFICIENT_EVIDENCE", session, reason: "no signed activation in governed context" };
     if (typeof dispatchCheckerSession !== "function") return { result: "INSUFFICIENT_EVIDENCE", session, reason: "no governed checker session configured" };
-    const checkerLease = { role: "checker", read_only: true, single_use: true, uses_remaining: 1 };
-    let out; try { out = await dispatchCheckerSession(job, checkerLease, session); } catch { return { result: "INSUFFICIENT_EVIDENCE", session }; }
+    // mint + validate + consume a distinct read-only single-use checker lease BEFORE spawn
+    const checkerLease = mintCheckerLease(gc, session);
+    const lv = validateLease(checkerLease, { run_id: checkerLease.run_id, job_id: job.job_id, role: "checker", branch: gc.branch, worktree: gc.worktree });
+    if (!lv.valid) return { result: "INSUFFICIENT_EVIDENCE", session, reason: "checker lease invalid: " + lv.refusals.join(";") };
+    if (checkerLease.read_only !== true || checkerLease.denied_tools.includes("Read")) return { result: "INSUFFICIENT_EVIDENCE", session, reason: "checker lease not read-only" };
+    if (consumed.has(checkerLease.lease_id)) return { result: "INSUFFICIENT_EVIDENCE", session, reason: "checker lease already consumed" };
+    checkerLease.uses_remaining = 0; consumed.add(checkerLease.lease_id);
+    record({ lease_id: checkerLease.lease_id, role: "checker", job_id: job.job_id, attempt, session_id: session.session_id, read_only: true, single_use: true, consumed: true });
+    let out; try { out = await dispatchCheckerSession(job, checkerLease, session, gc); } catch { return { result: "INSUFFICIENT_EVIDENCE", session }; }
     if (!out || typeof out.verdict !== "string") return { result: "INSUFFICIENT_EVIDENCE", session };
     const v = out.verdict.toUpperCase();
     const result = v === "CLEAN" ? "CLEAN" : v === "FINDINGS" ? "FINDINGS" : "INSUFFICIENT_EVIDENCE";
-    return { result, session };
+    return { result, session, checker_lease_id: checkerLease.lease_id };
   };
 }
 

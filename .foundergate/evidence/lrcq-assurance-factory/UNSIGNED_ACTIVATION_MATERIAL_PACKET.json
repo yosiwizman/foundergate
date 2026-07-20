@@ -6,8 +6,8 @@
   "lrcq_base_tree": "7d44473b63f524f3a3891f059f3e315622fdae30",
   "provider_candidate_sha": "50e18e55863b4abc0f0c2ef036b790ef15001ac5",
   "provider_candidate_tree": "4092da7b192ab085ccbc41e4aedad9da7229e6cd",
-  "run_harness_candidate_sha": "d4f2ccd95b31af37eb678e236d13c64aca90844d",
-  "run_harness_candidate_tree": "810db2cd9a03d644bde669650b2913c84b92109a",
+  "run_harness_candidate_sha": "FINAL_HEAD_PLACEHOLDER_REPLACED_AT_FREEZE",
+  "run_harness_candidate_tree": "FINAL_TREE_PLACEHOLDER_REPLACED_AT_FREEZE",
   "assurance_control_backlog_digest": "sha256:22483c69521d013b169a8aeea7e68bc745c61255918116912925099a4d6a70b9",
   "first_real_run_backlog_digest": "sha256:0057b1b61bf5ef04ec22bef515a39ca44b1ff7ff4049a802667e5e6ddcbc442d",
   "run_manifest_path": ".foundergate/run-materials/first-internal-5h/run-manifest.json",
@@ -21,11 +21,11 @@
   "policy_version": "lrcq-policy-v1",
   "capability_lease_manifest_digest": "sha256:3d221aa11cc74582d5d34cb46a1f35ee87ab821e23ebdb790c8f5afd725919e5",
   "blast_budget_manifest_digest": "sha256:d7e380418002f5a0187475f5580cbc8f998e4230c518d8bc67a5fec6252cdc18",
-  "launcher_digest": "sha256:b49f8ae07bfc6c3c34d2ef396a3d9fc43bd7744a9251850d532642d6d9948e4f",
-  "orchestrator_digest": "sha256:aa49c4d904580008aa07f5917e8c0aedec25cf1c6139ad7bc59663172b841441",
+  "launcher_digest": "sha256:1e7bc380ebd4b5f866353dd6cbf3b34134258bf91e5bacab55f5bb43eb7dfd37",
+  "orchestrator_digest": "sha256:f63a95dbb358fa75f267c1fb6063aab05d9eb68be2e65b5424c0b2e6c9a8fd61",
   "provider_adapter_digest": "sha256:b39ec55365901ec97049ae98a97bf2b09af999013b8c55a0d725ede0f46d7e67",
   "run_manifest_module_digest": "sha256:d103b66abfdd072fd2fa06a04386a910a0013ab31ae631456d6c47a69f587a3e",
-  "real_seams_digest": "sha256:2b5b5f149463dd1220dc53f11cd39ba978f2d1cfdaae9c9afb518efe5e1bcc0d",
+  "real_seams_digest": "sha256:8912c1614b492cb3b2ced8a9ef25277c965afac240f2a1e55e06f2d2456f3873",
   "controller_authority_digest": "sha256:d13ac9a3761b8d13b4558c552a32da7344437908fc7b208f6ec233b4a67a8b95",
   "blocker_matrix_digest": "sha256:5272e3186a811bb2837cd0a1afcd06e154d943bbd8c11f679ac47bd7e3804eaa",
   "evidence_spec_digest": "sha256:73ce85ce1ebc4e42531b93115ad02a983e18dfbc7b095b4020a663d2dcb95b87",
@@ -69,6 +69,5 @@
     "proven_in_preparation": "The run machinery is fully WIRED and FAIL-CLOSED, verified with ZERO provider/builder/checker invocation (preflight SIGNATURE-REQUIRED). The signed V3 record composes a valid V2 adapter-activation (dispatch route reachable); the independent checker routes a distinct read-only session through the SAME provider adapter; undefined checker output -> INSUFFICIENT_EVIDENCE (never CLEAN).",
     "NOT_proven_in_preparation": "Actual productive work (a real builder session producing changes, and a real checker session returning CLEAN) is NOT exercised or proven here, because that requires invoking the real provider (Claude), which is forbidden during preparation. The FIRST place real productive capability is exercised is the founder-signed run itself.",
     "founder_must_accept": "Signing authorizes the first internal run to invoke the real provider through this wired, fail-closed machinery. Whether jobs actually COMPLETE depends on real builder + checker behavior, first observed under signature."
-  },
-  "candidate_binding_note": "Binds code commit H_A=d4f2ccd95b31af37eb678e236d13c64aca90844d; frozen head differs only by this packet file."
+  }
 }
