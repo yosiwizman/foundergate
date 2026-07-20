@@ -30,7 +30,9 @@ import { composeAdapterActivation, composeCheckerActivation } from "../../../src
 import { validateActivation } from "../../../src/v8b/lrcq/provider/activation-schema.mjs";
 import { validateLease } from "../../../src/v8b/lrcq/assurance/assurance-core.mjs";
 import { mintBuilderLease } from "../../../src/v8b/lrcq/run-harness/harness.mjs";
-import { readFileSync as _rf } from "node:fs";
+import { validateCheckerOutput } from "../../../src/v8b/lrcq/provider/provider-output.mjs";
+import { execMachineVerifier } from "../../../src/v8b/lrcq/run-harness/machine-verifier-exec.mjs";
+import { readFileSync as _rf, mkdirSync, writeFileSync } from "node:fs";
 import * as SEAMS from "../../../src/v8b/lrcq/run-harness/real-seams.mjs";
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
@@ -70,8 +72,10 @@ function loadManifest(activation) {
 function makeRealDispatch(manifest, loaded, evidenceRoot) {
   return async function realDispatch(job, { activation, bindings }) {
     const adapterActivation = composeAdapterActivation(activation, manifest, loaded, { evidence_root: evidenceRoot });
-    const outcome = await runJob(adapterActivation, job, { ...bindings, provider_path: manifest.provider_executable_path, provider_version: manifest.provider_version, provider_identity: manifest.provider_executable_identity, backlog_digest: activation.first_real_run_backlog_digest }, {});
-    return { ok: outcome.outcome === "SUCCESS", uncertain: outcome.outcome === "UNKNOWN_FAILURE" || outcome.outcome === "TEARDOWN_FAILED", obs: { dispatch_exists: true, process_alive: false, definitive_result: outcome.outcome === "SUCCESS" }, provider_outcome: outcome };
+    const outcome = await runJob(adapterActivation, { ...job, role: "builder" }, { ...bindings, provider_path: manifest.provider_executable_path, provider_version: manifest.provider_version, provider_identity: manifest.provider_executable_identity, backlog_digest: activation.first_real_run_backlog_digest }, { role: "builder" });
+    // FG-LRCQ-ACT-005/007: surface the validated parsed output AND the real teardown evidence
+    // (tree_gone) to the harness/machine-verifier.
+    return { ok: outcome.outcome === "SUCCESS", uncertain: outcome.outcome === "UNKNOWN_FAILURE" || outcome.outcome === "TEARDOWN_FAILED", obs: { dispatch_exists: true, process_alive: false, definitive_result: outcome.outcome === "SUCCESS" }, tree_gone: outcome.tree_gone, parsed_output: outcome.parsed_output, provider_outcome: outcome };
   };
 }
 
@@ -88,11 +92,21 @@ function makeCheckerSessionDispatch(manifest, loaded, evidenceRoot) {
     if (!checkerLease || checkerLease.role !== "checker" || checkerLease.read_only !== true || checkerLease.single_use !== true) return { verdict: "INSUFFICIENT_EVIDENCE" };
     if (session.session_id === (gc.builder_session && gc.builder_session.session_id) || session.prompt_digest === gc.builder_prompt_digest) return { verdict: "INSUFFICIENT_EVIDENCE" };
     const checkerActivation = composeCheckerActivation(gc.signed_activation, manifest, loaded, { evidence_root: evidenceRoot });
-    const outcome = await runJob(checkerActivation, { ...job, _checker_session: session.session_id, _checker_lease: checkerLease.lease_id }, { provider_path: manifest.provider_executable_path, provider_identity: manifest.provider_executable_identity }, {});
+    const outcome = await runJob(checkerActivation, { ...job, role: "checker", _checker_session: session.session_id, _checker_lease: checkerLease.lease_id }, { provider_path: manifest.provider_executable_path, provider_identity: manifest.provider_executable_identity }, { role: "checker" });
     if (outcome.outcome !== "SUCCESS") return { verdict: "INSUFFICIENT_EVIDENCE" };
-    // the checker session writes {verdict: CLEAN|FINDINGS} to its evidence path; read it (never invent CLEAN)
-    try { const vp = resolve(evidenceRoot, job.job_id, "checker-verdict.json"); const v = JSON.parse(_rf(vp, "utf8")); return { verdict: (v && v.verdict) || "INSUFFICIENT_EVIDENCE" }; }
-    catch { return { verdict: "INSUFFICIENT_EVIDENCE" }; }
+    // FG-LRCQ-ACT-005: the READ-ONLY checker emits its verdict on STDOUT (it cannot write files).
+    // The evidence plane (here) validates that structured output — role/run/job/attempt/session/
+    // prompt/builder-tx/mv-digest + a complete PASS/FAIL checklist — then atomically writes the
+    // attempt-bound verdict. Undefined/malformed/mismatched -> INSUFFICIENT_EVIDENCE (never CLEAN).
+    const cval = validateCheckerOutput(outcome.parsed_output, { run_id: gc.signed_activation.run_id, job_id: gc.job_id, attempt: gc.attempt, session_id: session.session_id, prompt_digest: session.prompt_digest, builder_transaction_id: gc.builder_transaction_id, machine_verifier_digest: gc.machine_verifier_report_digest });
+    if (!cval.valid) return { verdict: "INSUFFICIENT_EVIDENCE", refusals: cval.refusals };
+    try {
+      const vdir = resolve(evidenceRoot, gc.job_id, "attempt-" + gc.attempt); mkdirSync(vdir, { recursive: true });
+      const vp = resolve(vdir, "checker-verdict.json");
+      if (existsSync(vp)) { const prior = JSON.parse(_rf(vp, "utf8")); if (prior.run_id !== gc.signed_activation.run_id || prior.job_id !== gc.job_id || prior.attempt !== gc.attempt || prior.checker_session_id !== session.session_id) return { verdict: "INSUFFICIENT_EVIDENCE", refusals: ["stale/foreign pre-existing verdict"] }; }
+      writeFileSync(vp, JSON.stringify({ ...outcome.parsed_output, written_by: "evidence-plane" }, null, 2) + "\n");
+    } catch { return { verdict: "INSUFFICIENT_EVIDENCE" }; }
+    return { verdict: cval.verdict };
   };
 }
 
@@ -123,7 +137,7 @@ function buildRealCfg(activation, bindings, manifest, loaded, root, counters) {
     controlReader: SEAMS.fileControlReader(resolve(root, manifest.pause_file_path), resolve(root, manifest.stop_file_path)),
     evidenceWriter: SEAMS.durableEvidenceWriter(paths), recoveryWriter: SEAMS.durableRecoveryWriter(paths),
     transactionWriter: SEAMS.durableTransactionWriter(paths), replayWriter: SEAMS.durableReplayWriter(paths),
-    machineVerifier: counters.wrap("machineVerifier", SEAMS.realMachineVerifier()),
+    machineVerifier: counters.wrap("machineVerifier", execMachineVerifier()),
     checker: counters.wrap("checker", SEAMS.realIndependentCheckerRoute({ dispatchCheckerSession: counters.wrap("checkerSession", makeCheckerSessionDispatch(manifest, loaded, resolve(root, manifest.evidence_root))), consumed: new Set(), recordLease: SEAMS.durableTransactionWriter(paths).record ? (rec) => SEAMS.durableTransactionWriter(paths).record("checker-lease:" + rec.lease_id, "CONSUMED", rec) : undefined })),
     dispatch: counters.wrap("dispatch", makeRealDispatch(manifest, loaded, resolve(root, manifest.evidence_root))),
     teardownVerifier: SEAMS.realTeardownVerifier(),

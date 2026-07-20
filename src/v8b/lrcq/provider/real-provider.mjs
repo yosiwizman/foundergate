@@ -119,8 +119,11 @@ export async function runJob(activation, job, bindings, opts = {}) {
   if (sig0 === "PAUSE") return seal("TERMINATED_BY_PAUSE");
   if (sig0 === "STOP") return seal("TERMINATED_BY_STOP");
 
+  // FG-LRCQ-ACT-005: role-aware prompt. A checker session receives the READ-ONLY review prompt
+  // (not the builder objective). Role is derived from an explicit marker on the job.
+  const role = opts.role || (job._checker_session ? "checker" : "builder");
   let argv;
-  try { argv = buildArgv(activation, job, boundPrompt(job)); } catch (e) { return seal("ACTIVATION_REFUSED", { refusals: [e.message] }); }
+  try { argv = buildArgv(activation, job, rolePrompt(job, role)); } catch (e) { return seal("ACTIVATION_REFUSED", { refusals: [e.message] }); }
   const env = scrubEnv(activation, opts.env || {});
   const evDir = join(activation.allowed_evidence_root, job.job_id);
   try { mkdirSync(evDir, { recursive: true }); } catch { /* */ }
@@ -176,16 +179,34 @@ export async function runJob(activation, job, bindings, opts = {}) {
     if (!out || out.trim() === "") return seal("UNKNOWN_FAILURE", { note: "exit 0 but no output — not treated as success" });
     try { parsed = JSON.parse(out); } catch { return seal("FAILED", { note: "unparseable output on exit 0" }); }
   }
-  return seal(result.o, { ...(result.extra || {}), parsed_ok: !!parsed });
+  // FG-LRCQ-ACT-005: return the PARSED, role-validated output object (not just a boolean).
+  return seal(result.o, { ...(result.extra || {}), parsed_ok: !!parsed, parsed_output: parsed || null, role });
 }
 
-function boundPrompt(job) {
+// Builder prompt: bounded to the job objective + allowed files/tools; no authority to merge/push.
+export function builderPrompt(job) {
   return [
-    "FounderGate LRCQ job " + job.job_id + " — WIDE-SAFE only.",
+    "FounderGate LRCQ BUILDER — job " + job.job_id + " (attempt " + (job.__attempt || 1) + ") — WIDE-SAFE only.",
     "Objective: " + job.objective, "Done means: " + job.done_meaning,
     "Allowed files (ONLY these): " + (job.allowed_files || []).join(", "),
     "Forbidden files: " + (job.forbidden_files || []).join(", "),
-    "You may not merge, push, touch protected main, or act outside this worktree.",
+    "Required tests: " + JSON.stringify(job.tests || []), "Required evidence: " + JSON.stringify(job.required_evidence || []),
+    "Branch " + job.branch + " / worktree " + job.worktree,
+    "You may not merge, push, touch protected main, act outside this worktree, or modify any gate/authority.",
+    "Emit a single JSON object per the lrcq-builder-output-1 schema on stdout.",
   ].join("\n");
 }
+// Checker prompt: READ-ONLY review; explicitly requires a structured verdict; never asks the
+// checker to implement the objective; forbids edits/writes/push/merge/acceptance inference.
+export function checkerPrompt(job) {
+  return [
+    "FounderGate LRCQ INDEPENDENT CHECKER — job " + job.job_id + " (attempt " + (job.__attempt || 1) + ") — READ-ONLY.",
+    "Review candidate/job/attempt identity, the builder transaction, and the machine-verifier report digest.",
+    "Inspect ONLY: the actual diff, the executed-test evidence, and the required output/evidence artifacts.",
+    "You have ONLY Read and Grep. You may NOT edit, write, push, merge, or infer acceptance.",
+    "Do NOT implement the objective. Give a per-criterion PASS/FAIL and ONE final verdict: CLEAN | FINDINGS | INSUFFICIENT_EVIDENCE.",
+    "Emit a single JSON object per the lrcq-checker-output-1 schema on stdout.",
+  ].join("\n");
+}
+export function rolePrompt(job, role) { return role === "checker" ? checkerPrompt(job) : builderPrompt(job); }
 function redactArgv(argv) { return argv.map((a) => (a.length > 200 ? a.slice(0, 200) + "…" : a)); }

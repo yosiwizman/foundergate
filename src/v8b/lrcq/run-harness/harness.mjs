@@ -190,6 +190,15 @@ async function runJobLifecycle(cfg, job, lease, budget, usage, txByKey, replay, 
       ledger.push({ job: job.job_id, stage: "reconciliation", reconciliation: rec.state, recommend: rec.recommend, resumable });
       return { job_id: job.job_id, state: resumable ? "SAFE_TO_RESUME_HELD" : "HELD_RECONCILE", reconciliation: rec.state, recommend: rec.recommend, resumed: false, resumable };
     }
+    // ---- FG-LRCQ-ACT-007: provider process tree MUST be confirmed gone. A false/contradictory
+    // teardown blocks completion, becomes HELD_TEARDOWN_DEFECT, and stops the whole run. (undefined
+    // tree_gone is only permitted in DETERMINISTIC_TEST unit cfgs that don't model teardown.) ----
+    if (prov.tree_gone === false || (cfg.runtime_kind === RUNTIME_KIND.REAL && prov.tree_gone == null && prov.provider_outcome)) {
+      cfg.__teardownDefect = true;
+      w.evidence({ job: job.job_id, stage: "teardown_defect", tree_gone: prov.tree_gone });
+      w.nextSafeAction("HELD_TEARDOWN_DEFECT " + job.job_id + " — process tree not confirmed gone; run stopped");
+      return { job_id: job.job_id, state: "HELD_TEARDOWN_DEFECT", reason: "provider process tree not confirmed gone (tree_gone=" + prov.tree_gone + ")" };
+    }
     // ---- SEPARATE machine verification (provider success is NOT verification) ----
     sep.builderResult(prov.ok === true);
     const mv = await machineVerify(cfg, job, prov, controller.ctx());
@@ -321,8 +330,9 @@ export async function runHarness(cfg) {
       if (typeof cfg.teardownVerifier === "function") { const t = await cfg.teardownVerifier(j); teardown.teardown_verified.push({ job_id: j.job_id, torn_down: !!(t && t.torn_down) }); }
       teardown.locks_released.push(j.job_id);
       w.recovery({ run_id: cfg.run_id, job_id: j.job_id, state: res.state });
+      if (cfg.__teardownDefect) { controller.runtime_state = "STOPPED_TEARDOWN_DEFECT"; controller.stop_reason = "teardown defect — run stopped"; break; }
     }
-    if (controller.runtime_state === "STOPPED_BY_STOP" || controller.paused) break;
+    if (controller.runtime_state === "STOPPED_BY_STOP" || controller.runtime_state === "STOPPED_TEARDOWN_DEFECT" || controller.paused) break;
   }
   for (const j of controller.jobs) if (j.status === "PENDING") { const h = Controller.structuralHold(j); if (h) { j.status = "HELD"; j.hold_reason = h; } }
   const final_state = controller.runtime_state && controller.runtime_state.startsWith("STOPPED") ? controller.runtime_state
@@ -333,6 +343,22 @@ export async function runHarness(cfg) {
   const completed = Object.values(jobResults).filter((r) => r.state === "COMPLETED");
   const parked = Object.values(jobResults).filter((r) => r.state === "PARKED");
   const held = controller.jobs.filter((j) => j.status === "HELD");
+  const teardownDefect = !!cfg.__teardownDefect;
+  const teardownClean = !teardownDefect && Object.values(jobResults).every((r) => r.state !== "HELD_TEARDOWN_DEFECT");
+  const heldReconcile = Object.values(jobResults).some((r) => r.state === "HELD_RECONCILE");
+  const checkerInsufficient = Object.values(jobResults).some((r) => r.checker_result === "INSUFFICIENT_EVIDENCE");
+  // FG-LRCQ-ACT-008: truthful outcome. `ready`/activation-accepted alone is NOT a productive run.
+  let outcome_status;
+  if (teardownDefect) outcome_status = "HELD_TEARDOWN_DEFECT";
+  else if (final_state === "STOPPED_DEADLINE") outcome_status = "CONTROLLED_DEADLINE_STOP";
+  else if (final_state === "STOPPED_BY_STOP") outcome_status = "CONTROLLED_PAUSE";
+  else if (final_state === "PAUSED") outcome_status = "CONTROLLED_PAUSE";
+  else if (heldReconcile) outcome_status = "HELD_NEEDS_RECONCILIATION";
+  else if (completed.length > 0 && teardownClean) outcome_status = "VERIFIED_PRODUCTIVE_RUN";
+  else if (final_state === "STOPPED_EXHAUSTED" && completed.length === 0) outcome_status = "CONTROLLED_QUEUE_EXHAUSTION";
+  else if (checkerInsufficient) outcome_status = "HELD_CHECKER_INSUFFICIENT_EVIDENCE";
+  else outcome_status = "INSUFFICIENT_EVIDENCE";
+  w.recovery({ run_id: cfg.run_id, phase: "outcome", final_state, outcome_status, productive_jobs_completed: completed.length });
   return {
     ready: true, refused: null, run_id: cfg.run_id, final_state, runtime_kind: cfg.runtime_kind,
     dispatched: Object.keys(txByKey).length > 0,
@@ -342,6 +368,12 @@ export async function runHarness(cfg) {
     txRegistry: txByKey, usage, ledger, teardown,
     merged: false, accepted: false, pushed: false, protected_main_written: false,
     setup_ready: setup.ready,
+    // FG-LRCQ-ACT-008 truthful run-outcome fields
+    activation_accepted: true, run_started: Object.keys(txByKey).length > 0, controlled_stop: /^(STOPPED|PAUSED)/.test(final_state),
+    productive_jobs_completed: completed.length, jobs_parked: parked.length, jobs_held: held.length,
+    teardown_clean: teardownClean, teardown_defect: teardownDefect, evidence_complete: teardownClean,
+    outcome_status, verified_productive_run: outcome_status === "VERIFIED_PRODUCTIVE_RUN",
+    next_founder_gate: outcome_status === "VERIFIED_PRODUCTIVE_RUN" ? "review sealed evidence" : "review held/parked/stop reason",
   };
 }
 

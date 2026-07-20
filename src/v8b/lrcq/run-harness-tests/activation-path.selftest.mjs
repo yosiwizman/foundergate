@@ -73,6 +73,27 @@ ok("11 wrong-worktree lease refused", validateLease(mintBuilderLease(cfg, job("j
   ok("19 route validates+consumes the checker lease regardless of callback (lease enforced by route)", (await routeIgnore(job("m"), { session_id: "b", prompt_digest: "bp" }, 1, gc)).checker_lease_id !== undefined);
   ok("20 empty checker activation -> INSUFFICIENT_EVIDENCE", (await realIndependentCheckerRoute({ dispatchCheckerSession: async () => ({ verdict: "CLEAN" }) })(job("m"), { session_id: "b", prompt_digest: "bp" }, 1, { job_id: "m", attempt: 1 })).result === "INSUFFICIENT_EVIDENCE"); }
 
+// ---- FG-LRCQ-ACT-006/007/008: role prompts, teardown enforcement, truthful outcome ----
+{ const { builderPrompt, checkerPrompt } = await import("../provider/real-provider.mjs");
+  const bp = builderPrompt(job("j")); const cp = checkerPrompt(job("j"));
+  ok("21 builder and checker prompts differ", bp !== cp);
+  ok("22 checker prompt is READ-ONLY + requires a structured verdict + forbids edits", /READ-ONLY/.test(cp) && /CLEAN \| FINDINGS \| INSUFFICIENT_EVIDENCE/.test(cp) && /may NOT edit/.test(cp) && /Do NOT implement/.test(cp));
+  ok("23 builder prompt carries objective + allowed files (bounded)", /Objective:/.test(bp) && /Allowed files/.test(bp)); }
+// teardown defect: tree_gone false -> HELD_TEARDOWN_DEFECT, job not completed, run stops, outcome exposes it
+{ const r = await runHarness(base({ backlog: [job("t1"), job("t2")], dispatch: async () => ({ ok: true, tree_gone: false, provider_outcome: { tree_gone: false } }) }));
+  ok("24 tree_gone=false -> HELD_TEARDOWN_DEFECT (job not completed)", r.jobResults.t1.state === "HELD_TEARDOWN_DEFECT" && r.completed_count === 0);
+  ok("25 teardown defect -> outcome_status HELD_TEARDOWN_DEFECT + verified false + teardown_clean false", r.outcome_status === "HELD_TEARDOWN_DEFECT" && r.verified_productive_run === false && r.teardown_clean === false);
+  ok("26 teardown defect stops scheduling new jobs (t2 not run)", r.jobResults.t2 === undefined); }
+// zero productive completions must NOT be VERIFIED
+{ const r = await runHarness(base({ backlog: [job("z", { max_attempts: 1 })], checker: async (j, bs, a, gc) => ({ result: "INSUFFICIENT_EVIDENCE", session: { session_id: "cz" + a, prompt_digest: "cpz" + a, read_only: true } }) }));
+  ok("27 zero productive completions is NOT VERIFIED_PRODUCTIVE_RUN", r.completed_count === 0 && r.verified_productive_run === false && r.outcome_status !== "VERIFIED_PRODUCTIVE_RUN"); }
+// a genuine completion -> VERIFIED_PRODUCTIVE_RUN
+{ const r = await runHarness(base({ backlog: [job("ok1")] }));
+  ok("28 completed job -> VERIFIED_PRODUCTIVE_RUN + productive_jobs_completed 1", r.completed_count === 1 && r.outcome_status === "VERIFIED_PRODUCTIVE_RUN" && r.productive_jobs_completed === 1 && r.teardown_clean === true); }
+// controlled deadline stop is labeled accurately (not VERIFIED)
+{ let t = NOW; const r = await runHarness(base({ backlog: [job("d1"), job("d2")], liveClock: () => (t += 5_000_000) }));
+  ok("29 controlled deadline stop labeled CONTROLLED_DEADLINE_STOP (not VERIFIED)", r.outcome_status === "CONTROLLED_DEADLINE_STOP" && r.verified_productive_run === false); }
+
 console.log("\nLRCQ ACTIVATION-PATH SELFTEST: " + (n - fails.length) + "/" + n + " passed");
 if (fails.length) { console.log("FAILED: " + fails.join(", ")); process.exit(1); }
 process.exit(0);
