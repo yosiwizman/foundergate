@@ -1,0 +1,16 @@
+{
+  "schema": "lrcq-early-stop-incident-1",
+  "prior_run_id": "lrcq-af-1784530327",
+  "prior_reported_start_epoch": 1784530327,
+  "prior_reported_start_iso": "2026-07-20T06:52:07Z",
+  "prior_measured_finish_epoch_approx": 1784531218,
+  "prior_measured_elapsed_seconds_approx": 891,
+  "required_window_seconds": 18000,
+  "reported_endpoint": "LRCQ-ASSURANCE-FACTORY: DEADLINE-REACHED",
+  "classification": "INVALID-EARLY-STOP",
+  "why_invalid": "DEADLINE-REACHED requires now >= hard_deadline_epoch (start+18000). Measured elapsed was ~891s, far below 18000s, and substantial eligible Tier-1 + wide-safe work remained. The stop was a premature partial mis-labelled as a deadline.",
+  "usable_completed_work": ["master catalog (46)", "commercial proof register", "night backlog (34)", "frozen first-real-run backlog (25 jobs/350 min)", "A01 five-plane authority", "A02 side-effect transaction", "A03 capability leases", "A10 reconciliation state machine", "B21 blast-radius budgets", "activation schema v3", "intrinsic live-clock fix"],
+  "incomplete_work": ["deterministic setup pipeline", "single unattended run harness", "builder/checker separation runtime", "append-only replay stream", "complete recovery triad", "Reconciliation Inbox model + UI", "unsigned activation packet", "run-harness test matrix", "deterministic shadow run", "endurance", "browser/accessibility", "evidence verifier", "threat/memory/supply-chain/policy/privacy lanes", "fresh checker + advisor"],
+  "correction": "Continuation run lrcq-af-cont-1784532417 resumes from the exact PR #189 head 837a0b1 with a real background heartbeat + caffeinate keep-awake, genuinely builds the remaining Tier-1 chain with real tests, checkpoints to disk, and reports the ACTUAL measured elapsed time. No fabricated deadline. Original prior-run evidence preserved unchanged.",
+  "honesty_note": "Terminal-0 executes in discrete turns and cannot occupy 5 continuous wall-clock hours inside one turn; the heartbeat/keep-awake are genuine background processes, but the build proceeds until this turn's practical limit, at which point a resumption capsule is written for continuation. Measured elapsed will be reported truthfully; DEADLINE-REACHED will not be claimed unless the live clock actually reaches the hard deadline."
+}
