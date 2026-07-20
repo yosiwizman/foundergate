@@ -1,0 +1,26 @@
+{
+  "schema": "pr183-observability-test-classification-1",
+  "profile": "HYBRID_LOCAL_EXACT_SHA_CI_PROFILE_V1 (PR #184 tooling, merged on main)",
+  "evaluated_code_sha": "dcdd0e0b3190ff8bbce5fae24666af35b4c0aabd",
+  "evaluated_code_tree": "d1ca7b98d8c396d5ecd011e9f220b911b68ed0a2",
+  "classes": {
+    "REQUIRED_MAC_AND_DOCKER": [
+      "src/observability/status-core.selftest.mjs (35 checks) — pure Node, portable; runs green on Mac full suite AND in the network-disabled Docker container",
+      "module-load of src/observability/status-core.mjs — portable"
+    ],
+    "REQUIRED_MAC_ONLY": [
+      "tools/terminal0/paes/supervisor-session — exercised only through the Mac full suite (src/supervisor/*.selftest.mjs); it is a host/runtime script (singleton lock, pgrep-style host-process behaviour) not run standalone in Docker. The PR #183 change to it is additive run_id metadata only (see supervisor additive-effect audit); no new Docker-relevant unit test is required.",
+      "tools/terminal0/paes/status-wave2-session — read-only founder status reporter over on-disk supervisor state; verified via module import of the observability core it depends on; not a Docker unit"
+    ],
+    "REQUIRED_DOCKER_ONLY": [],
+    "NOT_AFFECTED": [
+      "all non-observability repository selftests — executed in Layer A (Mac full suite) and on the integration tree; not PR #183 code"
+    ]
+  },
+  "silent_omissions": "none — every affected file is classified; the observability core is covered in both layers; the two paes scripts are covered on the Mac full suite / by module import and are additive-only",
+  "layers": {
+    "mac_full_suite": "ALL GREEN 103/103",
+    "docker_portable": "observability 35/35, PORTABLE_RESULT pass=1 fail=0, net DISABLED",
+    "integration_tree": "ALL GREEN 103/103 on current-main + PR#183 (tree e5698c67674af4fdf8bb8e82568904ac85430499)"
+  }
+}

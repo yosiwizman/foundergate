@@ -1,0 +1,18 @@
+WAVE-2 RUN REPLAY (read-only, from preserved evidence — nothing rewritten)
+
+Run: v8b-wave-2-1784421259
+What actually happened: the run reached its FINAL state STOPPED_EXHAUSTED, shown honestly as
+  "COMPLETED (queue exhausted)". It finished because the queue emptied (all 13 jobs done),
+  NOT because a deadline was hit.
+The old "SAFE_TO_LEAVE_UNATTENDED" marker is only the LAUNCH-TIME promise (historical); it no longer
+  masks the final state.
+Heartbeat: last beat read as 30s ago (OK, unit=ms) — the millisecond
+  timestamp no longer produces a huge negative age.
+Runtime: 2.02h actual, out of a 9h maximum window — the run
+  used far less than its authorization; the window is a ceiling, not the runtime.
+Jobs: 13/13 worker-reported success. Worker success is NOT product
+  acceptance, NOT a merge, and NOT production readiness. The generated work stays in PR #182, HELD and
+  UNMERGED; the contamination is kept as historical evidence; the run's decision remains replay-blocked.
+Timeline: 0 events scoped to this run; 46 historical/legacy
+  (46 unscoped) excluded from current progress.
+This is a status replay only — no customer, production, security, certification, or acceptance claim.

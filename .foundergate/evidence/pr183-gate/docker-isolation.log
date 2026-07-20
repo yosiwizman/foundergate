@@ -1,0 +1,2 @@
+MODULE_LOAD_OK exports: BRANCH_ACTIVITY_NOTE,branchActivityIsLiveness,normalizeHeartbeatAge,resolveLifecycle,scopeEvents
+NET=DISABLED
