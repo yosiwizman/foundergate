@@ -124,6 +124,10 @@ const base = (over = {}) => ({
 // ============ REPLAY INTEGRITY ============
 { const r = await runHarness(base({ backlog: [job("a"), job("b")] })); ok("41 replay chain intact + populated", r.replay_ok === true && r.replay_len >= 2); }
 
+// ============ MALFORMED BACKLOG (fail-closed reporting, F-A) ============
+{ const r = await runHarness(base({ backlog: [job("bad", { gate_trigger: "NOT_A_GATE" })] })); ok("43 malformed backlog REFUSED fail-closed (not silently dropped into ready/exhausted)", !r.ready && r.refused.stage === "controller_real_init" && !r.dispatched); }
+{ const r = await runHarness(base({ backlog: [job("v1"), job("bad", { job_id: "" })] })); ok("43b malformed job in an otherwise-valid backlog refuses (no partial silent drop)", !r.ready && !r.dispatched); }
+
 // ============ INVARIANTS ============
 { const r = await runHarness(base()); ok("42 never merged/accepted/pushed/protected-main", r.merged === false && r.accepted === false && r.pushed === false && r.protected_main_written === false); }
 

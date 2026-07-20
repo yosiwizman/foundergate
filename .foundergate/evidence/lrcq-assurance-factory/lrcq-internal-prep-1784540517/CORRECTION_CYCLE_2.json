@@ -1,0 +1,10 @@
+{
+  "trigger": "LRCQ-INTERNAL-RUN-CHECKER: FINDINGS (F-A LOW, confirmed) on 23590b17",
+  "finding": "harness controller.load() return ignored -> malformed backlog silently dropped, run misreported ready:true/STOPPED_EXHAUSTED instead of refusing (fail-open REPORTING; execution stayed safe)",
+  "correction": "harness now captures load() result and returns refuse('controller_real_init',...) on !ok; symmetric fail-closed with activation/setup/lease/blast",
+  "regression_tests_added": ["harness 43 malformed backlog refused", "harness 43b malformed job in valid backlog refused"],
+  "cosmetic_fixes": ["PR body harness count 43/43 -> 46/46"],
+  "requalified": ["harness.selftest 46/46", "orchestrated-shadow 26/26", "full suite 114/114"],
+  "bounded": "single correction; no scope expansion",
+  "note_packet_self_sha": "unsigned packet run_harness_candidate_sha references parent commit (a commit cannot contain its own future hash); founder binds exact SHA at signing; orchestrator_digest already reflects the fixed code"
+}

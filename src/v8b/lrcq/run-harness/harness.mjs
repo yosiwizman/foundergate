@@ -165,9 +165,12 @@ export async function runHarness(cfg) {
   // 9. blast-radius budget
   const bv = validateBlastBudget(cfg.blast_budget);
   if (!bv.valid) return refuse("validate_blast_budget", bv.refusals);
-  // 10. controller REAL init
+  // 10. controller REAL init. load() validates the backlog + refuses re-load into a running
+  // controller; a malformed backlog must REFUSE fail-closed (symmetric with activation/setup/
+  // lease/blast), never be silently dropped into a false "ready/exhausted" report.
   const controller = new Controller({ run_id: cfg.run_id, mode: MODE.REAL, maxWidth: cfg.maxWidth || 2, now: cfg.now || 0, deadlineEpoch: cfg.deadlineEpoch || null });
-  controller.load(cfg.backlog || []);
+  const loaded = controller.load(cfg.backlog || []);
+  if (!loaded.ok) return refuse("controller_real_init", ["backlog invalid: " + JSON.stringify(loaded.errors)]);
   const replay = new ReplayStream(cfg.run_id);
   const txByKey = cfg.txByKey || {};
   const usage = { ...zeroUsage() };
