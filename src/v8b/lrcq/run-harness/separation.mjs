@@ -10,7 +10,12 @@ export class SeparationJob {
   startBuilder(session) { if (this.state !== "PENDING" && this.state !== "CORRECTION_PENDING") throw new Error("builder start from " + this.state); this.attempts += 1; this.builder_session = session; return this._to("BUILDER_RUNNING"); }
   // A raw builder exit is recorded but is NOT completion.
   builderResult(exitZero) { if (this.state !== "BUILDER_RUNNING") throw new Error("builderResult from " + this.state); this._to("BUILDER_RESULT", "exit0=" + exitZero); return this._to("MACHINE_VERIFICATION"); }
-  machineVerification(ok) { if (this.state !== "MACHINE_VERIFICATION") throw new Error("mv from " + this.state); if (!ok) return this._to("CORRECTION_PENDING", "machine verification failed"); return this._to("CHECKER_PENDING"); }
+  machineVerification(ok) {
+    if (this.state !== "MACHINE_VERIFICATION") throw new Error("mv from " + this.state);
+    if (ok) return this._to("CHECKER_PENDING");
+    if (this.attempts >= this.maxAttempts) return this._to("PARKED", "parked after " + this.attempts + " failed machine verifications");
+    return this._to("CORRECTION_PENDING", "machine verification failed");
+  }
   // The checker MUST be a distinct session from the builder (distinct prompt digest), read-only.
   startChecker(session) {
     if (this.state !== "CHECKER_PENDING") throw new Error("checker start from " + this.state);
