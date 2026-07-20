@@ -1,0 +1,14 @@
+{
+  "register": "FG-LRCQ-ACT-009..013 (full-material closure)",
+  "opened_against": "07bde44dd4513cbb5e29506d630122dd215fb1ec",
+  "prior_reviews": "checker CLEAN + advisor READY @07bde44 -> STALE (this operation mutated the candidate; full frozen materials not yet proven through the route)",
+  "findings": {
+    "FG-LRCQ-ACT-009": {"defect": "identity/output contract via identity.json side-channel not available to a real worker; builder output not validated before machine verification", "status": "OPEN — not addressed this turn"},
+    "FG-LRCQ-ACT-010": {"defect": "frozen backlog (lane/frr-*, /wt/*, path-string tests, expected_outputs, required_evidence) incompatible with manifest (lane/real-run-*) + executing verifier (argv tests, expected_output_paths, required_evidence_files)", "status": "PARTIAL — run-plan resolver + all-25 material validator BUILT+tested (full-material.selftest 09-23); executable backlog v2 FILE not yet generated/frozen"},
+    "FG-LRCQ-ACT-011": {"defect": "setup pipeline uses asserted booleans instead of mechanically creating + proving branches/worktrees", "status": "OPEN — real setup/worktree manager not built this turn"},
+    "FG-LRCQ-ACT-012": {"defect": "$10 passed per-session; no run-wide cumulative ledger", "status": "BUILT+tested (budget-ledger.mjs + full-material.selftest 01-08); NOT yet wired into the launcher/rehearsal"},
+    "FG-LRCQ-ACT-013": {"defect": "rehearsal used a custom job + identity.json + custom output, not the real frozen materials", "status": "OPEN — full 25-job real-materials rehearsal not built this turn"}
+  },
+  "honest_status": "Genuine verified progress on 2 of 5 findings. READY is NOT claimed: the directive's explicit READY gate (the exact frozen 25-job materials passing through the production launcher + real setup/worktree manager + role-output parser + machine verifier + checker route + cumulative $10 ledger via a protocol-faithful stub) is not built. Endpoint: FULL-REHEARSAL-DEFECT.",
+  "remaining_to_ready": ["executable frozen backlog v2 (25 jobs) + immutable verifier scripts + freeze/digest + manifest rebind", "canonical identity envelope rendered into REAL builder/checker prompts (remove identity.json from the production route)", "CLI transport-envelope parser separate from the FounderGate payload", "builder-output validation before machine verification (HELD_BUILDER_OUTPUT_INVALID)", "real setup/worktree manager (mechanical 25-branch/25-worktree creation + rollback)", "wire the budget ledger into the launcher (reserve before spawn, commit after, CONTROLLED_BUDGET_STOP)", "full 25-job production-equivalent rehearsal + negatives + mutation campaign", "fresh checker + separate advisor on the corrected candidate"]
+}
