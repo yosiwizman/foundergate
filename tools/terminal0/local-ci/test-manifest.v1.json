@@ -1,0 +1,67 @@
+{
+  "schema": "hybrid-local-ci-test-manifest-1",
+  "profile_version": "HYBRID_LOCAL_EXACT_SHA_CI_PROFILE_V1",
+  "created_for": [
+    "PR#182",
+    "PR#183"
+  ],
+  "classes": [
+    "REQUIRED_MAC_AND_DOCKER",
+    "REQUIRED_MAC_ONLY",
+    "REQUIRED_DOCKER_ONLY",
+    "NOT_APPLICABLE_TO_THIS_PR"
+  ],
+  "layer_model": "Layer A (Mac) runs the COMPLETE repository suite from a git checkout at the exact SHA (host-coupled + git-provenance infra tests execute); Layer B (Docker) runs the PR-relevant PORTABLE subset from the SAME exact-SHA git archive. A test relevant to the PR that cannot run in Linux Docker is REQUIRED_MAC_ONLY with a mechanical host-dependency justification and a proven Mac result.",
+  "host_coupled_tests_reevaluated": {
+    "src/tools/fixture-write-safety.selftest.mjs": {
+      "class": "REQUIRED_MAC_ONLY",
+      "host_dependency": "resolves repository AUTHORITY SHAs via the local git object database (needs a .git checkout, not a bare tar)",
+      "legit": true,
+      "ran_on_mac": true
+    },
+    "src/**/evidence-integrity.selftest.mjs": {
+      "class": "REQUIRED_MAC_ONLY",
+      "host_dependency": "git history/provenance inspection (fails with 'not a git repository' in a mount-free archive extract)",
+      "legit": true,
+      "ran_on_mac": true
+    },
+    "src/activation-path/launcher-failclose.selftest.mjs": {
+      "class": "REQUIRED_MAC_ONLY_if_PR_relevant_else_NA",
+      "host_dependency": "macOS sysctl hw.model (hardware identity) + host process (claude) inspection",
+      "legit": true,
+      "ran_on_mac": true
+    },
+    "src/supervisor/supervisor-deadline-integration.selftest.mjs": {
+      "class": "REQUIRED_MAC_ONLY_for_PR183",
+      "host_dependency": "pgrep host-process inspection for residual-process verification",
+      "legit": true,
+      "ran_on_mac": true
+    },
+    "src/safety_check/canonical-identity.selftest.mjs": {
+      "class": "NOT_APPLICABLE_TO_THIS_PR",
+      "note": "safety_check infra, not PR #182/#183 code; executes green on Mac",
+      "ran_on_mac": true
+    },
+    "src/**/report-provenance.selftest.mjs": {
+      "class": "NOT_APPLICABLE_TO_THIS_PR",
+      "host_dependency": "git",
+      "ran_on_mac": true
+    }
+  },
+  "pr182": {
+    "REQUIRED_MAC_AND_DOCKER": "16 src/v8b2/*.selftest.mjs feature suites (pure Node, portable)",
+    "REQUIRED_MAC_ONLY": "git-provenance infra tests in the full suite (fixture-write-safety, evidence-integrity) execute on the Mac git checkout",
+    "REQUIRED_DOCKER_ONLY": "none",
+    "NOT_APPLICABLE_TO_THIS_PR": "all non-v8b2 repository selftests (executed in Layer A on Mac; not PR #182 code)",
+    "unclassified": 0
+  },
+  "pr183": {
+    "REQUIRED_MAC_AND_DOCKER": "src/observability/status-core.selftest.mjs (24 checks) portable in Docker",
+    "REQUIRED_MAC_ONLY": "src/supervisor/supervisor-deadline-integration.selftest.mjs (pgrep host-process inspection) - PR-relevant (supervisor-session changed), executed green on Mac",
+    "REQUIRED_DOCKER_ONLY": "none",
+    "NOT_APPLICABLE_TO_THIS_PR": "all other repository selftests (executed in Layer A on Mac)",
+    "unclassified": 0
+  },
+  "digest_canonicalization": "sha256(JSON.stringify(object minus its own digest field), UTF-8, keys in insertion order; content is ASCII-only so UTF-8 and ascii-escaped forms are byte-identical)",
+  "digest": "sha256:117ac7bae0dff997d7dbc2422df5af8e6a9201c3b39b91b6a76aca0e3579bc7d"
+}
