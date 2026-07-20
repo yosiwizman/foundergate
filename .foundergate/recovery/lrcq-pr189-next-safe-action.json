@@ -1,0 +1,8 @@
+{ "ordered_steps": [
+  "1. Wire renderPrompt(identity-envelope) into real-provider rolePrompt (replace builderPrompt/checkerPrompt bodies); update productive-stub to read identity via parseIdentityFromPrompt (drop identity.json) + emit wrapTransport(payload,cost); update runJob to parseTransport(stdout) -> parsed_output + cost. Add ACT-009 route tests (21 identity/transport mutations). ACT-009 -> BUILT only after the ROUTE passes.",
+  "2. Wire validateBuilderOutput BEFORE machine verification in harness -> HELD_BUILDER_OUTPUT_INVALID; add ordering/mutation tests.",
+  "3. Build real setup/worktree manager (mechanical 25-branch/25-worktree create+verify+rollback) + disposable-fs tests (collision/stale/dirty/wrong-candidate/partial/restart/rollback/teardown/duplicate/founder-gate-refusal).",
+  "4. Wire budget-ledger into launcher (reserve before dispatch, commit parsed cost after transport, CONTROLLED_BUDGET_STOP/CONTROLLED_DEADLINE_STOP) + handshakes.",
+  "5. Rebind run-manifest + activation-material to backlog-v2 (ONLY after the scheduler consumes resolved-plan jobs) -> regen packet -> preflight SIGNATURE-REQUIRED zero-invocation.",
+  "6. Build full 25-job production-route rehearsal (deterministic stub) + negatives + mutation + autonomous-recovery tests.",
+  "7. Catalog/claim reconcile ACT-009..013; PR metadata truth; qualification; evidence capsule + Desktop ZIP; freeze; fresh checker; separate advisor." ] }

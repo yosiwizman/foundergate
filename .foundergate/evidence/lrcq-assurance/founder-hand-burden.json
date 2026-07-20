@@ -1,0 +1,5 @@
+{ "founder_initial_pastes": 1, "founder_followup_pastes": 0, "founder_terminal_commands": 0, "founder_raw_log_reviews": 0,
+  "founder_prompt_relays": 0, "founder_sha_entries": 0, "routine_questions_asked": 0, "true_founder_gates_reached": 0,
+  "forced_resume_events": 1, "operation_start": "this operation (1 founder paste)", "operation_end": "sealed at HARD-SESSION-LIMIT-RECOVERY",
+  "target_met": "partial — zero routine founder burden this operation; the READY gate was not reached so no founder activation gate was presented",
+  "limitations": "the full-material route rehearsal (READY gate) remains unbuilt; continuation requires a fresh session per the Desktop resume prompt" }

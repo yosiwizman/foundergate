@@ -1,0 +1,8 @@
+{ "candidate_sha": "5413e1f0adeaa5fb9920bb496cacaf03ab47ea33", "candidate_tree": "3ab217dd72e4daab5adc6c2c83fe0ed6ae11a4f7", "branch": "lane/v8b-lrcq-assurance-factory-50e18e5",
+  "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-assurance-factory-50e18e5", "host": "AKIOR-Mac-mini (Mac16,11)", "state": "HARD-SESSION-LIMIT-RECOVERY-SEALED (not READY)",
+  "reviews": "ALL prior checker/advisor STALE", "full_suite": "125/125",
+  "findings": { "ACT-009": "protocol modules BUILT+TESTED (identity-envelope+transport-envelope, protocol.selftest 16/16); NOT wired into runJob/stub/harness",
+    "ACT-010": "backlog-v2 BUILT+validated (digest sha256:0d55ef2f2e475b17); manifest/activation-material NOT rebound",
+    "ACT-011": "OPEN (real setup/worktree manager)", "ACT-012": "BUILT+TESTED, NOT wired into launcher",
+    "ACT-013": "OPEN (full 25-job production-route rehearsal = READY gate)" },
+  "next_safe_action": "See lrcq-pr189-next-safe-action.json + Desktop resume prompt" }
