@@ -1,0 +1,52 @@
+{
+  "schema": "pr184-gate-preparation-evidence-index-1",
+  "evidence_model": "non-recursive two-SHA: evaluated_sha (the PR #184 candidate under review) vs evidence_commit_sha (the commit that adds this index). This index is NOT committed after the final reviewed head is frozen for review of ITS OWN content; it binds the PR #182/#183 subject evidence and is itself frozen as part of the candidate.",
+  "protected_main_sha_at_preparation": "02d58de0064e24a2d938f80026c457fc270b31bb",
+  "pr185_governance": {
+    "merged": true,
+    "merge_commit": "02d58de0064e24a2d938f80026c457fc270b31bb",
+    "record": ".foundergate/governance/local_exact_sha_ci_clarification.json",
+    "status": "ACTIVE",
+    "authoritative_ref": "refs/heads/main",
+    "controls_all_required": 17,
+    "not_default_provider": true,
+    "exact_sha_ci_green": "necessary, never sufficient"
+  },
+  "acquisition_note": "Layer A exact-SHA acquisition for the committed PR #182/#183 evidence used `git clone --branch <exact-head> --single-branch <repo> <disposable>` and verified the checked-out tree == the packet git_tree_identity. The runner's default primitive is `git worktree add --detach <sha>`; this session used the clone-equivalent because Terminal-0's hardened firewall blocks `git worktree add`. Tree fingerprints (0fdbb63.. / 425906e..) prove the two acquisitions are byte-identical source. Layer B used `git archive <sha>` piped into a network-disabled read-only container (no mounts).",
+  "same_source_proof": {
+    "pr182": { "git_tree_identity": "0fdbb63ea2423a97735e6af7f4f53891d3c04d73", "canonical_archive_sha256": "sha256:bbc2d45cce3d6a3558c63dc34d90bc37e52b360e19048b62259b6c22b3cf0733", "archive_reproduced_this_session": true },
+    "pr183": { "git_tree_identity": "425906e41cfa3b6ab93cc0d36cc5ed0fd0c26c8a", "canonical_archive_sha256": "sha256:a8dabcfed09658f6f4aca40d5bd862c8a697ed23142423924a0dc0f3b05c15ec", "archive_reproduced_this_session": true }
+  },
+  "test_manifest_digest": "sha256:117ac7bae0dff997d7dbc2422df5af8e6a9201c3b39b91b6a76aca0e3579bc7d",
+  "packets": {
+    "pr182": { "path": ".foundergate/evidence/hybrid-ci/pr182-packet.json", "packet_sha256": "sha256:61cf27cc7b081b1b411cb7405322c83a0a36c2825e04043e2ed1349401796a42", "verdict": "HYBRID_LOCAL_CI_PASS", "status": "CURRENT_AND_REPRODUCIBLE" },
+    "pr183": { "path": ".foundergate/evidence/hybrid-ci/pr183-packet.json", "packet_sha256": "sha256:419c7acde0d42fe487212f9870973f8f204f94ecb84294c1f24e44a33fc85a2d", "verdict": "HYBRID_LOCAL_CI_PASS", "status": "CURRENT_AND_REPRODUCIBLE" }
+  },
+  "raw_logs": [
+    { "path": ".foundergate/evidence/hybrid-ci/raw/pr182-mac-fullsuite.log", "sha256": "sha256:beac6cf82a40ca3c320b6379fbb2177cc1df5c49da0ec3f8c146803f22c3e5b3", "layer": "A", "pr": 182, "command": "node scripts/run-selftests.mjs", "evaluated_sha": "e31153c60faeca528316d39af5a31ecacb56b11a", "result": "ALL GREEN 115/115", "exit_code": 0 },
+    { "path": ".foundergate/evidence/hybrid-ci/raw/pr182-docker-portable.log", "sha256": "sha256:a2074db2ff1a05c3eee936c733f0caed7ca63edeec60dd6e692b5b7f96c32fdd", "layer": "B", "pr": 182, "command": "docker run --network none --read-only ... node /tmp/p.mjs src/v8b2", "evaluated_sha": "e31153c60faeca528316d39af5a31ecacb56b11a", "result": "PORTABLE_RESULT pass=16 fail=0", "exit_code": 0 },
+    { "path": ".foundergate/evidence/hybrid-ci/raw/pr183-mac-fullsuite.log", "sha256": "sha256:cd9e192e5be2fae696a42949f8b448eda972e8024570d5a2be4ba5ba8fa41b9c", "layer": "A", "pr": 183, "command": "node scripts/run-selftests.mjs", "evaluated_sha": "0b378035e0f769b799fc47162888eabd2452e75f", "result": "ALL GREEN 103/103", "exit_code": 0 },
+    { "path": ".foundergate/evidence/hybrid-ci/raw/pr183-docker-portable.log", "sha256": "sha256:cc300834a46229bfe71a1da40528f38382ba73b80fcab5fbd0f3b6a9c1d541c7", "layer": "B", "pr": 183, "command": "docker run --network none --read-only ... node /tmp/p.mjs src/observability", "evaluated_sha": "0b378035e0f769b799fc47162888eabd2452e75f", "result": "PORTABLE_RESULT pass=1 fail=0 (status-core 24/24)", "exit_code": 0 }
+  ],
+  "isolation_proof": {
+    "network": "disabled (--network none)", "root_filesystem": "read-only (--read-only)",
+    "workspace": "writable tmpfs /work (:exec)", "tmp": "writable tmpfs /tmp",
+    "mounts": "NONE (no host path, no home dir, no source bind-mount)",
+    "secrets": "none", "docker_socket": "not mounted", "ssh_agent": "none", "cloud_creds": "none",
+    "container_removal": "automatic (--rm)"
+  },
+  "scans": {
+    "secret_credential_scan": "clean (no secrets/credentials in PR #184 files or raw logs)",
+    "forbidden_path_scan": "clean (PR #184 touches only tools/terminal0/local-ci + .foundergate/evidence/hybrid-ci)",
+    "absolute_path_scan": "generator no longer hardcodes any /Users, /home, or foundergate-wt-* path; raw logs verified free of /Users, /home, username, /private/tmp"
+  },
+  "teardown": "disposable git clones + archives removed from scratchpad; all containers auto-removed (--rm); no persistent runner or daemon created",
+  "pr182_packet_status": "CURRENT_AND_REPRODUCIBLE",
+  "pr183_packet_status": "CURRENT_AND_REPRODUCIBLE",
+  "known_limitations": [
+    "Local CI evidence is TEST evidence, not merge authority and not production-readiness proof.",
+    "Layer A used a git clone (not worktree) in this session due to the Terminal-0 firewall; tree fingerprints prove equivalence.",
+    "Docker base image node:20-bookworm-slim was already present locally; --network none guarantees no pull occurred during the run."
+  ],
+  "next_safe_action": "After a separate founder-authorized merge of the exact reviewed PR #184 candidate, freshly rebase or reconcile PR #183 only if mechanically required, rerun qualifying Hybrid Local Exact-SHA CI on its final exact head, obtain independent checker and separate Advisor review, and return PR #183 as its own founder gate. After PR #183 is resolved, begin the Live Run Console as the next V8-B product build."
+}

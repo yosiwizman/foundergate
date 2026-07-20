@@ -1,0 +1,380 @@
+== VB2 Anti-repeat Engine — surface ==
+  PASS: the engine lifts a defect into a conversion — defect fields, derived pattern, declared check
+  PASS: THE CENTRAL HONESTY: 'never again' is EARNED — a wired AND proven check protects the defect
+  PASS: a check that is AUTHORED but NOT WIRED is never shown as never-again (it does not run)
+  PASS: 'registered' with NO home suite is NOT wired — a home is required to actually run
+  PASS: a check that is WIRED but NOT PROVEN is never shown as never-again (may stay green on the bug)
+  PASS: NO regression check authored — the defect is honestly 'not converted', never invented
+  PASS: wired & proven are NEVER assumed — only an explicit true counts (falsey/other values do not)
+  PASS: the PATTERN is honest — a bare symptom with no area/kind is 'exact instance only', and warns
+  PASS: the pattern signature is DERIVED from the defect and STABLE for the same defect, differs across defects
+  PASS: REDACTION: a SECRET-classed defect shows its evidence redacted, but its protection verdict still computes
+  PASS: the conversion pipeline marks each stage present/absent from the conversion alone
+  PASS: the Anti-repeat law is shown verbatim on the surface (never paraphrased)
+  PASS: deriveRegressionCheck / deriveAntiRepeatView are PURE — they do not mutate their inputs
+  PASS: garbage / empty input degrades to an honest empty view, never throws
+  PASS: source truth-label is carried and never conflated (live vs fixture vs unknown)
+  PASS: a mock defect is carried as a truth-label out loud
+  PASS: renderSurfaceHtml is a COMPLETE page embedding the defect, pattern, check, and pipeline
+  PASS: HTML never shows an unprotected defect as protected (the seductive anti-repeat lie)
+  PASS: content is injection-safe — a malicious symptom / check text / actor is escaped, not executed
+  PASS: rendering is DETERMINISTIC — same snapshot in, byte-identical output (no clock/randomness)
+  PASS: NO ACT EDGE (source scan): the module imports no side-effect built-in and no v8b1
+  PASS: NO ACT EDGE (rendered page): no script/form/button/input/on*/href/anchor; states read-only
+  PASS: NO ACT EDGE (export scan): every exported function is read-only-named (no author/wire/run edge)
+
+V8B2-ANTI-REPEAT-ENGINE-SELFTEST: PASS (23 checks)
+== VB2 Bench v1 — component+project ledger + hand-burden ==
+  PASS: componentLedger on empty input is all-zero with every result bucket present (honest)
+  PASS: componentLedger counts each result and sum(by_result) === total (no lost items)
+  PASS: componentLedger: proven === PASS, unproven === everything not proven (UNKNOWN is NOT a pass)
+  PASS: componentLedger never invents state: an out-of-enum result is UNKNOWN, never coerced to PASS
+  PASS: componentLedger checks_proven tallies self-test checks behind PROVEN components only
+  PASS: componentLedger tolerates a missing checks count without faking it as 0-with-a-claim
+  PASS: componentLedger is PURE — it does not mutate the input array or records
+  PASS: projectLedger counts results honestly and sums to total
+  PASS: projectLedger redacts a protected project's NAME but keeps its RESULT (a result is a fact, not content)
+  PASS: projectLedger redaction flows through the TEXT renderer — protected name never in the clear
+  PASS: burdenDigest: all-zero technical operations -> hand_ops 0 -> ZERO_HAND_BURDEN
+  PASS: burdenDigest sums ONLY the burden fields; direction (prompts/signatures) is NOT counted as burden
+  PASS: THE HONESTY PROOF: a MISSING burden metric makes hand_ops UNKNOWN — never a fake 'zero burden'
+  PASS: burdenDigest: no metrics at all -> everything UNKNOWN, verdict UNKNOWN (degrades, never throws)
+  PASS: burdenDigest counts avoided burden (suppressed false gates + autonomous routine actions)
+  PASS: burdenDigest treats a negative/garbage metric as UNKNOWN, not a real count (Law 54)
+  PASS: benchDigest composes all three sections and a matching headline
+  PASS: renderSurfaceHtml is a COMPLETE page embedding all three ledgers
+  PASS: THE CRITICAL PROOF: the surface page has NO act affordance (no script/form/button/input/handler/link)
+  PASS: the surface escapes record content — content can't become markup
+  PASS: data-class redaction flows THROUGH the full surface (protected name never in the clear)
+  PASS: rendering is DETERMINISTIC — same snapshot in, byte-identical output (no clock/randomness)
+  PASS: an UNKNOWN hand-burden is stated out loud on the surface, never rendered as a clean zero
+  PASS: NO ACT EDGE (source scan): the module imports no side-effect built-in and no v8b1
+  PASS: NO ACT EDGE (export scan): no exported function reads like an act/approve/execute edge
+
+V8B2-BENCH-SELFTEST: PASS (25 checks)
+== VB2 ClassifiedObjectStore selftest ==
+  PASS: idFromBytes: 16 bytes -> ^q[0-9a-f]{32}$ (128 bits), deterministic
+  PASS: idFromBytes rejects non-16-byte input (fail-closed)
+  PASS: newId mints a valid 128-bit id; two mints differ (real entropy)
+  PASS: canonicalize is key-order-independent and hashes identically
+  PASS: canonicalize rejects non-finite numbers (fail-closed)
+  PASS: content-addressed snapshot: identical content -> identical id; a byte change -> different id
+  PASS: appendEvent builds a genesis-anchored chain; verifyChain -> intact
+  PASS: chain tamper -> broken-at-<id>; deletion/reorder -> broken-at
+  PASS: appendEvent is pure — does not mutate the input store
+  PASS: appendEvent requires timestamp DATA + kind (no clock)
+  PASS: lifecycleOf maps every status/resolution; DISMISSED and EXPIRED are DISTINCT and first-class
+  PASS: UNKNOWN is never guessed (Law 54): bare done or UNKNOWN status -> UNKNOWN
+  PASS: statusForLifecycle is the exact inverse; transitions legal/illegal enforced
+  PASS: objectState folds the chain; EXPIRED reachable only via a retention (retire-expired) event
+  PASS: validateObject rejects SECRET/BLOCKED/UNKNOWN data class and non-128-bit ids; accepts PUBLIC/INTERNAL
+
+VB2-CLASSIFIED-OBJECT-STORE-SELFTEST: PASS 15
+== VB2 Cost Display — surface ==
+  PASS: fmtMoney is deterministic two-decimal USD and says 'not measured' for an absent amount
+  PASS: the declared quota flows through verbatim (limit, enforcement, paid-services, policy)
+  PASS: source truth-label is carried and never conflated (live vs fixture vs unknown)
+  PASS: THE CENTRAL HONESTY: an unmeasured run/PR cost is 'not measured', NEVER $0.00
+  PASS: a REAL zero is distinct from unmeasured (0.00 shows, null says not measured)
+  PASS: measured total sums ONLY measured runs and is flagged PARTIAL when any run is unmeasured
+  PASS: 'within budget' is claimed ONLY when every run is measured AND the total is under limit
+  PASS: over-limit is surfaced as 'over' (red), never softened
+  PASS: no declared limit → 'no-limit', never assumed unlimited or assumed zero
+  PASS: spend measured but not comparable: limit present, zero measured → 'unmeasured'
+  PASS: per-PR costs roll up per run (measured count + measured-only sum)
+  PASS: deriveCostView is PURE — it does not mutate the snapshot
+  PASS: garbage / empty input degrades to an honest empty view, never throws
+  PASS: renderSurfaceHtml is a COMPLETE page embedding quota + spend + per-run/per-PR cost
+  PASS: HTML never renders an unmeasured cost as $0.00 (the seductive cost lie)
+  PASS: content is injection-safe — a malicious run label / PR title is escaped, not executed
+  PASS: rendering is DETERMINISTIC — same snapshot in, byte-identical output (no clock/randomness)
+  PASS: NO ACT EDGE (source scan): the module imports no side-effect built-in and no v8b1
+  PASS: NO ACT EDGE (rendered page): no script/form/button/input/on*/href/anchor; states read-only
+  PASS: NO ACT EDGE (export scan): every exported function is read-only-named
+
+V8B2-COST-DISPLAY-SELFTEST: PASS (20 checks)
+== VB2 CTO queue — dedicated surface ==
+  PASS: queueDigest counts the empty queue as all-zero, every status bucket present (honest)
+  PASS: queueDigest counts each status/kind and sum(by_status) === total
+  PASS: queueDigest is PURE — it does not mutate the queue
+  PASS: queueDigest never invents state: an out-of-enum status is counted as UNKNOWN, not guessed
+  PASS: queueDigest tallies protected (non-displayable) items WITHOUT summarising their content
+  PASS: renderDigestText omits the protected line when nothing is protected
+  PASS: renderSurfaceHtml is a COMPLETE page embedding the summary and the routed-item list
+  PASS: THE CRITICAL PROOF: the surface page has NO act affordance (no script/form/button/handler/link)
+  PASS: the surface escapes item content — content can't become markup
+  PASS: data-class redaction flows THROUGH the full surface (protected content never in the clear)
+  PASS: rendering is DETERMINISTIC — same queue in, byte-identical output (no clock/randomness)
+  PASS: NO ACT EDGE (source scan): the surface module imports no side-effect built-in and no v8b1
+  PASS: NO ACT EDGE (export scan): no exported function reads like an act/approve/execute edge
+
+V8B2-CTO-QUEUE-SURFACE-SELFTEST: PASS (13 checks)
+== VB2 CTO queue — data model ==
+  PASS: emptyQueue is schema-shaped: version + empty items
+  PASS: validateItem accepts a well-formed item and reports no errors
+  PASS: validateItem rejects each malformed field (id/title/kind/status/created_at/summary/requested_by)
+  PASS: data-class boundary: SECRET / BLOCKED / UNKNOWN-blocked content is REFUSED
+  PASS: status enum includes an honest UNKNOWN (Law 54 — never guess a status)
+  PASS: addItem returns a NEW queue and does NOT mutate the input (pure)
+  PASS: addItem works on a deeply-frozen input queue (proves no in-place mutation)
+  PASS: add/list/get round-trip: two items, listed in order, fetched by id
+  PASS: getItem returns null for an unknown id (never invents an item — Law 54)
+  PASS: addItem rejects an invalid item and a duplicate id (throws QueueError)
+  PASS: returned items are frozen — a caller cannot mutate the queue through them
+  PASS: LOW-2: validateItem rejects an item carrying an unknown own-key (matches additionalProperties:false)
+  PASS: LOW-3: validateItem rejects over-long string fields (maxLength caps)
+  PASS: LOW-3: schema maxLength matches the code caps (no code/schema divergence)
+  PASS: the queue conforms to its committed JSON schema
+
+V8B2-CTO-QUEUE-SELFTEST: PASS (15 checks)
+== VB2 Evidence viewer ==
+  PASS: a manifest entry with a valid sha256 is verifiable
+  PASS: a file listed with NO hash is unverifiable — never assumed to match (Law 54)
+  PASS: a garbage / short / non-hex hash does not pass as a real digest
+  PASS: a hash is normalized to lower-case (recompute-comparable regardless of input case)
+  PASS: a missing byte size is null ("size unknown"), never guessed to 0 (Law 54)
+  PASS: an entry with no path is UNKNOWN, never blank-passed off as real
+  PASS: a PASS bundle whose every listed file is hashed is self-verifying, not unsupported
+  PASS: a PASS bundle with ONE unhashed file is an UNSUPPORTED CLAIM (file-level false-green guard)
+  PASS: a PASS bundle with an EMPTY manifest is an unsupported claim (nothing to check)
+  PASS: the bundle's own 'VERIFIED' fact does NOT override unhashed files
+  PASS: a FAILED bundle with unhashed files is NOT an unsupported claim — it claims no pass
+  PASS: an unreadable verdict is UNKNOWN, never assumed PASS (Law 54)
+  PASS: absent id/surface become UNKNOWN; a non-array manifest/timeline is empty, never invented
+  PASS: total_bytes sums declared sizes and says so when a size is unknown (never under-reports silently)
+  PASS: facts accept an object OR an array of pairs; null/undefined values become an explicit dash
+  PASS: normalizeView is PURE — it does not mutate the descriptor
+  PASS: renderViewText states the verdict, the manifest, and the honest headline
+  PASS: renderViewText names the unsupported claim out loud
+  PASS: renderViewSurfaceHtml is a COMPLETE page with the read-only claim stated
+  PASS: the surface escapes bundle content — content can't become markup
+  PASS: empty renders are honest, not blank
+  PASS: rendering is DETERMINISTIC — same bundle in, byte-identical output (no clock/randomness)
+  PASS: the rendered page carries NO action affordance (no script/form/button/input/on*/href)
+  PASS: NO ACT EDGE (source scan): the module imports no side-effect built-in and no v8b1
+  PASS: NO ACT EDGE (export scan): no exported function reads like an act/approve/execute edge
+
+V8B2-EVIDENCE-VIEWER-SELFTEST: PASS (25 checks)
+== VB2 GitHub integration cards — surface ==
+  PASS: deriveCards carries the collector's source truth-label (never conflates live/fixture)
+  PASS: repoSlug validates owner/name and refuses anything else (no invented slug)
+  PASS: repo card derives the canonical repo URL from a clean slug
+  PASS: a non-owner/name repo yields NO link and says so (Law 54 — never invent a URL)
+  PASS: PR/branch/commit/file URLs are the canonical GitHub shapes for PR139
+  PASS: file URL falls back to the branch when no valid head SHA, and to null when neither is clean
+  PASS: a malicious branch/path never yields a URL and never escapes as markup
+  PASS: URL components are never built from redacted leaves
+  PASS: CI rollup and Copilot binding flow through into the derived card (PR139)
+  PASS: deriveCards is PURE — it does not mutate the bundle
+  PASS: garbage / empty input degrades to an honest empty view, never throws
+  PASS: renderSurfaceHtml is a COMPLETE page embedding repo + PR cards + links
+  PASS: THE CRITICAL PROOF: the page has NO act affordance AND no navigable link
+  PASS: rendering is DETERMINISTIC — same bundle in, byte-identical output (no clock/randomness)
+  PASS: NO ACT EDGE (source scan): the module imports no side-effect built-in and no v8b1
+  PASS: NO ACT EDGE (export scan): every exported function is read-only-named
+
+V8B2-GITHUB-CARDS-SELFTEST: PASS (16 checks)
+== VB2 Founder Hand-Burden Score — per-run score + live scoring surface ==
+  PASS: scoreRun: zero hand-ops WITH proven autonomous work scores a perfect 100 → FULLY_AUTONOMOUS
+  PASS: scoreRun: mixed run scores the harness's SHARE of the operations
+  PASS: THE CORE HONESTY PROOF: an EMPTY run (no operations at all) is UNSCORED, never a fake 100
+  PASS: scoreRun: a MISSING founder burden field makes the score UNKNOWN (can't score burden you didn't measure)
+  PASS: scoreRun: a MISSING avoided-burden metric makes the score UNKNOWN (can't credit autonomy you didn't measure)
+  PASS: scoreRun: no metrics at all → everything UNKNOWN (degrades, never throws)
+  PASS: scoreRun: direction (prompts/signatures) is NEVER counted into the score
+  PASS: scoreRun: a run the founder carried entirely scores 0 → FOUNDER_CARRIED_ALL
+  PASS: scoreRun band boundaries: 80 is NEAR_AUTONOMOUS, 49 is FOUNDER_OPERATED, 1 is not zero
+  PASS: scoreSeries aggregates latest/best/worst/average over scored runs
+  PASS: scoreSeries TREND: a rising score is IMPROVING (hand-burden falling), with the right delta
+  PASS: THE REGRESSION PROOF: a falling score is REGRESSING (founder hand-burden ROSE) and is flagged
+  PASS: scoreSeries trend skips OVER an unscored run to the two most recent SCORED runs
+  PASS: scoreSeries counts an unscored run but excludes it from best/worst/average (stated via scored/total)
+  PASS: scoreSeries: fewer than two scored runs → trend UNKNOWN (never guessed)
+  PASS: scoreSeries total_hand_ops is an HONEST sum: one unknown run poisons the total to UNKNOWN
+  PASS: scoreSeries is PURE — it does not mutate the input
+  PASS: handBurdenScore composes the series and a matching headline
+  PASS: renderSurfaceHtml is a COMPLETE page embedding the score card and the history
+  PASS: THE CRITICAL PROOF: the surface page has NO act affordance (no script/form/button/input/handler/link)
+  PASS: the surface escapes record content — a hostile run_id can't become markup
+  PASS: an UNKNOWN score is stated out loud on the surface, never rendered as a clean 100
+  PASS: the surface names a REGRESSION out loud when the score falls
+  PASS: rendering is DETERMINISTIC — same snapshot in, byte-identical output (no clock/randomness)
+  PASS: exported enums are frozen and complete (SCORE_BAND / TREND include UNKNOWN)
+  PASS: NO ACT EDGE (source scan): the module imports no side-effect built-in and no v8b1
+  PASS: NO ACT EDGE (export scan): no exported function reads like an act/approve/execute edge
+
+V8B2-HAND-BURDEN-SCORE-SELFTEST: PASS (27 checks)
+== VB2 lane router — unified ARLC/ARE routing ==
+  PASS: routingDigest counts the empty pair as all-zero, every source & destination bucket present (honest)
+  PASS: UNIFIED counting spans BOTH queues; by_source and by_destination each sum to the total
+  PASS: each destination is derived correctly across the mixed pair
+  PASS: an ARLC lane that declares founder_gate_required routes to the FOUNDER, not the backend
+  PASS: ARE native gate states carry their destination in their name (honoured, not re-derived)
+  PASS: routing COMPOSES the frozen gate-router law: requested_authority is classified by classifyGate
+  PASS: THE SAFETY PROOF: an unknown lane (no state / no authority / no flag) FAILS CLOSED to the founder
+  PASS: terminal states (ARE PASS, ARLC CLOSED) route to DONE — nothing left to route
+  PASS: routine progression states route to the backend (Terminal-0), not the founder
+  PASS: every FROZEN gate-router GATE_TYPE resolves to a valid destination (no taxonomy gap)
+  PASS: routeQueues is PURE — it does not mutate the input snapshots
+  PASS: routeQueues is triage-ordered (founder-facing first) and DETERMINISTIC
+  PASS: a missing id fails CLOSED by throwing — the router never invents an identity
+  PASS: an unrecognised source is reported as UNKNOWN, never coerced into ARLC/ARE
+  PASS: data-class redaction flows THROUGH: a protected lane is still ROUTED, but its title is hidden
+  PASS: renderDigestText omits the protected line when nothing is protected
+  PASS: renderSurfaceHtml is a COMPLETE page embedding the routing summary and the routed list
+  PASS: THE CRITICAL PROOF: the surface page has NO act affordance (no script/form/button/input/handler/link)
+  PASS: the surface escapes lane content — content can't become markup
+  PASS: empty pair renders read-only, no-action language in both text and html
+  PASS: NO ACT EDGE (source scan): the router imports no side-effect built-in and no v8b1
+  PASS: NO ACT EDGE (export scan): no exported function reads like an act/approve/execute edge
+
+V8B2-LANE-ROUTER-SELFTEST: PASS (22 checks)
+== VB2 License / IP Register — surface ==
+  PASS: the engine reads an entry into a normalized shape + clearance verdict (the §6.11 fields)
+  PASS: THE CENTRAL HONESTY: a commercial claim is CLEAR only when EVERY entry is cleared
+  PASS: a SINGLE blocking entry blocks the WHOLE commercial claim (unknown/high risk blocks — Law 66)
+  PASS: an UNKNOWN license is never guessed toward permissive — it blocks
+  PASS: commercial_use_allowed is tri-state — only explicit true clears; missing is unknown, blocks
+  PASS: a missing/unrecognized RISK is 'unknown' (never 'none') and blocks — unknown risk blocks the claim
+  PASS: HIGH copyleft/redistribution risk blocks and flags human legal review
+  PASS: status is never assumed APPROVED — WARN/BLOCKED/UNKNOWN all block; missing status → UNKNOWN
+  PASS: an entry with no review on record (missing reviewer_source / date_reviewed) is NOT cleared
+  PASS: an EMPTY register is 'unsubstantiated', NEVER 'clear' — nothing recorded clears no claim (Law 66)
+  PASS: the register-level roll-up counts entries, cleared, blocking, legal-review, and by-status
+  PASS: REDACTION: a SECRET-classed entry shows its terms redacted, but its clearance verdict still computes
+  PASS: the License/IP Register law (Law 66) is shown verbatim on the surface (never paraphrased)
+  PASS: obligations (attribution / weak copyleft / model terms) are surfaced without blocking a clear entry
+  PASS: deriveEntryVerdict / deriveRegisterView are PURE — they do not mutate their inputs
+  PASS: the engine is idempotent — a normalized entry flows through unchanged in verdict
+  PASS: garbage / empty input degrades to an honest empty view, never throws
+  PASS: source truth-label is carried and never conflated (live vs fixture vs unknown)
+  PASS: snapshot shape is flexible — entries via register.entries, register[], or entries[]
+  PASS: renderSurfaceHtml is a COMPLETE page embedding the roll-up, entries, and law
+  PASS: HTML never shows a blocked/unsubstantiated register as clear (the seductive lie)
+  PASS: content is injection-safe — a malicious license / vendor / terms is escaped, not executed
+  PASS: rendering is DETERMINISTIC — same snapshot in, byte-identical output (no clock/randomness)
+  PASS: the §6.11 vocabularies are exported as the honest, closed enums
+  PASS: NO ACT EDGE (source scan): the module imports no side-effect built-in and no v8b1
+  PASS: NO ACT EDGE (rendered page): no script/form/button/input/on*/href/anchor; states read-only
+  PASS: NO ACT EDGE (export scan): every exported function is read-only-named (no add/review/approve edge)
+
+V8B2-LICENSE-IP-REGISTER-SELFTEST: PASS (27 checks)
+== VB2 CTO queue — NO ACT EDGE / read-only proof ==
+  PASS: data-model exports contain NO executor / act / approve / run function
+  PASS: UI-shell exports contain NO executor / act / approve / run function
+  PASS: NO module under src/v8b2 imports anything from src/v8b1 (lane isolation)
+  PASS: no production source imports fs / net / child_process / process (no side-effect surface)
+  PASS: ClassifiedObjectStore: no act/approve/execute export; only node:crypto (pure hash + isolated entropy)
+  PASS: the UI shell HTML has no <script>, form, button, or on* handler (no wired affordance)
+  PASS: rendering returns a PURE STRING and does not mutate the queue (zero writes)
+  PASS: rendering is DETERMINISTIC — same queue in, byte-identical string out (no clock/randomness)
+  PASS: the empty queue renders read-only text with no action language
+  PASS: HTML output escapes item content (display only — content can't become markup)
+  PASS: LOW-1: a HAND-CRAFTED queue with a SECRET-classed item renders REDACTED, never in the clear
+
+V8B2-NO-ACT-EDGE-SELFTEST: PASS (11 checks)
+== VB2 Playwright evidence index ==
+  PASS: normalizeVerdict reads founder-surface state strings
+  PASS: normalizeVerdict falls back to @playwright/test reporter stats
+  PASS: normalizeVerdict is UNKNOWN when nothing can be read — never assumes PASS (Law 54)
+  PASS: an unrecognized state does NOT block honest stats from deciding the verdict
+  PASS: a PASS bundle with all core artifacts is supported and NOT an unsupported claim
+  PASS: a PASS bundle MISSING the trace is an UNSUPPORTED CLAIM (the false-green guard)
+  PASS: a PASS bundle missing screenshots OR hashes is also unsupported
+  PASS: a FAILED bundle with no artifacts is NOT an unsupported claim — it claims no pass
+  PASS: missing artifact fields normalize to none — never guessed present (Law 54)
+  PASS: garbage/negative counts and non-true booleans normalize honestly
+  PASS: absent id/surface become UNKNOWN, never blank-passed off as real
+  PASS: normalizeBundle is PURE — it does not mutate the descriptor
+  PASS: indexDigest counts the empty set as all-zero with every verdict bucket present
+  PASS: indexDigest buckets sum to total (no bundle lost or double-counted)
+  PASS: indexDigest is SURFACE-AGNOSTIC — it buckets by whatever surfaces appear, no hardcoding
+  PASS: indexDigest surfaces unsupported claims as a headline with the offending ids
+  PASS: indexDigest artifact_totals sum only DECLARED artifacts
+  PASS: indexDigest tolerates a non-array input as empty (never throws)
+  PASS: renderDigestText names the unsupported claims out loud
+  PASS: renderSurfaceText lists each bundle and flags the unsupported one
+  PASS: empty renders are honest, not blank
+  PASS: renderSurfaceHtml is a COMPLETE page with the read-only claim stated
+  PASS: the surface escapes bundle content — content can't become markup
+  PASS: rendering is DETERMINISTIC — same bundles in, byte-identical output (no clock/randomness)
+  PASS: the rendered page carries NO action affordance (no script/form/button/input/on*/href)
+  PASS: NO ACT EDGE (source scan): the module imports no side-effect built-in and no v8b1
+  PASS: NO ACT EDGE (export scan): no exported function reads like an act/approve/execute edge
+
+V8B2-PLAYWRIGHT-EVIDENCE-INDEX-SELFTEST: PASS (27 checks)
+== VB2 Project Bench — per-project result ledger (timeline-derived) ==
+  PASS: projectRecord DERIVES status from the LATEST run — the last run wins
+  PASS: THE HONESTY PROOF: a project with NO runs is UNKNOWN, never coerced to PROVEN
+  PASS: a supplied top-level result flag is IGNORED — only the run timeline decides
+  PASS: an out-of-enum run result is UNKNOWN, never a made-up PASS (Law 54)
+  PASS: REGRESSION: latest run FAILED but an earlier run PASSED -> regression=true
+  PASS: a project that only ever failed is NOT a regression (it never worked to break)
+  PASS: RECOVERY: latest run PASSED but an earlier run FAILED -> recovered=true (good news is a fact too)
+  PASS: pass_streak counts trailing consecutive PASSes and resets to 0 the moment the latest run is not a pass
+  PASS: deliverables reuse the component ledger: proven counts PASS deliverables, checks behind proven only
+  PASS: projectBench rollup: by_status buckets are present, zero-filled, and sum to total
+  PASS: projectBench on empty / non-array input degrades to an all-zero rollup, never throws
+  PASS: projectBench is PURE — it does not mutate the input array or its records
+  PASS: a protected project's NAME is redacted but its result, history and regression stay visible
+  PASS: redaction flows through the TEXT surface — a protected name never appears in the clear
+  PASS: renderProjectBenchSurfaceHtml is a COMPLETE page embedding the rollup and project cards
+  PASS: THE CRITICAL PROOF: the surface page has NO act affordance (no script/form/button/input/handler/link)
+  PASS: the surface escapes record content — content can't become markup
+  PASS: data-class redaction flows THROUGH the full surface (protected name never in the clear)
+  PASS: rendering is DETERMINISTIC — same snapshot in, byte-identical output (no clock/randomness)
+  PASS: the public per-record renderers agree with the bench (protected name stays redacted, no re-derive bug)
+  PASS: NO ACT EDGE (source scan): the module imports no side-effect built-in and no v8b1
+  PASS: NO ACT EDGE (export scan): no exported function reads like an act/approve/execute edge
+
+V8B2-PROJECT-BENCH-SELFTEST: PASS (22 checks)
+== VB2 Release Label Ladder — surface ==
+  PASS: the ladder rungs are EXACTLY the schema enum minus the off-ladder UNKNOWN sentinel
+  PASS: rungOf places a label on its 1-based rung; off-ladder labels get null, never a coerced rung
+  PASS: THE CENTRAL HONESTY: no declared label is 'not declared', NEVER assumed 'dev' (rung 1)
+  PASS: the REAL committed label flows through and is carried as a MOCK truth-label
+  PASS: an off-ladder declared label (UNKNOWN / unrecognised) is said to be off the ladder, not coerced
+  PASS: rung states are passed / current / ahead relative to the current label
+  PASS: transition history is preserved in the GIVEN order — timestamps are never parsed to re-sort
+  PASS: transition directions are classified honestly — promotion / jump / demotion / lateral / off-ladder
+  PASS: a missing timestamp / actor is 'not recorded', never fabricated
+  PASS: an empty / absent history is 'no transition history recorded' — never a manufactured path
+  PASS: a history that does not end at the current label is flagged as a MISMATCH, not reconciled
+  PASS: deriveLadderView is PURE — it does not mutate the snapshot
+  PASS: garbage / empty input degrades to an honest empty view, never throws
+  PASS: source truth-label is carried and never conflated (live vs fixture vs unknown)
+  PASS: renderSurfaceHtml is a COMPLETE page embedding current label + ladder + history
+  PASS: HTML never places an undeclared label on a rung (the seductive release lie)
+  PASS: content is injection-safe — a malicious label / stage / actor is escaped, not executed
+  PASS: rendering is DETERMINISTIC — same snapshot in, byte-identical output (no clock/randomness)
+  PASS: NO ACT EDGE (source scan): the module imports no side-effect built-in and no v8b1
+  PASS: NO ACT EDGE (rendered page): no script/form/button/input/on*/href/anchor; states read-only
+  PASS: NO ACT EDGE (export scan): every exported function is read-only-named
+
+V8B2-RELEASE-LABEL-LADDER-SELFTEST: PASS (21 checks)
+== VB2 Spec Card Engine — surface ==
+  PASS: the engine lifts a blueprint requirement into a plain-English card with all four contents
+  PASS: THE CENTRAL HONESTY: an unapproved card is 'awaiting', NEVER shown approved, and spawns NO lane
+  PASS: an explicit approval record flips the card to approved and lets a lane spawn — only then
+  PASS: approval is honest about non-approved states — pending / blank / rejected are NOT approved
+  PASS: missing "done" is said out loud as "no testable definition of done" — never manufactured
+  PASS: testability is honest — a criterion is testable only when it declares HOW it is proven
+  PASS: missing non-goals is "scope boundary undefined", missing open questions is not "all clear"
+  PASS: the gate is taken EXACTLY as classified — never computed here; unclassified is not assumed autonomous
+  PASS: the requirements-to-tests pipeline marks each stage present/absent from the card alone
+  PASS: scope kill-switches are shown as REFERENCE and are the five documented commands
+  PASS: deriveSpecCard / deriveSpecCardView are PURE — they do not mutate their inputs
+  PASS: garbage / empty input degrades to an honest empty view, never throws
+  PASS: source truth-label is carried and never conflated (live vs fixture vs unknown)
+  PASS: a mock card is carried as a truth-label out loud
+  PASS: renderSurfaceHtml is a COMPLETE page embedding all four card sections + pipeline
+  PASS: HTML never shows an unapproved card as approved (the seductive spec-card lie)
+  PASS: content is injection-safe — a malicious title / criterion / actor is escaped, not executed
+  PASS: rendering is DETERMINISTIC — same snapshot in, byte-identical output (no clock/randomness)
+  PASS: NO ACT EDGE (source scan): the module imports no side-effect built-in and no v8b1
+  PASS: NO ACT EDGE (rendered page): no script/form/button/input/on*/href/anchor; states read-only
+  PASS: NO ACT EDGE (export scan): every exported function is read-only-named (no approve/spawn edge)
+
+V8B2-SPEC-CARD-ENGINE-SELFTEST: PASS (21 checks)
+PORTABLE_MODULES 16
+PORTABLE_RESULT pass=16 fail=0

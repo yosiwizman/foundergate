@@ -1,5 +1,5 @@
 {
-  "schema": "hybrid-local-ci-evidence-packet-1",
+  "schema": "hybrid-local-ci-evidence-packet-2",
   "pr": 183,
   "pr_url": "https://github.com/yosiwizman/foundergate/pull/183",
   "branch": "lane/wave2-observability",
@@ -12,15 +12,16 @@
   "docker_source_fingerprint": "425906e41cfa3b6ab93cc0d36cc5ed0fd0c26c8a",
   "same_source_archive": true,
   "test_manifest_version": "HYBRID_LOCAL_EXACT_SHA_CI_PROFILE_V1",
-  "test_manifest_digest": "sha256:4966aafc68dd40a8730d11f81a904841d87f164505b44f937739f2d8d0b548ac",
+  "test_manifest_digest": "sha256:117ac7bae0dff997d7dbc2422df5af8e6a9201c3b39b91b6a76aca0e3579bc7d",
+  "mac_acquisition": "git clone --branch <exact-head> --single-branch <repo> <disposable>; verified checked-out tree == git_tree_identity",
   "mac_commands": [
-    "git worktree add --detach <disposable> 0b378035e0f769b799fc47162888eabd2452e75f",
+    "git clone --branch 0b378035e0f769b799fc47162888eabd2452e75f --single-branch <repo> <disposable>",
     "node scripts/run-selftests.mjs"
   ],
   "docker_commands": [
-    "git archive 0b378035e0f769b799fc47162888eabd2452e75f | docker run -i --rm --network none --read-only --tmpfs /work:exec --tmpfs /tmp node:20-bookworm-slim sh -c 'tar -xf - ; <portable profile>'"
+    "git archive 0b378035e0f769b799fc47162888eabd2452e75f | docker run -i --rm --network none --read-only --tmpfs /work:exec --tmpfs /tmp node:20-bookworm-slim sh -c 'tar -xf - ; <portable subset>'"
   ],
-  "mac_environment": "macOS Mac16,11 (AKIOR-Mac-mini) arm64, Node v24.13.1, git + procps + sysctl present",
+  "mac_environment": "macOS Mac16,11 (AKIOR-Mac-mini) arm64, Node v24.13.1, git present",
   "docker_image": "node:20-bookworm-slim (linux/arm64, node v20.20.2)",
   "docker_isolation_policy": {
     "network": "disabled (--network none; in-container getent github.com -> DISABLED)",
@@ -35,38 +36,43 @@
     "cloud_creds": "none",
     "container_removal": "automatic (--rm)"
   },
-  "mac_full_suite_totals": {
-    "runner": "node scripts/run-selftests.mjs",
-    "result": "ALL GREEN",
+  "mac_full_suite": {
     "passed": 103,
     "total": 103,
-    "failed": 0
-  },
-  "docker_portable_totals": {
-    "module_checks_passed": 3,
-    "status_core_selftest": "24/24",
     "failed": 0,
-    "network": "DISABLED"
+    "result": "ALL GREEN",
+    "raw_log": ".foundergate/evidence/hybrid-ci/raw/pr183-mac-fullsuite.log",
+    "raw_log_sha256": "sha256:cd9e192e5be2fae696a42949f8b448eda972e8024570d5a2be4ba5ba8fa41b9c"
+  },
+  "docker_portable": {
+    "portable_passed": 1,
+    "portable_failed": 0,
+    "modules": 1,
+    "network": "DISABLED",
+    "raw_log": ".foundergate/evidence/hybrid-ci/raw/pr183-docker-portable.log",
+    "raw_log_sha256": "sha256:cc300834a46229bfe71a1da40528f38382ba73b80fcab5fbd0f3b6a9c1d541c7"
   },
   "mac_only_classifications": "src/supervisor/supervisor-deadline-integration.selftest.mjs (pgrep host-process inspection) - executed green on Mac",
   "secret_credential_scan": "clean (no secrets/credentials in PR-changed files)",
-  "forbidden_path_scan": "clean (no .foundergate/governance/dangerous-flag paths; only src/observability + tools/terminal0/paes)",
+  "forbidden_path_scan": "clean (no .foundergate/governance or dangerous-flag paths; only src/observability + tools/terminal0/paes)",
   "source_fingerprint_after": "425906e41cfa3b6ab93cc0d36cc5ed0fd0c26c8a",
-  "teardown": "disposable worktree removed; container auto-removed (--rm); archive+tmp under scratchpad",
+  "teardown": "disposable git clone + archive removed; container auto-removed (--rm)",
   "exit_codes": {
     "mac": 0,
     "docker": 0
   },
+  "raw_logs_committed": true,
   "limitations": [
-    "LOCAL CI EVIDENCE IS TEST EVIDENCE, NOT PRODUCTION-READINESS PROOF.",
-    "Layer A used a git-enabled disposable worktree (identical tree fingerprint to the archive) because host-coupled infra tests require git/macOS; Layer B used the archive extract. Both bound to tree 425906e41cfa3b6ab93cc0d36cc5ed0fd0c26c8a."
+    "LOCAL CI EVIDENCE IS TEST EVIDENCE, NOT MERGE AUTHORITY AND NOT PRODUCTION-READINESS PROOF.",
+    "Layer A used a git checkout (identical tree fingerprint to the archive) because host-coupled + git-provenance infra tests require a .git; Layer B used the archive extract. Both bound to tree 425906e41cfa3b6ab93cc0d36cc5ed0fd0c26c8a."
   ],
   "combined_verdict": "HYBRID_LOCAL_CI_PASS",
   "statements": [
     "THE MAC FULL SUITE AND DOCKER PORTABLE SUITE USED THE SAME EXACT-SHA SOURCE ARCHIVE AND FINGERPRINT.",
     "DOCKER EXCLUSIONS WERE LIMITED TO MECHANICALLY PROVEN HOST-DEPENDENT TESTS THAT EXECUTED ON THE MAC.",
-    "A PASS REQUIRES BOTH THE MAC AND DOCKER LAYERS TO PASS."
+    "A PASS REQUIRES BOTH THE MAC AND DOCKER LAYERS TO PASS.",
+    "MAC AND DOCKER TOTALS IN THIS PACKET ARE PARSED FROM THE COMMITTED RAW LOGS, EACH BOUND BY SHA-256."
   ],
   "digest_canonicalization": "sha256(JSON.stringify(object minus its own digest field), UTF-8, keys in insertion order; content is ASCII-only so UTF-8 and ascii-escaped forms are byte-identical)",
-  "packet_sha256": "sha256:8e3dc6137eb36961ec105df3ca818c17498c381819e4ae19ce168a8f15421039"
+  "packet_sha256": "sha256:419c7acde0d42fe487212f9870973f8f204f94ecb84294c1f24e44a33fc85a2d"
 }
