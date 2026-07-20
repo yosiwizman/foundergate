@@ -10,6 +10,8 @@ import { spawn, execFileSync } from "node:child_process";
 import { writeFileSync, readFileSync, mkdirSync, existsSync, realpathSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
 import { validateActivation } from "./activation-schema.mjs";
+import { renderPrompt } from "./identity-envelope.mjs";
+import { parseTransport } from "./transport-envelope.mjs";
 
 export const OUTCOMES = ["SUCCESS", "FAILED", "WORKER_TIMEOUT", "RUN_DEADLINE_EXPIRED", "OUTPUT_OVERFLOW", "SPAWN_ERROR", "TERMINATED_BY_PAUSE", "TERMINATED_BY_STOP", "TEARDOWN_FAILED", "ACTIVATION_REFUSED", "UNKNOWN_FAILURE"];
 const PERMISSION_BYPASS = ["--dangerously-skip-permissions", "--allow-dangerously-skip-permissions"];
@@ -173,14 +175,17 @@ export async function runJob(activation, job, bindings, opts = {}) {
   // a termination event that did NOT clean up the tree is NEVER success
   if (evidence.killed && !tv.gone) return seal("TEARDOWN_FAILED", { note: "process tree not confirmed gone after termination", alive: tv.alive });
 
-  let parsed = null;
+  let parsed = null, providerCostUsd = null, transportDigest = null;
   if (result.o === "SUCCESS") {
     if (!tv.gone) return seal("TEARDOWN_FAILED", { note: "exit 0 but tree not confirmed gone" });
     if (!out || out.trim() === "") return seal("UNKNOWN_FAILURE", { note: "exit 0 but no output — not treated as success" });
-    try { parsed = JSON.parse(out); } catch { return seal("FAILED", { note: "unparseable output on exit 0" }); }
+    // FG-LRCQ-ACT-009 protocol: when opts.transport is set, the worker wraps its payload in the
+    // documented CLI transport envelope; parse it strictly (separating transport + payload + cost).
+    if (opts.transport) { const tp = parseTransport(out); if (!tp.ok) return seal("FAILED", { note: "transport: " + tp.reason }); parsed = tp.payload; providerCostUsd = tp.cost_usd; transportDigest = tp.transport_digest; }
+    else { try { parsed = JSON.parse(out); } catch { return seal("FAILED", { note: "unparseable output on exit 0" }); } }
   }
-  // FG-LRCQ-ACT-005: return the PARSED, role-validated output object (not just a boolean).
-  return seal(result.o, { ...(result.extra || {}), parsed_ok: !!parsed, parsed_output: parsed || null, role });
+  // FG-LRCQ-ACT-005/009: return the PARSED role output + provider cost + transport evidence.
+  return seal(result.o, { ...(result.extra || {}), parsed_ok: !!parsed, parsed_output: parsed || null, role, provider_cost_usd: providerCostUsd, transport_digest: transportDigest });
 }
 
 // Builder prompt: bounded to the job objective + allowed files/tools; no authority to merge/push.
@@ -208,5 +213,11 @@ export function checkerPrompt(job) {
     "Emit a single JSON object per the lrcq-checker-output-1 schema on stdout.",
   ].join("\n");
 }
-export function rolePrompt(job, role) { return role === "checker" ? checkerPrompt(job) : builderPrompt(job); }
+// FG-LRCQ-ACT-009: when a canonical identity envelope is attached, render the FULL identity +
+// non-recursive prompt-contract digest DIRECTLY into the prompt (no identity.json side channel).
+export function rolePrompt(job, role) {
+  const instructions = role === "checker" ? checkerPrompt(job) : builderPrompt(job);
+  if (job._identity_envelope) return renderPrompt(job._identity_envelope, instructions);
+  return instructions;
+}
 function redactArgv(argv) { return argv.map((a) => (a.length > 200 ? a.slice(0, 200) + "…" : a)); }
