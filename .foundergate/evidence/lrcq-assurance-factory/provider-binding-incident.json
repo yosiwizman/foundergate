@@ -1,0 +1,36 @@
+{
+  "incident": "PR189-PROVIDER-BINDING-DRIFT",
+  "tag": "FG-LRCQ-ACT-022",
+  "append_only": true,
+  "prior_candidate": "446f4d6154012f2a78e160e372a33cfa8b8c8a4a",
+  "does_not_overwrite": ["witness-truth-incident.json", "active-witness-incident.json", "seam-closure-incident.json", "detached-supervisor-incident.json", "any prior freeze/checker/advisor/review-index/matrix"],
+  "detected": "by the founder-authorized five-hour-run preflight, BEFORE signature, consumption, provider invocation, cost, or REAL-RUN creation",
+  "drift": {
+    "frozen_logical_alias": "/Users/yosiwizman/.local/bin/claude",
+    "frozen_resolved_target": "/Users/yosiwizman/.local/share/claude/versions/2.1.215",
+    "frozen_version": "2.1.215",
+    "frozen_identity": "sha256:90608b5c5ab504e96e77365cea6203d046e291d59b2bb42cf28dcb2ccdf9dd58",
+    "alias_current_target": "/Users/yosiwizman/.local/share/claude/versions/2.1.217",
+    "alias_current_version": "2.1.217",
+    "alias_current_digest": "sha256:5840c777fd47115e9ca276e165563c6e121e7c7e2b4d86598e0025f8cc37de56",
+    "symlink_mtime_observed": "Jul 21 17:49 (retargeted after freeze/review)",
+    "reviewed_target_still_present": true,
+    "reviewed_target_digest_still_matches": true
+  },
+  "root_cause": "The activation validator verified activation<->manifest agreement (both named the mutable alias) but did NOT rehash the binary that would actually execute. Because provider_executable_path was a mutable host symlink, a global Claude update retargeted it from the reviewed 2.1.215 to 2.1.217 without any signal to the frozen activation.",
+  "correction": {
+    "provider_authority_contract": "The authority-bearing execution target is the IMMUTABLE versioned resolved_provider_target + its digest + version. A mutable alias/symlink is informational only and is NEVER the execution target.",
+    "pre_consumption_verification": "provider-verify.mjs verifyProviderTarget() rehashes the resolved target on disk immediately BEFORE consumption: rejects missing/non-regular-file/non-executable/symlink(mutable-alias)/digest-mismatch/version-mismatch/UNKNOWN. Wired into run-five-hour --activation before launchDetachedSupervisor; fails closed with a specific PROVIDER_* code, zero consumption, zero spawn.",
+    "exact_execution_target": "compose-adapter-activation emits provider_resolved_target (= manifest.resolved_provider_target); real-provider spawns execTarget = activation.provider_resolved_target — NOT the alias, PATH, or a 'latest' resolution. The alias stays the validation-consistency field so all existing V2/harness checks remain intact.",
+    "no_global_change": "The global /Users/yosiwizman/.local/bin/claude symlink was NOT modified; no global Claude installation was touched; no unrelated Claude/AKIOR session altered.",
+    "kept_2_1_215": "The reviewed Claude 2.1.215 target + digest are preserved; 2.1.217 was NOT bound or exercised."
+  },
+  "proven_by": {
+    "provider-binding.selftest": "16/16 with disposable fake versioned executables + retargeting symlink: exact target OK; alias retarget does not change the bound result; missing/digest/version/symlink/non-exec all fail closed; disk rehash detects agreement-but-disk-differs; UNKNOWN never passes; mutation guards (execution spawns resolved target; verification before consumption; disk rehash).",
+    "preflight.selftest": "6/6 (SIGNATURE-REQUIRED / BINDING-DEFECT discrimination intact)",
+    "detached-supervisor.selftest": "22/22 (real CLI now runs pre-consumption provider verification against the stub before RUN_ACTIVE)",
+    "full_suite": "37/37 files, 852 assertions, reproduced twice, zero orphans/leaked worktrees"
+  },
+  "prior_reviews_status": "STALE_FOR_RUNTIME_PROVIDER_BINDING (anti-replay, detached supervisor, witness observability, seam closure, backlog, evidence-index validation, protected-main verification remain valid)",
+  "safety_state": { "founder_signature": "NONE", "real_activation": false, "provider_invocation": false, "real_run": false, "merged": false, "protected_main_modified": false, "global_claude_symlink_modified": false }
+}

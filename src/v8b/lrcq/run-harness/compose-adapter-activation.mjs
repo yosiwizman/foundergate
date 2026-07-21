@@ -32,7 +32,13 @@ export function composeAdapterActivation(v3, manifest, loaded, opts = {}) {
     allowed_tools: builderTools, denied_tools: SEMANTIC_DENY.slice(),
     allowed_repository: manifest.repository_root, allowed_branch_prefix: manifest.branch_prefix,
     allowed_worktree_root: manifest.permitted_worktree_root, allowed_evidence_root: evidenceRoot,
-    provider_executable_path: manifest.provider_executable_path, provider_version: manifest.provider_version,
+    // provider_executable_path (the host alias) remains the VALIDATION-consistency field (matches the manifest
+    // + activation). FG-LRCQ-ACT-022: EXECUTION uses provider_resolved_target — the immutable reviewed
+    // versioned binary — so a mutable alias retarget cannot change what runs. The spawn path (real-provider)
+    // invokes provider_resolved_target; the alias is informational for identity binding only.
+    provider_executable_path: manifest.provider_executable_path,
+    provider_resolved_target: manifest.resolved_provider_target || manifest.provider_executable_path,
+    provider_executable_alias: manifest.provider_executable_path, provider_version: manifest.provider_version,
     provider_executable_identity: manifest.provider_executable_identity, provider_mode: "default", subscription_only: true,
     prohibited_env: ["ANTHROPIC_API_KEY", "AWS_SECRET_ACCESS_KEY", "GITHUB_TOKEN", "GH_TOKEN", "OPENAI_API_KEY"],
     prohibited_commands: SEMANTIC_DENY.slice(), stop_conditions: ["hard_deadline", "per_job_timeout", "pause", "stop", "queue_exhaustion", "founder_gate"],

@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// TEST-ONLY: answer the provider-binding version check (FG-LRCQ-ACT-022) deterministically.
+if (process.argv.includes("--version")) { console.log("stub-1"); process.exit(0); }
 // Deterministic PRODUCTIVE provider stub for the LRCQ end-to-end rehearsal. NO model request.
 // PROTOCOL mode (FG-LRCQ-ACT-009): identity is recovered ONLY from the rendered prompt (no
 // identity.json); output is wrapped in the documented CLI transport envelope with a deterministic

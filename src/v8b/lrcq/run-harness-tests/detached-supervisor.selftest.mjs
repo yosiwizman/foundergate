@@ -7,7 +7,7 @@
 //   the run later reaches a truthful terminal (a post-terminal witness returns COMPLETED_HEALTHY, NOT
 //   HEALTHY_CONTINUE) -> teardown reaps descendants -> replay stays blocked. The witness reads the
 //   AUTHORITATIVE evidence index (evidence_index_path), never join(runRoot,"ev").
-import { mkdtempSync, mkdirSync, writeFileSync, existsSync, rmSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, existsSync, rmSync, readFileSync, copyFileSync, chmodSync } from "node:fs";
 import { execFileSync, spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
@@ -51,6 +51,9 @@ try {
   const CAND = git(["rev-parse", "HEAD"], CLONE);
   // Reviewed protected-main baseline = the REAL origin/main ref (distinct from the candidate lane HEAD).
   MAIN_REF_SHA = git(["rev-parse", "refs/remotes/origin/main"], CLONE);
+  // Overlay the CURRENT (under-test) provider stubs into the clone so pre-consumption --version verification
+  // reflects the source under test (git clone only carries committed files).
+  for (const rel of ["src/v8b/lrcq/provider-tests/slow-productive-stub.mjs", "src/v8b/lrcq/provider-tests/productive-stub.mjs"]) { copyFileSync(join(SRCREPO, rel), join(CLONE, rel)); chmodSync(join(CLONE, rel), 0o755); }
   const SLOWSTUB = join(CLONE, "src/v8b/lrcq/provider-tests/slow-productive-stub.mjs"); PROVIDER_PATH = SLOWSTUB;
   const WTROOT = join(ROOT, "wt"); mkdirSync(WTROOT, { recursive: true });
   const v2 = JSON.parse(readFileSync(join(CLONE, ".foundergate/backlog/first-real-five-hour-run-v2.json"), "utf8"));

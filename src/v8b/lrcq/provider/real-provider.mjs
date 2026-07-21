@@ -131,7 +131,9 @@ export async function runJob(activation, job, bindings, opts = {}) {
   try { mkdirSync(evDir, { recursive: true }); } catch { /* */ }
 
   let child;
-  try { child = spawn(activation.provider_executable_path, argv, { cwd: job.worktree, env, detached: true, stdio: ["ignore", "pipe", "pipe"] }); }
+  // FG-LRCQ-ACT-022: spawn the IMMUTABLE resolved versioned target (never the mutable alias).
+  const execTarget = activation.provider_resolved_target || activation.provider_executable_path;
+  try { child = spawn(execTarget, argv, { cwd: job.worktree, env, detached: true, stdio: ["ignore", "pipe", "pipe"] }); }
   catch (e) { return seal("SPAWN_ERROR", { error: e.message }); }
   if (!child.pid) return seal("SPAWN_ERROR", { error: "no pid" });
   evidence.started = true; evidence.pid = child.pid; evidence.pgid = child.pid;

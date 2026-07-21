@@ -29,5 +29,9 @@
   ],
   "witness_truth_current_candidate": "PENDING — set to the new frozen head at freeze time",
   "witness_truth_current_checker_path": "PENDING — pr189-<new-sha>-checker-1.json (fresh, witness-truth)",
-  "witness_truth_current_advisor_path": "PENDING — pr189-<new-sha>-advisor-1.json (fresh, witness-truth)"
+  "witness_truth_current_advisor_path": "PENDING — pr189-<new-sha>-advisor-1.json (fresh, witness-truth)",
+  "reports_provider_binding_wave": [
+    { "role": "checker", "candidate_sha": "446f4d6154012f2a78e160e372a33cfa8b8c8a4a", "verdict": "CLEAN (witness-truth)", "status": "STALE_FOR_RUNTIME_PROVIDER_BINDING", "reason": "predates the provider-binding-drift closure (mutable alias execution)", "path": "scratchpad/pr189-446f4d6…-checker-1.json" },
+    { "role": "advisor", "candidate_sha": "446f4d6154012f2a78e160e372a33cfa8b8c8a4a", "verdict": "READY (witness-truth)", "status": "STALE_FOR_RUNTIME_PROVIDER_BINDING", "reason": "same — runtime provider binding not challenged", "path": "scratchpad/pr189-446f4d6…-advisor-1.json" }
+  ]
 }

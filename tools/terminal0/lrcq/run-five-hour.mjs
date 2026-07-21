@@ -41,6 +41,7 @@ import { witnessHealth } from "../../../src/v8b/lrcq/run-harness/health-witness.
 import { BudgetLedger } from "../../../src/v8b/lrcq/run-harness/budget-ledger.mjs";
 import { readFileSync as _rf, mkdirSync, writeFileSync, openSync, closeSync } from "node:fs";
 import * as SEAMS from "../../../src/v8b/lrcq/run-harness/real-seams.mjs";
+import { verifyProviderTarget } from "../../../src/v8b/lrcq/provider/provider-verify.mjs";
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 const git = (...a) => execFileSync("git", ["-C", REPO, ...a], { encoding: "utf8" }).trim();
@@ -408,7 +409,21 @@ async function main() {
   // manifest it binds (loadManifest), the frozen candidate, and the normal provider resolver — no caller.
   const man = loadManifest(activation);
   if (!man.ok) { console.error("MANIFEST-DEFECT: " + man.reason); return 1; }
-  const runBindings = { ...bindings, now_epoch: Math.floor(Date.now() / 1000), provider_path: man.manifest.provider_executable_path, provider_identity: man.manifest.provider_executable_identity, candidate_stack: bindings.run_harness_candidate_sha };
+  // FG-LRCQ-ACT-022 PRE-CONSUMPTION PROVIDER VERIFICATION: rehash the IMMUTABLE reviewed versioned target
+  // (resolved_provider_target) on disk and confirm its digest + version against the activation-bound identity
+  // BEFORE any consumption or spawn. A mutable host alias (e.g. ~/.local/bin/claude) that drifted to an
+  // unreviewed version cannot change what this signed activation executes; drift FAILS CLOSED here.
+  const pv = verifyProviderTarget(
+    { resolvedTarget: man.manifest.resolved_provider_target, expectedIdentity: activation.provider_executable_identity, expectedVersion: man.manifest.provider_version },
+    { versionRunner: (p) => execFileSync(p, ["--version"], { encoding: "utf8" }).trim() },
+  );
+  if (!pv.ok) {
+    console.log(JSON.stringify({ result: pv.code, provider_binding: "VERIFICATION_FAILED", detail: pv, resolved_target: man.manifest.resolved_provider_target, mutable_alias: man.manifest.provider_executable_path, activation_consumed: false, process_spawned: false, provider_invocation: 0 }, null, 2));
+    console.error("PROVIDER_BINDING_REFUSED: " + pv.code + " (bound target " + man.manifest.resolved_provider_target + ")");
+    return 1;
+  }
+  // Execution + witness bind the IMMUTABLE resolved target (not the mutable alias).
+  const runBindings = { ...bindings, now_epoch: Math.floor(Date.now() / 1000), provider_path: man.manifest.provider_executable_path, provider_identity: man.manifest.provider_executable_identity, candidate_stack: bindings.run_harness_candidate_sha, provider_verification: pv.receipt };
   // The REAL signed-run path is DETACHED-SUPERVISED: valid signed activation -> canonical identity ->
   // atomic one-time consumption -> durable replay block -> write immutable supervisor config -> spawn ONE
   // detached supervisor OS process -> wait bounded for RUN_ACTIVE -> validate launch receipt -> RETURN +
