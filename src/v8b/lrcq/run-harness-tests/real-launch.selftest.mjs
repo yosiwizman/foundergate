@@ -79,6 +79,14 @@ ok("11-16 required real seams enforced (see seam-presence loop above)", REQUIRED
   const r1 = await route(job("re"), { session_id: "b", prompt_digest: "bp" }, 1, gc);
   const r2 = await route(job("re"), { session_id: "b", prompt_digest: "bp" }, 1, gc); // same lease_id -> reuse
   ok("23c reused checker lease refused (single-use)", r1.result === "CLEAN" && r2.result === "INSUFFICIENT_EVIDENCE"); }
+// 23d: ISOLATE the signed-activation guard. A WELL-FORMED governed context (valid branch/worktree/
+// bindings/evidence_dir -> the checker lease mints + validates cleanly) that lacks ONLY signed_activation
+// must still refuse. Unlike 23b (which omits branch/worktree and is thus backstopped by lease
+// validation), this proves the signed_activation check is the DECISIVE gate: remove it and this goes CLEAN.
+{ const gcNoSig = { bindings, job_id: "wf", attempt: 1, branch: "lane/wf", worktree: "/wt/wf", evidence_dir: "/ev", builder_session: { session_id: "b" }, builder_prompt_digest: "bp" };
+  const route = SEAMS.realIndependentCheckerRoute({ dispatchCheckerSession: async () => ({ verdict: "CLEAN" }) });
+  const res = await route(job("wf"), { session_id: "b", prompt_digest: "bp" }, 1, gcNoSig);
+  ok("23d well-formed gc lacking ONLY signed_activation -> INSUFFICIENT_EVIDENCE (guard is decisive, not lease-backstopped)", res.result === "INSUFFICIENT_EVIDENCE" && /signed activation/.test(res.reason || "")); }
 // 24-27. pause/stop/deadline observed live (between/during jobs)
 ok("24 pause observed between jobs", (await runHarness(realBase({ backlog: [job("p1"), job("p2")], controlReader: () => ({ pause: true, stop: false }) }))).final_state === "PAUSED");
 ok("25 stop observed between jobs", (await runHarness(realBase({ backlog: [job("s1"), job("s2")], controlReader: () => ({ pause: false, stop: true }) }))).final_state === "STOPPED_BY_STOP");

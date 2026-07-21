@@ -39,7 +39,7 @@ const resolved = {
   lrcq_base_sha: "3794ec1a6f0d83b72a823bbd36622b1210b1a4c5", lrcq_base_tree: git("rev-parse", "3794ec1^{tree}"),
   provider_candidate_sha: "50e18e55863b4abc0f0c2ef036b790ef15001ac5", provider_candidate_tree: git("rev-parse", "50e18e5^{tree}"),
   run_harness_candidate_sha: git("rev-parse", "HEAD"), run_harness_candidate_tree: git("rev-parse", "HEAD^{tree}"),
-  assurance_control_backlog_digest: sha(path), first_real_run_backlog_digest: sha(".foundergate/backlog/first-real-five-hour-run-v1.json"),
+  assurance_control_backlog_digest: sha(path), first_real_run_backlog_digest: sha(".foundergate/backlog/first-real-five-hour-run-v2.json"),
   provider_executable_path: "<founder-fills-approved-executable-path>", provider_version: "<founder-fills>", provider_executable_identity: "<founder-fills-sha256-of-executable>",
   policy_version: "lrcq-policy-v1", capability_lease_digest: "<founder-mints-per-run>", blast_radius_budget_digest: "<founder-mints-per-run>",
 };
