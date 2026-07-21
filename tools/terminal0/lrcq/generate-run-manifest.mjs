@@ -26,7 +26,7 @@ function resolveProvider() {
 }
 
 const MAT = ".foundergate/run-materials/first-internal-5h";
-const backlogRel = ".foundergate/backlog/first-real-five-hour-run-v1.json";
+const backlogRel = ".foundergate/backlog/first-real-five-hour-run-v2.json";
 const backlog = JSON.parse(readFileSync(P(backlogRel), "utf8"));
 const jobs = backlog.jobs || backlog.items || backlog.backlog || [];
 

@@ -169,12 +169,21 @@ async function runJobLifecycle(cfg, job, lease, budget, usage, txByKey, replay, 
     if (!preLv.valid) { ledger.push({ job: job.job_id, stage: "mint_lease", refused: preLv.refusals }); return { job_id: job.job_id, state: "PARKED", reason: "minted lease invalid: " + preLv.refusals.join(";") }; }
     w.tx("lease:" + attemptLease.lease_id, "MINTED", { lease_id: attemptLease.lease_id, lease_digest: leaseDigest(attemptLease), job_id: job.job_id, attempt, single_use: true, uses_remaining: 1 });
     job.__attempt = attempt;
+    // ---- FG-LRCQ-ACT-012: reserve run-wide budget BEFORE dispatch (retaining checker headroom).
+    // Insufficient remaining -> CONTROLLED_BUDGET_STOP; the run stops scheduling new work. ----
+    if (cfg.budgetLedger) {
+      const bres = cfg.budgetLedger.reserve({ role: "builder", job: job.job_id, attempt }, job.builder_cost_cap_usd || 0.25, job.checker_cost_cap_usd || 0.08);
+      if (!bres.ok) { cfg.__budgetStop = true; w.nextSafeAction("CONTROLLED_BUDGET_STOP before " + job.job_id + " builder"); return { job_id: job.job_id, state: "CONTROLLED_BUDGET_STOP", reason: bres.reason }; }
+      job.__builder_session_cap = bres.session_cap_usd;
+    }
     w.tx(intent.idempotency_key, "AUTHORIZED", { job_id: job.job_id, attempt, lease_id: attemptLease.lease_id });
     sep.startBuilder(builderSession);
     // ---- single governed dispatch route (validates + atomically consumes the single-use lease) ----
     const d = await governedDispatch(cfg, job, intent, attemptLease, budget, usage, txByKey, bindings, w, cfg.__consumedLeases);
-    if (!d.dispatched) return { job_id: job.job_id, state: "PARKED", reason: "dispatch refused: " + d.refused, duplicate: d.duplicate };
+    if (!d.dispatched) { if (cfg.budgetLedger) cfg.budgetLedger.commit({ role: "builder", job: job.job_id, attempt }, 0); return { job_id: job.job_id, state: "PARKED", reason: "dispatch refused: " + d.refused, duplicate: d.duplicate }; }
     const prov = d.provider || {};
+    // FG-LRCQ-ACT-012: commit the builder's actual reported cost (from the transport envelope).
+    if (cfg.budgetLedger) cfg.budgetLedger.commit({ role: "builder", job: job.job_id, attempt }, prov.provider_cost_usd ?? 0, prov.transport_digest);
     // ---- uncertain-effect: reconcile; NEVER re-fire ----
     if (prov.uncertain) {
       const obs = prov.obs || { dispatch_exists: true, process_alive: false, definitive_result: false };
@@ -223,7 +232,10 @@ async function runJobLifecycle(cfg, job, lease, budget, usage, txByKey, replay, 
       machine_verifier_report_digest: leaseDigest(mv.report || { pass: mv.pass }), job_id: job.job_id, attempt,
       branch: job.branch, worktree: job.worktree, evidence_dir: cfg.evidenceDir || "/ev",
     });
+    // FG-LRCQ-ACT-012: reserve + commit the checker session's run-wide budget.
+    if (cfg.budgetLedger) { const cres = cfg.budgetLedger.reserve({ role: "checker", job: job.job_id, attempt }, job.checker_cost_cap_usd || 0.08); if (!cres.ok) { cfg.__budgetStop = true; return { job_id: job.job_id, state: "CONTROLLED_BUDGET_STOP", reason: cres.reason }; } }
     const chk = await runChecker(cfg, job, builderSession, attempt, governedContext);
+    if (cfg.budgetLedger) cfg.budgetLedger.commit({ role: "checker", job: job.job_id, attempt }, (chk && chk.provider_cost_usd) ?? 0, chk && chk.transport_digest);
     w.evidence({ job: job.job_id, stage: "independent_checker", attempt, result: chk.result });
     sep.startChecker(chk.session); // throws if not independent / not read-only
     sep.checkerResult(chk.clean === true);
@@ -339,8 +351,9 @@ export async function runHarness(cfg) {
       teardown.locks_released.push(j.job_id);
       w.recovery({ run_id: cfg.run_id, job_id: j.job_id, state: res.state });
       if (cfg.__teardownDefect) { controller.runtime_state = "STOPPED_TEARDOWN_DEFECT"; controller.stop_reason = "teardown defect — run stopped"; break; }
+      if (cfg.__budgetStop) { controller.runtime_state = "STOPPED_BUDGET"; controller.stop_reason = "run-wide budget exhausted"; break; }
     }
-    if (controller.runtime_state === "STOPPED_BY_STOP" || controller.runtime_state === "STOPPED_TEARDOWN_DEFECT" || controller.paused) break;
+    if (controller.runtime_state === "STOPPED_BY_STOP" || controller.runtime_state === "STOPPED_TEARDOWN_DEFECT" || controller.runtime_state === "STOPPED_BUDGET" || controller.paused) break;
   }
   for (const j of controller.jobs) if (j.status === "PENDING") { const h = Controller.structuralHold(j); if (h) { j.status = "HELD"; j.hold_reason = h; } }
   const final_state = controller.runtime_state && controller.runtime_state.startsWith("STOPPED") ? controller.runtime_state
@@ -358,6 +371,7 @@ export async function runHarness(cfg) {
   // FG-LRCQ-ACT-008: truthful outcome. `ready`/activation-accepted alone is NOT a productive run.
   let outcome_status;
   if (teardownDefect) outcome_status = "HELD_TEARDOWN_DEFECT";
+  else if (cfg.__budgetStop || final_state === "STOPPED_BUDGET") outcome_status = "CONTROLLED_BUDGET_STOP";
   else if (final_state === "STOPPED_DEADLINE") outcome_status = "CONTROLLED_DEADLINE_STOP";
   else if (final_state === "STOPPED_BY_STOP") outcome_status = "CONTROLLED_PAUSE";
   else if (final_state === "PAUSED") outcome_status = "CONTROLLED_PAUSE";

@@ -32,6 +32,8 @@ import { validateLease } from "../../../src/v8b/lrcq/assurance/assurance-core.mj
 import { mintBuilderLease } from "../../../src/v8b/lrcq/run-harness/harness.mjs";
 import { validateCheckerOutput, validateBuilderOutput } from "../../../src/v8b/lrcq/provider/provider-output.mjs";
 import { execMachineVerifier } from "../../../src/v8b/lrcq/run-harness/machine-verifier-exec.mjs";
+import { validateAll25, resolveRunPlan } from "../../../src/v8b/lrcq/run-harness/run-plan.mjs";
+import { BudgetLedger } from "../../../src/v8b/lrcq/run-harness/budget-ledger.mjs";
 import { readFileSync as _rf, mkdirSync, writeFileSync } from "node:fs";
 import * as SEAMS from "../../../src/v8b/lrcq/run-harness/real-seams.mjs";
 
@@ -44,7 +46,7 @@ export function resolveBindings() {
     provider_candidate_sha: "50e18e55863b4abc0f0c2ef036b790ef15001ac5", provider_candidate_tree: git("rev-parse", "50e18e5^{tree}"),
     run_harness_candidate_sha: git("rev-parse", "HEAD"), run_harness_candidate_tree: git("rev-parse", "HEAD^{tree}"),
     assurance_control_backlog_digest: sha256File(join(REPO, ".foundergate/backlog/assurance-control-master-v1.json")),
-    first_real_run_backlog_digest: sha256File(join(REPO, ".foundergate/backlog/first-real-five-hour-run-v1.json")),
+    first_real_run_backlog_digest: sha256File(join(REPO, ".foundergate/backlog/first-real-five-hour-run-v2.json")),
   };
 }
 
@@ -62,6 +64,10 @@ function loadManifest(activation) {
   });
   if (!rres.valid) return { ok: false, reason: "manifest invalid: " + rres.refusals.join(" | "), refusals: rres.refusals };
   if (!activationBindsManifest(activation, manifest)) return { ok: false, reason: "activation.run_manifest_digest does not match manifest" };
+  // FG-LRCQ-ACT-010/013: a v1-style (execution-incompatible) backlog must FAIL AT LOAD, not silently
+  // park at runtime. Run the all-25 executable-material validator over the bound backlog.
+  const bl = rres.loaded.backlog_path;
+  if (bl && Array.isArray(bl.jobs)) { const va = validateAll25(bl, manifest, { exists: (t) => existsSync(resolve(root, t)) }); if (!va.valid) return { ok: false, reason: "bound backlog fails all-25 execution validation: " + va.refusals.slice(0, 4).join(" | "), refusals: va.refusals }; }
   return { ok: true, manifest, loaded: rres.loaded, root };
 }
 
@@ -123,7 +129,28 @@ function buildRealCfg(activation, bindings, manifest, loaded, root, counters) {
   // run-level lease). The harness mints a fresh per-job/per-attempt single-use lease from it.
   const lease = { lease_id: "builder-template", run_id: activation.run_id, job_id: null, role: "builder", candidate_stack: bindings.run_harness_candidate_sha, branch: null, worktree: null, allowed_files: ["src/"], allowed_tools: leaseTpl.allowed_tools, denied_tools: leaseTpl.denied_tools, effect_class: leaseTpl.effect_class, deadline_epoch: activation.hard_deadline_epoch || 9e12, max_cost_usd: leaseTpl.max_cost_usd, max_files: leaseTpl.max_files, max_changed_lines: leaseTpl.max_changed_lines, max_external_calls: leaseTpl.max_external_calls, max_delegation_depth: leaseTpl.max_delegation_depth, evidence_dir: resolve(root, manifest.evidence_root), uses_remaining: 1, single_use: true, expiry_epoch: (activation.expiry_epoch || 9e12), revoked: false };
   const blast = loaded.blast_budget_manifest_path.budget;
-  const backlogJobs = (loaded.backlog_path.jobs || loaded.backlog_path);
+  // FG-LRCQ-ACT-013: the FROZEN backlog (v2) carries EXECUTABLE material — test_commands (signed
+  // argv vs the immutable verifier), branch_suffix, expected_output_paths, cost caps. Resolve each
+  // into the scheduler-compatible job shape the controller's validateBacklog accepts, deriving the
+  // per-job branch/worktree deterministically via the run-plan resolver (never trusting free-form
+  // path strings). This is the seam that made v1 (documentary-only) silently park; v2 executes.
+  const rawJobs = (loaded.backlog_path.jobs || loaded.backlog_path);
+  const backlogJobs = rawJobs.map((j) => {
+    const plan = resolveRunPlan(j, activation.run_id, manifest);
+    return {
+      job_id: j.job_id, title: j.job_id, objective: j.objective, done_meaning: j.done_meaning,
+      source: "first-real-five-hour-run-v2", risk_class: j.risk_class, effect_class: j.effect_class,
+      dependencies: j.dependencies || [], allowed_files: j.allowed_files, forbidden_files: j.forbidden_files || [],
+      branch: plan.branch, worktree: plan.worktree,
+      expected_outputs: j.expected_output_paths, expected_output_paths: j.expected_output_paths,
+      tests: j.test_commands, test_commands: j.test_commands,
+      required_evidence: (j.required_evidence_files || []).map((e) => e.path || e), required_evidence_files: j.required_evidence_files || [],
+      checker_requirement: "independent", gate_trigger: j.gate_trigger || "NONE",
+      risk: j.risk_class, estimated_minutes: j.estimated_minutes || 5, max_attempts: j.max_attempts || 3, correction_cycle: 0,
+      max_changed_lines: j.max_changed_lines, builder_cost_cap_usd: j.builder_cost_cap_usd, checker_cost_cap_usd: j.checker_cost_cap_usd,
+      status: "PENDING",
+    };
+  });
   const env = { host_model: manifest.host_model || "Mac16,11", repo_origin_ok: true, lrcq_base_ok: true, provider_candidate_ok: true, run_harness_candidate_ok: true, master_digest: bindings.assurance_control_backlog_digest, expected_master_digest: bindings.assurance_control_backlog_digest, frr_digest: bindings.first_real_run_backlog_digest, expected_frr_digest: bindings.first_real_run_backlog_digest, provider_identity: manifest.provider_executable_identity, expected_provider_identity: activation.provider_executable_identity, active_run: false, lock_acquired: true, run_id: activation.run_id, evidence_root: resolve(root, manifest.evidence_root), ledger_ready: true, replay_ready: true, tx_registry_ready: true, branches_ok: true, worktrees_ok: true, identity_ok: true, controller_real: true, backlog_loaded: true, dep_graph_ok: true, console_started: true, ready_recorded: true, scheduling_allowed: true, activation, activation_bindings: bindings, lease, lease_bindings: { ...bindings, run_id: activation.run_id }, blast_budget: blast };
   const setupChecks = { ...standardChecks(env), validate_activation_record: () => ({ ok: true }), validate_capability_lease: () => ({ ok: true }), validate_blast_budget: () => ({ ok: true }) };
   return {
@@ -132,6 +159,9 @@ function buildRealCfg(activation, bindings, manifest, loaded, root, counters) {
     lease_digest: activation.capability_lease_digest, blast_digest: activation.blast_radius_budget_digest, evidenceDir: resolve(root, manifest.evidence_root),
     provider_version: manifest.provider_version, provider_identity: manifest.provider_executable_identity, runManifest: manifest,
     builderOutputValidator: validateBuilderOutput,
+    // FG-LRCQ-ACT-012: run-wide cumulative $10 ceiling. The ledger reserves builder+checker headroom
+    // per job/attempt and CONTROLLED_BUDGET_STOPs the scheduler before the cap is ever exceeded.
+    budgetLedger: new BudgetLedger(manifest.max_cost_usd || 10),
     backlog: backlogJobs, lease, blast_budget: blast, setupChecks,
     lockManager: SEAMS.fileLockManager(resolve(root, manifest.run_lock_path)),
     liveClock: SEAMS.systemClock(),
@@ -203,8 +233,12 @@ async function main() {
     report.checks.manifest = man.ok ? "VERIFIED" : "REFUSED: " + man.reason;
     if (!man.ok) { report.result = "MANIFEST-DEFECT"; console.log(JSON.stringify(report, null, 2)); console.log("\nLRCQ-REAL-LAUNCH-PREFLIGHT: BINDING-DEFECT"); return 1; }
     const runB = { ...bindings, now_epoch: Math.floor(Date.now() / 1000), provider_path: man.manifest.provider_executable_path, provider_identity: man.manifest.provider_executable_identity, candidate_stack: bindings.run_harness_candidate_sha, backlog_digest: activation.first_real_run_backlog_digest };
-    // 2. mint + validate ONE representative builder lease + ONE checker lease
-    const j0 = (man.loaded.backlog_path.jobs || man.loaded.backlog_path)[0];
+    // 2. mint + validate ONE representative builder lease + ONE checker lease. The v2 backlog job
+    // carries deterministic branch/worktree TEMPLATES, not host paths — resolve j0 through the same
+    // run-plan resolver the scheduler uses so the lease binds the exact resolved branch/worktree.
+    const rawJ0 = (man.loaded.backlog_path.jobs || man.loaded.backlog_path)[0];
+    const p0 = resolveRunPlan(rawJ0, activation.run_id, man.manifest);
+    const j0 = { ...rawJ0, branch: p0.branch, worktree: p0.worktree };
     const bl = mintBuilderLease({ run_id: activation.run_id, lease: man.loaded.capability_lease_manifest_path.template, bindings: runB, deadlineEpoch: activation.hard_deadline_epoch, evidenceDir: resolve(man.root, man.manifest.evidence_root) }, j0, 1);
     report.checks.builder_lease = validateLease(bl, { ...runB, run_id: activation.run_id, job_id: j0.job_id, role: "builder", branch: j0.branch, worktree: j0.worktree }).valid && bl.single_use === true;
     const cl = SEAMS.mintCheckerLease({ signed_activation: activation, bindings: runB, job_id: j0.job_id, attempt: 1, branch: j0.branch, worktree: j0.worktree, evidence_dir: "/ev" }, { session_id: "cs", prompt_digest: "cp" });

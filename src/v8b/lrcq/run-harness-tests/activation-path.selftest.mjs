@@ -106,6 +106,13 @@ ok("11 wrong-worktree lease refused", validateLease(mintBuilderLease(cfg, job("j
   const drift = await runHarness(base({ backlog: [job("bo3", { max_attempts: 1 })], builderOutputValidator: validateBuilderOutput, dispatch: async (j) => ({ ok: true, parsed_output: { ...goodOut(j.job_id), run_id: "OTHER" } }) }));
   ok("32 builder output run_id drift -> HELD_BUILDER_OUTPUT_INVALID", drift.jobResults.bo3.state === "HELD_BUILDER_OUTPUT_INVALID"); }
 
+// ---- FG-LRCQ-ACT-012: run-wide budget ledger WIRED INTO runHarness -> CONTROLLED_BUDGET_STOP ----
+{ const { BudgetLedger } = await import("../run-harness/budget-ledger.mjs");
+  const led = new BudgetLedger(0.3);
+  const r = await runHarness(base({ backlog: [job("g1"), job("g2")], budgetLedger: led, dispatch: async () => ({ ok: true, provider_cost_usd: 0.3 }) }));
+  ok("33 run-wide budget wired: g1 completes, g2 -> CONTROLLED_BUDGET_STOP (cumulative <= cap)", r.jobResults.g1.state === "COMPLETED" && r.outcome_status === "CONTROLLED_BUDGET_STOP" && led.spent() <= 0.3 && r.jobResults.g2.state === "CONTROLLED_BUDGET_STOP");
+  ok("34 budget stop is NOT a verified productive run", r.verified_productive_run === false); }
+
 console.log("\nLRCQ ACTIVATION-PATH SELFTEST: " + (n - fails.length) + "/" + n + " passed");
 if (fails.length) { console.log("FAILED: " + fails.join(", ")); process.exit(1); }
 process.exit(0);

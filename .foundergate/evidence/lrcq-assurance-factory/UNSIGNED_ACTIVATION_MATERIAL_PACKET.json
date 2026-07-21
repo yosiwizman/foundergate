@@ -6,12 +6,12 @@
   "lrcq_base_tree": "7d44473b63f524f3a3891f059f3e315622fdae30",
   "provider_candidate_sha": "50e18e55863b4abc0f0c2ef036b790ef15001ac5",
   "provider_candidate_tree": "4092da7b192ab085ccbc41e4aedad9da7229e6cd",
-  "run_harness_candidate_sha": "a52a6fc2e9f693d3696ec59483b63eee4faf0535",
-  "run_harness_candidate_tree": "30e66425ab81299b4d79372f892f418fa160d9c7",
+  "run_harness_candidate_sha": "FINAL_HEAD_PLACEHOLDER_REPLACED_AT_FREEZE",
+  "run_harness_candidate_tree": "FINAL_TREE_PLACEHOLDER_REPLACED_AT_FREEZE",
   "assurance_control_backlog_digest": "sha256:22483c69521d013b169a8aeea7e68bc745c61255918116912925099a4d6a70b9",
-  "first_real_run_backlog_digest": "sha256:0057b1b61bf5ef04ec22bef515a39ca44b1ff7ff4049a802667e5e6ddcbc442d",
+  "first_real_run_backlog_digest": "sha256:f3801d96df6314568a7adc6c66decf35ae24a73ff584944c590dbfb08268d77b",
   "run_manifest_path": ".foundergate/run-materials/first-internal-5h/run-manifest.json",
-  "run_manifest_digest": "sha256:3f6f82c5a4744fe720f554e962fc4f70c25e710895eb1b2ce763fbb871b7ce12",
+  "run_manifest_digest": "sha256:f8c645b1ba4b4343bcc6f5c44aed0b30d2d37d720854c39e14c545f22901d2c6",
   "provider_executable_path": "/Users/yosiwizman/.local/bin/claude",
   "provider_version": "2.1.215",
   "provider_executable_identity": "sha256:90608b5c5ab504e96e77365cea6203d046e291d59b2bb42cf28dcb2ccdf9dd58",
@@ -21,9 +21,9 @@
   "policy_version": "lrcq-policy-v1",
   "capability_lease_manifest_digest": "sha256:3d221aa11cc74582d5d34cb46a1f35ee87ab821e23ebdb790c8f5afd725919e5",
   "blast_budget_manifest_digest": "sha256:d7e380418002f5a0187475f5580cbc8f998e4230c518d8bc67a5fec6252cdc18",
-  "launcher_digest": "sha256:9e34d13e0acd8d5ccf76ceb3065bc4b823a0e14ffd88579ac8a9280c6969370d",
-  "orchestrator_digest": "sha256:207e3fd7ebf72e0e04915b19541b1a5157714ecef56c768798ec501627af69c4",
-  "provider_adapter_digest": "sha256:21a31b568320801732551bd57795cce46c51bb1651885edd11f40decbc7be896",
+  "launcher_digest": "sha256:1a91eabf160fce67718450dc7e4b01a23097ba2d022e43065ad485734b579d24",
+  "orchestrator_digest": "sha256:1225045df5e770d12c1c40255ed901147b946a52c01d9faf4dc93d3d85b8075a",
+  "provider_adapter_digest": "sha256:c7af11d0647028beb7e6cbcb4fc00c14be903641260789ab9aef27f9389c1800",
   "run_manifest_module_digest": "sha256:d103b66abfdd072fd2fa06a04386a910a0013ab31ae631456d6c47a69f587a3e",
   "real_seams_digest": "sha256:8912c1614b492cb3b2ced8a9ef25277c965afac240f2a1e55e06f2d2456f3873",
   "controller_authority_digest": "sha256:d13ac9a3761b8d13b4558c552a32da7344437908fc7b208f6ec233b4a67a8b95",
@@ -69,6 +69,5 @@
     "proven_in_preparation": "The run machinery is fully WIRED and FAIL-CLOSED, verified with ZERO provider/builder/checker invocation (preflight SIGNATURE-REQUIRED). The signed V3 record composes a valid V2 adapter-activation (dispatch route reachable); the independent checker routes a distinct read-only session through the SAME provider adapter; undefined checker output -> INSUFFICIENT_EVIDENCE (never CLEAN).",
     "NOT_proven_in_preparation": "Actual productive work (a real builder session producing changes, and a real checker session returning CLEAN) is NOT exercised or proven here, because that requires invoking the real provider (Claude), which is forbidden during preparation. The FIRST place real productive capability is exercised is the founder-signed run itself.",
     "founder_must_accept": "Signing authorizes the first internal run to invoke the real provider through this wired, fail-closed machinery. Whether jobs actually COMPLETE depends on real builder + checker behavior, first observed under signature."
-  },
-  "candidate_binding_note": "Two-step-seal input binding code commit H_A=a52a6fc2e9f693d3696ec59483b63eee4faf0535; signable = out-of-repo FINAL template binding the frozen head."
+  }
 }
