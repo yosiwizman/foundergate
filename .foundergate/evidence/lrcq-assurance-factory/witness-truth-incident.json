@@ -1,0 +1,40 @@
+{
+  "incident": "PR189-WITNESS-ATTESTATION-FALSE-GREEN",
+  "tag": "FG-LRCQ-ACT-021",
+  "append_only": true,
+  "prior_candidate": "259600127f3bcf0fd789987349dd8d393c48ce14",
+  "does_not_overwrite": ["active-witness-incident.json", "seam-closure-incident.json", "detached-supervisor-incident.json", "any prior freeze/checker/advisor/review-index/acceptance-matrix"],
+  "finding": {
+    "mechanically_observed_before": "supervisor state, heartbeat, process-start identity, activation-consumption marker, supervisor liveness were genuinely observed",
+    "hard_coded_before": "cost_spent_usd/cost_ceiling_usd/cost_reservation_exceeded/missing_cost_held; duplicate_supervisors=0; escaped_processes=0; crash_count=0; second_provider_route/second_executor=false; akior_or_m1_access/customer_or_prod_access/merge_push_deploy_send_payment=false; first_worktree_in_authorized_root=true — all constants (witness-main.mjs:47-54)",
+    "self_comparison_before": "provider_identity and provider_expected_identity both = opts.providerIdentity (tautological)",
+    "caller_supplied_before": "queue_total/queue_initial_expected from witness config",
+    "wrong_source_before": "protected-main read `git rev-parse HEAD` of repoRoot (candidate), not refs/*/main; fixture baseline == candidate HEAD; git error fell back to 'unchanged'",
+    "line_count_before": "evidence progress was non-blank line count only (no schema/run/job binding)",
+    "overstated_before": "the witness was presented as confirming the run 'within every boundary control'"
+  },
+  "still_enforced_by_harness_not_witness": [
+    "run-wide $10 ceiling: BudgetLedger is IN-PROCESS (reserve/commit in memory); CONTROLLED_BUDGET_STOP enforced by the harness; not durably readable by a separate witness process",
+    "AKIOR/M1/customer/production access, merge/push/deploy/send/payment: no durable witness event stream",
+    "single provider route + single executor: harness structural (one dispatch route)",
+    "supervisor crash/restart loop; escaped/orphaned provider process: no durable witness counter (detached provider has its own session)",
+    "first-worktree-in-authorized-root: setup-manager enforced"
+  ],
+  "correction": {
+    "no_hard_coded_safe_value": "buildSnapshot no longer emits any safety-conclusion constant; unobservable controls are surfaced in harness_enforced_not_witness_observed and are NOT part of the green verdict",
+    "provider_identity_real_cross_check": "provider presence = a supervisor descendant whose ps -ww argv matches the MANIFEST-bound provider path (not a config self-comparison); helper children (machine-verifier/git) are not counted as the provider",
+    "evidence_index_content_validation": "witness-sources.parseEvidenceIndex validates JSON + run_id binding + backlog-job membership + dedup + monotonic t; foreign-run/malformed/fabricated/duplicate records do NOT establish progress (line-count removed). Evidence-index writer enriched with run_id (same authority, harness.mjs:259)",
+    "productivity_vs_liveness": "heartbeat advance alone is liveness; HEALTHY_CONTINUE requires validated evidence advancement OR a verified in-flight provider within the SIGNED per-job timeout before the immutable deadline; one past transient child never suffices",
+    "queue_from_reviewed_material": "queue_total derived from the reviewed backlog job IDs; job progress from validated evidence-index records; finer job-state claims classified HARNESS_ENFORCED",
+    "protected_main_correct_ref": "witness-sources.protectedMainState reads the authoritative ref (default refs/remotes/origin/main) vs the reviewed baseline; git error -> ok:null (UNKNOWN) -> INSUFFICIENT_EVIDENCE, never 'unchanged'",
+    "unknown_fails_closed": "an UNKNOWN required control (protected-main) never greens"
+  },
+  "proven_by": {
+    "health-witness.selftest": "27/27 verdict semantics + mutation guards (heartbeat-only/one-transient-child never HEALTHY_CONTINUE; wrong-exe/duplicate/foreign-evidence/main-drift -> FAILED; main UNKNOWN -> INSUFFICIENT; cost+boundaries reported HARNESS_ENFORCED)",
+    "witness-sources.selftest": "17/17 real files/git: evidence-index content+run-binding+dedup+fail-closed; protected-main real ref + drift + UNKNOWN; duplicate live supervisor enumeration",
+    "detached-supervisor.selftest": "22/22 real CLI + real processes: witness reads the authoritative evidence index, verifies the provider executable, checks origin/main vs reviewed baseline, and returns HEALTHY_CONTINUE while RUN_ACTIVE; COMPLETED_HEALTHY at terminal",
+    "full_suite": "36/36 files green, 836 assertions, reproduced twice, zero orphans/leaked worktrees"
+  },
+  "prior_reviews_status": "STALE_FOR_WITNESS_INPUT_AUTHENTICITY (seam-closure + detached-process + active-ordering proofs remain valid)",
+  "safety_state": { "founder_signature": "NONE", "real_activation": false, "provider_invocation": false, "real_run": false, "merged": false, "protected_main_modified": false }
+}

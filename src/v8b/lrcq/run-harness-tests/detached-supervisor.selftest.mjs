@@ -35,21 +35,27 @@ function cleanup() { try { if (supervisorPid && alive(supervisorPid)) { try { pr
 
 function runWitness(cfgExtra) {
   const wCfg = join(ROOT, "witness-" + Math.floor(idxCount(EVIDENCE_INDEX) + n) + ".json");
-  writeFileSync(wCfg, JSON.stringify({ supervisorDir: SUPDIR, ledgerDir: LEDGER, runId: "HERMETIC-RUN", evidenceIndexPath: EVIDENCE_INDEX, repoRoot: CLONE, protectedMainBaseline: MAIN0, providerIdentity: PROVIDER_ID, queueTotal: 3, queueInitial: 3, acceleratedTotalMs: 1500, acceleratedPolls: 5, ...cfgExtra }));
+  // Authoritative-source witness config: real backlog job IDs, the manifest-bound provider path (real
+  // cross-check, not self-comparison), the REAL protected-main ref + reviewed baseline (origin/main, NOT
+  // candidate HEAD), and the signed per-job timeout for bounded in-flight grace.
+  writeFileSync(wCfg, JSON.stringify({ supervisorDir: SUPDIR, ledgerDir: LEDGER, runId: "HERMETIC-RUN", evidenceIndexPath: EVIDENCE_INDEX, repoRoot: CLONE, jobIds: JOB_IDS, providerExpectedPath: PROVIDER_PATH, protectedMainRef: "refs/remotes/origin/main", protectedMainBaseline: MAIN_REF_SHA, perJobTimeoutS: 2700, acceleratedTotalMs: 1500, acceleratedPolls: 5, ...cfgExtra }));
   const wr = spawnSync(process.execPath, [WITNESS_ACCEL, "--config", wCfg], { encoding: "utf8", timeout: 15000 });
   try { return JSON.parse(wr.stdout); } catch { return null; }
 }
 
-let CLONE, SUPDIR, LEDGER, EVIDENCE_INDEX, MAIN0, PROVIDER_ID;
+let CLONE, SUPDIR, LEDGER, EVIDENCE_INDEX, MAIN_REF_SHA, JOB_IDS, PROVIDER_PATH;
 try {
   CLONE = join(ROOT, "repo");
   git(["clone", "--local", "--no-hardlinks", "-q", SRCREPO, CLONE], ROOT);
   git(["config", "user.email", "t@t"], CLONE); git(["config", "user.name", "t"], CLONE);
-  const CAND = git(["rev-parse", "HEAD"], CLONE); MAIN0 = CAND;
-  const SLOWSTUB = join(CLONE, "src/v8b/lrcq/provider-tests/slow-productive-stub.mjs");
+  const CAND = git(["rev-parse", "HEAD"], CLONE);
+  // Reviewed protected-main baseline = the REAL origin/main ref (distinct from the candidate lane HEAD).
+  MAIN_REF_SHA = git(["rev-parse", "refs/remotes/origin/main"], CLONE);
+  const SLOWSTUB = join(CLONE, "src/v8b/lrcq/provider-tests/slow-productive-stub.mjs"); PROVIDER_PATH = SLOWSTUB;
   const WTROOT = join(ROOT, "wt"); mkdirSync(WTROOT, { recursive: true });
   const v2 = JSON.parse(readFileSync(join(CLONE, ".foundergate/backlog/first-real-five-hour-run-v2.json"), "utf8"));
   const jobs3 = v2.jobs.slice(0, 3).map((j) => ({ ...j, dependencies: [] }));
+  JOB_IDS = jobs3.map((j) => j.job_id);
   const backlogRel = "fixture-3job.json"; writeFileSync(join(CLONE, backlogRel), JSON.stringify({ ...v2, jobs: jobs3 }, null, 2));
   const realMan = JSON.parse(readFileSync(join(CLONE, ".foundergate/run-materials/first-internal-5h/run-manifest.json"), "utf8"));
   const EVROOT = ".fixture-run/ev";
@@ -63,7 +69,7 @@ try {
     evidence_index_path: EVROOT + "/evidence-index.jsonl", next_safe_action_path: EVROOT + "/next-safe-action.txt",
     run_lock_path: EVROOT + "/run.lock", pause_file_path: EVROOT + "/PAUSE", stop_file_path: EVROOT + "/STOP" };
   const manPath = join(ROOT, "manifest.fixture.json"); writeFileSync(manPath, JSON.stringify(manifest));
-  PROVIDER_ID = manifest.provider_executable_identity;
+  const PROVIDER_ID = manifest.provider_executable_identity;
   const b = resolveBindings(); const DEADLINE = 9_000_000_000;
   const activation = { schema_version: "lrcq-activation-3", founder_signature: "SYNTHETIC-TEST-SIGNATURE", issued_epoch: 1000, expiry_epoch: 9_999_999_999,
     lrcq_base_sha: b.lrcq_base_sha, lrcq_base_tree: b.lrcq_base_tree, provider_candidate_sha: b.provider_candidate_sha, provider_candidate_tree: b.provider_candidate_tree,
@@ -99,9 +105,9 @@ try {
   // (5-16) A SEPARATE witness observes the ACTIVE run and returns HEALTHY_CONTINUE while still RUN_ACTIVE.
   const wj = runWitness({});
   ok("08 witness process is separate (distinct PID)", !!wj && typeof wj.witness_pid === "number" && wj.witness_pid !== launcherPid && wj.witness_pid !== supervisorPid);
-  ok("09 witness returns HEALTHY_CONTINUE (result=" + (wj && wj.result) + ", progressed=" + (wj && wj.progressed) + ")", !!wj && wj.result === "HEALTHY_CONTINUE");
+  ok("09 witness returns HEALTHY_CONTINUE (result=" + (wj && wj.result) + ", progressed=" + (wj && wj.progressed) + ", failed=" + (wj && JSON.stringify(wj.failed_checks)) + ")", !!wj && wj.result === "HEALTHY_CONTINUE");
   ok("10 witness reports run_active_at_end true", !!wj && wj.run_active_at_end === true);
-  ok("11 witness read the authoritative evidence index (>=0 entries observed)", !!wj && typeof wj.evidence_index_last === "number");
+  ok("11 witness read the authoritative evidence index (sealed count observed)", !!wj && typeof wj.evidence_sealed_last === "number");
   ok("12 witness reports the immutable production 12-minute window (720000ms)", !!wj && wj.production_witness_ms === 720000);
   const sAfter = readSupervisorState(SUPDIR, "HERMETIC-RUN");
   ok("13 supervisor still RUN_ACTIVE immediately after witness returns", sAfter && sAfter.state === "RUN_ACTIVE");

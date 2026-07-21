@@ -22,5 +22,12 @@
   ],
   "active_witness_current_candidate": "PENDING — set to the new frozen head at freeze time",
   "active_witness_current_checker_path": "PENDING — pr189-<new-sha>-checker-1.json (fresh, active-witness)",
-  "active_witness_current_advisor_path": "PENDING — pr189-<new-sha>-advisor-1.json (fresh, active-witness)"
+  "active_witness_current_advisor_path": "PENDING — pr189-<new-sha>-advisor-1.json (fresh, active-witness)",
+  "reports_witness_truth_wave": [
+    { "role": "checker", "candidate_sha": "259600127f3bcf0fd789987349dd8d393c48ce14", "verdict": "CLEAN (active-witness)", "status": "STALE_FOR_WITNESS_INPUT_AUTHENTICITY", "reason": "did not challenge hard-coded cost/boundary fields, provider-identity self-comparison, evidence line-count, or protected-main ref", "path": "scratchpad/pr189-2596001…-checker-1.json" },
+    { "role": "advisor", "candidate_sha": "259600127f3bcf0fd789987349dd8d393c48ce14", "verdict": "READY_FOR_FOUNDER_ACTIVATION_GATE (active-witness)", "status": "STALE_FOR_WITNESS_INPUT_AUTHENTICITY", "reason": "same — witness input authenticity not challenged", "path": "scratchpad/pr189-2596001…-advisor-1.json" }
+  ],
+  "witness_truth_current_candidate": "PENDING — set to the new frozen head at freeze time",
+  "witness_truth_current_checker_path": "PENDING — pr189-<new-sha>-checker-1.json (fresh, witness-truth)",
+  "witness_truth_current_advisor_path": "PENDING — pr189-<new-sha>-advisor-1.json (fresh, witness-truth)"
 }

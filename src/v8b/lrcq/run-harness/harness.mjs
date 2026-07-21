@@ -256,7 +256,7 @@ async function runJobLifecycle(cfg, job, lease, budget, usage, txByKey, replay, 
     w.tx(intent.idempotency_key, "SEALED", { job_id: job.job_id });
     usage.max_records = (usage.max_records || 0) + 1;
     const ev = replayEvent(cfg, job, attempt, "SEALED", "RESULT_COMPLETE"); replay.append(ev); w.replayW(ev);
-    w.evidenceIndex({ job: job.job_id, sealed: true, attempt });
+    w.evidenceIndex({ run_id: cfg.run_id, job: job.job_id, sealed: true, attempt });
     sep.complete();
     return { job_id: job.job_id, state: "COMPLETED", merged: sep.canMerge(), accepted: sep.canAccept(), checker_result: chk.result };
   }
