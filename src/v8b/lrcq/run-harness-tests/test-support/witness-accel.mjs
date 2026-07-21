@@ -15,5 +15,5 @@ const cfg = JSON.parse(readFileSync(process.argv[ci + 1], "utf8"));
 const totalMs = Number(cfg.acceleratedTotalMs || 600);
 const polls = Number(cfg.acceleratedPolls || 4);
 witnessWithTiming(cfg, { totalMs, polls })
-  .then((r) => { console.log(JSON.stringify(r, null, 2)); process.exit(r.result === "HEALTHY_CONTINUE" ? 0 : (r.result === "FAILED" ? 1 : 2)); })
+  .then((r) => { console.log(JSON.stringify(r, null, 2)); process.exit(r.result === "HEALTHY_CONTINUE" || r.result === "COMPLETED_HEALTHY" ? 0 : (r.result === "FAILED" ? 1 : 2)); })
   .catch((e) => { console.error("witness-accel error:", e && e.message); process.exit(3); });

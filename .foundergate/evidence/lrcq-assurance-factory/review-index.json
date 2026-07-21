@@ -15,5 +15,12 @@
   ],
   "current_candidate": "PENDING — set to the new frozen head at freeze time",
   "current_checker_path": "PENDING — pr189-<new-sha>-checker-1.json (fresh, seam-closure)",
-  "current_advisor_path": "PENDING — pr189-<new-sha>-advisor-1.json (fresh, seam-closure)"
+  "current_advisor_path": "PENDING — pr189-<new-sha>-advisor-1.json (fresh, seam-closure)",
+  "reports_active_witness_wave": [
+    { "role": "checker", "candidate_sha": "f84f14d50c95375540051cc3c43f787bedb29ed0", "verdict": "CLEAN (seam closure)", "status": "STALE_FOR_ACTIVE_RUN_WITNESS_READINESS", "reason": "accepted the witness assertion that was later found POST_TERMINAL_ONLY", "path": "scratchpad/pr189-f84f14d5…-checker-1.json" },
+    { "role": "advisor", "candidate_sha": "f84f14d50c95375540051cc3c43f787bedb29ed0", "verdict": "READY_FOR_FOUNDER_ACTIVATION_GATE (seam closure)", "status": "STALE_FOR_ACTIVE_RUN_WITNESS_READINESS", "reason": "same — active-run witness proven only post-terminal at that head", "path": "scratchpad/pr189-f84f14d5…-advisor-1.json" }
+  ],
+  "active_witness_current_candidate": "PENDING — set to the new frozen head at freeze time",
+  "active_witness_current_checker_path": "PENDING — pr189-<new-sha>-checker-1.json (fresh, active-witness)",
+  "active_witness_current_advisor_path": "PENDING — pr189-<new-sha>-advisor-1.json (fresh, active-witness)"
 }

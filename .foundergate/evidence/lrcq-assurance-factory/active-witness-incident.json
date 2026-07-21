@@ -1,0 +1,27 @@
+{
+  "incident": "PR189-ACTIVE-RUN-WITNESS-FALSE-GREEN",
+  "tag": "FG-LRCQ-ACT-020",
+  "append_only": true,
+  "prior_candidate": "f84f14d50c95375540051cc3c43f787bedb29ed0",
+  "does_not_overwrite": ["seam-closure-incident.json", "detached-supervisor-incident.json", "any prior freeze/checker/advisor/review-index/acceptance-matrix/immutability record"],
+  "finding": {
+    "passing_witness_started_after_terminal": "The hermetic detached-supervisor.selftest waited for the supervisor to reach STOPPED_EXHAUSTED BEFORE spawning the witness, so HEALTHY_CONTINUE was proven only POST-TERMINAL, not while RUN_ACTIVE.",
+    "active_attempt_returned_INSUFFICIENT_EVIDENCE": "An earlier active-run attempt returned INSUFFICIENT_EVIDENCE and was masked by the reorder.",
+    "evidence_files_wrong_path": "witness-main.mjs buildSnapshot read evidence from join(runRoot,\"ev\"), but authoritative evidence is written per job under the manifest evidence_root and indexed via evidence_index_path (real-seams.mjs:44, harness.mjs:259).",
+    "instantaneous_provider_signal": "provider_invocations was derived from an instantaneous pgrep child snapshot at the last poll; a legitimate between-job / machine-verify interval has zero provider children.",
+    "terminal_confused_with_continue": "health-witness accepted terminal fail-closed state as satisfying provider/evidence checks and mapped generic HEALTHY -> HEALTHY_CONTINUE without requiring RUN_ACTIVE at window end, so a completed run received HEALTHY_CONTINUE.",
+    "fixture_too_short": "The 2-job deterministic fixture terminated in seconds and could not sustain an observable active window."
+  },
+  "prior_reviews": {
+    "seam_closure_and_detached_process_proof": "REMAIN VALID (not rebuilt): both seam refusals, immutable 720000 witness constant, test-support isolation, single production route, launcher-exits/distinct-PID/supervisor-survival/teardown/replay.",
+    "status_for_active_witness": "STALE_FOR_ACTIVE_RUN_WITNESS_READINESS"
+  },
+  "correction_summary": {
+    "witness_evidence_path": "read the AUTHORITATIVE evidence_index_path (per-run, manifest-bound) line growth; no hard-coded runRoot/ev.",
+    "cumulative_provider_progress": "progress derived from durable/cumulative signals across the observation window (evidence-index growth OR provider-child-present at any poll OR heartbeat advance), never a single final-snapshot child PID.",
+    "verdict_semantics": "HEALTHY_CONTINUE ONLY when RUN_ACTIVE + alive + progress (or bounded grace) at window end; a successful terminal run returns COMPLETED_HEALTHY (never HEALTHY_CONTINUE); stall -> HELD; boundary/identity/lineage/deadline breach -> FAILED; unreadable -> INSUFFICIENT_EVIDENCE.",
+    "no_new_authority_file": "reuses supervisor state + the authoritative evidence index; introduces no second evidence/queue/budget authority.",
+    "active_fixture": "a longer deterministic-stub run stays genuinely RUN_ACTIVE past the accelerated witness window so the witness observes an ACTIVE run and the same supervisor/run continue afterward."
+  },
+  "safety_state": { "founder_signature": "NONE", "real_activation": false, "provider_invocation": false, "real_run": false, "merged": false, "protected_main_modified": false }
+}
