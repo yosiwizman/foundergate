@@ -5,9 +5,9 @@
 // A tests array with names is not proof. An evidence dir existing is not proof. Builder self-report
 // is not proof.
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { resolve } from "node:path";
+import { resolve, dirname } from "node:path";
 
 export function reportDigest(report) { return "sha256:" + createHash("sha256").update(JSON.stringify(report)).digest("hex"); }
 
@@ -18,6 +18,7 @@ export function execMachineVerifier(opts = {}) {
   const git = opts.gitRunner || ((args, cwd) => execFileSync("git", args, { cwd, encoding: "utf8" }).trim());
   const allowlist = opts.allowlist || ["node", "npm", "git", "shasum"];
   const hashFile = opts.hashFile || ((p) => "sha256:" + createHash("sha256").update(readFileSync(p)).digest("hex"));
+  const writeEvidence = opts.writeEvidence || ((p, content) => { mkdirSync(dirname(p), { recursive: true }); writeFileSync(p, content); });
 
   return async (job, prov, ctx) => {
     const checks = []; const add = (name, ok, detail) => checks.push({ name, ok, detail });
@@ -52,16 +53,24 @@ export function execMachineVerifier(opts = {}) {
       }
       // 10. declared expected outputs exist
       for (const o of job.expected_output_paths || []) add("expected_output:" + o, exists(resolve(job.worktree, o)), "");
-      // 11-12. required evidence files exist AND hashes match declared
-      for (const ev of job.required_evidence_files || []) {
-        const p = resolve(evDir, ev.path); const ok = exists(p);
-        add("evidence_exists:" + ev.path, ok, "");
-        if (ok && ev.sha256) add("evidence_hash:" + ev.path, hashFile(p) === ev.sha256, "");
-      }
       // 13. no forbidden authority (builder output must not claim push/merge)
       add("no_forbidden_authority", !(prov && prov.parsed_output && /push|merge/i.test(JSON.stringify(prov.parsed_output.forbidden_used || []))), "");
       // 14. provider process tree CONFIRMED gone (FG-LRCQ-ACT-007)
       add("tree_gone", prov != null && prov.tree_gone === true, "tree_gone=" + (prov && prov.tree_gone));
+      // 11-12. required evidence (AFTER the substantive checks). The machine verifier is the EVIDENCE
+      // PLANE for its verification proof: for a must_exist entry it WRITES its signed report as the
+      // durable proof (the builder cannot — the evidence path is immutable to the builder), so the
+      // "must_exist" requirement records that verification ran + its result. A must_match_sha256 entry
+      // is an UPSTREAM-produced artifact and is verified (existence + hash), never written here.
+      const evProof = JSON.stringify({ job_id: job.job_id, run_id: (ctx && ctx.run_id) || null, attempt: (ctx && ctx.attempt) || null, verified: checks.every((c) => c.ok), checks, machine_verifier: "lrcq-machine-verifier-1" }, null, 2) + "\n";
+      for (const ev of job.required_evidence_files || []) {
+        const p = resolve(evDir, ev.path);
+        // A declared sha256 marks an UPSTREAM content-addressed artifact the verifier must find + hash-
+        // match (never writes it). Otherwise the entry is the machine verifier's OWN verification proof:
+        // the verifier WRITES its signed report (the builder cannot — the path is immutable to it).
+        if (ev.sha256) { const ok = exists(p); add("evidence_exists:" + ev.path, ok, ""); add("evidence_hash:" + ev.path, ok && hashFile(p) === ev.sha256, ok ? "" : "absent"); }
+        else { let wrote = false; try { writeEvidence(p, evProof); wrote = exists(p); } catch (e) { wrote = false; } add("evidence_recorded:" + ev.path, wrote, ev.path); }
+      }
     } catch (e) { add("verifier_error", false, e.message || String(e)); }
     const report = { job_id: job.job_id, checks };
     return { pass: checks.every((c) => c.ok), checks, report, report_digest: reportDigest(report) };

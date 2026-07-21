@@ -32,10 +32,15 @@ export class BudgetLedger {
     if (!this.open.has(sessionKey(session))) return { ok: false, reason: "no reservation for session" };
     if (typeof actualUsd !== "number" || !Number.isFinite(actualUsd) || actualUsd < 0) { this.reservedCents -= this.open.get(sessionKey(session)); this.open.delete(sessionKey(session)); this.records.push({ event: "HELD_COST_EVIDENCE_MISSING", session, role: session.role, job: session.job, attempt: session.attempt }); return { ok: false, reason: "HELD_COST_EVIDENCE_MISSING" }; }
     const reservedCents = this.open.get(sessionKey(session)); this.open.delete(sessionKey(session));
-    const actualCents = Math.min(CENTS(actualUsd), reservedCents); // a session cannot spend beyond its reservation
+    // Commit the TRUE reported cost. Do NOT silently cap it at the reservation — a session that spent
+    // more than it reserved (e.g. the per-session CLI cap was not honored) must be counted at its real
+    // cost so the run-wide ceiling reflects reality and stops the next required stage, rather than being
+    // masked. A per-session overspend is recorded as its own event for the evidence plane.
+    const actualCents = CENTS(actualUsd);
     this.reservedCents -= reservedCents; this.spentCents += actualCents;
+    if (actualCents > reservedCents) this.records.push({ event: "BUDGET_OVERSPEND", session, role: session.role, job: session.job, attempt: session.attempt, reserved_usd: USD(reservedCents), reported_cost_usd: actualUsd, spent_total_usd: this.spent() });
     this.records.push({ event: "COMMIT", session, role: session.role, job: session.job, attempt: session.attempt, reported_cost_usd: actualUsd, committed_cost_usd: USD(actualCents), spent_total_usd: this.spent(), remaining_usd: this.remaining(), transport_evidence_digest: transportEvidenceDigest || null });
-    return { ok: true, spent_total_usd: this.spent() };
+    return { ok: true, spent_total_usd: this.spent(), overspent: actualCents > reservedCents };
   }
 
   // May a new required stage start? False once committed+reserved would reach the ceiling.

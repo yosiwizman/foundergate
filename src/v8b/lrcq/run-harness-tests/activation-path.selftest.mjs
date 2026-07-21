@@ -107,11 +107,26 @@ ok("11 wrong-worktree lease refused", validateLease(mintBuilderLease(cfg, job("j
   ok("32 builder output run_id drift -> HELD_BUILDER_OUTPUT_INVALID", drift.jobResults.bo3.state === "HELD_BUILDER_OUTPUT_INVALID"); }
 
 // ---- FG-LRCQ-ACT-012: run-wide budget ledger WIRED INTO runHarness -> CONTROLLED_BUDGET_STOP ----
+// Per-session costs are WITHIN each session's reservation (builder cap 0.25, checker cap 0.08). With a
+// $0.4 run budget, g1 (0.25 builder + 0.08 checker = 0.33) fits; g2's builder reserve then has < 0.08
+// unreserved headroom and is refused -> CONTROLLED_BUDGET_STOP. Cumulative committed spend stays <= cap.
 { const { BudgetLedger } = await import("../run-harness/budget-ledger.mjs");
-  const led = new BudgetLedger(0.3);
-  const r = await runHarness(base({ backlog: [job("g1"), job("g2")], budgetLedger: led, dispatch: async () => ({ ok: true, provider_cost_usd: 0.3 }) }));
-  ok("33 run-wide budget wired: g1 completes, g2 -> CONTROLLED_BUDGET_STOP (cumulative <= cap)", r.jobResults.g1.state === "COMPLETED" && r.outcome_status === "CONTROLLED_BUDGET_STOP" && led.spent() <= 0.3 && r.jobResults.g2.state === "CONTROLLED_BUDGET_STOP");
+  const led = new BudgetLedger(0.4);
+  const costChecker = async (j, bs, a, gc) => ({ result: gc && gc.signed_activation && Object.keys(gc.signed_activation).length ? "CLEAN" : "INSUFFICIENT_EVIDENCE", provider_cost_usd: 0.08, session: { session_id: "c:" + j.job_id + ":" + a, prompt_digest: "cp:" + j.job_id + ":" + a, read_only: true } });
+  const r = await runHarness(base({ backlog: [job("g1"), job("g2")], budgetLedger: led, dispatch: async () => ({ ok: true, provider_cost_usd: 0.25 }), checker: costChecker }));
+  ok("33 run-wide budget wired: g1 completes, g2 -> CONTROLLED_BUDGET_STOP (cumulative <= cap)", r.jobResults.g1.state === "COMPLETED" && r.outcome_status === "CONTROLLED_BUDGET_STOP" && led.spent() <= 0.4 && r.jobResults.g2.state === "CONTROLLED_BUDGET_STOP");
   ok("34 budget stop is NOT a verified productive run", r.verified_productive_run === false); }
+// 35: the per-session ledger reservation is stamped on the job so the dispatch can hard-cap the CLI at
+// the per-session cap (NOT the whole run budget). Prove the builder dispatch actually receives it.
+{ const { BudgetLedger } = await import("../run-harness/budget-ledger.mjs");
+  const led = new BudgetLedger(10); let seenBuilderCap = null;
+  await runHarness(base({ backlog: [job("cap1")], budgetLedger: led, dispatch: async (j) => { seenBuilderCap = j.__builder_session_cap; return { ok: true, provider_cost_usd: 0.1 }; }, checker: async (j, bs, a, gc) => ({ result: "CLEAN", provider_cost_usd: 0.05, session: { session_id: "c:" + j.job_id, prompt_digest: "cp:" + j.job_id, read_only: true } }) }));
+  ok("35 builder dispatch receives its per-session cap (<= builder cost cap, NOT the $10 run budget)", seenBuilderCap === 0.25); }
+// 36: a session that reports NO cost does not silently commit $0 — the ledger records HELD_COST_EVIDENCE_MISSING.
+{ const { BudgetLedger } = await import("../run-harness/budget-ledger.mjs");
+  const led = new BudgetLedger(10);
+  await runHarness(base({ backlog: [job("nc1")], budgetLedger: led, dispatch: async () => ({ ok: true /* no provider_cost_usd */ }), checker: async (j, bs, a) => ({ result: "CLEAN", provider_cost_usd: 0.05, session: { session_id: "c:" + j.job_id, prompt_digest: "cp:" + j.job_id, read_only: true } }) }));
+  ok("36 missing builder cost -> ledger records HELD_COST_EVIDENCE_MISSING (never a silent $0)", led.records.some((x) => x.event === "HELD_COST_EVIDENCE_MISSING" && x.role === "builder")); }
 
 console.log("\nLRCQ ACTIVATION-PATH SELFTEST: " + (n - fails.length) + "/" + n + " passed");
 if (fails.length) { console.log("FAILED: " + fails.join(", ")); process.exit(1); }

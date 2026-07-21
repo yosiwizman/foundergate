@@ -28,17 +28,45 @@ import { loadAndVerifyManifest, activationBindsManifest, sha256File } from "../.
 import { standardChecks } from "../../../src/v8b/lrcq/run-harness/setup-pipeline.mjs";
 import { composeAdapterActivation, composeCheckerActivation } from "../../../src/v8b/lrcq/run-harness/compose-adapter-activation.mjs";
 import { validateActivation } from "../../../src/v8b/lrcq/provider/activation-schema.mjs";
-import { validateLease } from "../../../src/v8b/lrcq/assurance/assurance-core.mjs";
+import { validateLease, validateActivationV3 } from "../../../src/v8b/lrcq/assurance/assurance-core.mjs";
+import { setupManager, eligibleForSetup } from "../../../src/v8b/lrcq/run-harness/setup-manager.mjs";
 import { mintBuilderLease } from "../../../src/v8b/lrcq/run-harness/harness.mjs";
 import { validateCheckerOutput, validateBuilderOutput } from "../../../src/v8b/lrcq/provider/provider-output.mjs";
 import { execMachineVerifier } from "../../../src/v8b/lrcq/run-harness/machine-verifier-exec.mjs";
-import { validateAll25, resolveRunPlan } from "../../../src/v8b/lrcq/run-harness/run-plan.mjs";
+import { validateAll25, resolveRunPlan, runPlanDigest } from "../../../src/v8b/lrcq/run-harness/run-plan.mjs";
+import { buildIdentityEnvelope } from "../../../src/v8b/lrcq/provider/identity-envelope.mjs";
 import { BudgetLedger } from "../../../src/v8b/lrcq/run-harness/budget-ledger.mjs";
 import { readFileSync as _rf, mkdirSync, writeFileSync } from "node:fs";
 import * as SEAMS from "../../../src/v8b/lrcq/run-harness/real-seams.mjs";
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 const git = (...a) => execFileSync("git", ["-C", REPO, ...a], { encoding: "utf8" }).trim();
+const sha256 = (s) => "sha256:" + createHash("sha256").update(typeof s === "string" ? s : JSON.stringify(s)).digest("hex");
+// The controlled base env the provider process runs in. scrubEnv keeps only PATH+HOME and strips every
+// prohibited secret (ANTHROPIC_API_KEY, cloud/GH tokens, ...); without PATH the provider cannot exec.
+const PROVIDER_ENV = { PATH: process.env.PATH, HOME: process.env.HOME };
+// FG-LRCQ-ACT-009: assemble the canonical session identity envelope the ONE dispatch route renders into
+// the real prompt (no identity.json side channel). All values derive from the signed activation, the
+// consumed single-use lease, the composed adapter tools, and the run-plan — nothing hand-filled.
+function sessionEnvelope(role, { activation, bindings, job, lease, session, adapter, evidenceRoot, sessionCap, checker }) {
+  const plan = resolveRunPlan(job, activation.run_id, { branch_prefix: adapter.allowed_branch_prefix, permitted_worktree_root: adapter.allowed_worktree_root });
+  const f = {
+    role, run_id: activation.run_id, job_id: job.job_id, attempt: job.__attempt || 1, session_id: session.session_id,
+    candidate_sha: bindings.run_harness_candidate_sha, candidate_tree: bindings.run_harness_candidate_tree,
+    backlog_digest: activation.first_real_run_backlog_digest, resolved_plan_digest: runPlanDigest(plan),
+    branch: job.branch, worktree: job.worktree, lease_id: lease.lease_id, lease_digest: sha256(lease),
+    allowed_tools_digest: sha256(adapter.allowed_tools || []), denied_tools_digest: sha256(adapter.denied_tools || []),
+    evidence_path: resolve(evidenceRoot, job.job_id), deadline_epoch: activation.hard_deadline_epoch || 9e12, session_cost_cap_usd: sessionCap,
+  };
+  if (checker) { f.builder_transaction_id = checker.builder_transaction_id; f.machine_verifier_report_digest = checker.machine_verifier_report_digest; }
+  const env = buildIdentityEnvelope(f);
+  // Carry the harness's session prompt-digest(s) so the worker ECHOES exactly what the harness binds its
+  // output against (builder: prompt_digest; checker: checker_session_id + checker_prompt_digest). Without
+  // these the worker falls back to session_id and the output fails the harness's prompt-digest binding.
+  if (checker) { env.checker_session_id = session.session_id; env.checker_prompt_digest = session.prompt_digest; env.machine_verifier_digest = checker.machine_verifier_report_digest; }
+  else { env.prompt_digest = session.prompt_digest; }
+  return env;
+}
 
 export function resolveBindings() {
   return {
@@ -76,12 +104,19 @@ function loadManifest(activation) {
 // realDispatch COMPOSES the V2 adapter-activation from the signed V3 record + verified manifest
 // (never hand-filled) so a signed run genuinely reaches the single provider spawn route.
 function makeRealDispatch(manifest, loaded, evidenceRoot) {
-  return async function realDispatch(job, { activation, bindings }) {
-    const adapterActivation = composeAdapterActivation(activation, manifest, loaded, { evidence_root: evidenceRoot });
-    const outcome = await runJob(adapterActivation, { ...job, role: "builder" }, { ...bindings, provider_path: manifest.provider_executable_path, provider_version: manifest.provider_version, provider_identity: manifest.provider_executable_identity, backlog_digest: activation.first_real_run_backlog_digest }, { role: "builder" });
-    // FG-LRCQ-ACT-005/007: surface the validated parsed output AND the real teardown evidence
-    // (tree_gone) to the harness/machine-verifier.
-    return { ok: outcome.outcome === "SUCCESS", uncertain: outcome.outcome === "UNKNOWN_FAILURE" || outcome.outcome === "TEARDOWN_FAILED", obs: { dispatch_exists: true, process_alive: false, definitive_result: outcome.outcome === "SUCCESS" }, tree_gone: outcome.tree_gone, parsed_output: outcome.parsed_output, provider_outcome: outcome };
+  return async function realDispatch(job, { activation, bindings, lease, builderSession }) {
+    // FG-LRCQ-ACT-012: hard-cap THIS builder session's CLI budget at its run-wide ledger reservation
+    // (job.__builder_session_cap), so no single session can spend the whole $10.
+    const adapterActivation = composeAdapterActivation(activation, manifest, loaded, { evidence_root: evidenceRoot, session_budget_usd: job.__builder_session_cap });
+    // FG-LRCQ-ACT-009: render the canonical identity envelope into the REAL builder prompt (no
+    // identity.json side channel) and parse the CLI transport envelope (payload + cost). Without these
+    // the real Claude CLI's transport-wrapped output is unparseable and no cost is extracted.
+    const bs = builderSession || { session_id: "builder:" + activation.run_id + ":" + job.job_id, prompt_digest: "bpd:" + job.job_id };
+    const _identity_envelope = sessionEnvelope("builder", { activation, bindings, job, lease: lease || { lease_id: "builder:" + job.job_id }, session: bs, adapter: adapterActivation, evidenceRoot, sessionCap: job.__builder_session_cap });
+    const outcome = await runJob(adapterActivation, { ...job, role: "builder", _identity_envelope }, { ...bindings, provider_path: manifest.provider_executable_path, provider_version: manifest.provider_version, provider_identity: manifest.provider_executable_identity, backlog_digest: activation.first_real_run_backlog_digest }, { role: "builder", transport: true, env: PROVIDER_ENV });
+    // FG-LRCQ-ACT-005/007/012: surface the validated parsed output, the real teardown evidence
+    // (tree_gone), AND the transport-reported cost so the run-wide ledger commits real spend.
+    return { ok: outcome.outcome === "SUCCESS", uncertain: outcome.outcome === "UNKNOWN_FAILURE" || outcome.outcome === "TEARDOWN_FAILED", obs: { dispatch_exists: true, process_alive: false, definitive_result: outcome.outcome === "SUCCESS" }, tree_gone: outcome.tree_gone, parsed_output: outcome.parsed_output, provider_cost_usd: outcome.provider_cost_usd, transport_digest: outcome.transport_digest, provider_outcome: outcome };
   };
 }
 
@@ -97,9 +132,16 @@ function makeCheckerSessionDispatch(manifest, loaded, evidenceRoot) {
     if (!gc.signed_activation || Object.keys(gc.signed_activation).length === 0) return { verdict: "INSUFFICIENT_EVIDENCE" };
     if (!checkerLease || checkerLease.role !== "checker" || checkerLease.read_only !== true || checkerLease.single_use !== true) return { verdict: "INSUFFICIENT_EVIDENCE" };
     if (session.session_id === (gc.builder_session && gc.builder_session.session_id) || session.prompt_digest === gc.builder_prompt_digest) return { verdict: "INSUFFICIENT_EVIDENCE" };
-    const checkerActivation = composeCheckerActivation(gc.signed_activation, manifest, loaded, { evidence_root: evidenceRoot });
-    const outcome = await runJob(checkerActivation, { ...job, role: "checker", _checker_session: session.session_id, _checker_lease: checkerLease.lease_id }, { provider_path: manifest.provider_executable_path, provider_identity: manifest.provider_executable_identity }, { role: "checker" });
-    if (outcome.outcome !== "SUCCESS") return { verdict: "INSUFFICIENT_EVIDENCE" };
+    // FG-LRCQ-ACT-012: hard-cap the checker session's CLI budget at its ledger reservation too.
+    const checkerActivation = composeCheckerActivation(gc.signed_activation, manifest, loaded, { evidence_root: evidenceRoot, session_budget_usd: job.__checker_session_cap });
+    // FG-LRCQ-ACT-009: render the checker's canonical identity envelope (bound to the builder tx + the
+    // machine-verifier report digest) into the READ-ONLY checker prompt; parse the transport envelope.
+    const cjob = { ...job, role: "checker", __attempt: gc.attempt, branch: gc.branch, worktree: gc.worktree };
+    const _identity_envelope = sessionEnvelope("checker", { activation: gc.signed_activation, bindings: gc.bindings || {}, job: cjob, lease: checkerLease, session, adapter: checkerActivation, evidenceRoot, sessionCap: job.__checker_session_cap, checker: { builder_transaction_id: gc.builder_transaction_id, machine_verifier_report_digest: gc.machine_verifier_report_digest } });
+    const outcome = await runJob(checkerActivation, { ...cjob, _checker_session: session.session_id, _checker_lease: checkerLease.lease_id, _identity_envelope }, { ...(gc.bindings || {}), provider_path: manifest.provider_executable_path, provider_version: manifest.provider_version, provider_identity: manifest.provider_executable_identity, backlog_digest: gc.signed_activation.first_real_run_backlog_digest }, { role: "checker", transport: true, env: PROVIDER_ENV });
+    // FG-LRCQ-ACT-012: surface the checker session's real cost even on failure so the run-wide ledger
+    // commits it (a checker session that spent money must be counted whether or not its verdict lands).
+    if (outcome.outcome !== "SUCCESS") return { verdict: "INSUFFICIENT_EVIDENCE", provider_cost_usd: outcome.provider_cost_usd, transport_digest: outcome.transport_digest };
     // FG-LRCQ-ACT-005: the READ-ONLY checker emits its verdict on STDOUT (it cannot write files).
     // The evidence plane (here) validates that structured output — role/run/job/attempt/session/
     // prompt/builder-tx/mv-digest + a complete PASS/FAIL checklist — then atomically writes the
@@ -111,14 +153,14 @@ function makeCheckerSessionDispatch(manifest, loaded, evidenceRoot) {
       const vp = resolve(vdir, "checker-verdict.json");
       if (existsSync(vp)) { const prior = JSON.parse(_rf(vp, "utf8")); if (prior.run_id !== gc.signed_activation.run_id || prior.job_id !== gc.job_id || prior.attempt !== gc.attempt || prior.checker_session_id !== session.session_id) return { verdict: "INSUFFICIENT_EVIDENCE", refusals: ["stale/foreign pre-existing verdict"] }; }
       writeFileSync(vp, JSON.stringify({ ...outcome.parsed_output, written_by: "evidence-plane" }, null, 2) + "\n");
-    } catch { return { verdict: "INSUFFICIENT_EVIDENCE" }; }
-    return { verdict: cval.verdict };
+    } catch { return { verdict: "INSUFFICIENT_EVIDENCE", provider_cost_usd: outcome.provider_cost_usd, transport_digest: outcome.transport_digest }; }
+    return { verdict: cval.verdict, provider_cost_usd: outcome.provider_cost_usd, transport_digest: outcome.transport_digest };
   };
 }
 
 // Build a fully-wired REAL cfg from a verified manifest. `counters` wrap the never-in-preflight
 // seams to prove zero invocation.
-function buildRealCfg(activation, bindings, manifest, loaded, root, counters) {
+export function buildRealCfg(activation, bindings, manifest, loaded, root, counters) {
   const paths = {
     ledger_path: resolve(root, manifest.ledger_path), recovery_state_path: resolve(root, manifest.recovery_state_path),
     transaction_registry_path: resolve(root, manifest.transaction_registry_path), replay_stream_path: resolve(root, manifest.replay_stream_path),
@@ -175,7 +217,31 @@ function buildRealCfg(activation, bindings, manifest, loaded, root, counters) {
   };
 }
 
-function makeCounters() { const c = {}; return { c, wrap(name, fn) { c[name] = 0; return async (...a) => { c[name]++; return fn(...a); }; } }; }
+export function makeCounters() { const c = {}; return { c, wrap(name, fn) { c[name] = 0; return async (...a) => { c[name]++; return fn(...a); }; } }; }
+
+// FG-LRCQ-ACT-011/013: execute the SIGNED run. runJob spawns each provider session with cwd=job.worktree
+// and REFUSES a non-existent worktree — so the per-job git worktrees MUST be created (from the exact
+// candidate ref) BEFORE dispatch and torn down after. The harness validates the activation FIRST
+// (validate_activation, before setup), so we only create real worktrees once the record actually
+// validates (no side effects for an unsigned/mis-bound record); runHarness then re-validates
+// authoritatively. `exec` (git/repoRoot/candidateRef) is injectable so this exact path is testable with
+// a deterministic stub provider. NOTHING here is invoked during preflight (preflight never reaches it).
+export async function executeSignedRun(activation, man, runBindings, counters, exec = {}) {
+  const cfg = buildRealCfg(activation, runBindings, man.manifest, man.loaded, man.root, counters);
+  // Do not create any worktrees for a record that will be refused — let runHarness produce the
+  // authoritative refusal with zero side effects.
+  if (!validateActivationV3(activation, runBindings).valid) return runHarness(cfg);
+  const gitRun = exec.git || ((a, cwd) => execFileSync("git", a, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim());
+  const repoRoot = exec.repoRoot || man.manifest.repository_root;
+  const candidateRef = exec.candidateRef || runBindings.run_harness_candidate_sha;
+  const setup = setupManager(cfg.backlog, activation.run_id, man.manifest, { git: gitRun, repoRoot, candidateRef });
+  if (!setup.ok) { if (setup.teardown) setup.teardown(); return { ready: false, refused: { stage: "create_registered_worktrees", reasons: ["real worktree setup failed: " + (setup.failed_step || "?")] }, final_state: "SETUP_FAILED", dispatched: false, setup }; }
+  // reflect the REAL setup result into the harness setup pipeline (replaces the asserted booleans)
+  const eligible = cfg.backlog.filter((j) => eligibleForSetup(j).ok).length;
+  cfg.setupChecks = { ...cfg.setupChecks, allocate_branches: () => ({ ok: setup.created.length === eligible }), create_registered_worktrees: () => ({ ok: setup.ok && setup.created.length === eligible }), verify_worktree_branch_identity: () => ({ ok: setup.ok }) };
+  try { const result = await runHarness(cfg); return { ...result, worktrees_created: setup.created.length }; }
+  finally { try { if (setup.teardown) setup.teardown(); } catch { /* teardown best-effort; verifier confirms tree-gone per job */ } }
+}
 
 async function main() {
   const args = process.argv.slice(2);
@@ -273,10 +339,15 @@ async function main() {
   if (!man.ok) { console.error("MANIFEST-DEFECT: " + man.reason); return 1; }
   const counters = makeCounters();
   const runBindings = { ...bindings, now_epoch: Math.floor(Date.now() / 1000), provider_path: man.manifest.provider_executable_path, provider_identity: man.manifest.provider_executable_identity, candidate_stack: bindings.run_harness_candidate_sha };
-  const cfg = buildRealCfg(activation, runBindings, man.manifest, man.loaded, man.root, counters);
-  const result = await runHarness(cfg); // refuses at validate_activation unless the record is signed + matching
-  console.log(JSON.stringify({ ready: result.ready, refused: result.refused, final_state: result.final_state, invocations: counters.c }, null, 2));
+  // executeSignedRun refuses at validate_activation (zero side effects) unless the record is signed +
+  // matching; only then does it create the per-job worktrees, run, and tear them down.
+  const result = await executeSignedRun(activation, man, runBindings, counters, { git: (a, cwd) => execFileSync("git", a, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(), repoRoot: man.manifest.repository_root, candidateRef: runBindings.run_harness_candidate_sha });
+  console.log(JSON.stringify({ ready: result.ready, refused: result.refused, final_state: result.final_state, worktrees_created: result.worktrees_created, invocations: counters.c }, null, 2));
   return result.ready ? 0 : 1;
 }
 
-main().then((c) => process.exit(c)).catch((e) => { console.error("launcher error:", e.message); process.exit(3); });
+// Run main() ONLY when this file is executed directly as the launcher — never when imported (e.g. by the
+// integration selftest, which drives executeSignedRun/buildRealCfg without triggering the CLI entrypoint).
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().then((c) => process.exit(c)).catch((e) => { console.error("launcher error:", e.message); process.exit(3); });
+}

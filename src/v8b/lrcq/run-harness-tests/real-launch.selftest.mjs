@@ -158,6 +158,10 @@ ok("32 real lease + blast are non-null in REAL happy path", (await runHarness(re
   ok("F1c denied_tools semantically cover all prohibited classes", (await import("../provider/activation-schema.mjs")).denyListSemanticGaps(rec.denied_tools).length === 0);
   const crec = composeCheckerActivation(v3, man, loaded);
   ok("F2 checker activation is read-only (no Write/Edit) + validates", !crec.allowed_tools.includes("Write") && !crec.allowed_tools.includes("Edit") && validateActivation(crec, b).valid === true);
+  // FG-LRCQ-ACT-012: the CLI cost ceiling (max_budget_usd -> --max-budget-usd) is the PER-SESSION
+  // reservation when supplied, NOT the run budget. Without a session cap it falls back to the run budget.
+  ok("F1d session_budget_usd caps the CLI ceiling at the per-session reservation (not the $10 run budget)", composeAdapterActivation(v3, man, loaded, { session_budget_usd: 0.25 }).max_budget_usd === 0.25 && rec.max_budget_usd === 5);
+  ok("F2b checker session_budget_usd caps the checker CLI ceiling at its reservation", composeCheckerActivation(v3, man, loaded, { session_budget_usd: 0.08 }).max_budget_usd === 0.08);
 }
 // F2b: the real independent checker route returns INSUFFICIENT_EVIDENCE (never invented CLEAN)
 // when its routed session does not yield a definitive CLEAN verdict.

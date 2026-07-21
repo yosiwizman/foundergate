@@ -133,7 +133,8 @@ export function realIndependentCheckerRoute(opts = {}) {
     if (!out || typeof out.verdict !== "string") return { result: "INSUFFICIENT_EVIDENCE", session };
     const v = out.verdict.toUpperCase();
     const result = v === "CLEAN" ? "CLEAN" : v === "FINDINGS" ? "FINDINGS" : "INSUFFICIENT_EVIDENCE";
-    return { result, session, checker_lease_id: checkerLease.lease_id };
+    // FG-LRCQ-ACT-012: pass the checker session's reported cost through to the harness ledger commit.
+    return { result, session, checker_lease_id: checkerLease.lease_id, provider_cost_usd: out.provider_cost_usd, transport_digest: out.transport_digest };
   };
 }
 

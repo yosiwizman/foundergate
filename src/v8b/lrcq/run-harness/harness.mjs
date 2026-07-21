@@ -117,10 +117,12 @@ async function runChecker(cfg, job, builderSession, attempt, governedContext) {
   if (raw && typeof raw.result === "string") result = raw.result;
   else if (raw && typeof raw.clean === "boolean") result = raw.clean ? CHECKER_RESULTS.CLEAN : CHECKER_RESULTS.FINDINGS;
   else result = CHECKER_RESULTS.INSUFFICIENT_EVIDENCE;
-  return { result, clean: result === CHECKER_RESULTS.CLEAN, session: (raw && raw.session) || defaultSession };
+  // FG-LRCQ-ACT-012: preserve the checker session's reported cost + transport digest so the run-wide
+  // ledger commits the real checker spend (dropping it here silently under-counted every checker session).
+  return { result, clean: result === CHECKER_RESULTS.CLEAN, session: (raw && raw.session) || defaultSession, provider_cost_usd: raw && raw.provider_cost_usd, transport_digest: raw && raw.transport_digest };
 }
 
-async function governedDispatch(cfg, job, intent, lease, budget, usage, txByKey, bindings, w, consumed) {
+async function governedDispatch(cfg, job, intent, lease, budget, usage, txByKey, bindings, w, consumed, builderSession) {
   const cd = canDispatch(intent, txByKey);
   if (!cd.ok) return { dispatched: false, refused: cd.reason, duplicate: !!cd.duplicate };
   // the exact per-attempt single-use lease is revalidated at the dispatch boundary against THIS job
@@ -139,7 +141,9 @@ async function governedDispatch(cfg, job, intent, lease, budget, usage, txByKey,
   w.tx("lease:" + lease.lease_id, "CONSUMED", { lease_id: lease.lease_id, lease_digest: leaseDigest(lease), job_id: job.job_id, attempt: job.__attempt || intent.attempt, consumed_epoch: cfg.now || 0, pre_uses_remaining: preUses, post_uses_remaining: 0, dispatch_transaction_id: intent.transaction_id });
   txByKey[intent.idempotency_key] = { state: "DISPATCHED", job_id: job.job_id, lease_id: lease.lease_id };
   w.tx(intent.idempotency_key, "DISPATCHED", { job_id: job.job_id, transaction_id: intent.transaction_id, lease_id: lease.lease_id });
-  const out = await cfg.dispatch(job, { activation: cfg.activation, bindings });
+  // Pass the consumed single-use lease + builder session so the ONE dispatch route can render the
+  // canonical identity envelope into the real prompt (FG-LRCQ-ACT-009) and bind cost/transport.
+  const out = await cfg.dispatch(job, { activation: cfg.activation, bindings, lease, builderSession, intent });
   return { dispatched: true, provider: out, lease_id: lease.lease_id };
 }
 
@@ -179,11 +183,13 @@ async function runJobLifecycle(cfg, job, lease, budget, usage, txByKey, replay, 
     w.tx(intent.idempotency_key, "AUTHORIZED", { job_id: job.job_id, attempt, lease_id: attemptLease.lease_id });
     sep.startBuilder(builderSession);
     // ---- single governed dispatch route (validates + atomically consumes the single-use lease) ----
-    const d = await governedDispatch(cfg, job, intent, attemptLease, budget, usage, txByKey, bindings, w, cfg.__consumedLeases);
+    const d = await governedDispatch(cfg, job, intent, attemptLease, budget, usage, txByKey, bindings, w, cfg.__consumedLeases, builderSession);
     if (!d.dispatched) { if (cfg.budgetLedger) cfg.budgetLedger.commit({ role: "builder", job: job.job_id, attempt }, 0); return { job_id: job.job_id, state: "PARKED", reason: "dispatch refused: " + d.refused, duplicate: d.duplicate }; }
     const prov = d.provider || {};
-    // FG-LRCQ-ACT-012: commit the builder's actual reported cost (from the transport envelope).
-    if (cfg.budgetLedger) cfg.budgetLedger.commit({ role: "builder", job: job.job_id, attempt }, prov.provider_cost_usd ?? 0, prov.transport_digest);
+    // FG-LRCQ-ACT-012: commit the builder's actual reported cost (from the transport envelope). Pass the
+    // value THROUGH — do NOT coerce a missing cost to 0; the ledger holds the run
+    // (HELD_COST_EVIDENCE_MISSING) when a real session reports no cost, instead of silently under-counting.
+    if (cfg.budgetLedger) cfg.budgetLedger.commit({ role: "builder", job: job.job_id, attempt }, prov.provider_cost_usd, prov.transport_digest);
     // ---- uncertain-effect: reconcile; NEVER re-fire ----
     if (prov.uncertain) {
       const obs = prov.obs || { dispatch_exists: true, process_alive: false, definitive_result: false };
@@ -218,7 +224,9 @@ async function runJobLifecycle(cfg, job, lease, budget, usage, txByKey, replay, 
     }
     // ---- SEPARATE machine verification (provider success is NOT verification) ----
     sep.builderResult(prov.ok === true);
-    const mv = await machineVerify(cfg, job, prov, controller.ctx());
+    // Pass the per-job evidence dir so the machine verifier persists its verification proof under the
+    // run's evidence root (evidenceRoot/<job_id>), never a default like /ev.
+    const mv = await machineVerify(cfg, job, prov, { ...controller.ctx(), run_id: cfg.run_id, attempt, evidenceDir: cfg.evidenceDir ? cfg.evidenceDir + "/" + job.job_id : undefined });
     w.evidence({ job: job.job_id, stage: "machine_verification", attempt, pass: mv.pass, report: mv.report });
     sep.machineVerification(mv.pass);
     if (sep.state === "PARKED") { const ev = replayEvent(cfg, job, attempt, "DISPATCHED", "n/a"); replay.append(ev); w.replayW(ev); return { job_id: job.job_id, state: "PARKED", reason: "parked after repeated machine-verification failure" }; }
@@ -232,10 +240,12 @@ async function runJobLifecycle(cfg, job, lease, budget, usage, txByKey, replay, 
       machine_verifier_report_digest: leaseDigest(mv.report || { pass: mv.pass }), job_id: job.job_id, attempt,
       branch: job.branch, worktree: job.worktree, evidence_dir: cfg.evidenceDir || "/ev",
     });
-    // FG-LRCQ-ACT-012: reserve + commit the checker session's run-wide budget.
-    if (cfg.budgetLedger) { const cres = cfg.budgetLedger.reserve({ role: "checker", job: job.job_id, attempt }, job.checker_cost_cap_usd || 0.08); if (!cres.ok) { cfg.__budgetStop = true; return { job_id: job.job_id, state: "CONTROLLED_BUDGET_STOP", reason: cres.reason }; } }
+    // FG-LRCQ-ACT-012: reserve + commit the checker session's run-wide budget. Store the reservation on
+    // the job so the checker dispatch can hard-cap the CLI at the per-session cap (not the whole $10).
+    if (cfg.budgetLedger) { const cres = cfg.budgetLedger.reserve({ role: "checker", job: job.job_id, attempt }, job.checker_cost_cap_usd || 0.08); if (!cres.ok) { cfg.__budgetStop = true; return { job_id: job.job_id, state: "CONTROLLED_BUDGET_STOP", reason: cres.reason }; } job.__checker_session_cap = cres.session_cap_usd; }
     const chk = await runChecker(cfg, job, builderSession, attempt, governedContext);
-    if (cfg.budgetLedger) cfg.budgetLedger.commit({ role: "checker", job: job.job_id, attempt }, (chk && chk.provider_cost_usd) ?? 0, chk && chk.transport_digest);
+    // Pass the reported checker cost THROUGH (no ?? 0): a checker session that reports no cost holds the run.
+    if (cfg.budgetLedger) cfg.budgetLedger.commit({ role: "checker", job: job.job_id, attempt }, chk && chk.provider_cost_usd, chk && chk.transport_digest);
     w.evidence({ job: job.job_id, stage: "independent_checker", attempt, result: chk.result });
     sep.startChecker(chk.session); // throws if not independent / not read-only
     sep.checkerResult(chk.clean === true);

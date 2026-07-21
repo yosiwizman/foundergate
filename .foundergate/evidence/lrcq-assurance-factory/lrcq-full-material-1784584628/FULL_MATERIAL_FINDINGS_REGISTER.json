@@ -1,4 +1,6 @@
 {
+  "SUPERSEDED": true,
+  "superseded_note": "HISTORICAL SNAPSHOT — opened against 07bde44 when only 2 of 5 findings were addressed. Every OPEN/PARTIAL item below has SINCE been BUILT and verified: executable backlog v2 frozen (digest sha256:f3801d96) + manifest/template rebound to v2; identity envelope rendered into the real prompt (no identity.json); CLI transport-envelope parser; builder-output validation before machine verification; real setup/worktree manager; budget ledger wired into the launcher with per-session CLI caps + truthful accounting; full 25-job rehearsal; fresh checker CLEAN + separate advisor. Current authoritative status is ACT_009_013_MATRIX.json at the current frozen head. This file is retained only for the audit trail; do NOT read it as current status.",
   "register": "FG-LRCQ-ACT-009..013 (full-material closure)",
   "opened_against": "07bde44dd4513cbb5e29506d630122dd215fb1ec",
   "prior_reviews": "checker CLEAN + advisor READY @07bde44 -> STALE (this operation mutated the candidate; full frozen materials not yet proven through the route)",
