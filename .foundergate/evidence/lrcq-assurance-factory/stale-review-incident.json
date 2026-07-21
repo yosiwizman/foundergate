@@ -1,0 +1,28 @@
+{
+  "incident": "PR189-STALE-REVIEW-POST-FREEZE-WRITES",
+  "append_only": true,
+  "discovered_by": "strict read-only gate-integrity audit (FOUNDERGATE-GATE-INTEGRITY-AUDIT: INDEPENDENT_ADVISOR_AUDIT_REQUIRED)",
+  "prior_reviewed_head": "fcf2172ebeef56aa880961a4a66f0b1dd8b68890",
+  "prior_reviewed_tree": "c4815b711ab530aea464c91d4254068049d5e8d8",
+  "prior_reviews": {
+    "independent_checker": "returned CLEAN on head fcf2172e with an attested EMPTY git status",
+    "separate_advisor": "returned READY on head fcf2172e with an attested EMPTY git status"
+  },
+  "post_review_mutations_discovered": [
+    "TRACKED file .foundergate/evidence/lrcq-assurance/founder-hand-burden.json was MODIFIED after both reviews (HEAD blob 3b7e5c89… vs post-review worktree blob 193fc67d…)",
+    "UNTRACKED evidence package .foundergate/evidence/lrcq-assurance-factory/founder-capsule/ (14 files) was CREATED after both reviews; aggregate digest sha256:247784bd842aa9ccd8e834622bb084666ebde42c33f94486ad1d3ed0148b9dea; it included a copy of the out-of-tree final activation template and was the founder-facing evidence package the reviews never saw"
+  ],
+  "classification": "BOTH PRIOR REVIEWS ARE STALE for the complete founder-facing package. They remain valid ONLY as evidence that the frozen SOURCE at fcf2172e was byte-unchanged and the signature gate held; they do NOT bind the founder capsule or the reconciled hand-burden.",
+  "preserved_preimage": "scratchpad/stale-review-preimage/ (founder-capsule-STALE + founder-hand-burden-POSTREVIEW-STALE.json) — preserved, not deleted",
+  "safety_facts_confirmed_at_incident_time": {
+    "real_provider_invoked": false,
+    "activation_signed": false,
+    "activation_consumed": false,
+    "five_hour_run_started": false,
+    "pr_189_merged": false,
+    "protected_main_modified": false,
+    "final_template_preflight": "SIGNATURE-REQUIRED, zero provider invocation (reproduced read-only, zero mutation)"
+  },
+  "why_fresh_freeze_and_reviews_required": "Under the non-recursive freeze law, a post-review change to any tracked evidence file or to the founder-facing evidence package invalidates the reviews' clean-tree / no-post-review-mutation binding. No two-SHA / out-of-tree evidence-set seal existed that the prior reports referenced. Remediation: fold the reconciled hand-burden into the candidate, move the capsule out-of-tree, bind the complete package with a non-recursive evidence-set manifest referenced by BOTH fresh reviews, reconcile PR metadata + GitHub head, re-freeze, and obtain a FRESH checker + FRESH advisor on the unchanged package.",
+  "old_reviews_not_reused_as_current_approval": true
+}
