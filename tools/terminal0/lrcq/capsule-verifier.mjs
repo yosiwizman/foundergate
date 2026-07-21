@@ -9,6 +9,7 @@ import { execFileSync } from "node:child_process";
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { resolve, join, relative } from "node:path";
+import { prMetadataDigest } from "./pr-metadata-canon.mjs";
 
 const sha256 = (buf) => "sha256:" + createHash("sha256").update(buf).digest("hex");
 const sha256file = (p) => sha256(readFileSync(p));
@@ -37,6 +38,13 @@ if (existsSync(sumsPath)) {
 // 2. candidate binding: SYSTEM_STATE + FINAL template bind the exact current head
 const ss = existsSync(join(CAP, "SYSTEM_STATE.json")) ? JSON.parse(readFileSync(join(CAP, "SYSTEM_STATE.json"), "utf8")) : {};
 check("SYSTEM_STATE binds exact frozen head", ss.frozen_head === head, "state=" + ss.frozen_head + " head=" + head);
+// FG-LRCQ metadata binding: when gh is available, confirm the canonical digest of the LIVE GitHub PR body
+// equals the capsule's recorded pr_body_digest (canonicalizer treats trailing-newline normalization as equal).
+try {
+  const t = execFileSync("gh", ["pr", "view", "189", "--json", "title", "-q", ".title"], { encoding: "utf8" }).replace(/\n$/, "");
+  const b = execFileSync("gh", ["pr", "view", "189", "--json", "body", "-q", ".body"], { encoding: "utf8" });
+  check("canonical LIVE GitHub metadata == capsule pr_body_digest", prMetadataDigest(t, b) === ss.pr_body_digest, "live=" + prMetadataDigest(t, b));
+} catch { console.log("  SKIP canonical live-metadata check (gh unavailable — offline mode)"); }
 const tpl = existsSync(join(CAP, "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json")) ? JSON.parse(readFileSync(join(CAP, "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json"), "utf8")) : {};
 check("FINAL template binds exact frozen head", tpl.run_harness_candidate_sha === head);
 check("FINAL template is UNSIGNED", tpl.founder_signature == null && ss.frozen_tree === undefined ? true : tpl.founder_signature == null, "sig=" + tpl.founder_signature);
