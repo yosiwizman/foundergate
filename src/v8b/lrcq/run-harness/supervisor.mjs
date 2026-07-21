@@ -42,6 +42,9 @@ export function startSupervisor(opts = {}) {
   try { mkdirp(stateDir); } catch { /* */ }
   const state = {
     schema: SUPERVISOR_SCHEMA, run_id, supervisor_pid: pid, activation_id: consumerReceipt.activation_id,
+    // process_start_identity (e.g. `ps -o lstart`) distinguishes THIS supervisor process from a later
+    // process that happens to reuse the same PID — a stale/reused PID cannot impersonate the supervisor.
+    process_start_identity: opts.process_start_identity || null,
     start_epoch: now, immutable_hard_deadline_epoch: deadline, run_duration_s: consumerReceipt.run_duration_s,
     max_budget_usd: consumerReceipt.max_budget_usd, heartbeat_epoch: now, state: "RUN_ACTIVE",
     owns: ["immutable_deadline", "queue", "cost_ledger", "process_tree"],

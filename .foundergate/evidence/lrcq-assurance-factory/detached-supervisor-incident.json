@@ -1,0 +1,45 @@
+{
+  "incident": "PR189-DETACHED-SUPERVISOR-IN-PROCESS-GAP",
+  "append_only": true,
+  "prior_candidate": "2cc08dba5936bf7b0653b0ccc40b9591d2a0f0a9",
+  "finding": "The prior control-plane candidate added durable activation consumption, replay protection, supervisor STATE, and health-witness LOGIC, and the prior checker + advisor accepted 'detached continuation'. But mechanically: supervisor.mjs spawns NO OS process; executeSupervisedRun does `await executeSignedRun(...)` synchronously in the LAUNCHER process (run-five-hour.mjs:274); there is NO dedicated supervisor process entry point and NO independent witness process entry point. The prior acceptance-matrix row CP-25 honestly labeled OS detachment 'production-only behavior ... modeled via durable receipt' — i.e., MODELED_ONLY, not proven.",
+  "process_model_audit": {
+    "DS-01 different OS processes": "CONTRADICTED (same process)",
+    "DS-02 supervisor PID != launcher PID": "CONTRADICTED (same PID)",
+    "DS-03 launcher returns after RUN_ACTIVE": "PARTIAL (returns after the WHOLE run)",
+    "DS-04 launcher exits before run completes": "CONTRADICTED (awaits full run)",
+    "DS-05/06 supervisor survives launcher exit": "MISSING",
+    "DS-12 separate witness process": "MISSING",
+    "real_detachment": "MODELED_ONLY"
+  },
+  "classification": "prior checker + advisor STALE_FOR_REAL_OS_DETACH_AND_INDEPENDENT_WITNESS",
+  "safety_state": { "founder_signature": "NONE", "real_activation": false, "provider_invocation": false, "real_run": false, "merged": false, "protected_main_modified": false },
+  "remediation": "Implement a REAL dedicated supervisor OS process (supervisor-main.mjs) spawned detached by the launcher, and a separate read-only witness process (witness-main.mjs). The launcher validates + atomically consumes + spawns ONE detached supervisor + waits bounded for RUN_ACTIVE + returns a receipt + EXITS (never awaits the job run). Prove with REAL-process deterministic stub tests (different PIDs, launcher exits, supervisor survives + heartbeat advances, separate witness attaches, provider-stub descends from supervisor, process-group teardown). No real Claude, no real activation, no real run.",
+  "prior_reviews_not_reused": true,
+  "resolution": {
+    "resolved_state": "REAL_OS_PROCESS_DETACHMENT_PROVEN",
+    "candidate_after": "pending step-A commit on top of 2cc08dba (this same working tree)",
+    "built": [
+      "src/v8b/lrcq/run-harness/supervisor-main.mjs — dedicated detached supervisor process (own PID + process-start identity, publishes RUN_ACTIVE, own heartbeat interval, runs executeSignedRun, durable terminal state, process-group teardown).",
+      "src/v8b/lrcq/run-harness/witness-main.mjs — independent read-only witness process; builds real snapshots (readSupervisorState + supervisorAlive + pgrep -P child lineage + ps -o lstart start-identity + evidence file count); production 12-min cadence; NEVER writes run state.",
+      "tools/terminal0/lrcq/run-five-hour.mjs launchDetachedSupervisor() — validate -> atomic consumeActivation -> write 0600 supervisor config -> spawn(execPath,[supervisor-main,--config],{detached:true,stdio:['ignore',outFd,errFd]}).unref() -> bounded wait for RUN_ACTIVE -> validate receipt (distinct PID + process-start identity) -> return receipt + EXIT (never awaits the job run).",
+      "src/v8b/lrcq/provider-tests/slow-productive-stub.mjs (mode 100755) — protocol-identical to productive-stub but sleeps first so the supervised run stays observable after launcher exit."
+    ],
+    "proven_by": {
+      "detached-supervisor.selftest.mjs": "16/16 REAL processes: launcher exits (did not await run); RUN_ACTIVE launch receipt; supervisor PID != launcher PID; launcher gone + supervisor alive after exit; provider stub is a supervisor DESCENDANT (pgrep -P); heartbeat advances after launcher exit; process-start identity recorded; separate WITNESS process attaches read-only -> HEALTHY_CONTINUE; production 12-min witness cadence preserved; stable run_id + immutable deadline across launcher/supervisor/witness; durable terminal STOPPED_EXHAUSTED; descendants gone after teardown; replay blocked after terminal; protected main unchanged; provider was the stub (never real Claude).",
+      "detached-supervisor-failure.selftest.mjs": "5/5 launcher fail-closed: unsigned refused before consume/spawn; no RUN_ACTIVE within bound -> refuse (consumed, not launched); replay -> REPLAY_BLOCKED (not launched); missing supervisor entry -> refuse (never launched); elapsed deadline refused (never launched).",
+      "full_suite": "34/34 selftest files green, 777 assertions, reproduced twice back-to-back, zero orphan processes."
+    },
+    "process_model_after": {
+      "DS-01 different OS processes": "PROVEN (real spawn; distinct PIDs asserted)",
+      "DS-02 supervisor PID != launcher PID": "PROVEN",
+      "DS-03 launcher returns after RUN_ACTIVE": "PROVEN (bounded wait for RUN_ACTIVE only)",
+      "DS-04 launcher exits before run completes": "PROVEN (launcher process observed exited while run still executing)",
+      "DS-05/06 supervisor survives launcher exit + heartbeat advances": "PROVEN",
+      "DS-12 separate witness process attaches read-only": "PROVEN (independent process, HEALTHY_CONTINUE, no state writes)",
+      "real_detachment": "PROVEN"
+    },
+    "root_cause_of_a_transient_false_pass": "slow-productive-stub.mjs was first written non-executable (0644); spawn(stub) failed EACCES so jobs parked while the queue still exhausted to STOPPED_EXHAUSTED, masking the missing descendant. Fixed to mode 100755 (git tracks the exec bit); the descendant assertion is then real and stable across repeated runs.",
+    "safety_state_unchanged": { "founder_signature": "NONE", "real_activation": false, "provider_invocation": false, "real_run": false, "merged": false, "protected_main_modified": false }
+  }
+}

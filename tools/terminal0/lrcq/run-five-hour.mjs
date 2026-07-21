@@ -17,7 +17,7 @@
 //   run-five-hour.mjs --preflight-unsigned <packet.json>
 //   run-five-hour.mjs --activation <signed-activation.json>
 
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawn } from "node:child_process";
 import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve, join } from "node:path";
@@ -39,7 +39,7 @@ import { consumeActivation, isConsumed } from "../../../src/v8b/lrcq/run-harness
 import { startSupervisor, readSupervisorState } from "../../../src/v8b/lrcq/run-harness/supervisor.mjs";
 import { witnessHealth } from "../../../src/v8b/lrcq/run-harness/health-witness.mjs";
 import { BudgetLedger } from "../../../src/v8b/lrcq/run-harness/budget-ledger.mjs";
-import { readFileSync as _rf, mkdirSync, writeFileSync } from "node:fs";
+import { readFileSync as _rf, mkdirSync, writeFileSync, openSync, closeSync } from "node:fs";
 import * as SEAMS from "../../../src/v8b/lrcq/run-harness/real-seams.mjs";
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
@@ -281,6 +281,53 @@ export async function executeSupervisedRun(activation, man, runBindings, counter
   }
 }
 
+// FG-LRCQ-ACT-017/018: the ONE production detached-launch path. The launcher validates + atomically
+// consumes + writes immutable supervisor config, then SPAWNS supervisor-main.mjs as a genuine DETACHED
+// OS process (own process group, stdin disconnected, stdout/stderr to durable run files, unref'd) so it
+// OUTLIVES this launcher/terminal. The launcher then waits a BOUNDED interval for the supervisor to
+// publish RUN_ACTIVE, validates the launch receipt (distinct PID + process-start identity + immutable
+// deadline), returns it, and EXITS — it never awaits the job run. Refuses (zero side effects) before any
+// provider work on any binding/consumption/spawn/RUN_ACTIVE failure. Never invokes a provider itself.
+export async function launchDetachedSupervisor(activation, man, runBindings, exec = {}, life = {}) {
+  const root = man.root;
+  const ledgerDir = life.ledgerDir || resolve(root, man.manifest.evidence_root, "activation-ledger");
+  const supervisorDir = life.supervisorDir || resolve(root, man.manifest.evidence_root, "supervisor");
+  const runRoot = life.runRoot || resolve(root, man.manifest.evidence_root);
+  const now = typeof life.now === "number" ? life.now : Math.floor(Date.now() / 1000);
+  const supMain = life.supervisorMainPath || resolve(REPO, "src/v8b/lrcq/run-harness/supervisor-main.mjs");
+  // Gate 0: unsigned/mis-bound -> authoritative refusal via the inner validator, zero side effects.
+  if (!validateActivationV3(activation, runBindings).valid) { return { ready: false, refused: { stage: "validate_activation", reasons: ["activation invalid/unsigned"] }, final_state: "REFUSED", consumed: false, launched: false }; }
+  // Gate 1: atomic one-time consumption (durable anti-replay) — BEFORE spawning anything.
+  const consumption = consumeActivation(activation, { ledgerDir, now });
+  if (!consumption.ok) return { ready: false, refused: { stage: "activation_consumption", reasons: [consumption.reason] }, final_state: consumption.replay_blocked ? "REPLAY_BLOCKED" : "CONSUMPTION_REFUSED", consumed: false, launched: false, consumption };
+  // Write immutable supervisor config (explicit array args; restrictive perms; no shell).
+  try { mkdirSync(supervisorDir, { recursive: true }); mkdirSync(runRoot, { recursive: true }); } catch { /* */ }
+  const cfgPath = resolve(supervisorDir, "supervisor-config-" + String(activation.run_id).replace(/[^a-zA-Z0-9_.-]/g, "_") + ".json");
+  const cfg = { activation, man, bindings: runBindings, exec, ledgerDir, supervisorDir, runRoot, heartbeatMs: life.heartbeatMs || 30000, eventLog: resolve(runRoot, "supervisor-events.jsonl") };
+  writeFileSync(cfgPath, JSON.stringify(cfg), { flag: "w", mode: 0o600 });
+  // Spawn the detached supervisor process; durable stdout/stderr opened BEFORE spawn; fds closed after.
+  const outFd = openSync(resolve(runRoot, "supervisor.out"), "a", 0o600);
+  const errFd = openSync(resolve(runRoot, "supervisor.err"), "a", 0o600);
+  let child;
+  try { child = spawn(process.execPath, [supMain, "--config", cfgPath], { detached: true, stdio: ["ignore", outFd, errFd] }); child.unref(); }
+  catch (e) { try { closeSync(outFd); closeSync(errFd); } catch { /* */ } return { ready: false, refused: { stage: "supervisor_spawn", reasons: [e && e.message] }, final_state: "SUPERVISOR_SPAWN_FAILED", consumed: true, launched: false }; }
+  const launcherPid = process.pid, supervisorPid = child.pid;
+  try { closeSync(outFd); closeSync(errFd); } catch { /* */ }
+  // Wait a BOUNDED interval for durable RUN_ACTIVE (the supervisor publishes it from ITS process).
+  const deadlineMs = Date.now() + (life.startupTimeoutMs || 10000);
+  let state = null;
+  while (Date.now() < deadlineMs) {
+    state = readSupervisorState(supervisorDir, activation.run_id);
+    if (state && !state.corrupt && state.state === "RUN_ACTIVE" && typeof state.supervisor_pid === "number") break;
+    await new Promise((r) => setTimeout(r, life.pollMs || 150));
+  }
+  if (!state || state.corrupt || state.state !== "RUN_ACTIVE") return { ready: false, refused: { stage: "run_active_timeout", reasons: ["supervisor did not publish RUN_ACTIVE within bound"] }, final_state: "RUN_ACTIVE_TIMEOUT", consumed: true, launched: false, supervisor_pid: supervisorPid };
+  if (state.supervisor_pid === launcherPid) return { ready: false, refused: { stage: "pid_distinctness", reasons: ["supervisor PID equals launcher PID"] }, final_state: "SUPERVISOR_NOT_DETACHED", consumed: true, launched: false };
+  if (!state.process_start_identity) return { ready: false, refused: { stage: "process_start_identity", reasons: ["supervisor did not publish a process-start identity"] }, final_state: "NO_PROCESS_IDENTITY", consumed: true, launched: false };
+  // Launch receipt; the launcher now RETURNS and (as a CLI) exits — the supervisor keeps running.
+  return { ready: true, launched: true, consumed: true, launcher_pid: launcherPid, launch_receipt: { run_id: activation.run_id, supervisor_pid: state.supervisor_pid, process_start_identity: state.process_start_identity, immutable_hard_deadline_epoch: state.immutable_hard_deadline_epoch, state: "RUN_ACTIVE", activation_id: consumption.activation_id, run_duration_s: consumption.run_duration_s, max_budget_usd: consumption.max_budget_usd }, config_path: cfgPath, run_root: runRoot };
+}
+
 // Map a harness result to a durable supervisor terminal state (all fail-closed / bounded stops).
 function mapTerminalState(result) {
   const fstate = result && result.final_state;
@@ -384,17 +431,29 @@ async function main() {
   const ai = args.indexOf("--activation");
   if (ai < 0 || !args[ai + 1]) { console.error("usage: run-five-hour.mjs --activation <path> | --preflight-unsigned <path> | --resolve-only"); return 2; }
   const activation = JSON.parse(readFileSync(args[ai + 1], "utf8"));
-  const man = loadManifest(activation);
-  if (!man.ok) { console.error("MANIFEST-DEFECT: " + man.reason); return 1; }
-  const counters = makeCounters();
-  const runBindings = { ...bindings, now_epoch: Math.floor(Date.now() / 1000), provider_path: man.manifest.provider_executable_path, provider_identity: man.manifest.provider_executable_identity, candidate_stack: bindings.run_harness_candidate_sha };
-  // The REAL signed-run path is SUPERVISED: valid signed activation -> canonical identity -> atomic
-  // one-time consumption -> durable replay block -> exactly one supervisor -> existing executor +
-  // provider adapter. There is no alternate unsigned/unsupervised launch path. It refuses (zero side
-  // effects) before any provider invocation if unsigned/mis-bound, already consumed, corrupt, or a live
-  // supervisor already owns the run.
-  const result = await executeSupervisedRun(activation, man, runBindings, counters, { git: (a, cwd) => execFileSync("git", a, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(), repoRoot: man.manifest.repository_root, candidateRef: runBindings.run_harness_candidate_sha });
-  console.log(JSON.stringify({ ready: result.ready, refused: result.refused, final_state: result.final_state, consumed: result.consumed, terminal_state: result.terminal_state, launch_receipt: result.launch_receipt, worktrees_created: result.worktrees_created, invocations: counters.c }, null, 2));
+  // TEST-ONLY SEAM (inaccessible to production; env-gated): a deterministic-stub test provides its own
+  // man/bindings/life so the REAL launcher + detached-spawn path is exercised without the real manifest
+  // or the real provider. Production leaves LRCQ_TEST_LIFECYCLE unset and uses loadManifest + real bindings.
+  let man, runBindings, testLife = null, testExec = null;
+  if (process.env.LRCQ_TEST_LIFECYCLE) {
+    const t = JSON.parse(readFileSync(process.env.LRCQ_TEST_LIFECYCLE, "utf8"));
+    man = { manifest: t.manifest, loaded: t.loaded, root: t.root, ok: true };
+    runBindings = t.bindings; testLife = t.life || {}; testExec = t.exec || null;
+  } else {
+    man = loadManifest(activation);
+    if (!man.ok) { console.error("MANIFEST-DEFECT: " + man.reason); return 1; }
+    runBindings = { ...bindings, now_epoch: Math.floor(Date.now() / 1000), provider_path: man.manifest.provider_executable_path, provider_identity: man.manifest.provider_executable_identity, candidate_stack: bindings.run_harness_candidate_sha };
+  }
+  // The REAL signed-run path is DETACHED-SUPERVISED: valid signed activation -> canonical identity ->
+  // atomic one-time consumption -> durable replay block -> write immutable supervisor config -> spawn ONE
+  // detached supervisor OS process -> wait bounded for RUN_ACTIVE -> validate launch receipt -> RETURN +
+  // EXIT (the launcher never awaits the run; the detached supervisor owns it to the immutable deadline).
+  // This is the ONLY production launch route — there is no synchronous/unsupervised alternative here.
+  // Production derives exec from the manifest + candidate SHA; the test-only seam supplies its own exec
+  // (disposable repo + real candidate ref) so the detached supervisor can create real worktrees.
+  const detExec = testExec ? { git: (a, cwd) => execFileSync("git", a, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(), ...testExec } : { git: (a, cwd) => execFileSync("git", a, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(), repoRoot: man.manifest.repository_root, candidateRef: runBindings.run_harness_candidate_sha };
+  const result = await launchDetachedSupervisor(activation, man, runBindings, detExec, testLife || {});
+  console.log(JSON.stringify({ ready: result.ready, launched: result.launched, refused: result.refused, final_state: result.final_state, consumed: result.consumed, launcher_pid: result.launcher_pid, launch_receipt: result.launch_receipt, run_root: result.run_root }, null, 2));
   return result.ready ? 0 : 1;
 }
 
