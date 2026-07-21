@@ -1,0 +1,19 @@
+{
+  "review_index": "PR189",
+  "append_only": true,
+  "path_policy": "Every checker/advisor report has a UNIQUE path binding an exact candidate SHA: pr189-<full-sha>-<role>-<sequence>.json. No report path is ever overwritten.",
+  "provenance_incident": {
+    "what": "During the detached-supervisor correction, the scratchpad review artifact fresh-checker-report.json was OVERWRITTEN in place: it had held the control-plane checker CLEAN verdict bound to 2cc08dba and was replaced with the detached-supervisor checker verdict bound to e0dd06e0 at the same path.",
+    "honestly_recorded": true,
+    "not_reconstructed": "The overwritten prior content is NOT reconstructed or silently replaced; this record simply documents the overwrite.",
+    "remediation": "This SHA-bound unique-path policy prevents recurrence."
+  },
+  "reports": [
+    { "role": "checker", "candidate_sha": "2cc08dba5936bf7b0653b0ccc40b9591d2a0f0a9", "verdict": "CLEAN (control-plane)", "status": "STALE_FOR_PRODUCTION_SEAM_CLOSURE", "reason": "predates detached-supervisor + seam closure; its scratchpad artifact was later overwritten", "path": "(scratchpad, overwritten — see provenance_incident)" },
+    { "role": "checker", "candidate_sha": "e0dd06e080b42d8fbbc8851705cb6b8b7508a450", "verdict": "PASS (detached-supervisor)", "status": "STALE_FOR_PRODUCTION_SEAM_CLOSURE", "reason": "predates the LRCQ_TEST_LIFECYCLE / LRCQ_WITNESS_TEST_MS seam closure + executeSupervisedRun relocation", "path": "scratchpad/fresh-checker-report.json (bound to e0dd06e0)" },
+    { "role": "advisor", "candidate_sha": "e0dd06e080b42d8fbbc8851705cb6b8b7508a450", "verdict": "PROCEED_WITH_NOTES (detached-supervisor)", "status": "STALE_FOR_PRODUCTION_SEAM_CLOSURE", "reason": "its two hardening notes (executeSupervisedRun export; seam reachability) are the very defects this correction closes", "path": "scratchpad/fresh-advisor-report.json (bound to e0dd06e0)" }
+  ],
+  "current_candidate": "PENDING — set to the new frozen head at freeze time",
+  "current_checker_path": "PENDING — pr189-<new-sha>-checker-1.json (fresh, seam-closure)",
+  "current_advisor_path": "PENDING — pr189-<new-sha>-advisor-1.json (fresh, seam-closure)"
+}

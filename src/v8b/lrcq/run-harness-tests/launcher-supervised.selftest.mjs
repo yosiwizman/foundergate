@@ -1,10 +1,12 @@
-// FounderGate LRCQ — SUPERVISED launcher lifecycle (FG-LRCQ-ACT-014/015/016). Drives the production
-// executeSupervisedRun with a SYNTHETIC signed activation + the deterministic STUB provider (NEVER real
-// Claude), proving: valid signed activation -> canonical identity -> atomic ONE-TIME consumption ->
-// durable REPLAY BLOCK -> exactly ONE supervisor (PID/heartbeat/immutable deadline) -> existing executor
-// + provider adapter -> durable terminal state -> read-only witness. Replay is refused sequentially,
-// concurrently, and after a fresh "process" (state reload). No real provider, no merge, no protected main.
-import { executeSupervisedRun, makeCounters } from "../../../../tools/terminal0/lrcq/run-five-hour.mjs";
+// FounderGate LRCQ — SUPERVISED launcher lifecycle (FG-LRCQ-ACT-014/015/016/019). Drives the TEST-ONLY
+// (relocated, non-production) executeSupervisedRun with a SYNTHETIC signed activation + the deterministic
+// STUB provider (NEVER real Claude), proving: valid signed activation -> canonical identity -> atomic
+// ONE-TIME consumption -> durable REPLAY BLOCK -> exactly ONE supervisor (PID/heartbeat/immutable deadline)
+// -> existing executor + provider adapter -> durable terminal state -> read-only witness. Replay is refused
+// sequentially, concurrently, and after a fresh "process" (state reload). No real provider, no merge, no
+// protected main. executeSupervisedRun now lives in test-support (structurally absent from production).
+import { executeSupervisedRun } from "./test-support/supervised-run.mjs";
+import { makeCounters } from "../../../../tools/terminal0/lrcq/run-five-hour.mjs";
 import { consumeActivation, isConsumed } from "../run-harness/activation-consumer.mjs";
 import { readSupervisorState } from "../run-harness/supervisor.mjs";
 import { witnessHealth } from "../run-harness/health-witness.mjs";

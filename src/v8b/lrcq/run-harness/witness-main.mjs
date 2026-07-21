@@ -1,29 +1,38 @@
 #!/usr/bin/env node
-// FounderGate LRCQ — the REAL independent read-only WITNESS process (FG-LRCQ-ACT-018). A SEPARATE process
-// (distinct PID from launcher + supervisor) that ATTACHES to an already-running supervised run by run ID
-// and observes for the production 12-minute window (accelerated ONLY via a test-only env injection). It
-// reads durable supervisor/ledger state + OS process liveness/lineage and returns HEALTHY_CONTINUE / HELD
-// / FAILED / INSUFFICIENT_EVIDENCE. It NEVER writes run state, launches, restarts, repairs, consumes,
-// alters the queue, extends the deadline, or spawns a second supervisor.
+// FounderGate LRCQ — the REAL independent read-only WITNESS process (FG-LRCQ-ACT-018/019). A SEPARATE
+// process (distinct PID from launcher + supervisor) that ATTACHES to an already-running supervised run by
+// run ID and observes for the PRODUCTION 12-minute window. It reads durable supervisor/ledger state + OS
+// process liveness/lineage and returns HEALTHY_CONTINUE / HELD / FAILED / INSUFFICIENT_EVIDENCE. It NEVER
+// writes run state, launches, restarts, repairs, consumes, alters the queue, extends the deadline, or
+// spawns a second supervisor.
+//
+// SEAM CLOSURE: the production window is an IMMUTABLE reviewed constant (WITNESS_PRODUCTION_MS = 720000).
+// No environment variable, CLI argument, or caller input can shorten / skip / accelerate it or change its
+// poll count. If the retired accelerator LRCQ_WITNESS_TEST_MS is present during production witness
+// execution, this FAILS CLOSED (PRODUCTION_WITNESS_OVERRIDE_REFUSED) before returning any health verdict.
+// Accelerated witnessing for real-process tests exists ONLY in a structurally test-only entry point
+// (src/v8b/lrcq/run-harness-tests/test-support/witness-accel.mjs), which is absent from the production
+// import graph and is the sole caller that passes a shortened window to witnessWithTiming().
 import { existsSync, readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 import { readSupervisorState, supervisorAlive } from "./supervisor.mjs";
 import { witnessHealth } from "./health-witness.mjs";
 
+export const WITNESS_PRODUCTION_MS = 12 * 60 * 1000; // immutable reviewed production window: 720000 ms
+export const WITNESS_PRODUCTION_POLLS = 12;
+
 function startIdentity(pid) { try { return execFileSync("ps", ["-o", "lstart=", "-p", String(pid)], { encoding: "utf8" }).trim(); } catch { return null; } }
 function childPids(pid) { try { return execFileSync("pgrep", ["-P", String(pid)], { encoding: "utf8" }).trim().split(/\s+/).filter(Boolean); } catch { return []; } }
 
-async function witness(opts) {
+// Build the read-only snapshot closure for a run. Never mutates anything.
+function buildSnapshot(opts, s0) {
   const { supervisorDir, ledgerDir, runId, runRoot } = opts;
-  const s0 = readSupervisorState(supervisorDir, runId);
-  if (!s0 || s0.corrupt) return { result: "INSUFFICIENT_EVIDENCE", reason: "no/corrupt supervisor state for run " + runId };
   const activationId = s0.activation_id;
   const markerPath = join(ledgerDir, String(activationId).replace(":", "_") + ".consumed.json");
   const baselineIdentity = s0.process_start_identity;
   const mainBaseline = opts.protectedMainBaseline || null;
-
-  const snapshot = () => {
+  return () => {
     const s = readSupervisorState(supervisorDir, runId) || {};
     const alive = supervisorAlive(s.supervisor_pid) && (!baselineIdentity || startIdentity(s.supervisor_pid) === baselineIdentity);
     const kids = alive ? childPids(s.supervisor_pid) : [];
@@ -42,16 +51,27 @@ async function witness(opts) {
       terminal_state: s.state && s.state !== "RUN_ACTIVE" ? s.state : null,
     };
   };
-
-  const testMs = process.env.LRCQ_WITNESS_TEST_MS ? Number(process.env.LRCQ_WITNESS_TEST_MS) : null; // test-only injection
-  const totalMs = testMs != null ? testMs : 12 * 60 * 1000; // PRODUCTION: 12 minutes
-  const polls = testMs != null ? (opts.polls || 4) : 12;
-  const pollMs = Math.max(0, Math.floor(totalMs / polls));
-  const r = await witnessHealth({ snapshot, polls, pollMs, sleep: (ms) => new Promise((res) => setTimeout(res, ms)) });
-  return { ...r, result: r.result === "HEALTHY" ? "HEALTHY_CONTINUE" : r.result, run_id: runId, supervisor_pid: s0.supervisor_pid, immutable_hard_deadline_epoch: s0.immutable_hard_deadline_epoch, witness_pid: process.pid, production_witness_ms: 12 * 60 * 1000, accelerated_test: testMs != null };
 }
 
-export { witness };
+// Timing-parameterized core. PRODUCTION pins { WITNESS_PRODUCTION_MS, WITNESS_PRODUCTION_POLLS }; the ONLY
+// caller that passes a shortened window is the structurally test-only witness-accel entry point.
+export async function witnessWithTiming(opts, { totalMs, polls }) {
+  const s0 = readSupervisorState(opts.supervisorDir, opts.runId);
+  if (!s0 || s0.corrupt) return { result: "INSUFFICIENT_EVIDENCE", reason: "no/corrupt supervisor state for run " + opts.runId };
+  const snapshot = buildSnapshot(opts, s0);
+  const pollMs = Math.max(0, Math.floor(totalMs / polls));
+  const r = await witnessHealth({ snapshot, polls, pollMs, sleep: (ms) => new Promise((res) => setTimeout(res, ms)) });
+  return { ...r, result: r.result === "HEALTHY" ? "HEALTHY_CONTINUE" : r.result, run_id: opts.runId, supervisor_pid: s0.supervisor_pid, immutable_hard_deadline_epoch: s0.immutable_hard_deadline_epoch, witness_pid: process.pid, production_witness_ms: WITNESS_PRODUCTION_MS, accelerated_test: totalMs !== WITNESS_PRODUCTION_MS };
+}
+
+// PRODUCTION witness entry: immutable 12-minute window; NO override path. Fails closed if the retired
+// accelerator env var is present.
+export async function witness(opts) {
+  if (process.env.LRCQ_WITNESS_TEST_MS) {
+    return { result: "PRODUCTION_WITNESS_OVERRIDE_REFUSED", variable: "LRCQ_WITNESS_TEST_MS", run_id: opts && opts.runId, witness_pid: process.pid, production_witness_ms: WITNESS_PRODUCTION_MS };
+  }
+  return witnessWithTiming(opts, { totalMs: WITNESS_PRODUCTION_MS, polls: WITNESS_PRODUCTION_POLLS });
+}
 
 if (process.argv[1] && /witness-main\.mjs$/.test(process.argv[1])) {
   const ci = process.argv.indexOf("--config");

@@ -246,40 +246,12 @@ export async function executeSignedRun(activation, man, runBindings, counters, e
   finally { try { if (setup.teardown) setup.teardown(); } catch { /* teardown best-effort; verifier confirms tree-gone per job */ } }
 }
 
-// FG-LRCQ-ACT-014/015/016: the SUPERVISED signed-run entry. Adds the activation-lifecycle control plane
-// on top of executeSignedRun: (1) durable ONE-TIME activation consumption + anti-replay (a replay is
-// refused before any run), (2) single-owner supervisor with PID + heartbeat + duplicate refusal + the
-// IMMUTABLE deadline from the consumption receipt, (3) a durable terminal state. It NEVER mints authority,
-// invokes a provider itself, or extends the deadline. Refuses (zero side effects) if the activation is
-// unsigned/mis-bound, already consumed, or a live supervisor already owns the run. Tested with synthetic
-// signed fixtures + deterministic stub providers only — never the real provider.
-export async function executeSupervisedRun(activation, man, runBindings, counters, exec = {}, life = {}) {
-  const root = man.root;
-  const ledgerDir = life.ledgerDir || resolve(root, man.manifest.evidence_root, "activation-ledger");
-  const supervisorDir = life.supervisorDir || resolve(root, man.manifest.evidence_root, "supervisor");
-  const now = typeof life.now === "number" ? life.now : Math.floor(Date.now() / 1000);
-  // Gate 0: an unsigned/mis-bound record never consumes or supervises — run the authoritative refusal path.
-  if (!validateActivationV3(activation, runBindings).valid) { const r = await executeSignedRun(activation, man, runBindings, counters, exec); return { ...r, consumed: false, supervised: false }; }
-  // Gate 1: consume exactly once (durable, anti-replay).
-  const consumption = consumeActivation(activation, { ledgerDir, now });
-  if (!consumption.ok) return { ready: false, refused: { stage: "activation_consumption", reasons: [consumption.reason] }, final_state: consumption.replay_blocked ? "REPLAY_BLOCKED" : "CONSUMPTION_REFUSED", consumed: false, consumption };
-  // Gate 2: single supervisor ownership (PID + heartbeat + immutable deadline from the receipt).
-  const sup = startSupervisor({ stateDir: supervisorDir, run_id: activation.run_id, consumerReceipt: consumption, now, pid: life.pid });
-  if (!sup.ok) return { ready: false, refused: { stage: "supervisor", reasons: [sup.reason] }, final_state: "SUPERVISOR_REFUSED", consumed: true, consumption, supervisor: sup };
-  // Run under supervision; heartbeat around execution; record a durable terminal state. The activation
-  // stays consumed after EVERY terminal outcome (success, held, budget/deadline stop, or failure).
-  let result;
-  try {
-    sup.handle.heartbeat(now);
-    result = await executeSignedRun(activation, man, runBindings, counters, exec);
-    const term = mapTerminalState(result);
-    sup.handle.setTerminal(term.state, term.reason);
-    return { ...result, consumed: true, supervised: true, consumption_receipt: consumption, launch_receipt: sup.launch_receipt, terminal_state: term.state };
-  } catch (e) {
-    try { sup.handle.setTerminal("FAILED_CLOSED", e && e.message); } catch { /* */ }
-    return { ready: false, refused: { stage: "supervised_execution", reasons: [e && e.message] }, final_state: "FAILED_CLOSED", consumed: true, consumption_receipt: consumption, launch_receipt: sup.launch_receipt, terminal_state: "FAILED_CLOSED" };
-  }
-}
+// FG-LRCQ-ACT-014/015/016/019: the in-process SUPERVISED signed-run orchestration (durable one-time
+// consumption + anti-replay + single-owner supervisor + durable terminal state) has been RELOCATED OUT of
+// this production launcher into a structurally test-only module so it is absent from the production
+// authority graph: src/v8b/lrcq/run-harness-tests/test-support/supervised-run.mjs. Production real-activation
+// execution uses ONLY launchDetachedSupervisor (a genuine detached OS process) — there is no synchronous /
+// in-process supervised route reachable from production source. mapTerminalState moved with it.
 
 // FG-LRCQ-ACT-017/018: the ONE production detached-launch path. The launcher validates + atomically
 // consumes + writes immutable supervisor config, then SPAWNS supervisor-main.mjs as a genuine DETACHED
@@ -326,17 +298,6 @@ export async function launchDetachedSupervisor(activation, man, runBindings, exe
   if (!state.process_start_identity) return { ready: false, refused: { stage: "process_start_identity", reasons: ["supervisor did not publish a process-start identity"] }, final_state: "NO_PROCESS_IDENTITY", consumed: true, launched: false };
   // Launch receipt; the launcher now RETURNS and (as a CLI) exits — the supervisor keeps running.
   return { ready: true, launched: true, consumed: true, launcher_pid: launcherPid, launch_receipt: { run_id: activation.run_id, supervisor_pid: state.supervisor_pid, process_start_identity: state.process_start_identity, immutable_hard_deadline_epoch: state.immutable_hard_deadline_epoch, state: "RUN_ACTIVE", activation_id: consumption.activation_id, run_duration_s: consumption.run_duration_s, max_budget_usd: consumption.max_budget_usd }, config_path: cfgPath, run_root: runRoot };
-}
-
-// Map a harness result to a durable supervisor terminal state (all fail-closed / bounded stops).
-function mapTerminalState(result) {
-  const fstate = result && result.final_state;
-  if (fstate === "STOPPED_DEADLINE") return { state: "STOPPED_DEADLINE", reason: "hard deadline reached" };
-  if (fstate === "STOPPED_BY_STOP") return { state: "STOPPED_BY_STOP", reason: "stop control observed" };
-  if (fstate === "CONTROLLED_BUDGET_STOP" || (result && result.outcome_status === "CONTROLLED_BUDGET_STOP")) return { state: "CONTROLLED_BUDGET_STOP", reason: "run-wide $10 ceiling" };
-  if (fstate && /HELD/.test(fstate)) return { state: "HELD", reason: fstate };
-  if (result && result.ready === false) return { state: "HELD", reason: (result.refused && result.refused.stage) || "not ready" };
-  return { state: "STOPPED_EXHAUSTED", reason: "queue drained / run complete" };
 }
 
 async function main() {
@@ -430,29 +391,32 @@ async function main() {
   }
   const ai = args.indexOf("--activation");
   if (ai < 0 || !args[ai + 1]) { console.error("usage: run-five-hour.mjs --activation <path> | --preflight-unsigned <path> | --resolve-only"); return 2; }
-  const activation = JSON.parse(readFileSync(args[ai + 1], "utf8"));
-  // TEST-ONLY SEAM (inaccessible to production; env-gated): a deterministic-stub test provides its own
-  // man/bindings/life so the REAL launcher + detached-spawn path is exercised without the real manifest
-  // or the real provider. Production leaves LRCQ_TEST_LIFECYCLE unset and uses loadManifest + real bindings.
-  let man, runBindings, testLife = null, testExec = null;
+  // FG-LRCQ-ACT-019 PRODUCTION SEAM CLOSURE: the production --activation command accepts NO caller-supplied
+  // override of manifest / loaded backlog / bindings / provider / repository / candidate / execution adapter
+  // / runtime root / evidence root / ledger dir / supervisor dir / supervisor-main path / startup / polling /
+  // heartbeat. A retired test-injection variable present during a production run FAILS CLOSED HERE — before
+  // the activation is read or consumed and before any process is spawned — with zero provider invocation.
+  // Deterministic tests drive the detached launcher through a structurally test-only path
+  // (src/v8b/lrcq/run-harness-tests/test-support), never through this production CLI.
   if (process.env.LRCQ_TEST_LIFECYCLE) {
-    const t = JSON.parse(readFileSync(process.env.LRCQ_TEST_LIFECYCLE, "utf8"));
-    man = { manifest: t.manifest, loaded: t.loaded, root: t.root, ok: true };
-    runBindings = t.bindings; testLife = t.life || {}; testExec = t.exec || null;
-  } else {
-    man = loadManifest(activation);
-    if (!man.ok) { console.error("MANIFEST-DEFECT: " + man.reason); return 1; }
-    runBindings = { ...bindings, now_epoch: Math.floor(Date.now() / 1000), provider_path: man.manifest.provider_executable_path, provider_identity: man.manifest.provider_executable_identity, candidate_stack: bindings.run_harness_candidate_sha };
+    console.log(JSON.stringify({ result: "PRODUCTION_TEST_OVERRIDE_REFUSED", variable: "LRCQ_TEST_LIFECYCLE", command: "--activation", activation_consumed: false, process_spawned: false, provider_invocation: 0 }, null, 2));
+    console.error("PRODUCTION_TEST_OVERRIDE_REFUSED: LRCQ_TEST_LIFECYCLE must not be set for a production run");
+    return 1;
   }
+  const activation = JSON.parse(readFileSync(args[ai + 1], "utf8"));
+  // Production authority-bearing values derive ONLY from the validated signed activation, the reviewed
+  // manifest it binds (loadManifest), the frozen candidate, and the normal provider resolver — no caller.
+  const man = loadManifest(activation);
+  if (!man.ok) { console.error("MANIFEST-DEFECT: " + man.reason); return 1; }
+  const runBindings = { ...bindings, now_epoch: Math.floor(Date.now() / 1000), provider_path: man.manifest.provider_executable_path, provider_identity: man.manifest.provider_executable_identity, candidate_stack: bindings.run_harness_candidate_sha };
   // The REAL signed-run path is DETACHED-SUPERVISED: valid signed activation -> canonical identity ->
   // atomic one-time consumption -> durable replay block -> write immutable supervisor config -> spawn ONE
   // detached supervisor OS process -> wait bounded for RUN_ACTIVE -> validate launch receipt -> RETURN +
   // EXIT (the launcher never awaits the run; the detached supervisor owns it to the immutable deadline).
-  // This is the ONLY production launch route — there is no synchronous/unsupervised alternative here.
-  // Production derives exec from the manifest + candidate SHA; the test-only seam supplies its own exec
-  // (disposable repo + real candidate ref) so the detached supervisor can create real worktrees.
-  const detExec = testExec ? { git: (a, cwd) => execFileSync("git", a, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(), ...testExec } : { git: (a, cwd) => execFileSync("git", a, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(), repoRoot: man.manifest.repository_root, candidateRef: runBindings.run_harness_candidate_sha };
-  const result = await launchDetachedSupervisor(activation, man, runBindings, detExec, testLife || {});
+  // This is the ONLY production launch route — there is no synchronous/unsupervised alternative here. Exec
+  // derives from the manifest repository_root + the frozen candidate SHA; life uses manifest-derived defaults.
+  const detExec = { git: (a, cwd) => execFileSync("git", a, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(), repoRoot: man.manifest.repository_root, candidateRef: runBindings.run_harness_candidate_sha };
+  const result = await launchDetachedSupervisor(activation, man, runBindings, detExec, {});
   console.log(JSON.stringify({ ready: result.ready, launched: result.launched, refused: result.refused, final_state: result.final_state, consumed: result.consumed, launcher_pid: result.launcher_pid, launch_receipt: result.launch_receipt, run_root: result.run_root }, null, 2));
   return result.ready ? 0 : 1;
 }
