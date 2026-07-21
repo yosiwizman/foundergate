@@ -35,6 +35,9 @@ import { validateCheckerOutput, validateBuilderOutput } from "../../../src/v8b/l
 import { execMachineVerifier } from "../../../src/v8b/lrcq/run-harness/machine-verifier-exec.mjs";
 import { validateAll25, resolveRunPlan, runPlanDigest } from "../../../src/v8b/lrcq/run-harness/run-plan.mjs";
 import { buildIdentityEnvelope } from "../../../src/v8b/lrcq/provider/identity-envelope.mjs";
+import { consumeActivation, isConsumed } from "../../../src/v8b/lrcq/run-harness/activation-consumer.mjs";
+import { startSupervisor, readSupervisorState } from "../../../src/v8b/lrcq/run-harness/supervisor.mjs";
+import { witnessHealth } from "../../../src/v8b/lrcq/run-harness/health-witness.mjs";
 import { BudgetLedger } from "../../../src/v8b/lrcq/run-harness/budget-ledger.mjs";
 import { readFileSync as _rf, mkdirSync, writeFileSync } from "node:fs";
 import * as SEAMS from "../../../src/v8b/lrcq/run-harness/real-seams.mjs";
@@ -243,6 +246,52 @@ export async function executeSignedRun(activation, man, runBindings, counters, e
   finally { try { if (setup.teardown) setup.teardown(); } catch { /* teardown best-effort; verifier confirms tree-gone per job */ } }
 }
 
+// FG-LRCQ-ACT-014/015/016: the SUPERVISED signed-run entry. Adds the activation-lifecycle control plane
+// on top of executeSignedRun: (1) durable ONE-TIME activation consumption + anti-replay (a replay is
+// refused before any run), (2) single-owner supervisor with PID + heartbeat + duplicate refusal + the
+// IMMUTABLE deadline from the consumption receipt, (3) a durable terminal state. It NEVER mints authority,
+// invokes a provider itself, or extends the deadline. Refuses (zero side effects) if the activation is
+// unsigned/mis-bound, already consumed, or a live supervisor already owns the run. Tested with synthetic
+// signed fixtures + deterministic stub providers only — never the real provider.
+export async function executeSupervisedRun(activation, man, runBindings, counters, exec = {}, life = {}) {
+  const root = man.root;
+  const ledgerDir = life.ledgerDir || resolve(root, man.manifest.evidence_root, "activation-ledger");
+  const supervisorDir = life.supervisorDir || resolve(root, man.manifest.evidence_root, "supervisor");
+  const now = typeof life.now === "number" ? life.now : Math.floor(Date.now() / 1000);
+  // Gate 0: an unsigned/mis-bound record never consumes or supervises — run the authoritative refusal path.
+  if (!validateActivationV3(activation, runBindings).valid) { const r = await executeSignedRun(activation, man, runBindings, counters, exec); return { ...r, consumed: false, supervised: false }; }
+  // Gate 1: consume exactly once (durable, anti-replay).
+  const consumption = consumeActivation(activation, { ledgerDir, now });
+  if (!consumption.ok) return { ready: false, refused: { stage: "activation_consumption", reasons: [consumption.reason] }, final_state: consumption.replay_blocked ? "REPLAY_BLOCKED" : "CONSUMPTION_REFUSED", consumed: false, consumption };
+  // Gate 2: single supervisor ownership (PID + heartbeat + immutable deadline from the receipt).
+  const sup = startSupervisor({ stateDir: supervisorDir, run_id: activation.run_id, consumerReceipt: consumption, now, pid: life.pid });
+  if (!sup.ok) return { ready: false, refused: { stage: "supervisor", reasons: [sup.reason] }, final_state: "SUPERVISOR_REFUSED", consumed: true, consumption, supervisor: sup };
+  // Run under supervision; heartbeat around execution; record a durable terminal state. The activation
+  // stays consumed after EVERY terminal outcome (success, held, budget/deadline stop, or failure).
+  let result;
+  try {
+    sup.handle.heartbeat(now);
+    result = await executeSignedRun(activation, man, runBindings, counters, exec);
+    const term = mapTerminalState(result);
+    sup.handle.setTerminal(term.state, term.reason);
+    return { ...result, consumed: true, supervised: true, consumption_receipt: consumption, launch_receipt: sup.launch_receipt, terminal_state: term.state };
+  } catch (e) {
+    try { sup.handle.setTerminal("FAILED_CLOSED", e && e.message); } catch { /* */ }
+    return { ready: false, refused: { stage: "supervised_execution", reasons: [e && e.message] }, final_state: "FAILED_CLOSED", consumed: true, consumption_receipt: consumption, launch_receipt: sup.launch_receipt, terminal_state: "FAILED_CLOSED" };
+  }
+}
+
+// Map a harness result to a durable supervisor terminal state (all fail-closed / bounded stops).
+function mapTerminalState(result) {
+  const fstate = result && result.final_state;
+  if (fstate === "STOPPED_DEADLINE") return { state: "STOPPED_DEADLINE", reason: "hard deadline reached" };
+  if (fstate === "STOPPED_BY_STOP") return { state: "STOPPED_BY_STOP", reason: "stop control observed" };
+  if (fstate === "CONTROLLED_BUDGET_STOP" || (result && result.outcome_status === "CONTROLLED_BUDGET_STOP")) return { state: "CONTROLLED_BUDGET_STOP", reason: "run-wide $10 ceiling" };
+  if (fstate && /HELD/.test(fstate)) return { state: "HELD", reason: fstate };
+  if (result && result.ready === false) return { state: "HELD", reason: (result.refused && result.refused.stage) || "not ready" };
+  return { state: "STOPPED_EXHAUSTED", reason: "queue drained / run complete" };
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const bindings = resolveBindings();
@@ -339,10 +388,13 @@ async function main() {
   if (!man.ok) { console.error("MANIFEST-DEFECT: " + man.reason); return 1; }
   const counters = makeCounters();
   const runBindings = { ...bindings, now_epoch: Math.floor(Date.now() / 1000), provider_path: man.manifest.provider_executable_path, provider_identity: man.manifest.provider_executable_identity, candidate_stack: bindings.run_harness_candidate_sha };
-  // executeSignedRun refuses at validate_activation (zero side effects) unless the record is signed +
-  // matching; only then does it create the per-job worktrees, run, and tear them down.
-  const result = await executeSignedRun(activation, man, runBindings, counters, { git: (a, cwd) => execFileSync("git", a, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(), repoRoot: man.manifest.repository_root, candidateRef: runBindings.run_harness_candidate_sha });
-  console.log(JSON.stringify({ ready: result.ready, refused: result.refused, final_state: result.final_state, worktrees_created: result.worktrees_created, invocations: counters.c }, null, 2));
+  // The REAL signed-run path is SUPERVISED: valid signed activation -> canonical identity -> atomic
+  // one-time consumption -> durable replay block -> exactly one supervisor -> existing executor +
+  // provider adapter. There is no alternate unsigned/unsupervised launch path. It refuses (zero side
+  // effects) before any provider invocation if unsigned/mis-bound, already consumed, corrupt, or a live
+  // supervisor already owns the run.
+  const result = await executeSupervisedRun(activation, man, runBindings, counters, { git: (a, cwd) => execFileSync("git", a, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(), repoRoot: man.manifest.repository_root, candidateRef: runBindings.run_harness_candidate_sha });
+  console.log(JSON.stringify({ ready: result.ready, refused: result.refused, final_state: result.final_state, consumed: result.consumed, terminal_state: result.terminal_state, launch_receipt: result.launch_receipt, worktrees_created: result.worktrees_created, invocations: counters.c }, null, 2));
   return result.ready ? 0 : 1;
 }
 
