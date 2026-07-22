@@ -98,7 +98,11 @@ export function verifyTreeGone(pgid, descendantPids) {
 }
 
 export async function runJob(activation, job, bindings, opts = {}) {
-  const evidence = { pid: null, pgid: null, outcome: null, exit_code: null, stdout_bytes: 0, stderr_bytes: 0, killed: false, kill_escalated: false, tree_gone: null, tree_alive: null, descendant_pids: [], started: false };
+  // FG-LRCQ-ACT-023: teardown_status is NEVER null. It starts NOT_ATTEMPTED (the provider has not yet run,
+  // so there is nothing to tear down) and becomes CONFIRMED/FAILED/UNKNOWN only after the real teardown
+  // check. An early return (refused/spawn-error) therefore reports NOT_ATTEMPTED — a PROVIDER outcome, never
+  // a teardown defect. provider_invocation likewise tracks the real lifecycle stage.
+  const evidence = { pid: null, pgid: null, outcome: null, exit_code: null, stdout_bytes: 0, stderr_bytes: 0, killed: false, kill_escalated: false, tree_gone: null, tree_alive: null, descendant_pids: [], started: false, teardown_status: "TEARDOWN_NOT_ATTEMPTED", provider_invocation: "PROVIDER_NOT_ATTEMPTED" };
   const seal = (outcome, extra) => ({ ...evidence, outcome, ...(extra || {}) });
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   // INTRINSIC LIVE CLOCK: the running-worker clock is the REAL system clock by default.
@@ -133,10 +137,11 @@ export async function runJob(activation, job, bindings, opts = {}) {
   let child;
   // FG-LRCQ-ACT-022: spawn the IMMUTABLE resolved versioned target (never the mutable alias).
   const execTarget = activation.provider_resolved_target || activation.provider_executable_path;
+  evidence.provider_invocation = "PROVIDER_SPAWN_ATTEMPTED";
   try { child = spawn(execTarget, argv, { cwd: job.worktree, env, detached: true, stdio: ["ignore", "pipe", "pipe"] }); }
   catch (e) { return seal("SPAWN_ERROR", { error: e.message }); }
   if (!child.pid) return seal("SPAWN_ERROR", { error: "no pid" });
-  evidence.started = true; evidence.pid = child.pid; evidence.pgid = child.pid;
+  evidence.started = true; evidence.pid = child.pid; evidence.pgid = child.pid; evidence.provider_invocation = "PROVIDER_SPAWNED";
   writeFileSync(join(evDir, "process.json"), JSON.stringify({ pid: child.pid, pgid: child.pid, argv_redacted: redactArgv(argv), started_epoch: nowS() }, null, 2) + "\n");
 
   const maxBytes = activation.max_output_bytes;
@@ -172,7 +177,11 @@ export async function runJob(activation, job, bindings, opts = {}) {
   let tv = { gone: false, alive: ["unchecked"] };
   for (let i = 0; i < 6; i++) { tv = verifyTreeGone(child.pid, descendants); if (tv.gone) break; await sleep(40); }
   evidence.tree_gone = tv.gone; evidence.tree_alive = tv.alive;
-  writeFileSync(join(evDir, "teardown.json"), JSON.stringify({ pgid: child.pid, descendant_pids: descendants, tree_gone: tv.gone, alive: tv.alive }, null, 2) + "\n");
+  // teardown_status is an explicit enum — never null: CONFIRMED requires the tree confirmed gone; an
+  // "unchecked" verification is UNKNOWN (fails closed); otherwise FAILED. Provider output was received.
+  evidence.teardown_status = tv.gone ? "TEARDOWN_CONFIRMED" : (Array.isArray(tv.alive) && tv.alive.includes("unchecked") ? "TEARDOWN_UNKNOWN" : "TEARDOWN_FAILED");
+  evidence.provider_invocation = "PROVIDER_OUTPUT_RECEIVED";
+  writeFileSync(join(evDir, "teardown.json"), JSON.stringify({ pgid: child.pid, descendant_pids: descendants, tree_gone: tv.gone, alive: tv.alive, teardown_status: evidence.teardown_status }, null, 2) + "\n");
 
   // a termination event that did NOT clean up the tree is NEVER success
   if (evidence.killed && !tv.gone) return seal("TEARDOWN_FAILED", { note: "process tree not confirmed gone after termination", alive: tv.alive });

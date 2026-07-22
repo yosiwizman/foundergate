@@ -33,16 +33,22 @@ async function supervise(cfgPath) {
   if (hb.unref) hb.unref();
 
   let counters = { c: {}, wrap(name, fn) { this.c[name] = 0; return async (...a) => { this.c[name]++; return fn(...a); }; } };
-  let term = "STOPPED_EXHAUSTED", reason = "queue drained";
+  let term = "HELD", reason = "unmapped terminal (fail-closed)";
   try {
     const result = await executeSignedRun(activation, man, bindings, counters, exec);
     const fstate = result && result.final_state;
-    if (fstate === "STOPPED_DEADLINE") { term = "STOPPED_DEADLINE"; reason = "hard deadline reached"; }
+    const ostat = result && result.outcome_status;
+    // FG-LRCQ-ACT-023 EXHAUSTIVE terminal mapping. A held/failed/defect/unknown terminal NEVER falls through
+    // to STOPPED_EXHAUSTED (clean queue exhaustion). Only a genuinely clean, non-held exhaustion maps to
+    // STOPPED_EXHAUSTED; anything unrecognized fails closed to HELD.
+    const held = (x) => !!x && /HELD|TEARDOWN_DEFECT|PROVIDER_FAILURE|CHECKER_FAILURE|EVIDENCE_DEFECT|RECONCILE|BUILDER_OUTPUT_INVALID/.test(x);
+    if (fstate === "STOPPED_DEADLINE" || ostat === "CONTROLLED_DEADLINE_STOP") { term = "STOPPED_DEADLINE"; reason = "hard deadline reached"; }
     else if (fstate === "STOPPED_BY_STOP") { term = "STOPPED_BY_STOP"; reason = "stop control"; }
-    else if (fstate === "CONTROLLED_BUDGET_STOP" || (result && result.outcome_status === "CONTROLLED_BUDGET_STOP")) { term = "CONTROLLED_BUDGET_STOP"; reason = "$10 ceiling"; }
-    else if (fstate && /HELD/.test(fstate)) { term = "HELD"; reason = fstate; }
-    else if (result && result.ready === false) { term = "HELD"; reason = (result.refused && result.refused.stage) || "not ready"; }
-    log({ evt: "RUN_TERMINAL", final_state: fstate, mapped: term, refused: result && result.refused });
+    else if (fstate === "CONTROLLED_BUDGET_STOP" || fstate === "STOPPED_BUDGET" || ostat === "CONTROLLED_BUDGET_STOP") { term = "CONTROLLED_BUDGET_STOP"; reason = "run-wide $10 ceiling"; }
+    else if (held(fstate) || held(ostat) || (result && result.ready === false)) { term = "HELD"; reason = ostat || fstate || (result && result.refused && result.refused.stage) || "held"; }
+    else if (fstate === "STOPPED_EXHAUSTED" && !held(ostat)) { term = "STOPPED_EXHAUSTED"; reason = "queue drained / run complete"; }
+    else { term = "HELD"; reason = "UNKNOWN_TERMINAL (fail-closed): final_state=" + fstate + " outcome_status=" + ostat; }
+    log({ evt: "RUN_TERMINAL", final_state: fstate, outcome_status: ostat, mapped: term, refused: result && result.refused });
   } catch (e) { term = "FAILED_CLOSED"; reason = (e && e.message) || "error"; log({ evt: "RUN_FAILED_CLOSED", reason }); }
   clearInterval(hb);
   try { sup.handle.setTerminal(term, reason); } catch { /* */ }

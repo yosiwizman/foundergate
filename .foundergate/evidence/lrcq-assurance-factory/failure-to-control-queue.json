@@ -1,0 +1,23 @@
+{
+  "queue": "FAILURE_TO_CONTROL_LESSONS",
+  "status": "QUEUED_FOR_POST_RUN_DISK_LOCK",
+  "note": "NOT_FULL_REGISTRY_IMPLEMENTATION — two lessons from the first real run's controlled hold; the broader Autonomous Run Contract System / Loop Contract Engine / Repository Stewardship / full Failure-to-Control Registry are NOT implemented here.",
+  "lessons": [
+    {
+      "id": "A_WORKTREE_TEARDOWN_TRUTH",
+      "lesson": "Teardown success requires BOTH Git-registration absence AND filesystem absence. A null or UNKNOWN teardown state can never pass; failure preserves evidence and holds BEFORE the next job. A provider that never ran reports TEARDOWN_NOT_ATTEMPTED (a provider outcome), not a teardown defect.",
+      "closed_in": "FG-LRCQ-ACT-023 (real-provider teardown_status enum; harness provider-failure-vs-teardown split)"
+    },
+    {
+      "id": "B_TERMINAL_MAPPING_TRUTH",
+      "lesson": "Held, failed, defect, and unknown terminals must be exhaustively mapped; no default may convert them to clean queue exhaustion; every observer layer (recovery, supervisor, witness, terminal report, founder projection) must preserve the authoritative terminal class.",
+      "closed_in": "FG-LRCQ-ACT-023 (supervisor-main exhaustive mapping; health-witness held-terminal -> HELD)"
+    },
+    {
+      "id": "C_PROVIDER_INVOCATION_EVIDENCE",
+      "lesson": "A missing process.json must not be read as 'not invoked'. The provider lifecycle (NOT_ATTEMPTED / SPAWN_ATTEMPTED / SPAWNED / OUTPUT_RECEIVED / COST_RECORDED / COMPLETED / FAILED / UNKNOWN) must be durably distinguishable. In the first real run the truth (PROVIDER_NOT_ATTEMPTED) was recoverable only by cross-reading transactions + absent evidence; a durable per-stage record is now emitted.",
+      "closed_in": "FG-LRCQ-ACT-023 (real-provider provider_invocation lifecycle field)"
+    }
+  ],
+  "deferred_not_in_this_pr": ["Autonomous Run Contract System", "Loop Contract Engine", "Repository Stewardship", "full Failure-to-Control Registry"]
+}

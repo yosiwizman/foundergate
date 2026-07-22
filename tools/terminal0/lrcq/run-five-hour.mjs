@@ -120,7 +120,7 @@ function makeRealDispatch(manifest, loaded, evidenceRoot) {
     const outcome = await runJob(adapterActivation, { ...job, role: "builder", _identity_envelope }, { ...bindings, provider_path: manifest.provider_executable_path, provider_version: manifest.provider_version, provider_identity: manifest.provider_executable_identity, backlog_digest: activation.first_real_run_backlog_digest }, { role: "builder", transport: true, env: PROVIDER_ENV });
     // FG-LRCQ-ACT-005/007/012: surface the validated parsed output, the real teardown evidence
     // (tree_gone), AND the transport-reported cost so the run-wide ledger commits real spend.
-    return { ok: outcome.outcome === "SUCCESS", uncertain: outcome.outcome === "UNKNOWN_FAILURE" || outcome.outcome === "TEARDOWN_FAILED", obs: { dispatch_exists: true, process_alive: false, definitive_result: outcome.outcome === "SUCCESS" }, tree_gone: outcome.tree_gone, parsed_output: outcome.parsed_output, provider_cost_usd: outcome.provider_cost_usd, transport_digest: outcome.transport_digest, provider_outcome: outcome };
+    return { ok: outcome.outcome === "SUCCESS", uncertain: outcome.outcome === "UNKNOWN_FAILURE" || outcome.outcome === "TEARDOWN_FAILED", obs: { dispatch_exists: true, process_alive: false, definitive_result: outcome.outcome === "SUCCESS" }, tree_gone: outcome.tree_gone, teardown_status: outcome.teardown_status, provider_invocation: outcome.provider_invocation, parsed_output: outcome.parsed_output, provider_cost_usd: outcome.provider_cost_usd, transport_digest: outcome.transport_digest, provider_outcome: outcome };
   };
 }
 

@@ -213,14 +213,27 @@ async function runJobLifecycle(cfg, job, lease, budget, usage, txByKey, replay, 
       if (!bv || bv.valid !== true) { w.evidence({ job: job.job_id, stage: "builder_output_invalid", attempt, refusals: bv && bv.refusals }); w.nextSafeAction("HELD_BUILDER_OUTPUT_INVALID " + job.job_id + " — builder output failed validation before machine verification"); return { job_id: job.job_id, state: "HELD_BUILDER_OUTPUT_INVALID", reason: "builder output invalid: " + (bv && bv.refusals ? bv.refusals.join(";") : "absent") }; }
       w.evidence({ job: job.job_id, stage: "builder_output_valid", attempt });
     }
-    // ---- FG-LRCQ-ACT-007: provider process tree MUST be confirmed gone. A false/contradictory
-    // teardown blocks completion, becomes HELD_TEARDOWN_DEFECT, and stops the whole run. (undefined
-    // tree_gone is only permitted in DETERMINISTIC_TEST unit cfgs that don't model teardown.) ----
-    if (prov.tree_gone === false || (cfg.runtime_kind === RUNTIME_KIND.REAL && prov.tree_gone == null && prov.provider_outcome)) {
+    // ---- FG-LRCQ-ACT-007/023: distinguish a GENUINE teardown failure from an EARLY provider failure.
+    // A provider that never reached the teardown check (refused / spawn-error / failed before build) is a
+    // PROVIDER failure (HELD_PROVIDER_FAILURE), NOT a teardown defect — the previous rule mislabeled a
+    // pre-spawn ACTIVATION_REFUSED (tree_gone=null) as a teardown defect. A teardown defect requires the
+    // provider to have RUN and its tree to be unconfirmed/failed (tree_gone===false or teardown_status
+    // FAILED/UNKNOWN). teardown_status is never silently treated as success. ----
+    const po = prov.provider_outcome || {};
+    const ts = prov.teardown_status || po.teardown_status || null;
+    const genuineTeardownDefect = prov.tree_gone === false || po.outcome === "TEARDOWN_FAILED" || ts === "TEARDOWN_FAILED" || ts === "TEARDOWN_UNKNOWN";
+    if (genuineTeardownDefect) {
       cfg.__teardownDefect = true;
-      w.evidence({ job: job.job_id, stage: "teardown_defect", tree_gone: prov.tree_gone });
-      w.nextSafeAction("HELD_TEARDOWN_DEFECT " + job.job_id + " — process tree not confirmed gone; run stopped");
-      return { job_id: job.job_id, state: "HELD_TEARDOWN_DEFECT", reason: "provider process tree not confirmed gone (tree_gone=" + prov.tree_gone + ")" };
+      w.evidence({ job: job.job_id, stage: "teardown_defect", tree_gone: prov.tree_gone, teardown_status: ts });
+      w.nextSafeAction("HELD_TEARDOWN_DEFECT " + job.job_id + " — provider ran but process tree not confirmed gone; run stopped");
+      return { job_id: job.job_id, state: "HELD_TEARDOWN_DEFECT", reason: "teardown not confirmed (tree_gone=" + prov.tree_gone + ", teardown_status=" + ts + ")" };
+    }
+    if (cfg.runtime_kind === RUNTIME_KIND.REAL && prov.ok !== true && po.outcome !== "SUCCESS" && !!prov.provider_outcome) {
+      cfg.__providerFailure = true;
+      const oc = po.outcome || "PROVIDER_FAILED"; const pinv = prov.provider_invocation || po.provider_invocation || "PROVIDER_EVIDENCE_UNKNOWN";
+      w.evidence({ job: job.job_id, stage: "provider_failure", attempt, provider_outcome: oc, provider_invocation: pinv, teardown_status: ts });
+      w.nextSafeAction("HELD_PROVIDER_FAILURE " + job.job_id + " — provider outcome " + oc + " (" + pinv + ") before productive completion; run stopped");
+      return { job_id: job.job_id, state: "HELD_PROVIDER_FAILURE", reason: "provider outcome " + oc + " / " + pinv + " (teardown_status=" + ts + ")" };
     }
     // ---- SEPARATE machine verification (provider success is NOT verification) ----
     sep.builderResult(prov.ok === true);
@@ -361,9 +374,10 @@ export async function runHarness(cfg) {
       teardown.locks_released.push(j.job_id);
       w.recovery({ run_id: cfg.run_id, job_id: j.job_id, state: res.state });
       if (cfg.__teardownDefect) { controller.runtime_state = "STOPPED_TEARDOWN_DEFECT"; controller.stop_reason = "teardown defect — run stopped"; break; }
+      if (cfg.__providerFailure) { controller.runtime_state = "STOPPED_PROVIDER_FAILURE"; controller.stop_reason = "provider failure — run stopped"; break; }
       if (cfg.__budgetStop) { controller.runtime_state = "STOPPED_BUDGET"; controller.stop_reason = "run-wide budget exhausted"; break; }
     }
-    if (controller.runtime_state === "STOPPED_BY_STOP" || controller.runtime_state === "STOPPED_TEARDOWN_DEFECT" || controller.runtime_state === "STOPPED_BUDGET" || controller.paused) break;
+    if (controller.runtime_state === "STOPPED_BY_STOP" || controller.runtime_state === "STOPPED_TEARDOWN_DEFECT" || controller.runtime_state === "STOPPED_PROVIDER_FAILURE" || controller.runtime_state === "STOPPED_BUDGET" || controller.paused) break;
   }
   for (const j of controller.jobs) if (j.status === "PENDING") { const h = Controller.structuralHold(j); if (h) { j.status = "HELD"; j.hold_reason = h; } }
   const final_state = controller.runtime_state && controller.runtime_state.startsWith("STOPPED") ? controller.runtime_state
@@ -381,6 +395,7 @@ export async function runHarness(cfg) {
   // FG-LRCQ-ACT-008: truthful outcome. `ready`/activation-accepted alone is NOT a productive run.
   let outcome_status;
   if (teardownDefect) outcome_status = "HELD_TEARDOWN_DEFECT";
+  else if (cfg.__providerFailure || final_state === "STOPPED_PROVIDER_FAILURE") outcome_status = "HELD_PROVIDER_FAILURE";
   else if (cfg.__budgetStop || final_state === "STOPPED_BUDGET") outcome_status = "CONTROLLED_BUDGET_STOP";
   else if (final_state === "STOPPED_DEADLINE") outcome_status = "CONTROLLED_DEADLINE_STOP";
   else if (final_state === "STOPPED_BY_STOP") outcome_status = "CONTROLLED_PAUSE";
