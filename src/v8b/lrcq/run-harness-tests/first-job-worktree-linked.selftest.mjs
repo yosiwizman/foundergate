@@ -9,7 +9,7 @@
 // pre-spawn ("belongs to a different repository"), yet setupManager (which only checked the branch)
 // reported ok:true and the run dispatched into a refusal. "Prepared" must now IMPLY "provider-accepts".
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
+import { mkdtempSync, writeFileSync, existsSync, mkdirSync, lstatSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { setupManager, eligibleForSetup } from "../run-harness/setup-manager.mjs";
@@ -32,7 +32,10 @@ try {
   const linked = join(base, "linked-run-dir");
   g(["worktree", "add", "-q", "-b", "lane/run-dir", linked, cand], main);
   disposables.push(["worktree", linked, "lane/run-dir"]);
-  ok("00 launch dir is a LINKED worktree (its .git is a pointer file, not a dir)", existsSync(join(linked, ".git")) && execFileSync("test", ["-f", join(linked, ".git")], { stdio: "ignore" }) === undefined || true);
+  // Load-bearing precondition: the launch dir must be a LINKED worktree — its `.git` is a regular
+  // FILE (a `gitdir:` pointer), NOT a directory. This is the exact condition the fix addresses; if it
+  // is not met, the rest of the test is not exercising the real-run topology.
+  ok("00 launch dir is a LINKED worktree (its .git is a pointer FILE, not a dir)", existsSync(join(linked, ".git")) && lstatSync(join(linked, ".git")).isFile());
 
   // --- run through the REAL setupManager, from the linked worktree ------------------------------
   const manifest = { branch_prefix: "lane/fjwt-", permitted_worktree_root: join(base, "wtroot") };
