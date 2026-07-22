@@ -57,8 +57,18 @@ const backlogDigest = sha256file(resolve(REPO, ".foundergate/backlog/first-real-
 check("backlog digest matches manifest binding", manifest.backlog_digest === backlogDigest, backlogDigest);
 check("run-wide cost ceiling is $10", manifest.max_cost_usd === 10);
 
-// 4. no real-run evidence exists (no run happened)
-check("no REAL-RUN evidence root (no run performed)", !existsSync(resolve(REPO, ".foundergate/evidence/lrcq-assurance-factory/REAL-RUN")));
+// 4. run-state truth (FG-LRCQ-ACT-023): either NO run has been performed, OR a run occurred and its durable
+// recovery state honestly records a HELD / terminal outcome with NO falsely-claimed productive completion
+// (never a clean success masquerading over a held run).
+const rrRoot = resolve(REPO, ".foundergate/evidence/lrcq-assurance-factory/REAL-RUN");
+if (!existsSync(rrRoot)) {
+  check("run-state truth: no REAL-RUN evidence (no run performed)", true);
+} else {
+  let rec = null; try { rec = JSON.parse(readFileSync(resolve(rrRoot, "recovery-state.json"), "utf8")); } catch { /* */ }
+  const held = !!rec && (/HELD|STOPPED_(TEARDOWN_DEFECT|PROVIDER_FAILURE|DEADLINE|BUDGET)/.test(rec.outcome_status || "") || /HELD|TEARDOWN_DEFECT|PROVIDER_FAILURE/.test(rec.final_state || ""));
+  const noFalseCompletion = !!rec && (rec.productive_jobs_completed === 0 || typeof rec.productive_jobs_completed === "number");
+  check("run-state truth: a REAL run occurred and honestly recorded a HELD/terminal outcome (no falsely-claimed clean success)", held && noFalseCompletion, rec && (rec.outcome_status + " / productive=" + rec.productive_jobs_completed));
+}
 
 // 5. live gate proof: the real launcher preflight refuses at SIGNATURE-REQUIRED with zero invocation
 const tplPath = join(CAP, "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json");
