@@ -200,7 +200,7 @@ export function generateCapsule(inputs) {
     writeFileSync(join(tmp, "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json"), stable(finalTpl));
     for (const [n, s] of Object.entries(renderMarkdown(ctx))) writeFileSync(join(tmp, n), s);
     // evidence-set manifest (authoritative buildEvidenceSet; reads committed packet + template + capsule)
-    const es = buildEvidenceSet({ repo: i.repoRoot, template: join(tmp, "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json"), capsuleDir: tmp, prTitle: i.prTitle, prLiveBody: i.prLiveBody, prStoredBody: i.prStoredBody, githubHead: evidenceCommitSha, templateBindsCandidate: evidenceCommitSha, templateSigned: false });
+    const es = buildEvidenceSet({ repo: i.repoRoot, template: join(tmp, "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json"), capsuleDir: tmp, capsuleDirLabel: outDir, prTitle: i.prTitle, prLiveBody: i.prLiveBody, prStoredBody: i.prStoredBody, githubHead: evidenceCommitSha, templateBindsCandidate: evidenceCommitSha, templateSigned: false });
     writeFileSync(join(tmp, "EVIDENCE_SET_MANIFEST.json"), stable(es));
     // guard: no forbidden/review file, no subdir slipped in
     for (const f of readdirSync(tmp)) { if (FORBIDDEN_IN_CAPSULE.includes(f)) throw new Error("forbidden capsule member: " + f); if (statSync(join(tmp, f)).isDirectory()) throw new Error("subdirectory not allowed in capsule: " + f); }

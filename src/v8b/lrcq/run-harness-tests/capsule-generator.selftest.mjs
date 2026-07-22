@@ -69,10 +69,11 @@ try {
     const pf = (pfr.stdout || "") + (pfr.stderr || ""); // preflight prints to stderr
     ok("06 ACTUAL preflight -> SIGNATURE-REQUIRED (zero_invocation, no non-sig refusals)", /LRCQ-REAL-LAUNCH-PREFLIGHT: SIGNATURE-REQUIRED/.test(pf) && /"zero_invocation":\s*true/.test(pf) && !/non_signature_refusals":\s*\[[^\]]/.test(pf));
 
-    // B. ACTUAL evidence-set verifier (run against the clone; HEAD == evidence_commit)
+    // B. ACTUAL evidence-set verifier on the DELIVERED capsule (founder_capsule.dir must be the final outDir)
     const ev = verifyES(clone, join(cap, "EVIDENCE_SET_MANIFEST.json"));
-    ok("07 ACTUAL verifyEvidenceSet: no founder-capsule recursion/aggregate problem", !(ev.problems || []).some((p) => /capsule aggregate|aggregate_exclusions/.test(p)));
-    ok("07b evidence-set binds evaluated candidate == HEAD + non-recursive digest present", ev.evaluated_candidate_sha === evidenceCommitSha && typeof ev.evidence_set_digest === "string");
+    if (!ev.valid) console.log("   [07 problems]:", JSON.stringify(ev.problems));
+    ok("07 ACTUAL verifyEvidenceSet -> valid:true, problems:[] on the DELIVERED capsule", ev.valid === true && (ev.problems || []).length === 0);
+    ok("07b founder_capsule.dir is the FINAL capsule dir (survives the atomic rename), not the staging dir", JSON.parse(readFileSync(join(cap, "EVIDENCE_SET_MANIFEST.json"), "utf8")).founder_capsule.dir === cap && ev.evaluated_candidate_sha === evidenceCommitSha);
 
     // C. SHA256SUMS covers every file except itself (incl. the manifest); no absolute paths
     const sums = readFileSync(join(cap, "SHA256SUMS.txt"), "utf8").trim().split("\n");
@@ -86,7 +87,8 @@ try {
     if (!cv.valid) console.log("   [09 problems]:", JSON.stringify(cv.problems));
     ok("09 ACTUAL verifyCapsule -> valid:true, problems:[] on the SAME capsule", cv.valid === true && cv.problems.length === 0);
     ok("09b live-metadata check RAN (PASS, not SKIP) via the injected provider", cv.checks.some((c) => /canonical LIVE metadata/.test(c.name) && c.status === "PASS"));
-    ok("09c SKIP != acceptance: null provider -> metadata SKIP recorded (informational)", verifyCapsule({ repo: clone, capsuleDir: cap, prNumber: 190, githubMetadataProvider: null }).checks.some((c) => c.status === "SKIP"));
+    const noGh = verifyCapsule({ repo: clone, capsuleDir: cap, prNumber: 190, githubMetadataProvider: null });
+    ok("09c SKIP != acceptance: null provider -> metadata SKIP recorded AND overall valid:false", noGh.checks.some((c) => c.status === "SKIP") && noGh.valid === false);
     // all three controls referenced the SAME capsule dir + FINAL template + SYSTEM_STATE + manifest + SHA256SUMS
     ok("09d three controls share the identical capsule artifacts", existsSync(join(cap, "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json")) && existsSync(join(cap, "EVIDENCE_SET_MANIFEST.json")) && existsSync(join(cap, "SHA256SUMS.txt")));
 

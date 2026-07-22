@@ -106,7 +106,11 @@ export function buildEvidenceSet(opts) {
     job_count: manifest.job_count || null,
     cost_ceiling_usd: manifest.max_cost_usd || null,
     committed_artifacts: committed_digests,
-    founder_capsule: { dir: opts.capsuleDir, files: capsule.map, aggregate_digest: capsule.aggregate, aggregate_exclusions: FOUNDER_CAPSULE_EXCLUSIONS },
+    // FG-LRCQ-ACT-026: hash opts.capsuleDir (may be an atomic staging dir), but RECORD the final delivered
+    // path via opts.capsuleDirLabel when given — so verifyEvidenceSet re-hashes the capsule at its real
+    // location after an atomic rename (the staging dir no longer exists). Contents are byte-identical, so
+    // the aggregate matches. Defaults to opts.capsuleDir when no label is supplied.
+    founder_capsule: { dir: opts.capsuleDirLabel || opts.capsuleDir, files: capsule.map, aggregate_digest: capsule.aggregate, aggregate_exclusions: FOUNDER_CAPSULE_EXCLUSIONS },
     checker_report_digest: opts.checkerReportDigest || null,
     advisor_report_digest: opts.advisorReportDigest || null,
     exclusions: ["the evidence_set_digest field itself (non-recursive)", "out-of-tree fresh review reports (bound separately by digest once produced)"],

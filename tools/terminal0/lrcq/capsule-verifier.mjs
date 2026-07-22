@@ -24,7 +24,7 @@ const sha256file = (p) => sha256(readFileSync(p));
 // verifyCapsule — every production check; returns { valid, problems[], checks[] }. `githubMetadataProvider`
 // (prNumber) -> { title, body } | null. null => the live-metadata check is SKIPPED as a NON-ACCEPTING
 // informational result (recorded, never counted as PASS).
-export function verifyCapsule({ repo, capsuleDir: CAP, prNumber = 189, githubMetadataProvider = null }) {
+export function verifyCapsule({ repo, capsuleDir: CAP, prNumber = 189, githubMetadataProvider = null, requireMetadata = true }) {
   const git = (...a) => execFileSync("git", ["-C", repo, ...a], { encoding: "utf8" }).trim();
   const checks = []; const problems = [];
   const check = (name, cond, detail) => { checks.push({ name, status: cond ? "PASS" : "FAIL", detail }); if (!cond) problems.push(name); };
@@ -52,7 +52,12 @@ export function verifyCapsule({ repo, capsuleDir: CAP, prNumber = 189, githubMet
   const md = githubMetadataProvider ? githubMetadataProvider(prNumber) : null;
   if (md && typeof md.title === "string" && typeof md.body === "string") {
     check("canonical LIVE metadata == capsule pr_body_digest", prMetadataDigest(md.title, md.body) === ss.pr_body_digest, "live=" + prMetadataDigest(md.title, md.body));
-  } else { skip("canonical live-metadata check (metadata provider unavailable — informational, NOT acceptance)"); }
+  } else {
+    // SKIP is a NON-ACCEPTING informational result — it must NEVER yield VALID. When metadata cannot be
+    // verified (provider unavailable/offline), acceptance is withheld: a problem is recorded so valid=false.
+    skip("canonical live-metadata check (metadata provider unavailable)");
+    if (requireMetadata) problems.push("live-metadata binding could not be verified (metadata provider unavailable) — SKIP is NOT acceptance");
+  }
   const tpl = existsSync(join(CAP, "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json")) ? JSON.parse(readFileSync(join(CAP, "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json"), "utf8")) : {};
   check("FINAL template binds exact frozen head", tpl.run_harness_candidate_sha === head);
   check("FINAL template is UNSIGNED", tpl.founder_signature == null, "sig=" + tpl.founder_signature);
