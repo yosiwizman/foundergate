@@ -6,7 +6,8 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { mkdtempSync, writeFileSync, readFileSync, existsSync, readdirSync, statSync, rmSync, realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { generateCapsule, validateInputs, REQUIRED_MEMBERS } from "../../../../tools/terminal0/lrcq/generate-capsule.mjs";
+import { generateCapsule, validateInputs, REQUIRED_MEMBERS, REQUIRED_MEMBER_REGISTRY } from "../../../../tools/terminal0/lrcq/generate-capsule.mjs";
+import { verifyCapsule } from "../../../../tools/terminal0/lrcq/capsule-verifier.mjs";
 import { buildActivationMaterialPacket } from "../../../../tools/terminal0/lrcq/generate-run-manifest.mjs";
 import { manifestDigest } from "../../../../src/v8b/lrcq/run-harness/run-manifest.mjs";
 import { verifyEvidenceSet as verifyES } from "../../../../tools/terminal0/lrcq/evidence-set.mjs";
@@ -78,6 +79,24 @@ try {
     const listed = sums.map((l) => l.match(/^([0-9a-f]{64})\s+(.+)$/)).filter(Boolean);
     const present = readdirSync(cap).filter((f) => f !== "SHA256SUMS.txt").sort();
     ok("08 SHA256SUMS bijection (incl. EVIDENCE_SET_MANIFEST.json), correct hashes, relative paths", listed.length === present.length && listed.every(([, h, f]) => present.includes(f) && !f.startsWith("/") && h === execFileSync("shasum", ["-a", "256", join(cap, f)], { encoding: "utf8" }).slice(0, 64)));
+
+    // C. ACTUAL third control — exported verifyCapsule on the SAME disposable capsule (fixture metadata provider)
+    const ghMeta = () => ({ title: inputs.prTitle, body: inputs.prLiveBody });
+    const cv = verifyCapsule({ repo: clone, capsuleDir: cap, prNumber: 190, githubMetadataProvider: ghMeta });
+    if (!cv.valid) console.log("   [09 problems]:", JSON.stringify(cv.problems));
+    ok("09 ACTUAL verifyCapsule -> valid:true, problems:[] on the SAME capsule", cv.valid === true && cv.problems.length === 0);
+    ok("09b live-metadata check RAN (PASS, not SKIP) via the injected provider", cv.checks.some((c) => /canonical LIVE metadata/.test(c.name) && c.status === "PASS"));
+    ok("09c SKIP != acceptance: null provider -> metadata SKIP recorded (informational)", verifyCapsule({ repo: clone, capsuleDir: cap, prNumber: 190, githubMetadataProvider: null }).checks.some((c) => c.status === "SKIP"));
+    // all three controls referenced the SAME capsule dir + FINAL template + SYSTEM_STATE + manifest + SHA256SUMS
+    ok("09d three controls share the identical capsule artifacts", existsSync(join(cap, "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json")) && existsSync(join(cap, "EVIDENCE_SET_MANIFEST.json")) && existsSync(join(cap, "SHA256SUMS.txt")));
+
+    // capsule-file tamper -> verifyCapsule INVALID (restore after each)
+    const tamperCV = (file, mutate) => { const p = join(cap, file); const orig = readFileSync(p); mutate(p, orig); const bad = verifyCapsule({ repo: clone, capsuleDir: cap, prNumber: 190, githubMetadataProvider: ghMeta }).valid; writeFileSync(p, orig); return bad === false; };
+    ok("M1 tamper SYSTEM_STATE -> verifyCapsule INVALID", tamperCV("SYSTEM_STATE.json", (p, o) => writeFileSync(p, JSON.stringify({ ...JSON.parse(o), frozen_head: "0".repeat(40) }))));
+    ok("M2 non-null founder_signature in FINAL template -> verifyCapsule INVALID", tamperCV("FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json", (p, o) => { const t = JSON.parse(o); t.founder_signature = "X"; writeFileSync(p, JSON.stringify(t)); }));
+    ok("M3 issued_epoch stamped in FINAL template -> verifyCapsule INVALID", tamperCV("FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json", (p, o) => { const t = JSON.parse(o); t.issued_epoch = 1; writeFileSync(p, JSON.stringify(t)); }));
+    ok("M4 tamper EVIDENCE_SET_MANIFEST -> SHA256SUMS bijection fails -> INVALID", tamperCV("EVIDENCE_SET_MANIFEST.json", (p, o) => writeFileSync(p, o + " ")));
+    ok("M5 tamper SHA256SUMS -> INVALID", tamperCV("SHA256SUMS.txt", (p, o) => writeFileSync(p, o.toString().replace(/[0-9a-f]/, "0"))));
   }
 
   // ---- fail-closed authority matrix (validateInputs) ----------------------------------------------
@@ -94,7 +113,24 @@ try {
   // required-member absence: point at a repo missing a required member
   const emptyRepo = join(base, "empty"); execFileSync("mkdir", ["-p", emptyRepo]); execFileSync("git", ["-C", emptyRepo, "init", "-q"]);
   bad({ repoRoot: emptyRepo }, "19 missing required members -> REFUSED");
-  ok("20 REQUIRED_MEMBERS is a non-trivial authoritative set", Array.isArray(REQUIRED_MEMBERS) && REQUIRED_MEMBERS.length >= 12);
+  ok("20 required-member registry is versioned + complete (>=20 members incl. activation-schema, lease/blast manifests)", REQUIRED_MEMBER_REGISTRY.version >= 1 && REQUIRED_MEMBER_REGISTRY.members.length >= 20 && ["activation_schema", "capability_lease_manifest", "blast_budget_manifest", "setup_pipeline", "separation", "supervisor_main"].every((id) => REQUIRED_MEMBER_REGISTRY.members.some((m) => m.id === id)));
+
+  // per-member mutation: removing ONE specific required member fails with that member's ID
+  const perMember = (id) => { const m = REQUIRED_MEMBER_REGISTRY.members.find((x) => x.id === id); const p = join(clone, m.path); const bak = p + ".bak"; execFileSync("mv", [p, bak]); const r2 = validateInputs({ ...inputs, evaluatedSha, branch, prNumber: 190, protectedMainBaseline: inputs.protectedMainBaseline, providerDeps: { versionRunner } }); execFileSync("mv", [bak, p]); return r2.ok === false && (r2.errors || []).some((e) => e.includes(id)); };
+  ok("21 remove activation_schema member -> REFUSED with its exact ID", perMember("activation_schema"));
+  ok("22 remove capability_lease_manifest member -> REFUSED with its exact ID", perMember("capability_lease_manifest"));
+
+  // PRODUCTION path (no injected providerDeps): re-hashes the real immutable 2.1.215 target
+  const prodOut = generateCapsule({ ...inputs, capsuleName: "capsule-prod" });
+  ok("23 production path (no injected providerDeps) verifies the real immutable target + succeeds", prodOut.ok === true);
+
+  // containment: a symlink approved-root resolving INTO the repository is REFUSED
+  const evilLink = join(base, "evil-root"); try { execFileSync("ln", ["-s", clone, evilLink]); } catch { /* */ }
+  bad({ approvedOutputRoot: evilLink, capsuleName: "x" }, "24 symlinked approved-root escaping into the repository -> REFUSED");
+
+  // CLI-strip: the production generateCapsule() default provider path is used when providerDeps omitted (proven by 23);
+  // a malformed injected providerDeps (fixture API) that lies about the digest is still caught by the real re-hash
+  bad({ providerDeps: { versionRunner, hashFile: () => "sha256:" + "1".repeat(64) } }, "25 injected false provider digest is caught by the real re-hash -> REFUSED");
 } finally {
   try { rmSync(base, { recursive: true, force: true }); } catch { /* */ }
 }
