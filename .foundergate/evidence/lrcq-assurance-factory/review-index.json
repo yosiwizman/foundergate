@@ -42,10 +42,31 @@
     { "role": "checker", "candidate_sha": "302058b5f73fe13a4397f4490daa1ab543bc950b", "verdict": "CLEAN (claim-consistency)", "status": "STALE_FOR_FIRST_JOB_WORKTREE_PREPARATION", "reason": "predates FG-LRCQ-ACT-025: the provider repository-identity check refused every job under a linked-worktree launch, and setup deemed worktrees 'prepared' without verifying repository identity", "path": "scratchpad/pr189-302058b…-checker-1.json" },
     { "role": "advisor", "candidate_sha": "302058b5f73fe13a4397f4490daa1ab543bc950b", "verdict": "READY_FOR_RETRY_ACTIVATION_GATE (claim-consistency)", "status": "STALE_FOR_FIRST_JOB_WORKTREE_PREPARATION", "reason": "same — retry readiness asserted before the first-job worktree lifecycle was mechanically proven under the real linked-worktree launch condition", "path": "scratchpad/pr189-302058b…-advisor-1.json" }
   ],
-  "first_job_worktree_reviewed_candidate": "8cfedf6e9a2468fb51b7e3d2a1b5ae56db3f531f",
-  "first_job_worktree_current_candidate": "0237d5b385caa863e9696379a258be4fe105b8e3",
-  "first_job_worktree_head_delta_note": "The final frozen head 0237d5b differs from the reviewed head 8cfedf6 ONLY by a test-assertion honesty fix: assertion 00 of first-job-worktree-linked.selftest was a tautology the checker flagged (LOW) and is now lstatSync(...).isFile(). The FG-LRCQ-ACT-025 production fix (real-provider gitWorktreeIdentity + setup-manager) is byte-identical between the two heads; the checker CLEAN + advisor READY verdicts at 8cfedf6 validated the load-bearing assertions and stand.",
-  "first_job_worktree_current_checker": { "role": "checker", "candidate_sha": "8cfedf6e9a2468fb51b7e3d2a1b5ae56db3f531f", "verdict": "CLEAN", "reproduced": "independently reproduced both directions (pre-fix REFUSES, post-fix ACCEPTS, different-repo REFUSED) from a real linked worktree; suite 143/143; no leaks", "path": "scratchpad/pr189-8cfedf6e-checker-1.json" },
-  "first_job_worktree_current_advisor": { "role": "advisor", "candidate_sha": "8cfedf6e9a2468fb51b7e3d2a1b5ae56db3f531f", "verdict": "READY_FOR_RETRY_ACTIVATION_GATE", "notes": "honesty strong (root-cause reframing disclosed, not force-fit); create/verify/use/remove proven under the real linked-worktree condition; real Claude productivity/cost/latency, 25-job scale, wall-clock witness, teardown-after-real-write remain unproven until a real retry", "path": "scratchpad/pr189-8cfedf6e-advisor-1.json" },
+  "first_job_worktree_reviews_INVALIDATED": {
+    "status": "STALE_AFTER_POST_REVIEW_MUTATION",
+    "invalidated_reports": [
+      { "role": "checker", "candidate_sha": "8cfedf6e9a2468fb51b7e3d2a1b5ae56db3f531f", "historical_verdict": "CLEAN", "path": "scratchpad/pr189-8cfedf6e-checker-1.json", "status": "STALE_AFTER_POST_REVIEW_MUTATION" },
+      { "role": "advisor", "candidate_sha": "8cfedf6e9a2468fb51b7e3d2a1b5ae56db3f531f", "historical_verdict": "READY_FOR_RETRY_ACTIVATION_GATE", "path": "scratchpad/pr189-8cfedf6e-advisor-1.json", "status": "STALE_AFTER_POST_REVIEW_MUTATION" }
+    ],
+    "these_verdicts_do_NOT_stand_for_the_final_head": true,
+    "precise_invalidating_changes_after_the_8cfedf6_reviews": [
+      "Tautological test-assertion correction: assertion 00 of first-job-worktree-linked.selftest changed from an always-true `(A && B) || true` to `lstatSync(...).isFile()` (commit 0237d5b).",
+      "Subsequent commit(s): 0237d5b (test-assertion fix) and 679b4f2 (review-index rebind) were created AFTER the reviews.",
+      "Review-index mutation: this file was edited after the reviews (the now-removed 'current'/'stands' claims).",
+      "PR-body mutation: PR #189 body was edited after the reviews (FG-LRCQ-ACT-025 root-cause section).",
+      "Review sequencing defect: the 8cfedf6 checker and advisor were run CONCURRENTLY; the advisor must run only AFTER a final-head checker returns CLEAN.",
+      "Package binding: the final head was never independently reviewed, and no package artifact binds it (see first_job_worktree_package_reconciliation_findings)."
+    ],
+    "preserved_as_historical_evidence": true
+  },
+  "first_job_worktree_final_candidate": "PENDING_SET_AT_THIS_WAVE_FREEZE (FG-LRCQ-ACT-025-REVIEW-RECONCILE)",
+  "first_job_worktree_fresh_checker_path": "PENDING — a completely fresh checker bound to the exact frozen final head; not yet produced",
+  "first_job_worktree_fresh_advisor_path": "PENDING — runs ONLY after the fresh final-head checker returns CLEAN (sequential, never concurrent)",
+  "first_job_worktree_package_reconciliation_findings": [
+    "UNSIGNED_ACTIVATION_MATERIAL_PACKET.json binds run_harness_candidate_sha 905e779 — 12 commits behind the final head; its production-file digests predate the ACT-025 change to real-provider.mjs + setup-manager.mjs.",
+    "No out-of-repo capsule (SYSTEM_STATE + SHA256SUMS + FINAL_UNSIGNED_ACTIVATION_TEMPLATE) binds any recent head; the newest FINAL templates bind f2e5dcfb/6f2ed492/07bde44d.",
+    "No evidence-set manifest exists for the final head.",
+    "Rebinding these is founder-signing material and must be rebuilt by the deliberate freeze/generator process, not hand-patched — recorded as a correctable HOLD."
+  ],
   "real_run_evidence": "One founder authorization was CONSUMED and is spent; the real run held on the first job (HELD_TEARDOWN_DEFECT, 0 productive, $0, real Claude never spawned). Root cause (FG-LRCQ-ACT-025): the provider repository-identity check misidentified the repository under a linked-worktree launch, refusing every job pre-spawn; worktree preparation itself was correct. Raw evidence preserved + manifested (scratchpad/REAL_RUN_RAW_EVIDENCE_MANIFEST.json). Any retry requires a NEW founder authorization."
 }
