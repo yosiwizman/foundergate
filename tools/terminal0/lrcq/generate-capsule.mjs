@@ -63,6 +63,9 @@ export const REQUIRED_MEMBER_REGISTRY = {
     { id: "pr_metadata_canon", path: "tools/terminal0/lrcq/pr-metadata-canon.mjs", purpose: "PR metadata canonicalizer", required: true },
     { id: "provider_verify", path: "src/v8b/lrcq/provider/provider-verify.mjs", purpose: "immutable provider verifier", required: true },
     { id: "run_five_hour", path: "tools/terminal0/lrcq/run-five-hour.mjs", purpose: "launcher + preflight", required: true },
+    { id: "real_run_evidence_binding_builder", path: "tools/terminal0/lrcq/real-run-evidence-binding.mjs", purpose: "path-independent real-run evidence binding builder/verifier (FG-LRCQ-ACT-027)", required: true },
+    { id: "real_run_evidence_binding", path: ".foundergate/evidence/lrcq-assurance-factory/REAL_RUN_EVIDENCE_BINDING.json", purpose: "source-bound real-run evidence binding manifest", required: true },
+    { id: "real_run_incident", path: ".foundergate/evidence/lrcq-assurance-factory/real-run-teardown-terminal-incident.json", purpose: "authoritative committed real-run record (FG-LRCQ-ACT-023)", required: true },
   ],
 };
 export const REQUIRED_MEMBERS = REQUIRED_MEMBER_REGISTRY.members.map((m) => m.path);

@@ -16,6 +16,7 @@ import { createHash } from "node:crypto";
 import { resolve, join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { prMetadataDigest } from "./pr-metadata-canon.mjs";
+import { verifyBinding, BINDING_PATH } from "./real-run-evidence-binding.mjs";
 
 const SELF = fileURLToPath(import.meta.url);
 const sha256 = (buf) => "sha256:" + createHash("sha256").update(buf).digest("hex");
@@ -70,14 +71,28 @@ export function verifyCapsule({ repo, capsuleDir: CAP, prNumber = 189, githubMet
   check("backlog digest matches manifest binding", manifest.backlog_digest === backlogDigest, backlogDigest);
   check("run-wide cost ceiling is $10", manifest.max_cost_usd === 10);
 
-  // 4. run-state truth: no REAL-RUN evidence, OR a run honestly recorded a HELD/terminal outcome
-  const rrRoot = resolve(repo, ".foundergate/evidence/lrcq-assurance-factory/REAL-RUN");
-  if (!existsSync(rrRoot)) { check("run-state truth: no REAL-RUN evidence (no run performed)", true); }
-  else {
-    let rec = null; try { rec = JSON.parse(readFileSync(resolve(rrRoot, "recovery-state.json"), "utf8")); } catch { /* */ }
-    const held = !!rec && (/HELD|STOPPED_(TEARDOWN_DEFECT|PROVIDER_FAILURE|DEADLINE|BUDGET)/.test(rec.outcome_status || "") || /HELD|TEARDOWN_DEFECT|PROVIDER_FAILURE/.test(rec.final_state || ""));
-    const noFalseCompletion = !!rec && typeof rec.productive_jobs_completed === "number";
-    check("run-state truth: a REAL run honestly recorded a HELD/terminal outcome (no falsely-claimed clean success)", held && noFalseCompletion, rec && (rec.outcome_status + " / productive=" + rec.productive_jobs_completed));
+  // 4. run-state truth (FG-LRCQ-ACT-027): PATH-INDEPENDENT + source-bound. The old check keyed off the
+  // LITERAL gitignored REAL-RUN/ dir, so a clone (where it is absent) would falsely report "no run
+  // performed". Now: if a committed REAL_RUN_EVIDENCE_BINDING manifest exists, verify it against current
+  // committed source bytes (fails closed on ambiguity/contradiction/digest-mismatch) and render the honest
+  // held-run statement. "No run performed" is asserted ONLY when a complete governed inventory proves it —
+  // no binding AND no committed authoritative incident AND no consumed-activation record.
+  const bindingPath = resolve(repo, BINDING_PATH);
+  const incidentPath = resolve(repo, ".foundergate/evidence/lrcq-assurance-factory/real-run-teardown-terminal-incident.json");
+  if (existsSync(bindingPath)) {
+    const binding = JSON.parse(readFileSync(bindingPath, "utf8"));
+    const rv = verifyBinding(repo, binding);
+    check("run-state truth: source-bound real-run evidence binding VALID (path-independent)", rv.ok, rv.ok ? binding.authoritative_outcome_status + " / productive=" + binding.productive_jobs_completed : rv.code + " " + (rv.detail || ""));
+    check("run-state truth: binding represents the HELD run honestly (0 productive, provider-not-attempted, replay-blocked)", rv.ok && binding.productive_jobs_completed === 0 && binding.provider_attempt_status === "PROVIDER_NOT_ATTEMPTED" && binding.replay_blocked === true && /HELD|TEARDOWN_DEFECT|PROVIDER_FAILURE/.test(binding.authoritative_outcome_status || ""));
+  } else if (existsSync(incidentPath)) {
+    // authoritative incident present but no binding manifest -> ambiguous, fail closed (do NOT claim no-run)
+    check("run-state truth: committed real-run incident requires a REAL_RUN_EVIDENCE_BINDING manifest (not literal-path inference)", false, "incident present without binding");
+  } else {
+    // genuine no-run: no binding, no incident, no consumed activation anywhere in the governed evidence root
+    const evRoot = resolve(repo, ".foundergate/evidence/lrcq-assurance-factory");
+    let anyConsumed = false;
+    try { const walk = (d) => { for (const e of readdirSync(d)) { const p = resolve(d, e); if (statSync(p).isDirectory()) walk(p); else if (/\.consumed\.json$/.test(e)) anyConsumed = true; } }; if (existsSync(evRoot)) walk(evRoot); } catch { /* */ }
+    check("run-state truth: complete governed inventory proves NO run performed (no binding, no incident, no consumed activation)", anyConsumed === false);
   }
 
   // 5. live gate proof: the real launcher preflight refuses at SIGNATURE-REQUIRED with zero invocation
