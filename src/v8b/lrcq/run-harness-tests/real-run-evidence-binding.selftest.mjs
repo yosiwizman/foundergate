@@ -1,10 +1,11 @@
 // FounderGate LRCQ — path-independent real-run evidence authority (FG-LRCQ-ACT-027).
 // Positive proof against the ACTUAL committed authoritative record + M01-M20 mutation matrix on disposable
 // fixtures. Read-only on the real repo (never rewrites raw REAL-RUN evidence); mutations use temp copies.
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, cpSync, rmSync, existsSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, cpSync, rmSync, existsSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
-import { buildBinding, verifyBinding, CODES, BINDING_SCHEMA, BINDING_SCHEMA_VERSION } from "../../../../tools/terminal0/lrcq/real-run-evidence-binding.mjs";
+import { buildBinding, verifyBinding, deriveStatement, CODES, BINDING_SCHEMA, BINDING_SCHEMA_VERSION } from "../../../../tools/terminal0/lrcq/real-run-evidence-binding.mjs";
+import { inventoryRunIndicators } from "../../../../tools/terminal0/lrcq/capsule-verifier.mjs";
 
 let n = 0; const fails = [];
 const ok = (name, cond) => { n++; if (!cond) { fails.push(name); console.log("  FAIL " + name); } else console.log("  ok   " + name); };
@@ -87,6 +88,33 @@ try {
   r = mkdtempSync(join(base, "compat-")); const cd = join(r, ".foundergate/evidence/lrcq-assurance-factory"); mkdirSync(cd, { recursive: true });
   writeFileSync(join(cd, "REAL_RUN_EVIDENCE_BINDING.json"), JSON.stringify({ schema: BINDING_SCHEMA, schema_version: BINDING_SCHEMA_VERSION, authoritative_source: { path: INCIDENT_REL, sha256: "sha256:" + "0".repeat(64) } }, null, 2));
   ok("M20 compatibility binding without the real incident source -> REFUSED (MISSING/DIGEST)", !verifyBinding(r, JSON.parse(readFileSync(join(cd, "REAL_RUN_EVIDENCE_BINDING.json"), "utf8"))).ok);
+
+  // ---- descriptive-field tamper: alter ONLY a prose/status field, keep authoritative source FIXED ----
+  // (self-consistency-proof avoidance: the incident is NOT changed; only the stored binding is edited, so a
+  // re-derive-and-compare must catch it.)
+  const descTamper = (mut, label) => { const rr = mkFix(); const b = load(rr); mut(b); const c = verifyBinding(rr, b).code; return c === CODES.BINDING_FIELD_MISMATCH || c !== CODES.OK; };
+  ok("N01 alter ONLY allowed_statement -> REFUSED (field mismatch)", (() => { const rr = mkFix(); const b = load(rr); b.allowed_statement = "Everything was fine and the five-hour run completed."; return verifyBinding(rr, b).code === CODES.BINDING_FIELD_MISMATCH; })());
+  ok("N02 alter ONLY observed_historical_label -> REFUSED", descTamper((b) => { b.observed_historical_label = "COMPLETED_HEALTHY"; }));
+  ok("N03 alter ONLY authoritative_final_state -> REFUSED", descTamper((b) => { b.authoritative_final_state = "STOPPED_EXHAUSTED"; }));
+  ok("N04 alter ONLY authoritative_outcome_status -> REFUSED", descTamper((b) => { b.authoritative_outcome_status = "COMPLETED_HEALTHY"; }));
+  ok("N05 alter ONLY does_not_authorize_retry -> REFUSED", descTamper((b) => { b.does_not_authorize_retry = false; }));
+  ok("N06 alter ONLY normalization_rules -> REFUSED", descTamper((b) => { b.normalization_rules = "trust me"; }));
+  ok("N07 malformed binding (missing schema) -> INVALID", verifyBinding(mkFix(), {}).ok === false);
+  ok("N19 prose tamper + re-stringify (no source change) -> STILL REFUSED by structural comparison", (() => { const rr = mkFix(); const b = JSON.parse(JSON.stringify(load(rr))); b.allowed_statement += " (edited)"; return verifyBinding(rr, b).ok === false; })());
+  ok("N20 descriptive tamper + ordinary manifest re-stringify -> STILL REFUSED (source fixed)", (() => { const rr = mkFix(); const b = load(rr); b.historical_run_classification = "CLEAN_COMPLETION"; writeFileSync(join(rr, BINDING_REL), JSON.stringify(b, null, 2)); return verifyBinding(rr, JSON.parse(readFileSync(join(rr, BINDING_REL), "utf8"))).ok === false; })());
+
+  // statement is structurally derived (P03): a binding whose stored statement != deriveStatement(facts) fails
+  ok("P03 canonical statement derived from structured fields (stored must equal derived)", (() => { const rr = mkFix(); const b = load(rr); return verifyBinding(rr, b).ok === true && b.allowed_statement === deriveStatement({ activation_consumed_once: true, replay_blocked: true, run_active_reached: true, authoritative_outcome_status: "HELD_TEARDOWN_DEFECT", productive_jobs_completed: 0, cost_usd: 0, provider_attempt_status: "PROVIDER_NOT_ATTEMPTED" }); })());
+
+  // ---- inventoryRunIndicators fail-closed semantics (production capsule-verifier no-run path) ----
+  const mkEvRepo = (files) => { const rr = mkdtempSync(join(base, "inv-")); const d = join(rr, ".foundergate/evidence/lrcq-assurance-factory"); mkdirSync(d, { recursive: true }); for (const [f, c] of Object.entries(files || {})) { const fp = join(d, f); mkdirSync(dirname(fp), { recursive: true }); writeFileSync(fp, c); } return rr; };
+  ok("N17 complete inventory, ZERO indicators -> NO_RUN (the only allowed no-run case)", inventoryRunIndicators(mkEvRepo({ "note.txt": "x" })).status === "INVENTORY_COMPLETE_NO_RUN_INDICATORS");
+  ok("N14 consumed marker present (no binding/incident) -> RUN_INDICATORS_PRESENT (never no-run)", inventoryRunIndicators(mkEvRepo({ "sha256_x.consumed.json": "{}" })).status === "INVENTORY_COMPLETE_RUN_INDICATORS_PRESENT");
+  ok("N15 recovery-state present (no binding/incident) -> RUN_INDICATORS_PRESENT", inventoryRunIndicators(mkEvRepo({ "recovery-state.json": "{}" })).status === "INVENTORY_COMPLETE_RUN_INDICATORS_PRESENT");
+  ok("N15b supervisor receipt present -> RUN_INDICATORS_PRESENT", inventoryRunIndicators(mkEvRepo({ "supervisor-events.jsonl": "{}" })).status === "INVENTORY_COMPLETE_RUN_INDICATORS_PRESENT");
+  ok("N16 raw-run manifest present -> RUN_INDICATORS_PRESENT", inventoryRunIndicators(mkEvRepo({ "REAL_RUN_RAW_EVIDENCE_MANIFEST.json": "{}" })).status === "INVENTORY_COMPLETE_RUN_INDICATORS_PRESENT");
+  ok("N09/N10/N18 broken symlink in evidence root -> INVENTORY_INCOMPLETE_ERROR (never no-run)", (() => { const rr = mkEvRepo({ "ok.txt": "x" }); try { symlinkSync(join(rr, "does-not-exist"), join(rr, ".foundergate/evidence/lrcq-assurance-factory/dangling")); } catch { return true; } return inventoryRunIndicators(rr).status === "INVENTORY_INCOMPLETE_ERROR"; })());
+  ok("N06b the current lane repo (binding+incident present) -> RUN_INDICATORS_PRESENT (never false no-run)", inventoryRunIndicators(REPO).status === "INVENTORY_COMPLETE_RUN_INDICATORS_PRESENT");
 
   // restore-clean proof
   r = mkFix(); ok("Z restore: clean fixture passes again after all mutations", verifyBinding(r, load(r)).ok === true);

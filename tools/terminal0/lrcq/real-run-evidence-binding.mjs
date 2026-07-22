@@ -37,7 +37,22 @@ export const CODES = {
   RAW_MANIFEST_DIGEST_MISMATCH: "RAW_MANIFEST_DIGEST_MISMATCH",
   STALE_BINDING: "STALE_BINDING",
   UNAUTHORIZED_SOURCE_PATH: "UNAUTHORIZED_SOURCE_PATH",
+  BINDING_FIELD_MISMATCH: "BINDING_FIELD_MISMATCH",
 };
+
+// Canonical human statement — derived ONLY from verified structured fields (never trusted prose). Any
+// change to a structured fact changes the statement, so a manifest that keeps facts but edits the prose
+// (or vice versa) fails the full-body comparison in verifyBinding.
+export function deriveStatement(f) {
+  const held = /HELD|TEARDOWN_DEFECT|PROVIDER_FAILURE/.test(f.authoritative_outcome_status || "") ? "held on the first job" : "did not hold";
+  const consumed = f.activation_consumed_once ? "A founder authorization was consumed once" : "No founder authorization was consumed";
+  const replay = f.replay_blocked ? "replay-blocked" : "replay NOT blocked";
+  const active = f.run_active_reached ? "reached RUN_ACTIVE" : "did not reach RUN_ACTIVE";
+  const prod = "completed " + (f.productive_jobs_completed === 0 ? "zero" : String(f.productive_jobs_completed)) + " productive job" + (f.productive_jobs_completed === 1 ? "" : "s");
+  const cost = (typeof f.cost_usd === "number" && f.cost_usd <= 0.01) ? "incurred approximately zero cost" : "incurred cost $" + f.cost_usd;
+  const prov = f.provider_attempt_status === "PROVIDER_NOT_ATTEMPTED" ? "did not spawn the real Claude provider" : "provider attempt: " + f.provider_attempt_status;
+  return consumed + " and " + replay + ". The first real run " + active + ", " + held + ", " + prod + ", " + cost + ", and " + prov + ".";
+}
 
 const sha256 = (buf) => "sha256:" + createHash("sha256").update(buf).digest("hex");
 const sha256file = (p) => sha256(readFileSync(p));
@@ -118,11 +133,16 @@ export function buildBinding(repo, opts = {}) {
     derivation_impl: { path: "tools/terminal0/lrcq/real-run-evidence-binding.mjs" },
     normalization_rules: "Facts are read verbatim from the committed authoritative incident; cost precision is not invented; both the observed-old-label and corrected outcome are preserved.",
     contradiction_result: "NONE",
-    allowed_statement: "A founder authorization was consumed once and replay-blocked. The first real run reached RUN_ACTIVE, held on the first job, completed zero productive jobs, incurred approximately zero cost, and did not spawn the real Claude provider.",
+    allowed_statement: deriveStatement(facts), // structurally derived, never hand-authored prose
     does_not_authorize_retry: true,
   };
   return R(CODES.OK, { binding: body });
 }
+
+// The authority-bearing body is EVERY field except these mechanically-contextual ones, which are supplied
+// per-capsule and are not facts about the historical run itself. verifyBinding compares all other fields.
+const NON_AUTHORITY_FIELDS = new Set(["evaluated_sha", "evaluated_tree"]);
+function canonBody(binding) { const o = {}; for (const k of Object.keys(binding).sort()) if (!NON_AUTHORITY_FIELDS.has(k)) o[k] = binding[k]; return JSON.stringify(o); }
 
 // Verify an existing binding manifest against current source bytes (path-independent, fail closed).
 export function verifyBinding(repo, binding) {
@@ -134,18 +154,32 @@ export function verifyBinding(repo, binding) {
   const authAbs = resolve(repo, src.path);
   if (!existsSync(authAbs)) return R(CODES.REAL_RUN_EVIDENCE_MISSING, { detail: src.path });
   if (sha256file(authAbs) !== src.sha256) return R(CODES.SOURCE_DIGEST_MISMATCH, { detail: src.path });
-  // re-derive from the (verified) source and require the binding to agree exactly
+  // Re-derive the CANONICAL expected binding from the (digest-verified) source. The supplied binding must
+  // match it in EVERY authority-bearing field — including all human-readable/descriptive fields
+  // (allowed_statement, observed_historical_label, authoritative_final_state, historical_run_classification,
+  // does_not_authorize_retry, normalization_rules, binding_id, ...). No stored prose is trusted; the
+  // statement itself is structurally derived (deriveStatement), so editing prose OR a fact breaks the match.
   const rebuilt = buildBinding(repo, { evaluatedSha: binding.evaluated_sha, evaluatedTree: binding.evaluated_tree });
   if (!rebuilt.ok) return rebuilt;
   const rb = rebuilt.binding;
-  const cmp = (k, code) => binding[k] === rb[k] ? null : code;
+  // First, targeted codes for the load-bearing facts (stable, specific refusal codes).
   for (const [k, code] of [["run_id", CODES.RUN_ID_MISMATCH], ["activation_identity", CODES.ACTIVATION_IDENTITY_MISMATCH],
     ["activation_consumed_once", CODES.CONSUMPTION_STATE_MISMATCH], ["replay_blocked", CODES.REPLAY_STATE_MISMATCH],
     ["authoritative_outcome_status", CODES.OUTCOME_CONTRADICTION], ["productive_jobs_completed", CODES.PRODUCTIVE_JOB_COUNT_MISMATCH],
     ["provider_attempt_status", CODES.PROVIDER_ATTEMPT_MISMATCH], ["cost_usd", CODES.COST_EVIDENCE_MISMATCH],
-    ["production_witness_reached", CODES.OUTCOME_CONTRADICTION]]) { const bad = cmp(k, code); if (bad) return R(bad, { detail: k }); }
-  if (binding.raw_evidence_manifest_digest !== rb.raw_evidence_manifest_digest) return R(CODES.RAW_MANIFEST_DIGEST_MISMATCH);
-  return R(CODES.OK, { binding, statement: binding.allowed_statement });
+    ["production_witness_reached", CODES.OUTCOME_CONTRADICTION], ["raw_evidence_manifest_digest", CODES.RAW_MANIFEST_DIGEST_MISMATCH]]) {
+    if (JSON.stringify(binding[k]) !== JSON.stringify(rb[k])) return R(code, { detail: k });
+  }
+  // Then, the FULL authority-bearing body (descriptive fields included) — any residual mismatch is caught
+  // with the exact field name so a prose-only or descriptive-only tamper cannot pass.
+  if (canonBody(binding) !== canonBody(rb)) {
+    const field = Object.keys(rb).sort().find((k) => !NON_AUTHORITY_FIELDS.has(k) && JSON.stringify(binding[k]) !== JSON.stringify(rb[k])) || Object.keys(binding).sort().find((k) => !NON_AUTHORITY_FIELDS.has(k) && !(k in rb));
+    return R(CODES.BINDING_FIELD_MISMATCH, { detail: field });
+  }
+  // Independent statement authority: the stored statement MUST equal the structurally-derived one.
+  const facts = extractFacts(JSON.parse(readFileSync(authAbs, "utf8"))).facts;
+  if (binding.allowed_statement !== deriveStatement(facts)) return R(CODES.BINDING_FIELD_MISMATCH, { detail: "allowed_statement (not structurally derived)" });
+  return R(CODES.OK, { binding, statement: deriveStatement(facts) });
 }
 
 // CLI: build | verify
