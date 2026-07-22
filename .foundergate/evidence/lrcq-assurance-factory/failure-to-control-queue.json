@@ -17,6 +17,11 @@
       "id": "C_PROVIDER_INVOCATION_EVIDENCE",
       "lesson": "A missing process.json must not be read as 'not invoked'. The provider lifecycle (NOT_ATTEMPTED / SPAWN_ATTEMPTED / SPAWNED / OUTPUT_RECEIVED / COST_RECORDED / COMPLETED / FAILED / UNKNOWN) must be durably distinguishable. In the first real run the truth (PROVIDER_NOT_ATTEMPTED) was recoverable only by cross-reading transactions + absent evidence; a durable per-stage record is now emitted.",
       "closed_in": "FG-LRCQ-ACT-023 (real-provider provider_invocation lifecycle field)"
+    },
+    {
+      "id": "D_CLAIM_SURFACE_CONSISTENCY",
+      "lesson": "Official current claim surfaces (PR title/body, founder summary, package) must reconcile with durable activation/replay/run/provider/witness/terminal records. A correct new status paragraph does NOT neutralize contradictory stale sections; contradictions block freeze + founder authorization. Current vs historical claims must be mechanically distinguished (a HISTORICAL label exempts a section); a regression verifier must reject incompatible current statements (e.g. 'activation NOT consumed' after a real consumption).",
+      "closed_in": "FG-LRCQ-ACT-024 (claim-consistency.mjs verifier + claim-consistency.selftest regression fixture)"
     }
   ],
   "deferred_not_in_this_pr": ["Autonomous Run Contract System", "Loop Contract Engine", "Repository Stewardship", "full Failure-to-Control Registry"]
