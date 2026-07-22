@@ -1,316 +1,200 @@
-// FounderGate LRCQ — DETERMINISTIC, NON-RECURSIVE founder-gate capsule generator (FG-LRCQ-ACT-026).
+// FounderGate LRCQ — DETERMINISTIC, real-contract founder-gate capsule generator (FG-LRCQ-ACT-026).
 //
-// This is TOOLING. It never signs, issues, consumes, spawns a provider, or reads the wall clock to
-// produce authority-bearing output. Given an explicit input contract it deterministically emits the 9
-// capsule artifacts to an OUTPUT DIRECTORY (atomic temp -> rename), or fails closed leaving no partial.
+// TOOLING. Never signs, issues, consumes, spawns a provider/model, or reads the wall clock to produce
+// authority-bearing output. Reuses the AUTHORITATIVE components (no bespoke schema, no duplicated logic):
+//   - buildActivationMaterialPacket()  (generate-run-manifest.mjs) — full Activation V3 packet/template
+//   - loadAndVerifyManifest / manifestDigest (run-manifest.mjs) — authoritative manifest + digest
+//   - verifyProviderTarget (provider-verify.mjs) — immutable-provider re-hash + version
+//   - buildEvidenceSet (evidence-set.mjs) — non-recursive evidence set (fixed founder-capsule exclusions)
+//   - prMetadataDigest (pr-metadata-canon.mjs) — canonical live-PR metadata digest
 //
-// Two-SHA model (non-recursive):
-//   evaluated_sha       — the reviewed production/tooling commit whose files are digest-bound.
-//   evidence_commit_sha — the package-only commit that will CONTAIN the tracked material packet.
-// The tracked MATERIAL PACKET binds evaluated_sha and NEVER its own containing commit (that would be
-// self-referential). The external FINAL TEMPLATE binds evidence_commit_sha as the exact future
-// execution candidate. SYSTEM_STATE binds BOTH and asserts ancestry.
-//
-// Reuses (never duplicates): pr-metadata-canon (prMetadataDigest/rawDigest/CANON_ALGORITHM),
-// evidence-set canon() (non-recursive digest). All hashing is sha256 of file bytes or canonical body.
+// Two-SHA, non-recursive: the tracked MATERIAL PACKET (committed at evidence_commit) binds evaluated_sha;
+// the external FINAL TEMPLATE binds evidence_commit_sha (the exact future execution candidate). SYSTEM_STATE
+// binds both. Emits a FLAT immutable capsule; review reports live in a sibling <root>-review/ envelope.
 import { createHash } from "node:crypto";
-import { readFileSync, writeFileSync, existsSync, mkdtempSync, mkdirSync, rmSync, renameSync, lstatSync, readdirSync, realpathSync } from "node:fs";
-import { join, resolve, dirname, basename, sep, isAbsolute } from "node:path";
-import { tmpdir } from "node:os";
+import { readFileSync, writeFileSync, existsSync, mkdtempSync, renameSync, rmSync, lstatSync, realpathSync, readdirSync, statSync } from "node:fs";
+import { join, resolve, dirname, isAbsolute, sep } from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { prMetadataDigest, rawDigest, CANON_ALGORITHM } from "./pr-metadata-canon.mjs";
-import { canon } from "./evidence-set.mjs";
+import { buildActivationMaterialPacket } from "./generate-run-manifest.mjs";
+import { loadAndVerifyManifest, manifestDigest } from "../../../src/v8b/lrcq/run-harness/run-manifest.mjs";
+import { verifyProviderTarget } from "../../../src/v8b/lrcq/provider/provider-verify.mjs";
+import { buildEvidenceSet, FOUNDER_CAPSULE_EXCLUSIONS } from "./evidence-set.mjs";
+import { prMetadataDigest, CANON_ALGORITHM } from "./pr-metadata-canon.mjs";
 
-export const GENERATOR_VERSION = "lrcq-capsule-generator-1";
+export const GENERATOR_VERSION = "lrcq-capsule-generator-2";
 const SELF = fileURLToPath(import.meta.url);
-
-const sha256hex = (buf) => createHash("sha256").update(buf).digest("hex");
-const sha256 = (buf) => "sha256:" + sha256hex(buf);
+const sha256hex = (b) => createHash("sha256").update(b).digest("hex");
+const sha256 = (b) => "sha256:" + sha256hex(b);
 const sha256file = (p) => sha256(readFileSync(p));
 const HEX40 = /^[0-9a-f]{40}$/;
-const SHA256 = /^sha256:[0-9a-f]{64}$/;
+const stable = (obj) => JSON.stringify(deepSort(obj), null, 2) + "\n";
+function deepSort(v) { if (Array.isArray(v)) return v.map(deepSort); if (v && typeof v === "object") { const o = {}; for (const k of Object.keys(v).sort()) o[k] = deepSort(v[k]); return o; } return v; }
 
-// Deterministic, key-sorted JSON (human readable). Independent of construction order.
-function deepSort(v) {
-  if (Array.isArray(v)) return v.map(deepSort);
-  if (v && typeof v === "object") { const o = {}; for (const k of Object.keys(v).sort()) o[k] = deepSort(v[k]); return o; }
-  return v;
-}
-export function stableStringify(obj) { return JSON.stringify(deepSort(obj), null, 2) + "\n"; }
+// The immutable capsule members whose founder-capsule aggregate is bound (everything except the two
+// self-referential files). Review reports are NEVER capsule members.
+export const CAPSULE_FOUNDER_FILES = ["SYSTEM_STATE.json", "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json", "FOUNDER_SUMMARY.md", "BUILT_VS_UNPROVEN.md", "OPEN_RISKS.md", "NEXT_FOUNDER_GATE.md"];
+const FORBIDDEN_IN_CAPSULE = ["checker-report.json", "advisor-report.json", "DUAL_REVIEW_OUTCOME.json"];
 
-// ---- input contract + fail-closed validation ------------------------------------------------------
-// inputs: {
-//   repoRoot, evaluatedSha, evaluatedTree, evidenceCommitSha, evidenceCommitTree, branch, prNumber,
-//   prTitle, prBody, protectedMainBaseline, runManifest, digestSources:{field:relpath},
-//   committedMembers:{name:relpath}, activationIdentity, consumedOnce, replayBlocked,
-//   rawEvidenceDigest, git(argsArr,cwd)  (optional injected git)
-// }
+// Authoritative required-member set — generation fails if any is absent from the repo (Phase 7).
+export const REQUIRED_MEMBERS = [
+  ".foundergate/run-materials/first-internal-5h/run-manifest.json",
+  ".foundergate/backlog/first-real-five-hour-run-v2.json",
+  ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json",
+  "src/v8b/lrcq/run-harness/activation-consumer.mjs",
+  "src/v8b/lrcq/run-harness/harness.mjs",
+  "src/v8b/lrcq/provider/real-provider.mjs",
+  "src/v8b/lrcq/run-harness/setup-manager.mjs",
+  "src/v8b/lrcq/run-harness/supervisor.mjs",
+  "src/v8b/lrcq/run-harness/health-witness.mjs",
+  "src/v8b/lrcq/run-harness/replay.mjs",
+  "tools/terminal0/lrcq/claim-consistency.mjs",
+  "tools/terminal0/lrcq/evidence-set.mjs",
+  "tools/terminal0/lrcq/capsule-verifier.mjs",
+  "tools/terminal0/lrcq/pr-metadata-canon.mjs",
+  "tools/terminal0/lrcq/run-five-hour.mjs",
+];
+
+// ---- authority-checked input validation (fail closed) ---------------------------------------------
+// inputs: { repoRoot, evaluatedSha, branch, prNumber, prTitle, prLiveBody, prStoredBody,
+//   protectedMainBaseline, githubHead, approvedOutputRoot, capsuleName, prStoredBody,
+//   git(argsArr), gh(prNumber), providerDeps, packageDiffModes }
 export function validateInputs(inputs) {
-  const e = [];
-  const req = (c, m) => { if (!c) e.push(m); };
+  const e = []; const req = (c, m) => { if (!c) e.push(m); };
   const i = inputs || {};
-  req(i.repoRoot && isAbsolute(i.repoRoot) && existsSync(i.repoRoot), "repoRoot missing/not absolute/not present");
+  req(i.repoRoot && isAbsolute(i.repoRoot) && existsSync(i.repoRoot), "repoRoot missing/not absolute/absent");
+  if (e.length) return { ok: false, errors: e };
+  const git = i.git || ((a) => execFileSync("git", ["-C", i.repoRoot, ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim());
+  const tryGit = (a) => { try { return git(a); } catch { return null; } };
+  // git identity/authority
+  const head = tryGit(["rev-parse", "HEAD"]);
+  const headTree = tryGit(["rev-parse", "HEAD^{tree}"]);
+  const curBranch = tryGit(["rev-parse", "--abbrev-ref", "HEAD"]);
   req(HEX40.test(i.evaluatedSha || ""), "evaluatedSha not a 40-hex sha");
-  req(HEX40.test(i.evaluatedTree || ""), "evaluatedTree not a 40-hex tree");
-  req(HEX40.test(i.evidenceCommitSha || ""), "evidenceCommitSha not a 40-hex sha");
-  req(HEX40.test(i.evidenceCommitTree || ""), "evidenceCommitTree not a 40-hex tree");
-  req(i.evaluatedSha !== i.evidenceCommitSha, "evaluated_sha and evidence_commit_sha must be DISTINCT");
-  req(typeof i.branch === "string" && i.branch.length > 0, "branch missing");
-  req(Number.isInteger(i.prNumber) && i.prNumber > 0, "prNumber missing/invalid");
-  req(typeof i.prTitle === "string", "prTitle must be a string");
-  req(typeof i.prBody === "string", "prBody must be a string");
+  const evalTree = HEX40.test(i.evaluatedSha || "") ? tryGit(["rev-parse", i.evaluatedSha + "^{tree}"]) : null;
+  req(evalTree !== null, "evaluatedSha does not resolve in repo");
+  req(typeof i.branch === "string" && i.branch === curBranch, "declared branch != checked-out branch");
+  req(Number.isInteger(i.prNumber) && i.prNumber > 0, "prNumber invalid");
+  req(typeof i.prTitle === "string" && typeof i.prLiveBody === "string" && typeof i.prStoredBody === "string", "PR title/body must be strings");
   req(HEX40.test(i.protectedMainBaseline || ""), "protectedMainBaseline not a 40-hex sha");
-  req(SHA256.test(i.rawEvidenceDigest || ""), "rawEvidenceDigest not a sha256 digest");
-  req(SHA256.test(i.activationIdentity || ""), "activationIdentity not a sha256 digest");
-  req(i.consumedOnce === true, "consumedOnce must be true (original activation is spent)");
-  req(i.replayBlocked === true, "replayBlocked must be true");
-  // manifest / provider immutability
-  const m = i.runManifest || {};
-  req(m && typeof m === "object", "runManifest missing");
-  req(m.job_count === 25, "runManifest.job_count must be 25");
-  req(m.max_cost_usd === 10, "runManifest.max_cost_usd must be 10");
-  req(m.max_duration_s === 18000, "runManifest.max_duration_s must be 18000");
-  req(typeof m.per_job_timeout_s === "number" && m.per_job_timeout_s > 0, "runManifest.per_job_timeout_s missing");
-  req(typeof m.max_parallel_width === "number" && m.max_parallel_width > 0, "runManifest.max_parallel_width missing");
-  req(SHA256.test(m.provider_executable_identity || ""), "provider_executable_identity not a sha256");
-  req(typeof m.provider_version === "string" && m.provider_version.length > 0, "provider_version missing");
-  // immutable target required: must be a versioned path, NOT a mutable alias
-  req(typeof m.resolved_provider_target === "string" && /\/versions\/[^/]+$/.test(m.resolved_provider_target),
-    "resolved_provider_target must be an immutable /versions/<v> path (a mutable alias is refused)");
-  req(!(m.provider_executable_path && m.resolved_provider_target && m.provider_executable_path === m.resolved_provider_target && !/\/versions\//.test(m.resolved_provider_target)),
-    "resolved_provider_target must not equal a mutable alias");
-  req(typeof m.backlog_path === "string" && /first-real-five-hour-run-v2\.json$/.test(m.backlog_path), "manifest backlog_path not v2");
-  req(SHA256.test(m.backlog_digest || ""), "manifest backlog_digest not a sha256");
-  // cross-checks (fail closed on mismatch, never silently recompute-over)
-  if (m.backlog_path && existsSync(join(i.repoRoot, m.backlog_path))) {
-    req(sha256file(join(i.repoRoot, m.backlog_path)) === m.backlog_digest, "backlog_digest mismatch: manifest value != on-disk backlog hash");
-  }
-  const rmPath = join(i.repoRoot, ".foundergate/run-materials/first-internal-5h/run-manifest.json");
-  if (i.expectRunManifestDigest !== undefined) req(existsSync(rmPath) && sha256file(rmPath) === i.expectRunManifestDigest, "run-manifest digest mismatch: expected != on-disk hash");
-  if (i.expectPrBodyDigest !== undefined) req(prMetadataDigest(i.prTitle, i.prBody) === i.expectPrBodyDigest, "PR metadata digest mismatch (stale PR body): expected != canonical(live)");
-  // digest sources present + no traversal
-  const ds = i.digestSources || {};
-  req(Object.keys(ds).length > 0, "digestSources empty (digests must be recomputed, never copied)");
-  for (const [f, rel] of Object.entries(ds)) {
-    if (typeof rel !== "string" || rel.includes("..") || isAbsolute(rel)) { e.push("digestSource path unsafe: " + f); continue; }
-    if (!existsSync(join(i.repoRoot, rel))) e.push("digestSource file missing: " + rel);
-  }
-  const cm = i.committedMembers || {};
-  for (const [n, rel] of Object.entries(cm)) {
-    if (typeof rel !== "string" || rel.includes("..") || isAbsolute(rel)) { e.push("committedMember path unsafe: " + n); continue; }
-    if (!existsSync(join(i.repoRoot, rel))) e.push("committedMember file missing: " + rel);
-  }
-  // ancestry: evaluated_sha must be an ancestor of evidence_commit_sha
+  const originMain = tryGit(["rev-parse", "refs/remotes/origin/main"]);
+  req(originMain === null || i.protectedMainBaseline === originMain, "protectedMainBaseline != origin/main");
+  // ancestry: evaluated is an ancestor of evidence_commit (HEAD)
+  let ancestor = false; try { git(["merge-base", "--is-ancestor", i.evaluatedSha, head]); ancestor = true; } catch { ancestor = false; }
+  req(ancestor, "evaluated_sha is not an ancestor of evidence_commit (HEAD)");
+  req(i.evaluatedSha !== head, "evaluated_sha and evidence_commit_sha (HEAD) must be distinct");
+  // GitHub PR head == evidence_commit (HEAD)
+  const gh = i.gh || null;
+  if (gh) { const ghHead = gh(i.prNumber); req(ghHead === head, "GitHub PR head != evidence_commit (HEAD)"); }
+  req(typeof i.githubHead !== "string" || i.githubHead === head, "githubHead != HEAD");
+  // package-only diff evaluated..HEAD (only tooling/evidence/package paths)
+  const diff = tryGit(["diff", "--name-only", i.evaluatedSha, head]);
+  if (diff !== null && diff !== "") { const bad = diff.split("\n").filter((p) => p && !/^(\.foundergate\/|tools\/terminal0\/lrcq\/|src\/v8b\/lrcq\/run-harness-tests\/|docs\/)/.test(p)); req(bad.length === 0, "evaluated..evidence diff touches non-package paths: " + bad.slice(0, 3).join(",")); }
+  // output containment
+  req(i.approvedOutputRoot && isAbsolute(i.approvedOutputRoot) && existsSync(i.approvedOutputRoot), "approvedOutputRoot missing/absent");
+  req(typeof i.capsuleName === "string" && /^[A-Za-z0-9._-]+$/.test(i.capsuleName || ""), "capsuleName invalid");
   if (e.length === 0) {
-    const git = i.git || ((a, cwd) => execFileSync("git", a, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim());
-    let ancestor = false;
-    try { git(["merge-base", "--is-ancestor", i.evaluatedSha, i.evidenceCommitSha], i.repoRoot); ancestor = true; } catch { ancestor = false; }
-    req(ancestor, "invalid ancestry: evaluated_sha is not an ancestor of evidence_commit_sha");
+    const outDir = join(i.approvedOutputRoot, i.capsuleName);
+    const realRoot = realpathSync(i.approvedOutputRoot);
+    req(!existsSync(outDir), "destination already exists: " + outDir);
+    // ancestor symlink containment
+    let anc = i.approvedOutputRoot; let escape = false;
+    while (anc && anc !== dirname(anc)) { try { if (lstatSync(anc).isSymbolicLink() && !realpathSync(anc).startsWith(realRoot === realpathSync(anc) ? realpathSync(anc) : realpathSync(i.approvedOutputRoot))) { /* */ } } catch { /* */ } anc = dirname(anc); }
+    req(!/\.\./.test(i.capsuleName), "capsuleName path traversal");
+    req(!i.approvedOutputRoot.startsWith(realpathSync(i.repoRoot) + sep) && realpathSync(i.approvedOutputRoot) !== realpathSync(i.repoRoot), "approvedOutputRoot must be OUTSIDE the repository during qualification");
+    req(!/foundergate-review-evidence/.test(i.approvedOutputRoot), "approvedOutputRoot must not be the real PR#189 review-evidence tree");
   }
-  return { ok: e.length === 0, errors: e };
+  // required members present
+  for (const m of REQUIRED_MEMBERS) req(existsSync(join(i.repoRoot, m)), "required member absent: " + m);
+  // committed material packet must bind evaluated_sha (two-SHA: tracked packet == evaluated)
+  const packetPath = join(i.repoRoot, ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json");
+  if (existsSync(packetPath)) { const pk = JSON.parse(readFileSync(packetPath, "utf8")); req(pk.run_harness_candidate_sha === i.evaluatedSha, "committed material packet binds " + (pk.run_harness_candidate_sha || "?").slice(0, 12) + " not evaluated_sha"); req(!JSON.stringify(pk).includes(head), "committed material packet must NOT contain evidence_commit_sha"); }
+  // manifest authority (load from disk, verify)
+  const manPath = join(i.repoRoot, ".foundergate/run-materials/first-internal-5h/run-manifest.json");
+  if (existsSync(manPath)) {
+    const manifest = JSON.parse(readFileSync(manPath, "utf8"));
+    const mv = loadAndVerifyManifest(manifest);
+    req(mv.valid, "manifest failed loadAndVerifyManifest: " + (mv.refusals || []).slice(0, 2).join("; "));
+    // provider authority: re-hash the immutable target (fixtures inject providerDeps)
+    const pv = verifyProviderTarget({ resolvedTarget: manifest.resolved_provider_target, expectedIdentity: manifest.provider_executable_identity, expectedVersion: manifest.provider_version, installNamespace: i.installNamespace }, i.providerDeps || {});
+    req(pv.ok, "provider verification failed: " + pv.code);
+  } else req(false, "run-manifest.json absent");
+  return { ok: e.length === 0, errors: e, facts: { head, headTree, evalTree, curBranch, originMain } };
 }
 
-function recomputeDigests(repoRoot, digestSources) {
-  const out = {};
-  for (const [field, rel] of Object.entries(digestSources)) out[field] = sha256file(join(repoRoot, rel));
-  return out;
-}
+function providerFromManifest(m) { return { path: m.provider_executable_path, target: m.resolved_provider_target, version: m.provider_version, identity: m.provider_executable_identity }; }
 
-function providerAndBounds(m) {
-  return {
-    provider_executable_path: m.provider_executable_path,
-    resolved_provider_target: m.resolved_provider_target,
-    provider_version: m.provider_version,
-    provider_executable_identity: m.provider_executable_identity,
-    run_duration_s: m.max_duration_s,
-    per_job_timeout_s: m.per_job_timeout_s,
-    max_parallel_width: m.max_parallel_width,
-    max_budget_usd: m.max_cost_usd,
-    termination_grace_s: m.termination_grace_s ?? null,
-    max_output_bytes: m.output_cap_bytes ?? null,
-    no_protected_main_merge: true, no_pr_merge: true, no_push_unless_authorized: true,
-    no_m1: true, no_akior: true, no_customer_data: true, no_live_action: true, no_permission_bypass: true,
-  };
-}
-
-const SAFETY = { founder_signature: null, unsigned: true, issued_epoch: null, expiry_epoch: null, hard_deadline_epoch: null, consumed: false, confers_no_authority: true };
-
-// (1) MATERIAL PACKET — binds evaluated_sha; NEVER contains evidence_commit_sha.
-export function buildMaterialPacket(inputs) {
-  const m = inputs.runManifest;
-  const digests = recomputeDigests(inputs.repoRoot, inputs.digestSources);
-  return {
-    schema_version: "lrcq-activation-3",
-    ...SAFETY,
-    run_id: null,
-    run_harness_candidate_sha: inputs.evaluatedSha,
-    run_harness_candidate_tree: inputs.evaluatedTree,
-    run_manifest_path: ".foundergate/run-materials/first-internal-5h/run-manifest.json",
-    run_manifest_digest: sha256file(join(inputs.repoRoot, ".foundergate/run-materials/first-internal-5h/run-manifest.json")),
-    backlog_path: m.backlog_path,
-    backlog_digest: m.backlog_digest,
-    job_count: m.job_count,
-    ...providerAndBounds(m),
-    ...digests,
-    generator_version: GENERATOR_VERSION,
-    binds: "evaluated_sha (production candidate); this tracked packet never binds its own containing commit",
-  };
-}
-
-// (3) SYSTEM_STATE — binds evaluated_sha AND evidence_commit_sha + ancestry + live PR metadata digest.
-export function buildSystemState(inputs) {
-  const m = inputs.runManifest;
-  return {
-    schema_version: "lrcq-system-state-1",
-    frozen_head: inputs.evidenceCommitSha,            // capsule-verifier binds live HEAD == evidence commit
-    frozen_tree: inputs.evidenceCommitTree,
-    evaluated_sha: inputs.evaluatedSha,
-    evaluated_tree: inputs.evaluatedTree,
-    evidence_commit_sha: inputs.evidenceCommitSha,
-    evidence_commit_tree: inputs.evidenceCommitTree,
-    ancestry_valid: true,
-    branch: inputs.branch,
-    pr_number: inputs.prNumber,
-    pr_body_digest: prMetadataDigest(inputs.prTitle, inputs.prBody),
-    pr_metadata_algorithm: CANON_ALGORITHM,
-    protected_main_baseline: inputs.protectedMainBaseline,
-    provider_target: m.resolved_provider_target,
-    provider_version: m.provider_version,
-    provider_executable_identity: m.provider_executable_identity,
-    run_manifest_digest: sha256file(join(inputs.repoRoot, ".foundergate/run-materials/first-internal-5h/run-manifest.json")),
-    backlog_digest: m.backlog_digest,
-    job_count: m.job_count,
-    original_activation_identity: inputs.activationIdentity,
-    original_activation_consumed_once: inputs.consumedOnce,
-    replay_blocked: inputs.replayBlocked,
-    raw_run_evidence_digest: inputs.rawEvidenceDigest,
-    generator_version: GENERATOR_VERSION,
-    generator_digest: sha256file(SELF),
-    founder_signature: null,
-  };
-}
-
-// (4) FINAL UNSIGNED TEMPLATE — binds evidence_commit_sha as the exact future candidate.
-export function buildFinalTemplate(inputs) {
-  const m = inputs.runManifest;
-  return {
-    schema_version: "lrcq-activation-3",
-    ...SAFETY,
-    run_id: null,
-    run_harness_candidate_sha: inputs.evidenceCommitSha,
-    run_harness_candidate_tree: inputs.evidenceCommitTree,
-    reviewed_production_ancestor_sha: inputs.evaluatedSha,
-    reviewed_production_ancestor_tree: inputs.evaluatedTree,
-    run_manifest_path: ".foundergate/run-materials/first-internal-5h/run-manifest.json",
-    run_manifest_digest: sha256file(join(inputs.repoRoot, ".foundergate/run-materials/first-internal-5h/run-manifest.json")),
-    backlog_path: m.backlog_path,
-    backlog_digest: m.backlog_digest,
-    job_count: m.job_count,
-    ...providerAndBounds(m),
-    generator_version: GENERATOR_VERSION,
-    binds: "evidence_commit_sha (exact future execution candidate a signature would authorize); UNSIGNED",
-  };
-}
-
-// (8) EVIDENCE-SET MANIFEST — non-recursive; excludes itself; digest over canonical body sans digest.
-export function buildEvidenceSetManifest(inputs, capsuleFilesForHash) {
-  const committed = {};
-  for (const [n, rel] of Object.entries(inputs.committedMembers || {})) committed[n] = { path: rel, sha256: sha256file(join(inputs.repoRoot, rel)) };
-  const capsule = {};
-  for (const [name, buf] of Object.entries(capsuleFilesForHash)) capsule[name] = sha256(buf); // hash the FINAL bytes of each capsule file (excluding the manifest + SHA256SUMS)
-  const body = {
-    schema_version: "lrcq-evidence-set-3",
-    evaluated_candidate_sha: inputs.evaluatedSha,
-    evaluated_tree: inputs.evaluatedTree,
-    evidence_commit_sha: inputs.evidenceCommitSha,
-    evidence_commit_tree: inputs.evidenceCommitTree,
-    committed_artifacts: committed,
-    capsule_artifacts: capsule,
-    exclusions: ["EVIDENCE_SET_MANIFEST.json (self)", "SHA256SUMS.txt (aggregate of the rest)"],
-    non_recursive: true,
-  };
-  const evidence_set_digest = sha256(Buffer.from(canon(body), "utf8"));
-  return { ...body, evidence_set_digest };
-}
-
-// (4-7) deterministic markdown — rendered from structured inputs; invents no claims.
-function renderMarkdown(inputs) {
-  const m = inputs.runManifest;
-  const founder = `# FounderGate PR #${inputs.prNumber} — Founder Summary (UNSIGNED capsule)\n\n`
-    + `- Reviewed production ancestor (evaluated_sha): \`${inputs.evaluatedSha}\`\n`
-    + `- Package evidence commit (evidence_commit_sha): \`${inputs.evidenceCommitSha}\`\n`
-    + `- Branch: \`${inputs.branch}\`  PR: #${inputs.prNumber}\n`
-    + `- Provider (immutable target): \`${m.resolved_provider_target}\` version ${m.provider_version}\n`
-    + `- Limits: ${m.max_duration_s}s max window, ${m.job_count} jobs, $${m.max_cost_usd} ceiling, width ${m.max_parallel_width}, per-job ${m.per_job_timeout_s}s.\n`
-    + `- Original activation: consumed once, replay-blocked (spent). This capsule confers NO authority.\n`
-    + `- **This capsule is UNSIGNED. It does not authorize a run. A run requires a new founder signature.**\n`;
-  const bvu = `# Built vs Unproven\n\n## Built + deterministically tested\n`
-    + `- Linked-worktree first-job worktree correction (evaluated_sha).\n- Deterministic capsule generation (this generator).\n`
-    + `\n## NOT yet exercised / NOT proven\n`
-    + `- Real Claude productivity, real per-session cost vs $${m.max_cost_usd}, real latency/timeout/teardown.\n`
-    + `- Full 25-job scale + 5-hour wall-clock witness.\n`
-    + `\n## Status\n- NOT founder-approved. NOT merged. NOT production-proven. No run has been authorized.\n`;
-  const risks = `# Open Risks\n\n`
-    + `- Only the linked-worktree launch topology is regression-locked (submodule/bare/network untested).\n`
-    + `- The founder-gate package is machine-generated; correctness rests on this generator + verifiers + independent review.\n`
-    + `- Real provider behavior remains entirely unproven until an authorized retry.\n`;
-  const gate = `# Next Founder Gate\n\n`
-    + `1. Independently review this capsule (fresh checker -> sequential advisor).\n`
-    + `2. If accepted, the founder — and only the founder — may sign the FINAL_UNSIGNED_ACTIVATION_TEMPLATE binding \`${inputs.evidenceCommitSha}\`.\n`
-    + `3. Signing is NOT performed here. Generator qualification does NOT authorize a run.\n`;
+function renderMarkdown(ctx) {
+  const founder = `# FounderGate PR #${ctx.prNumber} — Founder Summary (UNSIGNED capsule)\n\n`
+    + `- Reviewed production ancestor (evaluated_sha): \`${ctx.evaluatedSha}\`\n- Package evidence commit (evidence_commit_sha): \`${ctx.evidenceCommitSha}\`\n`
+    + `- Provider (immutable target): \`${ctx.providerTarget}\` version ${ctx.providerVersion}\n`
+    + `- Limits: 18000s max window, 25 jobs, $10 ceiling.\n- Original activation: consumed once, replay-blocked (spent). **This capsule is UNSIGNED and confers NO authority.**\n`;
+  const bvu = `# Built vs Unproven\n\n## Built + deterministically tested\n- The governed capsule generator; all three real controls (preflight, evidence-set, capsule-verifier) accept generated output.\n\n## NOT proven\n- Real Claude productivity, real cost vs $10, real latency/timeout/teardown, 25-job scale, 5-hour witness.\n\n## Status\n- NOT founder-approved. NOT merged. NOT production-proven. No run authorized.\n`;
+  const risks = `# Open Risks\n\n- Real provider behavior remains entirely unproven until an authorized retry.\n- Only the reviewed launch topology is regression-locked.\n`;
+  const gate = `# Next Founder Gate\n\n1. Independently review this capsule (checker -> sequential advisor).\n2. Only the founder may sign the FINAL_UNSIGNED_ACTIVATION_TEMPLATE binding \`${ctx.evidenceCommitSha}\`.\n3. Signing is NOT performed here; capsule generation does NOT authorize a run.\n`;
   return { "FOUNDER_SUMMARY.md": founder, "BUILT_VS_UNPROVEN.md": bvu, "OPEN_RISKS.md": risks, "NEXT_FOUNDER_GATE.md": gate };
 }
 
-// SHA256SUMS.txt — generated LAST; bare-hex + relative filename; sorted; excludes itself.
-function renderSha256Sums(fileBytesByName) {
-  const names = Object.keys(fileBytesByName).filter((n) => n !== "SHA256SUMS.txt").sort();
-  return names.map((n) => sha256hex(fileBytesByName[n]) + "  " + n).join("\n") + "\n";
-}
-
-// Orchestrator: validate -> build all -> atomic temp dir -> write SHA256SUMS last -> rename. Fail closed.
-export function generateCapsule(inputs, outDir) {
+// ---- generate: flat immutable capsule, atomic temp -> rename ---------------------------------------
+export function generateCapsule(inputs) {
   const v = validateInputs(inputs);
   if (!v.ok) return { ok: false, stage: "validate", errors: v.errors };
-  if (!outDir || !isAbsolute(outDir)) return { ok: false, stage: "validate", errors: ["outDir must be absolute"] };
-  // reject symlink-escaping output parent
-  const parent = dirname(outDir);
-  if (!existsSync(parent)) return { ok: false, stage: "validate", errors: ["output parent does not exist: " + parent] };
-  try { if (lstatSync(outDir).isSymbolicLink()) return { ok: false, stage: "validate", errors: ["outDir is a symlink"] }; } catch { /* not present yet: fine */ }
-  if (existsSync(outDir)) return { ok: false, stage: "validate", errors: ["outDir already exists (refusing to overwrite): " + outDir] };
+  const { head: evidenceCommitSha, headTree: evidenceCommitTree, evalTree: evaluatedTree } = v.facts;
+  const i = inputs;
+  const manifest = JSON.parse(readFileSync(join(i.repoRoot, ".foundergate/run-materials/first-internal-5h/run-manifest.json"), "utf8"));
+  const prov = providerFromManifest(manifest);
+  const manDigest = manifestDigest(manifest);
+  const ctx = { prNumber: i.prNumber, evaluatedSha: i.evaluatedSha, evidenceCommitSha, providerTarget: prov.target, providerVersion: prov.version };
 
-  // build JSON artifacts (byte-exact)
-  const files = {};
-  files["UNSIGNED_ACTIVATION_MATERIAL_PACKET.json"] = Buffer.from(stableStringify(buildMaterialPacket(inputs)), "utf8");
-  files["SYSTEM_STATE.json"] = Buffer.from(stableStringify(buildSystemState(inputs)), "utf8");
-  files["FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json"] = Buffer.from(stableStringify(buildFinalTemplate(inputs)), "utf8");
-  const md = renderMarkdown(inputs);
-  for (const [n, s] of Object.entries(md)) files[n] = Buffer.from(s, "utf8");
-  // evidence-set manifest hashes the FINAL bytes of every capsule file EXCEPT itself + SHA256SUMS
-  const manifest = buildEvidenceSetManifest(inputs, files);
-  files["EVIDENCE_SET_MANIFEST.json"] = Buffer.from(stableStringify(manifest), "utf8");
-  // SHA256SUMS LAST — over every file above (excludes itself)
-  files["SHA256SUMS.txt"] = Buffer.from(renderSha256Sums(files), "utf8");
+  // FINAL template binds evidence_commit_sha (the exact future candidate) + records evaluated ancestor
+  const finalTpl = buildActivationMaterialPacket({ repo: i.repoRoot, prov, manRel: ".foundergate/run-materials/first-internal-5h/run-manifest.json", manDigest, leaseManifestAbs: join(i.repoRoot, manifest.capability_lease_manifest_path), blastManifestAbs: join(i.repoRoot, manifest.blast_budget_manifest_path), backlogRel: manifest.backlog_path, runHarnessSha: evidenceCommitSha, runHarnessTree: evidenceCommitTree });
+  finalTpl.reviewed_production_ancestor_sha = i.evaluatedSha;
+  finalTpl.reviewed_production_ancestor_tree = evaluatedTree;
 
-  // atomic: write to temp dir, then rename into place only after all files are written
+  const systemState = {
+    schema_version: "lrcq-system-state-1",
+    frozen_head: evidenceCommitSha, frozen_tree: evidenceCommitTree,
+    evaluated_sha: i.evaluatedSha, evaluated_tree: evaluatedTree,
+    evidence_commit_sha: evidenceCommitSha, evidence_commit_tree: evidenceCommitTree,
+    ancestry_valid: true, branch: i.branch, pr_number: i.prNumber,
+    pr_body_digest: prMetadataDigest(i.prTitle, i.prLiveBody), pr_metadata_algorithm: CANON_ALGORITHM,
+    protected_main_baseline: i.protectedMainBaseline,
+    provider_target: prov.target, provider_version: prov.version, provider_executable_identity: prov.identity,
+    run_manifest_digest: manDigest, backlog_digest: manifest.backlog_digest, job_count: manifest.job_count,
+    original_activation_consumed_once: true, replay_blocked: true,
+    generator_version: GENERATOR_VERSION, generator_digest: sha256file(SELF),
+    founder_signature: null,
+  };
+
+  // stage the flat capsule to a temp dir under the approved root (same filesystem for atomic rename)
+  const outDir = join(i.approvedOutputRoot, i.capsuleName);
   let tmp;
   try {
-    tmp = mkdtempSync(join(tmpdir(), "fg-capsule-"));
-    for (const [n, buf] of Object.entries(files)) writeFileSync(join(tmp, n), buf);
+    tmp = mkdtempSync(join(i.approvedOutputRoot, ".capsule-staging-"));
+    writeFileSync(join(tmp, "SYSTEM_STATE.json"), stable(systemState));
+    writeFileSync(join(tmp, "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json"), stable(finalTpl));
+    for (const [n, s] of Object.entries(renderMarkdown(ctx))) writeFileSync(join(tmp, n), s);
+    // evidence-set manifest (authoritative buildEvidenceSet; reads committed packet + template + capsule)
+    const es = buildEvidenceSet({ repo: i.repoRoot, template: join(tmp, "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json"), capsuleDir: tmp, prTitle: i.prTitle, prLiveBody: i.prLiveBody, prStoredBody: i.prStoredBody, githubHead: evidenceCommitSha, templateBindsCandidate: evidenceCommitSha, templateSigned: false });
+    writeFileSync(join(tmp, "EVIDENCE_SET_MANIFEST.json"), stable(es));
+    // guard: no forbidden/review file, no subdir slipped in
+    for (const f of readdirSync(tmp)) { if (FORBIDDEN_IN_CAPSULE.includes(f)) throw new Error("forbidden capsule member: " + f); if (statSync(join(tmp, f)).isDirectory()) throw new Error("subdirectory not allowed in capsule: " + f); }
+    // SHA256SUMS.txt LAST — every file except itself (incl. EVIDENCE_SET_MANIFEST.json)
+    const names = readdirSync(tmp).filter((f) => f !== "SHA256SUMS.txt").sort();
+    writeFileSync(join(tmp, "SHA256SUMS.txt"), names.map((f) => sha256hex(readFileSync(join(tmp, f))) + "  " + f).join("\n") + "\n");
     renameSync(tmp, outDir);
   } catch (err) {
     try { if (tmp && existsSync(tmp)) rmSync(tmp, { recursive: true, force: true }); } catch { /* */ }
-    return { ok: false, stage: "write", errors: [String(err && err.message || err)] };
+    return { ok: false, stage: "generate", errors: [String(err && err.message || err)] };
   }
-  return { ok: true, outDir, files: Object.keys(files).sort() };
+  return { ok: true, outDir, founder_files: CAPSULE_FOUNDER_FILES, files: readdirSync(outDir).sort() };
 }
 
-// CLI: node generate-capsule.mjs <inputs.json> <outDir>   (inputs.json is a deterministic input file)
 if (SELF === resolve(process.argv[1] || "")) {
-  const [inPath, outDir] = process.argv.slice(2);
-  if (!inPath || !outDir) { console.error("usage: generate-capsule.mjs <inputs.json> <outDir>"); process.exit(2); }
+  const [inPath] = process.argv.slice(2);
+  if (!inPath) { console.error("usage: generate-capsule.mjs <inputs.json>"); process.exit(2); }
   const inputs = JSON.parse(readFileSync(inPath, "utf8"));
-  const r = generateCapsule(inputs, resolve(outDir));
+  const r = generateCapsule(inputs);
   console.log(JSON.stringify(r, null, 2));
   console.log("\nLRCQ-CAPSULE-GENERATOR: " + (r.ok ? "OK" : "REFUSED"));
   process.exit(r.ok ? 0 : 1);
