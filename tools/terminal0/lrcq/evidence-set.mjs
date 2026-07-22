@@ -14,8 +14,10 @@ const sha256 = (buf) => "sha256:" + createHash("sha256").update(buf).digest("hex
 const sha256file = (p) => sha256(readFileSync(p));
 const git = (repo, ...a) => execFileSync("git", ["-C", repo, ...a], { encoding: "utf8" }).trim();
 
-// canonical serialization (sorted keys) so the digest is stable and order-independent
-function canon(v) { if (Array.isArray(v)) return "[" + v.map(canon).join(",") + "]"; if (v && typeof v === "object") return "{" + Object.keys(v).sort().map((k) => JSON.stringify(k) + ":" + canon(v[k])).join(",") + "}"; return JSON.stringify(v === undefined ? null : v); }
+// canonical serialization (sorted keys) so the digest is stable and order-independent.
+// Exported (behavior-preserving) so the deterministic capsule generator reuses this exact
+// canonicalization instead of duplicating it (FG-LRCQ-ACT-026 tooling lane).
+export function canon(v) { if (Array.isArray(v)) return "[" + v.map(canon).join(",") + "]"; if (v && typeof v === "object") return "{" + Object.keys(v).sort().map((k) => JSON.stringify(k) + ":" + canon(v[k])).join(",") + "}"; return JSON.stringify(v === undefined ? null : v); }
 
 function hashDir(dir) {
   const files = [];
