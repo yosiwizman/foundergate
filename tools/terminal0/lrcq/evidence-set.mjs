@@ -19,9 +19,19 @@ const git = (repo, ...a) => execFileSync("git", ["-C", repo, ...a], { encoding: 
 // canonicalization instead of duplicating it (FG-LRCQ-ACT-026 tooling lane).
 export function canon(v) { if (Array.isArray(v)) return "[" + v.map(canon).join(",") + "]"; if (v && typeof v === "object") return "{" + Object.keys(v).sort().map((k) => JSON.stringify(k) + ":" + canon(v[k])).join(",") + "}"; return JSON.stringify(v === undefined ? null : v); }
 
-function hashDir(dir) {
+// FG-LRCQ-ACT-026: the founder-capsule aggregate must NOT include the two files that are themselves
+// derived from it — EVIDENCE_SET_MANIFEST.json (which records the aggregate) and SHA256SUMS.txt (which is
+// generated last over the whole capsule incl. the manifest). Including them makes founder_capsule.aggregate
+// self-referential: it changes between build (before they exist) and verify (after), so verifyEvidenceSet
+// always fails on a complete flat capsule. This FIXED exclusion (never caller-supplied) closes that
+// self-reference and nothing else; both files remain tamper-covered — the manifest by its own non-recursive
+// evidence_set_digest, SHA256SUMS by capsule-verifier's bijection.
+export const FOUNDER_CAPSULE_EXCLUSIONS = ["EVIDENCE_SET_MANIFEST.json", "SHA256SUMS.txt"];
+
+function hashDir(dir, exclude = []) {
+  const ex = new Set(exclude);
   const files = [];
-  const walk = (d) => { for (const e of readdirSync(d)) { const p = join(d, e); if (statSync(p).isDirectory()) walk(p); else files.push(p); } };
+  const walk = (d) => { for (const e of readdirSync(d)) { const p = join(d, e); if (statSync(p).isDirectory()) walk(p); else if (!ex.has(relative(dir, p))) files.push(p); } };
   walk(dir);
   files.sort();
   const map = {}; for (const f of files) map[relative(dir, f)] = sha256file(f);
@@ -62,7 +72,7 @@ export function buildEvidenceSet(opts) {
   const packet = JSON.parse(readFileSync(rel(committed.activation_packet), "utf8"));
 
   const template_digest = existsSync(opts.template) ? sha256file(opts.template) : null;
-  const capsule = existsSync(opts.capsuleDir) ? hashDir(opts.capsuleDir) : { map: {}, aggregate: null };
+  const capsule = existsSync(opts.capsuleDir) ? hashDir(opts.capsuleDir, FOUNDER_CAPSULE_EXCLUSIONS) : { map: {}, aggregate: null };
   const template_json = existsSync(opts.template) ? JSON.parse(readFileSync(opts.template, "utf8")) : {};
 
   // FG-LRCQ metadata binding: bind the EXACT live GitHub PR body via the ONE canonicalizer, which treats
@@ -96,7 +106,7 @@ export function buildEvidenceSet(opts) {
     job_count: manifest.job_count || null,
     cost_ceiling_usd: manifest.max_cost_usd || null,
     committed_artifacts: committed_digests,
-    founder_capsule: { dir: opts.capsuleDir, files: capsule.map, aggregate_digest: capsule.aggregate },
+    founder_capsule: { dir: opts.capsuleDir, files: capsule.map, aggregate_digest: capsule.aggregate, aggregate_exclusions: FOUNDER_CAPSULE_EXCLUSIONS },
     checker_report_digest: opts.checkerReportDigest || null,
     advisor_report_digest: opts.advisorReportDigest || null,
     exclusions: ["the evidence_set_digest field itself (non-recursive)", "out-of-tree fresh review reports (bound separately by digest once produced)"],
@@ -114,7 +124,13 @@ export function verifyEvidenceSet(repo, manifestPath) {
   if (m.evaluated_tree !== tree) problems.push("tree drift");
   for (const [k, v] of Object.entries(m.committed_artifacts || {})) { const abs = resolve(repo, v.path); if (!existsSync(abs)) { problems.push("missing " + v.path); continue; } if (sha256file(abs) !== v.sha256) problems.push("digest mismatch: " + v.path); }
   if (m.founder_capsule && m.founder_capsule.dir && existsSync(m.founder_capsule.dir)) {
-    const cur = hashDir(m.founder_capsule.dir);
+    // FG-LRCQ-ACT-026: re-hash with the SAME fixed non-recursive exclusion the manifest recorded. Refuse a
+    // manifest that tries to declare a different exclusion set (only the two self-referential files are allowed).
+    const declared = m.founder_capsule.aggregate_exclusions;
+    if (declared !== undefined && (!Array.isArray(declared) || declared.length !== FOUNDER_CAPSULE_EXCLUSIONS.length || !FOUNDER_CAPSULE_EXCLUSIONS.every((f) => declared.includes(f)))) {
+      problems.push("founder_capsule.aggregate_exclusions is not the fixed authoritative set");
+    }
+    const cur = hashDir(m.founder_capsule.dir, FOUNDER_CAPSULE_EXCLUSIONS);
     if (cur.aggregate !== m.founder_capsule.aggregate_digest) problems.push("capsule aggregate digest mismatch (files added/removed/altered)");
   } else if (m.founder_capsule && m.founder_capsule.aggregate_digest) { problems.push("capsule dir missing at verify time: " + (m.founder_capsule && m.founder_capsule.dir)); }
   if (m.activation_template && m.activation_template.path && existsSync(m.activation_template.path)) { if (sha256file(m.activation_template.path) !== m.activation_template.digest) problems.push("activation template digest mismatch"); }
