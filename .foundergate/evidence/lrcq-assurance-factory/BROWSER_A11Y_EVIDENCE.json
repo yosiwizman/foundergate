@@ -1,0 +1,25 @@
+{
+  "note": "Phase 4 — actual browser automation over the 10 required LRCQ run states (Chrome, localhost:8199/run-states.html). Rendered from real reconcile()/SeparationJob module states.",
+  "run_states_verified": [
+    "1 ready", "2 builder running", "3 machine verification", "4 checker pending",
+    "5 checker finding", "6 needs reconciliation", "7 diagnostic branch", "8 abandoned",
+    "9 deadline stopped", "10 queue exhausted"
+  ],
+  "accessibility": {
+    "keyboard_navigation": "Tab moves focus through skip-link + each state card (tabindex=0); verified in browser",
+    "visible_focus": "3px solid focus outline visible on the focused 'Ready' card (see run-states-all10-focus.jpg)",
+    "headings": "h2 section headings + h3 per-state headings present in the accessibility tree",
+    "landmarks": "banner, main, region landmarks present",
+    "live_region": "role=alert aria-live=assertive founder-action banner",
+    "stale_data_labels": "held states (6,7,8) carry 'stale — awaiting reconciliation'",
+    "founder_action_message": "'founder action required' note role on each held state; banner: '3 state(s) are HELD for reconciliation and will not auto-retry'",
+    "no_fake_completion": "state 5 explicitly 'Not merged, not accepted'; no state renders merged/accepted",
+    "no_merge_or_accept_inference": "fixture never_inferred: { merged:false, accepted:false }"
+  },
+  "screenshots": [
+    "screenshots/run-states-top.jpg (states 1-9 top view + founder-action banner)",
+    "screenshots/run-states-all10-focus.jpg (all 10 states + visible keyboard focus outline)"
+  ],
+  "recon_inbox_prior": "screenshots/recon-inbox.png (from lrcq-af-cont-1784532417) — reconciliation inbox surface",
+  "no_real_provider_invoked": true
+}

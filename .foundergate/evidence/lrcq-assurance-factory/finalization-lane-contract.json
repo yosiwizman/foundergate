@@ -1,0 +1,29 @@
+{
+  "lane": "PR189-FULL-MATERIAL-FINALIZATION",
+  "objective": "Repair the review-staleness condition (post-review capsule + hand-burden writes), complete the founder-facing package, bind it with a non-recursive evidence-set manifest, reconcile PR #189 metadata + GitHub head, re-freeze, and obtain a FRESH independent checker CLEAN + separate read-only Advisor READY — then STOP at the founder activation gate.",
+  "done_definition": "Clean pushed candidate (local == upstream == GitHub PR head), accurate PR metadata, complete out-of-tree founder capsule + evidence-set manifest bound by digest into both fresh reviews, fresh checker CLEAN + fresh Advisor READY on the same unchanged head/tree/evidence-set, activation unsigned + unconsumed, zero provider invocation, no real run, no merge.",
+  "risk_class": "WIDE_SAFE (narrow-sensitive finalization; no provider, no run, no signature, no merge)",
+  "base_sha_finalization_builds_on": "fcf2172ebeef56aa880961a4a66f0b1dd8b68890",
+  "base_tree": "c4815b711ab530aea464c91d4254068049d5e8d8",
+  "branch": "lane/v8b-lrcq-assurance-factory-50e18e5",
+  "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-assurance-factory-50e18e5",
+  "allowed_files": [
+    ".foundergate/evidence/lrcq-assurance/founder-hand-burden.json",
+    ".foundergate/evidence/lrcq-assurance-factory/finalization-lane-contract.json",
+    ".foundergate/evidence/lrcq-assurance-factory/stale-review-incident.json",
+    ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json (step-B binding only)",
+    "tools/terminal0/lrcq/capsule-verifier.mjs",
+    "tools/terminal0/lrcq/evidence-set.mjs",
+    "PR #189 title/body (via gh, before final review)"
+  ],
+  "forbidden_files": ["protected main", "PR #182/#186/#187/#188 material", "src/v8b/lrcq/provider/activation-schema.mjs", "any provider permission/secret/governance file", "the 25-job backlog (no expansion)"],
+  "dependencies": ["frozen candidate route already proven end-to-end with a deterministic stub (launcher-integration.selftest, full-rehearsal.selftest)"],
+  "collision_check": "single finalizer (Terminal-0); no parallel writer; the two prior reviewers are read-only and separate from the finalizer",
+  "tests": ["full LRCQ selftest suite", "capsule-verifier", "evidence-set verifier", "final-template preflight (SIGNATURE-REQUIRED, zero invocation)", "negative mutation battery"],
+  "evidence_requirements": ["out-of-tree evidence-set manifest binding head/tree/template/manifest/backlog/capsule/hand-burden/PR-body digests", "stale-review incident (append-only)", "fresh checker report (out-of-tree, bound by digest)", "fresh advisor report (out-of-tree, bound by digest)"],
+  "independent_checker_identity_requirement": "a checker that did NOT implement this finalization; strictly read-only; binds head/tree/GitHub-head/PR-body-digest/evidence-set-digest/capsule-digest/template-digest/manifest-digest/backlog-digest",
+  "separate_advisor_requirement": "a separate read-only advisor, distinct from the checker, reviewing the same unchanged identities + the checker report digest",
+  "rollback_plan": "all changes confined to this lane branch; revert the finalization commits (no push-force to protected refs); protected main and other PRs untouched; the frozen candidate route is unaffected by capsule/evidence changes",
+  "founder_gate_trigger": "A clean, pushed, exact candidate + complete founder package receive a FRESH checker CLEAN and separate Advisor READY on the same unchanged head/tree/evidence-set digest, while the activation remains unsigned, unconsumed, and provider invocation remains zero.",
+  "terminal0_handoff": "On fresh checker CLEAN + fresh Advisor READY + immutability proof, STOP and present the single founder activation gate. Do not sign, consume, launch, or merge."
+}

@@ -1,0 +1,33 @@
+{
+  "queue": "FAILURE_TO_CONTROL_LESSONS",
+  "status": "QUEUED_FOR_POST_RUN_DISK_LOCK",
+  "note": "NOT_FULL_REGISTRY_IMPLEMENTATION — two lessons from the first real run's controlled hold; the broader Autonomous Run Contract System / Loop Contract Engine / Repository Stewardship / full Failure-to-Control Registry are NOT implemented here.",
+  "lessons": [
+    {
+      "id": "A_WORKTREE_TEARDOWN_TRUTH",
+      "lesson": "Teardown success requires BOTH Git-registration absence AND filesystem absence. A null or UNKNOWN teardown state can never pass; failure preserves evidence and holds BEFORE the next job. A provider that never ran reports TEARDOWN_NOT_ATTEMPTED (a provider outcome), not a teardown defect.",
+      "closed_in": "FG-LRCQ-ACT-023 (real-provider teardown_status enum; harness provider-failure-vs-teardown split)"
+    },
+    {
+      "id": "B_TERMINAL_MAPPING_TRUTH",
+      "lesson": "Held, failed, defect, and unknown terminals must be exhaustively mapped; no default may convert them to clean queue exhaustion; every observer layer (recovery, supervisor, witness, terminal report, founder projection) must preserve the authoritative terminal class.",
+      "closed_in": "FG-LRCQ-ACT-023 (supervisor-main exhaustive mapping; health-witness held-terminal -> HELD)"
+    },
+    {
+      "id": "C_PROVIDER_INVOCATION_EVIDENCE",
+      "lesson": "A missing process.json must not be read as 'not invoked'. The provider lifecycle (NOT_ATTEMPTED / SPAWN_ATTEMPTED / SPAWNED / OUTPUT_RECEIVED / COST_RECORDED / COMPLETED / FAILED / UNKNOWN) must be durably distinguishable. In the first real run the truth (PROVIDER_NOT_ATTEMPTED) was recoverable only by cross-reading transactions + absent evidence; a durable per-stage record is now emitted.",
+      "closed_in": "FG-LRCQ-ACT-023 (real-provider provider_invocation lifecycle field)"
+    },
+    {
+      "id": "D_CLAIM_SURFACE_CONSISTENCY",
+      "lesson": "Official current claim surfaces (PR title/body, founder summary, package) must reconcile with durable activation/replay/run/provider/witness/terminal records. A correct new status paragraph does NOT neutralize contradictory stale sections; contradictions block freeze + founder authorization. Current vs historical claims must be mechanically distinguished (a HISTORICAL label exempts a section); a regression verifier must reject incompatible current statements (e.g. 'activation NOT consumed' after a real consumption).",
+      "closed_in": "FG-LRCQ-ACT-024 (claim-consistency.mjs verifier + claim-consistency.selftest regression fixture)"
+    },
+    {
+      "id": "E_FIRST_JOB_WORKTREE_READINESS",
+      "lesson": "A worktree is only 'PREPARED' if the SAME identity facts the provider requires are verified at setup time — including REPOSITORY identity, not just the branch. Verify repository identity by comparing common git dirs (git rev-parse --git-common-dir), never by join(path, '.git'): when the run itself is launched from a LINKED git worktree, '.git' is a pointer FILE and that comparison silently misidentifies the repository, refusing every job pre-spawn while setup reports ready. Rehearse the production route from the ACTUAL launch topology (a linked worktree), not only a normal clone; a normal-clone rehearsal cannot exercise the pointer-file path. Fail closed BEFORE dispatch on any missing/failed/UNKNOWN worktree-identity fact so 'prepared' mechanically implies 'provider-accepts'.",
+      "closed_in": "FG-LRCQ-ACT-025 (gitWorktreeIdentity common-dir vs common-dir; setupManager same-repo verification fail-closed; first-job-worktree-linked.selftest hermetic linked-worktree integration test)"
+    }
+  ],
+  "deferred_not_in_this_pr": ["Autonomous Run Contract System", "Loop Contract Engine", "Repository Stewardship", "full Failure-to-Control Registry"]
+}

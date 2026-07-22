@@ -1,0 +1,254 @@
+{
+  "title": "FounderGate — First Internal Five-Hour Run: Founder Gate Packet",
+  "confers_no_authority": true,
+  "founder_signature": null,
+  "fifteen_blockers": [
+    {
+      "id": "A01",
+      "title": "Five-plane authority architecture",
+      "status": "PROVEN",
+      "evidence": [
+        "src/v8b/lrcq/assurance-tests/assurance-core.selftest.mjs"
+      ],
+      "tests": [
+        "assurance-core 55/55"
+      ],
+      "external_limitations": []
+    },
+    {
+      "id": "A02",
+      "title": "Side-effect transaction protocol",
+      "status": "PROVEN",
+      "evidence": [
+        "src/v8b/lrcq/reconciliation-tests/inbox-recovery.selftest.mjs"
+      ],
+      "tests": [
+        "transaction/reconciliation covered"
+      ],
+      "external_limitations": []
+    },
+    {
+      "id": "A03",
+      "title": "Task-scoped capability leases",
+      "status": "PROVEN",
+      "evidence": [
+        "src/v8b/lrcq/assurance-tests/assurance-core.selftest.mjs"
+      ],
+      "tests": [
+        "lease validator in assurance-core 55/55"
+      ],
+      "external_limitations": []
+    },
+    {
+      "id": "A04",
+      "title": "Independent externally-anchorable evidence",
+      "status": "BUILT",
+      "evidence": [
+        "src/v8b/lrcq/evidence/evidence-anchor.mjs",
+        "src/v8b/lrcq/evidence-tests/evidence.selftest.mjs"
+      ],
+      "tests": [
+        "evidence 30/30 (chain/tamper/insertion/write-once/witness-slot)"
+      ],
+      "external_limitations": [
+        "external timestamp service HELD",
+        "production signing key HELD",
+        "external write-once storage HELD"
+      ]
+    },
+    {
+      "id": "A05",
+      "title": "FounderGate assurance case",
+      "status": "BUILT",
+      "evidence": [
+        "src/v8b/lrcq/assurance-case/assurance-case.mjs",
+        "src/v8b/lrcq/assurance-tests/blocker-controls.selftest.mjs",
+        "src/v8b/lrcq/console/assurance-case.html",
+        ".foundergate/evidence/lrcq-assurance-factory/blocker-closure/screenshots/assurance-case.jpg"
+      ],
+      "tests": [
+        "blocker-controls A05 7/7 + browser+a11y"
+      ],
+      "external_limitations": []
+    },
+    {
+      "id": "A07",
+      "title": "Agentic threat model + security regression suite",
+      "status": "BUILT",
+      "evidence": [
+        "src/v8b/lrcq/assurance/attack-refusal.mjs",
+        "src/v8b/lrcq/assurance-tests/attack-refusal.selftest.mjs"
+      ],
+      "tests": [
+        "attack-refusal 24/24 (12 classes incl unconfirmed-success + provider-drift)"
+      ],
+      "external_limitations": [
+        "broader customer/MCP attack surface remains PRE_CUSTOMER"
+      ]
+    },
+    {
+      "id": "A08",
+      "title": "Memory & context quarantine",
+      "status": "BUILT",
+      "evidence": [
+        "src/v8b/lrcq/memory-quarantine/memory-quarantine.mjs",
+        "src/v8b/lrcq/assurance-tests/blocker-controls.selftest.mjs"
+      ],
+      "tests": [
+        "blocker-controls A08 10/10 (classification/promotion/prompt-quarantine/diff)"
+      ],
+      "external_limitations": []
+    },
+    {
+      "id": "A10",
+      "title": "Tested recovery & disaster-recovery framework",
+      "status": "BUILT",
+      "evidence": [
+        "src/v8b/lrcq/reconciliation-tests/recovery-completeness.selftest.mjs",
+        "src/v8b/lrcq/reconciliation-tests/inbox-recovery.selftest.mjs"
+      ],
+      "tests": [
+        "recovery-completeness 12/12 + inbox-recovery 15/15"
+      ],
+      "external_limitations": [
+        "production disaster recovery / customer backups / formal RPO-RTO NOT PROVEN"
+      ]
+    },
+    {
+      "id": "B13",
+      "title": "Portable open evidence format v1",
+      "status": "BUILT",
+      "evidence": [
+        "src/v8b/lrcq/evidence/evidence-spec.mjs",
+        "src/v8b/lrcq/evidence-tests/evidence.selftest.mjs"
+      ],
+      "tests": [
+        "evidence 30/30 (canonicalization/validation/unsupported-claim)"
+      ],
+      "external_limitations": []
+    },
+    {
+      "id": "B14",
+      "title": "Evidence verifier & trust roots",
+      "status": "BUILT",
+      "evidence": [
+        "src/v8b/lrcq/evidence/evidence-verifier.mjs",
+        "src/v8b/lrcq/evidence-tests/evidence.selftest.mjs"
+      ],
+      "tests": [
+        "evidence 30/30 (offline verify/tamper/wrong-SHA/missing-test/stale)"
+      ],
+      "external_limitations": [
+        "deterministic test keys only; no production key or external certification"
+      ]
+    },
+    {
+      "id": "B16",
+      "title": "Proof-coverage matrix",
+      "status": "BUILT",
+      "evidence": [
+        ".foundergate/claims/commercial-readiness-proof-register-v1.json"
+      ],
+      "tests": [
+        "proof register present"
+      ],
+      "external_limitations": []
+    },
+    {
+      "id": "B17",
+      "title": "Reconciliation Inbox",
+      "status": "BUILT",
+      "evidence": [
+        "src/v8b/lrcq/reconciliation/inbox.mjs",
+        "src/v8b/lrcq/console/recon-inbox.html",
+        "src/v8b/lrcq/reconciliation-tests/inbox-recovery.selftest.mjs",
+        ".foundergate/evidence/lrcq-assurance-factory/BROWSER_A11Y_EVIDENCE.json"
+      ],
+      "tests": [
+        "inbox-recovery 15/15 + browser+a11y (10 states)"
+      ],
+      "external_limitations": []
+    },
+    {
+      "id": "B20",
+      "title": "Model/provider change gates",
+      "status": "BUILT",
+      "evidence": [
+        "src/v8b/lrcq/assurance/provider-change-gate.mjs",
+        "src/v8b/lrcq/assurance-tests/blocker-controls.selftest.mjs"
+      ],
+      "tests": [
+        "blocker-controls B20 8/8 (fingerprint/drift/stale/expiry fail-closed)"
+      ],
+      "external_limitations": [
+        "no real provider/model canary executed in preparation (fail-closed on drift)"
+      ]
+    },
+    {
+      "id": "B21",
+      "title": "Blast-radius budgets",
+      "status": "PROVEN",
+      "evidence": [
+        "src/v8b/lrcq/run-harness-tests/harness.selftest.mjs"
+      ],
+      "tests": [
+        "blast budget exactly-N in harness 46/46"
+      ],
+      "external_limitations": []
+    },
+    {
+      "id": "B25",
+      "title": "Prove-the-refusal benchmark",
+      "status": "PROVEN",
+      "evidence": [
+        "src/v8b/lrcq/assurance-tests/attack-refusal.selftest.mjs"
+      ],
+      "tests": [
+        "attack-refusal 24/24"
+      ],
+      "external_limitations": []
+    }
+  ],
+  "blocker_summary": {
+    "PROVEN": 5,
+    "BUILT": 10
+  },
+  "exact_five_hour_authority": {
+    "what_it_may_do": [
+      "run WIDE_SAFE local-filesystem jobs from the frozen 25-job backlog",
+      "one governed provider session per job through the single adapter",
+      "under single-use task-scoped leases + blast-radius budgets"
+    ],
+    "cost_limit_usd": 10,
+    "max_parallel_width": 2,
+    "max_duration_s": 18000,
+    "per_job_timeout_s": 2700
+  },
+  "denied_authority": [
+    "merge any PR",
+    "push / write protected main",
+    "contact M1",
+    "access AKIOR",
+    "live/network actions",
+    "customer data",
+    "permission bypass",
+    "second execution route (controller.stepReal refuses)"
+  ],
+  "undo_and_teardown_plan": {
+    "stop": "touch the stop-file (.foundergate/evidence/lrcq-assurance-factory/REAL-RUN/STOP) — observed between and during jobs",
+    "pause": "touch the pause-file (.foundergate/evidence/lrcq-assurance-factory/REAL-RUN/PAUSE)",
+    "teardown": "process-tree teardown (SIGTERM->grace->SIGKILL) with real OS liveness verification",
+    "recovery": "run is disk-recoverable; uncertain dispatch is HELD (NEEDS_RECONCILIATION), never re-fired",
+    "reversible": "WIDE_SAFE local-fs only; each job on its own branch/worktree; nothing merged or pushed"
+  },
+  "real_run_capability_disclosure": {
+    "proven_in_preparation": "The run machinery is fully WIRED and FAIL-CLOSED, verified with ZERO provider/builder/checker invocation (preflight SIGNATURE-REQUIRED). The signed V3 record composes a valid V2 adapter-activation (dispatch route reachable); the independent checker routes a distinct read-only session through the SAME provider adapter; undefined checker output -> INSUFFICIENT_EVIDENCE (never CLEAN).",
+    "NOT_proven_in_preparation": "Actual productive work (a real builder session producing changes, and a real checker session returning CLEAN) is NOT exercised or proven here, because that requires invoking the real provider (Claude), which is forbidden during preparation. The FIRST place real productive capability is exercised is the founder-signed run itself.",
+    "founder_must_accept": "Signing authorizes the first internal run to invoke the real provider through this wired, fail-closed machinery. Whether jobs actually COMPLETE depends on real builder + checker behavior, first observed under signature."
+  },
+  "provider": {
+    "path": "/Users/yosiwizman/.local/bin/claude",
+    "version": "2.1.215",
+    "identity": "sha256:90608b5c5ab504e96e77365cea6203d046e291d59b2bb42cf28dcb2ccdf9dd58"
+  }
+}

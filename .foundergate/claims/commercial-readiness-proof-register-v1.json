@@ -1,0 +1,261 @@
+{
+  "schema": "af-commercial-proof-register-1",
+  "product": [
+    {
+      "category": "PRODUCT",
+      "id": "P1",
+      "requirement": "two unrelated projects",
+      "status": "NOT-PROVEN",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "PRODUCT",
+      "id": "P2",
+      "requirement": "one outside operator without coaching",
+      "status": "NOT-PROVEN",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "PRODUCT",
+      "id": "P3",
+      "requirement": "one serious design partner",
+      "status": "NOT-PROVEN",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "PRODUCT",
+      "id": "P4",
+      "requirement": "measured founder burden",
+      "status": "NOT-PROVEN",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "PRODUCT",
+      "id": "P5",
+      "requirement": "measured support failures",
+      "status": "NOT-PROVEN",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "PRODUCT",
+      "id": "P6",
+      "requirement": "measured recovery time",
+      "status": "NOT-PROVEN",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    }
+  ],
+  "safety": [
+    {
+      "category": "SAFETY",
+      "id": "S1",
+      "requirement": "no duplicate execution after side-effect crash",
+      "status": "PARTIAL (synthetic-proven; not production)",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "SAFETY",
+      "id": "S2",
+      "requirement": "uncertain effect reconciles instead of retrying",
+      "status": "NOT-PROVEN",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "SAFETY",
+      "id": "S3",
+      "requirement": "capability lease cannot be reused",
+      "status": "PARTIAL (synthetic-proven; not production)",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "SAFETY",
+      "id": "S4",
+      "requirement": "gate resists chat/repo/memory/tool-output bypass",
+      "status": "NOT-PROVEN",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "SAFETY",
+      "id": "S5",
+      "requirement": "process-tree teardown verified",
+      "status": "PARTIAL (synthetic-proven; not production)",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "SAFETY",
+      "id": "S6",
+      "requirement": "emergency stop proven",
+      "status": "NOT-PROVEN",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "SAFETY",
+      "id": "S7",
+      "requirement": "stale/altered approval fails closed",
+      "status": "PARTIAL (synthetic-proven; not production)",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    }
+  ],
+  "evidence": [
+    {
+      "category": "EVIDENCE",
+      "id": "E1",
+      "requirement": "tampering detected",
+      "status": "NOT-PROVEN",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "EVIDENCE",
+      "id": "E2",
+      "requirement": "package verifiable outside originating instance",
+      "status": "NOT-PROVEN",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "EVIDENCE",
+      "id": "E3",
+      "requirement": "source/policy/model/env/checker identities bound",
+      "status": "NOT-PROVEN",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "EVIDENCE",
+      "id": "E4",
+      "requirement": "evidence cannot cross SHAs",
+      "status": "NOT-PROVEN",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "EVIDENCE",
+      "id": "E5",
+      "requirement": "disclosure package reproducible",
+      "status": "NOT-PROVEN",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    }
+  ],
+  "production": [
+    {
+      "category": "PRODUCTION",
+      "id": "PR1",
+      "requirement": "backup restore demonstrated",
+      "status": "EXTERNAL-PROOF-REQUIRED",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "PRODUCTION",
+      "id": "PR2",
+      "requirement": "tenant separation attacked",
+      "status": "EXTERNAL-PROOF-REQUIRED",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "PRODUCTION",
+      "id": "PR3",
+      "requirement": "credential revocation demonstrated",
+      "status": "EXTERNAL-PROOF-REQUIRED",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "PRODUCTION",
+      "id": "PR4",
+      "requirement": "customer deletion demonstrated",
+      "status": "EXTERNAL-PROOF-REQUIRED",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "PRODUCTION",
+      "id": "PR5",
+      "requirement": "dependency/provider drift detected",
+      "status": "EXTERNAL-PROOF-REQUIRED",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "PRODUCTION",
+      "id": "PR6",
+      "requirement": "incident response rehearsed",
+      "status": "EXTERNAL-PROOF-REQUIRED",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "PRODUCTION",
+      "id": "PR7",
+      "requirement": "external security review completed",
+      "status": "EXTERNAL-PROOF-REQUIRED",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    }
+  ],
+  "business": [
+    {
+      "category": "BUSINESS",
+      "id": "B1",
+      "requirement": "customer understands gate card",
+      "status": "EXTERNAL-PROOF-REQUIRED",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "BUSINESS",
+      "id": "B2",
+      "requirement": "customer changes a ship decision",
+      "status": "EXTERNAL-PROOF-REQUIRED",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "BUSINESS",
+      "id": "B3",
+      "requirement": "customer pays or signs serious pilot",
+      "status": "EXTERNAL-PROOF-REQUIRED",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "BUSINESS",
+      "id": "B4",
+      "requirement": "operating time/cost known",
+      "status": "EXTERNAL-PROOF-REQUIRED",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "BUSINESS",
+      "id": "B5",
+      "requirement": "support burden measured",
+      "status": "EXTERNAL-PROOF-REQUIRED",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    },
+    {
+      "category": "BUSINESS",
+      "id": "B6",
+      "requirement": "customer explains value plainly",
+      "status": "EXTERNAL-PROOF-REQUIRED",
+      "evidence": null,
+      "note": "externally/production dependent — begins NOT PROVEN"
+    }
+  ]
+}

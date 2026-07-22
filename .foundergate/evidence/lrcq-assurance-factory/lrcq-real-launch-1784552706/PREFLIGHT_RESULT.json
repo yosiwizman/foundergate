@@ -1,0 +1,26 @@
+{
+  "mode": "preflight-unsigned",
+  "packet": ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json",
+  "checks": {
+    "manifest": "VERIFIED",
+    "provider_identity": "REAL sha256",
+    "no_placeholders": "none",
+    "candidate_stack": "bound",
+    "stopped_at": "validate_activation",
+    "stop_reason": [
+      "missing founder_signature"
+    ]
+  },
+  "invocations": {
+    "machineVerifier": 0,
+    "checkerSession": 0,
+    "checker": 0,
+    "dispatch": 0
+  },
+  "zero_provider_invocation": true,
+  "zero_builder_invocation": true,
+  "zero_checker_invocation": true,
+  "result": "SIGNATURE-REQUIRED"
+}
+
+LRCQ-REAL-LAUNCH-PREFLIGHT: SIGNATURE-REQUIRED

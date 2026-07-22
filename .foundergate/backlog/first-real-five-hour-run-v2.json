@@ -1,0 +1,1294 @@
+{
+  "schema": "lrcq-frr-backlog-2",
+  "version": "v2",
+  "total": 25,
+  "frozen": true,
+  "no_live_effects": true,
+  "all_endurance_fixtures": true,
+  "total_estimated_minutes": 300,
+  "jobs": [
+    {
+      "job_id": "frr2-0",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 0 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-0.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-0",
+      "worktree_suffix": "frr2-0",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-0.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-0.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-0-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-0; preserve evidence"
+    },
+    {
+      "job_id": "frr2-1",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 1 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-1.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-1",
+      "worktree_suffix": "frr2-1",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-1.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-1.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-1-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-1; preserve evidence"
+    },
+    {
+      "job_id": "frr2-2",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 2 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-2.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-2",
+      "worktree_suffix": "frr2-2",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-2.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-2.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-2-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-2; preserve evidence"
+    },
+    {
+      "job_id": "frr2-3",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 3 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-3.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-3",
+      "worktree_suffix": "frr2-3",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-3.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-3.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-3-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-3; preserve evidence"
+    },
+    {
+      "job_id": "frr2-4",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 4 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-4.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-4",
+      "worktree_suffix": "frr2-4",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-4.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-4.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-4-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-4; preserve evidence"
+    },
+    {
+      "job_id": "frr2-5",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 5 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [
+        "frr2-4"
+      ],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-5.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-5",
+      "worktree_suffix": "frr2-5",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-5.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-5.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-5-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-5; preserve evidence"
+    },
+    {
+      "job_id": "frr2-6",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 6 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-6.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-6",
+      "worktree_suffix": "frr2-6",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-6.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-6.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-6-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-6; preserve evidence"
+    },
+    {
+      "job_id": "frr2-7",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 7 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-7.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-7",
+      "worktree_suffix": "frr2-7",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-7.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-7.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-7-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-7; preserve evidence"
+    },
+    {
+      "job_id": "frr2-8",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 8 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-8.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-8",
+      "worktree_suffix": "frr2-8",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-8.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-8.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-8-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-8; preserve evidence"
+    },
+    {
+      "job_id": "frr2-9",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 9 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-9.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-9",
+      "worktree_suffix": "frr2-9",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-9.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-9.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-9-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-9; preserve evidence"
+    },
+    {
+      "job_id": "frr2-10",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 10 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [
+        "frr2-9"
+      ],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-10.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-10",
+      "worktree_suffix": "frr2-10",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-10.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-10.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-10-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-10; preserve evidence"
+    },
+    {
+      "job_id": "frr2-11",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 11 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-11.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-11",
+      "worktree_suffix": "frr2-11",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-11.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-11.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-11-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-11; preserve evidence"
+    },
+    {
+      "job_id": "frr2-12",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 12 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-12.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-12",
+      "worktree_suffix": "frr2-12",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-12.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-12.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-12-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-12; preserve evidence"
+    },
+    {
+      "job_id": "frr2-13",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 13 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-13.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-13",
+      "worktree_suffix": "frr2-13",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-13.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-13.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-13-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-13; preserve evidence"
+    },
+    {
+      "job_id": "frr2-14",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 14 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-14.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-14",
+      "worktree_suffix": "frr2-14",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-14.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-14.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-14-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-14; preserve evidence"
+    },
+    {
+      "job_id": "frr2-15",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 15 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [
+        "frr2-14"
+      ],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-15.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-15",
+      "worktree_suffix": "frr2-15",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-15.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-15.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-15-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-15; preserve evidence"
+    },
+    {
+      "job_id": "frr2-16",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 16 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-16.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-16",
+      "worktree_suffix": "frr2-16",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-16.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-16.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-16-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-16; preserve evidence"
+    },
+    {
+      "job_id": "frr2-17",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 17 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-17.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-17",
+      "worktree_suffix": "frr2-17",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-17.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-17.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-17-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-17; preserve evidence"
+    },
+    {
+      "job_id": "frr2-18",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 18 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-18.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-18",
+      "worktree_suffix": "frr2-18",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-18.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-18.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-18-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-18; preserve evidence"
+    },
+    {
+      "job_id": "frr2-19",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 19 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-19.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-19",
+      "worktree_suffix": "frr2-19",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-19.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-19.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-19-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-19; preserve evidence"
+    },
+    {
+      "job_id": "frr2-20",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 20 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [
+        "frr2-19"
+      ],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-20.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-20",
+      "worktree_suffix": "frr2-20",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-20.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-20.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-20-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-20; preserve evidence"
+    },
+    {
+      "job_id": "frr2-21",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 21 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-21.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-21",
+      "worktree_suffix": "frr2-21",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-21.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-21.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-21-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-21; preserve evidence"
+    },
+    {
+      "job_id": "frr2-22",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 22 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-22.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-22",
+      "worktree_suffix": "frr2-22",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-22.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-22.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-22-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-22; preserve evidence"
+    },
+    {
+      "job_id": "frr2-23",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 23 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-23.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-23",
+      "worktree_suffix": "frr2-23",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-23.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-23.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-23-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-23; preserve evidence"
+    },
+    {
+      "job_id": "frr2-24",
+      "objective": "ENDURANCE_FIXTURE: emit a deterministic FounderGate LRCQ fixture note for endurance job 24 (no product claim)",
+      "done_meaning": "the fixture file exists, is non-empty, and carries the ENDURANCE_FIXTURE marker; the immutable verifier passes",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "classification": "ENDURANCE_FIXTURE",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr2/frr2-24.mjs"
+      ],
+      "forbidden_files": [
+        "secrets",
+        "PR#182",
+        "PR#186",
+        "protected main",
+        "AKIOR",
+        "M1"
+      ],
+      "branch_suffix": "frr2-24",
+      "worktree_suffix": "frr2-24",
+      "test_commands": [
+        [
+          "node",
+          "tools/terminal0/lrcq/verifiers/fixture-verifier.mjs",
+          "src/v8b/lrcq/frr2/frr2-24.mjs"
+        ]
+      ],
+      "negative_test_commands": [],
+      "expected_output_paths": [
+        "src/v8b/lrcq/frr2/frr2-24.mjs"
+      ],
+      "required_evidence_files": [
+        {
+          "path": "frr2-24-verified.json",
+          "mode": "must_exist"
+        }
+      ],
+      "evidence_validation_mode": "must_exist",
+      "max_files": 2,
+      "max_changed_lines": 60,
+      "builder_cost_cap_usd": 0.25,
+      "checker_cost_cap_usd": 0.08,
+      "checker_criteria": [
+        "diff_within_allowed",
+        "tests_executed",
+        "fixture_marker_present"
+      ],
+      "gate_trigger": "NONE",
+      "rollback_action": "remove the registered worktree + branch for frr2-24; preserve evidence"
+    }
+  ]
+}

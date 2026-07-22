@@ -1,0 +1,20 @@
+{ "operation": "PR #189 metadata-binding CORRECTION (one canonicalizer + live-GitHub binding + new freeze + fresh reviews)",
+  "founder_technical_debugging_this_finalization": false,
+  "founder_initial_pastes_this_finalization": 1,
+  "founder_followup_pastes_this_finalization": 0,
+  "founder_terminal_commands": 0,
+  "founder_raw_log_reviews": 0,
+  "founder_prompt_relays": 0,
+  "founder_sha_entries": 0,
+  "routine_questions_asked": 0,
+  "true_founder_gate": "SIGN the out-of-tree final unsigned activation template (bound to the frozen candidate identified in the evidence-set manifest) to authorize ONE isolated internal five-hour run. This is the FIRST and ONLY founder gate; signing is not starting — launch remains a separate explicit step.",
+  "true_founder_gates_reached_this_operation": 1,
+  "state_facts": {
+    "founder_signature": "NONE (activation unsigned)",
+    "activation_consumed": false,
+    "real_provider_invoked": false,
+    "five_hour_run_performed": false,
+    "pr_189_merged": false,
+    "protected_main_modified": false
+  },
+  "note": "Head-agnostic by design: the exact frozen head is bound by the material packet + the final activation template + the out-of-tree evidence-set manifest, and proven by the SIGNATURE-REQUIRED preflight — not hard-coded here. An earlier checker+advisor pair reviewed a prior frozen head but were classified STALE after post-review evidence writes (see stale-review-incident.json); this finalization re-freezes the complete package and obtains a FRESH checker + FRESH advisor. Founder burden this finalization: 1 paste, zero technical actions." }

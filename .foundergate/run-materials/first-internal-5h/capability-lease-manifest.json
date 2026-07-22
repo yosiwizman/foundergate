@@ -1,0 +1,45 @@
+{
+  "schema": "lrcq-capability-lease-manifest-1",
+  "scope": "task-scoped-single-use-per-job",
+  "template": {
+    "role": "builder",
+    "candidate_stack": "d873f27",
+    "effect_class": "LOCAL_FS",
+    "allowed_tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Grep"
+    ],
+    "denied_tools": [
+      "Bash",
+      "WebFetch",
+      "Push",
+      "Merge"
+    ],
+    "max_cost_usd": 5,
+    "max_files": 10,
+    "max_changed_lines": 500,
+    "max_external_calls": 0,
+    "max_delegation_depth": 1,
+    "single_use": true,
+    "uses_remaining": 1
+  },
+  "checker_lease_template": {
+    "role": "checker",
+    "read_only": true,
+    "single_use": true,
+    "uses_remaining": 1,
+    "allowed_tools": [
+      "Read",
+      "Grep"
+    ],
+    "denied_tools": [
+      "Write",
+      "Edit",
+      "Bash",
+      "Push",
+      "Merge"
+    ]
+  }
+}

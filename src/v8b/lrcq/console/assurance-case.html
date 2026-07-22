@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FounderGate — Assurance Case</title>
+<link rel="stylesheet" href="./console.css" />
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <div class="brand">FounderGate</div>
+  <div class="witness-flag" role="note">Assurance case — witness candidate, not an accepted product surface</div>
+  <div class="run-id">candidate <span id="cand">—</span></div>
+</header>
+<main id="main" tabindex="-1">
+  <div id="gate-banner" class="banner" role="alert" aria-live="assertive" hidden>
+    <strong>Held at founder gate</strong> — <span id="gate-text"></span>
+  </div>
+  <section class="card" aria-labelledby="sum-h"><h2 id="sum-h">Verification summary</h2>
+    <ul class="small" id="summary"></ul></section>
+  <section class="card" aria-labelledby="claims-h"><h2 id="claims-h">Claims &amp; evidence</h2>
+    <table class="inbox" id="claims-table" aria-describedby="claims-h">
+      <thead><tr><th>Claim</th><th>Supported by</th><th>Asserts</th></tr></thead>
+      <tbody id="claims-body"></tbody>
+    </table></section>
+  <section class="card" aria-labelledby="lim-h"><h2 id="lim-h">Unresolved limitations (honest)</h2>
+    <ul class="small" id="limitations"></ul></section>
+</main>
+<script src="./assurance-case.js"></script>
+</body>
+</html>

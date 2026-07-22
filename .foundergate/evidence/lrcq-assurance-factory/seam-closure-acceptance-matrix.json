@@ -1,0 +1,29 @@
+{
+  "matrix": "PR189-PRODUCTION-SEAM-CLOSURE",
+  "tag": "FG-LRCQ-ACT-019",
+  "candidate": "set at freeze (step-A commit on top of e0dd06e0)",
+  "rows": [
+    { "id": "SC-01", "control": "Production --activation refuses LRCQ_TEST_LIFECYCLE before consumption", "status": "PROVEN", "evidence": "production-seam-closure.selftest 01-02 (PRODUCTION_TEST_OVERRIDE_REFUSED, activation_consumed:false)" },
+    { "id": "SC-02", "control": "Refusal occurs before any process spawn; provider invocation zero", "status": "PROVEN", "evidence": "production-seam-closure.selftest 03-05" },
+    { "id": "SC-03", "control": "Env-supplied manifest/provider/repository/candidate/supervisor-path NOT used", "status": "PROVEN", "evidence": "production-seam-closure.selftest 06-07 (no evil ledger; evil strings never used) + 09 (no injection reads in source)" },
+    { "id": "SC-04", "control": "Normal production CLI works through a COMPLETE disposable synthetic fixture (no seam)", "status": "PROVEN", "evidence": "detached-supervisor.selftest 01-02 (real run-five-hour --activation, no LRCQ_TEST_LIFECYCLE, RUN_ACTIVE receipt)" },
+    { "id": "SC-05", "control": "Real detached launcher behavior remains proven (launcher exits; supervisor survives; distinct PID; descendant; teardown; replay blocked)", "status": "PROVEN", "evidence": "detached-supervisor.selftest 03-06,12-14" },
+    { "id": "SC-06", "control": "Separate read-only witness attaches; HEALTHY_CONTINUE", "status": "PROVEN", "evidence": "detached-supervisor.selftest 08-09 (via structurally test-only accelerated entry)" },
+    { "id": "SC-07", "control": "Production witness refuses LRCQ_WITNESS_TEST_MS before any verdict", "status": "PROVEN", "evidence": "production-seam-closure.selftest 13" },
+    { "id": "SC-08", "control": "Production witness duration is immutable 720000 ms / 12 polls; no override path", "status": "PROVEN", "evidence": "production-seam-closure.selftest 14,15a + detached-supervisor.selftest 10 (production_witness_ms 720000)" },
+    { "id": "SC-09", "control": "Accelerated witness logic exists ONLY in structurally test-only code", "status": "PROVEN", "evidence": "production-seam-closure.selftest 15a-15b" },
+    { "id": "SC-10", "control": "Production modules do not import test-support", "status": "PROVEN", "evidence": "production-seam-closure.selftest 16a-16d" },
+    { "id": "SC-11", "control": "executeSupervisedRun absent from the production authority graph (relocated to test-support)", "status": "PROVEN", "evidence": "production-seam-closure.selftest 17a-17d" },
+    { "id": "SC-12", "control": "Exactly one production activation route (launchDetachedSupervisor); no synchronous route", "status": "PROVEN", "evidence": "production-seam-closure.selftest 20" },
+    { "id": "SC-13", "control": "Mutation reintroducing LRCQ_TEST_LIFECYCLE injection turns red", "status": "PROVEN", "evidence": "production-seam-closure.selftest 18" },
+    { "id": "SC-14", "control": "Mutation reintroducing LRCQ_WITNESS_TEST_MS acceleration turns red", "status": "PROVEN", "evidence": "production-seam-closure.selftest 19" },
+    { "id": "SC-15", "control": "Mutation rewiring --activation to a synchronous route turns red", "status": "PROVEN", "evidence": "production-seam-closure.selftest 20" },
+    { "id": "SC-16", "control": "Review provenance: unique SHA-bound append-only report paths; prior overwrite recorded honestly", "status": "PROVEN", "evidence": "review-index.json" },
+    { "id": "SC-17", "control": "Existing control-plane + detached proofs remain green", "status": "PROVEN", "evidence": "full suite 35/35 files, 801 assertions, reproduced twice, zero orphans/leaked worktrees" }
+  ],
+  "queued_non_blocking_hardening": [
+    "A real wall-clock 12-minute production-witness exercise (proven here only by immutable constant + no-override + mutation guard).",
+    "Terminal-loss survival across a real closed-terminal/SSH/logout/reboot session (mechanism present; only launcher-process-exit survival is proven)."
+  ],
+  "safety_state": { "founder_signature": "NONE", "real_activation": false, "provider_invocation": false, "real_run": false, "merged": false, "protected_main_modified": false }
+}

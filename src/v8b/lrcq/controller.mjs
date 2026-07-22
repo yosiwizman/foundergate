@@ -9,10 +9,11 @@
 //
 // Real provider execution requires an activation record NOT created here.
 import { validateBacklog, findCycle, RUNTIME_STATES } from "./schemas.mjs";
-// The ONE sanctioned real-Claude route. Imported so REAL mode has a single adapter
-// entry point; SIMULATION_ONLY never touches it.
-import { runJob as providerRunJob } from "./provider/real-provider.mjs";
-import { validateActivation } from "./provider/activation-schema.mjs";
+// AUTHORITY-ROUTE COLLAPSE (FG-LRCQ-FINAL-001): the controller holds NO real-provider
+// invocation authority. There is exactly ONE sanctioned REAL route —
+//   tools/terminal0/lrcq/run-five-hour.mjs -> run-harness/harness.mjs
+// which wires the machine verifier + independent checker + durable transaction/replay/
+// recovery chain. The controller therefore imports NO provider and NO activation schema.
 
 export const MODE = { SIMULATION_ONLY: "SIMULATION_ONLY", REAL: "REAL" };
 
@@ -229,20 +230,17 @@ export class Controller {
   // Revalidates the activation record before the worker starts; only WIDE_SAFE jobs
   // reach the adapter; deadline/pause/gate all block. Maps the structured outcome onto
   // the same seal/complete or cycle/park logic. NEVER marks work accepted/merged.
-  async stepReal(job_id, activation, bindings, opts = {}) {
-    const j = this.byId.get(job_id);
-    if (!j || j.status !== "RUNNING") return { ok: false, reason: "not running" };
-    if (this.mode !== MODE.REAL) return { ok: false, reason: "stepReal requires REAL mode" };
-    // revalidate activation immediately before the worker starts
-    const av = validateActivation(activation, bindings);
-    if (!av.valid) return { ok: false, reason: "ACTIVATION_REFUSED", refusals: av.refusals };
-    if (j.risk_class !== "WIDE_SAFE" || (j.gate_trigger && j.gate_trigger !== "NONE")) return { ok: false, reason: "only WIDE_SAFE ungated jobs may reach the adapter" };
-    if (this.gate || this.paused) return { ok: false, reason: "gate/pause active" };
-    if (this.deadlineEpoch && this.now >= this.deadlineEpoch) return { ok: false, reason: "deadline" };
-    const outcome = await providerRunJob(activation, j, bindings, opts);
-    this.emit(j.job_id, "provider_outcome", outcome.outcome, outcome.refusals ? outcome.refusals.join(";") : null);
-    const ok = outcome.outcome === "SUCCESS";
-    return { ...this._applyOutcome(j, ok, outcome.outcome), provider_outcome: outcome };
+  // AUTHORITY-ROUTE COLLAPSE (FG-LRCQ-FINAL-001). REAL execution is NOT permitted through the
+  // controller. stepReal retains its name ONLY to return a structured refusal directing callers
+  // to the single sanctioned launcher. It invokes NO provider, seals NOTHING, completes NOTHING,
+  // consumes NO lease, and creates NO second authority route. It never touches _applyOutcome.
+  async stepReal() {
+    return {
+      ok: false,
+      reason: "REAL_EXECUTION_REQUIRES_RUN_HARNESS",
+      sanctioned_route: "tools/terminal0/lrcq/run-five-hour.mjs -> src/v8b/lrcq/run-harness/harness.mjs (runHarness, REAL mode)",
+      invoked_provider: false, completed: false, sealed: false, lease_consumed: false, second_route_created: false,
+    };
   }
   pause() { this.paused = true; this.runtime_state = "PAUSED"; this.emit(null, "pause_requested", "PAUSED"); }
   resume() { this.paused = false; if (this.runtime_state === "PAUSED") this.runtime_state = "RUNNING"; }

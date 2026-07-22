@@ -1,0 +1,31 @@
+{
+  "lane": "PR189-METADATA-BINDING-CORRECTION",
+  "objective": "Correct the single fail-closed defect: the reviewed PR-metadata digest bound a STORED body; the live GitHub PR #189 body differs only by trailing-newline normalization. Introduce ONE canonicalizer used by both build + verify, bind the exact live GitHub metadata, explicitly bind the 18000s five-hour maximum, regenerate the non-recursive evidence set + capsule, re-freeze, and obtain fresh checker CLEAN + fresh Advisor READY. Then STOP at the founder gate.",
+  "done_definition": "canonical(live GitHub metadata) == canonical(stored) via the committed canonicalizer; substantive mutations red; 18000s/25-job/$10 bound; pushed candidate with local==upstream==GitHub parity; fresh checker CLEAN + fresh Advisor READY on the unchanged package; activation unsigned/unconsumed; zero provider invocation; no run; no merge.",
+  "classification": "NARROW-SENSITIVE FINALIZATION CORRECTION",
+  "base_sha": "f10cd681ca303fc8b75eb759d38a660321e4fc0a",
+  "base_tree": "2483b1e996c1b9d2bd5329411816307d2867bd57",
+  "branch": "lane/v8b-lrcq-assurance-factory-50e18e5",
+  "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-assurance-factory-50e18e5",
+  "allowed_files": [
+    "tools/terminal0/lrcq/pr-metadata-canon.mjs",
+    "src/v8b/lrcq/run-harness-tests/pr-metadata-canon.selftest.mjs",
+    "tools/terminal0/lrcq/evidence-set.mjs",
+    "tools/terminal0/lrcq/capsule-verifier.mjs",
+    ".foundergate/evidence/lrcq-assurance-factory/metadata-binding-lane-contract.json",
+    ".foundergate/evidence/lrcq-assurance-factory/metadata-binding-incident.json",
+    ".foundergate/evidence/lrcq-assurance/founder-hand-burden.json",
+    ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json (step-B binding only)",
+    "PR #189 title/body (only if factually necessary)"
+  ],
+  "forbidden_files": ["protected main", "PR #187/#188 material", "src/v8b/lrcq/provider/activation-schema.mjs", "the 25-job backlog", "root test runner", "GitHub Actions", "provider permission/secret/governance files"],
+  "dependencies": ["the prior finalized route (f10cd681) is proven end-to-end with a deterministic stub"],
+  "collision_check": "single finalizer (Terminal-0); read-only checker + separate advisor distinct from the writer; no parallel writer",
+  "tests": ["pr-metadata-canon.selftest (positive equivalence + red mutations)", "evidence-set verify (canonical binding + 18000/25/$10)", "capsule-verifier (live canonical check)", "final-template preflight", "full PR#189 suite"],
+  "evidence_requirements": ["out-of-tree evidence-set manifest with raw_live/raw_stored/canonical_live/canonical_stored digests + equality + five_hour_contract", "metadata-binding incident (append-only)", "fresh checker + advisor reports bound by digest"],
+  "independent_checker_requirement": "read-only; did not implement the correction; independently retrieves live GitHub metadata + runs the committed canonicalizer",
+  "separate_advisor_requirement": "separate read-only advisor on the same unchanged package + checker report digest",
+  "rollback_plan": "confined to this lane branch; revert the correction commits; protected main + other PRs untouched",
+  "founder_gate_trigger": "exact corrected candidate + exact live GitHub canonical metadata digest + complete evidence set + capsule + 18000s/25-job/$10 contract + unsigned activation + fresh checker CLEAN + fresh Advisor READY remain unchanged after final review.",
+  "terminal0_handoff": "On fresh checker CLEAN + fresh Advisor READY + immutability proof, STOP and present the single founder activation gate. Do not sign, consume, launch, or merge."
+}

@@ -1,0 +1,5 @@
+{
+  "proven_in_preparation": "The run machinery is fully WIRED and FAIL-CLOSED, verified with ZERO provider/builder/checker invocation (preflight SIGNATURE-REQUIRED). The signed V3 record composes a valid V2 adapter-activation (dispatch route reachable); the independent checker routes a distinct read-only session through the SAME provider adapter; undefined checker output -> INSUFFICIENT_EVIDENCE (never CLEAN).",
+  "NOT_proven_in_preparation": "Actual productive work (a real builder session producing changes, and a real checker session returning CLEAN) is NOT exercised or proven here, because that requires invoking the real provider (Claude), which is forbidden during preparation. The FIRST place real productive capability is exercised is the founder-signed run itself.",
+  "founder_must_accept": "Signing authorizes the first internal run to invoke the real provider through this wired, fail-closed machinery. Whether jobs actually COMPLETE depends on real builder + checker behavior, first observed under signature."
+}

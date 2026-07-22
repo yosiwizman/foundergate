@@ -1,0 +1,1168 @@
+{
+  "schema": "af-first-real-run-backlog-1",
+  "total": 25,
+  "total_estimated_minutes": 350,
+  "frozen": true,
+  "excludes_tonight": true,
+  "no_live_effects": true,
+  "jobs": [
+    {
+      "job_id": "FRR-01",
+      "title": "console-refinement job",
+      "objective": "wide-safe console-refinement",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/console-refinement-0.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-0",
+      "worktree": "/wt/frr-0",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/console-refinement-0.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/console-refinement-0.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/0.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-02",
+      "title": "console-fixture job",
+      "objective": "wide-safe console-fixture",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/console-fixture-1.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-1",
+      "worktree": "/wt/frr-1",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/console-fixture-1.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/console-fixture-1.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/1.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-03",
+      "title": "browser-coverage job",
+      "objective": "wide-safe browser-coverage",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/browser-coverage-2.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-2",
+      "worktree": "/wt/frr-2",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/browser-coverage-2.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/browser-coverage-2.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/2.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-04",
+      "title": "accessibility job",
+      "objective": "wide-safe accessibility",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/accessibility-3.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-3",
+      "worktree": "/wt/frr-3",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/accessibility-3.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/accessibility-3.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/3.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-05",
+      "title": "evidence-index job",
+      "objective": "wide-safe evidence-index",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/evidence-index-4.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-4",
+      "worktree": "/wt/frr-4",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/evidence-index-4.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/evidence-index-4.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/4.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-06",
+      "title": "claim-register job",
+      "objective": "wide-safe claim-register",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/claim-register-5.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-5",
+      "worktree": "/wt/frr-5",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/claim-register-5.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/claim-register-5.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/5.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-07",
+      "title": "documentation job",
+      "objective": "wide-safe documentation",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [
+        "FRR-06"
+      ],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/documentation-6.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-6",
+      "worktree": "/wt/frr-6",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/documentation-6.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/documentation-6.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/6.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-08",
+      "title": "architecture-record job",
+      "objective": "wide-safe architecture-record",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/architecture-record-7.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-7",
+      "worktree": "/wt/frr-7",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/architecture-record-7.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/architecture-record-7.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/7.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-09",
+      "title": "synthetic-negative-test job",
+      "objective": "wide-safe synthetic-negative-test",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/synthetic-negative-test-8.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-8",
+      "worktree": "/wt/frr-8",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/synthetic-negative-test-8.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/synthetic-negative-test-8.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/8.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-10",
+      "title": "recovery-test job",
+      "objective": "wide-safe recovery-test",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/recovery-test-9.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-9",
+      "worktree": "/wt/frr-9",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/recovery-test-9.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/recovery-test-9.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/9.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-11",
+      "title": "local-ci-presentation job",
+      "objective": "wide-safe local-ci-presentation",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/local-ci-presentation-10.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-10",
+      "worktree": "/wt/frr-10",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/local-ci-presentation-10.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/local-ci-presentation-10.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/10.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-12",
+      "title": "proof-lab-draft job",
+      "objective": "wide-safe proof-lab-draft",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/proof-lab-draft-11.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-11",
+      "worktree": "/wt/frr-11",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/proof-lab-draft-11.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/proof-lab-draft-11.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/11.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-13",
+      "title": "provider-neutral-adapter-test job",
+      "objective": "wide-safe provider-neutral-adapter-test",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [
+        "FRR-12"
+      ],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/provider-neutral-adapter-test-12.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-12",
+      "worktree": "/wt/frr-12",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/provider-neutral-adapter-test-12.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/provider-neutral-adapter-test-12.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/12.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-14",
+      "title": "product-copy job",
+      "objective": "wide-safe product-copy",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/product-copy-13.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-13",
+      "worktree": "/wt/frr-13",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/product-copy-13.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/product-copy-13.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/13.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-15",
+      "title": "backlog-quality job",
+      "objective": "wide-safe backlog-quality",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/backlog-quality-14.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-14",
+      "worktree": "/wt/frr-14",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/backlog-quality-14.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/backlog-quality-14.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/14.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-16",
+      "title": "assurance-case-render job",
+      "objective": "wide-safe assurance-case-render",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/assurance-case-render-15.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-15",
+      "worktree": "/wt/frr-15",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/assurance-case-render-15.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/assurance-case-render-15.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/15.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-17",
+      "title": "proof-coverage-fixture job",
+      "objective": "wide-safe proof-coverage-fixture",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/proof-coverage-fixture-16.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-16",
+      "worktree": "/wt/frr-16",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/proof-coverage-fixture-16.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/proof-coverage-fixture-16.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/16.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-18",
+      "title": "redaction-fixture job",
+      "objective": "wide-safe redaction-fixture",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/redaction-fixture-17.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-17",
+      "worktree": "/wt/frr-17",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/redaction-fixture-17.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/redaction-fixture-17.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/17.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-19",
+      "title": "policy-sim-scenario job",
+      "objective": "wide-safe policy-sim-scenario",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [
+        "FRR-18"
+      ],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/policy-sim-scenario-18.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-18",
+      "worktree": "/wt/frr-18",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/policy-sim-scenario-18.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/policy-sim-scenario-18.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/18.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-20",
+      "title": "drift-fixture job",
+      "objective": "wide-safe drift-fixture",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/drift-fixture-19.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-19",
+      "worktree": "/wt/frr-19",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/drift-fixture-19.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/drift-fixture-19.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/19.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-21",
+      "title": "threat-fixture job",
+      "objective": "wide-safe threat-fixture",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/threat-fixture-20.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-20",
+      "worktree": "/wt/frr-20",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/threat-fixture-20.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/threat-fixture-20.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/20.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-22",
+      "title": "memory-quarantine-fixture job",
+      "objective": "wide-safe memory-quarantine-fixture",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/memory-quarantine-fixture-21.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-21",
+      "worktree": "/wt/frr-21",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/memory-quarantine-fixture-21.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/memory-quarantine-fixture-21.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/21.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-23",
+      "title": "supply-chain-fixture job",
+      "objective": "wide-safe supply-chain-fixture",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/supply-chain-fixture-22.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-22",
+      "worktree": "/wt/frr-22",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/supply-chain-fixture-22.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/supply-chain-fixture-22.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/22.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-24",
+      "title": "gate-fatigue-metric job",
+      "objective": "wide-safe gate-fatigue-metric",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/gate-fatigue-metric-23.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-23",
+      "worktree": "/wt/frr-23",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/gate-fatigue-metric-23.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/gate-fatigue-metric-23.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/23.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    },
+    {
+      "job_id": "FRR-25",
+      "title": "reversible-first-doc job",
+      "objective": "wide-safe reversible-first-doc",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main + assurance catalog (NOT PR#182/#186)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [
+        "FRR-24"
+      ],
+      "allowed_files": [
+        "src/v8b/lrcq/frr/reversible-first-doc-24.mjs"
+      ],
+      "forbidden_files": [
+        "src/founder_url_drop/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/",
+        "PR#182",
+        "PR#186"
+      ],
+      "branch": "lane/frr-24",
+      "worktree": "/wt/frr-24",
+      "expected_outputs": [
+        "src/v8b/lrcq/frr/reversible-first-doc-24.mjs"
+      ],
+      "tests": [
+        "src/v8b/lrcq/frr/reversible-first-doc-24.selftest.mjs"
+      ],
+      "required_evidence": [
+        ".foundergate/evidence/frr/24.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 14,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "blast_radius_budget": {
+        "max_files": 3,
+        "max_changed_lines": 300,
+        "max_external_calls": 0,
+        "max_dollars": 1
+      },
+      "capability_lease_required": true,
+      "idempotency_required": true,
+      "status": "PENDING",
+      "next_safe_action": "eligible when deps complete"
+    }
+  ]
+}

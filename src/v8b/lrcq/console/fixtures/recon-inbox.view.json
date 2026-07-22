@@ -1,0 +1,101 @@
+{
+  "schema": "lrcq-recon-inbox-view-1",
+  "run_id": "shadow",
+  "entries": [
+    {
+      "transaction_id": "tx-crashDispatch",
+      "idempotency_key": "k-crashDispatch",
+      "job_id": "crashDispatch",
+      "attempt": 1,
+      "target": "lane/crashDispatch",
+      "dispatch_state": "DISPATCHED",
+      "process_state": "GONE",
+      "result_state": "NONE",
+      "reconciliation_classification": "NEEDS_RECONCILIATION",
+      "safe_retry": false,
+      "required_external_query": "verify external effect before any retry",
+      "recommendation": "BRANCH",
+      "evidence_links": [
+        ".foundergate/evidence/lrcq/crashDispatch/process.json"
+      ],
+      "founder_action_required": true
+    },
+    {
+      "transaction_id": "tx-reconHold",
+      "idempotency_key": "k-reconHold",
+      "job_id": "reconHold",
+      "attempt": 2,
+      "target": "lane/reconHold",
+      "dispatch_state": "NOT_DISPATCHED",
+      "process_state": "GONE",
+      "result_state": "NONE",
+      "reconciliation_classification": "HELD",
+      "safe_retry": false,
+      "required_external_query": "verify external effect before any retry",
+      "recommendation": "ABANDON",
+      "evidence_links": [
+        "/ev/reconHold"
+      ],
+      "founder_action_required": true
+    },
+    {
+      "transaction_id": "tx-live",
+      "idempotency_key": "k-live",
+      "job_id": "activeJob",
+      "attempt": 1,
+      "target": "lane/activeJob",
+      "dispatch_state": "DISPATCHED",
+      "process_state": "ALIVE",
+      "result_state": "NONE",
+      "reconciliation_classification": "ACTIVE_PROCESS_FOUND",
+      "safe_retry": false,
+      "required_external_query": null,
+      "recommendation": "WAIT",
+      "evidence_links": [
+        "/ev/activeJob"
+      ],
+      "founder_action_required": false
+    },
+    {
+      "transaction_id": "tx-unknown",
+      "idempotency_key": "k-unknown",
+      "job_id": "unknownFx",
+      "attempt": 1,
+      "target": "lane/unknownFx",
+      "dispatch_state": "NOT_DISPATCHED",
+      "process_state": "GONE",
+      "result_state": "NONE",
+      "reconciliation_classification": "EXTERNAL_EFFECT_UNKNOWN",
+      "safe_retry": false,
+      "required_external_query": "verify external effect before any retry",
+      "recommendation": "ABANDON",
+      "evidence_links": [],
+      "founder_action_required": true
+    },
+    {
+      "transaction_id": "tx-safe",
+      "idempotency_key": "k-safe",
+      "job_id": "safeResume",
+      "attempt": 1,
+      "target": "lane/safeResume",
+      "dispatch_state": "NOT_DISPATCHED",
+      "process_state": "GONE",
+      "result_state": "NONE",
+      "reconciliation_classification": "SAFE_TO_RESUME",
+      "safe_retry": true,
+      "required_external_query": null,
+      "recommendation": "RESUME",
+      "evidence_links": [
+        "/ev/safeResume"
+      ],
+      "founder_action_required": false
+    }
+  ],
+  "pending_count": 3,
+  "statements": [
+    "FounderGate will not retry an uncertain action until reconciliation is complete.",
+    "Unknown side-effect state is HELD.",
+    "Worker success is not checker acceptance.",
+    "Checker CLEAN is not merge authority."
+  ]
+}

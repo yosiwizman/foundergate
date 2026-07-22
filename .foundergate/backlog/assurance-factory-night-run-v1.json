@@ -1,0 +1,473 @@
+{
+  "schema": "af-night-backlog-1",
+  "total": 34,
+  "total_estimated_minutes": 1530,
+  "items": [
+    {
+      "control_id": "A01",
+      "job_id": "AF-N-001",
+      "title": "five-plane authority contract + boundary tests",
+      "risk_class": "NARROW_SENSITIVE",
+      "status": "COMPLETE",
+      "night_run_eligible": true,
+      "allowed_files": [
+        "src/v8b/lrcq/assurance/assurance-core.mjs"
+      ],
+      "tests": [
+        "assurance-core.selftest 01-06"
+      ],
+      "estimated_minutes": 40,
+      "dependencies": [],
+      "activation_blocker": true
+    },
+    {
+      "control_id": "ACT-V3",
+      "job_id": "AF-N-002",
+      "title": "activation schema v3 (three-layer binding + bounds)",
+      "risk_class": "NARROW_SENSITIVE",
+      "status": "COMPLETE",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [
+        "27-41"
+      ],
+      "estimated_minutes": 45,
+      "dependencies": [],
+      "activation_blocker": true
+    },
+    {
+      "control_id": "A03",
+      "job_id": "AF-N-003",
+      "title": "capability leases",
+      "risk_class": "NARROW_SENSITIVE",
+      "status": "COMPLETE",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [
+        "07-20"
+      ],
+      "estimated_minutes": 40,
+      "dependencies": [],
+      "activation_blocker": true
+    },
+    {
+      "control_id": "B21",
+      "job_id": "AF-N-004",
+      "title": "blast-radius budgets",
+      "risk_class": "NARROW_SENSITIVE",
+      "status": "COMPLETE",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [
+        "21-26"
+      ],
+      "estimated_minutes": 40,
+      "dependencies": [],
+      "activation_blocker": true
+    },
+    {
+      "control_id": "A02",
+      "job_id": "AF-N-005",
+      "title": "side-effect transaction protocol",
+      "risk_class": "NARROW_SENSITIVE",
+      "status": "COMPLETE",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [
+        "42-47"
+      ],
+      "estimated_minutes": 45,
+      "dependencies": [],
+      "activation_blocker": true
+    },
+    {
+      "control_id": "A02",
+      "job_id": "AF-N-006",
+      "title": "idempotent dispatch + duplicate prevention",
+      "risk_class": "NARROW_SENSITIVE",
+      "status": "COMPLETE",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [
+        "46-47"
+      ],
+      "estimated_minutes": 30,
+      "dependencies": [],
+      "activation_blocker": true
+    },
+    {
+      "control_id": "A10",
+      "job_id": "AF-N-007",
+      "title": "reconciliation state machine (RESUME/BRANCH/ABANDON)",
+      "risk_class": "NARROW_SENSITIVE",
+      "status": "COMPLETE",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [
+        "48-55"
+      ],
+      "estimated_minutes": 45,
+      "dependencies": [],
+      "activation_blocker": true
+    },
+    {
+      "control_id": "CLOCK",
+      "job_id": "AF-N-008",
+      "title": "intrinsic live clock (real by default; injected for tests)",
+      "risk_class": "NARROW_SENSITIVE",
+      "status": "COMPLETE",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [
+        "provider 45"
+      ],
+      "estimated_minutes": 20,
+      "dependencies": [],
+      "activation_blocker": true
+    },
+    {
+      "control_id": "SETUP",
+      "job_id": "AF-N-009",
+      "title": "deterministic setup pipeline (25 ordered steps)",
+      "risk_class": "NARROW_SENSITIVE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 60,
+      "dependencies": [],
+      "activation_blocker": true
+    },
+    {
+      "control_id": "HARNESS",
+      "job_id": "AF-N-010",
+      "title": "single unattended run harness (launcher->lease->setup->controller->adapter->checker)",
+      "risk_class": "NARROW_SENSITIVE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 90,
+      "dependencies": [
+        "AF-N-009"
+      ],
+      "activation_blocker": true
+    },
+    {
+      "control_id": "SEP",
+      "job_id": "AF-N-011",
+      "title": "builder/checker separation state flow",
+      "risk_class": "NARROW_SENSITIVE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 50,
+      "dependencies": [],
+      "activation_blocker": true
+    },
+    {
+      "control_id": "REPLAY",
+      "job_id": "AF-N-012",
+      "title": "replay stream schema + append-only integrity + tamper tests",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 45,
+      "dependencies": [],
+      "activation_blocker": true
+    },
+    {
+      "control_id": "TRIAD",
+      "job_id": "AF-N-013",
+      "title": "recovery triad (crash-after-intent/dispatch/seal)",
+      "risk_class": "NARROW_SENSITIVE",
+      "status": "PARTIAL",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 50,
+      "dependencies": [],
+      "activation_blocker": true
+    },
+    {
+      "control_id": "B17",
+      "job_id": "AF-N-014",
+      "title": "Reconciliation Inbox data model",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 40,
+      "dependencies": [],
+      "activation_blocker": true
+    },
+    {
+      "control_id": "PACKET",
+      "job_id": "AF-N-015",
+      "title": "unsigned activation packet generation",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 30,
+      "dependencies": [
+        "AF-N-002"
+      ],
+      "activation_blocker": true
+    },
+    {
+      "control_id": "B16",
+      "job_id": "AF-N-016",
+      "title": "proof-coverage matrix module",
+      "risk_class": "WIDE_SAFE",
+      "status": "COMPLETE",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 35,
+      "dependencies": [],
+      "activation_blocker": false
+    },
+    {
+      "control_id": "B18",
+      "job_id": "AF-N-017",
+      "title": "checker-diversity register",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 30,
+      "dependencies": [],
+      "activation_blocker": false
+    },
+    {
+      "control_id": "B25",
+      "job_id": "AF-N-018",
+      "title": "refusal benchmark corpus (>=12 fixtures)",
+      "risk_class": "WIDE_SAFE",
+      "status": "PARTIAL",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [
+        "assurance-core refusal cases"
+      ],
+      "estimated_minutes": 60,
+      "dependencies": [],
+      "activation_blocker": true
+    },
+    {
+      "control_id": "A07",
+      "job_id": "AF-N-019",
+      "title": "agentic threat-model fixtures",
+      "risk_class": "WIDE_SAFE",
+      "status": "PARTIAL",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 60,
+      "dependencies": [],
+      "activation_blocker": false
+    },
+    {
+      "control_id": "B13",
+      "job_id": "AF-N-020",
+      "title": "portable evidence format v1",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 50,
+      "dependencies": [],
+      "activation_blocker": false
+    },
+    {
+      "control_id": "B14",
+      "job_id": "AF-N-021",
+      "title": "offline evidence verifier + trust roots",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 55,
+      "dependencies": [],
+      "activation_blocker": false
+    },
+    {
+      "control_id": "A05",
+      "job_id": "AF-N-022",
+      "title": "assurance-case claim-evidence graph",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 40,
+      "dependencies": [],
+      "activation_blocker": false
+    },
+    {
+      "control_id": "A08",
+      "job_id": "AF-N-023",
+      "title": "memory & context quarantine schema",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 50,
+      "dependencies": [],
+      "activation_blocker": false
+    },
+    {
+      "control_id": "A06",
+      "job_id": "AF-N-024",
+      "title": "supply-chain baseline interfaces",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 45,
+      "dependencies": [],
+      "activation_blocker": false
+    },
+    {
+      "control_id": "B15",
+      "job_id": "AF-N-025",
+      "title": "policy simulator (pure preview)",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 45,
+      "dependencies": [],
+      "activation_blocker": false
+    },
+    {
+      "control_id": "B19",
+      "job_id": "AF-N-026",
+      "title": "local drift monitor + fixtures",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 45,
+      "dependencies": [],
+      "activation_blocker": false
+    },
+    {
+      "control_id": "B20",
+      "job_id": "AF-N-027",
+      "title": "model/provider change-gate detector",
+      "risk_class": "WIDE_SAFE",
+      "status": "PARTIAL",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 40,
+      "dependencies": [],
+      "activation_blocker": false
+    },
+    {
+      "control_id": "B22",
+      "job_id": "AF-N-028",
+      "title": "reversible-first action contract",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 35,
+      "dependencies": [],
+      "activation_blocker": false
+    },
+    {
+      "control_id": "B23",
+      "job_id": "AF-N-029",
+      "title": "gate-fatigue metrics",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 30,
+      "dependencies": [],
+      "activation_blocker": false
+    },
+    {
+      "control_id": "B24",
+      "job_id": "AF-N-030",
+      "title": "evidence redaction + privacy export",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 45,
+      "dependencies": [],
+      "activation_blocker": false
+    },
+    {
+      "control_id": "A11",
+      "job_id": "AF-N-031",
+      "title": "safe-defaults validator",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 30,
+      "dependencies": [],
+      "activation_blocker": false
+    },
+    {
+      "control_id": "SHADOW",
+      "job_id": "AF-N-032",
+      "title": "deterministic shadow run (>=25 jobs)",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 60,
+      "dependencies": [],
+      "activation_blocker": false
+    },
+    {
+      "control_id": "ENDURANCE",
+      "job_id": "AF-N-033",
+      "title": "wall-clock shadow endurance (<=60 min)",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 60,
+      "dependencies": [],
+      "activation_blocker": false
+    },
+    {
+      "control_id": "BROWSER",
+      "job_id": "AF-N-034",
+      "title": "console browser + accessibility proof extension",
+      "risk_class": "WIDE_SAFE",
+      "status": "PLANNED",
+      "night_run_eligible": true,
+      "allowed_files": [],
+      "tests": [],
+      "estimated_minutes": 45,
+      "dependencies": [],
+      "activation_blocker": false
+    }
+  ]
+}

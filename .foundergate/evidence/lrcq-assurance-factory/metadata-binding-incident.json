@@ -1,0 +1,23 @@
+{
+  "incident": "PR189-LIVE-METADATA-BINDING-GAP",
+  "append_only": true,
+  "discovered_by": "FOUNDERGATE-PR189-PRESIGN-REVALIDATION (final pre-signature revalidation)",
+  "prior_reviewed_head": "f10cd681ca303fc8b75eb759d38a660321e4fc0a",
+  "finding": {
+    "prior_package_bound": "a STORED PR-body representation (scratchpad pr189-body.md) via pr_body_digest = sha256(title + LF + stored body)",
+    "live_github_body_differed_by": "GitHub trailing-newline normalization only",
+    "raw_digest_difference": "raw live sha256:d69575188ff21ba227081f50d6c902e2e215e1966e95e4bef84fe9d461210556 vs raw stored sha256:96d36136e9f577e425b3333a8093c51a175d16f6f739f6f0a24ceea5cb41c1ae (differ)",
+    "substantive_content": "otherwise byte-identical (only trailing newline)",
+    "prior_reviews": "the fresh checker (CLEAN) and Advisor (READY) at f10cd681 are STALE for EXACT LIVE-METADATA authentication because they inherited the stored-body binding"
+  },
+  "safety_state_at_incident": {
+    "founder_signature": "NONE",
+    "activation_consumed": false,
+    "real_provider_invoked": false,
+    "five_hour_run_started": false,
+    "pr_189_merged": false,
+    "protected_main_modified": false
+  },
+  "remediation": "Introduce ONE deterministic canonicalizer (lrcq-pr-metadata-canon-1) used by build + all verifiers, that normalizes ONLY line-ending form and final-newline count and preserves all substantive content. Bind the exact live GitHub metadata via canonical(live) == canonical(stored); explicitly bind the 18000s five-hour maximum; regenerate the non-recursive evidence set + capsule; re-freeze; obtain a FRESH checker + FRESH advisor. Prior reports NOT rewritten to appear current.",
+  "old_reviews_not_reused_as_current_authority": true
+}

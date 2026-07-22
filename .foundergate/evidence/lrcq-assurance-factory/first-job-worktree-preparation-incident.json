@@ -1,0 +1,32 @@
+{
+  "incident": "FG-LRCQ-ACT-025",
+  "title": "First real run held on job 1 because the provider's repository-identity check is wrong when the run is launched from a LINKED git worktree",
+  "append_only": true,
+  "supersedes_narrative": "The retry directive hypothesized a worktree-PREPARATION / dispatch-ordering / parent-vs-job path-conflation defect. Forensics DISPROVED that hypothesis: worktree preparation was correct. The true root cause is a repository-identity check in the provider that fails under a linked-worktree launch. Recorded honestly rather than forced to fit the pre-framed narrative.",
+  "durable_evidence_reviewed": {
+    "recovery_state": ".foundergate/evidence/lrcq-assurance-factory/REAL-RUN/recovery-state.json -> final_state STOPPED_TEARDOWN_DEFECT, outcome_status HELD_TEARDOWN_DEFECT, productive_jobs_completed 0",
+    "ledger": ".../REAL-RUN/ledger.jsonl -> {\"job\":\"frr2-0\",\"stage\":\"teardown_defect\",\"tree_gone\":null}",
+    "transactions": ".../REAL-RUN/transactions.jsonl -> frr2-0 reached DISPATCHED then no further job transaction (provider refused pre-spawn; real Claude PROVIDER_NOT_ATTEMPTED, $0)",
+    "supervisor_config": "man.manifest.repository_root = /Users/yosiwizman/Projects/foundergate-wt-lrcq-assurance-factory-50e18e5 (a LINKED worktree); permitted_worktree_root = <that>-worktrees",
+    "launch_dir_fact": "The run dir's .git is a 108-byte POINTER FILE; git --git-common-dir resolves to /Users/yosiwizman/Projects/foundergate/.git (the main clone).",
+    "not_durably_recorded": "The exact provider refusal STRING was never durably written for frr2-0 (lesson C territory). The root cause was therefore established by mechanical REPRODUCTION, not recovered from a log."
+  },
+  "root_cause": {
+    "component": "src/v8b/lrcq/provider/real-provider.mjs :: gitWorktreeIdentity",
+    "defect": "It derived the allowed repository's git dir via realpathSync(join(activation.allowed_repository, '.git')). When allowed_repository is a LINKED git worktree, '.git' is a POINTER FILE (not the common dir), so that value never equals the created sub-worktree's real common git dir (the main clone's .git). The check '(commonDir !== allowedRepoGit && !commonDir.startsWith(allowedRepoGit + sep))' was therefore true for EVERY job -> refusal 'worktree belongs to a different repository' BEFORE any provider spawn.",
+    "why_setup_passed_anyway": "setupManager's per-job identity check only verified the branch (onBranch === plan.branch), NOT repository identity, so it reported ok:true and the run dispatched into a guaranteed pre-spawn refusal. 'Prepared' did not imply 'provider-accepts' — a silent readiness gap.",
+    "why_stub_rehearsals_missed_it": "All prior rehearsals ran from a NORMAL clone (its '.git' is a directory == the common dir), so allowed_repository/.git happened to match. The linked-worktree launch condition existed only in the real run."
+  },
+  "mechanical_reproduction": {
+    "method": "Hermetic: a disposable main clone -> a LINKED worktree of it -> a per-job sub-worktree created from the linked worktree -> the REAL gitWorktreeIdentity invoked with allowed_repository = the linked worktree.",
+    "observed_before_fix": "REFUSED: 'worktree belongs to a different repository: <tmp>/main/.git' (allowed_repository = linked worktree). Control with allowed_repository = the normal clone: PASS. This reproduces the exact real-run failure class.",
+    "permanent_regression_test": "src/v8b/lrcq/run-harness-tests/first-job-worktree-linked.selftest.mjs (12/12): drives the REAL setupManager + REAL gitWorktreeIdentity through CREATE -> VERIFY(branch AND repo-identity) -> provider-ACCEPT -> REMOVE(tree gone) from a linked-worktree launch, plus negatives (different repo REFUSED; wrong branch REFUSED)."
+  },
+  "fix": {
+    "provider": "gitWorktreeIdentity now resolves the allowed repository's AUTHORITATIVE common git dir the same way as the job worktree's (git rev-parse --path-format=absolute --git-common-dir inside allowed_repository), and compares common-dir to common-dir. Correct whether the launch dir is a normal clone, a linked worktree, or a subdirectory of either. A genuinely different repository is still refused.",
+    "setup_manager_readiness_contract": "setupManager's per-job worktree_identity step now ALSO verifies repository identity: the job worktree's common git dir must equal (or nest under) repoRoot's common git dir (both realpath'd for macOS /private parity). This closes the readiness gap: a worktree is 'prepared' (setup.ok) ONLY if the provider will accept it. A mismatch or UNKNOWN fails closed BEFORE dispatch (executeSignedRun returns final_state SETUP_FAILED / failed_step worktree_identity:<job>), never dispatching into a pre-spawn refusal.",
+    "no_change_to": "the immutable Claude installation/symlink; the consumed activation + replay record; the raw REAL-RUN evidence; protected main; the provider spawn target (still activation.provider_resolved_target, versioned 2.1.215)."
+  },
+  "retry_gate": "A retry still requires a NEW founder authorization; the prior activation is spent + replay-blocked. This wave only proves the production path creates, verifies, USES (provider-accepts), and removes the first job worktree under the real linked-worktree condition.",
+  "suite_after_fix": "143/143 selftest files GREEN (twice, deterministic, zero leaked worktrees/branches)."
+}

@@ -1,0 +1,17 @@
+{
+  "operation": "LRCQ-FULL-MATERIAL-RESUME continuation",
+  "candidate_before": "ca0183c26ab5470ac83237440380d2dbefcf51e3",
+  "host": "AKIOR-Mac-mini (Mac16,11) verified Mac Mini Pro",
+  "state": "TURN-ENDED-WORK-REMAINS (not a founder gate; not READY)",
+  "reviews": "ALL prior checker/advisor verdicts STALE",
+  "progress_this_turn": {
+    "FG-LRCQ-ACT-009": "ADVANCED: canonical identity-envelope module (identity-envelope.mjs) with NON-RECURSIVE prompt-contract digest + rendered-prompt rendering + parseIdentityFromPrompt (worker reads identity ONLY from the rendered prompt; NO identity.json) + transport-envelope parser (transport-envelope.mjs) separating CLI transport from FounderGate payload. protocol.selftest 16/16. NOT yet wired into runJob/stub/harness; builder-output-before-MV not yet wired.",
+    "FG-LRCQ-ACT-010": "BUILT (backlog v2 frozen + all-25 validated last turn); manifest/activation-material NOT yet rebound to the v2 digest.",
+    "FG-LRCQ-ACT-012": "BUILT+TESTED; NOT wired into launcher.",
+    "FG-LRCQ-ACT-011": "OPEN — real setup/worktree manager not built.",
+    "FG-LRCQ-ACT-013": "OPEN — full 25-job real-materials rehearsal (READY gate) not built."
+  },
+  "next_executable_action": "1) Rebind run-manifest + activation-material to backlog-v2 digest (regenerate packet + re-run preflight). 2) Wire identity-envelope.renderPrompt into real-provider rolePrompt (replace builderPrompt/checkerPrompt bodies) + update productive-stub to read identity from the rendered prompt (drop identity.json) and emit wrapTransport(payload,cost); update runJob to parseTransport(stdout) -> parsed_output + cost. 3) Wire validateBuilderOutput before machine verification in harness (HELD_BUILDER_OUTPUT_INVALID). 4) Build real setup/worktree manager (mechanical 25-branch/25-worktree create + verify + rollback). 5) Wire budget-ledger into launcher (reserve/commit; CONTROLLED_BUDGET_STOP; handshakes). 6) Build the full 25-job production-equivalent rehearsal + negatives + mutation campaign. 7) Freeze + fresh checker + separate advisor.",
+  "full_suite": "125/125", "protocol_selftest": "16/16",
+  "constraints": "no real provider; no five-hour run; no signature; no merge; PR187/188 byte-unchanged; PR182/186 untouched; queued post-run items not implemented"
+}

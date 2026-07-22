@@ -1,0 +1,13 @@
+{
+  "schema": "lrcq-allowed-tools-1",
+  "builder": [
+    "Read",
+    "Write",
+    "Edit",
+    "Grep"
+  ],
+  "checker": [
+    "Read",
+    "Grep"
+  ]
+}

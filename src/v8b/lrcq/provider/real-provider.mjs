@@ -10,6 +10,8 @@ import { spawn, execFileSync } from "node:child_process";
 import { writeFileSync, readFileSync, mkdirSync, existsSync, realpathSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
 import { validateActivation } from "./activation-schema.mjs";
+import { renderPrompt } from "./identity-envelope.mjs";
+import { parseTransport } from "./transport-envelope.mjs";
 
 export const OUTCOMES = ["SUCCESS", "FAILED", "WORKER_TIMEOUT", "RUN_DEADLINE_EXPIRED", "OUTPUT_OVERFLOW", "SPAWN_ERROR", "TERMINATED_BY_PAUSE", "TERMINATED_BY_STOP", "TEARDOWN_FAILED", "ACTIVATION_REFUSED", "UNKNOWN_FAILURE"];
 const PERMISSION_BYPASS = ["--dangerously-skip-permissions", "--allow-dangerously-skip-permissions"];
@@ -50,8 +52,14 @@ export function gitWorktreeIdentity(job, activation, gitRunner) {
     const top = realpathSync(g(["rev-parse", "--show-toplevel"], wt));
     if (top !== realpathSync(wt)) return "worktree toplevel != assigned path: " + top;
     const commonDir = realpathSync(g(["rev-parse", "--path-format=absolute", "--git-common-dir"], wt));
-    const allowedRepoGit = realpathSync(join(activation.allowed_repository, ".git"));
-    if (commonDir !== allowedRepoGit && !commonDir.startsWith(allowedRepoGit + sep)) return "worktree belongs to a different repository: " + commonDir;
+    // FG-LRCQ-ACT-025: allowed_repository may ITSELF be a linked git worktree (its `.git` is a pointer
+    // FILE, not the common git dir) — the actual first-real-run condition. Deriving its git dir via
+    // join(allowed_repository, ".git") then resolves that pointer file and never equals the sub-worktree's
+    // real common-dir, so EVERY job was refused pre-spawn. Resolve the allowed repository's AUTHORITATIVE
+    // common git dir the same way (git rev-parse), so we compare common-dir to common-dir regardless of
+    // whether the launch dir is a normal clone, a linked worktree, or a subdirectory of either.
+    const allowedCommonDir = realpathSync(g(["rev-parse", "--path-format=absolute", "--git-common-dir"], activation.allowed_repository));
+    if (commonDir !== allowedCommonDir && !commonDir.startsWith(allowedCommonDir + sep)) return "worktree belongs to a different repository: " + commonDir + " (allowed common-dir " + allowedCommonDir + ")";
     const head = g(["symbolic-ref", "--quiet", "--short", "HEAD"], wt); // empty/throws when detached
     if (!head) return "worktree is in detached HEAD";
     if (head !== job.branch) return "actual branch (" + head + ") != assigned job.branch (" + job.branch + ")";
@@ -96,10 +104,18 @@ export function verifyTreeGone(pgid, descendantPids) {
 }
 
 export async function runJob(activation, job, bindings, opts = {}) {
-  const evidence = { pid: null, pgid: null, outcome: null, exit_code: null, stdout_bytes: 0, stderr_bytes: 0, killed: false, kill_escalated: false, tree_gone: null, tree_alive: null, descendant_pids: [], started: false };
+  // FG-LRCQ-ACT-023: teardown_status is NEVER null. It starts NOT_ATTEMPTED (the provider has not yet run,
+  // so there is nothing to tear down) and becomes CONFIRMED/FAILED/UNKNOWN only after the real teardown
+  // check. An early return (refused/spawn-error) therefore reports NOT_ATTEMPTED — a PROVIDER outcome, never
+  // a teardown defect. provider_invocation likewise tracks the real lifecycle stage.
+  const evidence = { pid: null, pgid: null, outcome: null, exit_code: null, stdout_bytes: 0, stderr_bytes: 0, killed: false, kill_escalated: false, tree_gone: null, tree_alive: null, descendant_pids: [], started: false, teardown_status: "TEARDOWN_NOT_ATTEMPTED", provider_invocation: "PROVIDER_NOT_ATTEMPTED" };
   const seal = (outcome, extra) => ({ ...evidence, outcome, ...(extra || {}) });
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-  const nowS = () => (opts.nowProvider ? opts.nowProvider() : (typeof bindings.now_epoch === "number" ? bindings.now_epoch : Math.floor(Date.now() / 1000)));
+  // INTRINSIC LIVE CLOCK: the running-worker clock is the REAL system clock by default.
+  // opts.nowProvider is a DETERMINISTIC-TEST injector ONLY. The frozen activation
+  // validation timestamp (bindings.now_epoch) is used only for pre-spawn validation and
+  // must never become the running-worker deadline clock.
+  const nowS = () => (opts.nowProvider ? opts.nowProvider() : Math.floor(Date.now() / 1000));
 
   const av = validateActivation(activation, bindings);
   if (!av.valid) return seal("ACTIVATION_REFUSED", { refusals: av.refusals });
@@ -115,17 +131,23 @@ export async function runJob(activation, job, bindings, opts = {}) {
   if (sig0 === "PAUSE") return seal("TERMINATED_BY_PAUSE");
   if (sig0 === "STOP") return seal("TERMINATED_BY_STOP");
 
+  // FG-LRCQ-ACT-005: role-aware prompt. A checker session receives the READ-ONLY review prompt
+  // (not the builder objective). Role is derived from an explicit marker on the job.
+  const role = opts.role || (job._checker_session ? "checker" : "builder");
   let argv;
-  try { argv = buildArgv(activation, job, boundPrompt(job)); } catch (e) { return seal("ACTIVATION_REFUSED", { refusals: [e.message] }); }
+  try { argv = buildArgv(activation, job, rolePrompt(job, role)); } catch (e) { return seal("ACTIVATION_REFUSED", { refusals: [e.message] }); }
   const env = scrubEnv(activation, opts.env || {});
   const evDir = join(activation.allowed_evidence_root, job.job_id);
   try { mkdirSync(evDir, { recursive: true }); } catch { /* */ }
 
   let child;
-  try { child = spawn(activation.provider_executable_path, argv, { cwd: job.worktree, env, detached: true, stdio: ["ignore", "pipe", "pipe"] }); }
+  // FG-LRCQ-ACT-022: spawn the IMMUTABLE resolved versioned target (never the mutable alias).
+  const execTarget = activation.provider_resolved_target || activation.provider_executable_path;
+  evidence.provider_invocation = "PROVIDER_SPAWN_ATTEMPTED";
+  try { child = spawn(execTarget, argv, { cwd: job.worktree, env, detached: true, stdio: ["ignore", "pipe", "pipe"] }); }
   catch (e) { return seal("SPAWN_ERROR", { error: e.message }); }
   if (!child.pid) return seal("SPAWN_ERROR", { error: "no pid" });
-  evidence.started = true; evidence.pid = child.pid; evidence.pgid = child.pid;
+  evidence.started = true; evidence.pid = child.pid; evidence.pgid = child.pid; evidence.provider_invocation = "PROVIDER_SPAWNED";
   writeFileSync(join(evDir, "process.json"), JSON.stringify({ pid: child.pid, pgid: child.pid, argv_redacted: redactArgv(argv), started_epoch: nowS() }, null, 2) + "\n");
 
   const maxBytes = activation.max_output_bytes;
@@ -161,27 +183,58 @@ export async function runJob(activation, job, bindings, opts = {}) {
   let tv = { gone: false, alive: ["unchecked"] };
   for (let i = 0; i < 6; i++) { tv = verifyTreeGone(child.pid, descendants); if (tv.gone) break; await sleep(40); }
   evidence.tree_gone = tv.gone; evidence.tree_alive = tv.alive;
-  writeFileSync(join(evDir, "teardown.json"), JSON.stringify({ pgid: child.pid, descendant_pids: descendants, tree_gone: tv.gone, alive: tv.alive }, null, 2) + "\n");
+  // teardown_status is an explicit enum — never null: CONFIRMED requires the tree confirmed gone; an
+  // "unchecked" verification is UNKNOWN (fails closed); otherwise FAILED. Provider output was received.
+  evidence.teardown_status = tv.gone ? "TEARDOWN_CONFIRMED" : (Array.isArray(tv.alive) && tv.alive.includes("unchecked") ? "TEARDOWN_UNKNOWN" : "TEARDOWN_FAILED");
+  evidence.provider_invocation = "PROVIDER_OUTPUT_RECEIVED";
+  writeFileSync(join(evDir, "teardown.json"), JSON.stringify({ pgid: child.pid, descendant_pids: descendants, tree_gone: tv.gone, alive: tv.alive, teardown_status: evidence.teardown_status }, null, 2) + "\n");
 
   // a termination event that did NOT clean up the tree is NEVER success
   if (evidence.killed && !tv.gone) return seal("TEARDOWN_FAILED", { note: "process tree not confirmed gone after termination", alive: tv.alive });
 
-  let parsed = null;
+  let parsed = null, providerCostUsd = null, transportDigest = null;
   if (result.o === "SUCCESS") {
     if (!tv.gone) return seal("TEARDOWN_FAILED", { note: "exit 0 but tree not confirmed gone" });
     if (!out || out.trim() === "") return seal("UNKNOWN_FAILURE", { note: "exit 0 but no output — not treated as success" });
-    try { parsed = JSON.parse(out); } catch { return seal("FAILED", { note: "unparseable output on exit 0" }); }
+    // FG-LRCQ-ACT-009 protocol: when opts.transport is set, the worker wraps its payload in the
+    // documented CLI transport envelope; parse it strictly (separating transport + payload + cost).
+    if (opts.transport) { const tp = parseTransport(out); if (!tp.ok) return seal("FAILED", { note: "transport: " + tp.reason }); parsed = tp.payload; providerCostUsd = tp.cost_usd; transportDigest = tp.transport_digest; }
+    else { try { parsed = JSON.parse(out); } catch { return seal("FAILED", { note: "unparseable output on exit 0" }); } }
   }
-  return seal(result.o, { ...(result.extra || {}), parsed_ok: !!parsed });
+  // FG-LRCQ-ACT-005/009: return the PARSED role output + provider cost + transport evidence.
+  return seal(result.o, { ...(result.extra || {}), parsed_ok: !!parsed, parsed_output: parsed || null, role, provider_cost_usd: providerCostUsd, transport_digest: transportDigest });
 }
 
-function boundPrompt(job) {
+// Builder prompt: bounded to the job objective + allowed files/tools; no authority to merge/push.
+export function builderPrompt(job) {
   return [
-    "FounderGate LRCQ job " + job.job_id + " — WIDE-SAFE only.",
+    "FounderGate LRCQ BUILDER — job " + job.job_id + " (attempt " + (job.__attempt || 1) + ") — WIDE-SAFE only.",
     "Objective: " + job.objective, "Done means: " + job.done_meaning,
     "Allowed files (ONLY these): " + (job.allowed_files || []).join(", "),
     "Forbidden files: " + (job.forbidden_files || []).join(", "),
-    "You may not merge, push, touch protected main, or act outside this worktree.",
+    "Required tests: " + JSON.stringify(job.tests || []), "Required evidence: " + JSON.stringify(job.required_evidence || []),
+    "Branch " + job.branch + " / worktree " + job.worktree,
+    "You may not merge, push, touch protected main, act outside this worktree, or modify any gate/authority.",
+    "Emit a single JSON object per the lrcq-builder-output-1 schema on stdout.",
   ].join("\n");
+}
+// Checker prompt: READ-ONLY review; explicitly requires a structured verdict; never asks the
+// checker to implement the objective; forbids edits/writes/push/merge/acceptance inference.
+export function checkerPrompt(job) {
+  return [
+    "FounderGate LRCQ INDEPENDENT CHECKER — job " + job.job_id + " (attempt " + (job.__attempt || 1) + ") — READ-ONLY.",
+    "Review candidate/job/attempt identity, the builder transaction, and the machine-verifier report digest.",
+    "Inspect ONLY: the actual diff, the executed-test evidence, and the required output/evidence artifacts.",
+    "You have ONLY Read and Grep. You may NOT edit, write, push, merge, or infer acceptance.",
+    "Do NOT implement the objective. Give a per-criterion PASS/FAIL and ONE final verdict: CLEAN | FINDINGS | INSUFFICIENT_EVIDENCE.",
+    "Emit a single JSON object per the lrcq-checker-output-1 schema on stdout.",
+  ].join("\n");
+}
+// FG-LRCQ-ACT-009: when a canonical identity envelope is attached, render the FULL identity +
+// non-recursive prompt-contract digest DIRECTLY into the prompt (no identity.json side channel).
+export function rolePrompt(job, role) {
+  const instructions = role === "checker" ? checkerPrompt(job) : builderPrompt(job);
+  if (job._identity_envelope) return renderPrompt(job._identity_envelope, instructions);
+  return instructions;
 }
 function redactArgv(argv) { return argv.map((a) => (a.length > 200 ? a.slice(0, 200) + "…" : a)); }

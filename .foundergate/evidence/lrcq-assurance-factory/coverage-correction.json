@@ -1,0 +1,9 @@
+{
+  "record": "PR189-SUITE-COVERAGE-COUNT-CORRECTION",
+  "append_only": true,
+  "raised_by": "fresh independent checker (metadata-binding correction, cycle 1) — FINDINGS item 16",
+  "finding": "The founder-facing capsule and the digest-bound live PR #189 body stated the FULL LRCQ suite as '27 files / 681 assertions', but the actual frozen suite is 28 files / 701 assertions (the metadata-binding correction added src/v8b/lrcq/run-harness-tests/pr-metadata-canon.selftest.mjs, +20 assertions). An UNDER-count, not a capability overclaim, but a self-contradicting inaccuracy in founder-facing, digest-bound evidence.",
+  "authoritative_count": { "files": 28, "total_assertions": 701, "reproduce": "find src/v8b/lrcq -name '*.selftest.mjs' | wc -l  (=28); execute each and sum '/N passed' (=701)" },
+  "correction_applied": "Regenerated the out-of-tree capsule (CONTROL_COVERAGE/FOUNDER_SUMMARY/SYSTEM_STATE/BUILT_VS_UNPROVEN) and updated the live GitHub PR #189 body to '28 files / 701 assertions'. Because the PR body count is SUBSTANTIVE content, the canonical PR-metadata digest changed (proving the canonicalizer detects substantive changes). Re-frozen and re-reviewed with a fresh checker + fresh advisor (correction cycle 2).",
+  "prior_cycle1_checker": "CLEAN on all binding/safety items (1-15,17,18); FINDINGS only on this count accuracy (item 16). Not reused as current authority."
+}

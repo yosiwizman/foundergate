@@ -1,0 +1,15 @@
+{
+  "schema": "lrcq-checker-contract-1",
+  "mandatory": true,
+  "distinct_session": true,
+  "read_only_single_use_lease": true,
+  "distinct_prompt_digest": true,
+  "runs_after_machine_verification": true,
+  "verdicts": [
+    "CLEAN",
+    "FINDINGS",
+    "INSUFFICIENT_EVIDENCE"
+  ],
+  "undefined_output_becomes": "INSUFFICIENT_EVIDENCE",
+  "never_invents_clean": true
+}

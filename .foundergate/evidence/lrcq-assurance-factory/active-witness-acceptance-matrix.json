@@ -1,0 +1,26 @@
+{
+  "matrix": "PR189-ACTIVE-RUN-WITNESS",
+  "tag": "FG-LRCQ-ACT-020",
+  "candidate": "set at freeze (step-A commit on top of f84f14d5)",
+  "supersedes": "seam-closure-acceptance-matrix.json SC-06 (which is corrected from POST_TERMINAL_WITNESS_ONLY to the active-run proof below; SC-06's file is NOT overwritten)",
+  "rows": [
+    { "id": "AW-01", "control": "Witness reads the AUTHORITATIVE run-bound evidence index (evidence_index_path), not join(runRoot,'ev')", "status": "PROVEN", "evidence": "witness-main.mjs buildSnapshot evidence_index_count=countIndex(evidenceIndexPath); detached-supervisor.selftest 11; harness.mjs:259 + buildRealCfg:170 write the same file" },
+    { "id": "AW-02", "control": "Provider progress is CUMULATIVE across the window (evidence growth / any-poll child / heartbeat), never a single final-snapshot child PID", "status": "PROVEN", "evidence": "health-witness.mjs progressed = heartbeatAdvanced||evidenceAdvanced||providerSeen; health-witness.selftest 03,05" },
+    { "id": "AW-03", "control": "HEALTHY_CONTINUE ONLY when RUN_ACTIVE + alive + progress (or grace) at window end", "status": "PROVEN", "evidence": "health-witness.selftest 01,03,05; detached-supervisor.selftest 09-10 (run_active_at_end true)" },
+    { "id": "AW-04", "control": "A successful terminal run returns COMPLETED_HEALTHY, NEVER HEALTHY_CONTINUE", "status": "PROVEN", "evidence": "health-witness.selftest 02,26; detached-supervisor.selftest 19" },
+    { "id": "AW-05", "control": "Legitimate between-job zero-child interval with progress stays healthy", "status": "PROVEN", "evidence": "health-witness.selftest 03" },
+    { "id": "AW-06", "control": "Genuine stall (RUN_ACTIVE, no progress) -> HELD", "status": "PROVEN", "evidence": "health-witness.selftest 04" },
+    { "id": "AW-07", "control": "Boundary/identity/lineage/deadline/dead-supervisor/replay/cost/crash breach -> FAILED", "status": "PROVEN", "evidence": "health-witness.selftest 06-18" },
+    { "id": "AW-08", "control": "Missing-cost / controlled stop -> HELD", "status": "PROVEN", "evidence": "health-witness.selftest 19-21" },
+    { "id": "AW-09", "control": "Witness starts while RUN_ACTIVE and returns HEALTHY_CONTINUE while still RUN_ACTIVE (real CLI, real processes, stub)", "status": "PROVEN", "evidence": "detached-supervisor.selftest 05-10" },
+    { "id": "AW-10", "control": "Same supervisor PID + process-start identity + run_id + immutable deadline after witness", "status": "PROVEN", "evidence": "detached-supervisor.selftest 13-15" },
+    { "id": "AW-11", "control": "The SAME run continues RUN_ACTIVE and PROGRESSES (evidence index grows) after the witness returns", "status": "PROVEN", "evidence": "detached-supervisor.selftest 16-17" },
+    { "id": "AW-12", "control": "Run later reaches a truthful terminal; teardown reaps descendants; replay blocked", "status": "PROVEN", "evidence": "detached-supervisor.selftest 18,20,21" },
+    { "id": "AW-13", "control": "Witness is read-only by construction (no writes/spawns; read_only:true)", "status": "PROVEN", "evidence": "health-witness.selftest 24-25" },
+    { "id": "AW-14", "control": "Production witness window immutable 720000 ms / 12 polls; no override (seam closure preserved)", "status": "PROVEN", "evidence": "production-seam-closure.selftest 14,15a; detached-supervisor.selftest 12" },
+    { "id": "AW-15", "control": "Accelerated and production entry points use the SAME snapshot + verdict logic (witnessWithTiming)", "status": "PROVEN", "evidence": "witness-main.mjs witness()/witnessWithTiming share buildSnapshot + witnessHealth; only timing differs" },
+    { "id": "AW-16", "control": "No new evidence/queue/budget authority introduced; reuses supervisor state + evidence index", "status": "PROVEN", "evidence": "no new run-status file; witness reads existing evidence_index_path + supervisor state" }
+  ],
+  "actual_wall_clock_twelve_minute_witness": "NOT YET EXERCISED — FIRST REAL RUN",
+  "safety_state": { "founder_signature": "NONE", "real_activation": false, "provider_invocation": false, "real_run": false, "merged": false, "protected_main_modified": false }
+}

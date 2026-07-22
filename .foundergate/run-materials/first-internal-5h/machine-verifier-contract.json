@@ -1,0 +1,14 @@
+{
+  "schema": "lrcq-machine-verifier-contract-1",
+  "must_check": [
+    "worktree_exists",
+    "on_expected_branch",
+    "changed_within_allowed",
+    "none_forbidden",
+    "within_line_budget",
+    "has_required_tests",
+    "evidence_present",
+    "provider_torn_down"
+  ],
+  "rule": "provider SUCCESS is NOT machine verification; only an independent verifier PASS advances the job."
+}

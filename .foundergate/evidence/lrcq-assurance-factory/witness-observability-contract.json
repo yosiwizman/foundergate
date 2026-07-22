@@ -1,0 +1,28 @@
+{
+  "contract": "PR189-WITNESS-OBSERVABILITY",
+  "tag": "FG-LRCQ-ACT-021",
+  "candidate": "set at freeze (step-A commit on top of 2596001)",
+  "legend": ["WITNESS_MECHANICALLY_OBSERVED", "WITNESS_DERIVED_FROM_AUTHORITATIVE_RECORD", "HARNESS_ENFORCED_NOT_WITNESS_OBSERVED", "UNPROVEN", "UNKNOWN"],
+  "rules": ["HARD_CODED_SAFE_DEFAULT prohibited", "CALLER_SUPPLIED_UNVERIFIED prohibited", "SELF_COMPARISON prohibited", "UNKNOWN never greens", "HARNESS_ENFORCED must not be presented as independently witnessed"],
+  "controls": [
+    { "claim": "supervisor alive (state RUN_ACTIVE => process alive + start-identity match)", "source": "supervisor state dir + kill(pid,0) + ps lstart", "status": "WITNESS_MECHANICALLY_OBSERVED", "verdict": "FAILED if dead while active", "test": "health-witness 14; witness-sources supervisorObservation" },
+    { "claim": "heartbeat monotonic (LIVENESS only)", "source": "supervisor state heartbeat_epoch", "status": "WITNESS_MECHANICALLY_OBSERVED", "verdict": "liveness input; not productivity", "test": "health-witness 03,27" },
+    { "claim": "process-start identity stable", "source": "supervisor state + ps lstart", "status": "WITNESS_MECHANICALLY_OBSERVED", "verdict": "FAILED on change", "test": "health-witness 13" },
+    { "claim": "immutable deadline unchanged", "source": "supervisor state", "status": "WITNESS_MECHANICALLY_OBSERVED", "verdict": "FAILED on change", "test": "health-witness 12" },
+    { "claim": "run_id stable", "source": "supervisor state", "status": "WITNESS_MECHANICALLY_OBSERVED", "verdict": "FAILED on change", "test": "health-witness (stable check)" },
+    { "claim": "activation consumed / replay-blocked", "source": "consumption marker file", "status": "WITNESS_MECHANICALLY_OBSERVED", "verdict": "FAILED if not consumed", "test": "health-witness 15" },
+    { "claim": "single live supervisor owner", "source": "enumerate supervisor state dir for same run_id + live pid", "status": "WITNESS_MECHANICALLY_OBSERVED", "verdict": "FAILED if >1", "test": "witness-sources 14-17; health-witness 11" },
+    { "claim": "provider is the manifest-bound executable, running as a supervisor descendant", "source": "pgrep -P + ps -ww argv vs manifest provider path (real cross-check)", "status": "WITNESS_MECHANICALLY_OBSERVED", "verdict": "FAILED if a claimed provider child mismatches / not descendant; drives verified-in-flight", "test": "detached-supervisor 05-10; health-witness 09,10" },
+    { "claim": "productivity (validated evidence-index advancement OR verified in-flight provider within signed grace)", "source": "evidence_index_path parsed + validated (run/backlog/dedup/monotonic); per_job_timeout_s + immutable deadline", "status": "WITNESS_DERIVED_FROM_AUTHORITATIVE_RECORD", "verdict": "HEALTHY_CONTINUE needs it; stall -> HELD", "test": "health-witness 01-05; witness-sources 01-08; detached-supervisor 16-17" },
+    { "claim": "evidence index integrity (no foreign-run / malformed / non-monotonic records)", "source": "evidence_index_path content parse", "status": "WITNESS_DERIVED_FROM_AUTHORITATIVE_RECORD", "verdict": "FAILED on foreign/malformed", "test": "health-witness 16-18; witness-sources 01-08" },
+    { "claim": "queue total = reviewed backlog size; completion from validated seals", "source": "reviewed backlog job IDs + evidence index sealed jobs", "status": "WITNESS_DERIVED_FROM_AUTHORITATIVE_RECORD", "verdict": "progress input", "test": "witness-sources 01; detached-supervisor 17" },
+    { "claim": "protected main unchanged", "source": "git rev-parse refs/remotes/origin/main vs reviewed baseline; UNKNOWN on git error", "status": "WITNESS_DERIVED_FROM_AUTHORITATIVE_RECORD", "verdict": "FAILED on drift; INSUFFICIENT on UNKNOWN", "test": "witness-sources 09-13; health-witness 19-20" },
+    { "claim": "run-wide $10 cost ceiling / reservation / missing-cost", "source": "BudgetLedger (IN-PROCESS; not durably witness-readable)", "status": "HARNESS_ENFORCED_NOT_WITNESS_OBSERVED", "verdict": "enforced by CONTROLLED_BUDGET_STOP + HELD_COST_EVIDENCE_MISSING in the harness; NOT independently witnessed", "test": "reported in witness output harness_enforced list; health-witness 24" },
+    { "claim": "AKIOR/M1/customer/production access; merge/push/deploy/send/payment", "source": "no durable witness event stream", "status": "HARNESS_ENFORCED_NOT_WITNESS_OBSERVED", "verdict": "activation no-action flags + harness prohibitions", "test": "reported; health-witness 24" },
+    { "claim": "single provider route + single executor", "source": "harness structural (one dispatch route; executeSupervisedRun out of production)", "status": "HARNESS_ENFORCED_NOT_WITNESS_OBSERVED", "verdict": "production-seam-closure 20", "test": "production-seam-closure.selftest" },
+    { "claim": "supervisor crash/restart loop; escaped/orphaned provider process", "source": "no durable witness counter; detached provider has its own session", "status": "HARNESS_ENFORCED_NOT_WITNESS_OBSERVED", "verdict": "not witness-observed", "test": "reported" },
+    { "claim": "first worktree in authorized root", "source": "setup-manager (setup-time)", "status": "HARNESS_ENFORCED_NOT_WITNESS_OBSERVED", "verdict": "setup-manager enforced", "test": "reported" }
+  ],
+  "actual_wall_clock_twelve_minute_witness": "NOT YET EXERCISED — FIRST REAL RUN",
+  "safety_state": { "founder_signature": "NONE", "real_activation": false, "provider_invocation": false, "real_run": false, "merged": false, "protected_main_modified": false }
+}

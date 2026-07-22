@@ -1,0 +1,31 @@
+{
+  "incident": "PR189-PRODUCTION-SEAM-CLOSURE",
+  "tag": "FG-LRCQ-ACT-019",
+  "append_only": true,
+  "prior_candidate": "e0dd06e080b42d8fbbc8851705cb6b8b7508a450",
+  "does_not_overwrite": ["detached-supervisor-incident.json", "any prior freeze", "any prior checker report", "any prior advisor report", "any prior immutability record"],
+  "preserved_truths": {
+    "detached_supervisor_and_witness_real_process_proven": true,
+    "note": "The real detached supervisor + independent witness architecture proven in detached-supervisor-incident.json REMAINS real-process proven and is NOT rebuilt here."
+  },
+  "confirmed_defects_closed": {
+    "LRCQ_TEST_LIFECYCLE": "Was a PRODUCTION-REACHABLE AUTHORITY OVERRIDE: the production --activation binary (run-five-hour.mjs) read this env var and let a caller replace reviewed manifest / loaded backlog / bindings / provider path+identity / repository root / candidate ref / execution adapter / runtime root / evidence root / ledger dir / supervisor dir / supervisor-main path / startup / poll / heartbeat — none signature-bound — and the activation could be consumed before a later override failure.",
+    "LRCQ_WITNESS_TEST_MS": "Was a PRODUCTION-REACHABLE WITNESS-DURATION OVERRIDE: witness-main.mjs read this env var and could shorten/skip/accelerate the reviewed 12-minute window on the production binary.",
+    "claim_contradiction": "The prior comment/claim 'TEST-ONLY SEAM (inaccessible to production)' was CONTRADICTED — the seam was on the production binary, gated only by the convention 'production leaves it unset'.",
+    "executeSupervisedRun": "Was test-only by call graph but EXPORTED from the production launcher module — a future edit could silently re-point the production CLI to the synchronous in-process route.",
+    "review_provenance": "One scratchpad checker report (fresh-checker-report.json) had been overwritten in place rather than retained at a unique SHA-bound path."
+  },
+  "closure": {
+    "LRCQ_TEST_LIFECYCLE_removed": "The production --activation branch NO LONGER reads it for injection. If present during a production command it FAILS CLOSED (PRODUCTION_TEST_OVERRIDE_REFUSED) BEFORE the activation is read/consumed and BEFORE any process spawn; provider invocation zero. Production authority-bearing values derive ONLY from the validated signed activation + loadManifest + resolveBindings + the frozen candidate + the normal provider resolver.",
+    "LRCQ_WITNESS_TEST_MS_removed": "witness-main.mjs now pins an IMMUTABLE reviewed window WITNESS_PRODUCTION_MS = 720000 (12 min) / 12 polls with NO override path. If the retired accelerator is present it FAILS CLOSED (PRODUCTION_WITNESS_OVERRIDE_REFUSED) before returning any verdict.",
+    "test_support_structurally_isolated": "Deterministic tests drive the detached launcher through the ACTUAL production CLI over a complete disposable clone fixture (no seam), and the accelerated witness + the in-process supervised orchestration live under src/v8b/lrcq/run-harness-tests/test-support/ — structurally ABSENT from the production import graph (asserted).",
+    "executeSupervisedRun_relocated": "Moved (with mapTerminalState) into test-support/supervised-run.mjs; it is NO LONGER exported from the production launcher module and no production module imports/calls it. Production real-activation execution uses ONLY launchDetachedSupervisor.",
+    "review_provenance_corrected": "A uniquely-named, SHA-bound, append-only review index (review-index.json) is introduced; going forward every checker/advisor report has a unique path pr189-<sha>-<role>-<seq>.json. The prior overwrite is recorded honestly (not reconstructed)."
+  },
+  "proven_by": {
+    "detached-supervisor.selftest.mjs": "16/16 HERMETIC real-process proof: the ACTUAL production run-five-hour.mjs --activation (NO seam) over a complete disposable clone fixture bound by a synthetic SIGNED activation whose bindings equal resolveBindings() and whose manifest points the provider at a deterministic stub. Launcher exits before the run completes; supervisor PID != launcher PID; supervisor survives + heartbeat present; provider stub is a supervisor descendant; a SEPARATE witness process (test-only accelerated entry) reports HEALTHY_CONTINUE + the immutable 720000 window; stable run_id + deadline; durable STOPPED_EXHAUSTED; teardown reaps descendants; replay blocked; disposable protected main unchanged; never real Claude.",
+    "production-seam-closure.selftest.mjs": "24/24: production --activation refuses LRCQ_TEST_LIFECYCLE before consume/spawn (provider invocation 0; no supervisor spawned; no evil ledger created; evil strings never used); production witness refuses LRCQ_WITNESS_TEST_MS; WITNESS_PRODUCTION_MS === 720000; accelerated witness only in test-support; production modules (launcher/supervisor-main/witness-main/real-provider) do not import test-support; executeSupervisedRun absent from the production authority graph; mutation guards for reintroducing either seam or a synchronous CLI rewire.",
+    "full_suite": "35/35 selftest files green, 801 assertions, reproduced twice back-to-back, zero orphan processes, no leaked worktrees."
+  },
+  "safety_state": { "founder_signature": "NONE", "real_activation": false, "provider_invocation": false, "real_run": false, "merged": false, "protected_main_modified": false, "second_provider_route": false, "second_executor": false }
+}

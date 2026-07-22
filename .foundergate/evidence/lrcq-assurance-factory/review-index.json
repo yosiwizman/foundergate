@@ -1,0 +1,72 @@
+{
+  "review_index": "PR189",
+  "append_only": true,
+  "path_policy": "Every checker/advisor report has a UNIQUE path binding an exact candidate SHA: pr189-<full-sha>-<role>-<sequence>.json. No report path is ever overwritten.",
+  "provenance_incident": {
+    "what": "During the detached-supervisor correction, the scratchpad review artifact fresh-checker-report.json was OVERWRITTEN in place: it had held the control-plane checker CLEAN verdict bound to 2cc08dba and was replaced with the detached-supervisor checker verdict bound to e0dd06e0 at the same path.",
+    "honestly_recorded": true,
+    "not_reconstructed": "The overwritten prior content is NOT reconstructed or silently replaced; this record simply documents the overwrite.",
+    "remediation": "This SHA-bound unique-path policy prevents recurrence."
+  },
+  "reports": [
+    { "role": "checker", "candidate_sha": "2cc08dba5936bf7b0653b0ccc40b9591d2a0f0a9", "verdict": "CLEAN (control-plane)", "status": "STALE_FOR_PRODUCTION_SEAM_CLOSURE", "reason": "predates detached-supervisor + seam closure; its scratchpad artifact was later overwritten", "path": "(scratchpad, overwritten — see provenance_incident)" },
+    { "role": "checker", "candidate_sha": "e0dd06e080b42d8fbbc8851705cb6b8b7508a450", "verdict": "PASS (detached-supervisor)", "status": "STALE_FOR_PRODUCTION_SEAM_CLOSURE", "reason": "predates the LRCQ_TEST_LIFECYCLE / LRCQ_WITNESS_TEST_MS seam closure + executeSupervisedRun relocation", "path": "scratchpad/fresh-checker-report.json (bound to e0dd06e0)" },
+    { "role": "advisor", "candidate_sha": "e0dd06e080b42d8fbbc8851705cb6b8b7508a450", "verdict": "PROCEED_WITH_NOTES (detached-supervisor)", "status": "STALE_FOR_PRODUCTION_SEAM_CLOSURE", "reason": "its two hardening notes (executeSupervisedRun export; seam reachability) are the very defects this correction closes", "path": "scratchpad/fresh-advisor-report.json (bound to e0dd06e0)" }
+  ],
+  "current_candidate": "PENDING — set to the new frozen head at freeze time",
+  "current_checker_path": "PENDING — pr189-<new-sha>-checker-1.json (fresh, seam-closure)",
+  "current_advisor_path": "PENDING — pr189-<new-sha>-advisor-1.json (fresh, seam-closure)",
+  "reports_active_witness_wave": [
+    { "role": "checker", "candidate_sha": "f84f14d50c95375540051cc3c43f787bedb29ed0", "verdict": "CLEAN (seam closure)", "status": "STALE_FOR_ACTIVE_RUN_WITNESS_READINESS", "reason": "accepted the witness assertion that was later found POST_TERMINAL_ONLY", "path": "scratchpad/pr189-f84f14d5…-checker-1.json" },
+    { "role": "advisor", "candidate_sha": "f84f14d50c95375540051cc3c43f787bedb29ed0", "verdict": "READY_FOR_FOUNDER_ACTIVATION_GATE (seam closure)", "status": "STALE_FOR_ACTIVE_RUN_WITNESS_READINESS", "reason": "same — active-run witness proven only post-terminal at that head", "path": "scratchpad/pr189-f84f14d5…-advisor-1.json" }
+  ],
+  "active_witness_current_candidate": "PENDING — set to the new frozen head at freeze time",
+  "active_witness_current_checker_path": "PENDING — pr189-<new-sha>-checker-1.json (fresh, active-witness)",
+  "active_witness_current_advisor_path": "PENDING — pr189-<new-sha>-advisor-1.json (fresh, active-witness)",
+  "reports_witness_truth_wave": [
+    { "role": "checker", "candidate_sha": "259600127f3bcf0fd789987349dd8d393c48ce14", "verdict": "CLEAN (active-witness)", "status": "STALE_FOR_WITNESS_INPUT_AUTHENTICITY", "reason": "did not challenge hard-coded cost/boundary fields, provider-identity self-comparison, evidence line-count, or protected-main ref", "path": "scratchpad/pr189-2596001…-checker-1.json" },
+    { "role": "advisor", "candidate_sha": "259600127f3bcf0fd789987349dd8d393c48ce14", "verdict": "READY_FOR_FOUNDER_ACTIVATION_GATE (active-witness)", "status": "STALE_FOR_WITNESS_INPUT_AUTHENTICITY", "reason": "same — witness input authenticity not challenged", "path": "scratchpad/pr189-2596001…-advisor-1.json" }
+  ],
+  "witness_truth_current_candidate": "PENDING — set to the new frozen head at freeze time",
+  "witness_truth_current_checker_path": "PENDING — pr189-<new-sha>-checker-1.json (fresh, witness-truth)",
+  "witness_truth_current_advisor_path": "PENDING — pr189-<new-sha>-advisor-1.json (fresh, witness-truth)",
+  "reports_provider_binding_wave": [
+    { "role": "checker", "candidate_sha": "446f4d6154012f2a78e160e372a33cfa8b8c8a4a", "verdict": "CLEAN (witness-truth)", "status": "STALE_FOR_RUNTIME_PROVIDER_BINDING", "reason": "predates the provider-binding-drift closure (mutable alias execution)", "path": "scratchpad/pr189-446f4d6…-checker-1.json" },
+    { "role": "advisor", "candidate_sha": "446f4d6154012f2a78e160e372a33cfa8b8c8a4a", "verdict": "READY (witness-truth)", "status": "STALE_FOR_RUNTIME_PROVIDER_BINDING", "reason": "same — runtime provider binding not challenged", "path": "scratchpad/pr189-446f4d6…-advisor-1.json" }
+  ],
+  "reports_real_run_hold_wave": [
+    { "role": "checker", "candidate_sha": "048985bda0f7fedb75cda3bdf9d0228f1c040ea2", "verdict": "CLEAN (provider-binding)", "status": "STALE_FOR_REAL_RUN_TEARDOWN_AND_TERMINAL_MAPPING", "reason": "predates the first real run's teardown-mislabel + terminal-mapping defects", "path": "scratchpad/pr189-048985b…-checker-1.json" },
+    { "role": "advisor", "candidate_sha": "048985bda0f7fedb75cda3bdf9d0228f1c040ea2", "verdict": "READY (provider-binding)", "status": "STALE_FOR_REAL_RUN_TEARDOWN_AND_TERMINAL_MAPPING", "reason": "same — real-run teardown/terminal truth not yet exercised", "path": "scratchpad/pr189-048985b…-advisor-1.json" }
+  ],
+  "reports_first_job_worktree_wave": [
+    { "role": "checker", "candidate_sha": "302058b5f73fe13a4397f4490daa1ab543bc950b", "verdict": "CLEAN (claim-consistency)", "status": "STALE_FOR_FIRST_JOB_WORKTREE_PREPARATION", "reason": "predates FG-LRCQ-ACT-025: the provider repository-identity check refused every job under a linked-worktree launch, and setup deemed worktrees 'prepared' without verifying repository identity", "path": "scratchpad/pr189-302058b…-checker-1.json" },
+    { "role": "advisor", "candidate_sha": "302058b5f73fe13a4397f4490daa1ab543bc950b", "verdict": "READY_FOR_RETRY_ACTIVATION_GATE (claim-consistency)", "status": "STALE_FOR_FIRST_JOB_WORKTREE_PREPARATION", "reason": "same — retry readiness asserted before the first-job worktree lifecycle was mechanically proven under the real linked-worktree launch condition", "path": "scratchpad/pr189-302058b…-advisor-1.json" }
+  ],
+  "first_job_worktree_reviews_INVALIDATED": {
+    "status": "STALE_AFTER_POST_REVIEW_MUTATION",
+    "invalidated_reports": [
+      { "role": "checker", "candidate_sha": "8cfedf6e9a2468fb51b7e3d2a1b5ae56db3f531f", "historical_verdict": "CLEAN", "path": "scratchpad/pr189-8cfedf6e-checker-1.json", "status": "STALE_AFTER_POST_REVIEW_MUTATION" },
+      { "role": "advisor", "candidate_sha": "8cfedf6e9a2468fb51b7e3d2a1b5ae56db3f531f", "historical_verdict": "READY_FOR_RETRY_ACTIVATION_GATE", "path": "scratchpad/pr189-8cfedf6e-advisor-1.json", "status": "STALE_AFTER_POST_REVIEW_MUTATION" }
+    ],
+    "these_verdicts_do_NOT_stand_for_the_final_head": true,
+    "precise_invalidating_changes_after_the_8cfedf6_reviews": [
+      "Tautological test-assertion correction: assertion 00 of first-job-worktree-linked.selftest changed from an always-true `(A && B) || true` to `lstatSync(...).isFile()` (commit 0237d5b).",
+      "Subsequent commit(s): 0237d5b (test-assertion fix) and 679b4f2 (review-index rebind) were created AFTER the reviews.",
+      "Review-index mutation: this file was edited after the reviews (the now-removed 'current'/'stands' claims).",
+      "PR-body mutation: PR #189 body was edited after the reviews (FG-LRCQ-ACT-025 root-cause section).",
+      "Review sequencing defect: the 8cfedf6 checker and advisor were run CONCURRENTLY; the advisor must run only AFTER a final-head checker returns CLEAN.",
+      "Package binding: the final head was never independently reviewed, and no package artifact binds it (see first_job_worktree_package_reconciliation_findings)."
+    ],
+    "preserved_as_historical_evidence": true
+  },
+  "first_job_worktree_final_candidate": "PENDING_SET_AT_THIS_WAVE_FREEZE (FG-LRCQ-ACT-025-REVIEW-RECONCILE)",
+  "first_job_worktree_fresh_checker_path": "PENDING — a completely fresh checker bound to the exact frozen final head; not yet produced",
+  "first_job_worktree_fresh_advisor_path": "PENDING — runs ONLY after the fresh final-head checker returns CLEAN (sequential, never concurrent)",
+  "first_job_worktree_package_reconciliation_findings": [
+    "UNSIGNED_ACTIVATION_MATERIAL_PACKET.json binds run_harness_candidate_sha 905e779 — 12 commits behind the final head; its production-file digests predate the ACT-025 change to real-provider.mjs + setup-manager.mjs.",
+    "No out-of-repo capsule (SYSTEM_STATE + SHA256SUMS + FINAL_UNSIGNED_ACTIVATION_TEMPLATE) binds any recent head; the newest FINAL templates bind f2e5dcfb/6f2ed492/07bde44d.",
+    "No evidence-set manifest exists for the final head.",
+    "Rebinding these is founder-signing material and must be rebuilt by the deliberate freeze/generator process, not hand-patched — recorded as a correctable HOLD."
+  ],
+  "real_run_evidence": "One founder authorization was CONSUMED and is spent; the real run held on the first job (HELD_TEARDOWN_DEFECT, 0 productive, $0, real Claude never spawned). Root cause (FG-LRCQ-ACT-025): the provider repository-identity check misidentified the repository under a linked-worktree launch, refusing every job pre-spawn; worktree preparation itself was correct. Raw evidence preserved + manifested (scratchpad/REAL_RUN_RAW_EVIDENCE_MANIFEST.json). Any retry requires a NEW founder authorization."
+}

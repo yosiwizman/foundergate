@@ -1,0 +1,46 @@
+{
+  "incident": "PR189-REAL-RUN-TEARDOWN-AND-TERMINAL-MAPPING",
+  "tag": "FG-LRCQ-ACT-023",
+  "append_only": true,
+  "prior_candidate": "048985bda0f7fedb75cda3bdf9d0228f1c040ea2",
+  "does_not_overwrite": ["provider-binding-incident.json", "witness-truth-incident.json", "active-witness-incident.json", "seam-closure-incident.json", "detached-supervisor-incident.json", "the raw REAL-RUN evidence"],
+  "real_run": {
+    "founder_authorization_passed_preflight": true,
+    "activation_consumed_exactly_once": true,
+    "activation_id": "sha256:ba4e4880698b959b1b4bc0f9e75396c6e42dc4ce39c9af16874f598067089f8f",
+    "replay_blocked": true,
+    "run_active_reached": true,
+    "held_on_first_job": "frr2-0",
+    "productive_jobs_sealed": 0,
+    "authoritative_recovery_state": "HELD_TEARDOWN_DEFECT",
+    "supervisor_state_exposed": "STOPPED_EXHAUSTED (incorrect — mapping defect)",
+    "production_witness_reached": false,
+    "safety_envelope_intact": true,
+    "no_merge_or_protected_main_mutation": true,
+    "raw_evidence_manifest": "scratchpad/REAL_RUN_RAW_EVIDENCE_MANIFEST.json (12 files, digest sha256:df8c317b…)"
+  },
+  "provider_invocation_truth": {
+    "verdict": "PROVIDER_NOT_ATTEMPTED — real Claude 2.1.215 was NEVER spawned",
+    "evidence": "transactions.jsonl shows frr2-0 lease MINTED->AUTHORIZED->CONSUMED->DISPATCHED, but real-provider.runJob returned at the pre-spawn gitWorktreeIdentity check (real-provider.mjs:118 -> ACTIVATION_REFUSED): no process.json, no evidence dir, no teardown.json, empty supervisor.out/err, no cost. The job worktree was not a valid git worktree (setup left only an empty run dir).",
+    "cost_usd": 0.0
+  },
+  "root_causes": {
+    "teardown_mislabel": "real-provider initialized tree_gone=null and only set it AFTER the teardown block; an early ACTIVATION_REFUSED left it null. harness.mjs:219 treated (REAL && tree_gone==null && provider_outcome) as HELD_TEARDOWN_DEFECT — mislabeling a pre-spawn PROVIDER failure as a teardown defect.",
+    "tree_gone_null": "tree_gone was a nullable field with no explicit not-attempted state; an early return never reached the teardown check.",
+    "terminal_mapping": "supervisor-main had no case for final_state STOPPED_TEARDOWN_DEFECT and defaulted to STOPPED_EXHAUSTED, exposing a HELD run as clean queue exhaustion."
+  },
+  "corrections": {
+    "teardown_authority": "real-provider now carries teardown_status (never null): TEARDOWN_NOT_ATTEMPTED (init/early return) / TEARDOWN_CONFIRMED (tree gone) / TEARDOWN_UNKNOWN (unchecked) / TEARDOWN_FAILED. Success requires the tree confirmed gone; UNKNOWN fails closed.",
+    "provider_failure_vs_teardown": "harness distinguishes a genuine teardown defect (tree_gone===false OR teardown_status FAILED/UNKNOWN) from an early provider failure (HELD_PROVIDER_FAILURE). A pre-spawn refusal no longer maps to a teardown defect. provider_invocation lifecycle recorded (NOT_ATTEMPTED/SPAWN_ATTEMPTED/SPAWNED/OUTPUT_RECEIVED).",
+    "terminal_mapping": "supervisor-main uses an EXHAUSTIVE mapping: held/defect/provider-failure/unknown terminals map to HELD (unknown fails closed); ONLY a clean STOPPED_EXHAUSTED with a non-held outcome maps to STOPPED_EXHAUSTED. No default fall-through.",
+    "witness": "health-witness reads the supervisor state; a HELD teardown/provider terminal now surfaces as HELD, never COMPLETED_HEALTHY.",
+    "leaked_worktree": "the exact empty leaked worktree (…-worktrees/lrcq-first-internal-5h-run, unregistered, 0 files, no unique work) was removed with a receipt; raw REAL-RUN evidence preserved."
+  },
+  "proven_by": {
+    "real-run-hold.selftest": "12/12 (witness held-terminal -> HELD; real-provider teardown_status truth; harness provider-failure-vs-teardown guards; supervisor-main exhaustive mapping guards)",
+    "harness.selftest + orchestrated-shadow": "46/46 + 26/26 (existing park/completion behavior preserved; REAL-gated provider-failure branch)",
+    "full_suite": "38/38 files, 864 assertions, reproduced twice, zero orphans"
+  },
+  "prior_reviews_status": "STALE_FOR_REAL_RUN_TEARDOWN_AND_TERMINAL_MAPPING (provider binding, witness structure, detachment, seam closure, anti-replay remain valid)",
+  "safety_state": { "founder_signature": "CONSUMED_AND_SPENT", "real_activation": "consumed once, replay blocked", "provider_invocation": "NONE (real Claude never spawned)", "real_run": "held on first job", "merged": false, "protected_main_modified": false, "cost_usd": 0.0 }
+}

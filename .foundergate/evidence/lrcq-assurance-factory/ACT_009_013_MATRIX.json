@@ -1,0 +1,74 @@
+{
+  "evaluated_against": "the frozen candidate head bound by UNSIGNED_ACTIVATION_MATERIAL_PACKET.run_harness_candidate_sha (step-A code commit); this matrix is committed inside that frozen tree, so it cannot embed its own head hash",
+  "honesty_note": "Every claim below is BUILT + verified by deterministic selftests with a protocol-faithful stub (NEVER real Claude) + preflight. Nothing here has been exercised by a real provider run. 'Proven productive' is explicitly NOT claimed for any item.",
+  "FG-LRCQ-ACT-009": {
+    "status": "BUILT",
+    "evidence": [
+      "src/v8b/lrcq/provider/identity-envelope.mjs",
+      "src/v8b/lrcq/provider/transport-envelope.mjs",
+      "provider-tests/protocol.selftest (17)",
+      "run-harness-tests/protocol-route.selftest (8)",
+      "run-harness-tests/launcher-integration.selftest (10) — proves the ACTUAL launcher dispatch renders the envelope + parses transport"
+    ],
+    "proof": "identity rendered into the real prompt (no identity.json side channel); transport parsed strictly; route-level via runJob; and the production launcher's makeRealDispatch/makeCheckerSessionDispatch now actually render the envelope + pass transport:true (proven end-to-end by launcher-integration)",
+    "limitations": [
+      "the real Claude CLI's actual transport/cost envelope is first observed under the founder-signed run"
+    ]
+  },
+  "FG-LRCQ-ACT-010": {
+    "status": "BUILT",
+    "evidence": [
+      ".foundergate/backlog/first-real-five-hour-run-v2.json (digest sha256:f3801d96)",
+      "run-harness/run-plan.mjs",
+      "full-material.selftest (27)",
+      "tools/terminal0/lrcq/run-five-hour.mjs loadManifest -> validateAll25 (load-time refusal)"
+    ],
+    "proof": "25 executable jobs frozen + validateAll25 25/25 + deterministic run-plan resolver; the run-manifest + FINAL activation template are rebound to v2 (backlog_digest f3801d96); a v1-style (execution-incompatible) backlog now FAILS AT LOAD rather than silently parking",
+    "limitations": []
+  },
+  "FG-LRCQ-ACT-011": {
+    "status": "BUILT",
+    "evidence": [
+      "run-harness/setup-manager.mjs",
+      "setup-manager.selftest (14)",
+      "tools/terminal0/lrcq/run-five-hour.mjs executeSignedRun (wires setupManager into the signed-run launcher)",
+      "run-harness-tests/launcher-integration.selftest (10) — proves the launcher actually creates + tears down real worktrees"
+    ],
+    "proof": "real 25-worktree create+verify+rollback+teardown; eligibility+collision refusal; no asserted booleans; AND the signed-run launcher (executeSignedRun) now invokes setupManager to create the per-job worktrees before dispatch and tears them down after (proven by launcher-integration)",
+    "limitations": [
+      "real-provider latency/timeout/teardown behavior under a 45-minute session is first observed under signature"
+    ]
+  },
+  "FG-LRCQ-ACT-012": {
+    "status": "BUILT",
+    "evidence": [
+      "run-harness/budget-ledger.mjs",
+      "run-harness/compose-adapter-activation.mjs (per-session --max-budget-usd)",
+      "tools/terminal0/lrcq/run-five-hour.mjs buildRealCfg (budgetLedger wired) + makeRealDispatch/makeCheckerSessionDispatch (per-session cap -> CLI)",
+      "budget-ledger.selftest (9)",
+      "activation-path.selftest 33-36",
+      "real-launch.selftest F1d/F2b (per-session CLI cap)"
+    ],
+    "proof": "run-wide $10 ledger wired into the signed-run launcher's buildRealCfg->runHarness; reserves+commits both builder and checker per job/attempt; each session's CLI cost ceiling (--max-budget-usd) is its per-session RESERVATION, not the full run budget; a session that reports no cost HOLDS the run (HELD_COST_EVIDENCE_MISSING); real overspend is committed truthfully (never masked at the reservation) and refuses the next reservation (CONTROLLED_BUDGET_STOP)",
+    "honest_bound": "Cumulative committed spend cannot exceed $10 SO LONG AS each session honors its per-session CLI cap and reports its cost; the ledger is fail-closed against a missing or over-cap cost report (holds/stops), but the accuracy of the per-session cost figure and the CLI's honoring of --max-budget-usd are first exercised by a real provider under the founder-signed run. It is NOT asserted that a real run can 'never' exceed $10 under all provider misbehavior — only that the machinery is wired to cap, count truthfully, and stop.",
+    "limitations": [
+      "real per-dollar behavior (cost reporting fidelity + CLI cap honoring) is first exercised under signature"
+    ]
+  },
+  "FG-LRCQ-ACT-013": {
+    "status": "BUILT",
+    "evidence": [
+      "run-harness-tests/full-rehearsal.selftest (13)",
+      "run-harness-tests/launcher-integration.selftest (10)"
+    ],
+    "proof": "exact frozen 25-job backlog-v2 through setup-manager->identity->transport->builder-output-validation->execMachineVerifier->checker->budget->teardown; all 25 completed; cost>0 and <=$10 with the stub. SEPARATELY, launcher-integration.selftest drives the ACTUAL launcher entry (executeSignedRun -> buildRealCfg -> setupManager creates real worktrees -> runHarness -> makeRealDispatch renders the identity envelope + parses the CLI transport envelope -> execMachineVerifier writes its verification proof -> real checker route -> run-wide $10 ledger -> teardown) end-to-end with the stub: all jobs COMPLETE, cost <=$10, worktrees created + torn down, and an UNSIGNED activation refuses at the signature gate with ZERO worktrees/provider/checker side effects.",
+    "wiring_fixed_this_wave": [
+      "the signed-run launcher now CREATES the per-job git worktrees (executeSignedRun + setupManager) before dispatch and tears them down after — previously nothing created them, so runJob (which requires an existing worktree) would have PARKED every job",
+      "the ONE dispatch route now renders the ACT-009 identity envelope into the real prompt AND parses the CLI transport envelope (cost + payload) — previously it used the legacy path, so the real Claude transport-wrapped output would have been unparseable and no cost extracted",
+      "the machine verifier writes its signed verification proof as the required must_exist evidence artifact (the builder cannot; the path is immutable to it)"
+    ],
+    "limitations": [
+      "deterministic protocol-faithful STUB (NOT real Claude — real provider productivity, real transport/cost fidelity, and real latency/timeout behavior are first observed under the founder-signed run)"
+    ]
+  }
+}

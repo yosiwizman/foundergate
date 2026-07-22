@@ -1,0 +1,16 @@
+{
+  "run_id": "lrcq-internal-prep-1784540517",
+  "frozen_pr189_sha": "51518a132a99f36fb2001ca01ae7584f1674f6f3",
+  "frozen_pr189_tree": "d0e0713947b0e1e05a402b81e7018b0869e94f1a",
+  "prior_checker_reviewed": "456b976 (STALE-BY-POST-REVIEW-MUTATION — not reused)",
+  "changed_file_count": 52,
+  "full_suite": "114/114",
+  "pr187_head": "3794ec1a6f0d83b72a823bbd36622b1210b1a4c5",
+  "pr188_head": "50e18e55863b4abc0f0c2ef036b790ef15001ac5",
+  "pr182_head": "e31153c60faeca528316d39af5a31ecacb56b11a",
+  "pr186_head": "be3209d632702403c05b555620949092986ad0a3",
+  "protected_main": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423",
+  "gate_packet_digest": "e628d41530191687",
+  "pr_body_digest": "0ab3f808d31edda5",
+  "founder_signature": null, "merged": false, "real_provider_invoked": false
+}

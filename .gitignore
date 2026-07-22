@@ -72,3 +72,6 @@ docs/testing/evidence/playwright-report/
 test-results/
 __pycache__/
 *.pyc
+
+# FG-LRCQ-ACT-023: first real run raw evidence — preserved on disk + digest-manifested, not committed into the frozen candidate tree (avoids retry overwrite conflicts)
+.foundergate/evidence/lrcq-assurance-factory/REAL-RUN/
