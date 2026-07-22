@@ -4,8 +4,13 @@
 // narrow-sensitive, HELD and UNKNOWN jobs are refused. Never alters protected main; never reuses a
 // worktree; never creates two writers for one path. Deterministic rollback removes only lane-owned state.
 import { execFileSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, realpathSync } from "node:fs";
+import { sep } from "node:path";
 import { resolveRunPlan } from "./run-plan.mjs";
+
+// Authoritative common git dir of a path (realpath'd for macOS /private symlink parity with the
+// provider's identity check). Returns null when the path is not inside a git tree.
+function commonGitDir(git, path) { try { return realpathSync(git(["rev-parse", "--path-format=absolute", "--git-common-dir"], path)); } catch { return null; } }
 
 export function eligibleForSetup(job) {
   if (job.risk_class !== "WIDE_SAFE") return { ok: false, reason: "not WIDE_SAFE (" + job.risk_class + ")" };
@@ -42,10 +47,18 @@ export function setupManager(jobs, run_id, manifest, opts = {}) {
     usedBranches.add(plan.branch); usedWorktrees.add(plan.worktree);
     // OBSERVE: worktree exists, on the exact branch, correct repository common-dir, not detached
     const onBranch = (() => { try { return git(["rev-parse", "--abbrev-ref", "HEAD"], plan.worktree); } catch { return "(err)"; } })();
-    const commonDir = (() => { try { return git(["rev-parse", "--git-common-dir"], plan.worktree); } catch { return "(err)"; } })();
     const wtExists = exists(plan.worktree);
-    const passIdentity = wtExists && onBranch === plan.branch && onBranch !== "HEAD";
-    rec("worktree_identity:" + job.job_id, plan.branch + " @ " + plan.worktree, onBranch + " exists=" + wtExists + " common=" + commonDir, passIdentity, { branch: plan.branch, worktree: plan.worktree });
+    // FG-LRCQ-ACT-025: verify the SAME repository-identity fact the provider requires — the job
+    // worktree's common git dir must equal (or nest under) the allowed repository's common git dir.
+    // repoRoot may itself be a linked worktree (its `.git` is a pointer file), so both sides are
+    // resolved via git rev-parse, not join(path,".git"). Without this, setup deemed a worktree
+    // "prepared" that the provider then refused ("belongs to a different repository") — the exact
+    // first-real-run defect. "Prepared" must now imply "provider-acceptable" (fail closed on UNKNOWN).
+    const repoCommon = commonGitDir(git, repoRoot);
+    const wtCommon = commonGitDir(git, plan.worktree);
+    const sameRepo = !!repoCommon && !!wtCommon && (wtCommon === repoCommon || wtCommon.startsWith(repoCommon + sep));
+    const passIdentity = wtExists && onBranch === plan.branch && onBranch !== "HEAD" && sameRepo;
+    rec("worktree_identity:" + job.job_id, plan.branch + " @ " + plan.worktree, onBranch + " exists=" + wtExists + " same_repo=" + sameRepo + " common=" + wtCommon, passIdentity, { branch: plan.branch, worktree: plan.worktree, repo_common_dir: repoCommon, worktree_common_dir: wtCommon });
     if (!passIdentity) { rollback(); return { ok: false, steps, created: [], failed_step: "worktree_identity:" + job.job_id }; }
   }
   // dependency eligibility (deps must be among the created set or previously satisfied)

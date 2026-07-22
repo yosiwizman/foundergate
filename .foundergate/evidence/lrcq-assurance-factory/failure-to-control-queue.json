@@ -22,6 +22,11 @@
       "id": "D_CLAIM_SURFACE_CONSISTENCY",
       "lesson": "Official current claim surfaces (PR title/body, founder summary, package) must reconcile with durable activation/replay/run/provider/witness/terminal records. A correct new status paragraph does NOT neutralize contradictory stale sections; contradictions block freeze + founder authorization. Current vs historical claims must be mechanically distinguished (a HISTORICAL label exempts a section); a regression verifier must reject incompatible current statements (e.g. 'activation NOT consumed' after a real consumption).",
       "closed_in": "FG-LRCQ-ACT-024 (claim-consistency.mjs verifier + claim-consistency.selftest regression fixture)"
+    },
+    {
+      "id": "E_FIRST_JOB_WORKTREE_READINESS",
+      "lesson": "A worktree is only 'PREPARED' if the SAME identity facts the provider requires are verified at setup time — including REPOSITORY identity, not just the branch. Verify repository identity by comparing common git dirs (git rev-parse --git-common-dir), never by join(path, '.git'): when the run itself is launched from a LINKED git worktree, '.git' is a pointer FILE and that comparison silently misidentifies the repository, refusing every job pre-spawn while setup reports ready. Rehearse the production route from the ACTUAL launch topology (a linked worktree), not only a normal clone; a normal-clone rehearsal cannot exercise the pointer-file path. Fail closed BEFORE dispatch on any missing/failed/UNKNOWN worktree-identity fact so 'prepared' mechanically implies 'provider-accepts'.",
+      "closed_in": "FG-LRCQ-ACT-025 (gitWorktreeIdentity common-dir vs common-dir; setupManager same-repo verification fail-closed; first-job-worktree-linked.selftest hermetic linked-worktree integration test)"
     }
   ],
   "deferred_not_in_this_pr": ["Autonomous Run Contract System", "Loop Contract Engine", "Repository Stewardship", "full Failure-to-Control Registry"]

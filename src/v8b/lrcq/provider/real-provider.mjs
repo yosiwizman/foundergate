@@ -52,8 +52,14 @@ export function gitWorktreeIdentity(job, activation, gitRunner) {
     const top = realpathSync(g(["rev-parse", "--show-toplevel"], wt));
     if (top !== realpathSync(wt)) return "worktree toplevel != assigned path: " + top;
     const commonDir = realpathSync(g(["rev-parse", "--path-format=absolute", "--git-common-dir"], wt));
-    const allowedRepoGit = realpathSync(join(activation.allowed_repository, ".git"));
-    if (commonDir !== allowedRepoGit && !commonDir.startsWith(allowedRepoGit + sep)) return "worktree belongs to a different repository: " + commonDir;
+    // FG-LRCQ-ACT-025: allowed_repository may ITSELF be a linked git worktree (its `.git` is a pointer
+    // FILE, not the common git dir) — the actual first-real-run condition. Deriving its git dir via
+    // join(allowed_repository, ".git") then resolves that pointer file and never equals the sub-worktree's
+    // real common-dir, so EVERY job was refused pre-spawn. Resolve the allowed repository's AUTHORITATIVE
+    // common git dir the same way (git rev-parse), so we compare common-dir to common-dir regardless of
+    // whether the launch dir is a normal clone, a linked worktree, or a subdirectory of either.
+    const allowedCommonDir = realpathSync(g(["rev-parse", "--path-format=absolute", "--git-common-dir"], activation.allowed_repository));
+    if (commonDir !== allowedCommonDir && !commonDir.startsWith(allowedCommonDir + sep)) return "worktree belongs to a different repository: " + commonDir + " (allowed common-dir " + allowedCommonDir + ")";
     const head = g(["symbolic-ref", "--quiet", "--short", "HEAD"], wt); // empty/throws when detached
     if (!head) return "worktree is in detached HEAD";
     if (head !== job.branch) return "actual branch (" + head + ") != assigned job.branch (" + job.branch + ")";

@@ -38,5 +38,12 @@
     { "role": "checker", "candidate_sha": "048985bda0f7fedb75cda3bdf9d0228f1c040ea2", "verdict": "CLEAN (provider-binding)", "status": "STALE_FOR_REAL_RUN_TEARDOWN_AND_TERMINAL_MAPPING", "reason": "predates the first real run's teardown-mislabel + terminal-mapping defects", "path": "scratchpad/pr189-048985b…-checker-1.json" },
     { "role": "advisor", "candidate_sha": "048985bda0f7fedb75cda3bdf9d0228f1c040ea2", "verdict": "READY (provider-binding)", "status": "STALE_FOR_REAL_RUN_TEARDOWN_AND_TERMINAL_MAPPING", "reason": "same — real-run teardown/terminal truth not yet exercised", "path": "scratchpad/pr189-048985b…-advisor-1.json" }
   ],
-  "real_run_evidence": "One founder authorization was CONSUMED and is spent; the real run held on the first job (HELD_TEARDOWN_DEFECT, 0 productive, $0, real Claude never spawned). Raw evidence preserved + manifested (scratchpad/REAL_RUN_RAW_EVIDENCE_MANIFEST.json). Any retry requires a NEW founder authorization."
+  "reports_first_job_worktree_wave": [
+    { "role": "checker", "candidate_sha": "302058b5f73fe13a4397f4490daa1ab543bc950b", "verdict": "CLEAN (claim-consistency)", "status": "STALE_FOR_FIRST_JOB_WORKTREE_PREPARATION", "reason": "predates FG-LRCQ-ACT-025: the provider repository-identity check refused every job under a linked-worktree launch, and setup deemed worktrees 'prepared' without verifying repository identity", "path": "scratchpad/pr189-302058b…-checker-1.json" },
+    { "role": "advisor", "candidate_sha": "302058b5f73fe13a4397f4490daa1ab543bc950b", "verdict": "READY_FOR_RETRY_ACTIVATION_GATE (claim-consistency)", "status": "STALE_FOR_FIRST_JOB_WORKTREE_PREPARATION", "reason": "same — retry readiness asserted before the first-job worktree lifecycle was mechanically proven under the real linked-worktree launch condition", "path": "scratchpad/pr189-302058b…-advisor-1.json" }
+  ],
+  "first_job_worktree_current_candidate": "PENDING — set to the new frozen head at freeze time (FG-LRCQ-ACT-025)",
+  "first_job_worktree_current_checker_path": "PENDING — pr189-<new-sha>-checker-1.json (fresh, first-job-worktree)",
+  "first_job_worktree_current_advisor_path": "PENDING — pr189-<new-sha>-advisor-1.json (fresh, first-job-worktree)",
+  "real_run_evidence": "One founder authorization was CONSUMED and is spent; the real run held on the first job (HELD_TEARDOWN_DEFECT, 0 productive, $0, real Claude never spawned). Root cause (FG-LRCQ-ACT-025): the provider repository-identity check misidentified the repository under a linked-worktree launch, refusing every job pre-spawn; worktree preparation itself was correct. Raw evidence preserved + manifested (scratchpad/REAL_RUN_RAW_EVIDENCE_MANIFEST.json). Any retry requires a NEW founder authorization."
 }
