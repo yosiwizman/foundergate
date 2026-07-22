@@ -1,0 +1,34 @@
+{
+  "activation_consumed_once": true,
+  "activation_identity": "sha256:ba4e4880698b959b1b4bc0f9e75396c6e42dc4ce39c9af16874f598067089f8f",
+  "allowed_statement": "A founder authorization was consumed once and replay-blocked. The first real run reached RUN_ACTIVE, held on the first job, completed zero productive jobs, incurred approximately zero cost, and did not spawn the real Claude provider.",
+  "authoritative_final_state": "STOPPED_TEARDOWN_DEFECT",
+  "authoritative_outcome_status": "HELD_TEARDOWN_DEFECT",
+  "authoritative_source": {
+    "path": ".foundergate/evidence/lrcq-assurance-factory/real-run-teardown-terminal-incident.json",
+    "sha256": "sha256:eff7c9e278820b48f7423357e51e2d112d56ac88cfa547cd29028cfa3facc68b"
+  },
+  "binding_id": "FG-LRCQ-ACT-027-real-run-evidence",
+  "contradiction_result": "NONE",
+  "corrected_outcome_authority": "FG-LRCQ-ACT-023 (teardown/terminal mapping correction)",
+  "cost_usd": 0,
+  "derivation_impl": {
+    "path": "tools/terminal0/lrcq/real-run-evidence-binding.mjs"
+  },
+  "does_not_authorize_retry": true,
+  "evaluated_sha": null,
+  "evaluated_tree": null,
+  "historical_run_classification": "HISTORICAL_HELD_RUN",
+  "normalization_rules": "Facts are read verbatim from the committed authoritative incident; cost precision is not invented; both the observed-old-label and corrected outcome are preserved.",
+  "observed_historical_label": "STOPPED_EXHAUSTED (incorrect — mapping defect)",
+  "production_witness_reached": false,
+  "productive_jobs_completed": 0,
+  "provider_attempt_status": "PROVIDER_NOT_ATTEMPTED",
+  "raw_evidence_manifest_digest": "sha256:df8c317b",
+  "raw_evidence_manifest_ref": "scratchpad/REAL_RUN_RAW_EVIDENCE_MANIFEST.json (12 files, digest sha256:df8c317b…)",
+  "replay_blocked": true,
+  "run_id": "lrcq-first-internal-5h-run",
+  "schema": "lrcq-real-run-evidence-binding",
+  "schema_version": 1,
+  "supporting_sources": []
+}

@@ -11,15 +11,63 @@
 // PR #189, and a live-GitHub metadata provider. Fixture injection (repo/capsuleDir/prNumber/githubMetadata
 // Provider) is a FUNCTION PARAMETER only — NOT reachable through CLI args, env, or capsule contents.
 import { execFileSync } from "node:child_process";
-import { readFileSync, existsSync, readdirSync, statSync, realpathSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync, statSync, lstatSync, realpathSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { resolve, join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { prMetadataDigest } from "./pr-metadata-canon.mjs";
+import { verifyBinding, BINDING_PATH } from "./real-run-evidence-binding.mjs";
 
 const SELF = fileURLToPath(import.meta.url);
 const sha256 = (buf) => "sha256:" + createHash("sha256").update(buf).digest("hex");
 const sha256file = (p) => sha256(readFileSync(p));
+
+// Complete governed run-indicator inventory. Fails CLOSED: ANY read/readdir/stat/lstat/realpath/symlink/
+// parse/traversal error -> INVENTORY_INCOMPLETE_ERROR (never "no run performed"). Only a fully successful
+// scan that finds ZERO recognized run indicator returns INVENTORY_COMPLETE_NO_RUN_INDICATORS. Recognized
+// indicators: the binding manifest, the committed run incident, a consumed-activation marker, an activation
+// ledger/transaction record, a recovery-state record, a supervisor event/receipt/terminal-state record, an
+// evidence index, a raw-run evidence manifest, a provider-attempt record, a run/cost ledger record.
+export function inventoryRunIndicators(repo) {
+  const evRoot = resolve(repo, ".foundergate/evidence/lrcq-assurance-factory");
+  const INDICATOR = [
+    { id: "evidence_binding", re: /REAL_RUN_EVIDENCE_BINDING\.json$/ },
+    { id: "run_incident", re: /real-run-teardown-terminal-incident\.json$/ },
+    { id: "consumed_activation", re: /\.consumed\.json$/ },
+    { id: "activation_ledger", re: /(activation-lifecycle|ledger)\.jsonl$/ },
+    { id: "transactions", re: /transactions\.jsonl$/ },
+    { id: "recovery_state", re: /recovery-state\.json$|RECOVERY_STATE/i },
+    { id: "supervisor", re: /supervisor(-events)?\.(jsonl|state\.json|out|err)$|\.state\.json$/ },
+    { id: "evidence_index", re: /evidence-index\.jsonl$/ },
+    { id: "raw_run_manifest", re: /REAL_RUN_RAW_EVIDENCE_MANIFEST\.json$/ },
+    { id: "provider_attempt", re: /process\.json$|provider.*attempt/i },
+    { id: "run_lock", re: /run\.lock$|next-safe-action\.txt$/ },
+  ];
+  const found = new Set();
+  try {
+    if (!existsSync(evRoot)) return { status: "INVENTORY_COMPLETE_NO_RUN_INDICATORS", indicators: [] };
+    const stack = [evRoot];
+    while (stack.length) {
+      const d = stack.pop();
+      let entries;
+      try { entries = readdirSync(d); } catch (e) { return { status: "INVENTORY_INCOMPLETE_ERROR", error: "readdir " + d + ": " + (e.message || e) }; }
+      for (const e of entries) {
+        const p = resolve(d, e);
+        let st;
+        try { st = lstatSync(p); } catch (err) { return { status: "INVENTORY_INCOMPLETE_ERROR", error: "lstat " + p + ": " + (err.message || err) }; }
+        if (st.isSymbolicLink()) { try { realpathSync(p); } catch (err) { return { status: "INVENTORY_INCOMPLETE_ERROR", error: "broken symlink " + p + ": " + (err.message || err) }; } }
+        let stt;
+        try { stt = statSync(p); } catch (err) { return { status: "INVENTORY_INCOMPLETE_ERROR", error: "stat " + p + ": " + (err.message || err) }; }
+        if (stt.isDirectory()) { stack.push(p); continue; }
+        if (!stt.isFile()) return { status: "INVENTORY_INCOMPLETE_ERROR", error: "unexpected filesystem type: " + p };
+        for (const ind of INDICATOR) if (ind.re.test(e)) found.add(ind.id);
+      }
+    }
+  } catch (e) { return { status: "INVENTORY_INCOMPLETE_ERROR", error: String(e.message || e) }; }
+  return found.size > 0
+    ? { status: "INVENTORY_COMPLETE_RUN_INDICATORS_PRESENT", indicators: [...found].sort() }
+    : { status: "INVENTORY_COMPLETE_NO_RUN_INDICATORS", indicators: [] };
+}
 
 // verifyCapsule — every production check; returns { valid, problems[], checks[] }. `githubMetadataProvider`
 // (prNumber) -> { title, body } | null. null => the live-metadata check is SKIPPED as a NON-ACCEPTING
@@ -70,14 +118,31 @@ export function verifyCapsule({ repo, capsuleDir: CAP, prNumber = 189, githubMet
   check("backlog digest matches manifest binding", manifest.backlog_digest === backlogDigest, backlogDigest);
   check("run-wide cost ceiling is $10", manifest.max_cost_usd === 10);
 
-  // 4. run-state truth: no REAL-RUN evidence, OR a run honestly recorded a HELD/terminal outcome
-  const rrRoot = resolve(repo, ".foundergate/evidence/lrcq-assurance-factory/REAL-RUN");
-  if (!existsSync(rrRoot)) { check("run-state truth: no REAL-RUN evidence (no run performed)", true); }
-  else {
-    let rec = null; try { rec = JSON.parse(readFileSync(resolve(rrRoot, "recovery-state.json"), "utf8")); } catch { /* */ }
-    const held = !!rec && (/HELD|STOPPED_(TEARDOWN_DEFECT|PROVIDER_FAILURE|DEADLINE|BUDGET)/.test(rec.outcome_status || "") || /HELD|TEARDOWN_DEFECT|PROVIDER_FAILURE/.test(rec.final_state || ""));
-    const noFalseCompletion = !!rec && typeof rec.productive_jobs_completed === "number";
-    check("run-state truth: a REAL run honestly recorded a HELD/terminal outcome (no falsely-claimed clean success)", held && noFalseCompletion, rec && (rec.outcome_status + " / productive=" + rec.productive_jobs_completed));
+  // 4. run-state truth (FG-LRCQ-ACT-027): PATH-INDEPENDENT + source-bound. The old check keyed off the
+  // LITERAL gitignored REAL-RUN/ dir, so a clone (where it is absent) would falsely report "no run
+  // performed". Now: if a committed REAL_RUN_EVIDENCE_BINDING manifest exists, verify it against current
+  // committed source bytes (fails closed on ambiguity/contradiction/digest-mismatch) and render the honest
+  // held-run statement. "No run performed" is asserted ONLY when a complete governed inventory proves it —
+  // no binding AND no committed authoritative incident AND no consumed-activation record.
+  const bindingPath = resolve(repo, BINDING_PATH);
+  if (existsSync(bindingPath)) {
+    const binding = JSON.parse(readFileSync(bindingPath, "utf8"));
+    const rv = verifyBinding(repo, binding);
+    check("run-state truth: source-bound real-run evidence binding VALID (path-independent)", rv.ok, rv.ok ? binding.authoritative_outcome_status + " / productive=" + binding.productive_jobs_completed : rv.code + " " + (rv.detail || ""));
+    // Use the STRUCTURALLY-DERIVED canonical statement (verifyBinding returns it), not stored prose.
+    check("run-state truth: binding represents the HELD run honestly (0 productive, provider-not-attempted, replay-blocked)", rv.ok && binding.productive_jobs_completed === 0 && binding.provider_attempt_status === "PROVIDER_NOT_ATTEMPTED" && binding.replay_blocked === true && /HELD|TEARDOWN_DEFECT|PROVIDER_FAILURE/.test(binding.authoritative_outcome_status || ""), rv.ok ? rv.statement : undefined);
+  } else {
+    // No binding present. Run a COMPLETE governed inventory that fails CLOSED on ANY error — "no run
+    // performed" is accepted ONLY when the inventory completes without error AND finds no run indicator.
+    const inv = inventoryRunIndicators(repo);
+    if (inv.status === "INVENTORY_INCOMPLETE_ERROR") {
+      check("run-state truth: governed inventory COMPLETE (no read/stat/symlink/parse error)", false, "REAL_RUN_INVENTORY_INCOMPLETE: " + inv.error);
+    } else if (inv.status === "INVENTORY_COMPLETE_RUN_INDICATORS_PRESENT") {
+      // run indicators exist but no binding -> ambiguous, fail closed (never claim no-run)
+      check("run-state truth: run indicators present require a REAL_RUN_EVIDENCE_BINDING manifest (not literal-path/no-run inference)", false, "indicators: " + inv.indicators.join(","));
+    } else { // INVENTORY_COMPLETE_NO_RUN_INDICATORS
+      check("run-state truth: complete governed inventory proves NO run performed (zero run indicators)", true);
+    }
   }
 
   // 5. live gate proof: the real launcher preflight refuses at SIGNATURE-REQUIRED with zero invocation
