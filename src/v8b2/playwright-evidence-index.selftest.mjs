@@ -129,6 +129,259 @@ check("F-2: the failure is not silently omitted from the rendered conclusion", (
   assert.ok(/>Failed</.test(rows), "the row's founder-visible label reads Failed");
 });
 
+// ---- F-A regression: token-safe state classification ----------------------------------------
+// Independent-checker finding F-A (PRE-EXISTING in PR #182, material): the green test
+// /VERIFIED|PASSED|\bPASS\b|SUCCESS|GREEN/ was an UNANCHORED SUBSTRING match evaluated before the
+// failure test, so "UNVERIFIED", "NOT_VERIFIED", "NOT_PASSED", "UNSUCCESSFUL", "NOT_SUCCESS",
+// "NOT_GREEN", "GREENISH" and "FAILED_BUT_PREVIOUSLY_PASSED" ALL normalized to PASS — the word
+// "PASSED" simply lives inside "NOT_PASSED". "UNVERIFIED -> PASS" contradicts this module's own
+// Law 54 contract; "FAILED_BUT_PREVIOUSLY_PASSED -> PASS" reads an explicit failure as a pass.
+// Classification is now TOKEN-AWARE against an explicit vocabulary of complete state tokens.
+// Every assertion below runs against the PRODUCTION EXPORT — there is no local re-implementation.
+
+// The complete accepted green vocabulary. Nothing outside this list may read as a pass.
+const F_A_GREEN_STATES = Object.freeze([
+  "PASS", "PASSED", "VERIFIED", "SUCCESS", "GREEN", "FOREGROUND_TEST_VERIFIED",
+]);
+
+// Explicit negative / negated states. Each contains a green word as a SUBSTRING and each must
+// still be a failure.
+const F_A_NEGATIVE_STATES = Object.freeze([
+  "UNVERIFIED", "NOT_VERIFIED", "NOT_PASSED", "UNSUCCESSFUL",
+  "NOT_SUCCESS", "NOT_GREEN", "FAILED_BUT_PREVIOUSLY_PASSED",
+]);
+
+// Ambiguous non-states: not a recognized state at all. Fail closed to UNKNOWN — never a pass.
+const F_A_AMBIGUOUS_STATES = Object.freeze([
+  "GREENISH", "PASSING",
+  "the reviewer said this looks like a pass to me",
+  "please pass report",
+  "",
+]);
+
+check("F-A: every legitimate green state token normalizes to PASS", () => {
+  for (const s of F_A_GREEN_STATES) {
+    assert.equal(normalizeVerdict({ state: s }), "PASS", `${s} must be PASS`);
+    assert.equal(normalizeVerdict({ state: s.toLowerCase() }), "PASS", `${s} is case-insensitive`);
+    assert.equal(normalizeVerdict({ state: s, failed: 0 }), "PASS", `${s} + failed:0 stays PASS`);
+  }
+});
+
+check("F-A: negated/negative states MUST NOT pass — they are FAIL, not a substring green", () => {
+  for (const s of F_A_NEGATIVE_STATES) {
+    const v = normalizeVerdict({ state: s });
+    assert.notEqual(v, "PASS", `${s} must never read as a pass (this was the F-A false green)`);
+    assert.equal(v, "FAIL", `${s} is an explicit negative state -> FAIL`);
+    assert.equal(normalizeVerdict({ state: s.toLowerCase() }), "FAIL", `${s} lowercase -> FAIL`);
+    assert.equal(normalizeVerdict({ state: s, passed: 99, failed: 0 }), "FAIL",
+      `${s} stays FAIL even beside flattering stats`);
+  }
+});
+
+check("F-A: ambiguous non-states fail closed to UNKNOWN — never PASS (Law 54)", () => {
+  for (const s of F_A_AMBIGUOUS_STATES) {
+    const v = normalizeVerdict({ state: s });
+    assert.notEqual(v, "PASS", `${JSON.stringify(s)} must never read as a pass`);
+    assert.equal(v, UNKNOWN, `${JSON.stringify(s)} is not a state we can read -> UNKNOWN`);
+  }
+  assert.equal(normalizeVerdict({ state: "GREENISH", failed: 0 }), UNKNOWN,
+    "an empty/ambiguous state with no usable statistics is UNKNOWN");
+  assert.equal(normalizeVerdict({ state: "" }), UNKNOWN, "empty state, no stats -> UNKNOWN");
+});
+
+check("F-A: an ambiguous state still lets honest statistics decide (no regression)", () => {
+  assert.equal(normalizeVerdict({ state: "GREENISH", passed: 7, failed: 0 }), "PASS",
+    "stats, not the ambiguous word, are what make this a pass");
+  assert.equal(normalizeVerdict({ state: "PASSING", failed: 2 }), "FAIL");
+});
+
+check("F-A: failure-stat precedence — a finite failed > 0 ALWAYS wins, for every state class", () => {
+  for (const s of [...F_A_GREEN_STATES, ...F_A_AMBIGUOUS_STATES, "FOREGROUND_TEST_RUNNING", "RUNNING", "PENDING", "IN_PROGRESS", "weird"]) {
+    assert.equal(normalizeVerdict({ state: s, failed: 1 }), "FAIL", `${JSON.stringify(s)} + failed:1 -> FAIL`);
+    assert.equal(normalizeVerdict({ state: s, passed: 100, failed: 5 }), "FAIL", `${JSON.stringify(s)} + failed:5 -> FAIL`);
+  }
+  assert.equal(normalizeVerdict({ failed: 1 }), "FAIL", "stats-only failed:1 -> FAIL");
+});
+
+check("F-A: running states stay RUNNING unless a declared failure overrides them", () => {
+  for (const s of ["RUNNING", "running", "FOREGROUND_TEST_RUNNING", "PENDING", "IN_PROGRESS", "IN-PROGRESS", "INPROGRESS"]) {
+    assert.equal(normalizeVerdict({ state: s }), "RUNNING", `${s} -> RUNNING`);
+    assert.equal(normalizeVerdict({ state: s, failed: 0 }), "RUNNING", `${s} + failed:0 stays RUNNING`);
+    assert.equal(normalizeVerdict({ state: s, failed: 3 }), "FAIL", `${s} + failed:3 -> FAIL (failure is authoritative)`);
+  }
+});
+
+check("F-A: recognized failure states remain FAIL", () => {
+  for (const s of ["FAIL", "FAILED", "FAILURE", "ERROR", "ERRORED", "REFUSED", "RED", "FOREGROUND_TEST_FAILED"]) {
+    assert.equal(normalizeVerdict({ state: s }), "FAIL", `${s} -> FAIL`);
+    assert.equal(normalizeVerdict({ state: s, passed: 40, failed: 0 }), "FAIL", `${s} stays FAIL beside green stats`);
+  }
+});
+
+check("F-A: a mixed state carrying both a failure and a green token reads as its failure half", () => {
+  assert.equal(normalizeVerdict({ state: "PASSED_THEN_FAILED" }), "FAIL");
+  assert.equal(normalizeVerdict({ state: "FAILED_BUT_PREVIOUSLY_PASSED" }), "FAIL");
+  assert.equal(normalizeVerdict({ state: "TEST_VERIFIED_RUNNING" }), UNKNOWN,
+    "an ambiguous mix of non-failure classes is unreadable, never a pass");
+});
+
+check("F-A: malformed / non-string state values are unreadable, never PASS", () => {
+  for (const bad of [123, 0, null, undefined, true, false, {}, [], ["PASSED"], { state: "PASSED" }, NaN]) {
+    assert.notEqual(normalizeVerdict({ state: bad }), "PASS", `state ${String(bad)} must not read as a pass`);
+    assert.equal(normalizeVerdict({ state: bad }), UNKNOWN, `state ${String(bad)} -> UNKNOWN`);
+  }
+  const stringly = { toString() { return "PASSED"; } };
+  assert.equal(normalizeVerdict({ state: stringly }), UNKNOWN, "an object that stringifies to PASSED is not a state string");
+});
+
+check("F-A: null / empty / non-object descriptors are UNKNOWN, never PASS", () => {
+  assert.equal(normalizeVerdict(null), UNKNOWN);
+  assert.equal(normalizeVerdict(undefined), UNKNOWN);
+  assert.equal(normalizeVerdict({}), UNKNOWN);
+  assert.equal(normalizeVerdict("PASSED"), UNKNOWN, "a bare string is not a descriptor");
+  assert.equal(normalizeVerdict(0), UNKNOWN);
+  assert.equal(normalizeVerdict([]), UNKNOWN);
+  assert.equal(normalizeBundle(null).verdict, UNKNOWN);
+  assert.equal(normalizeBundle(undefined).verdict, UNKNOWN);
+  assert.equal(normalizeBundle({}).verdict, UNKNOWN);
+});
+
+check("F-A: NaN / Infinity / negative counts never manufacture a pass out of nothing", () => {
+  // Stats alone: a non-finite or negative count is not a readable statistic, so there is nothing
+  // to decide on and the honest answer is UNKNOWN.
+  assert.equal(normalizeVerdict({ failed: NaN }), UNKNOWN);
+  assert.equal(normalizeVerdict({ failed: Infinity }), UNKNOWN);
+  assert.equal(normalizeVerdict({ failed: -Infinity }), UNKNOWN);
+  assert.equal(normalizeVerdict({ failed: -1 }), UNKNOWN);
+  assert.equal(normalizeVerdict({ passed: NaN, failed: 0 }), UNKNOWN);
+  assert.equal(normalizeVerdict({ passed: Infinity, failed: 0 }), UNKNOWN, "an infinite passed count is not a readable statistic (Number.isFinite(Infinity) is false)");
+  assert.equal(normalizeVerdict({ passed: -5, failed: 0 }), UNKNOWN, "a negative passed count is not > 0");
+  assert.equal(normalizeVerdict({ passed: 0, failed: 0 }), UNKNOWN, "0/0 is not a pass");
+  // A NON-FINITE `failed` is treated as ABSENT, so a green state still wins. This is the SEPARATE,
+  // still-open pre-existing checker finding F-B, deliberately NOT repaired here (this correction is
+  // scoped to F-A) and asserted so the residual is visible rather than hidden.
+  assert.equal(normalizeVerdict({ state: "PASSED", failed: Infinity }), "PASS", "KNOWN RESIDUAL F-B — non-finite failed is read as absent");
+  assert.equal(normalizeVerdict({ state: "PASSED", failed: NaN }), "PASS", "KNOWN RESIDUAL F-B");
+  assert.equal(normalizeVerdict({ state: "PASSED", failed: -1 }), "PASS", "KNOWN RESIDUAL F-B — a negative failed is not a declared failure");
+  // ...but a negated state is STILL not a pass under any of those garbage counts.
+  for (const bad of [NaN, Infinity, -Infinity, -1, "5", true, null]) {
+    assert.equal(normalizeVerdict({ state: "UNVERIFIED", failed: bad }), "FAIL", `UNVERIFIED + failed:${String(bad)} stays FAIL`);
+    assert.equal(normalizeVerdict({ state: "NOT_PASSED", failed: bad }), "FAIL", `NOT_PASSED + failed:${String(bad)} stays FAIL`);
+  }
+});
+
+check("F-A: classification is DETERMINISTIC across repeated identical input", () => {
+  const all = [...F_A_GREEN_STATES, ...F_A_NEGATIVE_STATES, ...F_A_AMBIGUOUS_STATES];
+  for (const s of all) {
+    const d = { state: s, passed: 3, failed: 0 };
+    const first = normalizeVerdict(d);
+    for (let i = 0; i < 25; i++) assert.equal(normalizeVerdict(d), first, `${JSON.stringify(s)} must be stable`);
+    assert.equal(normalizeVerdict({ state: s, passed: 3, failed: 0 }), first, "a fresh equal descriptor gives the same answer");
+  }
+});
+
+check("F-A: classification does NOT mutate the descriptor (input-immutable)", () => {
+  for (const s of [...F_A_GREEN_STATES, ...F_A_NEGATIVE_STATES, ...F_A_AMBIGUOUS_STATES]) {
+    const d = { id: "x", surface: "s", state: s, passed: 2, failed: 0, screenshots: 1, trace: true, hashes: true };
+    const before = JSON.stringify(d);
+    const keysBefore = Object.keys(d).join(",");
+    normalizeVerdict(d);
+    normalizeBundle(d);
+    indexDigest([d]);
+    renderSurfaceText([d]);
+    renderSurfaceHtml([d]);
+    assert.equal(JSON.stringify(d), before, `descriptor mutated for state ${JSON.stringify(s)}`);
+    assert.equal(Object.keys(d).join(","), keysBefore, "no key was added or removed");
+  }
+  const frozen = Object.freeze({ id: "f", surface: "s", state: "NOT_PASSED", failed: 0 });
+  assert.equal(normalizeVerdict(frozen), "FAIL", "a frozen descriptor is classified without being written to");
+});
+
+check("F-A: normalizeBundle gives a negated state NO green and NO unsupported-claim flag", () => {
+  for (const s of F_A_NEGATIVE_STATES) {
+    const b = normalizeBundle({ id: `neg-${s}`, surface: "playwright-test-reporter", state: s, screenshots: 4, trace: true, hashes: true, video: true });
+    assert.equal(b.verdict, "FAIL", `${s} bundle must be FAIL`);
+    assert.notEqual(b.verdict, "PASS");
+    assert.equal(b.unsupported_claim, false, "it claims no pass at all");
+    assert.ok(!(b.verdict === "PASS" && b.supported), "must never be a supported green");
+  }
+});
+
+check("F-A: founder digest counts every negated state as Failed, none as Passed", () => {
+  const bundles = F_A_NEGATIVE_STATES.map((s, i) => ({ id: `neg-${i}`, surface: "s", state: s, screenshots: 2, trace: true, hashes: true }));
+  const d = indexDigest(bundles);
+  assert.equal(d.total, F_A_NEGATIVE_STATES.length);
+  assert.equal(d.by_verdict.PASS, 0, "not one negated state may be counted as passed");
+  assert.equal(d.by_verdict.FAIL, F_A_NEGATIVE_STATES.length);
+  assert.equal(d.unsupported_claims, 0);
+  const sum = VERDICT.reduce((n, v) => n + d.by_verdict[v], 0);
+  assert.equal(sum, d.total, "buckets still sum to total");
+});
+
+check("F-A: founder digest counts every ambiguous state as Unknown, none as Passed", () => {
+  const bundles = F_A_AMBIGUOUS_STATES.map((s, i) => ({ id: `amb-${i}`, surface: "s", state: s }));
+  const d = indexDigest(bundles);
+  assert.equal(d.by_verdict.PASS, 0, "an ambiguous word is never a pass");
+  assert.equal(d.by_verdict[UNKNOWN], F_A_AMBIGUOUS_STATES.length);
+  assert.equal(VERDICT.reduce((n, v) => n + d.by_verdict[v], 0), d.total);
+});
+
+check("F-A: DUPLICATE bundles are each counted, never collapsed or double-passed", () => {
+  const one = Object.freeze({ id: "dupe", surface: "s", state: "NOT_VERIFIED", screenshots: 1, trace: true, hashes: true });
+  const d = indexDigest([one, one, one]);
+  assert.equal(d.total, 3, "three descriptors index as three bundles");
+  assert.equal(d.by_verdict.FAIL, 3);
+  assert.equal(d.by_verdict.PASS, 0);
+  assert.equal(d.by_surface.s, 3);
+  const green = indexDigest([backed({ id: "g" }), backed({ id: "g" })]);
+  assert.equal(green.total, 2);
+  assert.equal(green.by_verdict.PASS, 2);
+  assert.equal(VERDICT.reduce((n, v) => n + d.by_verdict[v], 0), d.total);
+});
+
+check("F-A: the founder-visible TEXT never shows a negated state as passed", () => {
+  const bundles = F_A_NEGATIVE_STATES.map((s, i) => ({ id: `neg-${i}`, surface: "s", state: s, screenshots: 1, trace: true, hashes: true }));
+  const digest = renderDigestText(bundles);
+  assert.ok(/Passed: 0/.test(digest), "founder sees Passed: 0");
+  assert.ok(new RegExp(`Failed: ${F_A_NEGATIVE_STATES.length}`).test(digest), "founder sees every negated state counted as failed");
+  assert.ok(!/UNSUPPORTED CLAIMS/.test(digest), "nothing claimed a pass, so nothing is an unsupported claim");
+  const surface = renderSurfaceText(bundles);
+  for (let i = 0; i < bundles.length; i++) {
+    assert.ok(new RegExp(`\\[Failed\\] neg-${i}`).test(surface), `neg-${i} must read Failed out loud`);
+    assert.ok(!new RegExp(`\\[Passed\\] neg-${i}`).test(surface), `neg-${i} must never read Passed`);
+  }
+});
+
+check("F-A: the rendered BUNDLE MARKUP marks negated states failed and ambiguous ones unknown", () => {
+  const negRows = renderBundleListHtml([{ id: "neg", surface: "s", state: "FAILED_BUT_PREVIOUSLY_PASSED", screenshots: 1, trace: true, hashes: true }]);
+  assert.ok(/fg-verdict-fail/.test(negRows), "the row marks the bundle failed");
+  assert.ok(!/fg-verdict-pass/.test(negRows), "no pass chip is rendered for a negated state");
+  assert.ok(/>Failed</.test(negRows), "the founder-visible label reads Failed");
+  const ambRows = renderBundleListHtml([{ id: "amb", surface: "s", state: "GREENISH" }]);
+  assert.ok(/fg-verdict-unknown/.test(ambRows), "an ambiguous state renders as unknown");
+  assert.ok(!/fg-verdict-pass/.test(ambRows), "no pass chip is rendered for an ambiguous state");
+  assert.ok(/>Unknown state</.test(ambRows));
+  const greenRows = renderBundleListHtml([backed({ id: "good" })]);
+  assert.ok(/fg-verdict-pass/.test(greenRows), "a legitimate green state still renders as a pass");
+});
+
+check("F-A: the F-2 contradiction case is STILL covered and still fails closed", () => {
+  assert.equal(normalizeVerdict(F2_CONTRADICTION), "FAIL", "F-2 must not regress under token-safe classification");
+  assert.equal(normalizeBundle(F2_CONTRADICTION).verdict, "FAIL");
+  assert.equal(indexDigest([F2_CONTRADICTION]).by_verdict.PASS, 0);
+  assert.ok(/Failed: 1/.test(renderDigestText([F2_CONTRADICTION])));
+  assert.equal(normalizeVerdict({ state: "PASSED", passed: 0, failed: 5 }), "FAIL");
+});
+
+check("F-A: NO loose substring green test survives in the module source", () => {
+  const src = sourceOf("playwright-evidence-index.mjs");
+  assert.ok(!/\/VERIFIED\|PASSED/.test(src), "the original unanchored green regex must be gone");
+  assert.ok(!/\.test\(state\)/.test(src), "no regex is applied to the whole state string any more");
+  assert.ok(!/state\.includes\(/.test(src), "no substring includes() classification");
+  assert.ok(!/indexOf\(/.test(src), "no substring indexOf() classification");
+  assert.ok(/STATE_TOKEN_CLASS/.test(src), "classification goes through an explicit token vocabulary");
+});
+
 // ---- bundle normalization + the unsupported-claim flag -------------------------------------
 
 check("a PASS bundle with all core artifacts is supported and NOT an unsupported claim", () => {
