@@ -65,28 +65,118 @@ function present(v) {
   return v === true;
 }
 
-// normalizeVerdict(descriptor) -> one of VERDICT. Surface-agnostic: it reads a raw run-state
-// STRING (as the founder-surface captures write, e.g. "FOREGROUND_TEST_VERIFIED") first, and
-// falls back to raw @playwright/test reporter stats (passed / failed counts). If neither can be
-// read honestly, the verdict is UNKNOWN — never assumed PASS.
+// ---- TOKEN-SAFE STATE VOCABULARY (checker finding F-A) --------------------------------------
 //
-// Contradiction rule (fail closed): a DECLARED failure count above zero DOMINATES any state
-// string, including a recognized green one. A bundle that says "PASSED" while its own reporter
-// stats say 5 tests failed is not a pass — it is a contradiction, and the honest reading of a
-// contradiction is the failure, never the flattering half. Without this, a green word would
+// A run-state string is classified by an EXPLICIT VOCABULARY of complete state TOKENS — never by
+// substring matching. Substring matching is what let a negated state read as green: the word
+// "PASSED" lives inside "NOT_PASSED" and inside "FAILED_BUT_PREVIOUSLY_PASSED", and "VERIFIED"
+// lives inside "UNVERIFIED", so an unanchored test scored all three as a pass. A token is only a
+// green token when the WHOLE token is a recognized green word.
+
+// Green state tokens. This is the complete accepted green vocabulary — nothing else reads as a
+// pass. "GREENISH" and "PASSING" are deliberately absent: they are not states we recognize.
+const GREEN_TOKENS = Object.freeze(["PASS", "PASSED", "VERIFIED", "SUCCESS", "GREEN"]);
+
+// Failure state tokens, INCLUDING the fused negatives that carry their own negation
+// ("UNVERIFIED", "UNSUCCESSFUL"). These are enumerated one by one on purpose: there is no "UN"
+// prefix rule, so an innocent word like "UNRECOGNIZED" is not mistaken for a declared failure.
+const FAIL_TOKENS = Object.freeze([
+  "FAIL", "FAILED", "FAILURE", "ERROR", "ERRORED",
+  "REFUSE", "REFUSED", "REFUSAL", "REFUSING", "RED",
+  "UNVERIFIED", "UNSUCCESSFUL",
+]);
+
+// Running state tokens. "IN_PROGRESS" / "IN-PROGRESS" tokenize to IN + PROGRESS; "IN" is a
+// neutral qualifier below, so both spellings and the fused "INPROGRESS" all read as RUNNING.
+const RUNNING_TOKENS = Object.freeze(["RUNNING", "PENDING", "PROGRESS", "INPROGRESS"]);
+
+// Explicit negation words. A negation next to ANY recognized state token means the bundle is
+// declaring that it is NOT in that state — the honest reading of "NOT_VERIFIED" is a failure,
+// never the verified half of the phrase.
+const NEGATION_TOKENS = Object.freeze(["NOT", "NON", "NEVER", "NO"]);
+
+// Neutral qualifier tokens that surfaces prepend to a state ("FOREGROUND_TEST_VERIFIED"). They
+// carry NO verdict of their own; they exist so a real composite surface state is still readable
+// as a state rather than being discarded as prose.
+const QUALIFIER_TOKENS = Object.freeze([
+  "FOREGROUND", "BACKGROUND", "TEST", "TESTS", "RUN", "CHECK", "CHECKS",
+  "SAFETY", "PLAYWRIGHT", "E2E", "SUITE", "STATE", "STATUS", "PHASE",
+  "IN", "FINAL", "OVERALL", "RESULT",
+]);
+
+// token -> verdict class. Built once, frozen; lookups are exact and order-independent.
+const STATE_TOKEN_CLASS = new Map([
+  ...GREEN_TOKENS.map((t) => [t, "PASS"]),
+  ...FAIL_TOKENS.map((t) => [t, "FAIL"]),
+  ...RUNNING_TOKENS.map((t) => [t, "RUNNING"]),
+]);
+const NEGATION_SET = new Set(NEGATION_TOKENS);
+const QUALIFIER_SET = new Set(QUALIFIER_TOKENS);
+
+// A state string is a short machine label, not prose. Anything longer than this many tokens is a
+// sentence that happens to contain a state word — it is NOT a state, and it is read as unreadable
+// (fall through to statistics, then UNKNOWN). Never as a pass.
+const MAX_STATE_TOKENS = 6;
+
+// classifyState(raw) -> "PASS" | "FAIL" | "RUNNING" | null. null means "this string is not a
+// state I can read honestly" — the caller then falls through to reporter statistics and finally
+// to UNKNOWN. It NEVER returns PASS for a string it did not fully recognize. Pure: it reads the
+// string and mutates nothing.
+function classifyState(raw) {
+  if (typeof raw !== "string") return null;
+  const tokens = raw.toUpperCase().split(/[^A-Z0-9]+/).filter(Boolean);
+  if (tokens.length === 0 || tokens.length > MAX_STATE_TOKENS) return null;
+
+  const classes = new Set();
+  let negated = false;
+  let allRecognized = true;
+  for (const t of tokens) {
+    if (NEGATION_SET.has(t)) { negated = true; continue; }
+    const cls = STATE_TOKEN_CLASS.get(t);
+    if (cls) { classes.add(cls); continue; }
+    if (QUALIFIER_SET.has(t)) continue;
+    allRecognized = false;
+  }
+
+  // 1. An explicit failure token anywhere in the state wins outright. This is what makes
+  //    "FAILED_BUT_PREVIOUSLY_PASSED" a FAIL: a declared failure is not undone by a later
+  //    green word, and a mixed state is read as its failure half, never its flattering half.
+  if (classes.has("FAIL")) return "FAIL";
+  // 2. A negation attached to any recognized state is an explicit negative state:
+  //    "NOT_VERIFIED", "NOT_PASSED", "NOT_SUCCESS", "NOT_GREEN" are failures, not passes.
+  if (negated && classes.size > 0) return "FAIL";
+  // 3. A bare negation, an unrecognized token, or an ambiguous mix of state classes means the
+  //    string is not a state we can read — "GREENISH", "PASSING" and prose land here. Fail
+  //    closed: unreadable is never a pass.
+  if (negated || !allRecognized || classes.size !== 1) return null;
+  // 4. Exactly one recognized class, every token accounted for, no negation.
+  return classes.has("RUNNING") ? "RUNNING" : "PASS";
+}
+
+// normalizeVerdict(descriptor) -> one of VERDICT. Surface-agnostic: it reads a raw run-state
+// STRING (as the founder-surface captures write, e.g. "FOREGROUND_TEST_VERIFIED") and falls back
+// to raw @playwright/test reporter stats (passed / failed counts). If neither can be read
+// honestly, the verdict is UNKNOWN — never assumed PASS.
+//
+// Contradiction rule (fail closed): a DECLARED FINITE failure count above zero DOMINATES any
+// state string, including a recognized green one. A bundle that says "PASSED" while its own
+// reporter stats say 5 tests failed is not a pass — it is a contradiction, and the honest reading
+// of a contradiction is the failure, never the flattering half. Without this, a green word would
 // silently outrank the numbers that disprove it and the index would show a false green.
+//
+// Token rule (fail closed, checker finding F-A): the state string is classified against an
+// explicit vocabulary of COMPLETE state tokens, never by substring. A green verdict requires that
+// the state carry a recognized green token, carry no failure token and no negation, and contain
+// nothing the vocabulary does not recognize. Anything else is a failure or is unreadable — and
+// unreadable is UNKNOWN, never a pass (Law 54).
 export function normalizeVerdict(descriptor) {
   const d = descriptor || {};
   const failed = typeof d.failed === "number" && Number.isFinite(d.failed) ? d.failed : null;
   const passed = typeof d.passed === "number" && Number.isFinite(d.passed) ? d.passed : null;
   if (failed !== null && failed > 0) return "FAIL";
-  const state = typeof d.state === "string" ? d.state.toUpperCase() : "";
-  if (state) {
-    if (/VERIFIED|PASSED|\bPASS\b|SUCCESS|GREEN/.test(state)) return "PASS";
-    if (/FAILED|\bFAIL\b|REFUS|ERROR|RED/.test(state)) return "FAIL";
-    if (/RUNNING|PENDING|IN[_-]?PROGRESS/.test(state)) return "RUNNING";
-    // a state string we do not recognize is NOT evidence of a pass — fall through to stats.
-  }
+  const stateVerdict = classifyState(d.state);
+  if (stateVerdict !== null) return stateVerdict;
+  // a state string we do not recognize is NOT evidence of a pass — fall through to stats.
   if (failed === 0 && passed !== null && passed > 0) return "PASS";
   return UNKNOWN;
 }
