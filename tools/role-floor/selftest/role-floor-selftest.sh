@@ -267,6 +267,21 @@ assert_eq "T12f lease digest tampering is detected" "LEASE_DIGEST_MISMATCH" \
 assert_eq "T12g writes outside the lease are refused" "PATH_OUTSIDE_LEASE" \
   "$(fg_lease_path_allowed "$RUN_D" "t-w2" "src/a.txt")"
 
+# Regression: lease globs must never be expanded against the current working
+# directory. Run the same overlap check from a directory that DOES contain a
+# matching src/ tree; a cwd-sensitive check silently admits a second writer.
+mkdir -p "${TMP}/globtrap/src"
+: > "${TMP}/globtrap/src/decoy-one.txt"
+: > "${TMP}/globtrap/src/decoy-two.txt"
+mk_task "$RUN_D" "t-w4" "lane-w4"
+mk_task "$RUN_D" "t-w5" "lane-w5"
+assert_contains "T09b a writable lease is granted from a glob-trap directory" "LEASE_GRANTED" \
+  "$(cd "${TMP}/globtrap" && fg_lease_request "$RUN_D" "t-w4" builder writable "${TMP}/other-repo" "lane/g1" "src/*" "" "$BASE_SHA" "$BASE_TREE" 3600)"
+assert_eq "T09c overlap detection does not depend on the working directory" "LEASE_REJECTED_OVERLAP" \
+  "$(cd "${TMP}/globtrap" && fg_lease_request "$RUN_D" "t-w5" builder writable "${TMP}/other-repo" "lane/g2" "src/a.txt" "" "$BASE_SHA" "$BASE_TREE" 3600)"
+assert_eq "T09d shared-surface detection does not depend on the working directory" "M4_HANDOFF_REQUIRED" \
+  "$(cd "${TMP}/globtrap" && fg_lease_request "$RUN_D" "t-w6" builder writable "${TMP}/other-repo" "lane/g3" ".foundergate/*" "" "$BASE_SHA" "$BASE_TREE" 3600)"
+
 # ===========================================================================
 printf -- '-- candidate freeze and sequencing --\n'
 # ===========================================================================

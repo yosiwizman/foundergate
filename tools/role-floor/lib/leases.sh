@@ -79,7 +79,7 @@ fg_lease_request() {
   # Shared integration surfaces belong to the serial integration writer, which
   # exists only where the host profile grants it.
   if [ "$mode" = "writable" ]; then
-    for og in $allowed; do
+    while IFS= read -r og; do
       if fg_path_is_shared_surface "$(fg_glob_literal_prefix "$og")"; then
         if fg_host_authority serial_integration_writer && \
            fg_in_list "$role" "$FG_RF_SHARED_SURFACE_WRITER_ROLES"; then
@@ -91,7 +91,7 @@ fg_lease_request() {
           echo "M4_HANDOFF_REQUIRED"; return 1
         fi
       fi
-    done
+    done <<< "$(fg_split_noglob "$allowed")"
   fi
 
   # One shared-surface integration writer at a time, everywhere. This is
@@ -124,16 +124,16 @@ fg_lease_request() {
       fi
 
       if [ "$(fg_json_get "$other" '.repository')" = "$repo" ]; then
-        for og in $(fg_json_get "$other" '.allowed_globs[]'); do
-          for ng in $allowed; do
+        while IFS= read -r og; do
+          while IFS= read -r ng; do
             if fg_globs_overlap "$og" "$ng"; then
               fg_event_append "$run" "lease_rejected" "$role" "$task" \
                 "$(jq -n --arg a "$og" --arg b "$ng" \
                    '{reason:"LEASE_REJECTED_OVERLAP", existing:$a, requested:$b}')" >/dev/null
               echo "LEASE_REJECTED_OVERLAP"; return 1
             fi
-          done
-        done
+          done <<< "$(fg_split_noglob "$allowed")"
+        done <<< "$(fg_split_noglob "$(fg_json_get "$other" '.allowed_globs | join(" ")')")"
       fi
     done
   fi
@@ -221,12 +221,12 @@ fg_lease_path_allowed() {
     fi
   fi
 
-  for g in $(fg_json_get "$f" '.forbidden_paths[]'); do
+  while IFS= read -r g; do
     case "$path" in $g) echo "PATH_FORBIDDEN"; return 1 ;; esac
-  done
-  for g in $(fg_json_get "$f" '.allowed_globs[]'); do
+  done <<< "$(fg_split_noglob "$(fg_json_get "$f" '.forbidden_paths | join(" ")')")"
+  while IFS= read -r g; do
     case "$path" in $g) echo "PATH_ALLOWED"; return 0 ;; esac
-  done
+  done <<< "$(fg_split_noglob "$(fg_json_get "$f" '.allowed_globs | join(" ")')")"
   echo "PATH_OUTSIDE_LEASE"
   return 1
 }

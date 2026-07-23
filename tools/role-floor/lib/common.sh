@@ -204,12 +204,12 @@ fg_run_layout_dirs() {
 # integration surface that only the M4 serial writer may touch.
 fg_path_is_shared_surface() {
   local p="$1" s
-  for s in ${FG_RF_SHARED_SURFACES}; do
+  while IFS= read -r s; do
     case "$s" in
       */) case "$p" in "$s"*) return 0 ;; esac ;;
       *)  [ "$p" = "$s" ] && return 0 ;;
     esac
-  done
+  done <<< "$(fg_split_noglob "$FG_RF_SHARED_SURFACES")"
   return 1
 }
 
@@ -245,6 +245,22 @@ fg_in_list() {
     [ "$item" = "$needle" ] && return 0
   done
   return 1
+}
+
+# fg_split_noglob <space separated list> - one item per line, with pathname
+# expansion DISABLED.
+#
+# An unquoted list of path globs is expanded against the current directory
+# before it is ever compared. A lease allowing "src/*" iterated that way turns
+# into whatever src/ happens to contain, so an overlap check silently depends
+# on where the floor was launched from. Always read glob lists through this.
+# The subshell keeps `set -f` from leaking to the caller.
+fg_split_noglob() {
+  ( set -f
+    local item
+    for item in $1; do
+      [ -n "$item" ] && printf '%s\n' "$item"
+    done )
 }
 
 fg_is_hard_stop_action() {
