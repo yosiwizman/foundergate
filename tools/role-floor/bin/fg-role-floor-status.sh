@@ -39,6 +39,16 @@ if [ -z "$RUN_ID" ]; then
 fi
 [ -n "$RUN_ID" ] && fg_run_exists "$RUN_ID" || { printf 'STATUS: NO_RUN_FOUND\nrun_root: %s\n' "$FG_RF_RUN_ROOT"; exit 0; }
 
+# An EXPLICIT --run-id must also belong to this profile. Describing another
+# profile's run under this profile's rules is exactly the confusion the
+# host-profile filter exists to prevent.
+RECORDED_HOST="$(fg_json_get "$(fg_control_dir "$RUN_ID")/RUN_MANIFEST.json" '.host_profile')"
+if [ -n "$RECORDED_HOST" ] && [ "$RECORDED_HOST" != "$FG_RF_HOST" ]; then
+  printf 'STATUS: BLOCKED\n'
+  printf 'reason: STATUS_REFUSED_HOST_PROFILE_MISMATCH:recorded=%s:requested=%s\n' "$RECORDED_HOST" "$FG_RF_HOST"
+  exit 4
+fi
+
 RUN_STATE="$(fg_run_state_file "$RUN_ID")"
 CHAIN="$(fg_events_verify "$RUN_ID")"
 SUMS="$(fg_verify_checksums "$RUN_ID" 2>/dev/null || true)"
@@ -77,7 +87,7 @@ for T in $(fg_task_list "$RUN_ID"); do
     --arg corr "$(fg_retry_get "$RUN_ID" "$T" correction_attempts)" \
     --arg climit "$(fg_retry_get "$RUN_ID" "$T" correction_limit)" \
     --arg ctx "$(fg_retry_get "$RUN_ID" "$T" context_restarts)" \
-    --arg lease "$(fg_lease_verify "$RUN_ID" "$T" 2>/dev/null || true)" \
+    --arg lease "$(fg_lease_verify "$RUN_ID" "$T" "" "$(fg_task_get "$RUN_ID" "$T" role)" 2>/dev/null || true)" \
     --arg next "$(fg_continuation_decision "$RUN_ID" "$T" "$REPO")" \
     '. + [{task:$t, lane:$lane, role:$role, status:$st,
            candidate_sha:(if $cand=="" then "not-frozen" else $cand end),

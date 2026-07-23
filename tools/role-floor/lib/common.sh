@@ -7,6 +7,37 @@
 #
 # Compatibility target: bash 3.2 (stock macOS). No associative arrays, no
 # mapfile, no ${var^^}.
+#
+# ---------------------------------------------------------------------------
+# THREAT MODEL - read this before relying on anything below
+# ---------------------------------------------------------------------------
+#
+# What this package enforces:
+#   * ASYMMETRIC founder authority. Founder decision receipts are SSHSIG
+#     signatures verified against a fingerprint-pinned PUBLIC key. The package
+#     contains no signing verb and no private key, so no process running this
+#     code can author a founder APPROVE, whatever it can read.
+#   * MECHANICAL sequencing, lease, drift, expiry, replay and one-time-use
+#     refusals that a cooperative operator cannot bypass by accident.
+#   * A keyed, length-anchored audit trail that makes casual rewriting of
+#     history detectable.
+#
+# What this package does NOT enforce, and never claims to:
+#   * It is NOT a boundary against a hostile process running as the same macOS
+#     user. Role windows are separate transcripts, not separate principals.
+#     Every keyed seal below (role capability commitments, artifact MACs, lease
+#     seals, the retry ledger, the event chain) is keyed with a per-run secret
+#     stored at ${run}/control/.writer_secret in mode 0600 under that same
+#     user. An actor who can read that file can recompute those seals. Such an
+#     actor still cannot forge a founder receipt, because that requires a
+#     private key the machine does not hold.
+#   * PACKAGE_DIGESTS.txt proves INTEGRITY (nothing changed by accident), never
+#     AUTHENTICITY (this is the audited package). Authenticity requires the
+#     externally supplied --expect-sha/--expect-tree anchor in the M4
+#     bootstrap.
+#   * A host profile name proves nothing about the physical machine. Physical
+#     host authority requires an external, signed, hardware-bound enrollment
+#     record that this package can only verify and never create.
 set -u
 
 # ---------------------------------------------------------------------------
@@ -42,9 +73,34 @@ FG_RF_CLAUDE_BIN="${FG_RF_CLAUDE_BIN:-claude}"
 # collide on one machine.
 FG_RF_RUN_ROOT="${FG_RF_RUN_ROOT:-${HOME}/FounderGateRuns/role-floor/${FG_RF_HOST}}"
 
-# The founder decision key lives outside the package and outside the run root.
-# The floor can VERIFY a founder receipt; it can never mint one.
-FG_RF_FOUNDER_KEY_FILE="${FG_RF_FOUNDER_KEY_FILE:-${HOME}/.foundergate/founder_receipt.key}"
+# ---------------------------------------------------------------------------
+# Founder decision trust root - VERIFY ONLY
+# ---------------------------------------------------------------------------
+#
+# The floor holds a PUBLIC verification key and nothing else. Founder receipts
+# are SSHSIG signatures (ssh-keygen -Y sign) produced OUTSIDE this package by a
+# private key the package never sees. There is deliberately no signing verb
+# anywhere under bin/ or lib/: grep -rn 'ssh-keygen -Y sign' bin lib returns
+# nothing, and that grep is asserted by the selftest.
+#
+# FG_RF_FOUNDER_PUBKEY_FILE may only LOCATE a candidate public key. It cannot
+# redirect the trust root: the located key's SHA256 fingerprint must equal the
+# fingerprint pinned in the loaded host profile, and any mismatch is a closed
+# refusal. Pointing this variable at an attacker key therefore fails.
+#
+# HONEST SCOPE: the pin lives in a package file. An attacker who can rewrite
+# the package working tree can rewrite the pin. That is exactly why
+# fg-m4-bootstrap.sh requires an EXTERNALLY supplied --expect-sha/--expect-tree
+# and refuses a dirty worktree. Package-internal digests prove integrity, never
+# authenticity.
+FG_RF_FOUNDER_PUBKEY_FILE="${FG_RF_FOUNDER_PUBKEY_FILE:-${HOME}/.foundergate/founder_receipt.pub}"
+FG_RF_FOUNDER_SIG_NAMESPACE="foundergate.founder-receipt.v2"
+FG_RF_FOUNDER_SIG_PRINCIPAL="foundergate-founder"
+
+# External, host-local, founder-gated machine enrollment record. Never written
+# by this package. Its absence is a closed refusal for any profile that carries
+# integration authority.
+FG_RF_HOST_ENROLLMENT_DIR="${FG_RF_HOST_ENROLLMENT_DIR:-${HOME}/.foundergate/host-enrollment}"
 
 # ---------------------------------------------------------------------------
 # Authority boundaries (host-profile defaults; m1 values shown)
@@ -146,6 +202,312 @@ fg_sha256_json_canonical() {
 }
 
 # ---------------------------------------------------------------------------
+# Keyed digests (HMAC-SHA256)
+# ---------------------------------------------------------------------------
+#
+# Every seal that a same-user actor could otherwise recompute from public
+# inputs is keyed with the per-run writer secret. This raises the bar from
+# "two lines of jq" to "read the writer secret first". It is NOT a defence
+# against an actor who can read ${run}/control/.writer_secret -- and on a
+# single macOS user account, any process the founder runs can read it. Say so;
+# do not claim otherwise.
+
+# fg_hmac_sha256 <key> - message on stdin, lowercase hex on stdout.
+fg_hmac_sha256() {
+  local key="$1"
+  if command -v openssl >/dev/null 2>&1; then
+    openssl dgst -sha256 -mac HMAC -macopt "key:${key}" 2>/dev/null | awk '{print $NF}'
+  else
+    # Deterministic fallback with an explicit key separator. Weaker than HMAC
+    # (length-extension applies to the underlying construction) and used only
+    # where openssl is unavailable.
+    printf 'FGRFMAC1|%s|' "$key" | cat - /dev/stdin | shasum -a 256 | awk '{print $1}'
+  fi
+}
+
+fg_hmac_string() { printf '%s' "$2" | fg_hmac_sha256 "$1"; }
+
+fg_writer_secret_file() { printf '%s/.writer_secret\n' "$(fg_control_dir "$1")"; }
+
+# fg_run_key <run> - the per-run keying material, or empty when absent.
+fg_run_key() { cat "$(fg_writer_secret_file "$1")" 2>/dev/null || printf ''; }
+
+# fg_hmac_json_canonical <run> <file> [excluded_field] - keyed seal over a JSON
+# document's canonical content with the seal field removed.
+fg_hmac_json_canonical() {
+  local run="$1" file="$2" field="${3:-seal}" key
+  [ -f "$file" ] || { echo "MISSING"; return 1; }
+  key="$(fg_run_key "$run")"
+  [ -n "$key" ] || { echo "NO_RUN_KEY"; return 1; }
+  jq -S -c "del(.${field})" "$file" 2>/dev/null | fg_hmac_sha256 "$key"
+}
+
+# ---------------------------------------------------------------------------
+# Asymmetric signature verification (SSHSIG) - VERIFY ONLY
+# ---------------------------------------------------------------------------
+#
+# This package verifies detached SSHSIG signatures. It NEVER produces one.
+# `ssh-keygen -Y sign` appears nowhere under bin/ or lib/ and there is no code
+# path, exported function, alias or template that reaches it. The only verbs
+# used are `-Y verify` and `-l -f` (fingerprint). A grep for the signing verb
+# over bin/ and lib/ must return zero, and the selftest asserts exactly that.
+
+fg_sshsig_bin() { printf '%s\n' "${FG_RF_SSH_KEYGEN_BIN:-ssh-keygen}"; }
+
+# fg_pubkey_fingerprint <public_key_file> - "SHA256:..." or empty.
+fg_pubkey_fingerprint() {
+  local f="$1" out
+  [ -f "$f" ] || { printf ''; return 1; }
+  out="$("$(fg_sshsig_bin)" -l -f "$f" 2>/dev/null | awk '{print $2}')" || { printf ''; return 1; }
+  case "$out" in SHA256:*) printf '%s\n' "$out"; return 0 ;; esac
+  printf ''
+  return 1
+}
+
+# fg_sshsig_verify <pubkey_file> <namespace> <principal> <signature_file>
+#                  <message_file>
+# SIGNATURE_OK | SIGNATURE_INVALID | SIGNATURE_TOOLING_MISSING |
+# SIGNATURE_MATERIAL_MISSING
+fg_sshsig_verify() {
+  local pub="$1" ns="$2" principal="$3" sig="$4" msg="$5" allowed rc kg
+  kg="$(fg_sshsig_bin)"
+  command -v "$kg" >/dev/null 2>&1 || { echo "SIGNATURE_TOOLING_MISSING"; return 1; }
+  [ -f "$pub" ] && [ -f "$sig" ] && [ -f "$msg" ] || { echo "SIGNATURE_MATERIAL_MISSING"; return 1; }
+  allowed="$(mktemp "${TMPDIR:-/tmp}/.fgsig.XXXXXX")" || { echo "SIGNATURE_MATERIAL_MISSING"; return 1; }
+  printf '%s %s\n' "$principal" "$(cat "$pub")" > "$allowed"
+  "$kg" -Y verify -f "$allowed" -I "$principal" -n "$ns" -s "$sig" < "$msg" >/dev/null 2>&1
+  rc=$?
+  rm -f "$allowed"
+  [ "$rc" -eq 0 ] || { echo "SIGNATURE_INVALID"; return 1; }
+  echo "SIGNATURE_OK"
+  return 0
+}
+
+# ---------------------------------------------------------------------------
+# Machine identity (read-only)
+# ---------------------------------------------------------------------------
+#
+# Read from the platform, never invented and never written. Used only to
+# COMPARE against an externally enrolled record.
+
+fg_machine_uuid() {
+  ioreg -rd1 -c IOPlatformExpertDevice 2>/dev/null \
+    | awk -F'"' '/IOPlatformUUID/{print $4; exit}'
+}
+
+fg_machine_serial() {
+  ioreg -rd1 -c IOPlatformExpertDevice 2>/dev/null \
+    | awk -F'"' '/IOPlatformSerialNumber/{print $4; exit}'
+}
+
+# ---------------------------------------------------------------------------
+# Identifier allowlist and safe interpolation
+# ---------------------------------------------------------------------------
+
+# fg_id_valid <value> - strict allowlist for every identifier that ever reaches
+# a path or a command string: run ids, task ids, role names, lane ids and tmux
+# session names. [A-Za-z0-9._-]{1,64}, no leading hyphen or dot, no "..".
+fg_id_valid() {
+  local v="${1-}"
+  [ -n "$v" ] || return 1
+  [ "${#v}" -le 64 ] || return 1
+  case "$v" in
+    -*|.*) return 1 ;;
+    *..*)  return 1 ;;
+  esac
+  case "$v" in
+    *[!A-Za-z0-9._-]*) return 1 ;;
+  esac
+  return 0
+}
+
+# fg_id_require <kind> <value> - INVALID_<KIND>_ID:<value> on refusal.
+fg_id_require() {
+  local kind="$1" v="${2-}"
+  if ! fg_id_valid "$v"; then
+    printf 'INVALID_%s_ID\n' "$(printf '%s' "$kind" | tr '[:lower:]' '[:upper:]')"
+    return 1
+  fi
+  return 0
+}
+
+# fg_shquote <value> - single-argument shell quoting. Every value interpolated
+# into a command string that a shell will later parse must pass through this.
+fg_shquote() {
+  local v="${1-}"
+  printf "'%s'" "$(printf '%s' "$v" | sed "s/'/'\\\\''/g")"
+}
+
+# ---------------------------------------------------------------------------
+# Path and branch normalisation
+# ---------------------------------------------------------------------------
+
+# fg_fs_case_insensitive [dir] - true when the filesystem folds case. Probed
+# once per process; git's core.ignorecase is consulted first when available.
+FG_RF_CASE_FOLD_CACHE=""
+fg_fs_case_insensitive() {
+  local dir="${1:-${TMPDIR:-/tmp}}" probe
+  if [ -n "$FG_RF_CASE_FOLD_CACHE" ]; then
+    [ "$FG_RF_CASE_FOLD_CACHE" = "yes" ]
+    return $?
+  fi
+  probe="$(mktemp "${dir%/}/.fgcase.XXXXXX" 2>/dev/null)" || probe=""
+  if [ -n "$probe" ]; then
+    if [ -e "$(printf '%s' "$probe" | tr '[:lower:]' '[:upper:]')" ] && \
+       [ "$probe" != "$(printf '%s' "$probe" | tr '[:lower:]' '[:upper:]')" ]; then
+      FG_RF_CASE_FOLD_CACHE="yes"
+    else
+      FG_RF_CASE_FOLD_CACHE="no"
+    fi
+    rm -f "$probe"
+  else
+    FG_RF_CASE_FOLD_CACHE="yes"   # fail safe: fold when we cannot tell
+  fi
+  [ "$FG_RF_CASE_FOLD_CACHE" = "yes" ]
+}
+
+fg_casefold() { printf '%s' "${1-}" | tr '[:upper:]' '[:lower:]'; }
+
+# fg_compare_key <value> - the form used for every path/branch comparison.
+# Case-folded on a case-insensitive filesystem, verbatim otherwise.
+fg_compare_key() {
+  if fg_fs_case_insensitive; then fg_casefold "${1-}"; else printf '%s' "${1-}"; fi
+}
+
+# fg_path_normalise <path> - collapse "./", resolve "." and ".." segments
+# lexically, strip duplicate and trailing slashes. Emits PATH_ESCAPES_ROOT when
+# the path resolves above its own root, and PATH_IS_ABSOLUTE for absolute input.
+# Runs in a subshell so `set -f` and IFS never leak to the caller.
+fg_path_normalise() (
+  p="${1-}"
+  case "$p" in
+    '') echo "PATH_EMPTY"; exit 1 ;;
+    /*) echo "PATH_IS_ABSOLUTE"; exit 1 ;;
+  esac
+  case "$p" in
+    *"$(printf '\t')"*) echo "PATH_CONTROL_CHARACTER"; exit 1 ;;
+  esac
+  case "$p" in
+    *"
+"*) echo "PATH_CONTROL_CHARACTER"; exit 1 ;;
+  esac
+  set -f
+  IFS=/
+  out=""
+  depth=0
+  for seg in $p; do
+    case "$seg" in
+      ''|'.') continue ;;
+      '..')
+        [ "$depth" -gt 0 ] || { echo "PATH_ESCAPES_ROOT"; exit 1; }
+        depth=$(( depth - 1 ))
+        out="${out%/*}"
+        [ "$depth" -gt 0 ] || out=""
+        ;;
+      *)
+        if [ "$depth" -eq 0 ]; then out="$seg"; else out="${out}/${seg}"; fi
+        depth=$(( depth + 1 ))
+        ;;
+    esac
+  done
+  [ "$depth" -gt 0 ] || { echo "PATH_EMPTY"; exit 1; }
+  printf '%s\n' "$out"
+)
+
+# fg_realpath <path> - resolve symlinks with a bounded loop. Pure shell; no
+# dependency on a realpath(1) that stock macOS does not ship.
+fg_realpath() {
+  local p="$1" i=0 link dir base
+  while [ "$i" -lt 40 ]; do
+    if [ -L "$p" ]; then
+      link="$(readlink "$p" 2>/dev/null)" || break
+      case "$link" in
+        /*) p="$link" ;;
+        *)  p="$(dirname "$p")/${link}" ;;
+      esac
+      i=$(( i + 1 ))
+      continue
+    fi
+    break
+  done
+  dir="$(dirname "$p")"; base="$(basename "$p")"
+  if [ -d "$dir" ]; then
+    printf '%s/%s\n' "$(cd "$dir" && pwd -P)" "$base"
+  else
+    printf '%s\n' "$p"
+  fi
+}
+
+# fg_path_contained <repo_root> <relative_path> - normalises the candidate,
+# resolves symlinks, and asserts the result stays under the repository root.
+# PATH_CONTAINED | PATH_ESCAPES_REPOSITORY | PATH_ESCAPES_ROOT | PATH_IS_ABSOLUTE
+fg_path_contained() {
+  local root="$1" rel="$2" norm real rootreal dir base probe
+  norm="$(fg_path_normalise "$rel")" || { printf '%s\n' "$norm"; return 1; }
+  rootreal="$(cd "$root" 2>/dev/null && pwd -P)" || { echo "PATH_NO_REPOSITORY"; return 1; }
+  probe="${rootreal}/${norm}"
+  # Resolve the deepest existing ancestor, then re-attach the remainder, so a
+  # not-yet-created file inside a symlinked directory is still resolved.
+  dir="$(dirname "$probe")"; base="$(basename "$probe")"
+  while [ ! -d "$dir" ] && [ "$dir" != "/" ]; do
+    base="$(basename "$dir")/${base}"
+    dir="$(dirname "$dir")"
+  done
+  real="$(cd "$dir" 2>/dev/null && pwd -P)/${base}" || { echo "PATH_UNRESOLVABLE"; return 1; }
+  real="$(fg_realpath "$real")"
+  case "$(fg_compare_key "$real")/" in
+    "$(fg_compare_key "$rootreal")"/*) echo "PATH_CONTAINED"; return 0 ;;
+  esac
+  echo "PATH_ESCAPES_REPOSITORY"
+  return 1
+}
+
+# fg_branch_normalise <branch> - strip refs/heads/, reject leading/trailing
+# whitespace, control characters, git-illegal characters and empty values.
+#
+# The character set follows git-check-ref-format: a legal branch name cannot
+# contain a space, ~, ^, :, ?, *, [, \, or a control character, and cannot
+# contain "..". Everything a shell would treat as a metacharacter is therefore
+# either already illegal in git or explicitly refused here, so a branch value
+# is inert data even before it is quoted.
+fg_branch_normalise() {
+  local b="${1-}"
+  case "$b" in
+    ''|' '*|*' ') echo "BRANCH_WHITESPACE"; return 1 ;;
+  esac
+  case "$b" in
+    *$'\t'*|*$'\n'*|*$'\r'*) echo "BRANCH_WHITESPACE"; return 1 ;;
+  esac
+  case "$b" in
+    *'~'*|*'^'*|*':'*|*'?'*|*'*'*|*'['*|*'\'*|*'..'*) echo "BRANCH_ILLEGAL_CHARACTER"; return 1 ;;
+    *'$'*|*'`'*|*';'*|*'|'*|*'&'*|*'<'*|*'>'*|*'('*|*')'*|*'"'*|*"'"*|*'!'*|*'#'*)
+      echo "BRANCH_ILLEGAL_CHARACTER"; return 1 ;;
+  esac
+  b="${b#refs/heads/}"
+  b="${b%/}"
+  [ -n "$b" ] || { echo "BRANCH_EMPTY"; return 1; }
+  case "$b" in
+    -*|/*|*/) echo "BRANCH_ILLEGAL_CHARACTER"; return 1 ;;
+  esac
+  printf '%s\n' "$b"
+  return 0
+}
+
+# fg_patharg_safe <path> - a filesystem path supplied by an operator or a role.
+# It is quoted wherever it reaches a command string, but a path carrying shell
+# metacharacters is refused outright rather than relied on to stay quoted
+# through every future edit of this package.
+fg_patharg_safe() {
+  local p="${1-}"
+  [ -n "$p" ] || return 1
+  case "$p" in
+    *$'\n'*|*$'\r'*|*$'\t'*) return 1 ;;
+    *'$'*|*'`'*|*';'*|*'|'*|*'&'*|*'<'*|*'>'*|*'('*|*')'*|*'"'*|*"'"*|*'\'*|*'!'*) return 1 ;;
+  esac
+  return 0
+}
+
+# ---------------------------------------------------------------------------
 # Atomic replacement
 # ---------------------------------------------------------------------------
 
@@ -202,21 +564,37 @@ fg_run_layout_dirs() {
 
 # fg_path_is_shared_surface <path> - true when the path belongs to a shared
 # integration surface that only the M4 serial writer may touch.
+#
+# The candidate is normalised ("./x", "a/../x" and "x" are one path) and, on a
+# case-insensitive filesystem, case-folded, so "Package.json" no longer slips
+# past a rule written as "package.json" (F-G02). An absolute or escaping path
+# is treated as shared-surface-bearing, i.e. refused, rather than admitted.
 fg_path_is_shared_surface() {
-  local p="$1" s
+  local p="$1" s n pk sk
+  n="$(fg_path_normalise "$p")" || return 0
+  pk="$(fg_compare_key "$n")"
   while IFS= read -r s; do
+    [ -n "$s" ] || continue
     case "$s" in
-      */) case "$p" in "$s"*) return 0 ;; esac ;;
-      *)  [ "$p" = "$s" ] && return 0 ;;
+      */) sk="$(fg_compare_key "${s%/}")"
+          case "$pk" in "$sk"|"$sk"/*) return 0 ;; esac ;;
+      *)  sk="$(fg_compare_key "$s")"
+          [ "$pk" = "$sk" ] && return 0 ;;
     esac
   done <<< "$(fg_split_noglob "$FG_RF_SHARED_SURFACES")"
   return 1
 }
 
+# fg_branch_is_protected <branch> - refs/heads/ stripped, whitespace refused,
+# case-folded on a case-insensitive repository. "Main" is "main" (F-G03).
+# A branch value that cannot be normalised is treated as protected: an
+# unparseable branch never earns a writable lease by being unparseable.
 fg_branch_is_protected() {
-  local b="$1" p
+  local b n p
+  n="$(fg_branch_normalise "${1-}")" || return 0
+  n="$(fg_compare_key "$n")"
   for p in ${FG_RF_PROTECTED_BRANCHES}; do
-    [ "$b" = "$p" ] && return 0
+    [ "$n" = "$(fg_compare_key "$p")" ] && return 0
   done
   return 1
 }
@@ -277,13 +655,29 @@ fg_glob_literal_prefix() {
   printf '%s' "$1" | sed -e 's/[*?[].*$//'
 }
 
-# fg_globs_overlap <globA> <globB> - conservative: true when either literal
-# prefix contains the other. Prefers false positives (rejecting a safe lease)
-# over false negatives (admitting two writers to one file).
+# fg_glob_compare_prefix <glob> - the literal prefix in comparison form:
+# normalised ("./src/a" -> "src/a") and case-folded where the filesystem folds.
+# An absolute or escaping glob yields the sentinel "\1ABSOLUTE", which overlaps
+# nothing and is separately refused at lease request time (F-G05).
+fg_glob_compare_prefix() {
+  local lit n
+  lit="$(fg_glob_literal_prefix "$1")"
+  [ -n "$lit" ] && n="$(fg_path_normalise "$lit")" || n=""
+  case "$n" in
+    ''|PATH_*) printf '%s' "$(fg_compare_key "$lit")"; return 0 ;;
+  esac
+  printf '%s' "$(fg_compare_key "$n")"
+}
+
+# fg_globs_overlap <globA> <globB> - conservative: true when either normalised,
+# case-folded literal prefix contains the other. Prefers false positives
+# (rejecting a safe lease) over false negatives (admitting two writers to one
+# file). Path spelling no longer decides: "./src/a.txt", "src/a.txt" and
+# "SRC/a.txt" all collide with an existing "src/*" lease.
 fg_globs_overlap() {
   local a b
-  a="$(fg_glob_literal_prefix "$1")"
-  b="$(fg_glob_literal_prefix "$2")"
+  a="$(fg_glob_compare_prefix "$1")"
+  b="$(fg_glob_compare_prefix "$2")"
   case "$a" in "$b"*) return 0 ;; esac
   case "$b" in "$a"*) return 0 ;; esac
   return 1

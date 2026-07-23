@@ -35,7 +35,12 @@
     "m1": {
       "config": "tools/role-floor/config/hosts/m1.json",
       "tmux_session": "foundergate-m1",
-      "windows": ["orchestrator", "builder", "checker", "advisor"],
+      "windows": [
+        "orchestrator",
+        "builder",
+        "checker",
+        "advisor"
+      ],
       "window_count": 4,
       "authorities": {
         "serial_integration_writer": false,
@@ -46,12 +51,26 @@
         "activation_consumption": false,
         "founder_signature_execution": false
       },
-      "handoff_required_for": ["shared_integration_surface_write", "serial_integration", "final_verification", "merge", "protected_main_write"]
+      "handoff_required_for": [
+        "shared_integration_surface_write",
+        "serial_integration",
+        "final_verification",
+        "merge",
+        "protected_main_write"
+      ]
     },
     "m4": {
       "config": "tools/role-floor/config/hosts/m4.json",
       "tmux_session": "foundergate-m4",
-      "windows": ["orchestrator", "builder", "checker", "advisor", "serial-integration", "final-verifier", "merge-sheriff"],
+      "windows": [
+        "orchestrator",
+        "builder",
+        "checker",
+        "advisor",
+        "serial-integration",
+        "final-verifier",
+        "merge-sheriff"
+      ],
       "window_count": 7,
       "authorities": {
         "serial_integration_writer": true,
@@ -66,55 +85,111 @@
     }
   },
   "m4_authority_boundaries": [
-    "Builder cannot check or approve its own work",
-    "Checker cannot repair findings and cannot write advisor state",
-    "Advisor cannot write code and cannot write verifier state",
+    "The artifact-class table refuses any role writing outside its profile entry: a Builder cannot write a checker verdict, a Checker cannot write advisor state, an Advisor cannot write verifier state, a serial writer cannot write a merge receipt",
     "Serial integration starts only from exact-SHA accepted inputs",
     "Only one shared-surface integration writer may hold a lease at a time",
     "Final verifier evaluates the exact final tree and SHA; a moved SHA is refused",
-    "Merge sheriff requires an exact final PASS and a mechanically valid founder decision receipt",
-    "No role can impersonate another role's state writer",
+    "Merge sheriff requires a verified physical-host enrollment, an exact final PASS, and a one-time founder decision receipt with a valid signature from the pinned founder public key",
     "Founder signature, production activation, deployment and destructive actions are hard stops on M4",
     "M4 Terminal-0 remains the human operating position"
   ],
   "founder_receipt": {
+    "scheme": "detached SSHSIG (ssh-keygen -Y sign / -Y verify), Ed25519",
     "required_for_merge": true,
-    "key_file": "${FG_RF_FOUNDER_KEY_FILE}",
-    "key_file_default": "${HOME}/.foundergate/founder_receipt.key",
-    "location": "outside the package and outside the run root",
+    "package_holds": "the PUBLIC verification key only",
     "package_can_verify": true,
-    "package_can_mint": false,
-    "exists_today": false,
-    "effect": "until the founder creates a key and signs a receipt, the merge gate refuses by construction"
+    "package_can_sign": false,
+    "signing_verb_present_in_bin_or_lib": false,
+    "grep_proof": "grep -rn -- '-Y sign' tools/role-floor/bin tools/role-floor/lib   # -> 0 non-comment hits; asserted by both selftests",
+    "public_key_location": "FG_RF_FOUNDER_PUBKEY_FILE, default ${HOME}/.foundergate/founder_receipt.pub",
+    "trust_root": "the SHA256 fingerprint pinned in config/hosts/<host>.json founder_trust_root.public_key_fingerprint. The environment variable may only LOCATE a key; a fingerprint mismatch is FOUNDER_PUBKEY_FINGERPRINT_MISMATCH.",
+    "signature_namespace": "foundergate.founder-receipt.v2",
+    "canonical_body": "jq -S -c 'del(.signature)' receipt.json > body   (the exact bytes signed, including jq's trailing newline)",
+    "signing_procedure": "ssh-keygen -Y sign -f <founder private key> -n foundergate.founder-receipt.v2 body; then jq -S --rawfile s body.sig '. + {signature:$s}' receipt.json",
+    "bound_fields": [
+      "action",
+      "branch",
+      "candidate_sha",
+      "candidate_tree",
+      "decision",
+      "expires_at_epoch",
+      "host_profile",
+      "issued_at",
+      "issued_at_epoch",
+      "nonce",
+      "repository",
+      "repository_origin",
+      "run_id",
+      "schema",
+      "signer_fingerprint",
+      "task_id",
+      "verification_report_digest"
+    ],
+    "shape_rules": "the key set must be exactly the bound fields plus 'signature', in sorted order, with no duplicates; anything else is FOUNDER_RECEIPT_MALFORMED before any cryptography runs",
+    "one_time_use": "consumption is recorded in the keyed control/CONSUMED_RECEIPTS.json ledger AND as a founder_receipt_consumed event in the keyed, length-anchored chain. A missing or unreadable ledger is a refusal (FOUNDER_RECEIPT_LEDGER_CONSUMED_LEDGER_MISSING), never treated as unspent.",
+    "pinned_today": false,
+    "effect": "config/hosts/m4.json ships founder_trust_root.public_key_fingerprint = null, so the merge gate refuses by construction with FOUNDER_TRUST_ROOT_NOT_ENROLLED until a founder pins a real fingerprint",
+    "performs_git_merge": false
   },
   "m4_bootstrap": {
     "verify_command": "bash tools/role-floor/bin/fg-m4-bootstrap.sh --host m4 --check --repo <M4_REPO_PATH>",
-    "start_command": "bash tools/role-floor/bin/fg-m4-bootstrap.sh --host m4 --repo <M4_REPO_PATH> --allow-start",
+    "start_command": "bash tools/role-floor/bin/fg-m4-bootstrap.sh --host m4 --repo <M4_REPO_PATH> --expect-sha <audited sha> --expect-tree <audited tree> --allow-start",
+    "external_candidate_identity_required_to_start": true,
+    "package_digests_are": "an INTEGRITY check only, never authenticity; the manifest ships inside the tree it describes and regenerating it is two lines of shell",
+    "why_the_dirty_worktree_check_matters": "modifying a package file and regenerating PACKAGE_DIGESTS.txt leaves HEAD untouched but the worktree dirty; committing the modification moves HEAD. Either way the external anchor fails.",
     "verified_status_line": "STATUS: M4_BOOTSTRAP_VERIFIED",
     "refusals": [
       "BOOTSTRAP_REFUSED_UNKNOWN_HOST_PROFILE",
       "BOOTSTRAP_REFUSED_WRONG_HOST_PROFILE",
+      "BOOTSTRAP_REFUSED_HOST_ENROLLMENT_NOT_CONFIGURED",
+      "BOOTSTRAP_REFUSED_HOST_ENROLLMENT_MISSING",
+      "BOOTSTRAP_REFUSED_HOST_HARDWARE_MISMATCH",
       "BOOTSTRAP_REFUSED_WRONG_REPOSITORY",
       "BOOTSTRAP_REFUSED_NO_REPOSITORY_CONFIGURED",
+      "BOOTSTRAP_REFUSED_UNSAFE_REPOSITORY_DEFAULT",
+      "BOOTSTRAP_REFUSED_NO_EXTERNAL_IDENTITY",
+      "BOOTSTRAP_REFUSED_CANDIDATE_SHA_MISMATCH",
+      "BOOTSTRAP_REFUSED_CANDIDATE_TREE_MISMATCH",
+      "BOOTSTRAP_REFUSED_PACKAGE_WORKTREE_DIRTY",
+      "BOOTSTRAP_REFUSED_BUNDLE_SHA_MISMATCH",
       "BOOTSTRAP_REFUSED_VERSION_MISMATCH",
       "BOOTSTRAP_REFUSED_DIGEST_MISMATCH",
       "BOOTSTRAP_REFUSED_DIGEST_MANIFEST_MISSING",
       "BOOTSTRAP_REFUSED_PROMPT_DIGEST_MISMATCH",
       "M4_BOOTSTRAP_BLOCKED (missing prerequisite)"
     ],
-    "installs_anything": false
+    "installs_anything": false,
+    "evaluates_configuration_with_eval": false
   },
   "expected_m4_repository": {
     "configurable": true,
-    "resolution_order": ["--repo <path>", "FG_RF_M4_REPO", "config/hosts/m4.json expected_repository_identity.default_path"],
+    "resolution_order": [
+      "--repo <path>",
+      "FG_RF_M4_REPO",
+      "config/hosts/m4.json expected_repository_identity.default_path"
+    ],
     "default_path": "${HOME}/Projects/foundergate",
     "expected_origin_basename": "foundergate",
     "guessed": false
   },
   "prerequisites": {
-    "required": ["tmux", "claude CLI", "git", "jq", "shasum", "bash >= 3.2"],
+    "required": [
+      "tmux",
+      "claude CLI",
+      "git",
+      "jq",
+      "shasum",
+      "bash >= 3.2"
+    ],
     "verified_never_installed": true,
-    "prohibited_automatic_installations": ["homebrew", "npm", "pip", "apt", "curl-to-shell", "any unattended install"]
+    "prohibited_automatic_installations": [
+      "homebrew",
+      "npm",
+      "pip",
+      "apt",
+      "curl-to-shell",
+      "any unattended install"
+    ]
   },
   "unified_commands": {
     "start": "bash tools/role-floor/bin/fg-role-floor-start.sh --host <m1|m4>",
@@ -124,7 +199,8 @@
     "attach_m4": "tmux attach -t foundergate-m4",
     "plan_only": "bash tools/role-floor/bin/fg-role-floor-start.sh --host <m1|m4> --plan",
     "selftest": "bash tools/role-floor/selftest/role-floor-selftest.sh",
-    "compatibility_wrappers": "not shipped; omitted to stay within the authorized file cap. The host-neutral commands are the interface."
+    "compatibility_wrappers": "not shipped; omitted to stay within the authorized file cap. The host-neutral commands are the interface.",
+    "security_selftest": "bash tools/role-floor/selftest/role-floor-security-selftest.sh"
   },
   "shared_implementation": {
     "one_codebase": true,
@@ -136,13 +212,13 @@
     "independent_audit": {
       "required": true,
       "performed": false,
-      "command": "bash tools/role-floor/selftest/role-floor-selftest.sh --json /tmp/role-floor-tests.json",
+      "command": "bash tools/role-floor/selftest/role-floor-selftest.sh --json /tmp/role-floor-tests.json && bash tools/role-floor/selftest/role-floor-security-selftest.sh --json /tmp/role-floor-sec.json",
       "must_be_run_by": "a context that did not build this package"
     },
     "live_tmux_verification": {
       "required": true,
       "performed": false,
-      "reason": "tmux is not installed on the build machine; all tmux behaviour is proven against a recording stub only"
+      "reason": "re-run both selftests on a host with tmux so the live window cases execute instead of skipping"
     },
     "serial_integration": {
       "required": true,
@@ -153,20 +229,91 @@
       "required": true,
       "performed": false,
       "note": "activation is a founder decision, taken with a decision receipt, never by the floor"
+    },
+    "host_enrollment": {
+      "required": true,
+      "performed": false,
+      "note": "external, signed, hardware-bound enrollment of the physical M4; until it exists every M4 authority path refuses"
+    },
+    "founder_key_enrollment": {
+      "required": true,
+      "performed": false,
+      "note": "pin the founder PUBLIC key fingerprint in config/hosts/m4.json; until it exists the merge gate refuses"
     }
   },
   "exact_next_action_after_clean_audit": [
     "git bundle verify <bundle> and compare its SHA-256 to the external evidence",
     "git fetch the branch from the bundle into the M4 repository",
+    "enroll the physical M4 (see M4_HANDOFF.md section 5a) and pin the enrollment authority fingerprint",
+    "enroll the founder PUBLIC verification key and pin its fingerprint",
     "run fg-m4-bootstrap.sh --host m4 --check --repo <M4_REPO_PATH> and require STATUS: M4_BOOTSTRAP_VERIFIED",
-    "run the selftest on the M4 with tmux present; require zero failures and no skipped live-tmux cases",
+    "run both selftests on the M4 with tmux present; require zero failures and no skipped live-tmux cases",
+    "run fg-m4-bootstrap.sh with --expect-sha/--expect-tree from the audit's out-of-band evidence before --allow-start",
     "open a serial-integration lane for manifest and launcher registration",
     "take the founder gate before any activation"
   ],
   "limitations": [
-    "no live tmux verification on the build machine",
+    "role separation is NOT a security boundary against a hostile process running as the same macOS user; it is accident resistance plus an audit trail",
+    "every keyed seal is keyed with control/.writer_secret, readable by that same user; the seals make tampering visible, not impossible",
+    "the external event-chain witness is written by the same user on the same machine; it is not an independent notary",
+    "the founder key fingerprint and the enrollment authority fingerprint are pinned in package files, so an actor who can rewrite the working tree can rewrite the pins; the external --expect-sha/--expect-tree anchor and the clean-worktree requirement exist for exactly this reason",
+    "no live tmux verification is recorded in this file; re-run both selftests on the target host",
     "no role has ever been launched through this package",
     "the M4 repository path and origin basename are defaults and must be confirmed on the M4",
-    "the founder receipt key does not exist yet, so the merge gate refuses by construction"
-  ]
+    "no founder verification key is enrolled and no machine is enrolled, so the merge gate and every M4 authority path refuse by construction"
+  ],
+  "not_enforced": {
+    "role_separation_is_not_a_security_boundary": true,
+    "detail": "All role windows run as one macOS uid. The per-run writer secret at control/.writer_secret is readable by that uid, and an actor who reads it can recompute the role capability commitments, artifact MACs, lease seals, retry ledger seal and event chain digests. The previous claim 'No role can impersonate another role's state writer' was disproved by independent audit and has been removed. Role separation here is accident resistance plus an audit trail, not forgery resistance.",
+    "what_would_be_required": "separate OS users with filesystem ACLs on the run root, or separate machines; neither is implemented",
+    "package_digests_prove": "integrity only, never authenticity",
+    "host_profile_name_proves": "nothing about the physical machine"
+  },
+  "host_enrollment": {
+    "why": "--host m4 is profile selection, not physical-host attestation. An earlier version allowed a full seven-window M4 floor with merge authority to start on an M1.",
+    "required_for": "any profile carrying serial_integration_writer, protected_main_writer, final_integration_verifier or merge_sheriff authority; derived from the authority set, not from a profile boolean",
+    "record_location": "FG_RF_HOST_ENROLLMENT_DIR, default ${HOME}/.foundergate/host-enrollment/<host>.enrollment.json (+ .sig, + <host>.enrollment-authority.pub)",
+    "signature_namespace": "foundergate.host-enrollment.v1",
+    "binds": [
+      "host_profile",
+      "hardware.platform_uuid (IOPlatformUUID)",
+      "hardware.serial_number",
+      "not_after_epoch",
+      "optional host_public_key_fingerprint"
+    ],
+    "package_can_verify": true,
+    "package_can_create_or_sign": false,
+    "enrolled_today": false,
+    "effect": "config/hosts/m4.json ships host_enrollment.enrollment_authority_fingerprint = null, so every M4 authority path refuses with HOST_ENROLLMENT_NOT_CONFIGURED",
+    "refusals": [
+      "HOST_ENROLLMENT_NOT_CONFIGURED",
+      "HOST_ENROLLMENT_MISSING",
+      "HOST_ENROLLMENT_KEY_MISSING",
+      "HOST_ENROLLMENT_KEY_FINGERPRINT_MISMATCH",
+      "HOST_ENROLLMENT_UNSIGNED",
+      "HOST_ENROLLMENT_WRONG_PROFILE",
+      "HOST_ENROLLMENT_EXPIRED",
+      "HOST_HARDWARE_UNAVAILABLE",
+      "HOST_HARDWARE_MISMATCH",
+      "HOST_KEY_FINGERPRINT_MISMATCH"
+    ],
+    "copying_the_repository_to_another_machine": "fails on the hardware comparison"
+  },
+  "record_of_corrections": {
+    "commit_subject_discrepancy": {
+      "commit": "a891b9b85ca3c3ff54b383bc37871c55cef7b5ac",
+      "subject_as_written": "feat(foundergate): add M4 role-floor profile and durable handoff",
+      "actual_content": "modifies exactly four files (PACKAGE_DIGESTS.txt, lib/common.sh, lib/leases.sh, selftest/role-floor-selftest.sh); introduces fg_split_noglob and its use in fg_path_is_shared_surface, fg_lease_request and fg_lease_path_allowed -- the glob-expansion one-writer-control fix -- plus regression tests T09b/T09c/T09d",
+      "where_the_m4_profile_actually_landed": "2f18159c581c56a36ead467e163d64696bbe0d4c",
+      "history_rewritten": false,
+      "why_not": "both commits are sealed in the original transfer bundle; rewriting them would invalidate external evidence. The discrepancy is recorded here instead."
+    },
+    "stale_top_level_builder_report": {
+      "fact": "the top-level ROLE_FLOOR_BUILDER_REPORT.md/.json and TEST_RESULTS.json in the external build evidence directory were never updated after commit 3106fdc2. They name a891b9b8 as head, state tmux is NOT INSTALLED, and report 152 pass / 0 fail / 2 skip.",
+      "corrected_picture": "head 3106fdc2, live tmux verified, 157 pass / 0 fail / 1 skip, recorded in that directory's live-tmux-qualification/ subdirectory",
+      "edited_by_this_correction": false,
+      "why_not": "that report is external audit evidence outside this repository's authorized scope",
+      "guidance": "treat the live-tmux qualification record, not the top-level report, as the description of 3106fdc2"
+    }
+  }
 }

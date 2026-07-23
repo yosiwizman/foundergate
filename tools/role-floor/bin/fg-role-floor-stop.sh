@@ -27,12 +27,36 @@ done
 
 fg_host_load "$HOST" >/dev/null || { printf 'STATUS: BLOCKED\nreason: HOST_PROFILE_UNKNOWN:%s\n' "$HOST"; exit 2; }
 
+# F-B01. Commit 3 applied the host_profile filter to the auto-selection loops
+# in start.sh and status.sh but NOT here -- and stop is the entry point that
+# MUTATES state. With one shared pinned run root, `stop.sh --host m1` selected
+# and stopped an m4 run. Stop now refuses to adopt another profile's run, by
+# the same exact-equality rule the other two entry points use.
+#
+# The comparison is exact equality against the run's recorded host_profile. An
+# empty or missing host_profile never matches, so it cannot broaden the target,
+# and no substring or prefix relation is consulted at any point.
 if [ -z "$RUN_ID" ]; then
   for d in $(ls -1t "$FG_RF_RUN_ROOT" 2>/dev/null); do
-    [ -f "${FG_RF_RUN_ROOT}/${d}/control/RUN_MANIFEST.json" ] && { RUN_ID="$d"; break; }
+    M="${FG_RF_RUN_ROOT}/${d}/control/RUN_MANIFEST.json"
+    [ -f "$M" ] || continue
+    RECORDED="$(fg_json_get "$M" '.host_profile')"
+    [ -n "$RECORDED" ] || continue
+    [ "$RECORDED" = "$FG_RF_HOST" ] || continue
+    RUN_ID="$d"; break
   done
 fi
-[ -n "$RUN_ID" ] && fg_run_exists "$RUN_ID" || { printf 'STATUS: NO_RUN_FOUND\n'; exit 0; }
+[ -n "$RUN_ID" ] && fg_run_exists "$RUN_ID" || { printf 'STATUS: NO_RUN_FOUND\nrun_root: %s\nhost_profile: %s\n' "$FG_RF_RUN_ROOT" "$FG_RF_HOST"; exit 0; }
+
+# An EXPLICIT --run-id must also belong to this profile. Naming a run id is a
+# convenience, not an authority to cross the profile boundary.
+RECORDED="$(fg_json_get "$(fg_control_dir "$RUN_ID")/RUN_MANIFEST.json" '.host_profile')"
+if [ -n "$RECORDED" ] && [ "$RECORDED" != "$FG_RF_HOST" ]; then
+  printf 'STATUS: BLOCKED\n'
+  printf 'reason: STOP_REFUSED_HOST_PROFILE_MISMATCH:recorded=%s:requested=%s\n' "$RECORDED" "$FG_RF_HOST"
+  printf 'nothing_was_modified: yes\n'
+  exit 4
+fi
 
 # 1. Refuse new dispatch first, so nothing new starts while we wind down.
 fg_run_state_update "$RUN_ID" '.stop_requested=true | .dispatch_enabled=false | .run_status="STOP_REQUESTED"'

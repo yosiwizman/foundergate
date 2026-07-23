@@ -47,8 +47,10 @@ exactly the lease named above, and it expires.
 
 1. Leave the working tree clean. A dirty tree cannot be frozen and cannot be
    checked.
-2. Write your builder report through your own role writer, using the token in
-   the role token file, to the report path above.
+2. Write your builder report through your own role writer, presenting the
+   single-use capability in `$FG_RF_ROLE_CAP` from this process's environment,
+   to the report path above. There is no token file to read: the capability is
+   delivered once at launch, expires, and is bound to this exact launch.
 3. Ask the dispatcher to freeze the candidate. The freeze binds commit SHA,
    tree SHA, parent, diff digest, changed files, cleanliness, branch, remote
    status and your report digest.

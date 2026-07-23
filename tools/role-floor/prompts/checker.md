@@ -53,7 +53,8 @@ mismatch rather than checking something adjacent to the candidate.
 
 ## Finishing
 
-Write your verdict through your own role writer, using the token in the role
+Write your verdict through your own role writer, presenting the single-use
+capability in `$FG_RF_ROLE_CAP` from this process's environment. There is no
 token file. Bind the candidate SHA and tree you actually examined. Then stop.
 CLEAN is what starts the Advisor, and only you can write it. If the evidence
 does not support CLEAN, do not write CLEAN.

@@ -93,9 +93,31 @@ case "$CLAUDE_DETECT" in
   CLAUDE_MISSING) fg_blocked "claude CLI (binary '${FG_RF_CLAUDE_BIN}' not found on PATH)" ;;
 esac
 
+# Physical host enrollment. A --host argument selects a configuration; it is
+# not an attestation. Any profile that carries integration authority must be
+# running on an externally enrolled, hardware-bound machine, and this package
+# can only verify such a record -- it never creates or self-approves one.
+HOST_IDENT="$(fg_host_identity_verify)"
+case "$HOST_IDENT" in
+  HOST_IDENTITY_OK|HOST_IDENTITY_NOT_REQUIRED) : ;;
+  *)
+    printf 'STATUS: BLOCKED\n'
+    printf 'reason: %s\n' "$HOST_IDENT"
+    printf 'detail: profile %s carries integration authority and therefore requires an external, signed, hardware-bound enrollment record. Selecting a profile does not create one.\n' "$FG_RF_HOST"
+    printf 'nothing_was_created: yes\n'
+    exit 4 ;;
+esac
+
 # Repository contract.
 if [ -z "$REPO" ]; then REPO="$(git rev-parse --show-toplevel 2>/dev/null || echo "")"; fi
 [ -n "$REPO" ] && [ -d "${REPO}/.git" ] || fg_blocked "a git repository (--repo <path>)"
+# The repository path is interpolated into the parked-window command string.
+# It is quoted there, and additionally refused here if it carries a shell
+# metacharacter at all.
+fg_patharg_safe "$REPO" || {
+  printf 'STATUS: BLOCKED\nreason: UNSAFE_REPOSITORY_PATH\n'
+  printf 'detail: the repository path contains a shell metacharacter or control character\n'
+  exit 2; }
 REPO_BRANCH="$(fg_git_branch "$REPO")"
 REPO_SHA="$(fg_git_head_sha "$REPO")"
 REPO_TREE="$(fg_git_head_tree "$REPO")"
@@ -205,8 +227,16 @@ if [ -n "$RUN_ID" ] && fg_run_exists "$RUN_ID"; then
       exit 4 ;;
   esac
 else
-  RUN_ID="m1-$(date -u +%Y%m%dT%H%M%SZ)-$(head -c 8 /dev/urandom | shasum -a 256 | cut -c1-8)"
+  # F-B02: the run id prefix is the ACTUAL host profile, not a hardcoded "m1-".
+  # Every M4 run previously appeared as m1-<stamp> while its manifest correctly
+  # recorded host_profile m4, which is exactly the wrong thing to be misleading
+  # about in the shared-run-root case the host filter exists for.
+  RUN_ID="${FG_RF_HOST}-$(date -u +%Y%m%dT%H%M%SZ)-$(head -c 8 /dev/urandom | shasum -a 256 | cut -c1-8)"
 fi
+fg_id_require run "$RUN_ID" >/dev/null || {
+  printf 'STATUS: BLOCKED\nreason: INVALID_RUN_ID:%s\n' "$RUN_ID"; exit 2; }
+fg_id_require session "$FG_RF_SESSION" >/dev/null || {
+  printf 'STATUS: BLOCKED\nreason: INVALID_SESSION_NAME:%s\n' "$FG_RF_SESSION"; exit 2; }
 
 # ---------------------------------------------------------------------------
 # tmux session
@@ -240,7 +270,8 @@ LOGS="$(fg_logs_dir "$RUN_ID")"
 # valid lease and gate.
 FIRST_WINDOW=1
 for W in $FG_RF_WINDOWS; do
-  PARK_CMD="FG_RF_HOST='${FG_RF_HOST}' FG_RF_RUN_ROOT='${FG_RF_RUN_ROOT}' bash '${DISPATCH}' park '${RUN_ID}' ${W} '${REPO}'"
+  # Every value interpolated into a string a shell will parse is quoted (F-J01).
+  PARK_CMD="FG_RF_HOST=$(fg_shquote "$FG_RF_HOST") FG_RF_RUN_ROOT=$(fg_shquote "$FG_RF_RUN_ROOT") bash $(fg_shquote "$DISPATCH") park $(fg_shquote "$RUN_ID") $(fg_shquote "$W") $(fg_shquote "$REPO")"
   if [ "$FIRST_WINDOW" = "1" ]; then
     "$FG_RF_TMUX_BIN" new-session -d -s "$FG_RF_SESSION" -n "$W" "$PARK_CMD" || {
       printf 'STATUS: BLOCKED\nreason: tmux session creation failed\n'; exit 3; }

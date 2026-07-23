@@ -115,10 +115,18 @@ fg_role_prompt_template() {
 
 fg_launch() {
   local run="$1" task="$2" role="$3" repo="$4" recovery="${5:-no}"
-  local tpl prompt digest token session_id cmd log exitf gate lease_state secret bindings report_path
+  local tpl prompt digest token session_id cmd log exitf gate lease_state fifo bindings report_path reverify
 
   fg_run_stop_requested "$run" && { echo "STOP_REQUESTED"; return 1; }
   fg_run_dispatch_enabled "$run" || { echo "DISPATCH_DISABLED"; return 1; }
+
+  # Identifiers reach filesystem paths and a tmux command string below, so they
+  # are validated here as well as at creation time (F-J01).
+  fg_id_require run "$run"   || { echo "INVALID_RUN_ID"; return 1; }
+  fg_id_require task "$task" || { echo "INVALID_TASK_ID"; return 1; }
+  fg_id_require role "$role" || { echo "INVALID_ROLE_ID"; return 1; }
+  fg_id_require session "$FG_RF_SESSION" || { echo "INVALID_SESSION_NAME"; return 1; }
+
   fg_task_exists "$run" "$task" || { echo "NO_SUCH_TASK"; return 1; }
 
   # A role that the host profile does not define cannot be launched on it.
@@ -183,7 +191,7 @@ fg_launch() {
     --arg sid "$session_id" \
     --arg runroot "$(fg_run_dir "$run")" \
     --arg report "$report_path" \
-    --arg tokenfile "$(fg_roles_dir "$run")/${task}/${role}.token.secret" \
+    --arg tokenfile "none. Present \$FG_RF_ROLE_CAP from THIS process's environment. It is single-use, expires, is bound to this launch, and is never written to any file." \
     --arg retry "$(fg_retry_get "$run" "$task" correction_limit)" \
     --arg handoff "$(ls -1t "$(fg_handoffs_dir "$run")"/${task}.${role}.*.json 2>/dev/null | head -1)" \
     --arg host "$FG_RF_HOST" \
@@ -205,22 +213,42 @@ fg_launch() {
 
   digest="$(fg_prompt_render "$tpl" "$prompt" "$bindings")" || { echo "$digest"; return 1; }
 
-  token="$(fg_role_token_mint "$run" "$task" "$role" "$digest" "$session_id")"
-  secret="$(fg_roles_dir "$run")/${task}/${role}.token.secret"
-  ( umask 077; printf '%s\n' "$token" > "$secret" )
+  # A per-launch, single-use capability. It is handed to the launched process
+  # over a one-shot FIFO and is never written to a reusable file; disk holds
+  # only its keyed commitment. Issuing a new one invalidates any earlier
+  # capability for this (task, role).
+  token="$(fg_role_capability_issue "$run" "$task" "$role" "$digest" "$session_id")" || {
+    echo "ROLE_CAPABILITY_ISSUE_FAILED"; return 1; }
+  rm -f "$(fg_roles_dir "$run")/${task}/${role}.token.secret" 2>/dev/null || true
 
   log="$(fg_logs_dir "$run")/${task}.${role}.log"
   exitf="$(fg_roles_dir "$run")/${task}/${role}.exit"
   mkdir -p "$(dirname "$log")" "$(dirname "$exitf")"
   rm -f "$exitf"
 
-  cmd="$(fg_claude_launch_command "$prompt" "$log" "$exitf")" || { echo "FORBIDDEN_CLAUDE_FLAG"; return 1; }
+  fifo="$(fg_role_capability_deliver "$run" "$task" "$role" "$token")" || {
+    echo "ROLE_CAPABILITY_DELIVERY_FAILED"; return 1; }
+
+  cmd="$(fg_claude_launch_command "$prompt" "$log" "$exitf" "$fifo")" || {
+    echo "FORBIDDEN_CLAUDE_FLAG"; return 1; }
 
   printf '%s\n' "$task" > "$(fg_roles_dir "$run")/${role}.current_task"
+
+  # F-J02: the rendered prompt is re-digested HERE, immediately before the
+  # process is created, so a same-user rewrite between render and launch is
+  # refused rather than silently executed.
+  reverify="$(fg_prompt_reverify "$prompt" "$digest")"
+  if [ "$reverify" != "PROMPT_DIGEST_OK" ]; then
+    fg_event_append "$run" "launch_refused" "$role" "$task" \
+      "$(jq -n --arg r "$reverify" '{reason:$r, prompt_changed_after_render:true}')" >/dev/null
+    rm -f "$fifo" 2>/dev/null || true
+    echo "LAUNCH_REFUSED_${reverify}"; return 1
+  fi
 
   # respawn-window -k guarantees a fresh process in the role's own window.
   "$FG_RF_TMUX_BIN" respawn-window -k -t "${FG_RF_SESSION}:${role}" "$cmd" 2>/dev/null || \
     "$FG_RF_TMUX_BIN" new-window -t "${FG_RF_SESSION}" -n "$role" "$cmd" 2>/dev/null || {
+      rm -f "$fifo" 2>/dev/null || true
       echo "TMUX_LAUNCH_FAILED"; return 1; }
 
   fg_task_update "$run" "$task" \
@@ -251,7 +279,7 @@ fg_restart() {
     echo "ROLE_SWITCH_REFUSED:${prev_role}->${role}"; return 1
   fi
   fg_retry_context_available "$run" "$task" || { echo "CONTEXT_RESTART_BUDGET_EXHAUSTED"; return 1; }
-  [ "$(fg_lease_verify "$run" "$task")" = "LEASE_OK" ] || \
+  [ "$(fg_lease_verify "$run" "$task" "" "$role")" = "LEASE_OK" ] || \
     [ ! -f "$(fg_lease_file "$run" "$task")" ] || { echo "LEASE_INVALID_ON_RESTART"; return 1; }
 
   handoff="$(fg_handoff_build "$run" "$task" "$role" "$repo")" || { echo "HANDOFF_FAILED"; return 1; }
@@ -270,7 +298,9 @@ case "$CMD" in
              "$(fg_git_head_sha "$5")" "$(fg_git_head_tree "$5")" ;;
   launch)  fg_launch "$1" "$2" "$3" "$4" "${5:-no}" ;;
   restart) fg_restart "$1" "$2" "$3" "$4" ;;
-  freeze)  fg_candidate_freeze "$1" "$2" "$3" "$(cat "$(fg_roles_dir "$1")/$2/builder.token.secret" 2>/dev/null || echo none)" ;;
+  # The builder presents the capability from its own environment. There is no
+  # token file to read, and no file for another role to copy.
+  freeze)  fg_candidate_freeze "$1" "$2" "$3" "${FG_RF_ROLE_CAP:-none}" ;;
   banner-only) fg_banner "$1" "$2" "${3:-}" ;;
   *) fg_err "usage: fg-role-floor-dispatch.sh {park|banner|lease|launch|restart|freeze} ..."; exit 2 ;;
 esac

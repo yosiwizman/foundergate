@@ -280,7 +280,7 @@
         },
         "digest": {
           "type": "string",
-          "description": "sha256 of the canonical record with the digest field removed."
+          "description": "KEYED seal: HMAC-SHA256 over the canonical record with the digest field removed, under the per-run writer secret at control/.writer_secret. Recomputing it requires that secret, so the party the lease constrains can no longer push out its own expiry or rewrite writer_role and re-seal. NOT a defence against an actor who can read the writer secret; on one macOS user account, that is any process the founder runs."
         }
       }
     },
@@ -312,7 +312,7 @@
     },
     "role_result": {
       "type": "object",
-      "description": "Every role result is bound to role identity, task, candidate identity, prompt digest, report digest, session identity and event-chain position. A result written through the wrong role writer is rejected before this record exists.",
+      "description": "Every role result is bound to run, task, role identity, candidate identity, prompt digest, session identity, launch nonce and event-chain position, and carries a KEYED artifact MAC. A result written through the wrong role writer is rejected by the artifact-class table before any credential is examined. Every consuming gate re-verifies the MAC and the embedded run_id/task_id IMMEDIATELY before it decides, so a payload swapped after an earlier check is not used. NOT a defence against a same-user process that can read control/.writer_secret.",
       "required": [
         "schema_version",
         "run_id",
@@ -321,7 +321,9 @@
         "artifact_class",
         "prompt_digest",
         "session_id",
+        "launch_nonce",
         "report_digest",
+        "artifact_mac",
         "event_seq",
         "written_at",
         "payload"
@@ -336,12 +338,20 @@
         "event_seq": {
           "type": "integer",
           "minimum": 1
+        },
+        "artifact_mac": {
+          "type": "string",
+          "description": "HMAC-SHA256 over the canonical artifact with artifact_mac removed, keyed with the per-run writer secret."
+        },
+        "launch_nonce": {
+          "type": "string",
+          "description": "The launch nonce of the single-use capability that authorised this write."
         }
       }
     },
     "event": {
       "type": "object",
-      "description": "Append-only. Each line commits to the digest of its predecessor; the first line's prev_digest is the literal GENESIS.",
+      "description": "Append-only. Each line carries a KEYED digest (HMAC-SHA256 over the canonical line body under the per-run writer secret) and commits to its predecessor's digest; the first line's prev_digest is the literal GENESIS. The chain's LENGTH and HEAD are committed separately in control/EVENTS.anchor.json and, when a witness directory exists, in an append-only witness outside the run root. That combination detects in-place edits, insertions, deletions, TAIL TRUNCATION and wholesale rewrites: a valid prefix is no longer a valid chain. HONEST SCOPE: an actor who reads control/.writer_secret can recompute line digests and re-anchor; the witness records conflicting heads at the same length, which makes such a rewrite visible but does not prevent it. This is not an independent notary.",
       "required": [
         "seq",
         "ts",
@@ -362,7 +372,8 @@
           "type": "string"
         },
         "digest": {
-          "type": "string"
+          "type": "string",
+          "description": "HMAC-SHA256 over the canonical line body (digest field removed), keyed with the per-run writer secret."
         }
       }
     },
@@ -488,15 +499,40 @@
     },
     "founder_receipt": {
       "type": "object",
-      "description": "Signed outside the package with the founder key. The floor verifies; it cannot mint.",
+      "description": "A detached SSHSIG signature over the receipt's canonical body, produced by an Ed25519 PRIVATE key that exists only on founder-controlled hardware. This package holds the PUBLIC key only, pinned by SHA-256 fingerprint in the digest-covered host profile, and contains NO signing verb: grep -rn -- '-Y sign' over bin/ and lib/ returns nothing, and both selftests assert it. Verify and forge are no longer the same operation. CANONICAL BODY (the exact signed bytes): jq -S -c 'del(.signature)' receipt.json > body. SIGN: ssh-keygen -Y sign -f <founder private key> -n foundergate.founder-receipt.v2 body. The key set must be EXACTLY the required fields plus 'signature', in sorted order, with no duplicates and nothing extra; anything else is FOUNDER_RECEIPT_MALFORMED before any cryptography runs. A receipt is spent exactly once. Verification performs no git operation.",
       "required": [
-        "task_id",
+        "schema",
+        "version",
+        "action",
+        "branch",
         "candidate_sha",
         "candidate_tree",
         "decision",
-        "digest"
+        "expires_at_epoch",
+        "host_profile",
+        "issued_at",
+        "issued_at_epoch",
+        "nonce",
+        "repository",
+        "repository_origin",
+        "run_id",
+        "signer_fingerprint",
+        "task_id",
+        "verification_report_digest",
+        "signature"
       ],
+      "additionalProperties": false,
       "properties": {
+        "schema": {
+          "const": "foundergate.founder-receipt"
+        },
+        "version": {
+          "const": "2"
+        },
+        "action": {
+          "type": "string",
+          "description": "The gated action this approval is for, e.g. 'merge'. A receipt for one action never authorises another."
+        },
         "decision": {
           "type": "string",
           "enum": [
@@ -504,9 +540,27 @@
             "REJECT"
           ]
         },
-        "digest": {
+        "nonce": {
           "type": "string",
-          "description": "sha256 of the canonical record without .digest, concatenated with the founder key."
+          "description": "Unique per receipt. Spent once; recorded in CONSUMED_RECEIPTS.json and in the keyed event chain."
+        },
+        "expires_at_epoch": {
+          "type": "integer"
+        },
+        "issued_at_epoch": {
+          "type": "integer"
+        },
+        "signer_fingerprint": {
+          "type": "string",
+          "description": "SHA256:... of the founder PUBLIC key. Must equal the pin in the loaded host profile."
+        },
+        "verification_report_digest": {
+          "type": "string",
+          "description": "report_digest of the final_verification_report this approval was issued against."
+        },
+        "signature": {
+          "type": "string",
+          "description": "Armored detached SSHSIG over the canonical body, namespace foundergate.founder-receipt.v2."
         }
       }
     },
@@ -527,6 +581,128 @@
         }
       },
       "description": "Bound to the exact final SHA and tree. A moved SHA is refused rather than re-verified."
+    },
+    "role_capability": {
+      "type": "object",
+      "description": "On-disk COMMITMENT to a per-launch, single-use role capability. The capability itself is 32 random bytes, delivered to the launched process once over a mode-0600 FIFO that is unlinked on first read, and is NEVER written to any file. This record contains only cap_commit, from which the capability cannot be recovered; presenting cap_commit confers nothing. Issuing a new capability for the same (task, role) invalidates the previous one. HONEST SCOPE: once delivered the capability lives in the launched process's environment, readable by another process running as the same user, and any same-user process can call the issuing function itself. Issuance is recorded in the keyed event chain naming the issuing pid, so ad-hoc issuance is DETECTABLE, not prevented.",
+      "required": [
+        "schema_version",
+        "run_id",
+        "task_id",
+        "role",
+        "host_profile",
+        "prompt_digest",
+        "session_id",
+        "launch_nonce",
+        "issue_event_seq",
+        "issue_chain_head",
+        "issued_at_epoch",
+        "not_after_epoch",
+        "issuer_pid",
+        "cap_commit"
+      ],
+      "properties": {
+        "role": {
+          "$ref": "#/$defs/role"
+        },
+        "cap_commit": {
+          "type": "string",
+          "description": "HMAC-SHA256(per-run writer secret, canonical binding | capability)."
+        },
+        "not_after_epoch": {
+          "type": "integer",
+          "description": "Capabilities expire (F-C05)."
+        }
+      }
+    },
+    "event_anchor": {
+      "type": "object",
+      "description": "control/EVENTS.anchor.json. Commits the chain's length and head so a truncated tail is no longer a valid chain (F-H02). Mirrored, when a witness directory exists, to an append-only witness file outside the run root.",
+      "required": [
+        "schema_version",
+        "run_id",
+        "event_count",
+        "head_digest",
+        "anchored_at",
+        "seal"
+      ],
+      "properties": {
+        "event_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "seal": {
+          "type": "string",
+          "description": "HMAC-SHA256 over the canonical anchor with seal removed, keyed with the per-run writer secret."
+        }
+      }
+    },
+    "consumed_receipts": {
+      "type": "object",
+      "description": "control/CONSUMED_RECEIPTS.json. Durable one-time-use ledger for founder decision receipt nonces, kept in agreement with founder_receipt_consumed events in the keyed chain. A MISSING or UNREADABLE ledger is a REFUSAL (FOUNDER_RECEIPT_LEDGER_CONSUMED_LEDGER_MISSING), never an optimistic 'nothing consumed yet': deleting it does not re-enable a spent receipt.",
+      "required": [
+        "schema_version",
+        "run_id",
+        "created_at",
+        "consumed",
+        "seal"
+      ],
+      "properties": {
+        "consumed": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "nonce",
+              "task_id",
+              "action",
+              "candidate_sha",
+              "consumed_at"
+            ]
+          }
+        },
+        "seal": {
+          "type": "string",
+          "description": "HMAC-SHA256 over the canonical ledger with seal removed, keyed with the per-run writer secret."
+        }
+      }
+    },
+    "host_enrollment": {
+      "type": "object",
+      "description": "EXTERNAL record, never written by this package, binding a host profile to a physical machine. Required for any profile carrying integration authority; the requirement is derived from the authority set, not from a profile boolean. Signed with the enrollment authority PRIVATE key on founder hardware; this package holds only the public half, pinned by fingerprint. CANONICAL BODY: jq -S -c . enrollment.json. NAMESPACE: foundergate.host-enrollment.v1. A --host argument is profile selection, NOT attestation.",
+      "required": [
+        "schema",
+        "version",
+        "host_profile",
+        "hardware",
+        "enrolled_at",
+        "not_after_epoch"
+      ],
+      "properties": {
+        "hardware": {
+          "type": "object",
+          "required": [
+            "platform_uuid",
+            "serial_number"
+          ],
+          "properties": {
+            "platform_uuid": {
+              "type": "string",
+              "description": "IOPlatformUUID, read read-only via ioreg and compared, never invented."
+            },
+            "serial_number": {
+              "type": "string",
+              "description": "IOPlatformSerialNumber."
+            }
+          }
+        },
+        "host_public_key_fingerprint": {
+          "type": "string"
+        },
+        "not_after_epoch": {
+          "type": "integer"
+        }
+      }
     }
   }
 }

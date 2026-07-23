@@ -63,6 +63,19 @@
   "context_restart_limit": 3,
   "heavy_test_slots": 1,
   "requires_founder_receipt_for_merge": true,
+  "founder_trust_root": {
+    "scheme": "sshsig",
+    "public_key_fingerprint": null,
+    "signature_namespace": "foundergate.founder-receipt.v2",
+    "signature_principal": "foundergate-founder",
+    "max_receipt_age_seconds": 86400,
+    "note": "VERIFY ONLY, and moot on M1: this profile holds no merge_sheriff authority, so the merge gate returns M4_HANDOFF_REQUIRED before any receipt is consulted. The pin is null; while it is null every receipt verification returns FOUNDER_TRUST_ROOT_NOT_ENROLLED. The package contains no signing verb and no private key."
+  },
+  "host_enrollment": {
+    "required_because": "not required: this profile carries no integration authority",
+    "enrollment_authority_fingerprint": null,
+    "note": "fg_host_identity_verify returns HOST_IDENTITY_NOT_REQUIRED for this profile, because the M1 build floor holds no serial-integration, protected-main, final-verification or merge authority to bind to a machine. Any profile that DOES hold one of those authorities requires an external, signed, hardware-bound enrollment record; the requirement is derived from the authority set, not from a flag in this file."
+  },
   "expected_repository_identity": null,
   "notes": "expected_repository_identity is null on M1: this profile runs against whatever isolated clone the founder names. The M4 profile pins it."
 }
