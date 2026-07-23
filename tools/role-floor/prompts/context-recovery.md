@@ -44,6 +44,7 @@ Continue only the remaining work listed in the handoff, under the same allowed
 paths and the same stop conditions. A context restart is not a correction
 attempt and does not buy you a second chance at rejected work.
 
-Write your result through your own role writer using the token in the role
-token file. If the handoff and disk disagree, disk wins and the disagreement
-goes in your report.
+Write your result through your own role writer, presenting the single-use
+capability in `$FG_RF_ROLE_CAP` from this process's environment. A restart
+issues a fresh capability and invalidates the previous one. If the handoff and
+disk disagree, disk wins and the disagreement goes in your report.

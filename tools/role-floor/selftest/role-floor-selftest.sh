@@ -24,6 +24,11 @@ export FG_RF_RUN_ROOT="${TMP}/runroot"
 export FG_RF_TMUX_BIN="${TMP}/bin/tmux"
 export FG_RF_CLAUDE_BIN="${TMP}/bin/claude"
 export FG_RF_NO_SUPERVISOR=1
+# Every trust root, witness and enrollment location is redirected into this
+# test's own temporary tree. The selftest never reads or writes ~/.foundergate.
+export FG_RF_EVENT_WITNESS_DIR="${TMP}/witness"
+export FG_RF_HOST_ENROLLMENT_DIR="${TMP}/enrollment"
+export FG_RF_FOUNDER_PUBKEY_FILE="${TMP}/founder.pub"
 export FG_TEST_TMUX_LOG="${TMP}/tmux.calls"
 export FG_TEST_TMUX_STATE="${TMP}/tmuxstate"
 export FG_TEST_CLAUDE_LOG="${TMP}/claude.calls"
@@ -110,10 +115,88 @@ git -C "$FIX" commit -q -m "fixture base" >/dev/null 2>&1
 BASE_SHA="$(git -C "$FIX" rev-parse HEAD)"
 BASE_TREE="$(git -C "$FIX" rev-parse 'HEAD^{tree}')"
 
-# The founder decision key belongs to the founder, not to the floor. The test
-# holds it here because the test is playing the founder.
-export FG_RF_FOUNDER_KEY_FILE="${TMP}/founder.key"
-printf 'selftest-founder-key-%s\n' "$$" > "$FG_RF_FOUNDER_KEY_FILE"
+mkdir -p "$FG_RF_EVENT_WITNESS_DIR" "$FG_RF_HOST_ENROLLMENT_DIR"
+
+# ---------------------------------------------------------------------------
+# Disposable founder identity
+# ---------------------------------------------------------------------------
+#
+# The founder's PRIVATE key belongs to the founder and never exists on a floor
+# machine. This test generates a THROWAWAY Ed25519 keypair inside its own
+# temporary directory and plays the founder with it, so that the verification
+# path can be exercised end to end. The package under test only ever sees the
+# .pub half; the private half is destroyed with $TMP on exit.
+#
+# Note what this arrangement proves and what it does not: it proves the floor
+# VERIFIES correctly. It cannot and does not give the floor any ability to
+# SIGN. `ssh-keygen -Y sign` appears in this test file and nowhere under bin/
+# or lib/ -- test T36 asserts exactly that.
+HAVE_SSHSIG=no
+if command -v ssh-keygen >/dev/null 2>&1 && \
+   ssh-keygen -t ed25519 -N '' -C 'selftest-fixture-founder' -f "${TMP}/founder" >/dev/null 2>&1; then
+  cp "${TMP}/founder.pub" "$FG_RF_FOUNDER_PUBKEY_FILE"
+  ssh-keygen -t ed25519 -N '' -C 'selftest-fixture-attacker' -f "${TMP}/attacker" >/dev/null 2>&1
+  HAVE_SSHSIG=yes
+fi
+FOUNDER_FPR="$(ssh-keygen -lf "$FG_RF_FOUNDER_PUBKEY_FILE" 2>/dev/null | awk '{print $2}')"
+
+# A package copy whose m4 profile pins the FIXTURE founder fingerprint. The
+# shipped profiles pin nothing, because no founder key has been enrolled and
+# the Builder is forbidden from inventing one; without a fixture pin the
+# receipt path could only ever be observed refusing.
+PKGFX="${TMP}/pkg-fixture"
+cp -R "$PKG" "$PKGFX"
+
+# ---------------------------------------------------------------------------
+# Disposable host enrollment fixture
+# ---------------------------------------------------------------------------
+#
+# `--host m4` is profile selection, not physical-host attestation. The fixture
+# profile below is enrolled to THIS machine's live IOPlatformUUID and serial,
+# read read-only via ioreg, with an enrollment authority keypair generated in
+# $TMP and destroyed with it. No real M4 identity is guessed, written or
+# committed anywhere. The SHIPPED m4.json pins nothing, so on the shipped
+# profile every enrollment check fails closed -- which is what M17 asserts.
+LIVE_UUID="$(ioreg -rd1 -c IOPlatformExpertDevice 2>/dev/null | awk -F'"' '/IOPlatformUUID/{print $4; exit}')"
+LIVE_SERIAL="$(ioreg -rd1 -c IOPlatformExpertDevice 2>/dev/null | awk -F'"' '/IOPlatformSerialNumber/{print $4; exit}')"
+ENROLL_FPR=""
+if [ "$HAVE_SSHSIG" = "yes" ]; then
+  ssh-keygen -t ed25519 -N '' -C 'selftest-enrollment-authority' -f "${TMP}/enrollauth" >/dev/null 2>&1
+  ENROLL_FPR="$(ssh-keygen -lf "${TMP}/enrollauth.pub" 2>/dev/null | awk '{print $2}')"
+  cp "${TMP}/enrollauth.pub" "${FG_RF_HOST_ENROLLMENT_DIR}/m4.enrollment-authority.pub"
+fi
+
+# write_enrollment <host> <uuid> <serial> [key]
+write_enrollment() {
+  local host="$1" uuid="$2" serial="$3" key="${4:-${TMP}/enrollauth}" rec
+  [ "$HAVE_SSHSIG" = "yes" ] || return 1
+  rec="${FG_RF_HOST_ENROLLMENT_DIR}/${host}.enrollment.json"
+  jq -n --arg h "$host" --arg u "$uuid" --arg s "$serial" \
+        --argjson na "$(( $(date -u +%s) + 86400 ))" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+    '{schema:"foundergate.host-enrollment", version:"1", host_profile:$h,
+      hardware:{platform_uuid:$u, serial_number:$s},
+      enrolled_at:$ts, not_after_epoch:$na}' > "$rec" || return 1
+  jq -S -c . "$rec" > "${TMP}/enroll.body"
+  ssh-keygen -Y sign -f "$key" -n "foundergate.host-enrollment.v1" "${TMP}/enroll.body" >/dev/null 2>&1 || return 1
+  mv "${TMP}/enroll.body.sig" "${rec}.sig"
+  rm -f "${TMP}/enroll.body"
+  return 0
+}
+
+if [ -n "$FOUNDER_FPR" ] && [ -n "$ENROLL_FPR" ]; then
+  jq --arg f "$FOUNDER_FPR" --arg e "$ENROLL_FPR" \
+     '.founder_trust_root.public_key_fingerprint=$f
+      | .host_enrollment.enrollment_authority_fingerprint=$e' \
+     "$PKGFX/config/hosts/m4.json" > "${TMP}/m4fx.json" && \
+     mv "${TMP}/m4fx.json" "$PKGFX/config/hosts/m4.json"
+  # The fixture copy re-seals its own INTEGRITY manifest, exactly as any
+  # modifier of the tree could. That is the point of F-E01: this step restores
+  # integrity and establishes nothing about authenticity.
+  ( cd "$PKGFX" && { head -6 PACKAGE_DIGESTS.txt
+      grep '^[0-9a-f]' PACKAGE_DIGESTS.txt | sed 's/^[0-9a-f]*  *//' \
+        | while IFS= read -r r; do shasum -a 256 "$r"; done; } > "${TMP}/pdfx" \
+    && mv "${TMP}/pdfx" PACKAGE_DIGESTS.txt )
+fi
 
 # shellcheck source=../lib/claude-adapter.sh
 . "${PKG}/lib/claude-adapter.sh"
@@ -129,18 +212,38 @@ mk_run() {
   fg_run_init "$run" "$FIX" >/dev/null 2>&1
   printf '%s\n' "$run"
 }
+# mint_founder_receipt <run> <task> <sha> <tree> [decision] [jq_mutation] [key]
+#
+# THE TEST PLAYS THE FOUNDER. This helper signs with the throwaway private key
+# generated above. Nothing under bin/ or lib/ can do this: the package holds no
+# private key and contains no signing verb. A receipt produced here verifies
+# only because the fixture profile pins the fixture public key.
 mint_founder_receipt() {
-  # Signs with the founder key. The package can verify this; it can never
-  # produce it, which is the whole point of the gate.
-  local run="$1" task="$2" sha="$3" tree="$4" decision="${5:-APPROVE}" f body digest
+  local run="$1" task="$2" sha="$3" tree="$4" decision="${5:-APPROVE}"
+  local mut="${6:-.}" key="${7:-${TMP}/founder}" f raw
+  [ "$HAVE_SSHSIG" = "yes" ] || return 1
   f="$(fg_gates_dir "$run")/${task}.decision.json"
   mkdir -p "$(dirname "$f")"
-  jq -n --arg t "$task" --arg s "$sha" --arg tr "$tree" --arg d "$decision" --arg ts "$(fg_now)" \
-    '{task_id:$t, candidate_sha:$s, candidate_tree:$tr, decision:$d,
-      founder:"selftest-founder", issued_at:$ts}' > "$f"
-  body="$(jq -S -c 'del(.digest)' "$f")"
-  digest="$(fg_sha256_string "${body}|$(cat "$FG_RF_FOUNDER_KEY_FILE")")"
-  jq --arg d "$digest" '. + {digest:$d}' "$f" > "${f}.tmp" && mv "${f}.tmp" "$f"
+  raw="${TMP}/receipt.raw.json"
+  jq -n --arg sc "foundergate.founder-receipt" --arg v "2" --arg action "merge" \
+     --arg branch "$(fg_task_get "$run" "$task" branch)" \
+     --arg csha "$sha" --arg ctree "$tree" --arg dec "$decision" \
+     --argjson exp "$(( $(fg_epoch) + 3600 ))" --arg host "$FG_RF_HOST" \
+     --arg iat "$(fg_now)" --argjson iate "$(fg_epoch)" \
+     --arg nonce "n-$(head -c 8 /dev/urandom | shasum -a 256 | cut -c1-24)" \
+     --arg repo "$(fg_json_get "$(fg_control_dir "$run")/RUN_MANIFEST.json" '.source_repository')" \
+     --arg origin "selftest-fixture" --arg run "$run" --arg fpr "$FOUNDER_FPR" --arg task "$task" \
+     --arg vrd "$(fg_json_get "$(fg_role_artifact_path "$run" "$task" final_verification_report)" '.report_digest')" \
+    '{schema:$sc, version:$v, action:$action, branch:$branch, candidate_sha:$csha,
+      candidate_tree:$ctree, decision:$dec, expires_at_epoch:$exp, host_profile:$host,
+      issued_at:$iat, issued_at_epoch:$iate, nonce:$nonce, repository:$repo,
+      repository_origin:$origin, run_id:$run, signer_fingerprint:$fpr, task_id:$task,
+      verification_report_digest:$vrd}' | jq "$mut" > "$raw" || return 1
+  jq -S -c 'del(.signature)' "$raw" > "${TMP}/receipt.body"
+  ssh-keygen -Y sign -f "$key" -n "$(fg_host_founder_namespace)" "${TMP}/receipt.body" >/dev/null 2>&1 || return 1
+  jq -S --rawfile s "${TMP}/receipt.body.sig" '. + {signature:$s}' "$raw" > "$f" || return 1
+  rm -f "${TMP}/receipt.body.sig" "${TMP}/receipt.body" "$raw"
+  return 0
 }
 mk_task() {
   local run="$1" task="$2" lane="${3:-lane-a}"
@@ -216,9 +319,9 @@ printf -- '-- role-forgery defence --\n'
 
 RUN_C="$(mk_run "run-forgery")"
 mk_task "$RUN_C" "t-forge" "lane-forge"
-B_TOKEN="$(fg_role_token_mint "$RUN_C" "t-forge" builder "digest-b" "sid-b")"
-C_TOKEN="$(fg_role_token_mint "$RUN_C" "t-forge" checker "digest-c" "sid-c")"
-A_TOKEN="$(fg_role_token_mint "$RUN_C" "t-forge" advisor "digest-a" "sid-a")"
+B_TOKEN="$(fg_role_capability_issue "$RUN_C" "t-forge" builder "digest-b" "sid-b")"
+C_TOKEN="$(fg_role_capability_issue "$RUN_C" "t-forge" checker "digest-c" "sid-c")"
+A_TOKEN="$(fg_role_capability_issue "$RUN_C" "t-forge" advisor "digest-a" "sid-a")"
 
 assert_contains "T06 builder cannot write checker state" "ROLE_FORGERY_REJECTED" \
   "$(echo '{"verdict":"CLEAN"}' | fg_role_result_write "$RUN_C" "t-forge" builder checker_verdict "$B_TOKEN" 2>&1)"
@@ -228,7 +331,7 @@ assert_contains "T08 advisor cannot write merge state" "M4_AUTHORITY_SEALED" \
   "$(echo '{"merged":true}' | fg_role_result_write "$RUN_C" "t-forge" advisor merge_receipt "$A_TOKEN" 2>&1)"
 assert_contains "T08b no role at all can write a merge receipt" "M4_AUTHORITY_SEALED" \
   "$(echo '{"merged":true}' | fg_role_result_write "$RUN_C" "t-forge" orchestrator merge_receipt "$B_TOKEN" 2>&1)"
-assert_contains "T08c a forged role token is rejected" "ROLE_TOKEN_INVALID" \
+assert_contains "T08c a forged role capability is rejected" "ROLE_CAPABILITY_INVALID" \
   "$(echo '{"verdict":"CLEAN"}' | fg_role_result_write "$RUN_C" "t-forge" checker checker_verdict "not-the-real-token" 2>&1)"
 assert_contains "T08d the legitimate role writer still works" "RESULT_WRITTEN:" \
   "$(echo '{"verdict":"FINDINGS"}' | fg_role_result_write "$RUN_C" "t-forge" checker checker_verdict "$C_TOKEN" 2>&1)"
@@ -263,7 +366,7 @@ assert_eq "T12e a stale writable lease cannot be silently reused" "LEASE_REJECTE
 assert_eq "T12f lease digest tampering is detected" "LEASE_DIGEST_MISMATCH" \
   "$( jq '.allowed_globs=["everything/*"]' "$(fg_lease_file "$RUN_D" "t-w1")" > "${TMP}/tamper.json"
      cp "${TMP}/tamper.json" "$(fg_lease_file "$RUN_D" "t-w1")"
-     fg_lease_verify "$RUN_D" "t-w1" )"
+     fg_lease_verify "$RUN_D" "t-w1" "" builder )"
 assert_eq "T12g writes outside the lease are refused" "PATH_OUTSIDE_LEASE" \
   "$(fg_lease_path_allowed "$RUN_D" "t-w2" "src/a.txt")"
 
@@ -289,7 +392,7 @@ printf -- '-- candidate freeze and sequencing --\n'
 RUN_E="$(mk_run "run-seq")"
 mk_task "$RUN_E" "t-seq" "lane-seq"
 mk_lease "$RUN_E" "t-seq" "src/*" >/dev/null
-E_BTOK="$(fg_role_token_mint "$RUN_E" "t-seq" builder "d-b" "s-b")"
+E_BTOK="$(fg_role_capability_issue "$RUN_E" "t-seq" builder "d-b" "s-b")"
 echo '{"claim":"fixture change"}' | fg_role_result_write "$RUN_E" "t-seq" builder builder_report "$E_BTOK" >/dev/null
 new_commit "candidate one"
 CAND_SHA="$(git -C "$FIX" rev-parse HEAD)"
@@ -309,7 +412,7 @@ git -C "$FIX" checkout -q -- . 2>/dev/null
 
 # Re-freeze at live HEAD so the sequencing tests continue from a valid candidate.
 FREEZE2="$(fg_candidate_freeze "$RUN_E" "t-seq" "$FIX" "$E_BTOK")"
-E_CTOK="$(fg_role_token_mint "$RUN_E" "t-seq" checker "d-c" "s-c")"
+E_CTOK="$(fg_role_capability_issue "$RUN_E" "t-seq" checker "d-c" "s-c")"
 jq -n --arg s "$(git -C "$FIX" rev-parse HEAD)" --arg t "$(git -C "$FIX" rev-parse 'HEAD^{tree}')" \
   '{verdict:"FINDINGS", candidate_sha:$s, candidate_tree:$t, findings:[{id:"F1",severity:"HIGH"}]}' \
   | fg_role_result_write "$RUN_E" "t-seq" checker checker_verdict "$E_CTOK" >/dev/null
@@ -343,10 +446,10 @@ assert_eq "T16b an exhausted budget stops automatic continuation" "STOP:ESCALATE
 RUN_F="$(mk_run "run-clean")"
 mk_task "$RUN_F" "t-clean" "lane-clean"
 mk_lease "$RUN_F" "t-clean" "src/*" >/dev/null
-F_BTOK="$(fg_role_token_mint "$RUN_F" "t-clean" builder "d-b" "s-b")"
+F_BTOK="$(fg_role_capability_issue "$RUN_F" "t-clean" builder "d-b" "s-b")"
 echo '{"claim":"ok"}' | fg_role_result_write "$RUN_F" "t-clean" builder builder_report "$F_BTOK" >/dev/null
 fg_candidate_freeze "$RUN_F" "t-clean" "$FIX" "$F_BTOK" >/dev/null
-F_CTOK="$(fg_role_token_mint "$RUN_F" "t-clean" checker "d-c" "s-c")"
+F_CTOK="$(fg_role_capability_issue "$RUN_F" "t-clean" checker "d-c" "s-c")"
 jq -n --arg s "$(git -C "$FIX" rev-parse HEAD)" --arg t "$(git -C "$FIX" rev-parse 'HEAD^{tree}')" \
   '{verdict:"CLEAN", candidate_sha:$s, candidate_tree:$t, findings:[]}' \
   | fg_role_result_write "$RUN_F" "t-clean" checker checker_verdict "$F_CTOK" >/dev/null
@@ -577,8 +680,8 @@ printf -- '-- cross-host: M1 profile boundaries --\n'
 fg_host_load m1 >/dev/null
 RUN_M1="$(mk_run "run-m1-profile")"
 mk_task "$RUN_M1" "t-m1" "lane-m1"
-M1_TOK="$(fg_role_token_mint "$RUN_M1" "t-m1" builder "d" "s")"
-M1_ATOK="$(fg_role_token_mint "$RUN_M1" "t-m1" advisor "d" "s")"
+M1_TOK="$(fg_role_capability_issue "$RUN_M1" "t-m1" builder "d" "s")"
+M1_ATOK="$(fg_role_capability_issue "$RUN_M1" "t-m1" advisor "d" "s")"
 
 assert_eq "M03a M1 cannot publish integration authority" "M4_AUTHORITY_SEALED" \
   "$(echo '{"integrated":true}' | fg_role_result_write "$RUN_M1" "t-m1" builder integration_write "$M1_TOK" 2>&1)"
@@ -599,8 +702,27 @@ assert_eq "M03g M1 routes a merge request to M4" "M4_HANDOFF_REQUIRED" \
 printf -- '-- cross-host: M4 profile --\n'
 # ===========================================================================
 
+# F-F01. The SHIPPED m4 profile is not enrolled to any machine, so selecting
+# it creates nothing at all. This is the primary regression for "a full
+# seven-window M4 floor with merge authority started on the M1".
 rm -f "${FG_TEST_TMUX_STATE}/session" "${FG_TEST_TMUX_STATE}/windows"
-M4_START="$(bash "${PKG}/bin/fg-role-floor-start.sh" --host m4 --repo "$FIX" 2>&1)"
+M4_UNENROLLED="$(bash "${PKG}/bin/fg-role-floor-start.sh" --host m4 --repo "$FIX" 2>&1)"
+assert_contains "M17 the shipped m4 profile refuses to start on an unenrolled machine" \
+  "HOST_ENROLLMENT_NOT_CONFIGURED" "$M4_UNENROLLED"
+assert_eq "M17b nothing was created by the refused m4 start" "0" \
+  "$(cat "${FG_TEST_TMUX_STATE}/windows" 2>/dev/null | grep -c . || true)"
+
+# Everything after this point uses the ENROLLED FIXTURE profile, so that the
+# governed M4 behaviour can be exercised without pretending this machine is an
+# M4. FG_RF_HOME follows the fixture package copy.
+if [ "$HAVE_SSHSIG" = "yes" ] && [ -n "$LIVE_UUID" ] && [ -n "$LIVE_SERIAL" ]; then
+  write_enrollment m4 "$LIVE_UUID" "$LIVE_SERIAL"
+fi
+# shellcheck source=../lib/claude-adapter.sh
+. "${PKGFX}/lib/claude-adapter.sh"
+
+rm -f "${FG_TEST_TMUX_STATE}/session" "${FG_TEST_TMUX_STATE}/windows"
+M4_START="$(bash "${PKGFX}/bin/fg-role-floor-start.sh" --host m4 --repo "$FIX" 2>&1)"
 M4_WINDOWS="$(cat "${FG_TEST_TMUX_STATE}/windows" 2>/dev/null)"
 assert_eq "M02 M4 creates the seven governed role windows" "7" \
   "$(printf '%s\n' "$M4_WINDOWS" | grep -c . || true)"
@@ -610,16 +732,34 @@ assert_eq "M02b the M4 window set is exactly the seven required roles" \
 assert_eq "M02c the M4 founder-facing window is still the orchestrator" "orchestrator" \
   "$(printf '%s\n' "$M4_WINDOWS" | head -1)"
 assert_contains "M02d the M4 session name is distinct from M1" "foundergate-m4" "$M4_START"
+assert_contains "M02e the run id prefix names the ACTUAL host profile" "run_id: m4-" "$M4_START"
 
 fg_host_load m4 >/dev/null
+assert_eq "M17c the enrolled fixture machine passes host identity verification" "HOST_IDENTITY_OK" \
+  "$(fg_host_identity_verify)"
+write_enrollment m4 "NOT-THIS-MACHINES-UUID" "$LIVE_SERIAL" >/dev/null 2>&1
+assert_eq "M17d a record enrolled to different hardware fails closed" "HOST_HARDWARE_MISMATCH" \
+  "$(fg_host_identity_verify)"
+write_enrollment m4 "$LIVE_UUID" "NOT-THIS-MACHINES-SERIAL" >/dev/null 2>&1
+assert_eq "M17e a wrong hardware serial fails closed" "HOST_HARDWARE_MISMATCH" \
+  "$(fg_host_identity_verify)"
+write_enrollment m4 "$LIVE_UUID" "$LIVE_SERIAL" "${TMP}/attacker" >/dev/null 2>&1
+assert_eq "M17f an enrollment signed by the wrong authority fails closed" "HOST_ENROLLMENT_UNSIGNED" \
+  "$(fg_host_identity_verify)"
+mv "${FG_RF_HOST_ENROLLMENT_DIR}/m4.enrollment.json" "${TMP}/enrollment.parked" 2>/dev/null || true
+assert_eq "M17g a missing enrollment record fails closed" "HOST_ENROLLMENT_MISSING" \
+  "$(fg_host_identity_verify)"
+write_enrollment m4 "$LIVE_UUID" "$LIVE_SERIAL" >/dev/null 2>&1
+assert_eq "M17h restoring a valid enrollment restores host identity" "HOST_IDENTITY_OK" \
+  "$(fg_host_identity_verify)"
 RUN_M4="$(mk_run "run-m4-profile")"
 mk_task "$RUN_M4" "t-m4" "lane-m4"
-M4_BTOK="$(fg_role_token_mint "$RUN_M4" "t-m4" builder "d" "s")"
-M4_CTOK="$(fg_role_token_mint "$RUN_M4" "t-m4" checker "d" "s")"
-M4_ATOK="$(fg_role_token_mint "$RUN_M4" "t-m4" advisor "d" "s")"
-M4_STOK="$(fg_role_token_mint "$RUN_M4" "t-m4" serial-integration "d" "s")"
-M4_VTOK="$(fg_role_token_mint "$RUN_M4" "t-m4" final-verifier "d" "s")"
-M4_MTOK="$(fg_role_token_mint "$RUN_M4" "t-m4" merge-sheriff "d" "s")"
+M4_BTOK="$(fg_role_capability_issue "$RUN_M4" "t-m4" builder "d" "s")"
+M4_CTOK="$(fg_role_capability_issue "$RUN_M4" "t-m4" checker "d" "s")"
+M4_ATOK="$(fg_role_capability_issue "$RUN_M4" "t-m4" advisor "d" "s")"
+M4_STOK="$(fg_role_capability_issue "$RUN_M4" "t-m4" serial-integration "d" "s")"
+M4_VTOK="$(fg_role_capability_issue "$RUN_M4" "t-m4" final-verifier "d" "s")"
+M4_MTOK="$(fg_role_capability_issue "$RUN_M4" "t-m4" merge-sheriff "d" "s")"
 
 assert_eq "M04 the M4 builder cannot invoke serial integration" "ROLE_FORGERY_REJECTED" \
   "$(echo '{"integrated":true}' | fg_role_result_write "$RUN_M4" "t-m4" builder integration_write "$M4_BTOK" 2>&1)"
@@ -670,52 +810,138 @@ jq -n --arg s "$FINAL_SHA" --arg t "$FINAL_TREE" \
   | fg_role_result_write "$RUN_M4" "t-m4" final-verifier final_verification_report "$M4_VTOK" >/dev/null
 assert_eq "M09 the merge sheriff refuses a missing founder receipt" "MERGE_REFUSED_FOUNDER_RECEIPT_MISSING" \
   "$(fg_merge_sheriff_gate "$RUN_M4" "t-m4")"
-mint_founder_receipt "$RUN_M4" "t-m4" "$FINAL_SHA" "$FINAL_TREE" "APPROVE"
-jq '.decision="APPROVE" | .candidate_sha="tampered"' "$(fg_founder_receipt_file "$RUN_M4" "t-m4")" > "${TMP}/r.json"
-cp "${TMP}/r.json" "$(fg_founder_receipt_file "$RUN_M4" "t-m4")"
-assert_eq "M09b the merge sheriff refuses a tampered founder receipt" "MERGE_REFUSED_FOUNDER_RECEIPT_INVALID" \
-  "$(fg_merge_sheriff_gate "$RUN_M4" "t-m4")"
-mint_founder_receipt "$RUN_M4" "t-m4" "$FINAL_SHA" "$FINAL_TREE" "REJECT"
-assert_eq "M09c the merge sheriff refuses a rejecting receipt" "MERGE_REFUSED_FOUNDER_RECEIPT_NOT_APPROVED" \
-  "$(fg_merge_sheriff_gate "$RUN_M4" "t-m4")"
-mint_founder_receipt "$RUN_M4" "t-m4" "0000000000000000000000000000000000000000" "$FINAL_TREE" "APPROVE"
-assert_eq "M09d the merge sheriff refuses a receipt for another candidate" "MERGE_REFUSED_FOUNDER_RECEIPT_WRONG_CANDIDATE" \
-  "$(fg_merge_sheriff_gate "$RUN_M4" "t-m4")"
-mint_founder_receipt "$RUN_M4" "t-m4" "$FINAL_SHA" "$FINAL_TREE" "APPROVE"
-assert_eq "M09e a valid founder receipt opens the merge gate" "MERGE_GATE_OPEN" \
-  "$(fg_merge_sheriff_gate "$RUN_M4" "t-m4")"
-assert_contains "M09f only the merge sheriff may then write the receipt" "RESULT_WRITTEN:" \
-  "$(echo '{"receipt":"prepared"}' | fg_role_result_write "$RUN_M4" "t-m4" merge-sheriff merge_receipt "$M4_MTOK" 2>&1)"
+
+if [ "$HAVE_SSHSIG" != "yes" ]; then
+  skip "M09b-M09m founder receipt signature matrix" "ssh-keygen -Y is unavailable on this host"
+else
+  # --- F-D01. The package cannot mint a receipt. The TEST mints one, with a
+  # throwaway private key that exists only in $TMP.
+  mint_founder_receipt "$RUN_M4" "t-m4" "$FINAL_SHA" "$FINAL_TREE" "APPROVE"
+  assert_eq "M09e a validly signed, in-scope founder receipt opens the merge gate" "MERGE_GATE_OPEN" \
+    "$(fg_merge_sheriff_gate "$RUN_M4" "t-m4")"
+
+  # --- F-D01. The exact audit forgery: build a receipt body with an attacker
+  # name in it and try to make the floor accept it. There is no digest function
+  # to call any more, and no private key to sign with.
+  RCPT="$(fg_founder_receipt_file "$RUN_M4" "t-m4")"
+  cp "$RCPT" "${TMP}/receipt.valid.json"
+  jq -S '.decision="APPROVE"' "${TMP}/receipt.valid.json" \
+    | jq -S '.signer_fingerprint=.signer_fingerprint' > "${TMP}/r.json"
+  jq -S '.candidate_sha="tampered-by-a-non-founder"' "${TMP}/receipt.valid.json" > "$RCPT"
+  assert_eq "M09b a receipt altered after signing fails the signature" \
+    "MERGE_REFUSED_FOUNDER_RECEIPT_SIGNATURE_INVALID" "$(fg_merge_sheriff_gate "$RUN_M4" "t-m4")"
+
+  mint_founder_receipt "$RUN_M4" "t-m4" "$FINAL_SHA" "$FINAL_TREE" "REJECT"
+  assert_eq "M09c the merge sheriff refuses a rejecting receipt" "MERGE_REFUSED_FOUNDER_RECEIPT_NOT_APPROVED" \
+    "$(fg_merge_sheriff_gate "$RUN_M4" "t-m4")"
+  mint_founder_receipt "$RUN_M4" "t-m4" "0000000000000000000000000000000000000000" "$FINAL_TREE" "APPROVE"
+  assert_eq "M09d the merge sheriff refuses a receipt for another candidate" "MERGE_REFUSED_FOUNDER_RECEIPT_WRONG_CANDIDATE" \
+    "$(fg_merge_sheriff_gate "$RUN_M4" "t-m4")"
+
+  # --- F-D01. An attacker-generated keypair produces a real signature over a
+  # real body -- and is refused, because the fingerprint is not the pinned one.
+  mint_founder_receipt "$RUN_M4" "t-m4" "$FINAL_SHA" "$FINAL_TREE" "APPROVE" '.' "${TMP}/attacker"
+  assert_eq "M09h a receipt signed by an attacker key is refused" \
+    "MERGE_REFUSED_FOUNDER_RECEIPT_SIGNATURE_INVALID" "$(fg_merge_sheriff_gate "$RUN_M4" "t-m4")"
+
+  # --- F-D02. The env var can LOCATE a key; it cannot redirect the trust root.
+  mint_founder_receipt "$RUN_M4" "t-m4" "$FINAL_SHA" "$FINAL_TREE" "APPROVE"
+  FG_RF_FOUNDER_PUBKEY_FILE_SAVE="$FG_RF_FOUNDER_PUBKEY_FILE"
+  export FG_RF_FOUNDER_PUBKEY_FILE="${TMP}/attacker.pub"
+  assert_eq "M09i pointing the key env var at an attacker key fails closed" \
+    "MERGE_REFUSED_FOUNDER_PUBKEY_FINGERPRINT_MISMATCH" "$(fg_merge_sheriff_gate "$RUN_M4" "t-m4")"
+  export FG_RF_FOUNDER_PUBKEY_FILE="$FG_RF_FOUNDER_PUBKEY_FILE_SAVE"
+
+  # --- F-D03. Scope, expiry, shape and one-time use.
+  mint_founder_receipt "$RUN_M4" "t-m4" "$FINAL_SHA" "$FINAL_TREE" "APPROVE" '.expires_at_epoch=1'
+  assert_eq "M09j an expired receipt is refused" "MERGE_REFUSED_FOUNDER_RECEIPT_EXPIRED" \
+    "$(fg_merge_sheriff_gate "$RUN_M4" "t-m4")"
+  mint_founder_receipt "$RUN_M4" "t-m4" "$FINAL_SHA" "$FINAL_TREE" "APPROVE" '.run_id="some-other-run"'
+  assert_eq "M09k a receipt bound to another run is refused" "MERGE_REFUSED_FOUNDER_RECEIPT_WRONG_RUN" \
+    "$(fg_merge_sheriff_gate "$RUN_M4" "t-m4")"
+  mint_founder_receipt "$RUN_M4" "t-m4" "$FINAL_SHA" "$FINAL_TREE" "APPROVE"
+  jq -S '. + {extra_field:"added after signing"}' "$(fg_founder_receipt_file "$RUN_M4" "t-m4")" > "${TMP}/r2.json"
+  cp "${TMP}/r2.json" "$(fg_founder_receipt_file "$RUN_M4" "t-m4")"
+  assert_eq "M09l an extra field fails the shape check before any crypto" \
+    "MERGE_REFUSED_FOUNDER_RECEIPT_MALFORMED:field_set" "$(fg_merge_sheriff_gate "$RUN_M4" "t-m4")"
+
+  mint_founder_receipt "$RUN_M4" "t-m4" "$FINAL_SHA" "$FINAL_TREE" "APPROVE"
+  assert_contains "M09f only the merge sheriff may then write the receipt" "RESULT_WRITTEN:" \
+    "$(echo '{"receipt":"prepared"}' | fg_role_result_write "$RUN_M4" "t-m4" merge-sheriff merge_receipt "$M4_MTOK" 2>&1)"
+  assert_eq "M09m the same receipt cannot be spent twice" "MERGE_REFUSED_FOUNDER_RECEIPT_ALREADY_CONSUMED" \
+    "$(fg_merge_sheriff_gate "$RUN_M4" "t-m4")"
+  assert_contains "M09n a second merge receipt on the spent receipt is refused" "ALREADY_CONSUMED" \
+    "$(echo '{"receipt":"replay"}' | fg_role_result_write "$RUN_M4" "t-m4" merge-sheriff merge_receipt "$M4_MTOK" 2>&1)"
+  rm -f "$(fg_receipt_ledger_file "$RUN_M4")"
+  assert_eq "M09o deleting the consumed-receipt ledger does NOT re-enable the receipt" \
+    "MERGE_REFUSED_FOUNDER_RECEIPT_LEDGER_CONSUMED_LEDGER_MISSING" "$(fg_merge_sheriff_gate "$RUN_M4" "t-m4")"
+fi
+
 assert_eq "M09g even then the package never executes the merge itself" "0" \
   "$(grep -rlE 'git +(-C +[^ ]+ +)?merge' "${PKG}/bin" "${PKG}/lib" 2>/dev/null | grep -c . || true)"
+
+# F-D01. The single most important structural assertion in this file: the
+# package contains no way to SIGN anything.
+assert_eq "T36 no signing verb is reachable from bin/ or lib/" "0" \
+  "$(grep -rn -- '-Y sign' "${PKG}/bin" "${PKG}/lib" 2>/dev/null | grep -vE ':[0-9]+:[[:space:]]*#' | grep -c . || true)"
+assert_eq "T36b no private key material is referenced by bin/ or lib/" "0" \
+  "$(grep -rnE 'BEGIN (OPENSSH|RSA|EC|PRIVATE) |ssh-keygen +-t |founder_receipt\.key' "${PKG}/bin" "${PKG}/lib" 2>/dev/null | grep -c . || true)"
+assert_eq "T36c no private key file exists anywhere in the package" "0" \
+  "$(find "$PKG" -type f \( -name '*.key' -o -name 'id_*' -o -name '*.pem' \) 2>/dev/null | grep -c . || true)"
 
 # ===========================================================================
 printf -- '-- M4 bootstrap --\n'
 # ===========================================================================
 
 BOOT="${PKG}/bin/fg-m4-bootstrap.sh"
+BOOTFX="${PKGFX}/bin/fg-m4-bootstrap.sh"
 assert_contains "M10 the M4 bootstrap refuses the wrong host profile" "BOOTSTRAP_REFUSED_WRONG_HOST_PROFILE" \
   "$(bash "$BOOT" --host m1 --check --repo "$FIX" 2>&1)"
 assert_contains "M10b the M4 bootstrap refuses an unknown host profile" "BOOTSTRAP_REFUSED_UNKNOWN_HOST_PROFILE" \
   "$(bash "$BOOT" --host m9 --check --repo "$FIX" 2>&1)"
-assert_contains "M10c the M4 bootstrap refuses the wrong repository" "BOOTSTRAP_REFUSED_WRONG_REPOSITORY" \
+assert_contains "M10e the shipped bootstrap refuses an unenrolled machine" "HOST_ENROLLMENT_NOT_CONFIGURED" \
   "$(bash "$BOOT" --host m4 --check --repo "$FIX" 2>&1)"
+assert_contains "M10c the M4 bootstrap refuses the wrong repository" "BOOTSTRAP_REFUSED_WRONG_REPOSITORY" \
+  "$(bash "$BOOTFX" --host m4 --check --repo "$FIX" 2>&1)"
 assert_contains "M10d the M4 bootstrap refuses a non-repository path" "BOOTSTRAP_REFUSED_WRONG_REPOSITORY" \
-  "$(bash "$BOOT" --host m4 --check --repo "${TMP}/not-a-repo" 2>&1)"
+  "$(bash "$BOOTFX" --host m4 --check --repo "${TMP}/not-a-repo" 2>&1)"
 
-cp -R "$PKG" "${TMP}/pkgm4"
+cp -R "$PKGFX" "${TMP}/pkgm4"
 printf '\n# tampered\n' >> "${TMP}/pkgm4/lib/roles.sh"
 git -C "$FIX" remote add origin "https://example.invalid/foundergate.git" 2>/dev/null || true
 assert_contains "M11 the M4 bootstrap refuses a package digest mismatch" "BOOTSTRAP_REFUSED_DIGEST_MISMATCH" \
   "$(bash "${TMP}/pkgm4/bin/fg-m4-bootstrap.sh" --host m4 --check --repo "$FIX" 2>&1)"
+
+# F-E01. THIS is the finding: regenerating the in-tree manifest restores
+# BOOTSTRAP_VERIFIED for integrity, and the integrity check alone is happy.
+( cd "${TMP}/pkgm4" && { head -3 PACKAGE_DIGESTS.txt
+    grep '^[0-9a-f]' PACKAGE_DIGESTS.txt | sed 's/^[0-9a-f]*  *//' \
+      | while IFS= read -r r; do shasum -a 256 "$r"; done; } > "${TMP}/pd.new" \
+  && mv "${TMP}/pd.new" PACKAGE_DIGESTS.txt )
+assert_contains "M11d a backdoored package with a regenerated manifest still passes the INTEGRITY check" \
+  "M4_BOOTSTRAP_VERIFIED" "$(bash "${TMP}/pkgm4/bin/fg-m4-bootstrap.sh" --host m4 --check --repo "$FIX" 2>&1)"
+assert_contains "M11e ... and is labelled as integrity only, never authenticity" \
+  "INTEGRITY ONLY, NOT AUTHENTICITY" "$(bash "${TMP}/pkgm4/bin/fg-m4-bootstrap.sh" --host m4 --check --repo "$FIX" 2>&1)"
+assert_contains "M11f ... and REFUSES to start without an external candidate identity" \
+  "BOOTSTRAP_REFUSED_NO_EXTERNAL_IDENTITY" \
+  "$(bash "${TMP}/pkgm4/bin/fg-m4-bootstrap.sh" --host m4 --repo "$FIX" --allow-start 2>&1)"
+assert_contains "M11g ... and fails the external identity check outright when one IS supplied" \
+  "BOOTSTRAP_REFUSED" \
+  "$(bash "${TMP}/pkgm4/bin/fg-m4-bootstrap.sh" --host m4 --check --repo "$FIX" \
+      --expect-sha 0000000000000000000000000000000000000000 \
+      --expect-tree 0000000000000000000000000000000000000000 2>&1)"
+
 assert_contains "M11b a matching digest set passes verification" "M4_BOOTSTRAP_VERIFIED" \
-  "$(bash "$BOOT" --host m4 --check --repo "$FIX" 2>&1)"
+  "$(bash "$BOOTFX" --host m4 --check --repo "$FIX" 2>&1)"
 assert_contains "M11c the bootstrap refuses a package version mismatch" "BOOTSTRAP_REFUSED_VERSION_MISMATCH" \
-  "$(bash "$BOOT" --host m4 --check --repo "$FIX" --expect-version 9.9.9 2>&1)"
+  "$(bash "$BOOTFX" --host m4 --check --repo "$FIX" --expect-version 9.9.9 2>&1)"
 assert_contains "M12 the M4 bootstrap installs nothing" "installed_anything   : no" \
-  "$(bash "$BOOT" --host m4 --check --repo "$FIX" 2>&1)"
+  "$(bash "$BOOTFX" --host m4 --check --repo "$FIX" 2>&1)"
 assert_eq "M12b the bootstrap contains no installation command" "0" \
   "$(grep -cE 'brew |apt-get |npm install|pip install|curl .*\| *(ba)?sh' "$BOOT" || true)"
+# F-E02
+assert_eq "M12c the bootstrap does not eval any configuration value" "0" \
+  "$(grep -cE '(^|[^_[:alnum:]])eval[[:space:]]' "$BOOT" || true)"
 
 # Regression (found by live tmux qualification): a run records the authority
 # table it was created under. Resuming it from the other host profile would run
@@ -725,11 +951,37 @@ assert_eq "M16 a run records the host profile that created it" "m4" \
   "$(jq -r '.host_profile' "$(fg_control_dir "$RUN_XH")/RUN_MANIFEST.json")"
 fg_host_load m1 >/dev/null
 assert_contains "M16b resuming an m4 run as m1 is refused" "RESUME_REFUSED_HOST_PROFILE_MISMATCH" \
-  "$(FG_RF_HOST=m1 bash "${PKG}/bin/fg-role-floor-start.sh" --host m1 --resume-check --run-id "$RUN_XH" --repo "$FIX" 2>&1)"
+  "$(FG_RF_HOST=m1 bash "${PKGFX}/bin/fg-role-floor-start.sh" --host m1 --resume-check --run-id "$RUN_XH" --repo "$FIX" 2>&1)"
 assert_contains "M16c the refusal names both profiles" "recorded=m4:requested=m1" \
-  "$(FG_RF_HOST=m1 bash "${PKG}/bin/fg-role-floor-start.sh" --host m1 --resume-check --run-id "$RUN_XH" --repo "$FIX" 2>&1)"
+  "$(FG_RF_HOST=m1 bash "${PKGFX}/bin/fg-role-floor-start.sh" --host m1 --resume-check --run-id "$RUN_XH" --repo "$FIX" 2>&1)"
 assert_contains "M16d resuming it as m4 is allowed" "RESUME_OK" \
-  "$(FG_RF_HOST=m4 bash "${PKG}/bin/fg-role-floor-start.sh" --host m4 --resume-check --run-id "$RUN_XH" --repo "$FIX" 2>&1)"
+  "$(FG_RF_HOST=m4 bash "${PKGFX}/bin/fg-role-floor-start.sh" --host m4 --resume-check --run-id "$RUN_XH" --repo "$FIX" 2>&1)"
+
+# F-B01. Stop must not cross the host-profile boundary either -- and stop is
+# the entry point that MUTATES state. A dedicated SHARED pinned run root
+# containing exactly one m4 run reproduces the audit's setup precisely.
+SHARED="${TMP}/runroot-shared"
+mkdir -p "$SHARED"
+RUN_SH="$(FG_RF_RUN_ROOT="$SHARED" bash -c '
+  . "'"$PKGFX"'/lib/claude-adapter.sh" >/dev/null 2>&1
+  fg_host_load m4 >/dev/null
+  fg_run_init m4-shared-run "'"$FIX"'" >/dev/null 2>&1 && echo m4-shared-run')"
+assert_eq "M18a the shared root holds exactly one m4 run" "m4" \
+  "$(jq -r '.host_profile' "${SHARED}/${RUN_SH}/control/RUN_MANIFEST.json" 2>/dev/null)"
+STOP_M1="$(FG_RF_RUN_ROOT="$SHARED" FG_RF_HOST=m1 bash "${PKGFX}/bin/fg-role-floor-stop.sh" --host m1 2>&1)"
+assert_contains "M18 stop --host m1 finds no run when only m4 runs exist" "STATUS: NO_RUN_FOUND" "$STOP_M1"
+assert_eq "M18b the m4 run was not stopped by an m1 stop" "false" \
+  "$(jq -r '.stop_requested' "${SHARED}/${RUN_SH}/control/RUN_STATE.json")"
+assert_contains "M18c naming another profile's run id explicitly is also refused" \
+  "STOP_REFUSED_HOST_PROFILE_MISMATCH" \
+  "$(FG_RF_RUN_ROOT="$SHARED" FG_RF_HOST=m1 bash "${PKGFX}/bin/fg-role-floor-stop.sh" --host m1 --run-id "$RUN_SH" 2>&1)"
+assert_eq "M18d the explicit cross-profile stop mutated nothing" "false" \
+  "$(jq -r '.stop_requested' "${SHARED}/${RUN_SH}/control/RUN_STATE.json")"
+assert_contains "M18e the correct profile CAN stop its own run" "STATUS: STOPPED" \
+  "$(FG_RF_RUN_ROOT="$SHARED" FG_RF_HOST=m4 FG_RF_SESSION=fg-selftest-none bash "${PKGFX}/bin/fg-role-floor-stop.sh" --host m4 --run-id "$RUN_SH" 2>&1)"
+assert_eq "M18f only then was the m4 run stopped" "true" \
+  "$(jq -r '.stop_requested' "${SHARED}/${RUN_SH}/control/RUN_STATE.json")"
+
 fg_host_load m4 >/dev/null
 
 assert_eq "M13 both host profiles run the same implementation" "1" \
@@ -751,6 +1003,9 @@ else
   skip "M15 git bundle verification" "the bundle is created after the commit; verified at build level and recorded in TEST_RESULTS.json"
 fi
 
+# Back to the shipped package for the final accounting.
+# shellcheck source=../lib/claude-adapter.sh
+. "${PKG}/lib/claude-adapter.sh"
 fg_host_load m1 >/dev/null
 
 # ---------------------------------------------------------------------------

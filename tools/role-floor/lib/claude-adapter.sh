@@ -84,6 +84,13 @@ fg_prompt_template() { printf '%s/prompts/%s.md\n' "$FG_RF_HOME" "$1"; }
 
 # fg_prompt_templates_verify - recomputes every protected template digest from
 # the package digest manifest (the prompts/ subset of PACKAGE_DIGESTS.txt).
+#
+# INTEGRITY ONLY. PACKAGE_DIGESTS.txt ships inside the tree it describes, so it
+# proves that no template changed by accident. It cannot prove the package is
+# the audited package: regenerating the manifest is two lines of shell.
+# Authenticity comes from the external --expect-sha/--expect-tree anchor in
+# fg-m4-bootstrap.sh, never from here.
+#
 # PROMPT_DIGESTS_OK | PROMPT_DIGEST_MISMATCH:<file> | PROMPT_DIGESTS_MISSING
 fg_prompt_templates_verify() {
   local manifest="${FG_RF_HOME}/PACKAGE_DIGESTS.txt" line want rel got seen=0
@@ -151,19 +158,64 @@ fg_prompt_render() {
 # Launch command construction
 # ---------------------------------------------------------------------------
 
-# fg_claude_launch_command <prompt_file> <log_file> <exit_file>
+# fg_claude_launch_command <prompt_file> <log_file> <exit_file> [cap_fifo]
 #
 # Emits a shell command string for one FRESH role context. It is executed
 # inside a tmux window by the dispatcher; this function never executes it.
 # Note the absence of --continue / --resume: each role gets its own transcript.
+#
+# EVERY interpolated value is shell-quoted (F-J01). The previous version used
+# a bare printf '%s < %s ...' with three unquoted paths, and the prompt path
+# embeds the task id, so a task id of 't;touch /tmp/PWNED;x' became arbitrary
+# command execution when tmux ran the string through sh -c. Quoting is the
+# second line of defence; the first is that fg_task_create refuses such a task
+# id outright.
+#
+# The one-shot capability FIFO, when supplied, is consumed by the launched
+# process into its own environment and then unlinked. The capability is never
+# written to a reusable file.
 fg_claude_launch_command() {
-  local prompt="$1" log="$2" exitf="$3" cmd
-  cmd="$(printf '%s < %s 2>&1 | tee -a %s; printf %%s "${PIPESTATUS[0]}" > %s' \
-        "$FG_RF_CLAUDE_BIN" "$prompt" "$log" "$exitf")"
+  local prompt="$1" log="$2" exitf="$3" fifo="${4:-}" cmd capprefix=""
+  # A path containing a newline or carriage return can never be represented
+  # safely in a single-line shell command; refuse rather than emit something
+  # ambiguous. (Note: $(printf '\n') would be the EMPTY string here, because
+  # command substitution strips trailing newlines, and an empty pattern would
+  # match everything. The literal newline below is deliberate.)
+  case "${prompt}${log}${exitf}${fifo}" in
+    *'
+'*) echo "LAUNCH_PATH_CONTROL_CHARACTER"; return 1 ;;
+  esac
+  case "${prompt}${log}${exitf}${fifo}" in
+    *$'\r'*) echo "LAUNCH_PATH_CONTROL_CHARACTER"; return 1 ;;
+  esac
+  if [ -n "$fifo" ]; then
+    capprefix="$(printf 'FG_RF_ROLE_CAP="$(cat %s 2>/dev/null)"; export FG_RF_ROLE_CAP; rm -f %s; ' \
+                 "$(fg_shquote "$fifo")" "$(fg_shquote "$fifo")")"
+  fi
+  cmd="${capprefix}$(printf '%s < %s 2>&1 | tee -a %s; printf %%s "${PIPESTATUS[0]}" > %s' \
+        "$(fg_shquote "$FG_RF_CLAUDE_BIN")" "$(fg_shquote "$prompt")" \
+        "$(fg_shquote "$log")" "$(fg_shquote "$exitf")")"
   if [ "$(fg_claude_assert_no_forbidden_flags "$cmd")" != "LAUNCH_COMMAND_OK" ]; then
     echo "FORBIDDEN_CLAUDE_FLAG"
     return 1
   fi
   printf '%s\n' "$cmd"
+  return 0
+}
+
+# fg_prompt_reverify <prompt_file> <expected_digest>
+# PROMPT_DIGEST_OK | PROMPT_DIGEST_DRIFT:<observed> | PROMPT_MISSING
+#
+# Called immediately before the respawn-window call (F-J02). fg_prompt_render
+# chmods the rendered prompt 0444, but the owning user can chmod it back and
+# rewrite it, so the digest recorded at mint time describes what was rendered,
+# not necessarily what the role process is about to read. This closes that
+# window to the interval between this check and exec.
+fg_prompt_reverify() {
+  local f="$1" expect="$2" got
+  [ -f "$f" ] || { echo "PROMPT_MISSING"; return 1; }
+  got="$(fg_prompt_rendered_digest "$f")"
+  [ "$got" = "$expect" ] || { echo "PROMPT_DIGEST_DRIFT:${got}"; return 1; }
+  echo "PROMPT_DIGEST_OK"
   return 0
 }

@@ -66,16 +66,32 @@
   "requires_founder_receipt_for_merge": true,
   "serial_integration_single_writer": true,
   "final_verification_requires_exact_sha": true,
+  "founder_trust_root": {
+    "scheme": "sshsig",
+    "public_key_fingerprint": null,
+    "signature_namespace": "foundergate.founder-receipt.v2",
+    "signature_principal": "foundergate-founder",
+    "max_receipt_age_seconds": 86400,
+    "public_key_location": "FG_RF_FOUNDER_PUBKEY_FILE, default ${HOME}/.foundergate/founder_receipt.pub",
+    "note": "VERIFY ONLY. public_key_fingerprint is null because no founder verification key has been enrolled on this host yet, and the correction Builder is forbidden from inventing one. While it is null every founder receipt verification returns FOUNDER_TRUST_ROOT_NOT_ENROLLED and the merge gate refuses. Enrolling it is a founder action taken on the M4: generate the keypair on founder-controlled hardware, copy ONLY the .pub here, and paste its SHA256 fingerprint into this field. The private key must never reach this machine, this repository or any run root. FG_RF_FOUNDER_PUBKEY_FILE can only LOCATE a key; a key whose fingerprint differs from this pin is refused with FOUNDER_PUBKEY_FINGERPRINT_MISMATCH."
+  },
+  "host_enrollment": {
+    "required_because": "this profile carries serial_integration_writer, protected_main_writer, final_integration_verifier and merge_sheriff authority",
+    "enrollment_authority_fingerprint": null,
+    "signature_namespace": "foundergate.host-enrollment.v1",
+    "record_location": "FG_RF_HOST_ENROLLMENT_DIR, default ${HOME}/.foundergate/host-enrollment/m4.enrollment.json",
+    "note": "A --host m4 argument is profile selection, NOT physical-host attestation. This profile additionally requires an external enrollment record binding the IOPlatformUUID and hardware serial of the real M4, signed by the enrollment authority key whose SHA256 fingerprint is pinned here. enrollment_authority_fingerprint is null because no machine has been enrolled: every check therefore fails closed with HOST_ENROLLMENT_NOT_CONFIGURED. Enrollment is a later host-local, founder-gated action performed ON the M4. This package can verify an enrollment record; it can never create, sign or self-approve one."
+  },
   "expected_repository_identity": {
     "configurable": true,
     "env_override": "FG_RF_M4_REPO",
     "default_path": "${HOME}/Projects/foundergate",
     "expected_origin_basename": "foundergate",
-    "note": "The M4 repository path is configuration, not a guess. Set FG_RF_M4_REPO or pass --repo on the M4 host. The bootstrap refuses any repository whose origin basename does not match expected_origin_basename."
+    "note": "The M4 repository path is configuration, not a guess. Set FG_RF_M4_REPO or pass --repo on the M4 host. The bootstrap refuses any repository whose origin basename does not match expected_origin_basename. Repository identity is NOT package authenticity: the bootstrap separately requires an externally supplied --expect-sha/--expect-tree."
   },
   "terminal0_boundary": {
     "description": "M4 Terminal-0 remains the human operating position. The floor never claims Terminal-0 authority, never executes a founder signature, and never consumes an activation.",
     "preserved": true
   },
-  "notes": "Merge authority on M4 is gated three ways: an exact final-verifier PASS bound to the final SHA and tree, a mechanically valid founder decision receipt signed outside the package, and the serial-integration single-writer lock. The package writes a merge receipt; it never executes the merge itself."
+  "notes": "Merge authority on M4 is gated four ways: a verified physical-host enrollment record, an exact final-verifier PASS bound to the final SHA and tree, a one-time founder decision receipt carrying a valid SSHSIG signature from the pinned founder public key (signed OUTSIDE this package, on hardware this package never touches), and the serial-integration single-writer lock. The package writes a merge receipt; it never executes the merge itself, and it holds no key with which it could sign anything."
 }
