@@ -32,7 +32,7 @@ const packet = {
   acquisition_timestamp: req.requested_at || U,
   run_start: req.requested_at || U,
   environment: "disposable Ubuntu 24.04 ARM64 (Lima/VZ) on Apple M4 Pro; patched opensandbox-server 0.2.1 (loopback)",
-  check_modules: ["exact-commit binding", "immutable snapshot fingerprint", "archive-entry validation", "harness-owned compileability (python -m compileall)"],
+  check_modules: ["exact-commit binding", "immutable snapshot fingerprint", "archive-entry validation", "harness-owned source parsing (python -m compileall byte-compilation; the project is never executed)"],
   claims: {
     compileability: result.classification === "COMPILEABILITY_OBSERVED" ? "OBSERVED" : U,
     build: "NOT_PROVEN", tests: "NOT_PROVEN", security: "NOT_PROVEN", production_readiness: "NOT_PROVEN",
@@ -47,13 +47,21 @@ const packet = {
     general_public_execution: "HELD",
     private_repositories: "REFUSED",
   },
-  limitations: ["compileability observed only — build/tests/security/production NOT proven", "runc standard container (not microVM)", "OpenSandbox tested, not adopted", "deletion is observable-state, not forensic erasure", "fixed public evaluation fixture only"],
+  limitations: ["source parsing observed only — build/tests/security/production NOT proven; python -m compileall byte-compiles the Python source to bytecode, it does not merely search text and it does not execute the project, and it proves nothing about runtime behavior, dependency correctness, native compilation, integration, safety, or production readiness", "runc standard container (not microVM)", "OpenSandbox tested, not adopted", "deletion is observable-state, not forensic erasure", "fixed public evaluation fixture only"],
   unknown_items: Object.entries({compileall_exit: result.compileall_exit}).filter(([,v])=>v===undefined||v===U).map(([k])=>k),
   checker: { identity: "independent Phase-7.1 checkers", verdict: "PENDING (see integration report)" },
   claim_boundary: "Evidence of the named checks on the exact recorded version only.",
   disclaimer: "This is an evidence packet, not a certification.",
   footer: "FounderGate Evidence Pack — evidence of the named checks on the exact recorded version; not a security, compliance, production-readiness, or bug-free certification.",
 };
+
+// Founder/partner-facing DISPLAY labels for the canonical claim keys.
+// The `claims` keys above are a MACHINE CONTRACT (canonical JSON authority) and are never
+// renamed; only the human-readable rendering in the .md/.html packet uses these labels, so
+// the packet reads with the same founder-facing terminology as the UI ("Source parsing
+// observed") while evidence-pack.json stays byte-compatible for machine consumers.
+const CLAIM_LABELS = { compileability: "source parsing" };
+const claimLabel = (k) => CLAIM_LABELS[k] || k;
 
 // required-evidence gate: refuse if exact_commit/manifest missing
 if (packet.exact_commit === U || packet.canonical_snapshot_sha256 === U) {
@@ -74,7 +82,7 @@ const md = `# ${packet.packet_title}
 | snapshot SHA-256 | \`${packet.canonical_snapshot_sha256}\` |
 
 ## Claims
-${Object.entries(packet.claims).map(([k, v]) => `- **${k}:** ${v}`).join("\n")}
+${Object.entries(packet.claims).map(([k, v]) => `- **${claimLabel(k)}:** ${v}`).join("\n")}
 
 ## Limitations
 ${packet.limitations.map((l) => `- ${l}`).join("\n")}
@@ -103,7 +111,7 @@ table{border-collapse:collapse;width:100%}td,th{border:1px solid #ddd;padding:6p
 <p><b>Run ID:</b> <code>${esc(packet.run_id)}</code> · <b>Repository:</b> ${esc(packet.repository)} · <b>Exact commit:</b> <code>${esc(packet.exact_commit)}</code></p>
 <table><tr><th>archive SHA-256</th><td><code>${esc(packet.archive_sha256)}</code></td></tr>
 <tr><th>snapshot SHA-256</th><td><code>${esc(packet.canonical_snapshot_sha256)}</code></td></tr></table>
-<h2>Claims</h2><p>${Object.entries(packet.claims).map(([k, v]) => `<span class="badge ${/PROVEN$/.test(v)?'p':/OBSERVED/.test(v)?'o':/NOT_PROVEN|HELD|REFUSED/.test(v)?'n':'u'}">${esc(k)}: ${esc(v)}</span>`).join(" ")}</p>
+<h2>Claims</h2><p>${Object.entries(packet.claims).map(([k, v]) => `<span class="badge ${/PROVEN$/.test(v)?'p':/OBSERVED/.test(v)?'o':/NOT_PROVEN|HELD|REFUSED/.test(v)?'n':'u'}">${esc(claimLabel(k))}: ${esc(v)}</span>`).join(" ")}</p>
 <h2>Limitations</h2><ul>${packet.limitations.map((l) => `<li>${esc(l)}</li>`).join("")}</ul>
 <h2>Environment</h2><p>${esc(packet.environment)}</p>
 <p><b>${esc(packet.disclaimer)}</b></p>
