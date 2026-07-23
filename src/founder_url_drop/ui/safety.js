@@ -2,7 +2,7 @@
 const $ = (id) => document.getElementById(id);
 const FIXTURE = "https://github.com/pypa/sampleproject";
 const STAGES = ["validating URL","resolving exact commit","acquiring immutable snapshot","validating archive",
-  "fingerprinting snapshot","creating disposable sandbox","running harness-owned compileability check",
+  "fingerprinting snapshot","creating disposable sandbox","running harness-owned source parsing check",
   "exporting evidence","removing temporary snapshot","destroying disposable runtime","generating Evidence Pack","complete"];
 let poll = null, currentRun = null;
 

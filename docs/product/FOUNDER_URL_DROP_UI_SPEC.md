@@ -3,7 +3,7 @@
 **Status:** DESIGN · founder-witness candidate, **not an accepted product surface**. Zero-dependency loopback Node app in the FounderGate idiom (`src/founder_url_drop/server.mjs` + `ui/`). Reads **real** Phase-6/Phase-7 evidence; missing → `UNKNOWN`; stale → `STALE`. **No invented green state.**
 
 ## The founder flow (14 steps)
-1. Open FounderGate (the URL-drop app on loopback). 2. Select "Check a public GitHub project." 3. Paste **or select** the fixed public fixture URL. 4. See "Public repositories only." 5. See "Private repositories are not supported." 6. Click one primary action **Run Safety Check**. 7. See progress stages: validating URL → resolving exact commit → acquiring immutable snapshot → checking archive safety → creating disposable sandbox → checking compileability → exporting evidence → deleting snapshot → destroying sandbox. 8. See exact commit + snapshot fingerprint. 9. See evidence-backed result. 10. See limitations (compileability observed; build not proven; tests not proven; security not proven; production readiness not proven). 11. See deletion proof. 12. Open evidence details. 13. Find "Pause & get help." 14. Understand the next safe action.
+1. Open FounderGate (the URL-drop app on loopback). 2. Select "Check a public GitHub project." 3. Paste **or select** the fixed public fixture URL. 4. See "Public repositories only." 5. See "Private repositories are not supported." 6. Click one primary action **Run Safety Check**. 7. See progress stages: validating URL → resolving exact commit → acquiring immutable snapshot → checking archive safety → creating disposable sandbox → checking source parsing → exporting evidence → deleting snapshot → destroying sandbox. 8. See exact commit + snapshot fingerprint. 9. See evidence-backed result. 10. See limitations (source parsing observed; build not proven; tests not proven; security not proven; production readiness not proven). 11. See deletion proof. 12. Open evidence details. 13. Find "Pause & get help." 14. Understand the next safe action.
 
 ## Surfaces (components)
 URL input · fixed evaluation-fixture shortcut · public-only warning · unsupported/private-repository refusal · one primary "Run Safety Check" action · progress timeline (9 stages) · current-stage indicator · **exact-commit card** · **snapshot-fingerprint card** · **safety-boundary card** · **result card** · **limitations card** · **deletion card** · **evidence drawer** · **Pause & get help** (always visible) · **failure-modes reminder** · **next-safe-action card**.
@@ -15,7 +15,12 @@ Every screen reads real Phase-7 run state, reads real Phase-6 evidence where reu
 The live path accepts **only** `https://github.com/pypa/sampleproject`. Any other valid-looking public URL returns **`HELD — GENERAL PUBLIC-REPOSITORY EXECUTION NOT YET AUTHORIZED`**. Private/SSH/`file://`/non-GitHub/credential URLs return a refusal. No arbitrary public-repository runtime is offered.
 
 ## "PASS" rule
-The UI must not display "PASS" without naming exactly what passed. The result card shows `COMPILEABILITY OBSERVED` (green only for that specific fact), with explicit `BUILD NOT PROVEN` / `TESTS NOT PROVEN` / `SECURITY NOT PROVEN` badges alongside.
+The UI must not display "PASS" without naming exactly what passed. The result card shows **Source parsing observed** (green only for that specific fact), with explicit `BUILD NOT PROVEN` / `TESTS NOT PROVEN` / `SECURITY NOT PROVEN` badges alongside.
+
+## What "Source parsing observed" means (rationale — normative)
+The observation comes from `python -m compileall`. That command **byte-compiles the Python source to bytecode**; the harness records the generated `.pyc` digests and then deletes them. It **does not merely search text**, and it **does not execute the project**. It proves nothing about runtime behavior, dependency correctness, native compilation, integration, safety, or production readiness — those remain `NOT PROVEN`. Never describe this check as "no compiler runs": a compiler does run, but no build system, package installer, test runner, linker, or native toolchain runs, and no repository-defined command is executed.
+
+"Source parsing observed" is the **founder-facing label only**. The machine classification token in `RUN_RESULT.json` / `GET /api/state` and the Evidence Pack JSON key `compileability` are unchanged machine contracts and must not be renamed.
 
 ## Read-only API (loopback, zero-dependency)
 - `GET /` → the app HTML. `GET /ui/*` → allowlisted static assets.
