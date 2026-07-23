@@ -452,6 +452,103 @@ assert_eq "S75 the shipped profiles enroll no machine, so M4 authority fails clo
      "${PKG}/config/hosts/m1.json" "${PKG}/config/hosts/m4.json" | paste -sd+ - | bc)"
 
 # ===========================================================================
+printf -- '-- S7: the founder-receipt verifier binary is PINNED (CHK-01) --\n'
+# ===========================================================================
+#
+# CHK-01: fg_sshsig_bin() used to return a bare "ssh-keygen" resolved through
+# PATH. Both the signature verifier (-Y verify) and the fingerprint reader
+# (-l -f) called it. A same-user account controls PATH, so it could prepend a
+# fake ssh-keygen that echoes the pinned founder fingerprint for any key and
+# exits 0 for any signature -- yielding FOUNDER_RECEIPT_OK for a throwaway
+# ATTACKER key, with no founder private key. That falsified an earlier, now
+# removed overclaim (the receipt was said to survive a fully-compromised
+# account; the shipped wording is narrowed). These tests re-run the
+# exact attack (a PATH-shadowed ssh-keygen) and assert it no longer works: the
+# verifier resolves to a trusted ABSOLUTE system path, the env override is dead
+# outside an explicit test-mode flag, and the legitimate path still verifies.
+SEC_HAVE_KG=no
+if [ -x /usr/bin/ssh-keygen ] && \
+   /usr/bin/ssh-keygen -t ed25519 -N '' -C 'sec-fixture-founder' -f "${TMP}/kgf" >/dev/null 2>&1 && \
+   /usr/bin/ssh-keygen -t ed25519 -N '' -C 'sec-fixture-attacker' -f "${TMP}/kga" >/dev/null 2>&1; then
+  SEC_HAVE_KG=yes
+fi
+if [ "$SEC_HAVE_KG" = "yes" ]; then
+  KG_REAL_FPR="$(/usr/bin/ssh-keygen -lf "${TMP}/kgf.pub" 2>/dev/null | awk '{print $2}')"
+  # A signature over a fixed message, made by the ATTACKER key (never the
+  # founder). The real binary must reject it against the founder public key.
+  printf 'chk01-message-body\n' > "${TMP}/kg.msg"
+  cp "${TMP}/kg.msg" "${TMP}/kg.msgF"
+  ( cd "$TMP" && /usr/bin/ssh-keygen -Y sign -f "${TMP}/kga" -n "chk01.ns" "${TMP}/kg.msg" >/dev/null 2>&1 )
+  ( cd "$TMP" && /usr/bin/ssh-keygen -Y sign -f "${TMP}/kgf" -n "chk01.ns" "${TMP}/kg.msgF" >/dev/null 2>&1 )
+  # The attacker's PATH-shadowed fake: echoes the pinned fingerprint for -l and
+  # exits 0 for -Y verify. This is the only attacker action (no env var).
+  mkdir -p "${TMP}/pathshadow"
+  cat > "${TMP}/pathshadow/ssh-keygen" <<SHADOW
+#!/bin/sh
+case "\$*" in
+  *" -l "*) echo "256 ${KG_REAL_FPR} shadow (ED25519)"; exit 0 ;;
+  *" -Y verify "*) exit 0 ;;
+  *) exit 0 ;;
+esac
+SHADOW
+  chmod +x "${TMP}/pathshadow/ssh-keygen"
+  SEC_PATH_SAVED="$PATH"
+  export PATH="${TMP}/pathshadow:$PATH"
+
+  # S90: with the shadow first on PATH and NO env override, the resolver still
+  # picks a trusted absolute system binary, never the PATH-shadowed fake.
+  SEC_BIN="$(FG_RF_SSH_KEYGEN_BIN= FG_RF_ALLOW_TEST_SSH_KEYGEN= fg_sshsig_bin)"
+  assert_eq "S90 the resolver returns an ABSOLUTE path, not a bare/relative name" "/" \
+    "$(printf '%s' "$SEC_BIN" | cut -c1)"
+  assert_not_contains "S91 the resolver never selects the PATH-shadowed fake" \
+    "${TMP}/pathshadow" "$SEC_BIN"
+  assert_eq "S92 the resolved verifier is an executable file" "yes" \
+    "$(if [ -x "$SEC_BIN" ]; then echo yes; else echo no; fi)"
+
+  # S93: fingerprint reader ignores the fake even though it echoes a fingerprint.
+  # The attacker key's fingerprint must read as ITSELF, not the founder's, so a
+  # fingerprint-pin check cannot be tricked by the shadow.
+  KG_ATT_REAL_FPR="$(/usr/bin/ssh-keygen -lf "${TMP}/kga.pub" 2>/dev/null | awk '{print $2}')"
+  assert_eq "S93 fg_pubkey_fingerprint reads the REAL attacker fingerprint through the pin, not the shadow's echo" \
+    "$KG_ATT_REAL_FPR" "$(FG_RF_SSH_KEYGEN_BIN= FG_RF_ALLOW_TEST_SSH_KEYGEN= fg_pubkey_fingerprint "${TMP}/kga.pub")"
+
+  # S94: THE ATTACK. Attacker-key signature verified against the founder pubkey
+  # while the PATH shadow (which exits 0 for -Y verify) is first on PATH. The
+  # pinned real binary must still reject it: this is what previously produced
+  # FOUNDER_RECEIPT_OK for a throwaway key.
+  assert_not_contains "S94 CHK-01: a PATH-shadowed ssh-keygen does NOT make an attacker signature verify (was FOUNDER_RECEIPT_OK)" \
+    "SIGNATURE_OK" \
+    "$(FG_RF_SSH_KEYGEN_BIN= FG_RF_ALLOW_TEST_SSH_KEYGEN= fg_sshsig_verify "${TMP}/kgf.pub" "chk01.ns" "chk01" "${TMP}/kg.msg.sig" "${TMP}/kg.msg")"
+
+  # S95: the legitimate path is intact -- a genuine founder signature verifies
+  # through the pinned real binary, so S94 is not a blanket refusal.
+  assert_eq "S95 a genuine founder signature still verifies through the pinned binary" "SIGNATURE_OK" \
+    "$(FG_RF_SSH_KEYGEN_BIN= FG_RF_ALLOW_TEST_SSH_KEYGEN= fg_sshsig_verify "${TMP}/kgf.pub" "chk01.ns" "chk01" "${TMP}/kg.msgF.sig" "${TMP}/kg.msgF")"
+
+  # S96: the env override is DEAD outside test mode. Point FG_RF_SSH_KEYGEN_BIN
+  # at the fake WITHOUT the flag: the resolver ignores it and the attacker
+  # signature is still rejected.
+  assert_not_contains "S96 FG_RF_SSH_KEYGEN_BIN is ignored without the test-mode flag (resolver stays pinned)" \
+    "${TMP}/pathshadow" "$(FG_RF_ALLOW_TEST_SSH_KEYGEN= FG_RF_SSH_KEYGEN_BIN="${TMP}/pathshadow/ssh-keygen" fg_sshsig_bin)"
+  assert_not_contains "S97 attacker signature stays rejected even with FG_RF_SSH_KEYGEN_BIN set but no flag" \
+    "SIGNATURE_OK" \
+    "$(FG_RF_ALLOW_TEST_SSH_KEYGEN= FG_RF_SSH_KEYGEN_BIN="${TMP}/pathshadow/ssh-keygen" fg_sshsig_verify "${TMP}/kgf.pub" "chk01.ns" "chk01" "${TMP}/kg.msg.sig" "${TMP}/kg.msg")"
+
+  # S98: test mode still works -- ONLY when the explicit flag is set is the
+  # override honoured, so the deterministic selftest can inject a stub.
+  assert_eq "S98 the override IS honoured under the explicit test-mode flag" "/usr/bin/ssh-keygen" \
+    "$(FG_RF_ALLOW_TEST_SSH_KEYGEN=1 FG_RF_SSH_KEYGEN_BIN="/usr/bin/ssh-keygen" fg_sshsig_bin)"
+  assert_eq "S98b under the flag the override can even select a stub (test-only surface)" \
+    "${TMP}/pathshadow/ssh-keygen" \
+    "$(FG_RF_ALLOW_TEST_SSH_KEYGEN=1 FG_RF_SSH_KEYGEN_BIN="${TMP}/pathshadow/ssh-keygen" fg_sshsig_bin)"
+
+  export PATH="$SEC_PATH_SAVED"
+  rm -f "${TMP}/pathshadow/ssh-keygen"
+else
+  skip "S90-S98 founder-receipt verifier pin (CHK-01)" "/usr/bin/ssh-keygen -Y is unavailable on this host"
+fi
+
+# ===========================================================================
 printf -- '-- S6: hygiene --\n'
 # ===========================================================================
 

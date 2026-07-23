@@ -179,8 +179,18 @@ that uid, and an actor who reads it can recompute the role capability
 commitments, the artifact MACs, the lease seals, the retry ledger seal and the
 event-chain digests. The previous version's claim that "no role can impersonate
 another role's state writer" was disproved by audit and has been removed. Treat
-role separation as accident resistance plus an audit trail. The one authority
-that survives a fully compromised same-user account is the founder receipt.
+role separation as accident resistance plus an audit trail. The founder receipt
+resists a **bounded** attacker: an actor who can read every file, call every
+library function here, and supply its own key cannot make the floor accept a
+receipt, because forging one needs a private key this machine never holds and
+the signature is verified by a system `ssh-keygen` resolved from a pinned
+absolute path (`fg_sshsig_bin`), not a `PATH`-resolved name. It does **not**
+survive an actor who can rewrite the package tree, alter the `PATH`/environment
+of the floor's processes (the shell helpers around the verifier remain
+`PATH`-resolved), or replace the system `ssh-keygen` binary itself (root); any
+of those defeats every shell-tool check in the package, the receipt included. An
+earlier draft claimed the receipt "survives a fully compromised same-user
+account" — that overclaimed and has been narrowed to the attacker above.
 
 ### The founder decision receipt
 

@@ -29,8 +29,12 @@
 #     seals, the retry ledger, the event chain) is keyed with a per-run secret
 #     stored at ${run}/control/.writer_secret in mode 0600 under that same
 #     user. An actor who can read that file can recompute those seals. Such an
-#     actor still cannot forge a founder receipt, because that requires a
-#     private key the machine does not hold.
+#     actor still cannot forge a founder receipt the floor will accept, because
+#     that requires a private key the machine does not hold and the signature is
+#     verified by a system ssh-keygen resolved from a pinned absolute path (see
+#     fg_sshsig_bin). An actor who can additionally rewrite the package tree,
+#     control the floor's PATH/environment, or replace the system ssh-keygen
+#     binary is OUTSIDE this guarantee -- see the SSHSIG section below.
 #   * PACKAGE_DIGESTS.txt proves INTEGRITY (nothing changed by accident), never
 #     AUTHENTICITY (this is the audited package). Authenticity requires the
 #     externally supplied --expect-sha/--expect-tree anchor in the M4
@@ -251,14 +255,61 @@ fg_hmac_json_canonical() {
 # path, exported function, alias or template that reaches it. The only verbs
 # used are `-Y verify` and `-l -f` (fingerprint). A grep for the signing verb
 # over bin/ and lib/ must return zero, and the selftest asserts exactly that.
+#
+# THE VERIFIER BINARY IS PINNED. The founder receipt is the one authority the
+# floor asks to resist a same-user actor, and its verdict is only as trustworthy
+# as the binary that renders it. A bare `ssh-keygen` resolved through PATH would
+# let any actor who controls PATH (which a same-user account does) prepend a
+# fake `ssh-keygen` that echoes the pinned fingerprint and exits 0 for any
+# signature -- forging FOUNDER_RECEIPT_OK with a throwaway key and no founder
+# private key at all. fg_sshsig_bin therefore selects the FIRST existing
+# executable from a fixed allowlist of trusted ABSOLUTE system paths, with the
+# SIP-protected /usr/bin/ssh-keygen first so a writable homebrew/usr-local bin
+# earlier in PATH cannot win. It fails closed (empty output, non-zero) when none
+# is present, so every caller refuses rather than fall back to a PATH name.
+#
+# The FG_RF_SSH_KEYGEN_BIN override exists ONLY so the selftest can inject a
+# deterministic stub. It is honoured ONLY under the explicit test-mode flag
+# FG_RF_ALLOW_TEST_SSH_KEYGEN=1 and is IGNORED otherwise, so a same-user
+# attacker who merely exports the variable in normal operation cannot redirect
+# the verifier. (Pinning ssh-keygen removes PATH from the trust base for the
+# signature check itself; the shell helpers around it -- awk, cat, mktemp -- are
+# still PATH-resolved, which is why the shipped wording narrows the claim to an
+# actor who cannot alter the floor's PATH/environment, tree, or system binary.)
+FG_RF_SSH_KEYGEN_TRUSTED_PATHS="/usr/bin/ssh-keygen /opt/homebrew/bin/ssh-keygen /usr/local/bin/ssh-keygen"
 
-fg_sshsig_bin() { printf '%s\n' "${FG_RF_SSH_KEYGEN_BIN:-ssh-keygen}"; }
+fg_sshsig_bin() {
+  local cand
+  # Test mode ONLY: an explicit, clearly-named flag must be set before the
+  # override is even consulted. Absent the flag, FG_RF_SSH_KEYGEN_BIN is dead.
+  if [ "${FG_RF_ALLOW_TEST_SSH_KEYGEN:-}" = "1" ] && [ -n "${FG_RF_SSH_KEYGEN_BIN:-}" ]; then
+    cand="${FG_RF_SSH_KEYGEN_BIN}"
+    if [ -f "$cand" ] && [ -x "$cand" ]; then
+      printf '%s\n' "$cand"
+      return 0
+    fi
+    return 1
+  fi
+  # Trusted absolute system paths, /usr/bin first. No PATH lookup.
+  for cand in ${FG_RF_SSH_KEYGEN_TRUSTED_PATHS}; do
+    case "$cand" in
+      /*) ;;            # absolute only; never a bare name
+      *)  continue ;;
+    esac
+    if [ -f "$cand" ] && [ -x "$cand" ]; then
+      printf '%s\n' "$cand"
+      return 0
+    fi
+  done
+  return 1
+}
 
 # fg_pubkey_fingerprint <public_key_file> - "SHA256:..." or empty.
 fg_pubkey_fingerprint() {
-  local f="$1" out
+  local f="$1" out kg
   [ -f "$f" ] || { printf ''; return 1; }
-  out="$("$(fg_sshsig_bin)" -l -f "$f" 2>/dev/null | awk '{print $2}')" || { printf ''; return 1; }
+  kg="$(fg_sshsig_bin)" || { printf ''; return 1; }
+  out="$("$kg" -l -f "$f" 2>/dev/null | awk '{print $2}')" || { printf ''; return 1; }
   case "$out" in SHA256:*) printf '%s\n' "$out"; return 0 ;; esac
   printf ''
   return 1
@@ -270,8 +321,8 @@ fg_pubkey_fingerprint() {
 # SIGNATURE_MATERIAL_MISSING
 fg_sshsig_verify() {
   local pub="$1" ns="$2" principal="$3" sig="$4" msg="$5" allowed rc kg
-  kg="$(fg_sshsig_bin)"
-  command -v "$kg" >/dev/null 2>&1 || { echo "SIGNATURE_TOOLING_MISSING"; return 1; }
+  kg="$(fg_sshsig_bin)" || { echo "SIGNATURE_TOOLING_MISSING"; return 1; }
+  [ -x "$kg" ] || { echo "SIGNATURE_TOOLING_MISSING"; return 1; }
   [ -f "$pub" ] && [ -f "$sig" ] && [ -f "$msg" ] || { echo "SIGNATURE_MATERIAL_MISSING"; return 1; }
   allowed="$(mktemp "${TMPDIR:-/tmp}/.fgsig.XXXXXX")" || { echo "SIGNATURE_MATERIAL_MISSING"; return 1; }
   printf '%s %s\n' "$principal" "$(cat "$pub")" > "$allowed"

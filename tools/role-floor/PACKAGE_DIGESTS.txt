@@ -4,7 +4,6 @@
 # package: regenerating it is two lines of shell. Authenticity requires the
 # external --expect-sha/--expect-tree anchor in fg-m4-bootstrap.sh.
 # Verified by fg-m4-bootstrap.sh (integrity step) and by
-# fg_prompt_templates_verify (prompts/ subset) before any role launch.
 8d509104f9a21723b4f53cdf39a1211d284a12ce612059b64a15418d68ca7ffe  README.md
 1e5b51cde515396a9fa762909cf8ca6584ccc564b325d2eebeea76175fe95c4d  VERSION
 5a311fb797b3b36f77b47862dd7cd9ee2664ac8affa1cdc63d74b1f66e1a5aa2  bin/fg-m4-bootstrap.sh
@@ -16,12 +15,12 @@ af7cf78472e964510ea00ffefe93f6ebb9f0f401510bbbff4d25415599f7ec77  bin/fg-role-fl
 073ec18358ada4fb7da446dc02c19c0ffd4cc7baeedab7f8adde4840caacc097  config/hosts/m1.json
 3f7105e7401c7d6b3b297f02f4e4703ab307a0506ddfd2066013e2a0a9899ff3  config/hosts/m4.json
 ed093184fe9c4bc9f2b21d37ea6ef79761be6c2aa319ed4d8e103f575aa137b9  docs/M4_HANDOFF.json
-9f6a4d08be6be3e87730fa9478f39fef1782d08def32620d29b2cc9f1baf1b1f  docs/M4_HANDOFF.md
+527af3472724dac45fca274ce4fa52a1fc0c693843ea6df33de7b88186448fff  docs/M4_HANDOFF.md
 6a2ee3899f67a3e2286a3f834866af86bd60da4b255ab9ebc1a0106caef0dbbe  lib/claude-adapter.sh
-72d23c1d90284bc4c956e17065d8b13c2ea11f03b45f02d602bb83976fad6d21  lib/common.sh
+48530952726e5b5439b0eacab74f7b9645000c04db48614ac8abc57aa0c86133  lib/common.sh
 7d3cfccb909ecbbfa28c98d6a452ecceef538c5e2466711bbf8e469ad72b7877  lib/hosts.sh
 3207938700b8e2e566b32fe7630f62885cde9c347b8e7452485ed2a6f8ac9bf3  lib/leases.sh
-c93e13e2247e17efa63aff41e86f0e541fda44181187bebf263acad16ec4fbdd  lib/roles.sh
+8c86d6b7efbeccaa11a0a740c4d41ecb2bd701ec85a115e95e031a2dadbf3c79  lib/roles.sh
 9cf53809300f55388e5a962375bb796017dc7f357d84de6c5d869d3b5fd4436f  lib/state.sh
 f880371a7b9d046b595f181c16a1132aa60f3ae5bac745e968c6da1f46d9f88a  prompts/advisor.md
 8c758d54250ae39064cfdd858d2f3f26b76afedf03da4bb2cf6a87f7a1d9bda5  prompts/builder.md
@@ -32,5 +31,5 @@ db3609aa5b30a27321c1b3417fe9d973f42185ce2ae7c8a1c6b6c3fb412732bf  prompts/founde
 9a32782f61cc58692422cf26b085243b43161a3e3af1f5d9788b130f6d5d5c5a  prompts/m4-roles.md
 363ea37d380bd7a1faca72dbf17c15160fe2be05da1e9c64c36d8f59238d52ae  prompts/orchestrator.md
 b1663713b5242fafe2fbdf3ed8ef2fd57aed65d467c6aebce2c9414b632b8c19  schema/role-floor.schema.json
-4585552bfb8223a09eca04ee780f849328d0a195db22ecee9ec8beede5834074  selftest/role-floor-security-selftest.sh
+dd322809cb199315abe3668fc249e914d1d88e0a6e46e47718b3fa35da724347  selftest/role-floor-security-selftest.sh
 5f93017a2739e0f396f68210c4f651861ad5f603ce0520b2d6706193bf42eabb  selftest/role-floor-selftest.sh

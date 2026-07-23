@@ -36,9 +36,20 @@
 #     requires separate OS users with filesystem ACLs on the run root, or
 #     separate machines. Neither is implemented.
 #   * Consequently: role separation on one user account is ACCIDENT RESISTANCE
-#     plus an audit trail, not forgery resistance. The one authority that does
-#     survive a fully compromised same-user account is the founder decision
-#     receipt, because forging it needs a private key this machine never holds.
+#     plus an audit trail, not forgery resistance. The founder decision receipt
+#     resists a BOUNDED attacker -- one who can read every file here, call every
+#     library function, and supply its OWN key: no such actor can make the floor
+#     accept a receipt, because forging one needs a private key this machine
+#     never holds AND the signature is checked by a system ssh-keygen resolved
+#     from a pinned absolute path (see fg_sshsig_bin in common.sh), never a
+#     PATH-resolved name. It does NOT survive an actor who can rewrite this
+#     package tree (which holds the fingerprint pin and the resolver), alter the
+#     PATH/environment of the floor's own processes (the shell helpers around the
+#     verifier are still PATH-resolved), or replace the system ssh-keygen binary
+#     itself (that requires root, outside the same-user model) -- any one of
+#     those defeats every shell-tool check in this package, the receipt included.
+#     Earlier text here claimed the receipt "survives a fully compromised
+#     same-user account"; that overclaimed and has been narrowed to the above.
 set -u
 
 # shellcheck source=./leases.sh
