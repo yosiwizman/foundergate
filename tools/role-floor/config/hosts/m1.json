@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0.0",
+  "host_profile": "m1",
+  "display_name": "FounderGate M1 build floor",
+  "description": "Four-role founder-facing operating floor. Builds and checks candidates. Holds no integration, verification or merge authority: those are M4 authorities and are mechanically sealed here.",
+  "tmux_session": "foundergate-m1",
+  "founder_window": "orchestrator",
+  "windows": ["orchestrator", "builder", "checker", "advisor"],
+  "primary_window_count": 4,
+  "roles": {
+    "orchestrator": {
+      "writes": ["lane_contract", "dispatch", "handoff", "status", "founder_packet_request"],
+      "forbidden": ["product_source", "checker_verdict", "advisor_packet", "merge_receipt", "integration_write", "final_verification_report"]
+    },
+    "builder": {
+      "writes": ["builder_report", "candidate_freeze"],
+      "forbidden": ["checker_verdict", "advisor_packet", "merge_receipt", "integration_write", "final_verification_report"]
+    },
+    "checker": {
+      "writes": ["checker_verdict", "checker_report"],
+      "forbidden": ["candidate_freeze", "advisor_packet", "merge_receipt", "product_source", "integration_write", "final_verification_report"]
+    },
+    "advisor": {
+      "writes": ["advisor_packet"],
+      "forbidden": ["candidate_freeze", "checker_verdict", "merge_receipt", "product_source", "integration_write", "final_verification_report"]
+    }
+  },
+  "sealed_artifact_classes": [
+    "merge_receipt",
+    "integration_write",
+    "integration_report",
+    "final_verification_report",
+    "signature_receipt",
+    "activation_receipt",
+    "protected_main_write",
+    "deployment_receipt"
+  ],
+  "authorities": {
+    "serial_integration_writer": false,
+    "protected_main_writer": false,
+    "final_integration_verifier": false,
+    "merge_sheriff": false,
+    "production_deployment": false,
+    "activation_consumption": false,
+    "founder_signature_execution": false
+  },
+  "writable_lease_roles": ["builder"],
+  "shared_surface_writer_roles": [],
+  "m4_handoff_required_for": [
+    "shared_integration_surface_write",
+    "serial_integration",
+    "final_verification",
+    "merge",
+    "protected_main_write"
+  ],
+  "hard_stop_actions": [
+    "merge", "sign", "signature", "activate", "activation", "deploy", "deployment",
+    "push_protected_main", "credential_change", "permission_change", "destructive_action"
+  ],
+  "protected_branches": ["main", "master", "release", "production", "protected-main"],
+  "shared_surfaces": [".foundergate/", ".github/", "package.json", "package-lock.json", "FounderGate-Start-Autonomous-Run.command"],
+  "correction_limit": 2,
+  "context_restart_limit": 3,
+  "heavy_test_slots": 1,
+  "requires_founder_receipt_for_merge": true,
+  "expected_repository_identity": null,
+  "notes": "expected_repository_identity is null on M1: this profile runs against whatever isolated clone the founder names. The M4 profile pins it."
+}

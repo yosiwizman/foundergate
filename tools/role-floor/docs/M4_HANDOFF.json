@@ -1,0 +1,172 @@
+{
+  "schema_version": "1.0.0",
+  "document": "M4_ROLE_FLOOR_HANDOFF",
+  "authority_note": "Chat memory is not authority. This file and M4_HANDOFF.md are the disk-backed authority for continuing this work on the M4.",
+  "package": {
+    "name": "role-floor",
+    "version": "1.1.0",
+    "repository_path": "tools/role-floor",
+    "file_inventory_source": "tools/role-floor/PACKAGE_DIGESTS.txt",
+    "digest_verification": "fg-m4-bootstrap.sh verifies every entry before creating anything"
+  },
+  "provenance": {
+    "built_on": "M1",
+    "machine": "qual-host-m1",
+    "isolated_clone": "/Users/macm1/Projects/foundergate-m1-role-floor-build",
+    "branch": "lane/m1-role-floor-orchestrator-ba7d654",
+    "parent_sha": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423",
+    "parent_tree": "a0fd38b7e05748028c22aff87695865a217a20d0",
+    "commit_sha": null,
+    "commit_tree": null,
+    "commit_sha_note": "Recorded in the external M4_ROLE_FLOOR_HANDOFF.json under ${HOME}/Desktop/FounderGate_M1_Role_Floor_Build/. A committed file cannot contain the digest of the commit that introduces it.",
+    "push_url": "DISABLED"
+  },
+  "github_status": {
+    "pushed": false,
+    "pull_request": false,
+    "merged": false,
+    "state": "LOCAL_ONLY",
+    "transfer_mechanism": "git bundle",
+    "bundle_path": "${HOME}/Desktop/FounderGate_M1_Role_Floor_Build/foundergate-role-floor.bundle",
+    "bundle_sha256": null,
+    "bundle_sha256_note": "Recorded in the external handoff JSON, which is produced after the commit and the bundle."
+  },
+  "host_profiles": {
+    "m1": {
+      "config": "tools/role-floor/config/hosts/m1.json",
+      "tmux_session": "foundergate-m1",
+      "windows": ["orchestrator", "builder", "checker", "advisor"],
+      "window_count": 4,
+      "authorities": {
+        "serial_integration_writer": false,
+        "protected_main_writer": false,
+        "final_integration_verifier": false,
+        "merge_sheriff": false,
+        "production_deployment": false,
+        "activation_consumption": false,
+        "founder_signature_execution": false
+      },
+      "handoff_required_for": ["shared_integration_surface_write", "serial_integration", "final_verification", "merge", "protected_main_write"]
+    },
+    "m4": {
+      "config": "tools/role-floor/config/hosts/m4.json",
+      "tmux_session": "foundergate-m4",
+      "windows": ["orchestrator", "builder", "checker", "advisor", "serial-integration", "final-verifier", "merge-sheriff"],
+      "window_count": 7,
+      "authorities": {
+        "serial_integration_writer": true,
+        "protected_main_writer": true,
+        "final_integration_verifier": true,
+        "merge_sheriff": true,
+        "production_deployment": false,
+        "activation_consumption": false,
+        "founder_signature_execution": false
+      },
+      "handoff_required_for": []
+    }
+  },
+  "m4_authority_boundaries": [
+    "Builder cannot check or approve its own work",
+    "Checker cannot repair findings and cannot write advisor state",
+    "Advisor cannot write code and cannot write verifier state",
+    "Serial integration starts only from exact-SHA accepted inputs",
+    "Only one shared-surface integration writer may hold a lease at a time",
+    "Final verifier evaluates the exact final tree and SHA; a moved SHA is refused",
+    "Merge sheriff requires an exact final PASS and a mechanically valid founder decision receipt",
+    "No role can impersonate another role's state writer",
+    "Founder signature, production activation, deployment and destructive actions are hard stops on M4",
+    "M4 Terminal-0 remains the human operating position"
+  ],
+  "founder_receipt": {
+    "required_for_merge": true,
+    "key_file": "${FG_RF_FOUNDER_KEY_FILE}",
+    "key_file_default": "${HOME}/.foundergate/founder_receipt.key",
+    "location": "outside the package and outside the run root",
+    "package_can_verify": true,
+    "package_can_mint": false,
+    "exists_today": false,
+    "effect": "until the founder creates a key and signs a receipt, the merge gate refuses by construction"
+  },
+  "m4_bootstrap": {
+    "verify_command": "bash tools/role-floor/bin/fg-m4-bootstrap.sh --host m4 --check --repo <M4_REPO_PATH>",
+    "start_command": "bash tools/role-floor/bin/fg-m4-bootstrap.sh --host m4 --repo <M4_REPO_PATH> --allow-start",
+    "verified_status_line": "STATUS: M4_BOOTSTRAP_VERIFIED",
+    "refusals": [
+      "BOOTSTRAP_REFUSED_UNKNOWN_HOST_PROFILE",
+      "BOOTSTRAP_REFUSED_WRONG_HOST_PROFILE",
+      "BOOTSTRAP_REFUSED_WRONG_REPOSITORY",
+      "BOOTSTRAP_REFUSED_NO_REPOSITORY_CONFIGURED",
+      "BOOTSTRAP_REFUSED_VERSION_MISMATCH",
+      "BOOTSTRAP_REFUSED_DIGEST_MISMATCH",
+      "BOOTSTRAP_REFUSED_DIGEST_MANIFEST_MISSING",
+      "BOOTSTRAP_REFUSED_PROMPT_DIGEST_MISMATCH",
+      "M4_BOOTSTRAP_BLOCKED (missing prerequisite)"
+    ],
+    "installs_anything": false
+  },
+  "expected_m4_repository": {
+    "configurable": true,
+    "resolution_order": ["--repo <path>", "FG_RF_M4_REPO", "config/hosts/m4.json expected_repository_identity.default_path"],
+    "default_path": "${HOME}/Projects/foundergate",
+    "expected_origin_basename": "foundergate",
+    "guessed": false
+  },
+  "prerequisites": {
+    "required": ["tmux", "claude CLI", "git", "jq", "shasum", "bash >= 3.2"],
+    "verified_never_installed": true,
+    "prohibited_automatic_installations": ["homebrew", "npm", "pip", "apt", "curl-to-shell", "any unattended install"]
+  },
+  "unified_commands": {
+    "start": "bash tools/role-floor/bin/fg-role-floor-start.sh --host <m1|m4>",
+    "status": "bash tools/role-floor/bin/fg-role-floor-status.sh --host <m1|m4>",
+    "stop": "bash tools/role-floor/bin/fg-role-floor-stop.sh --host <m1|m4>",
+    "attach_m1": "tmux attach -t foundergate-m1",
+    "attach_m4": "tmux attach -t foundergate-m4",
+    "plan_only": "bash tools/role-floor/bin/fg-role-floor-start.sh --host <m1|m4> --plan",
+    "selftest": "bash tools/role-floor/selftest/role-floor-selftest.sh",
+    "compatibility_wrappers": "not shipped; omitted to stay within the authorized file cap. The host-neutral commands are the interface."
+  },
+  "shared_implementation": {
+    "one_codebase": true,
+    "host_is_configuration": true,
+    "no_per_host_implementation_directories": true,
+    "bootstrap_delegates_to_shared_start": true
+  },
+  "required_before_activation": {
+    "independent_audit": {
+      "required": true,
+      "performed": false,
+      "command": "bash tools/role-floor/selftest/role-floor-selftest.sh --json /tmp/role-floor-tests.json",
+      "must_be_run_by": "a context that did not build this package"
+    },
+    "live_tmux_verification": {
+      "required": true,
+      "performed": false,
+      "reason": "tmux is not installed on the build machine; all tmux behaviour is proven against a recording stub only"
+    },
+    "serial_integration": {
+      "required": true,
+      "performed": false,
+      "scope": "registering this package in FounderGate manifests or launchers is a shared-surface write reserved for the M4 serial-integration role"
+    },
+    "founder_gate": {
+      "required": true,
+      "performed": false,
+      "note": "activation is a founder decision, taken with a decision receipt, never by the floor"
+    }
+  },
+  "exact_next_action_after_clean_audit": [
+    "git bundle verify <bundle> and compare its SHA-256 to the external evidence",
+    "git fetch the branch from the bundle into the M4 repository",
+    "run fg-m4-bootstrap.sh --host m4 --check --repo <M4_REPO_PATH> and require STATUS: M4_BOOTSTRAP_VERIFIED",
+    "run the selftest on the M4 with tmux present; require zero failures and no skipped live-tmux cases",
+    "open a serial-integration lane for manifest and launcher registration",
+    "take the founder gate before any activation"
+  ],
+  "limitations": [
+    "no live tmux verification on the build machine",
+    "no role has ever been launched through this package",
+    "the M4 repository path and origin basename are defaults and must be confirmed on the M4",
+    "the founder receipt key does not exist yet, so the merge gate refuses by construction"
+  ]
+}

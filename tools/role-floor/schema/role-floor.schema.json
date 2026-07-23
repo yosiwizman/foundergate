@@ -1,0 +1,532 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "foundergate/m1-role-floor/role-floor.schema.json",
+  "title": "FounderGate role floor control plane (m1 and m4 host profiles)",
+  "description": "Schemas for the disk-backed control plane of the FounderGate role floor. One implementation serves both host profiles; the role and artifact authority tables come from config/hosts/<host>.json. Mutable documents are replaced atomically; the event log is append-only and hash-chained.",
+  "version": "1.1.0",
+  "$defs": {
+    "lane_status": {
+      "type": "string",
+      "enum": [
+        "NOT_STARTED",
+        "QUEUED",
+        "STARTING",
+        "RUNNING",
+        "WAITING_DEPENDENCY",
+        "WAITING_FOR_FREEZE",
+        "READY_FOR_CHECK",
+        "CHECKING",
+        "CLEAN",
+        "FINDINGS",
+        "BLOCKED",
+        "READY_FOR_ADVISOR",
+        "ADVISING",
+        "READY_FOR_FOUNDER_GATE",
+        "HUMAN_ACTION_REQUIRED",
+        "M4_HANDOFF_REQUIRED",
+        "CONTEXT_EXHAUSTED",
+        "ESCALATED",
+        "STOP_REQUESTED",
+        "STOPPED",
+        "STALE",
+        "DRIFT"
+      ]
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "orchestrator",
+        "builder",
+        "checker",
+        "advisor",
+        "serial-integration",
+        "final-verifier",
+        "merge-sheriff"
+      ],
+      "description": "The last three exist only on the m4 profile."
+    },
+    "checker_verdict": {
+      "type": "string",
+      "enum": [
+        "CLEAN",
+        "FINDINGS",
+        "BLOCKING",
+        "DRIFT",
+        "INSUFFICIENT"
+      ]
+    },
+    "artifact_class": {
+      "type": "string",
+      "description": "A class is writable only by the roles the loaded host profile names, and only when the profile does not seal it. On m1 the integration, verification and merge classes are sealed outright; on m4 the signature, activation and deployment classes are sealed.",
+      "enum": [
+        "lane_contract",
+        "dispatch",
+        "handoff",
+        "status",
+        "founder_packet_request",
+        "builder_report",
+        "candidate_freeze",
+        "checker_verdict",
+        "checker_report",
+        "advisor_packet",
+        "integration_write",
+        "integration_report",
+        "final_verification_report",
+        "merge_receipt"
+      ]
+    },
+    "task_state": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "run_id",
+        "task_id",
+        "lane",
+        "role",
+        "session_id",
+        "tmux_target",
+        "pid",
+        "repository",
+        "branch",
+        "base_sha",
+        "base_tree",
+        "candidate_sha",
+        "candidate_tree",
+        "lease_digest",
+        "prompt_digest",
+        "attempt",
+        "retry_budget",
+        "started_at",
+        "last_activity_at",
+        "status",
+        "summary",
+        "dependencies",
+        "blockers",
+        "next_safe_action"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "task_id": {
+          "type": "string"
+        },
+        "lane": {
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/$defs/role"
+        },
+        "session_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tmux_target": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pid": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "repository": {
+          "type": "string"
+        },
+        "branch": {
+          "type": "string"
+        },
+        "base_sha": {
+          "type": "string"
+        },
+        "base_tree": {
+          "type": "string"
+        },
+        "candidate_sha": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "candidate_tree": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lease_digest": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "prompt_digest": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "retry_budget": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "context_restarts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "started_at": {
+          "type": "string"
+        },
+        "last_activity_at": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/lane_status"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "blockers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "next_safe_action": {
+          "type": "string"
+        },
+        "host_profile": {
+          "type": "string",
+          "enum": [
+            "m1",
+            "m4"
+          ]
+        }
+      }
+    },
+    "lease": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "run_id",
+        "task_id",
+        "writer_role",
+        "mode",
+        "repository",
+        "branch",
+        "allowed_globs",
+        "forbidden_paths",
+        "shared_surface_classification",
+        "start_sha",
+        "start_tree",
+        "expires_at_epoch",
+        "status",
+        "digest"
+      ],
+      "properties": {
+        "writer_role": {
+          "$ref": "#/$defs/role"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "writable",
+            "read_only"
+          ]
+        },
+        "allowed_globs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "forbidden_paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "shared_surface_classification": {
+          "type": "string",
+          "enum": [
+            "none",
+            "shared_integration_surface"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "RELEASED"
+          ]
+        },
+        "digest": {
+          "type": "string",
+          "description": "sha256 of the canonical record with the digest field removed."
+        }
+      }
+    },
+    "candidate_freeze": {
+      "type": "object",
+      "required": [
+        "commit_sha",
+        "tree_sha",
+        "parent_sha",
+        "branch",
+        "base_sha",
+        "diff_digest",
+        "changed_files",
+        "working_tree_clean",
+        "remote_push_url",
+        "builder_report_digest"
+      ],
+      "properties": {
+        "working_tree_clean": {
+          "const": true
+        },
+        "changed_files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "role_result": {
+      "type": "object",
+      "description": "Every role result is bound to role identity, task, candidate identity, prompt digest, report digest, session identity and event-chain position. A result written through the wrong role writer is rejected before this record exists.",
+      "required": [
+        "schema_version",
+        "run_id",
+        "task_id",
+        "role",
+        "artifact_class",
+        "prompt_digest",
+        "session_id",
+        "report_digest",
+        "event_seq",
+        "written_at",
+        "payload"
+      ],
+      "properties": {
+        "role": {
+          "$ref": "#/$defs/role"
+        },
+        "artifact_class": {
+          "$ref": "#/$defs/artifact_class"
+        },
+        "event_seq": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "description": "Append-only. Each line commits to the digest of its predecessor; the first line's prev_digest is the literal GENESIS.",
+      "required": [
+        "seq",
+        "ts",
+        "run_id",
+        "type",
+        "role",
+        "task_id",
+        "prev_digest",
+        "payload",
+        "digest"
+      ],
+      "properties": {
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "prev_digest": {
+          "type": "string"
+        },
+        "digest": {
+          "type": "string"
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "description": "Mechanical basis for restarting the SAME role in a fresh context.",
+      "required": [
+        "schema_version",
+        "run_id",
+        "task_id",
+        "role",
+        "lane",
+        "repository",
+        "branch",
+        "base_sha",
+        "base_tree",
+        "current_sha",
+        "current_tree",
+        "dirty_tree_digest",
+        "candidate_sha",
+        "candidate_tree",
+        "lease_digest",
+        "allowed_paths",
+        "forbidden_paths",
+        "completed_work",
+        "remaining_work",
+        "tests",
+        "findings",
+        "dependencies",
+        "retry_state",
+        "stop_conditions",
+        "revalidate_disk_truth_before_continuing"
+      ],
+      "properties": {
+        "retry_state": {
+          "type": "object",
+          "required": [
+            "attempt",
+            "context_restarts",
+            "correction_attempts"
+          ],
+          "description": "context_restarts and correction_attempts are counted separately: a context restart never consumes a correction attempt."
+        },
+        "revalidate_disk_truth_before_continuing": {
+          "const": true
+        }
+      }
+    },
+    "founder_gate": {
+      "type": "object",
+      "required": [
+        "run_id",
+        "task_id",
+        "requested_by_role",
+        "requested_action",
+        "verdict",
+        "executed_locally"
+      ],
+      "properties": {
+        "verdict": {
+          "type": "string",
+          "enum": [
+            "HUMAN_ACTION_REQUIRED",
+            "M4_HANDOFF_REQUIRED"
+          ]
+        },
+        "executed_locally": {
+          "const": false
+        }
+      }
+    },
+    "host_profile": {
+      "type": "object",
+      "description": "config/hosts/<host>.json. A host is configuration, not a fork.",
+      "required": [
+        "schema_version",
+        "host_profile",
+        "tmux_session",
+        "founder_window",
+        "windows",
+        "primary_window_count",
+        "roles",
+        "sealed_artifact_classes",
+        "authorities",
+        "writable_lease_roles",
+        "shared_surface_writer_roles",
+        "hard_stop_actions",
+        "protected_branches",
+        "shared_surfaces"
+      ],
+      "properties": {
+        "host_profile": {
+          "type": "string",
+          "enum": [
+            "m1",
+            "m4"
+          ]
+        },
+        "primary_window_count": {
+          "type": "integer",
+          "enum": [
+            4,
+            7
+          ]
+        },
+        "authorities": {
+          "type": "object",
+          "description": "production_deployment, activation_consumption and founder_signature_execution are refused even when a profile sets them true.",
+          "required": [
+            "serial_integration_writer",
+            "protected_main_writer",
+            "final_integration_verifier",
+            "merge_sheriff",
+            "production_deployment",
+            "activation_consumption",
+            "founder_signature_execution"
+          ]
+        },
+        "requires_founder_receipt_for_merge": {
+          "const": true
+        }
+      }
+    },
+    "founder_receipt": {
+      "type": "object",
+      "description": "Signed outside the package with the founder key. The floor verifies; it cannot mint.",
+      "required": [
+        "task_id",
+        "candidate_sha",
+        "candidate_tree",
+        "decision",
+        "digest"
+      ],
+      "properties": {
+        "decision": {
+          "type": "string",
+          "enum": [
+            "APPROVE",
+            "REJECT"
+          ]
+        },
+        "digest": {
+          "type": "string",
+          "description": "sha256 of the canonical record without .digest, concatenated with the founder key."
+        }
+      }
+    },
+    "final_verification_report": {
+      "type": "object",
+      "required": [
+        "verdict",
+        "final_sha",
+        "final_tree"
+      ],
+      "properties": {
+        "verdict": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "FAIL"
+          ]
+        }
+      },
+      "description": "Bound to the exact final SHA and tree. A moved SHA is refused rather than re-verified."
+    }
+  }
+}

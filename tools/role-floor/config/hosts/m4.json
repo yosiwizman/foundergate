@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0.0",
+  "host_profile": "m4",
+  "display_name": "FounderGate M4 integration floor",
+  "description": "Seven-role governed floor. Adds the serial integration writer, the final verifier and the merge sheriff. Founder signature, production activation and destructive actions remain hard stops here as well: M4 holds integration authority, not founder authority.",
+  "tmux_session": "foundergate-m4",
+  "founder_window": "orchestrator",
+  "windows": ["orchestrator", "builder", "checker", "advisor", "serial-integration", "final-verifier", "merge-sheriff"],
+  "primary_window_count": 7,
+  "roles": {
+    "orchestrator": {
+      "writes": ["lane_contract", "dispatch", "handoff", "status", "founder_packet_request"],
+      "forbidden": ["product_source", "checker_verdict", "advisor_packet", "integration_write", "final_verification_report", "merge_receipt"]
+    },
+    "builder": {
+      "writes": ["builder_report", "candidate_freeze"],
+      "forbidden": ["checker_verdict", "advisor_packet", "integration_write", "integration_report", "final_verification_report", "merge_receipt"]
+    },
+    "checker": {
+      "writes": ["checker_verdict", "checker_report"],
+      "forbidden": ["candidate_freeze", "advisor_packet", "integration_write", "final_verification_report", "merge_receipt", "product_source"]
+    },
+    "advisor": {
+      "writes": ["advisor_packet"],
+      "forbidden": ["candidate_freeze", "checker_verdict", "integration_write", "final_verification_report", "merge_receipt", "product_source"]
+    },
+    "serial-integration": {
+      "writes": ["integration_write", "integration_report"],
+      "forbidden": ["checker_verdict", "advisor_packet", "final_verification_report", "merge_receipt"]
+    },
+    "final-verifier": {
+      "writes": ["final_verification_report"],
+      "forbidden": ["integration_write", "checker_verdict", "advisor_packet", "merge_receipt", "product_source"]
+    },
+    "merge-sheriff": {
+      "writes": ["merge_receipt"],
+      "forbidden": ["integration_write", "final_verification_report", "checker_verdict", "advisor_packet", "product_source"]
+    }
+  },
+  "sealed_artifact_classes": [
+    "signature_receipt",
+    "activation_receipt",
+    "deployment_receipt"
+  ],
+  "authorities": {
+    "serial_integration_writer": true,
+    "protected_main_writer": true,
+    "final_integration_verifier": true,
+    "merge_sheriff": true,
+    "production_deployment": false,
+    "activation_consumption": false,
+    "founder_signature_execution": false
+  },
+  "writable_lease_roles": ["builder", "serial-integration"],
+  "shared_surface_writer_roles": ["serial-integration"],
+  "m4_handoff_required_for": [],
+  "hard_stop_actions": [
+    "sign", "signature", "activate", "activation", "deploy", "deployment",
+    "credential_change", "permission_change", "destructive_action"
+  ],
+  "protected_branches": ["main", "master", "release", "production", "protected-main"],
+  "shared_surfaces": [".foundergate/", ".github/", "package.json", "package-lock.json", "FounderGate-Start-Autonomous-Run.command"],
+  "correction_limit": 2,
+  "context_restart_limit": 3,
+  "heavy_test_slots": 1,
+  "requires_founder_receipt_for_merge": true,
+  "serial_integration_single_writer": true,
+  "final_verification_requires_exact_sha": true,
+  "expected_repository_identity": {
+    "configurable": true,
+    "env_override": "FG_RF_M4_REPO",
+    "default_path": "${HOME}/Projects/foundergate",
+    "expected_origin_basename": "foundergate",
+    "note": "The M4 repository path is configuration, not a guess. Set FG_RF_M4_REPO or pass --repo on the M4 host. The bootstrap refuses any repository whose origin basename does not match expected_origin_basename."
+  },
+  "terminal0_boundary": {
+    "description": "M4 Terminal-0 remains the human operating position. The floor never claims Terminal-0 authority, never executes a founder signature, and never consumes an activation.",
+    "preserved": true
+  },
+  "notes": "Merge authority on M4 is gated three ways: an exact final-verifier PASS bound to the final SHA and tree, a mechanically valid founder decision receipt signed outside the package, and the serial-integration single-writer lock. The package writes a merge receipt; it never executes the merge itself."
+}
