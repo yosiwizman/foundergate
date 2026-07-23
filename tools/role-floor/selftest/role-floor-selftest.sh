@@ -717,6 +717,21 @@ assert_contains "M12 the M4 bootstrap installs nothing" "installed_anything   : 
 assert_eq "M12b the bootstrap contains no installation command" "0" \
   "$(grep -cE 'brew |apt-get |npm install|pip install|curl .*\| *(ba)?sh' "$BOOT" || true)"
 
+# Regression (found by live tmux qualification): a run records the authority
+# table it was created under. Resuming it from the other host profile would run
+# one profile's role windows against the other profile's recorded rules.
+RUN_XH="$(mk_run "run-crosshost")"
+assert_eq "M16 a run records the host profile that created it" "m4" \
+  "$(jq -r '.host_profile' "$(fg_control_dir "$RUN_XH")/RUN_MANIFEST.json")"
+fg_host_load m1 >/dev/null
+assert_contains "M16b resuming an m4 run as m1 is refused" "RESUME_REFUSED_HOST_PROFILE_MISMATCH" \
+  "$(FG_RF_HOST=m1 bash "${PKG}/bin/fg-role-floor-start.sh" --host m1 --resume-check --run-id "$RUN_XH" --repo "$FIX" 2>&1)"
+assert_contains "M16c the refusal names both profiles" "recorded=m4:requested=m1" \
+  "$(FG_RF_HOST=m1 bash "${PKG}/bin/fg-role-floor-start.sh" --host m1 --resume-check --run-id "$RUN_XH" --repo "$FIX" 2>&1)"
+assert_contains "M16d resuming it as m4 is allowed" "RESUME_OK" \
+  "$(FG_RF_HOST=m4 bash "${PKG}/bin/fg-role-floor-start.sh" --host m4 --resume-check --run-id "$RUN_XH" --repo "$FIX" 2>&1)"
+fg_host_load m4 >/dev/null
+
 assert_eq "M13 both host profiles run the same implementation" "1" \
   "$(ls -1 "${PKG}/bin/fg-role-floor-start.sh" | wc -l | tr -d ' ')"
 assert_eq "M13b no host-specific implementation directory exists" "0" \

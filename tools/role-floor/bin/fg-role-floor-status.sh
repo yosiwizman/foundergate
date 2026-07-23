@@ -27,9 +27,14 @@ done
 
 fg_host_load "$HOST" >/dev/null || { printf 'STATUS: BLOCKED\nreason: HOST_PROFILE_UNKNOWN:%s\n' "$HOST"; exit 2; }
 
+# Auto-selection stays inside this host profile, so status never describes
+# another profile's run under this profile's rules.
 if [ -z "$RUN_ID" ]; then
   for d in $(ls -1t "$FG_RF_RUN_ROOT" 2>/dev/null); do
-    [ -f "${FG_RF_RUN_ROOT}/${d}/control/RUN_MANIFEST.json" ] && { RUN_ID="$d"; break; }
+    M="${FG_RF_RUN_ROOT}/${d}/control/RUN_MANIFEST.json"
+    [ -f "$M" ] || continue
+    [ "$(fg_json_get "$M" '.host_profile')" = "$FG_RF_HOST" ] || continue
+    RUN_ID="$d"; break
   done
 fi
 [ -n "$RUN_ID" ] && fg_run_exists "$RUN_ID" || { printf 'STATUS: NO_RUN_FOUND\nrun_root: %s\n' "$FG_RF_RUN_ROOT"; exit 0; }

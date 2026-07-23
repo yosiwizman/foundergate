@@ -117,19 +117,34 @@ PROMPT_CHECK="$(fg_prompt_templates_verify)"
 # Run selection and resume verification
 # ---------------------------------------------------------------------------
 
+# Only ever auto-select a run that was created under THIS host profile. Run
+# roots are per-host by default, but an operator may pin one shared root, and a
+# floor must never adopt another profile's run by accident.
 fg_latest_run() {
-  local d
+  local d m
   [ -d "$FG_RF_RUN_ROOT" ] || return 1
   for d in $(ls -1t "$FG_RF_RUN_ROOT" 2>/dev/null); do
-    [ -f "${FG_RF_RUN_ROOT}/${d}/control/RUN_MANIFEST.json" ] && { printf '%s\n' "$d"; return 0; }
+    m="${FG_RF_RUN_ROOT}/${d}/control/RUN_MANIFEST.json"
+    [ -f "$m" ] || continue
+    [ "$(fg_json_get "$m" '.host_profile')" = "$FG_RF_HOST" ] || continue
+    printf '%s\n' "$d"; return 0
   done
   return 1
 }
 
 # fg_resume_verify <run> - RESUME_OK | RESUME_REFUSED_<reason>
 fg_resume_verify() {
-  local run="$1" chain sums task status
+  local run="$1" chain sums task status recorded_host
   fg_run_exists "$run" || { echo "RESUME_REFUSED_NO_RUN"; return 1; }
+
+  # A run carries the authority table it was created under. Resuming it from a
+  # different host profile would run one profile's role windows against the
+  # other profile's recorded rules, so the two must match exactly.
+  recorded_host="$(fg_json_get "$(fg_control_dir "$run")/RUN_MANIFEST.json" '.host_profile')"
+  if [ -n "$recorded_host" ] && [ "$recorded_host" != "$FG_RF_HOST" ]; then
+    echo "RESUME_REFUSED_HOST_PROFILE_MISMATCH:recorded=${recorded_host}:requested=${FG_RF_HOST}"
+    return 1
+  fi
 
   chain="$(fg_events_verify "$run")"
   case "$chain" in EVENT_CHAIN_OK*) : ;; *) echo "RESUME_REFUSED_EVENT_CHAIN:${chain}"; return 1 ;; esac
