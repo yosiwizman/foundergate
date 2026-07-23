@@ -58,6 +58,77 @@ check("an unrecognized state does NOT block honest stats from deciding the verdi
   assert.equal(normalizeVerdict({ state: "weird", failed: 3 }), "FAIL");
 });
 
+// ---- F-2 regression: a declared failure count dominates a green state string ----------------
+// Independent-checker finding F-2: a recognized green state string ("PASSED", "VERIFIED",
+// "SUCCESS", "GREEN") used to be returned BEFORE the reporter stats were read, so a bundle whose
+// own stats said `failed: 5` indexed as a fully-backed PASS — a false green on the founder
+// surface. The contradiction must now fail closed: the numbers that disprove the word win.
+
+// The exact F-2 input: a green word contradicted by its own reporter stats, with every core
+// artifact declared (so nothing but the verdict itself can catch the contradiction).
+const F2_CONTRADICTION = Object.freeze({
+  id: "f2-contradiction", surface: "playwright-test-reporter",
+  state: "PASSED", passed: 0, failed: 5,
+  screenshots: 3, trace: true, hashes: true, video: true,
+});
+
+check("F-2: a declared failed > 0 DOMINATES a recognized green state string (fail closed)", () => {
+  assert.equal(normalizeVerdict({ state: "PASSED", passed: 0, failed: 5 }), "FAIL", "PASSED + failed:5 is a contradiction, not a pass");
+  assert.equal(normalizeVerdict({ state: "FOREGROUND_TEST_VERIFIED", failed: 99 }), "FAIL");
+  assert.equal(normalizeVerdict({ state: "SUCCESS", failed: 1 }), "FAIL");
+  assert.equal(normalizeVerdict({ state: "GREEN", failed: 2 }), "FAIL");
+  assert.equal(normalizeVerdict({ state: "PASS", failed: 1 }), "FAIL");
+  assert.equal(normalizeVerdict({ failed: 4 }), "FAIL", "stats-only failed > 0 stays FAIL");
+});
+
+check("F-2 preserves every non-contradictory verdict path", () => {
+  assert.equal(normalizeVerdict({ state: "PASSED", passed: 5, failed: 0 }), "PASS", "a green state with failed:0 is still a pass");
+  assert.equal(normalizeVerdict({ state: "PASSED" }), "PASS", "a green state with NO reporter stats keeps its documented behaviour");
+  assert.equal(normalizeVerdict({ state: "FOREGROUND_TEST_VERIFIED" }), "PASS");
+  assert.equal(normalizeVerdict({ state: "FOREGROUND_TEST_FAILED", failed: 0 }), "FAIL", "a recognized failure state stays FAIL");
+  assert.equal(normalizeVerdict({ state: "FOREGROUND_TEST_RUNNING" }), "RUNNING", "running keeps its behaviour when nothing failed");
+  assert.equal(normalizeVerdict({ state: "RUNNING", failed: 0 }), "RUNNING");
+  assert.equal(normalizeVerdict({ state: "RUNNING", failed: 3 }), "FAIL", "a running bundle with real failures is not still merely running");
+  assert.equal(normalizeVerdict({ state: "totally-unrecognized-word" }), UNKNOWN, "unknown state stays fail-closed");
+});
+
+check("F-2: normalizeBundle gives the contradiction NO supported, unflagged green", () => {
+  const b = normalizeBundle(F2_CONTRADICTION);
+  assert.equal(b.verdict, "FAIL", "the normalized bundle must not read as a pass");
+  assert.notEqual(b.verdict, "PASS");
+  assert.equal(b.unsupported_claim, false, "it claims no pass at all, so it is not an unsupported CLAIM");
+  assert.ok(!(b.verdict === "PASS" && b.supported), "must never be a supported green");
+});
+
+check("F-2: indexDigest places the contradiction in FAIL, not PASS", () => {
+  const d = indexDigest([F2_CONTRADICTION]);
+  assert.equal(d.by_verdict.PASS, 0, "no bundle may be counted as passed");
+  assert.equal(d.by_verdict.FAIL, 1);
+  assert.equal(d.total, 1);
+  const sum = VERDICT.reduce((n, v) => n + d.by_verdict[v], 0);
+  assert.equal(sum, d.total, "buckets still sum to total");
+});
+
+check("F-2: founder-visible text counts the contradiction as Failed: 1 / Passed: 0", () => {
+  const t = renderDigestText([F2_CONTRADICTION]);
+  assert.ok(/Passed: 0/.test(t), "founder sees Passed: 0");
+  assert.ok(/Failed: 1/.test(t), "founder sees Failed: 1");
+  assert.ok(!/Passed: 1/.test(t), "the false green must not survive anywhere in the summary");
+});
+
+check("F-2: the failure is not silently omitted from the rendered conclusion", () => {
+  const t = renderSurfaceText([F2_CONTRADICTION]);
+  assert.ok(/\[Failed\] f2-contradiction/.test(t), "the per-bundle line states Failed out loud");
+  assert.ok(!/\[Passed\] f2-contradiction/.test(t));
+  assert.ok(/Failed: 1/.test(t) && /Passed: 0/.test(t), "the summary conclusion carries the failed count");
+  // the bundle-list markup only (renderSurfaceHtml also inlines the stylesheet, which names every
+  // verdict class regardless of content — the ROW is what states this bundle's verdict).
+  const rows = renderBundleListHtml([F2_CONTRADICTION]);
+  assert.ok(/fg-verdict-fail/.test(rows), "the row marks the bundle failed");
+  assert.ok(!/fg-verdict-pass/.test(rows), "no pass chip is rendered for the contradiction");
+  assert.ok(/>Failed</.test(rows), "the row's founder-visible label reads Failed");
+});
+
 // ---- bundle normalization + the unsupported-claim flag -------------------------------------
 
 check("a PASS bundle with all core artifacts is supported and NOT an unsupported claim", () => {

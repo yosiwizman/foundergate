@@ -69,8 +69,17 @@ function present(v) {
 // STRING (as the founder-surface captures write, e.g. "FOREGROUND_TEST_VERIFIED") first, and
 // falls back to raw @playwright/test reporter stats (passed / failed counts). If neither can be
 // read honestly, the verdict is UNKNOWN — never assumed PASS.
+//
+// Contradiction rule (fail closed): a DECLARED failure count above zero DOMINATES any state
+// string, including a recognized green one. A bundle that says "PASSED" while its own reporter
+// stats say 5 tests failed is not a pass — it is a contradiction, and the honest reading of a
+// contradiction is the failure, never the flattering half. Without this, a green word would
+// silently outrank the numbers that disprove it and the index would show a false green.
 export function normalizeVerdict(descriptor) {
   const d = descriptor || {};
+  const failed = typeof d.failed === "number" && Number.isFinite(d.failed) ? d.failed : null;
+  const passed = typeof d.passed === "number" && Number.isFinite(d.passed) ? d.passed : null;
+  if (failed !== null && failed > 0) return "FAIL";
   const state = typeof d.state === "string" ? d.state.toUpperCase() : "";
   if (state) {
     if (/VERIFIED|PASSED|\bPASS\b|SUCCESS|GREEN/.test(state)) return "PASS";
@@ -78,9 +87,6 @@ export function normalizeVerdict(descriptor) {
     if (/RUNNING|PENDING|IN[_-]?PROGRESS/.test(state)) return "RUNNING";
     // a state string we do not recognize is NOT evidence of a pass — fall through to stats.
   }
-  const failed = typeof d.failed === "number" && Number.isFinite(d.failed) ? d.failed : null;
-  const passed = typeof d.passed === "number" && Number.isFinite(d.passed) ? d.passed : null;
-  if (failed !== null && failed > 0) return "FAIL";
   if (failed === 0 && passed !== null && passed > 0) return "PASS";
   return UNKNOWN;
 }
