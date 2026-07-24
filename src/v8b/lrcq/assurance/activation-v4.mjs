@@ -65,11 +65,47 @@ export function signActivation(payload, privateKeyObject) {
   return { ...payload, founder_signature: sig.toString("base64") };
 }
 
-// ---- verified capability: non-forgeable, module-private brand ---------------------------------------
-const CAP_BRAND = new WeakSet();
-function makeCapability(fields) { const cap = Object.freeze({ ...fields }); CAP_BRAND.add(cap); return cap; }
+// ---- three-stage non-forgeable capabilities (FG-LRCQ-ACT-028 Phase 1 A/B/C) -------------------------
+// A. VERIFIED — created only after full Ed25519 + payload + binding verification; NOT provider authority.
+// B. CONSUMED — created only after atomic one-time consumption of a genuine VERIFIED capability.
+// C. SUPERVISOR-EXECUTION — created only inside the detached supervisor after independent reverification +
+//    matching consumed marker + one-launch claim. The real provider requires THIS stage, not merely VERIFIED.
+// Each stage is a distinct module-private WeakSet brand; a plain object is never accepted at any stage.
+const CAP_BRAND = new WeakSet();          // A: verified
+const CONSUMED_BRAND = new WeakSet();     // B: consumed
+const SUPEXEC_BRAND = new WeakSet();      // C: supervisor-execution
+function makeCapability(fields) { const cap = Object.freeze({ ...fields, _stage: "VERIFIED" }); CAP_BRAND.add(cap); return cap; }
 export function isVerifiedCapability(x) { return typeof x === "object" && x !== null && CAP_BRAND.has(x); }
 export function assertVerifiedCapability(x) { if (!isVerifiedCapability(x)) { const e = new Error("verified capability required"); e.code = V4_CODES.FORGED_CAPABILITY; throw e; } return x; }
+
+// B: mint a CONSUMED capability — only from a genuine VERIFIED capability + the durable marker facts.
+export function mintConsumedCapability(verifiedCap, markerFacts) {
+  assertVerifiedCapability(verifiedCap);
+  const cap = Object.freeze({ _stage: "CONSUMED", activation_identity: verifiedCap.activation_identity, payload_digest: verifiedCap.payload_digest, signer_key_fingerprint: verifiedCap.signer_key_fingerprint, evaluated_candidate: verifiedCap.evaluated_candidate, evidence_candidate: verifiedCap.evidence_candidate, provider_identity: verifiedCap.provider_identity, run_id: verifiedCap.run_id, limits: verifiedCap.limits, consumed_marker_path: markerFacts.markerPath, consumed_marker_digest: markerFacts.markerDigest });
+  CONSUMED_BRAND.add(cap); return cap;
+}
+export function isConsumedCapability(x) { return typeof x === "object" && x !== null && CONSUMED_BRAND.has(x); }
+
+// C: mint a SUPERVISOR-EXECUTION capability — only from a genuine VERIFIED (reverified in-process) capability
+// PLUS proof of the matching consumed marker + one-launch claim + supervisor start identity.
+export function mintSupervisorExecutionCapability(reverifiedCap, proof) {
+  assertVerifiedCapability(reverifiedCap);
+  if (!proof || proof.consumedMarkerPresent !== true || proof.markerMatchesIdentity !== true || proof.launchClaimOwned !== true || !proof.supervisorStartIdentity) { const e = new Error("supervisor-execution proof incomplete"); e.code = V4_CODES.FORGED_CAPABILITY; throw e; }
+  const cap = Object.freeze({ _stage: "SUPERVISOR_EXECUTION", activation_identity: reverifiedCap.activation_identity, evaluated_candidate: reverifiedCap.evaluated_candidate, evidence_candidate: reverifiedCap.evidence_candidate, provider_identity: reverifiedCap.provider_identity, run_id: reverifiedCap.run_id, limits: reverifiedCap.limits, supervisor_start_identity: proof.supervisorStartIdentity, consumed_marker_path: proof.consumedMarkerPath });
+  SUPEXEC_BRAND.add(cap); return cap;
+}
+export function isSupervisorExecutionCapability(x) { return typeof x === "object" && x !== null && SUPEXEC_BRAND.has(x); }
+
+// Provider eligibility gate — the real provider spawn REQUIRES a genuine SUPERVISOR-EXECUTION capability
+// (not verified-only, not consumed-only, not a forged object) + job membership in the signed limits.
+export function providerEligibility(capability, job, bindings = {}) {
+  if (!isSupervisorExecutionCapability(capability)) return R(V4_CODES.FORGED_CAPABILITY, { detail: "supervisor-execution capability required" });
+  if (bindings.providerIdentity !== undefined && bindings.providerIdentity !== capability.provider_identity) return R(V4_CODES.BINDING_MISMATCH, { detail: "provider_identity" });
+  if (bindings.evaluatedCandidate !== undefined && bindings.evaluatedCandidate !== capability.evaluated_candidate) return R(V4_CODES.BINDING_MISMATCH, { detail: "evaluated_candidate" });
+  if (job && job.risk_class !== undefined && job.risk_class !== "WIDE_SAFE") return R(V4_CODES.EXCLUSION_VIOLATION, { detail: "job not WIDE_SAFE" });
+  if (job && job.gate_trigger && job.gate_trigger !== "NONE") return R(V4_CODES.EXCLUSION_VIOLATION, { detail: "job gated" });
+  return R(V4_CODES.OK, { capability });
+}
 
 function R(code, extra = {}) { return { ok: code === V4_CODES.OK, code, ...extra }; }
 

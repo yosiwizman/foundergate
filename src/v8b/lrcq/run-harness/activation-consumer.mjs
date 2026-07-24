@@ -6,7 +6,7 @@
 // is created — a consumed activation can never be reset to unused, and no new deadline window is minted.
 import { createHash } from "node:crypto";
 import { writeFileSync, readFileSync, existsSync, mkdirSync, appendFileSync, renameSync } from "node:fs";
-import { isVerifiedCapability, V4_CODES } from "../assurance/activation-v4.mjs";
+import { isVerifiedCapability, mintConsumedCapability, V4_CODES } from "../assurance/activation-v4.mjs";
 import { dirname, join } from "node:path";
 
 export const ACTIVATION_CONSUMER_SCHEMA = "lrcq-activation-consumer-1";
@@ -99,7 +99,11 @@ export function consumeVerifiedActivation(capability, opts = {}) {
   try { wxWrite(markerPath, JSON.stringify(receipt, null, 2) + "\n"); }
   catch (e) { if (e && e.code === "EEXIST") { appendLog(logPath, JSON.stringify({ event: "REPLAY_BLOCKED_RACE", activation_id, at: now }) + "\n"); return { ok: false, reason: "REPLAY_BLOCKED: lost the atomic claim race", activation_id, replay_blocked: true }; } return { ok: false, reason: "REFUSED: claim write failed: " + (e && e.message) }; }
   appendLog(logPath, JSON.stringify({ event: "CONSUMED_V4", activation_id, run_id: capability.run_id, at: now }) + "\n");
-  return { ok: true, ...receipt, marker_path: markerPath };
+  // Stage B: mint a non-forgeable CONSUMED capability bound to the durable marker (path + digest).
+  const markerBytes = JSON.stringify(receipt, null, 2) + "\n";
+  const markerDigest = "sha256:" + createHash("sha256").update(markerBytes).digest("hex");
+  const consumedCapability = mintConsumedCapability(capability, { markerPath, markerDigest });
+  return { ok: true, ...receipt, marker_path: markerPath, consumed_capability: consumedCapability };
 }
 
 // Read-only: is this exact activation already consumed? (used by witness/recovery — never mutates)
