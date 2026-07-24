@@ -4,6 +4,8 @@
 // public key. V3 is refused for all new execution (evidence-only). The verified capability is a frozen,
 // module-private-branded object — a plain { verified:true } is never accepted anywhere.
 import { createHash, verify as edVerify, sign as edSign } from "node:crypto";
+import { readFileSync, existsSync, lstatSync, statSync } from "node:fs";
+import { join } from "node:path";
 import { canonicalize, signedMessage } from "./canonical-json.mjs";
 import { resolveVerifierKey, fingerprintOfSpkiDer } from "./founder-key-authority.mjs";
 
@@ -78,23 +80,58 @@ function makeCapability(fields) { const cap = Object.freeze({ ...fields, _stage:
 export function isVerifiedCapability(x) { return typeof x === "object" && x !== null && CAP_BRAND.has(x); }
 export function assertVerifiedCapability(x) { if (!isVerifiedCapability(x)) { const e = new Error("verified capability required"); e.code = V4_CODES.FORGED_CAPABILITY; throw e; } return x; }
 
-// B: mint a CONSUMED capability — only from a genuine VERIFIED capability + the durable marker facts.
-export function mintConsumedCapability(verifiedCap, markerFacts) {
-  assertVerifiedCapability(verifiedCap);
-  const cap = Object.freeze({ _stage: "CONSUMED", activation_identity: verifiedCap.activation_identity, payload_digest: verifiedCap.payload_digest, signer_key_fingerprint: verifiedCap.signer_key_fingerprint, evaluated_candidate: verifiedCap.evaluated_candidate, evidence_candidate: verifiedCap.evidence_candidate, provider_identity: verifiedCap.provider_identity, run_id: verifiedCap.run_id, limits: verifiedCap.limits, consumed_marker_path: markerFacts.markerPath, consumed_marker_digest: markerFacts.markerDigest });
-  CONSUMED_BRAND.add(cap); return cap;
-}
 export function isConsumedCapability(x) { return typeof x === "object" && x !== null && CONSUMED_BRAND.has(x); }
-
-// C: mint a SUPERVISOR-EXECUTION capability — only from a genuine VERIFIED (reverified in-process) capability
-// PLUS proof of the matching consumed marker + one-launch claim + supervisor start identity.
-export function mintSupervisorExecutionCapability(reverifiedCap, proof) {
-  assertVerifiedCapability(reverifiedCap);
-  if (!proof || proof.consumedMarkerPresent !== true || proof.markerMatchesIdentity !== true || proof.launchClaimOwned !== true || !proof.supervisorStartIdentity) { const e = new Error("supervisor-execution proof incomplete"); e.code = V4_CODES.FORGED_CAPABILITY; throw e; }
-  const cap = Object.freeze({ _stage: "SUPERVISOR_EXECUTION", activation_identity: reverifiedCap.activation_identity, evaluated_candidate: reverifiedCap.evaluated_candidate, evidence_candidate: reverifiedCap.evidence_candidate, provider_identity: reverifiedCap.provider_identity, run_id: reverifiedCap.run_id, limits: reverifiedCap.limits, supervisor_start_identity: proof.supervisorStartIdentity, consumed_marker_path: proof.consumedMarkerPath });
-  SUPEXEC_BRAND.add(cap); return cap;
-}
 export function isSupervisorExecutionCapability(x) { return typeof x === "object" && x !== null && SUPEXEC_BRAND.has(x); }
+
+// Durable marker/claim helpers — read + verify from disk, NEVER trust caller-asserted facts.
+function readDurable(path, deps, wantKind) {
+  const exists = deps.exists || existsSync; const lstat = deps.lstat || lstatSync; const stat = deps.stat || statSync; const read = deps.read || ((p) => readFileSync(p, "utf8"));
+  if (!exists(path)) return { err: "MISSING:" + wantKind };
+  let st; try { st = lstat(path); } catch { return { err: "LSTAT:" + wantKind }; }
+  if (st.isSymbolicLink && st.isSymbolicLink()) return { err: "SYMLINK:" + wantKind };
+  let sst; try { sst = stat(path); } catch { return { err: "STAT:" + wantKind }; }
+  if (sst.isFile && !sst.isFile()) return { err: "NOT_REGULAR:" + wantKind };
+  let bytes, doc; try { bytes = read(path); doc = JSON.parse(bytes); } catch { return { err: "PARSE:" + wantKind }; }
+  return { bytes, doc, digest: "sha256:" + sha256hex(Buffer.from(bytes)) };
+}
+function markerPathFor(ledgerDir, activationIdentity) { return join(ledgerDir, activationIdentity.replace(":", "_") + ".consumed.json"); }
+
+// B: DERIVE a CONSUMED capability from the durable marker on disk (no caller digest/path trusted). The
+// marker path is derived from the verified capability's activation identity; the marker must exist, be a
+// regular non-symlink file, parse, and record the SAME activation identity. Digest is computed here.
+export function deriveConsumedCapability(verifiedCap, opts = {}) {
+  assertVerifiedCapability(verifiedCap);
+  const ledgerDir = opts.ledgerDir; if (!ledgerDir) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: "no ledgerDir" };
+  const markerPath = markerPathFor(ledgerDir, verifiedCap.activation_identity);
+  const m = readDurable(markerPath, opts, "consumed_marker");
+  if (m.err) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: m.err };
+  if (m.doc.activation_id !== verifiedCap.activation_identity) return { ok: false, code: V4_CODES.BINDING_MISMATCH, detail: "marker activation_id" };
+  const cap = Object.freeze({ _stage: "CONSUMED", activation_identity: verifiedCap.activation_identity, payload_digest: verifiedCap.payload_digest, signer_key_fingerprint: verifiedCap.signer_key_fingerprint, evaluated_candidate: verifiedCap.evaluated_candidate, evidence_candidate: verifiedCap.evidence_candidate, provider_identity: verifiedCap.provider_identity, run_id: verifiedCap.run_id, limits: verifiedCap.limits, consumed_marker_path: markerPath, consumed_marker_digest: m.digest });
+  CONSUMED_BRAND.add(cap); return { ok: true, capability: cap };
+}
+
+// C: DERIVE a SUPERVISOR-EXECUTION capability from durable records. Requires an in-process reverified
+// capability + the durable consumed marker + the durable one-launch claim; verifies the launch claim's
+// recorded supervisor PID + process-start identity against the ACTUAL current process values (passed in,
+// not asserted). Accepts NO booleans. The launch-claim path is derived from the activation identity.
+export function deriveSupervisorExecutionCapability(reverifiedCap, opts = {}) {
+  assertVerifiedCapability(reverifiedCap);
+  const ledgerDir = opts.ledgerDir; if (!ledgerDir) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: "no ledgerDir" };
+  const cm = readDurable(markerPathFor(ledgerDir, reverifiedCap.activation_identity), opts, "consumed_marker");
+  if (cm.err) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: cm.err };
+  if (cm.doc.activation_id !== reverifiedCap.activation_identity) return { ok: false, code: V4_CODES.BINDING_MISMATCH, detail: "marker identity" };
+  const claimPath = opts.launchClaimPath || join(ledgerDir, reverifiedCap.activation_identity.replace(":", "_") + ".launch-claim.json");
+  const lc = readDurable(claimPath, opts, "launch_claim");
+  if (lc.err) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: lc.err };
+  if (lc.doc.activation_id !== reverifiedCap.activation_identity) return { ok: false, code: V4_CODES.BINDING_MISMATCH, detail: "claim identity" };
+  // The claim's recorded owner must equal the ACTUAL current supervisor process (caller supplies the real
+  // current values; the function compares — it does not trust a boolean).
+  if (typeof opts.currentPid !== "number" || lc.doc.supervisor_pid !== opts.currentPid) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: "launch claim pid mismatch" };
+  if (!opts.currentStartIdentity || lc.doc.supervisor_start_identity !== opts.currentStartIdentity) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: "launch claim start-identity mismatch" };
+  if (lc.doc.terminal === true) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: "run already terminal" };
+  const cap = Object.freeze({ _stage: "SUPERVISOR_EXECUTION", activation_identity: reverifiedCap.activation_identity, evaluated_candidate: reverifiedCap.evaluated_candidate, evidence_candidate: reverifiedCap.evidence_candidate, provider_identity: reverifiedCap.provider_identity, run_id: reverifiedCap.run_id, limits: reverifiedCap.limits, supervisor_start_identity: opts.currentStartIdentity, supervisor_pid: opts.currentPid, consumed_marker_path: cm ? markerPathFor(ledgerDir, reverifiedCap.activation_identity) : null, launch_claim_path: claimPath });
+  SUPEXEC_BRAND.add(cap); return { ok: true, capability: cap };
+}
 
 // Provider eligibility gate — the real provider spawn REQUIRES a genuine SUPERVISOR-EXECUTION capability
 // (not verified-only, not consumed-only, not a forged object) + job membership in the signed limits.
