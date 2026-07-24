@@ -22,6 +22,7 @@ function basePayload(over = {}) {
     schema: ACTIVATION_V4_SCHEMA, signature_payload_version: V4_SIGNATURE_PAYLOAD_VERSION,
     founder_signature_algorithm: "ed25519", signer_key_fingerprint: fp,
     authorization_text_digest: authorizationTextDigest(authText), activation_nonce: "nonce-123",
+    repository_root_realpath: "/tmp/repo", lifecycle_root_realpath: "/tmp/repo/lifecycle", lifecycle_contract_version: "lrcq-lifecycle-v4-1",
     evidence_commit_sha: "8d1899f7", evidence_commit_tree: "9e720249", reviewed_runtime_sha: "bfc0556", reviewed_runtime_tree: "20518b8d",
     run_id: "lrcq-first-internal-5h-run", backlog_digest: "sha256:f3801d96",
     provider_executable_path: "/x/bin/claude", resolved_provider_target: "/x/versions/2.1.215", provider_version: "2.1.215", provider_executable_identity: "sha256:90608b5c",

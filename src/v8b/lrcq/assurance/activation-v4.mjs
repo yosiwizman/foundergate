@@ -4,9 +4,9 @@
 // public key. V3 is refused for all new execution (evidence-only). The verified capability is a frozen,
 // module-private-branded object — a plain { verified:true } is never accepted anywhere.
 import { createHash, verify as edVerify, sign as edSign } from "node:crypto";
-import { readFileSync, existsSync, lstatSync, statSync } from "node:fs";
+import { readFileSync, existsSync, lstatSync, statSync, realpathSync } from "node:fs";
 import { execFileSync } from "node:child_process";
-import { join } from "node:path";
+import { join, sep } from "node:path";
 import { canonicalize, signedMessage } from "./canonical-json.mjs";
 import { resolveVerifierKey, fingerprintOfSpkiDer } from "./founder-key-authority.mjs";
 
@@ -42,9 +42,13 @@ export const V4_CODES = {
 
 // The authority-bearing fields covered by the signature (everything except the signature itself + derived
 // receipts + derived identity). This exact ordering is documented; canonicalization sorts keys anyway.
+export const LIFECYCLE_CONTRACT_VERSION = "lrcq-lifecycle-v4-1";
 export const V4_PAYLOAD_FIELDS = [
   "schema", "signature_payload_version", "founder_signature_algorithm", "signer_key_fingerprint",
   "authorization_text_digest", "activation_nonce",
+  // FG-LRCQ-ACT-028: the repository + lifecycle roots are SIGNED, so authority can be read ONLY from the
+  // exact signed lifecycle root (a caller cannot substitute an arbitrary directory of forged records).
+  "repository_root_realpath", "lifecycle_root_realpath", "lifecycle_contract_version",
   "evidence_commit_sha", "evidence_commit_tree", "reviewed_runtime_sha", "reviewed_runtime_tree",
   "run_id", "backlog_digest",
   "provider_executable_path", "resolved_provider_target", "provider_version", "provider_executable_identity",
@@ -106,13 +110,31 @@ function readDurable(path, wantKind) {
 function markerPathFor(ledgerDir, activationIdentity) { return join(ledgerDir, activationIdentity.replace(":", "_") + ".consumed.json"); }
 function claimPathFor(ledgerDir, activationIdentity) { return join(ledgerDir, activationIdentity.replace(":", "_") + ".launch-claim.json"); }
 
+// Verify + resolve the SIGNED lifecycle root carried by a verified capability. Fail closed on: not a real
+// directory, symlink, not realpath-contained in the signed repository root. Returns the realpath'd root or
+// a fail code. A caller CANNOT substitute a directory — the root is whatever the founder signature bound.
+function resolveSignedLifecycleRoot(cap) {
+  const root = cap.lifecycle_root; const repo = cap.repository_root;
+  if (typeof root !== "string" || !root || typeof repo !== "string" || !repo) return { err: "MISSING_SIGNED_ROOT" };
+  if (!existsSync(root)) return { err: "LIFECYCLE_ROOT_MISSING" };
+  let st; try { st = lstatSync(root); } catch { return { err: "LIFECYCLE_ROOT_LSTAT" }; }
+  if (st.isSymbolicLink()) return { err: "LIFECYCLE_ROOT_SYMLINK" };
+  let rr, rrepo; try { rr = realpathSync(root); rrepo = realpathSync(repo); } catch { return { err: "REALPATH" }; }
+  let dst; try { dst = statSync(rr); } catch { return { err: "LIFECYCLE_ROOT_STAT" }; }
+  if (!dst.isDirectory()) return { err: "LIFECYCLE_ROOT_NOT_DIR" };
+  if (rr !== rrepo && !rr.startsWith(rrepo + sep)) return { err: "LIFECYCLE_ROOT_ESCAPES_REPO" };
+  return { root: rr };
+}
+
 // B: DERIVE a CONSUMED capability from the durable marker on disk. `ledgerDir` is the REAL lifecycle root
 // (contract-derived in production, a real disposable dir in tests). The marker path is derived from the
 // verified capability's activation identity; read via REAL fs only; must record the SAME activation
 // identity. Digest computed from actual bytes. No caller path/digest/fs is trusted.
-export function deriveConsumedCapability(verifiedCap, ledgerDir) {
+export function deriveConsumedCapability(verifiedCap) {
   assertVerifiedCapability(verifiedCap);
-  if (typeof ledgerDir !== "string" || !ledgerDir) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: "no ledgerDir" };
+  const lr = resolveSignedLifecycleRoot(verifiedCap);
+  if (lr.err) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: lr.err };
+  const ledgerDir = lr.root; // the SIGNED lifecycle root — never a caller argument
   const markerPath = markerPathFor(ledgerDir, verifiedCap.activation_identity);
   const m = readDurable(markerPath, "consumed_marker");
   if (m.err) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: m.err };
@@ -125,9 +147,11 @@ export function deriveConsumedCapability(verifiedCap, ledgerDir) {
 // real consumed marker + real launch-claim (identity-derived paths, REAL fs), then compares the claim's
 // recorded supervisor_pid + start_identity against process.pid + a MECHANICALLY OBSERVED start identity
 // (never caller-supplied). This catches stale-PID reuse. Accepts NO fs/pid/identity/boolean caller facts.
-export function deriveSupervisorExecutionCapability(reverifiedCap, ledgerDir) {
+export function deriveSupervisorExecutionCapability(reverifiedCap) {
   assertVerifiedCapability(reverifiedCap);
-  if (typeof ledgerDir !== "string" || !ledgerDir) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: "no ledgerDir" };
+  const lr = resolveSignedLifecycleRoot(reverifiedCap);
+  if (lr.err) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: lr.err };
+  const ledgerDir = lr.root; // SIGNED lifecycle root only
   const cm = readDurable(markerPathFor(ledgerDir, reverifiedCap.activation_identity), "consumed_marker");
   if (cm.err) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: cm.err };
   if (cm.doc.activation_id !== reverifiedCap.activation_identity) return { ok: false, code: V4_CODES.BINDING_MISMATCH, detail: "marker identity" };
@@ -212,6 +236,8 @@ export function verifyActivation(activation, bindings = {}, deps = {}) {
     authorization_text_digest: activation.authorization_text_digest,
     signer_key_fingerprint: activation.signer_key_fingerprint,
     activation_identity: activationIdentity,
+    repository_root: activation.repository_root_realpath,   // SIGNED
+    lifecycle_root: activation.lifecycle_root_realpath,     // SIGNED — the only place authority is read
     evaluated_candidate: activation.reviewed_runtime_sha,
     evidence_candidate: activation.evidence_commit_sha,
     provider_identity: activation.provider_executable_identity,

@@ -2,7 +2,7 @@
 // Disposable Ed25519 test keys ONLY, all under an auto-removed temp dir. Exercises the production tool
 // CORE functions + the V4 capability-gated consumer. Proves no private-key/passphrase leakage.
 import { generateKeyPairSync, createHash, createPublicKey } from "node:crypto";
-import { mkdtempSync, existsSync, readFileSync, writeFileSync, mkdirSync, statSync, rmSync, lstatSync, symlinkSync, readdirSync } from "node:fs";
+import { mkdtempSync, existsSync, readFileSync, writeFileSync, mkdirSync, statSync, rmSync, lstatSync, symlinkSync, readdirSync, realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { generateEnrollment, writeEncryptedKey } from "../../../../tools/terminal0/lrcq/founder-key-enroll.mjs";
@@ -38,7 +38,9 @@ try {
   ok("S4 refuses a symlink authorization-file", (() => { const l = join(base, "authz-link.txt"); try { symlinkSync(authPath, l); } catch { return true; } try { readAuthorizationBytes(l, { uid: 0 }); return false; } catch { return true; } })());
   // frozen template (mimics the FINAL_UNSIGNED_ACTIVATION_TEMPLATE fields)
   const template = { run_harness_candidate_sha: "8d1899f7", run_harness_candidate_tree: "9e720249", reviewed_production_ancestor_sha: "bfc0556", reviewed_production_ancestor_tree: "20518b8d", run_id: "lrcq-first-internal-5h-run", first_real_run_backlog_digest: "sha256:f3801d96", provider_executable_path: "/x/bin/claude", resolved_provider_target: "/x/versions/2.1.215", provider_version: "2.1.215", provider_executable_identity: "sha256:90608b5c", capability_lease_digest: "sha256:aa", blast_radius_budget_digest: "sha256:bb", max_budget_usd: 10 };
-  const payload = buildV4Payload({ template, signerFingerprint: fp, authorizationBytes: bytes, nonce: "n1", issuedEpoch: 1000 });
+  const repoRoot = realpathSync(base);
+  const lifecycleRoot = join(repoRoot, "lifecycle"); mkdirSync(lifecycleRoot, { recursive: true });
+  const payload = buildV4Payload({ template, signerFingerprint: fp, authorizationBytes: bytes, nonce: "n1", issuedEpoch: 1000, repositoryRootRealpath: repoRoot, lifecycleRootRealpath: lifecycleRoot });
   const signed = signActivation(payload, priv);
   // governed authority fixture with this disposable key as current
   const spkiDer = createPublicKey(priv).export({ format: "der", type: "spki" });
@@ -48,10 +50,10 @@ try {
   ok("S5 tool-signed activation verifies + yields a capability", v.ok === true && isVerifiedCapability(v.capability));
 
   // ---- consumption bypass closure ----
-  const ledgerDir = join(base, "ledger");
-  const c1 = consumeVerifiedActivation(v.capability, { ledgerDir, now: 1200 });
+  const ledgerDir = lifecycleRoot;
+  const c1 = consumeVerifiedActivation(v.capability, { ledgerDir: lifecycleRoot, now: 1200 });
   ok("B1 verified capability consumes exactly once", c1.ok === true && existsSync(c1.marker_path));
-  ok("B2 replay refused (second consumption)", consumeVerifiedActivation(v.capability, { ledgerDir, now: 1201 }).replay_blocked === true);
+  ok("B2 replay refused (second consumption)", consumeVerifiedActivation(v.capability, { ledgerDir: lifecycleRoot, now: 1201 }).replay_blocked === true);
   ok("B3 forged {verified:true} object refused BEFORE any marker", consumeVerifiedActivation({ verified: true, activation_identity: "sha256:" + "9".repeat(64) }, { ledgerDir: join(base, "l2"), now: 1200 }).code === V4_CODES.FORGED_CAPABILITY && !existsSync(join(base, "l2")));
   ok("B4 raw activation object (not a capability) refused", consumeVerifiedActivation(signed, { ledgerDir: join(base, "l3"), now: 1200 }).code === V4_CODES.FORGED_CAPABILITY);
 

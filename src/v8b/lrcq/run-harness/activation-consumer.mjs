@@ -102,7 +102,9 @@ export function consumeVerifiedActivation(capability, opts = {}) {
   // Stage B: DERIVE the CONSUMED capability by REREADING the durable marker just written, via REAL fs
   // (no injectable fs). The derive helper computes the digest from the actual on-disk bytes and verifies
   // the marker's recorded activation identity; an invented path/digest/fs cannot mint authority.
-  const dc = deriveConsumedCapability(capability, ledgerDir);
+  // The CONSUMED capability derives from the SIGNED lifecycle root carried by the verified capability (not
+  // the opts.ledgerDir). Production callers MUST consume into the signed lifecycle root so this matches.
+  const dc = deriveConsumedCapability(capability);
   if (!dc.ok) return { ok: false, reason: "REFUSED: consumed-capability derivation failed: " + (dc.detail || dc.code), code: dc.code };
   return { ok: true, ...receipt, marker_path: markerPath, consumed_capability: dc.capability };
 }
