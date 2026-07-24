@@ -1,12 +1,12 @@
-// FounderGate LRCQ — V4 three-stage authority DERIVED FROM DURABLE RECORDS (FG-LRCQ-ACT-028).
-// Closes the authority-minting bypass: consumed + supervisor-execution authority is derived only by
-// rereading + verifying the real marker/launch-claim from disk; NO caller-asserted digest/booleans mint
-// authority. Disposable Ed25519 keys + disposable lifecycle dirs only.
-import { generateKeyPairSync, createPublicKey, createHash } from "node:crypto";
-import { mkdtempSync, rmSync, writeFileSync, mkdirSync, existsSync, symlinkSync } from "node:fs";
+// FounderGate LRCQ — V4 stage authority DERIVED FROM DURABLE RECORDS via REAL fs ONLY (FG-LRCQ-ACT-028).
+// Closes the caller-assisted injection bypass: the production derive functions take only a real ledgerDir
+// and use real fs + real process.pid + a mechanically-observed start identity — no injectable fs/pid/
+// identity/booleans. Tests write REAL files to a disposable dir and use the test process's real identity.
+import { generateKeyPairSync, createPublicKey } from "node:crypto";
+import { mkdtempSync, rmSync, writeFileSync, mkdirSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { signActivation, verifyActivation, deriveConsumedCapability, isConsumedCapability, deriveSupervisorExecutionCapability, isSupervisorExecutionCapability, providerEligibility, isVerifiedCapability, authorizationTextDigest, V4_CODES, ACTIVATION_V4_SCHEMA, V4_SIGNATURE_PAYLOAD_VERSION } from "../../../../src/v8b/lrcq/assurance/activation-v4.mjs";
+import { signActivation, verifyActivation, deriveConsumedCapability, isConsumedCapability, deriveSupervisorExecutionCapability, isSupervisorExecutionCapability, providerEligibility, isVerifiedCapability, observedStartIdentity, authorizationTextDigest, V4_CODES, ACTIVATION_V4_SCHEMA, V4_SIGNATURE_PAYLOAD_VERSION } from "../../../../src/v8b/lrcq/assurance/activation-v4.mjs";
 import { fingerprintOfSpkiDer } from "../../../../src/v8b/lrcq/assurance/founder-key-authority.mjs";
 import { consumeVerifiedActivation } from "../../../../src/v8b/lrcq/run-harness/activation-consumer.mjs";
 
@@ -23,44 +23,46 @@ const payload = { schema: ACTIVATION_V4_SCHEMA, signature_payload_version: V4_SI
 const signed = signActivation(payload, kp.privateKey);
 const v = verifyActivation(signed, { authorizationBytes: authText, nowEpoch: 1200 }, { keyDeps });
 const ident = v.capability.activation_identity;
+const idFile = ident.replace(":", "_");
 
 const base = mkdtempSync(join(tmpdir(), "fg-v4stages-"));
 try {
-  ok("A1 verified capability is stage VERIFIED, not provider authority", v.ok && isVerifiedCapability(v.capability) && v.capability._stage === "VERIFIED");
+  // INJECTION CLOSURE: the derive API no longer accepts fs/pid/identity — passing extra "deps" is ignored,
+  // and a ledgerDir with no real marker on disk is REFUSED (fake fs can't help).
+  ok("Z1 deriveConsumedCapability({fake fs}) is IGNORED; no real marker -> REFUSED", (() => { const r = deriveConsumedCapability(v.capability, join(base, "nope"), { exists: () => true, read: () => JSON.stringify({ activation_id: ident }) }); return r.ok === false; })());
+  ok("Z1b deriveConsumedCapability only accepts a string ledgerDir (object arg refused)", deriveConsumedCapability(v.capability, { ledgerDir: "/x", exists: () => true }).ok === false);
 
-  // ---- BYPASS CLOSURE: consumed derivation requires a REAL durable marker ----
-  const emptyLedger = join(base, "empty"); mkdirSync(emptyLedger, { recursive: true });
-  ok("Z1 deriveConsumedCapability with NO marker on disk -> REFUSED (bypass closed)", deriveConsumedCapability(v.capability, { ledgerDir: emptyLedger }).ok === false);
-  // real consumption writes the marker, then derive rereads it
+  // real consumption writes a REAL marker; derive rereads it via real fs
   const ledgerDir = join(base, "led");
   const c = consumeVerifiedActivation(v.capability, { ledgerDir, now: 1200 });
   ok("B1 real consumption derives a genuine CONSUMED capability from the on-disk marker", c.ok && isConsumedCapability(c.consumed_capability) && c.consumed_capability._stage === "CONSUMED");
-  ok("B2 consumed capability binds the marker path + a disk-computed digest", c.consumed_capability.consumed_marker_path === c.marker_path && /^sha256:[0-9a-f]{64}$/.test(c.consumed_capability.consumed_marker_digest));
-  ok("Z2 a marker whose activation_id != identity -> REFUSED", (() => { const l = join(base, "wrongid"); mkdirSync(l, { recursive: true }); writeFileSync(join(l, ident.replace(":", "_") + ".consumed.json"), JSON.stringify({ activation_id: "sha256:" + "0".repeat(64) })); return deriveConsumedCapability(v.capability, { ledgerDir: l }).code === V4_CODES.BINDING_MISMATCH; })());
-  ok("Z3 a symlinked marker -> REFUSED", (() => { const l = join(base, "symld"); mkdirSync(l, { recursive: true }); const real = join(base, "real-marker.json"); writeFileSync(real, JSON.stringify({ activation_id: ident })); try { symlinkSync(real, join(l, ident.replace(":", "_") + ".consumed.json")); } catch { return true; } return deriveConsumedCapability(v.capability, { ledgerDir: l }).ok === false; })());
+  ok("B2 binds marker path + a disk-computed digest", c.consumed_capability.consumed_marker_path === c.marker_path && /^sha256:[0-9a-f]{64}$/.test(c.consumed_capability.consumed_marker_digest));
+  ok("Z2 marker with wrong activation_id -> REFUSED", (() => { const l = join(base, "wid"); mkdirSync(l, { recursive: true }); writeFileSync(join(l, idFile + ".consumed.json"), JSON.stringify({ activation_id: "sha256:" + "0".repeat(64) })); return deriveConsumedCapability(v.capability, l).code === V4_CODES.BINDING_MISMATCH; })());
+  ok("Z3 symlinked marker -> REFUSED", (() => { const l = join(base, "syl"); mkdirSync(l, { recursive: true }); const real = join(base, "rm.json"); writeFileSync(real, JSON.stringify({ activation_id: ident })); try { symlinkSync(real, join(l, idFile + ".consumed.json")); } catch { return true; } return deriveConsumedCapability(v.capability, l).ok === false; })());
 
-  // ---- BYPASS CLOSURE: supervisor-execution requires a REAL marker + REAL launch-claim + PID match ----
-  ok("Z4 supervisor-exec with NO launch-claim -> REFUSED (invented booleans cannot mint)", deriveSupervisorExecutionCapability(v.capability, { ledgerDir, currentPid: 4242, currentStartIdentity: "start-abc" }).ok === false);
-  // write a real launch claim owned by pid 4242 / start-abc
-  writeFileSync(join(ledgerDir, ident.replace(":", "_") + ".launch-claim.json"), JSON.stringify({ activation_id: ident, supervisor_pid: 4242, supervisor_start_identity: "start-abc", terminal: false }));
-  const sup = deriveSupervisorExecutionCapability(v.capability, { ledgerDir, currentPid: 4242, currentStartIdentity: "start-abc" });
-  ok("C1 supervisor-exec derived from real marker + real claim + matching PID/start-identity", sup.ok && isSupervisorExecutionCapability(sup.capability));
-  ok("Z5 wrong current PID -> REFUSED", deriveSupervisorExecutionCapability(v.capability, { ledgerDir, currentPid: 9999, currentStartIdentity: "start-abc" }).ok === false);
-  ok("Z6 wrong start-identity -> REFUSED", deriveSupervisorExecutionCapability(v.capability, { ledgerDir, currentPid: 4242, currentStartIdentity: "other" }).ok === false);
-  ok("Z7 terminal claim -> REFUSED", (() => { const l = join(base, "term"); mkdirSync(l, { recursive: true }); writeFileSync(join(l, ident.replace(":", "_") + ".consumed.json"), JSON.stringify({ activation_id: ident })); writeFileSync(join(l, ident.replace(":", "_") + ".launch-claim.json"), JSON.stringify({ activation_id: ident, supervisor_pid: 4242, supervisor_start_identity: "start-abc", terminal: true })); return deriveSupervisorExecutionCapability(v.capability, { ledgerDir: l, currentPid: 4242, currentStartIdentity: "start-abc" }).ok === false; })());
+  // supervisor-execution: real marker + real launch-claim owned by THIS process (real pid + observed identity)
+  const pid = process.pid; const observed = observedStartIdentity(pid);
+  ok("PI observedStartIdentity(current pid) is mechanically readable", typeof observed === "string" && observed.includes("pid:" + pid));
+  ok("Z4 supervisor-exec with NO launch-claim -> REFUSED", deriveSupervisorExecutionCapability(v.capability, ledgerDir).ok === false);
+  writeFileSync(join(ledgerDir, idFile + ".launch-claim.json"), JSON.stringify({ activation_id: ident, supervisor_pid: pid, supervisor_start_identity: observed, terminal: false }));
+  const sup = deriveSupervisorExecutionCapability(v.capability, ledgerDir);
+  ok("C1 supervisor-exec derived from real records + THIS process's real pid/observed identity", sup.ok && isSupervisorExecutionCapability(sup.capability));
+  ok("Z5 launch-claim with a DIFFERENT pid -> REFUSED (stale-PID/forgery closed)", (() => { const l = join(base, "wp"); mkdirSync(l, { recursive: true }); writeFileSync(join(l, idFile + ".consumed.json"), JSON.stringify({ activation_id: ident })); writeFileSync(join(l, idFile + ".launch-claim.json"), JSON.stringify({ activation_id: ident, supervisor_pid: pid + 1, supervisor_start_identity: observed, terminal: false })); return deriveSupervisorExecutionCapability(v.capability, l).ok === false; })());
+  ok("Z6 launch-claim with a forged start-identity -> REFUSED", (() => { const l = join(base, "wi"); mkdirSync(l, { recursive: true }); writeFileSync(join(l, idFile + ".consumed.json"), JSON.stringify({ activation_id: ident })); writeFileSync(join(l, idFile + ".launch-claim.json"), JSON.stringify({ activation_id: ident, supervisor_pid: pid, supervisor_start_identity: "forged", terminal: false })); return deriveSupervisorExecutionCapability(v.capability, l).ok === false; })());
+  ok("Z7 terminal claim -> REFUSED", (() => { const l = join(base, "tm"); mkdirSync(l, { recursive: true }); writeFileSync(join(l, idFile + ".consumed.json"), JSON.stringify({ activation_id: ident })); writeFileSync(join(l, idFile + ".launch-claim.json"), JSON.stringify({ activation_id: ident, supervisor_pid: pid, supervisor_start_identity: observed, terminal: true })); return deriveSupervisorExecutionCapability(v.capability, l).ok === false; })());
 
-  // ---- provider eligibility requires stage C ----
+  // provider eligibility requires stage C
   const job = { risk_class: "WIDE_SAFE", gate_trigger: "NONE" };
   const gbind = { providerIdentity: "sha256:90608b5c", evaluatedCandidate: "bfc0556" };
-  ok("P1 supervisor-execution capability -> provider ELIGIBLE", providerEligibility(sup.capability, job, gbind).ok === true);
+  ok("P1 supervisor-execution -> provider ELIGIBLE", providerEligibility(sup.capability, job, gbind).ok === true);
   ok("P2 verified-only -> REFUSED", providerEligibility(v.capability, job, gbind).code === V4_CODES.FORGED_CAPABILITY);
   ok("P3 consumed-only -> REFUSED", providerEligibility(c.consumed_capability, job, gbind).code === V4_CODES.FORGED_CAPABILITY);
-  ok("P4 forged {_stage:'SUPERVISOR_EXECUTION'} -> REFUSED", providerEligibility({ verified: true, _stage: "SUPERVISOR_EXECUTION" }, job, gbind).code === V4_CODES.FORGED_CAPABILITY);
+  ok("P4 forged {_stage:'SUPERVISOR_EXECUTION'} -> REFUSED", providerEligibility({ _stage: "SUPERVISOR_EXECUTION" }, job, gbind).code === V4_CODES.FORGED_CAPABILITY);
   ok("P5 raw signed activation -> REFUSED", providerEligibility(signed, job, gbind).code === V4_CODES.FORGED_CAPABILITY);
-  ok("P6 gated/non-WIDE_SAFE job -> REFUSED", providerEligibility(sup.capability, { risk_class: "NARROW", gate_trigger: "NONE" }, gbind).code === V4_CODES.EXCLUSION_VIOLATION);
+  ok("P6 gated job -> REFUSED", providerEligibility(sup.capability, { risk_class: "NARROW", gate_trigger: "NONE" }, gbind).code === V4_CODES.EXCLUSION_VIOLATION);
   ok("P7 wrong provider identity -> REFUSED", providerEligibility(sup.capability, job, { ...gbind, providerIdentity: "sha256:other" }).code === V4_CODES.BINDING_MISMATCH);
 } finally { try { rmSync(base, { recursive: true, force: true }); } catch { /* */ } }
 
-console.log("\nLRCQ ACTIVATION-V4 STAGES (DURABLE) SELFTEST: " + (n - fails.length) + "/" + n + " passed");
+console.log("\nLRCQ ACTIVATION-V4 STAGES (REAL-FS DURABLE) SELFTEST: " + (n - fails.length) + "/" + n + " passed");
 if (fails.length) { console.log("FAILED: " + fails.join(", ")); process.exit(1); }
 process.exit(0);

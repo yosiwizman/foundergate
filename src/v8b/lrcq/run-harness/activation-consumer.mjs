@@ -99,10 +99,10 @@ export function consumeVerifiedActivation(capability, opts = {}) {
   try { wxWrite(markerPath, JSON.stringify(receipt, null, 2) + "\n"); }
   catch (e) { if (e && e.code === "EEXIST") { appendLog(logPath, JSON.stringify({ event: "REPLAY_BLOCKED_RACE", activation_id, at: now }) + "\n"); return { ok: false, reason: "REPLAY_BLOCKED: lost the atomic claim race", activation_id, replay_blocked: true }; } return { ok: false, reason: "REFUSED: claim write failed: " + (e && e.message) }; }
   appendLog(logPath, JSON.stringify({ event: "CONSUMED_V4", activation_id, run_id: capability.run_id, at: now }) + "\n");
-  // Stage B: DERIVE the CONSUMED capability by REREADING the durable marker just written (never from
-  // caller-asserted facts). The derive helper computes the digest from the actual on-disk bytes and
-  // verifies the marker's recorded activation identity, so an invented path/digest cannot mint authority.
-  const dc = deriveConsumedCapability(capability, { ledgerDir, read, exists: has, lstat: opts.lstat, stat: opts.stat });
+  // Stage B: DERIVE the CONSUMED capability by REREADING the durable marker just written, via REAL fs
+  // (no injectable fs). The derive helper computes the digest from the actual on-disk bytes and verifies
+  // the marker's recorded activation identity; an invented path/digest/fs cannot mint authority.
+  const dc = deriveConsumedCapability(capability, ledgerDir);
   if (!dc.ok) return { ok: false, reason: "REFUSED: consumed-capability derivation failed: " + (dc.detail || dc.code), code: dc.code };
   return { ok: true, ...receipt, marker_path: markerPath, consumed_capability: dc.capability };
 }
