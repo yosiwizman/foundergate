@@ -6,6 +6,7 @@
 // is created — a consumed activation can never be reset to unused, and no new deadline window is minted.
 import { createHash } from "node:crypto";
 import { writeFileSync, readFileSync, existsSync, mkdirSync, appendFileSync, renameSync } from "node:fs";
+import { isVerifiedCapability, V4_CODES } from "../assurance/activation-v4.mjs";
 import { dirname, join } from "node:path";
 
 export const ACTIVATION_CONSUMER_SCHEMA = "lrcq-activation-consumer-1";
@@ -73,6 +74,31 @@ export function consumeActivation(activation, opts = {}) {
     return { ok: false, reason: "REFUSED: claim write failed: " + (e && e.message) };
   }
   appendLog(logPath, JSON.stringify({ event: "CONSUMED", activation_id, run_id: activation.run_id, at: now, immutable_hard_deadline_epoch: activation.hard_deadline_epoch }) + "\n");
+  return { ok: true, ...receipt, marker_path: markerPath };
+}
+
+// FG-LRCQ-ACT-028: the V4 execution consumption path. It REQUIRES a genuine, non-forgeable verified
+// capability (from activation-v4 verifyActivation) — a raw activation object or a forged {verified:true}
+// object is refused BEFORE any consumed-marker is written. This closes the direct-import consumption
+// bypass: importing consumeVerifiedActivation and passing an unverified activation cannot consume.
+export function consumeVerifiedActivation(capability, opts = {}) {
+  if (!isVerifiedCapability(capability)) return { ok: false, reason: "REFUSED: verified V4 capability required (forged/unverified rejected)", code: V4_CODES.FORGED_CAPABILITY };
+  const ledgerDir = opts.ledgerDir; if (!ledgerDir) return { ok: false, reason: "no ledger dir" };
+  const now = typeof opts.now === "number" ? opts.now : Math.floor(Date.now() / 1000);
+  const wxWrite = opts.wxWrite || ((p, c) => writeFileSync(p, c, { flag: "wx" }));
+  const read = opts.read || ((p) => readFileSync(p, "utf8"));
+  const has = opts.exists || existsSync;
+  const appendLog = opts.appendLog || ((p, line) => appendFileSync(p, line));
+  const mkdirp = opts.mkdirp || ((p) => mkdirSync(p, { recursive: true }));
+  const activation_id = capability.activation_identity; // derived from the signed payload digest + signature
+  try { mkdirp(ledgerDir); } catch { /* */ }
+  const markerPath = join(ledgerDir, activation_id.replace(":", "_") + ".consumed.json");
+  const logPath = join(ledgerDir, "activation-lifecycle.jsonl");
+  if (has(markerPath)) { appendLog(logPath, JSON.stringify({ event: "REPLAY_BLOCKED", activation_id, at: now }) + "\n"); return { ok: false, reason: "REPLAY_BLOCKED: activation already consumed", activation_id, replay_blocked: true }; }
+  const receipt = { schema: "lrcq-activation-consumer-4", activation_id, run_id: capability.run_id, evaluated_candidate: capability.evaluated_candidate, evidence_candidate: capability.evidence_candidate, signer_key_fingerprint: capability.signer_key_fingerprint, authorization_text_digest: capability.authorization_text_digest, payload_digest: capability.payload_digest, consumed_epoch: now, consumed_once: true, may_not_be_consumed_again: true, no_new_authorization_window: true };
+  try { wxWrite(markerPath, JSON.stringify(receipt, null, 2) + "\n"); }
+  catch (e) { if (e && e.code === "EEXIST") { appendLog(logPath, JSON.stringify({ event: "REPLAY_BLOCKED_RACE", activation_id, at: now }) + "\n"); return { ok: false, reason: "REPLAY_BLOCKED: lost the atomic claim race", activation_id, replay_blocked: true }; } return { ok: false, reason: "REFUSED: claim write failed: " + (e && e.message) }; }
+  appendLog(logPath, JSON.stringify({ event: "CONSUMED_V4", activation_id, run_id: capability.run_id, at: now }) + "\n");
   return { ok: true, ...receipt, marker_path: markerPath };
 }
 
