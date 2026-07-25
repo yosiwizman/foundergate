@@ -11,7 +11,20 @@
   "reviewed_executable_code_candidate_sha": "c6bf5a37d06b5a86a2ac1b7a5721bb53c38868c0",
   "reviewed_executable_code_candidate_tree": "0d598ceb16cc2faebc2099c1b88b62788ff72219",
   "reviewed_executable_code_candidate_proof": "PROCEDURAL, hash-independent: the executable candidate is the commit whose message begins \"FG-FCHK-197: correct the fresh independent Checker’s five findings\". For every commit AFTER it on this branch, git diff --stat <candidate> <commit> -- src tools package.json package-lock.json is EMPTY; each changes ONLY paths under .foundergate/evidence/ or docs/. A commit cannot embed its own hash, so the two SHAs above were recorded after the commit existed and are verifiable with git rev-parse.",
-  "evidence_only_commits_after_the_executable_candidate": "listed in evidence_only_tail; each changes ONLY .foundergate/evidence/ and/or docs/",
+  "evidence_only_commits_after_the_executable_candidate": {
+    "count": 2,
+    "note": "Each changes ONLY paths under .foundergate/evidence/ and/or docs/. Verify with: git diff --stat c6bf5a37d06b5a86a2ac1b7a5721bb53c38868c0 HEAD -- src tools package.json package-lock.json (must be EMPTY).",
+    "commits": [
+      {
+        "sha": "4362b3e60a2bfd108b6e2b8880d96b70524067e5",
+        "subject": "FG-FCHK-197 evidence: five-finding ledger, matrix, contract addendum, freeze record v3, fresh Checker packet"
+      },
+      {
+        "sha": "(this record’s own commit)",
+        "subject": "FG-FCHK-197 evidence: correct the freeze record’s dangling evidence_only_tail reference — a commit cannot embed its own hash, so this row is procedural; resolve it with git log --oneline c6bf5a37..HEAD"
+      }
+    ]
+  },
   "prior_freeze_record_label_defect": {
     "finding": "FG-CHK-197-08",
     "was": "reviewed_candidate_sha was defined procedurally as 'HEAD~1 of the frozen branch', which resolved to an EVIDENCE-ONLY commit (846b881), not the last code commit (d5cd803).",
