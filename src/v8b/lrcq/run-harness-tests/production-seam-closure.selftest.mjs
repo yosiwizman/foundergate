@@ -28,9 +28,10 @@ try {
   const evilLife = join(ROOT, "evil-lifecycle.json");
   writeFileSync(evilLife, JSON.stringify({ manifest: { repository_root: "/evil/repo", provider_executable_path: "/evil/provider", evidence_root: "ev" }, loaded: {}, root: "/evil/repo", bindings: { run_harness_candidate_sha: "EVIL" }, exec: { repoRoot: "/evil/repo", candidateRef: "EVIL" }, life: { supervisorMainPath: "/evil/supervisor-main.mjs", ledgerDir: join(ROOT, "evilledger") } }));
   const act = join(ROOT, "activation.json"); writeFileSync(act, JSON.stringify({ schema_version: "lrcq-activation-3", run_id: "SEAM-PROBE" }));
+  const authProbe = join(ROOT, "auth.txt"); writeFileSync(authProbe, "x\n", { mode: 0o600 });
   const supBefore = () => { try { return execFileSync("pgrep", ["-f", "supervisor-main.mjs"], { encoding: "utf8" }).trim().split(/\s+/).filter(Boolean).length; } catch { return 0; } };
   const before = supBefore();
-  const r = spawnSync(process.execPath, [LAUNCHER, "--activation", act], { env: { ...process.env, LRCQ_TEST_LIFECYCLE: evilLife }, encoding: "utf8", timeout: 15000 });
+  const r = spawnSync(process.execPath, [LAUNCHER, "--activation", act, "--authorization", authProbe], { env: { ...process.env, LRCQ_TEST_LIFECYCLE: evilLife }, encoding: "utf8", timeout: 15000 });
   let j = null; try { j = JSON.parse(r.stdout); } catch { /* */ }
   ok("01 production --activation refuses when LRCQ_TEST_LIFECYCLE is present", !!j && j.result === "PRODUCTION_TEST_OVERRIDE_REFUSED" && r.status === 1);
   ok("02 refusal records activation NOT consumed", !!j && j.activation_consumed === false);
@@ -68,7 +69,7 @@ try {
   ok("17a executeSupervisedRun is NOT exported from the production launcher module", typeof PROD_LAUNCHER.executeSupervisedRun === "undefined");
   ok("17b production launcher source neither defines nor calls executeSupervisedRun", !/executeSupervisedRun/.test(launcherSrc));
   ok("17c supervisor-main does not import/call executeSupervisedRun", !/executeSupervisedRun/.test(src(SUPMAIN)));
-  ok("17d the relocated executeSupervisedRun lives in test-support", existsSync(join(SRCREPO, "src/v8b/lrcq/run-harness-tests/test-support/supervised-run.mjs")));
+  ok("17d the V3 executeSupervisedRun model is RETIRED (absent from the whole tree)", !existsSync(join(SRCREPO, "src/v8b/lrcq/run-harness-tests/test-support/supervised-run.mjs")));
 
   // ---- (18-20) Mutation guards: reintroducing a seam / synchronous rewire turns THIS test red --------------
   // 18: a mutation that re-adds `LRCQ_TEST_LIFECYCLE` as an INJECTION (reading t.manifest/t.bindings/t.life to
@@ -78,7 +79,14 @@ try {
   ok("19 reintroducing an LRCQ_WITNESS_TEST_MS acceleration into production turns red (refusal present, no accel read)", witnessSrc.includes("PRODUCTION_WITNESS_OVERRIDE_REFUSED") && !/process\.env\.LRCQ_WITNESS_TEST_MS\s*\?/.test(witnessSrc) && !/testMs\s*!=\s*null\s*\?\s*testMs/.test(witnessSrc));
   // 20: the production --activation branch launches ONLY via launchDetachedSupervisor (no synchronous route).
   const actBranch = launcherSrc.slice(launcherSrc.indexOf('args.indexOf("--activation")'));
-  ok("20 production --activation launches ONLY via launchDetachedSupervisor (no synchronous/in-process route)", /launchDetachedSupervisor\(activation, man, runBindings, detExec/.test(actBranch) && !/executeSupervisedRun\(/.test(actBranch) && !/await executeSignedRun\(/.test(actBranch));
+  ok("20 production --activation launches ONLY via launchDetachedSupervisorV4 (no synchronous/in-process route)", /launchDetachedSupervisorV4\(args\[ai \+ 1\], authorizationPath, \{\}\)/.test(actBranch) && !/executeSupervisedRun\(/.test(actBranch) && !/await executeSignedRun\(/.test(actBranch));
+  // ---- (21-26) FG-LRCQ-ACT-029 V4 seam closure -------------------------------------------------------------
+  ok("21 the production --activation call passes an EMPTY life object (no caller-supplied manifest/bindings/provider/candidate/dirs)", /launchDetachedSupervisorV4\(args\[ai \+ 1\], authorizationPath, \{\}\)/.test(actBranch));
+  ok("22 the launcher derives the manifest from the SIGNED run_manifest_digest, never from a caller", /loadManifestV4/.test(launcherSrc) && /run manifest digest != SIGNED run_manifest_digest/.test(launcherSrc));
+  ok("23 the launcher never accepts a caller-supplied key authority path or env override", !/FOUNDER_KEY_AUTHORITY_PATH|process\.env\.[A-Z_]*AUTHORITY/.test(launcherSrc));
+  ok("24 the ephemeral key transfer is performed ONLY by the governed authority module", /spawnGovernedSupervisorV4/.test(launcherSrc) && !/\bspawn\(/.test(launcherSrc));
+  ok("25 supervisor-main re-verifies INDEPENDENTLY and trusts no launcher-supplied authority", /verifyActivationFile\(cfg\.activation_path/.test(src(SUPMAIN)) && !/cfg\.capability|cfg\.verified/.test(src(SUPMAIN)));
+  ok("26 the supervisor config carries only PUBLIC paths (no key, no capability, no manifest object)", /activation_path|authorization_path/.test(launcherSrc) && !/JSON\.stringify\(\{[^}]*capability/.test(launcherSrc));
 } finally { try { rmSync(ROOT, { recursive: true, force: true }); } catch { /* */ } }
 
 console.log("\nLRCQ PRODUCTION-SEAM-CLOSURE SELFTEST: " + (n - fails.length) + "/" + n + " passed");

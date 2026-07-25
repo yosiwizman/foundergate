@@ -4,7 +4,7 @@
 // executes; missing/modified/wrong-version/symlink/non-exec targets fail closed; and the production wiring
 // binds resolved_provider_target (not the alias) with a real disk rehash.
 import { verifyProviderTarget, sha256File } from "../provider/provider-verify.mjs";
-import { mkdtempSync, writeFileSync, chmodSync, rmSync, symlinkSync, unlinkSync, readFileSync } from "node:fs";
+import { mkdtempSync, writeFileSync, chmodSync, rmSync, symlinkSync, unlinkSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -59,14 +59,18 @@ try {
   ok("14 OK receipt binds target + digest + version", okr.receipt && okr.receipt.target === V215 && okr.receipt.digest === ID215 && okr.receipt.version === "2.1.215");
 
   // ---- production wiring guards (mutation guards 22-24) ----
-  const compSrc = readFileSync(join(SRC, "src/v8b/lrcq/run-harness/compose-adapter-activation.mjs"), "utf8");
+  // FG-LRCQ-ACT-029: the V2 adapter record is now produced ONLY by the non-authoritative V4 projection, and
+  // the SIGNED resolved_provider_target is what executes.
+  const projSrc = readFileSync(join(SRC, "src/v8b/lrcq/run-harness/v4-legacy-projection.mjs"), "utf8");
   const rpSrc = readFileSync(join(SRC, "src/v8b/lrcq/provider/real-provider.mjs"), "utf8");
-  ok("22 execution spawns provider_resolved_target, NOT the mutable alias (mutation guard)", /provider_resolved_target:\s*manifest\.resolved_provider_target/.test(compSrc) && /spawn\(\s*execTarget/.test(rpSrc) && /execTarget\s*=\s*activation\.provider_resolved_target/.test(rpSrc));
+  ok("22 execution spawns the SIGNED provider_resolved_target, NOT the mutable alias (mutation guard)", /provider_resolved_target:\s*supExecCap\.resolved_provider_target/.test(projSrc) && /spawn\(\s*execTarget/.test(rpSrc) && /execTarget\s*=\s*activation\.provider_resolved_target/.test(rpSrc));
   const launchSrc = readFileSync(join(SRC, "tools/terminal0/lrcq/run-five-hour.mjs"), "utf8");
-  const actIdx = launchSrc.indexOf('args.indexOf("--activation")');
-  const actBranch = launchSrc.slice(actIdx);
-  ok("23 runtime provider verification runs BEFORE consumption (verifyProviderTarget before launchDetachedSupervisor)", actBranch.indexOf("verifyProviderTarget(") >= 0 && actBranch.indexOf("verifyProviderTarget(") < actBranch.indexOf("launchDetachedSupervisor("));
-  ok("24 verification rehashes the disk target (not just manifest-to-activation compare)", /hashFile|sha256File|createHash/.test(readFileSync(join(SRC, "src/v8b/lrcq/provider/provider-verify.mjs"), "utf8")) && actBranch.includes("resolved_provider_target"));
+  const lv4 = launchSrc.slice(launchSrc.indexOf("export async function launchDetachedSupervisorV4"));
+  ok("23 provider verification runs BEFORE consumption (verifyProviderTarget precedes consumeVerifiedActivation)", lv4.indexOf("verifyProviderTarget(") >= 0 && lv4.indexOf("verifyProviderTarget(") < lv4.indexOf("consumeVerifiedActivation("));
+  ok("23b provider verification also precedes the launch intent and the key transfer", lv4.indexOf("verifyProviderTarget(") < lv4.indexOf("createLaunchIntentV4(") && lv4.indexOf("verifyProviderTarget(") < lv4.indexOf("spawnGovernedSupervisorV4("));
+  ok("24 verification rehashes the disk target (not just a manifest-to-activation compare)", /hashFile|sha256File|createHash/.test(readFileSync(join(SRC, "src/v8b/lrcq/provider/provider-verify.mjs"), "utf8")) && lv4.includes("cap.resolved_provider_target"));
+  ok("25 the verified target + digest + version come from the SIGNED activation, never the manifest alone", /resolvedTarget:\s*cap\.resolved_provider_target/.test(lv4) && /expectedIdentity:\s*cap\.provider_identity/.test(lv4) && /expectedVersion:\s*cap\.provider_version/.test(lv4));
+  ok("26 the retired V3 composer no longer exists in the tree", !existsSync(join(SRC, "src/v8b/lrcq/run-harness/compose-adapter-activation.mjs")));
 } finally { try { rmSync(ROOT, { recursive: true, force: true }); } catch { /* */ } }
 
 console.log("\nLRCQ PROVIDER-BINDING SELFTEST: " + (n - fails.length) + "/" + n + " passed");

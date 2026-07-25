@@ -32,7 +32,7 @@
 //   run-five-hour.mjs --activation <signed-activation-v4.json> --authorization <authorization.txt>
 
 import { execFileSync } from "node:child_process";
-import { readFileSync, existsSync, realpathSync, mkdirSync, writeFileSync, openSync, closeSync } from "node:fs";
+import { readFileSync, existsSync, realpathSync, lstatSync, mkdirSync, writeFileSync, openSync, closeSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve, join } from "node:path";
 import { createHash } from "node:crypto";
@@ -376,6 +376,39 @@ export function preflightV4(activationPath, authorizationPath, opts = {}) {
   report.checks.no_placeholders = JSON.stringify(activation).match(/<\s*founder|founder-fills/i) ? "PLACEHOLDER PRESENT" : "none";
   report.checks.signed_manifest_binding = activation.run_manifest_path && /^sha256:[0-9a-f]{64}$/.test(activation.run_manifest_digest || "") ? "bound" : "incomplete";
   report.checks.candidate_stack = (activation.lrcq_base_sha && activation.provider_candidate_sha && activation.reviewed_runtime_sha && activation.evidence_commit_sha) ? "bound" : "incomplete";
+  // ---- SIGNATURE-INDEPENDENT binding checks -------------------------------------------------------
+  // A founder act being pending must NEVER mask a binding defect. With no key enrolled the verifier stops
+  // at the key gate before it can compare a single binding, so every binding is cross-checked HERE against
+  // git, the manifest file on disk, the backlog file, and the reviewed provider target.
+  const defects = [];
+  const b = opts.bindings || resolveBindings();
+  const gitOk = (rev) => { try { git("rev-parse", "--verify", "--quiet", rev + "^{commit}"); return true; } catch { return false; } };
+  if (activation.evidence_commit_sha !== b.run_harness_candidate_sha || activation.evidence_commit_tree !== b.run_harness_candidate_tree) defects.push("evidence_commit_sha/tree is not the exact current HEAD/tree");
+  if (activation.lrcq_base_sha !== b.lrcq_base_sha || activation.lrcq_base_tree !== b.lrcq_base_tree) defects.push("lrcq_base_sha/tree differs from the resolved base");
+  if (activation.provider_candidate_sha !== b.provider_candidate_sha || activation.provider_candidate_tree !== b.provider_candidate_tree) defects.push("provider_candidate_sha/tree differs from the resolved provider candidate");
+  if (activation.reviewed_runtime_sha && !gitOk(activation.reviewed_runtime_sha)) defects.push("reviewed_runtime_sha is not a commit in this repository");
+  report.checks.binds_exact_final_head = activation.evidence_commit_sha === b.run_harness_candidate_sha && activation.evidence_commit_tree === b.run_harness_candidate_tree;
+  // the SIGNED manifest must exist and its file digest must match the SIGNED digest
+  let manCheck = "not attempted";
+  if (activation.repository_root_realpath && activation.run_manifest_path) {
+    const manAbs = resolve(activation.repository_root_realpath, activation.run_manifest_path);
+    if (!existsSync(manAbs)) { manCheck = "MISSING: " + manAbs; defects.push("run_manifest_path does not exist"); }
+    else { const d = sha256File(manAbs); manCheck = d === activation.run_manifest_digest ? "VERIFIED" : "DIGEST_MISMATCH"; if (d !== activation.run_manifest_digest) defects.push("run_manifest_digest != the manifest file on disk"); }
+  } else { manCheck = "UNBOUND"; defects.push("the activation binds no run_manifest_path/digest"); }
+  report.checks.signed_manifest = manCheck;
+  // the reviewed provider target must be a real immutable versioned file with the bound digest (digest-only:
+  // preflight NEVER executes the provider, so no --version run happens here)
+  let provCheck = "not attempted";
+  if (activation.resolved_provider_target) {
+    if (!existsSync(activation.resolved_provider_target)) { provCheck = "TARGET_MISSING"; defects.push("resolved_provider_target does not exist on this host"); }
+    else {
+      let st = null; try { st = lstatSync(activation.resolved_provider_target); } catch { /* */ }
+      if (st && st.isSymbolicLink()) { provCheck = "TARGET_IS_MUTABLE_ALIAS"; defects.push("resolved_provider_target is a symlink (mutable alias)"); }
+      else { const d = sha256File(activation.resolved_provider_target); provCheck = d === activation.provider_executable_identity ? "VERIFIED (digest only; provider never executed)" : "DIGEST_MISMATCH"; if (d !== activation.provider_executable_identity) defects.push("provider_executable_identity != the reviewed target's digest on disk"); }
+    }
+  } else { provCheck = "UNBOUND"; defects.push("the activation binds no resolved_provider_target"); }
+  report.checks.provider_target = provCheck;
+
   const vr = verifyActivationFile(activationPath, authorizationPath, { nowEpoch: opts.nowEpoch, deps: opts.deps || {}, authDeps: opts.authDeps || {} });
   report.checks.verification_code = vr.code;
   report.checks.stopped_at = vr.ok ? "(did not refuse!)" : "verify_activation_v4";
@@ -383,6 +416,9 @@ export function preflightV4(activationPath, authorizationPath, opts = {}) {
   report.founder_gate = fg.gate; report.founder_gate_reason = fg.reason;
   // Nothing above can invoke a provider: verification is pure crypto + fs reads. Assert it structurally.
   report.zero_provider_invocation = true; report.zero_builder_invocation = true; report.zero_checker_invocation = true;
+  report.zero_invocation = true;
+  report.binding_defects = defects;
+  if (defects.length) { report.result = "BINDING-DEFECT"; report.non_signature_refusal = defects.join(" | "); return report; }
   if (vr.ok) { report.result = "VERIFIED-SIGNED-ACTIVATION"; return report; }
   const founderActPending = [V4_CODES.UNKNOWN_OR_REVOKED_KEY, V4_CODES.EMPTY_SIGNATURE, V4_CODES.SIGNATURE_INVALID, V4_CODES.BAD_SIGNATURE_ENCODING].includes(vr.code) ||
     (vr.code === V4_CODES.MISSING_FIELD && /founder_signature|issued_epoch|expiry_epoch|hard_deadline_epoch|activation_nonce/.test(vr.detail || "")) ||
@@ -409,7 +445,6 @@ async function main() {
     if (!path) { console.error("usage: " + flag + " <activation-or-template.json> [--authorization <file>]"); return 2; }
     const report = preflightV4(path, authorizationPath, {});
     if (flag !== "--preflight-v4") report.mode = flag.replace(/^--/, "");
-    report.binds_exact_final_head = (() => { const b = resolveBindings(); try { const a = JSON.parse(readFileSync(path, "utf8")); return a.evidence_commit_sha === b.run_harness_candidate_sha && a.evidence_commit_tree === b.run_harness_candidate_tree; } catch { return false; } })();
     console.log(JSON.stringify(report, null, 2));
     console.log("\nLRCQ-REAL-LAUNCH-PREFLIGHT: " + (report.result === "SIGNATURE-REQUIRED" ? "SIGNATURE-REQUIRED" : report.result));
     return report.result === "SIGNATURE-REQUIRED" || report.result === "VERIFIED-SIGNED-ACTIVATION" ? 0 : 1;
