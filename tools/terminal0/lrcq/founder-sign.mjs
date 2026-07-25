@@ -40,14 +40,15 @@ export function buildV4Payload({ template, signerFingerprint, authorizationBytes
     founder_signature_algorithm: "ed25519", signer_key_fingerprint: signerFingerprint,
     authorization_text_digest: authorizationTextDigest(authorizationBytes), activation_nonce: nonce,
     repository_root_realpath: repositoryRootRealpath, repository_git_common_dir_realpath: repositoryGitCommonDirRealpath, lifecycle_root_realpath: lifecycleRootRealpath, lifecycle_contract_version: "lrcq-lifecycle-v4-1",
-    evidence_commit_sha: template.run_harness_candidate_sha, evidence_commit_tree: template.run_harness_candidate_tree,
-    reviewed_runtime_sha: template.reviewed_production_ancestor_sha, reviewed_runtime_tree: template.reviewed_production_ancestor_tree,
-    // FG-LRCQ-ACT-029: the run MANIFEST and the full candidate stack are SIGNED, so the non-authoritative
-    // legacy projection reads execution boundaries only from founder-signed facts.
+    // FG-LRCQ-ACT-029: the frozen template IS a V4 payload template (see generate-run-manifest.mjs
+    // buildActivationMaterialPacket), so every signed binding is read from it by its V4 field name. The
+    // ceremony fills ONLY the founder-supplied fields: key fingerprint, authorization digest, nonce, window.
+    evidence_commit_sha: template.evidence_commit_sha, evidence_commit_tree: template.evidence_commit_tree,
+    reviewed_runtime_sha: template.reviewed_runtime_sha, reviewed_runtime_tree: template.reviewed_runtime_tree,
     run_manifest_path: template.run_manifest_path, run_manifest_digest: template.run_manifest_digest,
     lrcq_base_sha: template.lrcq_base_sha, lrcq_base_tree: template.lrcq_base_tree,
     provider_candidate_sha: template.provider_candidate_sha, provider_candidate_tree: template.provider_candidate_tree,
-    run_id: template.run_id, backlog_digest: template.first_real_run_backlog_digest,
+    run_id: template.run_id, backlog_digest: template.backlog_digest,
     provider_executable_path: template.provider_executable_path, resolved_provider_target: template.resolved_provider_target,
     provider_version: template.provider_version, provider_executable_identity: template.provider_executable_identity,
     capability_lease_digest: template.capability_lease_digest, blast_radius_budget_digest: template.blast_radius_budget_digest,

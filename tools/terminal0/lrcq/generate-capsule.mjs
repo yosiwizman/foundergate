@@ -131,7 +131,7 @@ export function validateInputs(inputs) {
   }
   // committed material packet must bind evaluated_sha (two-SHA: tracked packet == evaluated)
   const packetPath = join(i.repoRoot, ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json");
-  if (existsSync(packetPath)) { const pk = JSON.parse(readFileSync(packetPath, "utf8")); req(pk.run_harness_candidate_sha === i.evaluatedSha, "committed material packet binds " + (pk.run_harness_candidate_sha || "?").slice(0, 12) + " not evaluated_sha"); req(!JSON.stringify(pk).includes(head), "committed material packet must NOT contain evidence_commit_sha"); }
+  if (existsSync(packetPath)) { const pk = JSON.parse(readFileSync(packetPath, "utf8")); req(pk.reviewed_runtime_sha === i.evaluatedSha, "committed material packet binds " + (pk.reviewed_runtime_sha || "?").slice(0, 12) + " not evaluated_sha"); req(!JSON.stringify(pk).includes(head), "committed material packet must NOT contain evidence_commit_sha"); }
   // manifest authority (load from disk, verify)
   const manPath = join(i.repoRoot, ".foundergate/run-materials/first-internal-5h/run-manifest.json");
   if (existsSync(manPath)) {
@@ -175,7 +175,7 @@ export function generateCapsule(inputs) {
   const ctx = { prNumber: i.prNumber, evaluatedSha: i.evaluatedSha, evidenceCommitSha, providerTarget: prov.target, providerVersion: prov.version };
 
   // FINAL template binds evidence_commit_sha (the exact future candidate) + records evaluated ancestor
-  const finalTpl = buildActivationMaterialPacket({ repo: i.repoRoot, prov, manRel: ".foundergate/run-materials/first-internal-5h/run-manifest.json", manDigest, leaseManifestAbs: join(i.repoRoot, manifest.capability_lease_manifest_path), blastManifestAbs: join(i.repoRoot, manifest.blast_budget_manifest_path), backlogRel: manifest.backlog_path, runHarnessSha: evidenceCommitSha, runHarnessTree: evidenceCommitTree });
+  const finalTpl = buildActivationMaterialPacket({ repo: i.repoRoot, prov, manRel: ".foundergate/run-materials/first-internal-5h/run-manifest.json", manDigest, leaseManifestAbs: join(i.repoRoot, manifest.capability_lease_manifest_path), blastManifestAbs: join(i.repoRoot, manifest.blast_budget_manifest_path), backlogRel: manifest.backlog_path, runHarnessSha: evidenceCommitSha, runHarnessTree: evidenceCommitTree, reviewedRuntimeSha: i.evaluatedSha || evidenceCommitSha, reviewedRuntimeTree: evaluatedTree || evidenceCommitTree });
   finalTpl.reviewed_production_ancestor_sha = i.evaluatedSha;
   finalTpl.reviewed_production_ancestor_tree = evaluatedTree;
 
