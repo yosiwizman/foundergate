@@ -5,7 +5,7 @@
 // over the governed inherited anonymous descriptor, a test that must reach the real provider-spawn boundary
 // cannot assert in-process. runV4Body() builds a disposable V4 world, consumes it, creates the launch intent
 // bound to v4-execution-child.mjs, performs the ONE governed key transfer, and returns the body's result.
-import { realpathSync, mkdirSync } from "node:fs";
+import { realpathSync, mkdirSync, openSync, closeSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { makeDisposableV4World } from "./v4-fixture.mjs";
@@ -29,24 +29,40 @@ export async function runV4Body(opts = {}) {
       bodyModule: realpathSync(opts.bodyModule),
       bodyArgs: { base: w.repoRoot, worldBase: w.base, lifecycleRoot: w.lifecycleRoot, ...(opts.bodyArgs || {}) },
     });
-    const g = await spawnGovernedSupervisorV4(c.capability, {
-      args: ["--config", cfgPath], stdoutFd: "pipe", stderrFd: "pipe", detached: false,
-      env: opts.env || { PATH: process.env.PATH, HOME: process.env.HOME },
-    });
-    if (!g.ok) throw new Error("runV4Body: governed transfer failed " + g.code + " " + (g.detail || ""));
+    // FG-FFIN-197-F1: the governed transfer now returns only AFTER the supervisor's VERIFIED claim exists, so
+    // the child may ALREADY have finished by the time we get the result — and node emits 'close' and DESTROYS
+    // the stdio pipes at exit, so listeners attached afterwards receive nothing and a 'close' wait would hang
+    // forever. (The old 240s timeout only KILLED the child; it never resolved the promise, so this hung
+    // rather than failing.) The supervisor therefore writes to FILE descriptors we open here — the governed
+    // transfer's supported stdoutFd/stderrFd — and we read those files once it is done.
+    const outPath = join(w.repoRoot, (opts.configName || "v4-body") + ".out");
+    const errPath = join(w.repoRoot, (opts.configName || "v4-body") + ".err");
+    const outFd = openSync(outPath, "a", 0o600), errFd = openSync(errPath, "a", 0o600);
+    let g;
+    try {
+      g = await spawnGovernedSupervisorV4(c.capability, {
+        args: ["--config", cfgPath], stdoutFd: outFd, stderrFd: errFd, detached: false,
+        env: opts.env || { PATH: process.env.PATH, HOME: process.env.HOME },
+      });
+    } finally { /* the fds are closed below, after the child is done writing through them */ }
+    if (!g.ok) {
+      try { closeSync(outFd); closeSync(errFd); } catch { /* */ }
+      throw new Error("runV4Body: governed transfer failed " + g.code + " " + (g.detail || "") + " :: " + readFileSync(errPath, "utf8").slice(-400));
+    }
     const res = await new Promise((resolve) => {
-      let out = "", err = "";
-      const t = setTimeout(() => { try { g.child.kill("SIGKILL"); } catch { /* */ } }, opts.timeoutMs || 240000);
-      g.child.stdout.on("data", (d) => (out += d));
-      g.child.stderr.on("data", (d) => (err += d));
-      g.child.on("close", (code) => {
-        clearTimeout(t);
+      const finish = () => {
+        try { closeSync(outFd); closeSync(errFd); } catch { /* */ }
+        const rd = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
+        const out = rd(outPath), err = rd(errPath);
         let parsed = null;
         const marker = out.lastIndexOf("__V4_BODY_RESULT__");
         if (marker >= 0) { try { parsed = JSON.parse(out.slice(marker + "__V4_BODY_RESULT__".length).trim().split("\n")[0]); } catch { /* */ } }
         if (!parsed) { const lines = out.trim().split("\n"); for (let i = lines.length - 1; i >= 0; i--) { try { parsed = JSON.parse(lines[i]); break; } catch { /* */ } } }
-        resolve({ parsed, out, err, code });
-      });
+        resolve({ parsed, out, err, code: g.child.exitCode });
+      };
+      if (g.child.exitCode !== null || g.child.signalCode !== null) return finish();
+      const t = setTimeout(() => { try { g.child.kill("SIGKILL"); } catch { /* */ } finish(); }, opts.timeoutMs || 240000);
+      g.child.on("close", () => { clearTimeout(t); finish(); });
     });
     return { ...res, world: w, capabilityWorld: w };
   } finally { if (owned && !opts.keepWorld) w.cleanup(); }

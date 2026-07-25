@@ -27,7 +27,19 @@ export const AUTHORITY_FREEZE_CODES = {
   ACCESSOR_PROPERTY: "AUTHORITY_ACCESSOR_PROPERTY",
   SYMBOL_KEY: "AUTHORITY_SYMBOL_KEY",
   CYCLE: "AUTHORITY_CYCLE",
+  // FG-FFIN-197-F4: a key that manipulates the object graph rather than carrying authority data.
+  DANGEROUS_KEY: "AUTHORITY_DANGEROUS_KEY",
 };
+
+// FG-FFIN-197-F4: keys that are structural rather than data. `__proto__` is the dangerous one — a plain
+// `out[k] = v` assignment invokes Object.prototype's __proto__ SETTER and silently reassigns the COPY's
+// prototype instead of creating an own data property, and JSON.parse produces exactly that shape (an own,
+// enumerable, writable __proto__ data property). The result was a copy that dropped the key, inherited the
+// attacker's fields through the prototype chain, still reported Object.isFrozen === true, and which this
+// very module then refused on round-trip as AUTHORITY_NON_PLAIN_PROTOTYPE — i.e. not the plain JSON
+// authority data the contract promises. `constructor` and `prototype` are refused alongside it: they carry
+// no authority meaning and their presence in signed authority data is never legitimate.
+const DANGEROUS_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 
 export class AuthorityFreezeError extends Error {
   constructor(code, path, detail) {
@@ -82,13 +94,23 @@ function copyFreeze(value, path, seen) {
       out.push(copyFreeze(d.value, path + "[" + i + "]", seen));
     }
   } else {
-    out = {};
+    // A null-prototype container: nothing is inherited, so no assignment can ever reach an inherited setter
+    // and the copy cannot silently gain fields from Object.prototype.
+    out = Object.create(null);
     for (const k of Object.getOwnPropertyNames(value)) {
       const d = Object.getOwnPropertyDescriptor(value, k);
+      // FG-FFIN-197-F4: refuse structural keys OUTRIGHT, recursively, at every depth — never silently drop
+      // one and never let it reach an assignment.
+      if (DANGEROUS_KEYS.has(k)) throw new AuthorityFreezeError(AUTHORITY_FREEZE_CODES.DANGEROUS_KEY, path + "." + k);
       // An accessor could recompute an "immutable" authority value on every read — refuse it outright.
       if (typeof d.get === "function" || typeof d.set === "function") throw new AuthorityFreezeError(AUTHORITY_FREEZE_CODES.ACCESSOR_PROPERTY, path + "." + k);
-      out[k] = copyFreeze(d.value, path + "." + k, seen);
+      // defineProperty, never assignment: a setter-safe copy operation by construction.
+      Object.defineProperty(out, k, { value: copyFreeze(d.value, path + "." + k, seen), writable: false, enumerable: true, configurable: false });
     }
+    // Consumers (JSON.stringify, Object.keys, spread, `in`, property reads) require ordinary plain-object
+    // behaviour, so restore the standard prototype AFTER every key has been materialised as an own data
+    // property. Assignment is never used above, so this can no longer trigger an inherited setter.
+    Object.setPrototypeOf(out, Object.prototype);
   }
   seen.delete(value);
   return Object.freeze(out);

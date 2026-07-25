@@ -43,6 +43,12 @@ export const LC_CODES = {
   // FG-FCHK-197-A: an asynchronous ChildProcess 'error' (bad cwd, unreachable executable) is a governed,
   // fail-closed SPAWN failure — never an unhandled event that terminates the launcher.
   SUPERVISOR_SPAWN_FAILED: "SUPERVISOR_SPAWN_FAILED",
+  // FG-FFIN-197-F1: a governed transfer reports OK only after the EXACT spawned supervisor has proven, with a
+  // verified ephemeral-signed claim, that it received and used the key. These are the three ways that proof
+  // can fail to arrive.
+  SUPERVISOR_TERMINATED_BEFORE_CLAIM: "SUPERVISOR_TERMINATED_BEFORE_CLAIM",
+  SUPERVISOR_CLAIM_TIMEOUT: "SUPERVISOR_CLAIM_TIMEOUT",
+  SUPERVISOR_CLAIM_INVALID: "SUPERVISOR_CLAIM_INVALID",
   // FG-CHK-197-04 / FG-CHK-197-05 filesystem authority guards
   ROOT_UNSAFE_OWNER: "ROOT_UNSAFE_OWNER", ROOT_UNSAFE_MODE: "ROOT_UNSAFE_MODE",
   RECORD_UNSAFE_OWNER: "RECORD_UNSAFE_OWNER", RECORD_UNSAFE_MODE: "RECORD_UNSAFE_MODE",
@@ -474,7 +480,101 @@ function verifiedIntentFor(consumedCap) {
   if (it.doc.activation_identity !== id) return { err: LC_CODES.IDENTITY_MISMATCH, detail: "intent" };
   if (it.doc.consumed_marker_digest !== m.digest) return { err: LC_CODES.BINDING_MISMATCH, detail: "intent->marker digest" };
   if (it.doc.ephemeral_fingerprint !== consumedCap.ephemeral_fingerprint) return { err: LC_CODES.BINDING_MISMATCH, detail: "intent->ephemeral fingerprint" };
-  return { marker: m, intent: it };
+  return { marker: m, intent: it, root, ephPub, expectRootObjectId: expect.expectRootObjectId };
+}
+
+// ---- FG-FFIN-197-F1: the DETERMINISTIC supervisor acknowledgment -----------------------------------
+// The governed key frame is 92 bytes and the inherited descriptor is an ordinary kernel pipe with a 64 KiB
+// buffer, so `writer.write`/`writer.end` ALWAYS complete into the buffer within microseconds. Pipe-write
+// completion therefore proves only that the bytes entered the pipe — NOT that the supervisor read them. A
+// child that exits immediately without reading fd 3 previously produced a full OK with a dead
+// supervisor_pid (reproduced 6/6). No timer can fix this: any elapsed-time arm loses the race to the write
+// callback deterministically, which is why the old 250 ms "premature termination" arm could never decide an
+// outcome at all.
+//
+// The ONLY sound acknowledgment is the one the supervisor cannot fabricate: the ephemeral-SIGNED supervisor
+// claim. Verifying it proves, in one artifact, that the exact spawned process (1) read and decoded the
+// inherited key frame, (2) matched the ephemeral key to the consumed marker, (3) independently reverified
+// the signed V4 activation, (4) proved its entrypoint identity, (5) minted a valid signed claim, and
+// (6) bound that claim to the spawned PID and its OS-observed start identity.
+//
+// NONE of the following is accepted as proof: the pipe-write callback, the writer end callback, elapsed
+// time, the existence of a child PID, or the child merely staying alive for some number of milliseconds.
+const SUPERVISOR_CLAIM_WAIT_MS = 30000;   // fixed module constant — deliberately NOT caller-configurable
+const CLAIM_POLL_MS = 15;
+
+// Classify the claim record currently on disk. Returns { ok, doc } | { pending } | { invalid, code, detail }.
+// A missing or half-written record is PENDING (the writer is not atomic against a concurrent reader); a
+// COMPLETE record that fails any binding is INVALID immediately, because claims are created wx-once and can
+// never become valid later.
+function classifySupervisorClaim(cPath, ctx, childPid, observedStart) {
+  if (!existsSync(cPath)) return { pending: true, reason: "no claim yet" };
+  const cd = readRecord(cPath, SUPERVISOR_CLAIM_SCHEMA, { expectRootObjectId: ctx.expectRootObjectId });
+  if (cd.err) {
+    // Only a torn/absent read is retryable. Anything else (owner, mode, symlink, schema, root identity) is
+    // a decided refusal.
+    if (cd.err === LC_CODES.RECORD_PARSE || cd.err === LC_CODES.RECORD_MISSING) return { pending: true, reason: cd.err };
+    return { invalid: true, code: LC_CODES.SUPERVISOR_CLAIM_INVALID, detail: cd.err + (cd.detail ? " (" + cd.detail + ")" : "") };
+  }
+  const d = cd.doc;
+  const bad = (detail) => ({ invalid: true, code: LC_CODES.SUPERVISOR_CLAIM_INVALID, detail });
+  // (5) a valid ephemeral SIGNATURE over the canonical body — only a process holding the transferred private
+  // key can produce it, so a copied or hand-written claim fails here.
+  if (!verifyEphemeral(d, ctx.ephPub)) return bad("claim ephemeral signature invalid");
+  // (2) the key really is THIS activation's ephemeral key
+  if (d.ephemeral_fingerprint !== ctx.ephemeralFingerprint) return bad("claim ephemeral fingerprint mismatch");
+  // (3) the supervisor reverified THIS signed activation
+  if (d.activation_identity !== ctx.activationIdentity) return bad("claim activation identity mismatch");
+  if (d.payload_digest !== ctx.payloadDigest) return bad("claim payload digest mismatch");
+  // the claim is bound to THIS marker and THIS launch intent
+  if (d.consumed_marker_digest !== ctx.markerDigest) return bad("claim->marker digest mismatch");
+  if (d.launch_intent_digest !== ctx.intentDigest) return bad("claim->intent digest mismatch");
+  if (d.launch_nonce !== ctx.launchNonce) return bad("claim launch nonce mismatch");
+  // (4) the supervisor proved it IS the entrypoint the signed intent names
+  if (d.supervisor_entrypoint_digest !== ctx.entrypointDigest) return bad("claim entrypoint digest mismatch");
+  // (6) the claim belongs to the process THIS transfer spawned, not some other live process
+  if (d.supervisor_pid !== childPid) return bad("claim supervisor_pid " + d.supervisor_pid + " != spawned pid " + childPid);
+  if (typeof d.supervisor_start_identity !== "string" || !d.supervisor_start_identity) return bad("claim records no process start identity");
+  if (observedStart !== null && d.supervisor_start_identity !== observedStart) {
+    return bad("claim start identity " + d.supervisor_start_identity + " != OS-observed " + observedStart);
+  }
+  return { ok: true, doc: d, digest: cd.digest, path: cPath, start_identity_independently_observed: observedStart !== null };
+}
+
+// Bounded deterministic wait for that claim. Exit-driven, not timing-driven: when the child is gone we do one
+// FINAL classification and decide, so an immediately-dying supervisor is refused as fast as it dies rather
+// than after any fixed delay.
+async function awaitVerifiedSupervisorClaim(child, ctx) {
+  const cPath = claimPath(ctx.root, ctx.activationIdentity);
+  // Observe the spawned child's OS start identity while it is (normally) still alive, so the claim can be
+  // checked against an INDEPENDENT observation rather than only against itself.
+  let observedStart = null;
+  try { observedStart = observedStartIdentity(child.pid); } catch { observedStart = null; }
+  let exited = child.exitCode !== null || child.signalCode !== null;
+  const markExited = () => { exited = true; };
+  child.once("exit", markExited);
+  child.once("close", markExited);
+  const deadline = Date.now() + SUPERVISOR_CLAIM_WAIT_MS;
+  for (;;) {
+    const v = classifySupervisorClaim(cPath, ctx, child.pid, observedStart);
+    if (v.ok) return v;
+    if (v.invalid) return v;
+    if (exited) {
+      const final = classifySupervisorClaim(cPath, ctx, child.pid, observedStart);
+      if (final.ok) return final;                 // a healthy short-lived supervisor may claim then exit
+      if (final.invalid) return final;
+      return { invalid: true, code: LC_CODES.SUPERVISOR_TERMINATED_BEFORE_CLAIM, detail: "the spawned supervisor exited without producing a verified claim (exit " + child.exitCode + ", signal " + child.signalCode + ")" };
+    }
+    if (Date.now() >= deadline) {
+      const final = classifySupervisorClaim(cPath, ctx, child.pid, observedStart);
+      if (final.ok) return final;
+      if (final.invalid) return final;
+      return { invalid: true, code: LC_CODES.SUPERVISOR_CLAIM_TIMEOUT, detail: "no verified supervisor claim within " + SUPERVISOR_CLAIM_WAIT_MS + "ms" };
+    }
+    // NOT unref'd: this is an ACTIVE wait for authority evidence. An unref'd timer would let node consider
+    // the loop empty and exit the launcher while the acknowledgment is still outstanding.
+    await new Promise((r) => setTimeout(r, CLAIM_POLL_MS));
+  }
 }
 
 // The GOVERNED launch: this module creates the inherited anonymous descriptor and performs the single
@@ -545,25 +645,19 @@ export async function spawnGovernedSupervisorV4(consumedCap, opts = {}) {
   // BEFORE the first await, and they RACE:
   //   * child 'error'            -> SUPERVISOR_SPAWN_FAILED
   //   * descriptor write failure -> TRANSFER_WRITE_FAILED
-  //   * premature child death    -> TRANSFER_WRITE_FAILED
-  //   * write completion         -> OK
+  //   * write completion         -> proceed to the DETERMINISTIC claim wait below
   // Whatever the outcome, the authority is ALREADY TRANSFERRED_SPENT, the private key is ALREADY deleted
   // from module storage and every temporary buffer is zeroed, so no branch here can be retried with the
   // same key: a failure returns a structured fail-closed result, never an uncaught exception.
+  //
+  // FG-FFIN-197-F1: write completion is NOT success. It only means the frame entered the pipe buffer. There
+  // is deliberately NO timing arm here: a "child died shortly after" timer loses the race to the write
+  // callback every time and can never decide anything. Whether the supervisor actually RECEIVED the key is
+  // decided further down, by awaitVerifiedSupervisorClaim, on cryptographic evidence.
   const sent = await new Promise((resolve) => {
     let settled = false;
     const done = (r) => { if (!settled) { settled = true; resolve(r); } };
     child.once("error", (e) => done({ code: LC_CODES.SUPERVISOR_SPAWN_FAILED, detail: "child spawn error: " + ((e && e.message) || "unknown") }));
-    // A supervisor that dies before the frame is complete never received the key. This arm is decisive only
-    // if nothing else has settled shortly after the child is gone — a HEALTHY supervisor may legitimately
-    // read the frame and exit before the writer's end callback lands, and that is a completed transfer.
-    const premature = () => {
-      if (settled) return;
-      const t = setTimeout(() => done({ code: LC_CODES.TRANSFER_WRITE_FAILED, detail: "child terminated before the key frame completed" }), 250);
-      if (t.unref) t.unref();
-    };
-    child.once("exit", premature);
-    child.once("close", premature);
     const writer = child.stdio[keyFd];
     if (!writer || typeof writer.write !== "function" || writer.writable !== true) {
       return done({ code: LC_CODES.DESCRIPTOR_UNAVAILABLE, detail: "governed inherited descriptor not established" });
@@ -580,8 +674,38 @@ export async function spawnGovernedSupervisorV4(consumedCap, opts = {}) {
     await killAndReap(child);
     return R(sent.code, { detail: sent.detail, transfer: st.transfer });
   }
+
+  // ---- FG-FFIN-197-F1 DETERMINISTIC SUPERVISOR ACKNOWLEDGMENT --------------------------------------
+  // The frame is in the pipe. Now require the EXACT spawned process to prove it used the key, by minting a
+  // verified ephemeral-signed claim bound to its own PID and OS-observed start identity. OK is returned only
+  // after that verification succeeds.
+  const ack = await awaitVerifiedSupervisorClaim(child, {
+    root: vi.root,
+    expectRootObjectId: vi.expectRootObjectId,
+    ephPub: vi.ephPub,
+    ephemeralFingerprint: consumedCap.ephemeral_fingerprint,
+    activationIdentity: consumedCap.activation_identity,
+    payloadDigest: consumedCap.payload_digest,
+    markerDigest: vi.marker.digest,
+    intentDigest: vi.intent.digest,
+    launchNonce: vi.intent.doc.launch_nonce,
+    entrypointDigest: eDigest,
+  });
+  if (!ack.ok) {
+    // Every failure here is AFTER key materialization: the authority stays TRANSFERRED_SPENT, the private
+    // key stays deleted, the buffers stay zeroed and the writer stays closed. A supervisor that is still
+    // alive but never produced a valid claim is killed and reaped so nothing is left holding the key.
+    await killAndReap(child);
+    return R(ack.code, { detail: ack.detail, transfer: st.transfer, supervisor_pid: child.pid, supervisor_acknowledged: false });
+  }
   if (opts.detached !== false && typeof child.unref === "function") child.unref();
-  return R(LC_CODES.OK, { child, supervisor_pid: child.pid, key_fd: keyFd, entrypoint: entry, entrypoint_digest: eDigest, transfer: st.transfer });
+  return R(LC_CODES.OK, {
+    child, supervisor_pid: child.pid, key_fd: keyFd, entrypoint: entry, entrypoint_digest: eDigest, transfer: st.transfer,
+    supervisor_acknowledged: true,
+    supervisor_claim_path: ack.path, supervisor_claim_digest: ack.digest,
+    supervisor_start_identity: ack.doc.supervisor_start_identity,
+    start_identity_independently_observed: ack.start_identity_independently_observed,
+  });
 }
 
 // Kill a partially launched supervisor and WAIT for it to be reaped, so a failed transfer leaves no process

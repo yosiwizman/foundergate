@@ -76,11 +76,19 @@ try {
     const r = await launchDetachedSupervisorV4(w.activationPath, authFile(w), life(w, { supervisorMainPath: link }));
     ok("09 symlinked supervisor entrypoint -> refused, never launched", r.ready === false && r.launched === false, JSON.stringify(r.refused)); }
 
-  // 10 a supervisor that exits WITHOUT publishing RUN_ACTIVE -> bounded refusal (consumed, not launched)
+  // 10 a supervisor that exits without ever acknowledging -> bounded refusal (consumed, not launched)
+  // FG-FFIN-197-F1: this noop supervisor never reads the key and never mints a claim, so it is now refused
+  // EARLIER and more precisely — at the acknowledgment gate (SUPERVISOR_NEVER_ACKNOWLEDGED) rather than after
+  // waiting out the RUN_ACTIVE window. The governing property is unchanged and still asserted: bounded
+  // refusal, activation consumed, supervisor NOT launched.
   { const w = world("noactive");
     const noop = join(w.repoRoot, "noop-supervisor.mjs"); writeFileSync(noop, "process.exit(0);\n");
     const r = await launchDetachedSupervisorV4(w.activationPath, authFile(w), life(w, { supervisorMainPath: noop }));
-    ok("10 no RUN_ACTIVE within bound -> refuse (consumed, not launched)", r.ready === false && r.launched === false && r.final_state === "RUN_ACTIVE_TIMEOUT" && r.consumed === true, r.final_state);
+    ok("10 a supervisor that never acknowledges -> bounded refusal (consumed, not launched)",
+      r.ready === false && r.launched === false && r.consumed === true && r.final_state === "SUPERVISOR_NEVER_ACKNOWLEDGED", r.final_state);
+    ok("10b the refusal names the acknowledgment stage and the exact lifecycle code",
+      !!r.refused && r.refused.stage === "supervisor_acknowledgment" && /SUPERVISOR_TERMINATED_BEFORE_CLAIM|SUPERVISOR_CLAIM_TIMEOUT/.test(String(r.refused.reasons)), JSON.stringify(r.refused));
+    ok("10c the launcher reports the supervisor as NOT acknowledged", r.supervisor_acknowledged === false);
     // 11 replay: the SAME activation cannot be consumed again
     const r2 = await launchDetachedSupervisorV4(w.activationPath, authFile(w), life(w, { supervisorMainPath: noop }));
     ok("11 replay of a consumed activation -> REPLAY_BLOCKED before any spawn", r2.ready === false && r2.final_state === "REPLAY_BLOCKED" && r2.launched === false, r2.final_state); }

@@ -56,11 +56,14 @@ const world = (nonce, opts = {}) => { const w = makeDisposableV4World({ prefix: 
 try {
   // ================================================================= C1 concurrent transfer (HIGH)
   {
-    // FG-FCHK-197-E: the SIGNED provider target for this world is the RECORDING stub, and every process in
-    // the attack is given FG_SPAWN_LOG, so any productive-provider execution anywhere in this family would
-    // append a line to PROVIDER_SPAWN_LOG. C1i below counts that file instead of inspecting receipts.
-    // The stub is COPIED into the disposable world and its log lives beside that copy, so the count does
-    // not depend on an environment variable the production boundary would scrub away.
+    // FG-FCHK-197-E / FG-FFIN-197-F3: the SIGNED provider target for this world is the RECORDING stub, which
+    // is COPIED into the disposable world so the founder signature binds it. The stub appends one line per
+    // execution to a log BESIDE ITS OWN EXECUTABLE (<stub>.spawns.log), derived from import.meta.url.
+    // The count therefore does NOT depend on environment propagation of any kind — which matters because the
+    // production provider boundary deliberately SCRUBS the child environment down to PATH and HOME, so an
+    // env-carried log path would silently never arrive and a zero would be an artefact of the scrubbing
+    // rather than a measurement. C1i counts that adjacent durable log; C1i2 is the positive control proving
+    // the instrument can actually record.
     let stubCopy = null;
     const w = world("c1", { prepare: ({ repoRoot }) => {
       stubCopy = join(repoRoot, "recording-provider-stub.mjs");
@@ -71,7 +74,11 @@ try {
     const c = consumeActivationV4(w.verified, { now: w.now });
     createLaunchIntentV4(c.capability, { now: w.now, supervisorEntrypoint: RECEIPT_CHILD });
     const rd = join(w.repoRoot, "receipts"); mkdirSync(rd, { recursive: true });
-    const mk = (tag) => ({ args: ["--receipt", join(rd, tag + ".json"), "--fd", "3"], detached: false });
+    // FG-FFIN-197-F1: the receipt child is now a GENUINE minimal supervisor — it re-verifies the signed
+    // activation and attaches over the inherited descriptor, minting the ephemeral-signed claim that a
+    // governed transfer now requires before it may report OK.
+    const cfgC1 = w.writeChildConfig("c1-supervisor-config.json");
+    const mk = (tag) => ({ args: ["--config", cfgC1, "--receipt", join(rd, tag + ".json"), "--fd", "3"], detached: false });
     const [a, b] = await Promise.all([
       spawnGovernedSupervisorV4(c.capability, mk("a")),
       spawnGovernedSupervisorV4(c.capability, mk("b")),
@@ -84,11 +91,14 @@ try {
     ok("C1b exactly ONE concurrent transfer returned ALREADY_TRANSFERRED", alreadyCount === 1, "already=" + alreadyCount);
     ok("C1c exactly ONE child process was created", children.length === 1, "children=" + children.length);
     // wait for the single child to finish writing its receipt
-    await Promise.all(children.map((ch) => new Promise((res) => { ch.on("close", res); setTimeout(res, 6000); })));
+    await Promise.all(children.map((ch) => new Promise((res) => { if (ch.exitCode !== null || ch.signalCode !== null) return res(); ch.on("close", res); setTimeout(res, 6000); })));
     const receipts = readdirSync(rd).map((f) => JSON.parse(readFileSync(join(rd, f), "utf8")));
-    const delivered = receipts.filter((r) => r.frame_bytes > 0);
-    ok("C1d exactly ONE key frame was delivered", delivered.length === 1, "delivered=" + delivered.length + " receipts=" + receipts.length);
-    ok("C1e the delivered frame went to the ONE spawned child", delivered.length === 1 && children.length === 1 && delivered[0].pid === children[0].pid);
+    // FG-FFIN-197-F1: the delivery proof is the ATTACH, not a byte count. Exactly one process reached
+    // SUPERVISOR_EXECUTION, which is only reachable by decoding the key frame off the inherited descriptor.
+    const delivered = receipts.filter((r) => r.attached === true);
+    ok("C1d exactly ONE supervisor received the key and reached SUPERVISOR_EXECUTION", delivered.length === 1, "delivered=" + delivered.length + " receipts=" + JSON.stringify(receipts));
+    ok("C1e that supervisor is the ONE spawned child", delivered.length === 1 && children.length === 1 && delivered[0].pid === children[0].pid);
+    ok("C1d2 the winning transfer returned a VERIFIED supervisor claim bound to that child", a.ok === true ? (a.supervisor_acknowledged === true && a.supervisor_pid === delivered[0].pid) : (b.supervisor_acknowledged === true && b.supervisor_pid === delivered[0].pid));
     ok("C1f the capability is permanently TRANSFERRED_SPENT", lifecycleStateV4(c.capability).transfer === TRANSFER_STATES.SPENT);
     ok("C1g a third sequential transfer is still refused", (await spawnGovernedSupervisorV4(c.capability, mk("c"))).code === LC_CODES.ALREADY_TRANSFERRED);
     // exactly one supervisor claim can exist: the wx create is atomic. Prove the claim file is single.
@@ -97,11 +107,16 @@ try {
     // FG-FCHK-197-E: this assertion was labelled "zero provider spawn" but its predicate was
     // receipts.every(r => r.read_error === null || r.frame_bytes === 0) — a statement about receipt FIELDS
     // that holds whether or not a provider was spawned, and nothing in the C1 family counted spawns at all.
-    // It now reads a REAL counter: the recording provider stub appends one line per execution to
-    // PROVIDER_SPAWN_LOG, and zero spawn means that file recorded nothing. Zero-spawn is COUNTED, never
-    // inferred from key-frame receipts.
-    const providerSpawnCount = existsSync(PROVIDER_SPAWN_LOG) ? readFileSync(PROVIDER_SPAWN_LOG, "utf8").split("\n").filter(Boolean).length : 0;
-    ok("C1i zero provider spawn during the concurrent-transfer attack (COUNTED from the recording provider stub's own log)", providerSpawnCount === 0, "spawns=" + providerSpawnCount);
+    // It now reads a REAL counter: the recording provider stub appends one line per execution to the log
+    // beside its own executable, and zero spawn means that file recorded nothing.
+    const spawnLines = () => (existsSync(PROVIDER_SPAWN_LOG) ? readFileSync(PROVIDER_SPAWN_LOG, "utf8").split("\n").filter(Boolean).length : 0);
+    const providerSpawnCount = spawnLines();
+    ok("C1i zero provider spawn during the concurrent-transfer attack (COUNTED from the recording provider stub's own adjacent log)", providerSpawnCount === 0, "spawns=" + providerSpawnCount);
+    // FG-FFIN-197-F3 POSITIVE CONTROL: a zero is only evidence if the instrument can record a one. Execute
+    // the very stub the signed activation binds and require the count to move — proving the zero above was a
+    // measurement, not a broken counter or a mis-addressed log.
+    spawnSync(stubCopy, ["--max-budget-usd", "10"], { cwd: w.repoRoot, encoding: "utf8" });
+    ok("C1i2 the spawn counter is a WORKING instrument (positive control: executing the signed stub records exactly one line)", spawnLines() === providerSpawnCount + 1, "before=" + providerSpawnCount + " after=" + spawnLines());
     // no process left behind
     await new Promise((r) => setTimeout(r, 250));
     ok("C1j no spawned process remains afterward", children.every((ch) => ch.exitCode !== null || ch.signalCode !== null || !alive(ch.pid)));
@@ -112,10 +127,10 @@ try {
     const w = world("c1fail");
     const c = consumeActivationV4(w.verified, { now: w.now });
     createLaunchIntentV4(c.capability, { now: w.now, supervisorEntrypoint: RECEIPT_CHILD });
-    // keyFd 9 with a child that never reads it still transfers; instead force the descriptor to be absent by
-    // asking for an fd the module cannot establish is not possible, so prove the sequential invariant:
-    const first = await spawnGovernedSupervisorV4(c.capability, { args: ["--receipt", join(w.repoRoot, "r1.json"), "--fd", "3"], detached: false });
-    await new Promise((res) => { if (first.child) { first.child.on("close", res); setTimeout(res, 5000); } else res(); });
+    // Prove the sequential invariant: after ONE completed transfer the key is gone from module storage.
+    const cfgFail = w.writeChildConfig("c1fail-supervisor-config.json");
+    const first = await spawnGovernedSupervisorV4(c.capability, { args: ["--config", cfgFail, "--receipt", join(w.repoRoot, "r1.json"), "--fd", "3"], detached: false });
+    await new Promise((res) => { if (!first.child || first.child.exitCode !== null || first.child.signalCode !== null) return res(); first.child.on("close", res); setTimeout(res, 5000); });
     ok("C1k after a completed transfer the key is gone from module storage (no KEY_RELEASED retry path)", (await spawnGovernedSupervisorV4(c.capability, { detached: false })).code === LC_CODES.ALREADY_TRANSFERRED);
   }
 

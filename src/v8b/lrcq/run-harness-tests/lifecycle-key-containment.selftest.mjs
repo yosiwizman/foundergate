@@ -14,7 +14,7 @@
 //   L1  no key material reaches argv, environment, the supervisor config JSON, disk, git, logs, receipts,
 //       stdout or stderr.
 // Disposable keys + a disposable git repository only. No provider is invoked.
-import { readFileSync, writeFileSync, readdirSync, statSync, symlinkSync, copyFileSync, appendFileSync, realpathSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync, statSync, symlinkSync, copyFileSync, appendFileSync, realpathSync, openSync, closeSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -30,6 +30,11 @@ let n = 0; const fails = [];
 const ok = (name, cond) => { n++; if (!cond) { fails.push(name); console.log("  FAIL " + name); } else console.log("  ok   " + name); };
 
 // Read the child's JSON line from a governed spawn (stdout piped by the authority module).
+// FG-FFIN-197-F1: a governed transfer now returns only AFTER the supervisor's VERIFIED claim exists, so a
+// short-lived supervisor has usually ALREADY exited by the time the caller gets the result — and node has by
+// then emitted 'close' and DESTROYED the stdio pipes, so a listener attached afterwards receives nothing.
+// Module-spawned supervisors therefore write to FILE descriptors we open ourselves (the governed transfer's
+// supported stdoutFd/stderrFd), which we read once the child is done.
 function collect(child) {
   return new Promise((res) => {
     let out = "", err = "";
@@ -37,6 +42,19 @@ function collect(child) {
     if (child.stderr) child.stderr.on("data", (d) => (err += d));
     child.on("close", (code) => { let parsed = null; try { parsed = JSON.parse(out.trim().split("\n").pop()); } catch { /* */ } res({ parsed, out, err, code }); });
   });
+}
+function capture(w, tag) {
+  const o = join(w.repoRoot, tag + ".out"), e = join(w.repoRoot, tag + ".err");
+  return { outPath: o, errPath: e, outFd: openSync(o, "a", 0o600), errFd: openSync(e, "a", 0o600) };
+}
+async function collectCaptured(child, cap) {
+  if (child && child.exitCode === null && child.signalCode === null) await new Promise((res) => child.on("close", res));
+  try { closeSync(cap.outFd); } catch { /* */ }
+  try { closeSync(cap.errFd); } catch { /* */ }
+  const rd = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
+  const out = rd(cap.outPath), err = rd(cap.errPath);
+  let parsed = null; try { parsed = JSON.parse(out.trim().split("\n").pop()); } catch { /* */ }
+  return { parsed, out, err, code: child ? child.exitCode : null };
 }
 
 // ---------------------------------------------------------------- S: static surface proofs
@@ -120,10 +138,11 @@ const w = makeDisposableV4World({ prefix: "fg-cont-" });
 
     // ---------------------------------------------------------------- T6/T7/L1: the ONE real transfer
     const cfgPath = w.writeChildConfig("supervisor-config.json", { eligibility: { job: { risk_class: "WIDE_SAFE", gate_trigger: "NONE" }, bindings: {} } });
-    const g = await spawnGovernedSupervisorV4(c.capability, { args: ["--config", cfgPath], stdoutFd: "pipe", stderrFd: "pipe", detached: false });
+    const capT = capture(w, "t7");
+    const g = await spawnGovernedSupervisorV4(c.capability, { args: ["--config", cfgPath], stdoutFd: capT.outFd, stderrFd: capT.errFd, detached: false });
     ok("T7a governed transfer succeeded over the module-created inherited descriptor", g.ok && g.key_fd === 3 && typeof g.supervisor_pid === "number");
     ok("T6a transfer state is permanently TRANSFERRED_SPENT", lifecycleStateV4(c.capability).transfer === TRANSFER_STATES.SPENT && g.transfer === TRANSFER_STATES.SPENT);
-    const res = await collect(g.child);
+    const res = await collectCaptured(g.child, capT);
     ok("T7b supervisor read exactly one framed key then EOF -> SUPERVISOR_EXECUTION", res.parsed && res.parsed.ok === true && res.parsed.stage === "SUPERVISOR_EXECUTION" && res.parsed.branded === true);
     ok("T7c provider eligibility reachable only from that stage", res.parsed && res.parsed.provider_eligible && res.parsed.provider_eligible.ok === true);
 

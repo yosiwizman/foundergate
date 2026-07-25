@@ -44,7 +44,7 @@ import { projectLegacyActivationV4, projectLegacyBindingsV4 } from "../../../src
 import { verifyActivation, V4_CODES, ACTIVATION_V4_SCHEMA } from "../../../src/v8b/lrcq/assurance/activation-v4.mjs";
 import { loadAuthority, KEY_CODES } from "../../../src/v8b/lrcq/assurance/founder-key-authority.mjs";
 import { consumeVerifiedActivation } from "../../../src/v8b/lrcq/run-harness/activation-consumer.mjs";
-import { createLaunchIntentV4, spawnGovernedSupervisorV4 } from "../../../src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs";
+import { createLaunchIntentV4, spawnGovernedSupervisorV4, LC_CODES } from "../../../src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs";
 import { validateActivation as validateLegacyProjection } from "../../../src/v8b/lrcq/provider/activation-schema.mjs";
 import { validateLease } from "../../../src/v8b/lrcq/assurance/assurance-core.mjs";
 import { setupManager, eligibleForSetup } from "../../../src/v8b/lrcq/run-harness/setup-manager.mjs";
@@ -353,7 +353,14 @@ export async function launchDetachedSupervisorV4(activationPath, authorizationPa
   let g;
   try { g = await spawnGovernedSupervisorV4(consumedCap, { args: ["--config", cfgPath], stdoutFd: outFd, stderrFd: errFd, detached: true, env: { PATH: process.env.PATH, HOME: process.env.HOME } }); }
   finally { try { closeSync(outFd); closeSync(errFd); } catch { /* */ } }
-  if (!g.ok) return { ready: false, refused: { stage: "governed_key_transfer", reasons: [g.code + (g.detail ? " (" + g.detail + ")" : "")] }, final_state: "SUPERVISOR_SPAWN_FAILED", consumed: true, launched: false };
+  // FG-FFIN-197-F1: g.ok now means the spawned supervisor produced a VERIFIED ephemeral-signed claim bound to
+  // its own PID and OS-observed start identity — not merely that the key frame entered the pipe. The refusal
+  // state is named after the actual failure so the evidence record cannot describe a claim failure as a spawn
+  // failure.
+  if (!g.ok) {
+    const claimFailure = g.code === LC_CODES.SUPERVISOR_TERMINATED_BEFORE_CLAIM || g.code === LC_CODES.SUPERVISOR_CLAIM_TIMEOUT || g.code === LC_CODES.SUPERVISOR_CLAIM_INVALID;
+    return { ready: false, refused: { stage: claimFailure ? "supervisor_acknowledgment" : "governed_key_transfer", reasons: [g.code + (g.detail ? " (" + g.detail + ")" : "")] }, final_state: claimFailure ? "SUPERVISOR_NEVER_ACKNOWLEDGED" : "SUPERVISOR_SPAWN_FAILED", consumed: true, launched: false, supervisor_acknowledged: false };
+  }
   const launcherPid = process.pid, supervisorPid = g.supervisor_pid;
   // Wait a BOUNDED interval for durable RUN_ACTIVE (the supervisor publishes it from ITS process).
   const deadlineMs = Date.now() + (life.startupTimeoutMs || 15000);

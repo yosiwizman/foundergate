@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // FounderGate LRCQ — TEST-SUPPORT RECORDING provider stub (FG-FCHK-197-B / FG-FCHK-197-E).
 // Structurally test-only. It is a DETERMINISTIC stand-in for the productive provider that APPENDS ONE LINE
-// PER EXECUTION to the log named by FG_SPAWN_LOG, so a test can count ACTUAL provider spawns directly
-// instead of inferring "zero spawn" from some other artefact. It never contacts a model.
+// PER EXECUTION to a durable log, so a test can count ACTUAL provider spawns directly instead of inferring
+// "zero spawn" from some other artefact. It never contacts a model.
 //
 // The log lives NEXT TO THIS FILE (`<thisfile>.spawns.log`), deliberately NOT in an environment variable:
 // the production boundary SCRUBS the child environment down to PATH and HOME, so an env-carried log path

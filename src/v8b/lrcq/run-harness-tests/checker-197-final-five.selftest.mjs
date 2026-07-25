@@ -106,9 +106,12 @@ try {
     try { g2 = await spawnGovernedSupervisorV4(c.capability, { args: [], detached: false }); }
     catch (e) { threw2 = e; }
     ok("FA17 [DYNAMIC] a child that dies before reading the descriptor raises no uncaught error", threw2 === null, threw2 && threw2.message);
-    ok("FA18 [DYNAMIC] the outcome is a structured result with a known lifecycle code",
-      !!g2 && typeof g2.code === "string" && Object.values(LC_CODES).includes(g2.code), JSON.stringify(g2 && { ok: g2.ok, code: g2.code }));
-    ok("FA19 [DYNAMIC] the authority is TRANSFERRED_SPENT regardless of which race arm won", lifecycleStateV4(c.capability).transfer === TRANSFER_STATES.SPENT, g2 && g2.code);
+    // FG-FFIN-197-F1: this outcome is now DETERMINISTIC, not race-dependent. Pipe-write completion is no
+    // longer treated as success, so a supervisor that never read the key can never produce OK.
+    ok("FA18 [DYNAMIC] the outcome is NEVER OK — it is the structured SUPERVISOR_TERMINATED_BEFORE_CLAIM refusal",
+      !!g2 && g2.ok === false && g2.code === LC_CODES.SUPERVISOR_TERMINATED_BEFORE_CLAIM, JSON.stringify(g2 && { ok: g2.ok, code: g2.code, detail: g2.detail }));
+    ok("FA18b [DYNAMIC] the result reports the supervisor as NOT acknowledged", !!g2 && g2.supervisor_acknowledged === false);
+    ok("FA19 [DYNAMIC] the authority is TRANSFERRED_SPENT under that refusal", lifecycleStateV4(c.capability).transfer === TRANSFER_STATES.SPENT, g2 && g2.code);
     ok("FA20 [DYNAMIC] a retry is refused ALREADY_TRANSFERRED", (await spawnGovernedSupervisorV4(c.capability, { detached: false })).code === LC_CODES.ALREADY_TRANSFERRED);
     await new Promise((r) => setTimeout(r, 300));
     ok("FA21 [DYNAMIC] no residual process survives the premature-termination route", !g2 || !g2.child || !g2.child.pid || !alive(g2.child.pid));
@@ -119,11 +122,12 @@ try {
     const c = consumeActivationV4(w.verified, { now: w.now });
     createLaunchIntentV4(c.capability, { now: w.now, supervisorEntrypoint: RECEIPT_CHILD });
     const rp = join(w.repoRoot, "good.json");
-    const g = await spawnGovernedSupervisorV4(c.capability, { args: ["--receipt", rp, "--fd", "3"], detached: false });
+    const cfg = w.writeChildConfig("fa4-supervisor-config.json");
+    const g = await spawnGovernedSupervisorV4(c.capability, { args: ["--config", cfg, "--receipt", rp, "--fd", "3"], detached: false });
     ok("FA22 [DYNAMIC] a normal governed transfer still returns OK", g.ok === true && g.code === LC_CODES.OK, g.code + " " + (g.detail || ""));
-    await new Promise((res) => { if (g.child) { g.child.on("close", res); setTimeout(res, 8000); } else res(); });
+    await new Promise((res) => { if (!g.child || g.child.exitCode !== null || g.child.signalCode !== null) return res(); g.child.on("close", res); setTimeout(res, 8000); });
     const receipt = existsSync(rp) ? JSON.parse(readFileSync(rp, "utf8")) : null;
-    ok("FA23 [DYNAMIC] the supervisor really received the key frame over the inherited descriptor", !!receipt && receipt.frame_bytes > 0, JSON.stringify(receipt));
+    ok("FA23 [DYNAMIC] the supervisor really received the key and reached SUPERVISOR_EXECUTION", !!receipt && receipt.attached === true && receipt.branded === true, JSON.stringify(receipt));
     ok("FA24 [DYNAMIC] exactly one child ran and it is the one the transfer returned", !!receipt && receipt.pid === g.child.pid);
   }
   {
@@ -280,10 +284,12 @@ try {
     const c3 = consumeActivationV4(w3.verified, { now: w3.now });
     createLaunchIntentV4(c3.capability, { now: w3.now, supervisorEntrypoint: RECEIPT_CHILD });
     const rp = join(w3.repoRoot, "normal.json");
-    const g3 = await spawnGovernedSupervisorV4(c3.capability, { args: ["--receipt", rp, "--fd", "3"], detached: false });
+    const cfg3 = w3.writeChildConfig("fd3-supervisor-config.json");
+    const g3 = await spawnGovernedSupervisorV4(c3.capability, { args: ["--config", cfg3, "--receipt", rp, "--fd", "3"], detached: false });
     ok("FD18 [DYNAMIC] an UNTOUCHED lifecycle root still completes the governed transfer", g3.ok === true, g3.code + " " + (g3.detail || ""));
-    await new Promise((res) => { if (g3.child) { g3.child.on("close", res); setTimeout(res, 8000); } else res(); });
-    ok("FD19 [DYNAMIC] the supervisor received the key over the untouched root", existsSync(rp) && JSON.parse(readFileSync(rp, "utf8")).frame_bytes > 0);
+    await new Promise((res) => { if (!g3.child || g3.child.exitCode !== null || g3.child.signalCode !== null) return res(); g3.child.on("close", res); setTimeout(res, 8000); });
+    ok("FD19 [DYNAMIC] the supervisor received the key over the untouched root and minted a verified claim",
+      existsSync(rp) && JSON.parse(readFileSync(rp, "utf8")).attached === true && g3.supervisor_acknowledged === true);
   }
 
   // ============================================================ FE  evidence accuracy (LOW)
@@ -299,6 +305,186 @@ try {
     const f04 = (ledger.findings || []).find((f) => f.id === "FG-CHK-197-04");
     ok("FE4 [DYNAMIC] the correction ledger distinguishes the DYNAMICALLY proven unsafe-mode result", !!f04 && /DYNAMICALLY[- ]PROVEN|dynamically proven/i.test(JSON.stringify(f04.result_after)), JSON.stringify(f04 && f04.result_after));
     ok("FE5 [DYNAMIC] the correction ledger marks the owner-mismatch result SOURCE-PROVEN (root required)", !!f04 && /SOURCE[- ]PROVEN/i.test(JSON.stringify(f04.result_after)) && /root/i.test(JSON.stringify(f04.result_after)), JSON.stringify(f04 && f04.result_after));
+  }
+
+  // ==================================================================================================
+  // FG-FFIN-197 — THIRD independent-Checker findings (report sha256 c49cc563...)
+  //   F1 MEDIUM  pipe-write completion reported OK though the supervisor never read the key
+  //   F4 LOW     deepFreezeAuthority invoked Object.prototype's __proto__ SETTER instead of refusing
+  // (F2 and F3 are evidence/prose corrections, asserted in the FF-E family below.)
+  // ==================================================================================================
+
+  // ---- F1-A: a supervisor that exits immediately WITHOUT reading fd 3 ------------------------------
+  {
+    // Run the race REPEATEDLY: the old defect was that the 92-byte frame always fits the kernel pipe
+    // buffer, so write completion won deterministically. A single run could not show the correction is
+    // schedule-independent; six can.
+    const RUNS = 6;
+    const outcomes = [];
+    for (let i = 0; i < RUNS; i++) {
+      const w = world("f1a" + i);
+      const dead = join(w.repoRoot, "dead-supervisor.mjs");
+      writeFileSync(dead, "process.exit(9);\n");
+      const c = consumeActivationV4(w.verified, { now: w.now });
+      createLaunchIntentV4(c.capability, { now: w.now, supervisorEntrypoint: realpathSync(dead) });
+      const g = await spawnGovernedSupervisorV4(c.capability, { detached: true });
+      const retry = await spawnGovernedSupervisorV4(c.capability, { detached: false });
+      outcomes.push({
+        ok: g.ok, code: g.code, ack: g.supervisor_acknowledged, transfer: g.transfer,
+        spent: lifecycleStateV4(c.capability).transfer === TRANSFER_STATES.SPENT,
+        retry: retry.code,
+        claim: existsSync(join(w.lifecycleRoot, w.verified.activation_identity.replace(":", "_") + ".supervisor-claim.json")),
+        alive: g.child && g.child.pid ? alive(g.child.pid) : false,
+      });
+    }
+    ok("FF1a [DYNAMIC] a supervisor that dies without reading the key NEVER returns OK (" + RUNS + "/" + RUNS + " runs)",
+      outcomes.every((o) => o.ok === false), JSON.stringify(outcomes.map((o) => o.code)));
+    ok("FF1b [DYNAMIC] every run returns the structured SUPERVISOR_TERMINATED_BEFORE_CLAIM refusal (not schedule-sensitive)",
+      outcomes.every((o) => o.code === LC_CODES.SUPERVISOR_TERMINATED_BEFORE_CLAIM), JSON.stringify(outcomes.map((o) => o.code)));
+    ok("FF1c [DYNAMIC] the result reports the supervisor as NOT acknowledged", outcomes.every((o) => o.ack === false));
+    ok("FF1d [DYNAMIC] the authority is TRANSFERRED_SPENT on every failed run", outcomes.every((o) => o.transfer === TRANSFER_STATES.SPENT && o.spent));
+    ok("FF1e [DYNAMIC] a retry after every failed run is refused ALREADY_TRANSFERRED", outcomes.every((o) => o.retry === LC_CODES.ALREADY_TRANSFERRED));
+    ok("FF1f [DYNAMIC] no supervisor claim was ever minted on this route", outcomes.every((o) => o.claim === false));
+    ok("FF1g [DYNAMIC] no residual process survives any run", outcomes.every((o) => o.alive === false));
+  }
+
+  // ---- F1-B: a supervisor that READS the frame but never creates a claim ---------------------------
+  {
+    const w = world("f1b");
+    // Reads fd 3 to EOF (so the frame IS consumed) and then exits without attaching — the exact shape of a
+    // supervisor that received the key but never proved it used it.
+    const reader = join(w.repoRoot, "reads-but-no-claim.mjs");
+    writeFileSync(reader, "import { readFileSync } from 'node:fs';\ntry { const b = readFileSync(3); b.fill(0); } catch { /* */ }\nprocess.exit(0);\n");
+    const c = consumeActivationV4(w.verified, { now: w.now });
+    createLaunchIntentV4(c.capability, { now: w.now, supervisorEntrypoint: realpathSync(reader) });
+    const g = await spawnGovernedSupervisorV4(c.capability, { detached: false });
+    ok("FF1h [DYNAMIC] reading the key frame is NOT sufficient — no claim means no OK", g.ok === false, g.code);
+    ok("FF1i [DYNAMIC] it is the structured SUPERVISOR_TERMINATED_BEFORE_CLAIM refusal", g.code === LC_CODES.SUPERVISOR_TERMINATED_BEFORE_CLAIM, g.code + " " + (g.detail || ""));
+    ok("FF1j [DYNAMIC] the authority is TRANSFERRED_SPENT", lifecycleStateV4(c.capability).transfer === TRANSFER_STATES.SPENT);
+    ok("FF1k [DYNAMIC] a retry is refused ALREADY_TRANSFERRED", (await spawnGovernedSupervisorV4(c.capability, { detached: false })).code === LC_CODES.ALREADY_TRANSFERRED);
+  }
+
+  // ---- F1-C/D: a MALFORMED claim, and a validly shaped claim for the wrong PID / start identity ----
+  {
+    // The child writes a claim file itself, at the exact governed path, without ever holding the ephemeral
+    // key. A claim is only acknowledgment if it is cryptographically bound — shape alone must not pass.
+    const mkForger = (w, body) => {
+      const p = join(w.repoRoot, "forging-supervisor.mjs");
+      writeFileSync(p, body);
+      return realpathSync(p);
+    };
+    const claimFileFor = (w) => join(w.lifecycleRoot, w.verified.activation_identity.replace(":", "_") + ".supervisor-claim.json");
+
+    // (C) malformed: valid JSON, right schema string, no valid ephemeral signature.
+    const wC = world("f1c");
+    const forgeC = mkForger(wC, "import { writeFileSync } from 'node:fs';\n" +
+      "writeFileSync(process.argv[2], JSON.stringify({ schema: 'lrcq-supervisor-claim-v4-1', activation_identity: 'x', ephemeral_signature: 'AA==' }, null, 2) + '\\n', { mode: 0o600 });\n" +
+      "process.exit(0);\n");
+    const cC = consumeActivationV4(wC.verified, { now: wC.now });
+    createLaunchIntentV4(cC.capability, { now: wC.now, supervisorEntrypoint: forgeC });
+    const gC = await spawnGovernedSupervisorV4(cC.capability, { args: [claimFileFor(wC)], detached: false });
+    ok("FF1l [DYNAMIC] a MALFORMED self-written claim is refused, never OK", gC.ok === false, gC.code);
+    ok("FF1m [DYNAMIC] the refusal is structured (claim invalid, or terminated before a valid claim)",
+      gC.code === LC_CODES.SUPERVISOR_CLAIM_INVALID || gC.code === LC_CODES.SUPERVISOR_TERMINATED_BEFORE_CLAIM, gC.code + " " + (gC.detail || ""));
+    ok("FF1n [DYNAMIC] the authority is still TRANSFERRED_SPENT", lifecycleStateV4(cC.capability).transfer === TRANSFER_STATES.SPENT);
+
+    // (D) validly SHAPED claim carrying every required field, but for the wrong PID and start identity.
+    const wD = world("f1d");
+    const forgeD = mkForger(wD, "import { writeFileSync } from 'node:fs';\n" +
+      "const body = { schema: 'lrcq-supervisor-claim-v4-1', lifecycle_contract_version: 'lrcq-lifecycle-v4-1', activation_identity: process.argv[3], payload_digest: 'sha256:0', consumed_marker_digest: 'sha256:0', launch_intent_digest: 'sha256:0', lifecycle_root_object_id: process.argv[4], lifecycle_root_digest: 'sha256:0', launch_nonce: 'n', supervisor_pid: 999999, supervisor_start_identity: 'FORGED-START-IDENTITY', supervisor_entrypoint_digest: 'sha256:0', claim_epoch: 0, terminal: false, ephemeral_fingerprint: 'sha256:0', ephemeral_signature: 'AA==' };\n" +
+      "writeFileSync(process.argv[2], JSON.stringify(body, null, 2) + '\\n', { mode: 0o600 });\n" +
+      "process.exit(0);\n");
+    const cD = consumeActivationV4(wD.verified, { now: wD.now });
+    createLaunchIntentV4(cD.capability, { now: wD.now, supervisorEntrypoint: forgeD });
+    const gD = await spawnGovernedSupervisorV4(cD.capability, {
+      args: [claimFileFor(wD), wD.verified.activation_identity, cD.capability.lifecycle_root_object_id], detached: false,
+    });
+    ok("FF1o [DYNAMIC] a validly SHAPED claim for the WRONG pid/start identity is refused, never OK", gD.ok === false, gD.code);
+    ok("FF1p [DYNAMIC] the refusal is structured", gD.code === LC_CODES.SUPERVISOR_CLAIM_INVALID || gD.code === LC_CODES.SUPERVISOR_TERMINATED_BEFORE_CLAIM, gD.code + " " + (gD.detail || ""));
+    ok("FF1q [DYNAMIC] no forged claim can make the transfer report an acknowledged supervisor", gD.supervisor_acknowledged !== true);
+  }
+
+  // ---- F1-E: the GENUINE supervisor route still succeeds -------------------------------------------
+  {
+    const w = world("f1e");
+    const c = consumeActivationV4(w.verified, { now: w.now });
+    createLaunchIntentV4(c.capability, { now: w.now, supervisorEntrypoint: RECEIPT_CHILD });
+    const rp = join(w.repoRoot, "genuine.json");
+    const cfg = w.writeChildConfig("f1e-supervisor-config.json");
+    const g = await spawnGovernedSupervisorV4(c.capability, { args: ["--config", cfg, "--receipt", rp, "--fd", "3"], detached: false });
+    ok("FF1r [DYNAMIC] a GENUINE supervisor that reads, reverifies and claims returns exactly one OK", g.ok === true && g.code === LC_CODES.OK, g.code + " " + (g.detail || ""));
+    ok("FF1s [DYNAMIC] the transfer reports the supervisor as acknowledged", g.supervisor_acknowledged === true);
+    const claimDoc = JSON.parse(readFileSync(g.supervisor_claim_path, "utf8"));
+    ok("FF1t [DYNAMIC] the verified claim is bound to the EXACT spawned PID", claimDoc.supervisor_pid === g.child.pid, claimDoc.supervisor_pid + " vs " + g.child.pid);
+    ok("FF1u [DYNAMIC] the claim's start identity matches and was independently OS-observed",
+      typeof g.supervisor_start_identity === "string" && g.supervisor_start_identity.length > 0 && g.start_identity_independently_observed === true, JSON.stringify({ id: g.supervisor_start_identity, observed: g.start_identity_independently_observed }));
+    await new Promise((res) => { if (!g.child || g.child.exitCode !== null || g.child.signalCode !== null) return res(); g.child.on("close", res); setTimeout(res, 8000); });
+    const receipt = existsSync(rp) ? JSON.parse(readFileSync(rp, "utf8")) : null;
+    ok("FF1v [DYNAMIC] that supervisor really reached SUPERVISOR_EXECUTION", !!receipt && receipt.attached === true && receipt.branded === true, JSON.stringify(receipt));
+    ok("FF1w [DYNAMIC] a retry after the SUCCESSFUL transfer is still ALREADY_TRANSFERRED", (await spawnGovernedSupervisorV4(c.capability, { detached: false })).code === LC_CODES.ALREADY_TRANSFERRED);
+    // No timing heuristic may be the authority decision.
+    const lsrc = src("src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs");
+    ok("FF1x [STRUCTURAL] the unreachable 250ms premature-termination timer is gone from the module",
+      !/child terminated before the key frame completed/.test(lsrc) && !/}, 250\)/.test(lsrc));
+    ok("FF1y [STRUCTURAL] the claim wait is a fixed module constant, not a caller-supplied option",
+      /const SUPERVISOR_CLAIM_WAIT_MS = \d+/.test(lsrc) && !/opts\.claimTimeout|opts\.skipClaim|opts\.claimPath/.test(lsrc));
+  }
+
+  // ---- F4: dangerous deep-copy keys ---------------------------------------------------------------
+  {
+    const rejects = (v) => { try { deepFreezeAuthority(v); return null; } catch (e) { return e.code; } };
+    const D = AUTHORITY_FREEZE_CODES.DANGEROUS_KEY;
+    ok("FF4a [DYNAMIC] an own __proto__ data key from JSON.parse is REFUSED, not silently dropped",
+      rejects(JSON.parse('{"limits":{"max_budget_usd":10},"__proto__":{"max_budget_usd":999999}}')) === D);
+    ok("FF4b [DYNAMIC] a NESTED __proto__ is refused (the rejection is recursive)",
+      rejects(JSON.parse('{"a":{"b":{"__proto__":{"no_akior":false}}}}')) === D);
+    ok("FF4c [DYNAMIC] an own constructor key is refused", rejects(JSON.parse('{"constructor":{"x":1}}')) === D);
+    ok("FF4d [DYNAMIC] an own prototype key is refused", rejects(JSON.parse('{"prototype":{"x":1}}')) === D);
+    ok("FF4e [DYNAMIC] a dangerous key inside an ARRAY element is refused", rejects(JSON.parse('{"a":[{"__proto__":{"x":1}}]}')) === D);
+    // Ordinary authority objects still copy and deep-freeze correctly.
+    const src0 = JSON.parse('{"limits":{"max_budget_usd":10,"max_parallel_width":2},"exclusions":{"no_deploy":true},"list":[1,{"k":"v"}]}');
+    const f = deepFreezeAuthority(src0);
+    ok("FF4f [DYNAMIC] an ordinary JSON authority object still copies and deep-freezes", Object.isFrozen(f) && Object.isFrozen(f.limits) && mutableAuthorityPaths(f).length === 0);
+    ok("FF4g [DYNAMIC] the copy keeps ORDINARY plain-object behaviour consumers depend on",
+      Object.getPrototypeOf(f) === Object.prototype && JSON.stringify(f) === JSON.stringify(src0) && Object.keys(f).length === 3 && ({ ...f.limits }).max_budget_usd === 10);
+    ok("FF4h [DYNAMIC] the helper ACCEPTS its own output on round-trip (no self-inconsistency)", (() => { try { deepFreezeAuthority(f); return true; } catch { return false; } })());
+    ok("FF4i [DYNAMIC] the caller-owned source is neither mutated nor frozen", !Object.isFrozen(src0) && !Object.isFrozen(src0.limits) && src0.limits.max_budget_usd === 10);
+    // No prototype change, no inherited attacker field, no global pollution.
+    ok("FF4j [DYNAMIC] no global prototype pollution occurred", ({}).max_budget_usd === undefined && ({}).no_akior === undefined && Object.prototype.max_budget_usd === undefined);
+    ok("FF4k [DYNAMIC] the previously-rejecting classes still reject",
+      rejects({ f: () => 1 }) && rejects({ d: new Date() }) && rejects({ u: undefined }) && rejects({ n: NaN }) &&
+      rejects(Object.defineProperty({}, "g", { get: () => 1, enumerable: true, configurable: true })) &&
+      rejects((() => { const a = {}; a.s = a; return a; })()));
+  }
+
+  // ---- FF-E: F2 / F3 evidence-prose corrections ----------------------------------------------------
+  {
+    const led5 = JSON.parse(src(".foundergate/evidence/lrcq-assurance-factory/FCHK_197_FINAL_FIVE_CORRECTION_LEDGER.json"));
+    const fa = (led5.findings || []).find((f) => f.id === "FG-FCHK-197-A");
+    const corrText = JSON.stringify(fa && fa.correction);
+    // The corrected bullet deliberately QUOTES the old mapping in order to disavow it, so a bare
+    // "does the string appear" test would be wrong. What must hold is that no bullet ASSERTS the mapping:
+    // every bullet mentioning it must also carry the correction marker.
+    const bullets = (fa && fa.correction) || [];
+    const asserting = bullets.filter((b) => /premature child termination -> TRANSFER_WRITE_FAILED/.test(b) && !/CORRECTED BY FG-FFIN-197-F1|NEVER ACHIEVED/.test(b));
+    ok("FFE1 [DYNAMIC] no ledger bullet ASSERTS the unreachable premature-termination -> TRANSFER_WRITE_FAILED mapping",
+      !!fa && asserting.length === 0, JSON.stringify(asserting).slice(0, 300));
+    ok("FFE1b [DYNAMIC] where the old mapping is quoted, it is explicitly marked as never achieved",
+      bullets.some((b) => /premature child termination -> TRANSFER_WRITE_FAILED/.test(b) && /NEVER ACHIEVED/.test(b)));
+    ok("FFE2 [DYNAMIC] the ledger states truthfully that candidate c6bf5a37 returned OK on that route",
+      !!fa && /returned OK|produced ok:true/i.test(JSON.stringify(fa.result_after) + corrText));
+    ok("FFE3 [DYNAMIC] the ledger records that the third Checker detected it and the successor requires a verified claim",
+      !!fa && /third independent Checker|FG-FFIN-197-F1/.test(corrText + JSON.stringify(fa.superseded_by || "")) &&
+      /SUPERVISOR_TERMINATED_BEFORE_CLAIM/.test(JSON.stringify(fa.result_after)));
+    const stubSrc = src("src/v8b/lrcq/run-harness-tests/test-support/recording-provider-stub.mjs");
+    const corrSrc = src("src/v8b/lrcq/run-harness-tests/checker-197-corrections.selftest.mjs");
+    ok("FFE4 [STRUCTURAL] no FG_SPAWN_LOG prose survives anywhere in the test surfaces",
+      !/FG_SPAWN_LOG/.test(stubSrc) && !/FG_SPAWN_LOG/.test(corrSrc));
+    ok("FFE5 [STRUCTURAL] the stub documents that it writes BESIDE its own signed executable",
+      /beside|next to|import\.meta\.url/i.test(stubSrc) && /SPAWN_LOG_SUFFIX/.test(stubSrc));
+    ok("FFE6 [STRUCTURAL] the C1 comment documents the scrubbed environment and the adjacent durable log",
+      /SCRUBS the child environment|scrubs the child environment/i.test(corrSrc) && /spawns\.log|adjacent/i.test(corrSrc));
+    ok("FFE7 [STRUCTURAL] a POSITIVE CONTROL proves the spawn counter can actually record", /C1i2/.test(corrSrc) && /positive control/i.test(corrSrc));
   }
 
   console.log("");
