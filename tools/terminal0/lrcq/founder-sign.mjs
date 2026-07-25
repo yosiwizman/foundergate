@@ -34,12 +34,12 @@ export function readAuthorizationBytes(path, deps = {}) {
 }
 
 // Build a V4 payload from a frozen unsigned template + mechanically-derived current state.
-export function buildV4Payload({ template, signerFingerprint, authorizationBytes, nonce, issuedEpoch, repositoryRootRealpath, lifecycleRootRealpath }) {
+export function buildV4Payload({ template, signerFingerprint, authorizationBytes, nonce, issuedEpoch, repositoryRootRealpath, repositoryGitCommonDirRealpath, lifecycleRootRealpath }) {
   const p = {
     schema: ACTIVATION_V4_SCHEMA, signature_payload_version: V4_SIGNATURE_PAYLOAD_VERSION,
     founder_signature_algorithm: "ed25519", signer_key_fingerprint: signerFingerprint,
     authorization_text_digest: authorizationTextDigest(authorizationBytes), activation_nonce: nonce,
-    repository_root_realpath: repositoryRootRealpath, lifecycle_root_realpath: lifecycleRootRealpath, lifecycle_contract_version: "lrcq-lifecycle-v4-1",
+    repository_root_realpath: repositoryRootRealpath, repository_git_common_dir_realpath: repositoryGitCommonDirRealpath, lifecycle_root_realpath: lifecycleRootRealpath, lifecycle_contract_version: "lrcq-lifecycle-v4-1",
     evidence_commit_sha: template.run_harness_candidate_sha, evidence_commit_tree: template.run_harness_candidate_tree,
     reviewed_runtime_sha: template.reviewed_production_ancestor_sha, reviewed_runtime_tree: template.reviewed_production_ancestor_tree,
     run_id: template.run_id, backlog_digest: template.first_real_run_backlog_digest,

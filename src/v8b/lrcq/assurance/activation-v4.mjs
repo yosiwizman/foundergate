@@ -4,11 +4,9 @@
 // public key. V3 is refused for all new execution (evidence-only). The verified capability is a frozen,
 // module-private-branded object — a plain { verified:true } is never accepted anywhere.
 import { createHash, verify as edVerify, sign as edSign } from "node:crypto";
-import { readFileSync, existsSync, lstatSync, statSync, realpathSync } from "node:fs";
 import { execFileSync } from "node:child_process";
-import { join, sep } from "node:path";
 import { canonicalize, signedMessage } from "./canonical-json.mjs";
-import { resolveVerifierKey, fingerprintOfSpkiDer } from "./founder-key-authority.mjs";
+import { resolveVerifierKey } from "./founder-key-authority.mjs";
 
 // Mechanically OBSERVED process-start identity for a PID — read from the OS (ps lstart), never caller-
 // supplied. UNKNOWN/unreadable fails closed (returns null). Used to prove a launch-claim's recorded
@@ -48,7 +46,9 @@ export const V4_PAYLOAD_FIELDS = [
   "authorization_text_digest", "activation_nonce",
   // FG-LRCQ-ACT-028: the repository + lifecycle roots are SIGNED, so authority can be read ONLY from the
   // exact signed lifecycle root (a caller cannot substitute an arbitrary directory of forged records).
-  "repository_root_realpath", "lifecycle_root_realpath", "lifecycle_contract_version",
+  // repository_git_common_dir_realpath binds the run to a SPECIFIC checkout under a SPECIFIC main repo:
+  // a copied tree / alternate worktree / re-init'd repo resolves to a different common dir -> refused.
+  "repository_root_realpath", "repository_git_common_dir_realpath", "lifecycle_root_realpath", "lifecycle_contract_version",
   "evidence_commit_sha", "evidence_commit_tree", "reviewed_runtime_sha", "reviewed_runtime_tree",
   "run_id", "backlog_digest",
   "provider_executable_path", "resolved_provider_target", "provider_version", "provider_executable_identity",
@@ -79,106 +79,16 @@ export function signActivation(payload, privateKeyObject) {
   return { ...payload, founder_signature: sig.toString("base64") };
 }
 
-// ---- three-stage non-forgeable capabilities (FG-LRCQ-ACT-028 Phase 1 A/B/C) -------------------------
+// ---- VERIFIED capability (FG-LRCQ-ACT-028 Stage A) --------------------------------------------------
 // A. VERIFIED — created only after full Ed25519 + payload + binding verification; NOT provider authority.
-// B. CONSUMED — created only after atomic one-time consumption of a genuine VERIFIED capability.
-// C. SUPERVISOR-EXECUTION — created only inside the detached supervisor after independent reverification +
-//    matching consumed marker + one-launch claim. The real provider requires THIS stage, not merely VERIFIED.
-// Each stage is a distinct module-private WeakSet brand; a plain object is never accepted at any stage.
+// The downstream lifecycle stages (B CONSUMED, C SUPERVISOR-EXECUTION) are owned EXCLUSIVELY by
+// lifecycle-authority-v4.mjs, which mints them via ephemeral-key-signed durable records — a copied JSON
+// marker/claim can no longer reconstruct authority. This module owns ONLY Stage A + the shared
+// observedStartIdentity probe; it deliberately no longer exports any derive-from-plain-JSON helper.
 const CAP_BRAND = new WeakSet();          // A: verified
-const CONSUMED_BRAND = new WeakSet();     // B: consumed
-const SUPEXEC_BRAND = new WeakSet();      // C: supervisor-execution
 function makeCapability(fields) { const cap = Object.freeze({ ...fields, _stage: "VERIFIED" }); CAP_BRAND.add(cap); return cap; }
 export function isVerifiedCapability(x) { return typeof x === "object" && x !== null && CAP_BRAND.has(x); }
 export function assertVerifiedCapability(x) { if (!isVerifiedCapability(x)) { const e = new Error("verified capability required"); e.code = V4_CODES.FORGED_CAPABILITY; throw e; } return x; }
-
-export function isConsumedCapability(x) { return typeof x === "object" && x !== null && CONSUMED_BRAND.has(x); }
-export function isSupervisorExecutionCapability(x) { return typeof x === "object" && x !== null && SUPEXEC_BRAND.has(x); }
-
-// Durable marker/claim reader — REAL Node fs ONLY. No injectable fs functions: production authority never
-// reads through caller-controlled functions (that was the caller-assisted forgery hole). Rejects
-// missing/symlink/non-regular/parse-fail; computes the digest from the actual on-disk bytes.
-function readDurable(path, wantKind) {
-  if (!existsSync(path)) return { err: "MISSING:" + wantKind };
-  let st; try { st = lstatSync(path); } catch { return { err: "LSTAT:" + wantKind }; }
-  if (st.isSymbolicLink()) return { err: "SYMLINK:" + wantKind };
-  let sst; try { sst = statSync(path); } catch { return { err: "STAT:" + wantKind }; }
-  if (!sst.isFile()) return { err: "NOT_REGULAR:" + wantKind };
-  let bytes, doc; try { bytes = readFileSync(path, "utf8"); doc = JSON.parse(bytes); } catch { return { err: "PARSE:" + wantKind }; }
-  return { bytes, doc, digest: "sha256:" + sha256hex(Buffer.from(bytes)) };
-}
-function markerPathFor(ledgerDir, activationIdentity) { return join(ledgerDir, activationIdentity.replace(":", "_") + ".consumed.json"); }
-function claimPathFor(ledgerDir, activationIdentity) { return join(ledgerDir, activationIdentity.replace(":", "_") + ".launch-claim.json"); }
-
-// Verify + resolve the SIGNED lifecycle root carried by a verified capability. Fail closed on: not a real
-// directory, symlink, not realpath-contained in the signed repository root. Returns the realpath'd root or
-// a fail code. A caller CANNOT substitute a directory — the root is whatever the founder signature bound.
-function resolveSignedLifecycleRoot(cap) {
-  const root = cap.lifecycle_root; const repo = cap.repository_root;
-  if (typeof root !== "string" || !root || typeof repo !== "string" || !repo) return { err: "MISSING_SIGNED_ROOT" };
-  if (!existsSync(root)) return { err: "LIFECYCLE_ROOT_MISSING" };
-  let st; try { st = lstatSync(root); } catch { return { err: "LIFECYCLE_ROOT_LSTAT" }; }
-  if (st.isSymbolicLink()) return { err: "LIFECYCLE_ROOT_SYMLINK" };
-  let rr, rrepo; try { rr = realpathSync(root); rrepo = realpathSync(repo); } catch { return { err: "REALPATH" }; }
-  let dst; try { dst = statSync(rr); } catch { return { err: "LIFECYCLE_ROOT_STAT" }; }
-  if (!dst.isDirectory()) return { err: "LIFECYCLE_ROOT_NOT_DIR" };
-  if (rr !== rrepo && !rr.startsWith(rrepo + sep)) return { err: "LIFECYCLE_ROOT_ESCAPES_REPO" };
-  return { root: rr };
-}
-
-// B: DERIVE a CONSUMED capability from the durable marker on disk. `ledgerDir` is the REAL lifecycle root
-// (contract-derived in production, a real disposable dir in tests). The marker path is derived from the
-// verified capability's activation identity; read via REAL fs only; must record the SAME activation
-// identity. Digest computed from actual bytes. No caller path/digest/fs is trusted.
-export function deriveConsumedCapability(verifiedCap) {
-  assertVerifiedCapability(verifiedCap);
-  const lr = resolveSignedLifecycleRoot(verifiedCap);
-  if (lr.err) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: lr.err };
-  const ledgerDir = lr.root; // the SIGNED lifecycle root — never a caller argument
-  const markerPath = markerPathFor(ledgerDir, verifiedCap.activation_identity);
-  const m = readDurable(markerPath, "consumed_marker");
-  if (m.err) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: m.err };
-  if (m.doc.activation_id !== verifiedCap.activation_identity) return { ok: false, code: V4_CODES.BINDING_MISMATCH, detail: "marker activation_id" };
-  const cap = Object.freeze({ _stage: "CONSUMED", activation_identity: verifiedCap.activation_identity, payload_digest: verifiedCap.payload_digest, signer_key_fingerprint: verifiedCap.signer_key_fingerprint, evaluated_candidate: verifiedCap.evaluated_candidate, evidence_candidate: verifiedCap.evidence_candidate, provider_identity: verifiedCap.provider_identity, run_id: verifiedCap.run_id, limits: verifiedCap.limits, consumed_marker_path: markerPath, consumed_marker_digest: m.digest });
-  CONSUMED_BRAND.add(cap); return { ok: true, capability: cap };
-}
-
-// C: DERIVE a SUPERVISOR-EXECUTION capability from durable records + the ACTUAL current process. Reads the
-// real consumed marker + real launch-claim (identity-derived paths, REAL fs), then compares the claim's
-// recorded supervisor_pid + start_identity against process.pid + a MECHANICALLY OBSERVED start identity
-// (never caller-supplied). This catches stale-PID reuse. Accepts NO fs/pid/identity/boolean caller facts.
-export function deriveSupervisorExecutionCapability(reverifiedCap) {
-  assertVerifiedCapability(reverifiedCap);
-  const lr = resolveSignedLifecycleRoot(reverifiedCap);
-  if (lr.err) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: lr.err };
-  const ledgerDir = lr.root; // SIGNED lifecycle root only
-  const cm = readDurable(markerPathFor(ledgerDir, reverifiedCap.activation_identity), "consumed_marker");
-  if (cm.err) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: cm.err };
-  if (cm.doc.activation_id !== reverifiedCap.activation_identity) return { ok: false, code: V4_CODES.BINDING_MISMATCH, detail: "marker identity" };
-  const claimPath = claimPathFor(ledgerDir, reverifiedCap.activation_identity);
-  const lc = readDurable(claimPath, "launch_claim");
-  if (lc.err) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: lc.err };
-  if (lc.doc.activation_id !== reverifiedCap.activation_identity) return { ok: false, code: V4_CODES.BINDING_MISMATCH, detail: "claim identity" };
-  const pid = process.pid;
-  const observed = observedStartIdentity(pid);
-  if (!observed) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: "process start identity UNKNOWN (fail closed)" };
-  if (lc.doc.supervisor_pid !== pid) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: "launch claim pid != current process" };
-  if (lc.doc.supervisor_start_identity !== observed) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: "launch claim start-identity != observed (stale PID reuse?)" };
-  if (lc.doc.terminal === true) return { ok: false, code: V4_CODES.FORGED_CAPABILITY, detail: "run already terminal" };
-  const cap = Object.freeze({ _stage: "SUPERVISOR_EXECUTION", activation_identity: reverifiedCap.activation_identity, evaluated_candidate: reverifiedCap.evaluated_candidate, evidence_candidate: reverifiedCap.evidence_candidate, provider_identity: reverifiedCap.provider_identity, run_id: reverifiedCap.run_id, limits: reverifiedCap.limits, supervisor_start_identity: observed, supervisor_pid: pid, consumed_marker_path: markerPathFor(ledgerDir, reverifiedCap.activation_identity), launch_claim_path: claimPath });
-  SUPEXEC_BRAND.add(cap); return { ok: true, capability: cap };
-}
-
-// Provider eligibility gate — the real provider spawn REQUIRES a genuine SUPERVISOR-EXECUTION capability
-// (not verified-only, not consumed-only, not a forged object) + job membership in the signed limits.
-export function providerEligibility(capability, job, bindings = {}) {
-  if (!isSupervisorExecutionCapability(capability)) return R(V4_CODES.FORGED_CAPABILITY, { detail: "supervisor-execution capability required" });
-  if (bindings.providerIdentity !== undefined && bindings.providerIdentity !== capability.provider_identity) return R(V4_CODES.BINDING_MISMATCH, { detail: "provider_identity" });
-  if (bindings.evaluatedCandidate !== undefined && bindings.evaluatedCandidate !== capability.evaluated_candidate) return R(V4_CODES.BINDING_MISMATCH, { detail: "evaluated_candidate" });
-  if (job && job.risk_class !== undefined && job.risk_class !== "WIDE_SAFE") return R(V4_CODES.EXCLUSION_VIOLATION, { detail: "job not WIDE_SAFE" });
-  if (job && job.gate_trigger && job.gate_trigger !== "NONE") return R(V4_CODES.EXCLUSION_VIOLATION, { detail: "job gated" });
-  return R(V4_CODES.OK, { capability });
-}
 
 function R(code, extra = {}) { return { ok: code === V4_CODES.OK, code, ...extra }; }
 
@@ -237,6 +147,7 @@ export function verifyActivation(activation, bindings = {}, deps = {}) {
     signer_key_fingerprint: activation.signer_key_fingerprint,
     activation_identity: activationIdentity,
     repository_root: activation.repository_root_realpath,   // SIGNED
+    repository_git_common_dir: activation.repository_git_common_dir_realpath, // SIGNED — binds the exact checkout
     lifecycle_root: activation.lifecycle_root_realpath,     // SIGNED — the only place authority is read
     evaluated_candidate: activation.reviewed_runtime_sha,
     evidence_candidate: activation.evidence_commit_sha,

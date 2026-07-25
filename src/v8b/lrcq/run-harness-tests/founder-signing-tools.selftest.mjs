@@ -3,6 +3,7 @@
 // CORE functions + the V4 capability-gated consumer. Proves no private-key/passphrase leakage.
 import { generateKeyPairSync, createHash, createPublicKey } from "node:crypto";
 import { mkdtempSync, existsSync, readFileSync, writeFileSync, mkdirSync, statSync, rmSync, lstatSync, symlinkSync, readdirSync, realpathSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { generateEnrollment, writeEncryptedKey } from "../../../../tools/terminal0/lrcq/founder-key-enroll.mjs";
@@ -39,8 +40,10 @@ try {
   // frozen template (mimics the FINAL_UNSIGNED_ACTIVATION_TEMPLATE fields)
   const template = { run_harness_candidate_sha: "8d1899f7", run_harness_candidate_tree: "9e720249", reviewed_production_ancestor_sha: "bfc0556", reviewed_production_ancestor_tree: "20518b8d", run_id: "lrcq-first-internal-5h-run", first_real_run_backlog_digest: "sha256:f3801d96", provider_executable_path: "/x/bin/claude", resolved_provider_target: "/x/versions/2.1.215", provider_version: "2.1.215", provider_executable_identity: "sha256:90608b5c", capability_lease_digest: "sha256:aa", blast_radius_budget_digest: "sha256:bb", max_budget_usd: 10 };
   const repoRoot = realpathSync(base);
+  execFileSync("git", ["-C", repoRoot, "init", "-q"]); // real worktree so the signed git-common-dir binding verifies
+  const gitCommonDir = realpathSync(join(repoRoot, ".git"));
   const lifecycleRoot = join(repoRoot, "lifecycle"); mkdirSync(lifecycleRoot, { recursive: true });
-  const payload = buildV4Payload({ template, signerFingerprint: fp, authorizationBytes: bytes, nonce: "n1", issuedEpoch: 1000, repositoryRootRealpath: repoRoot, lifecycleRootRealpath: lifecycleRoot });
+  const payload = buildV4Payload({ template, signerFingerprint: fp, authorizationBytes: bytes, nonce: "n1", issuedEpoch: 1000, repositoryRootRealpath: repoRoot, repositoryGitCommonDirRealpath: gitCommonDir, lifecycleRootRealpath: lifecycleRoot });
   const signed = signActivation(payload, priv);
   // governed authority fixture with this disposable key as current
   const spkiDer = createPublicKey(priv).export({ format: "der", type: "spki" });

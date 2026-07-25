@@ -4,6 +4,7 @@
 // key whose private half never leaves the opaque CONSUMED capability. Disposable keys only.
 import { generateKeyPairSync, createPublicKey } from "node:crypto";
 import { mkdtempSync, rmSync, writeFileSync, readFileSync, mkdirSync, realpathSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { signActivation, verifyActivation, authorizationTextDigest, observedStartIdentity, ACTIVATION_V4_SCHEMA, V4_SIGNATURE_PAYLOAD_VERSION, LIFECYCLE_CONTRACT_VERSION } from "../../../../src/v8b/lrcq/assurance/activation-v4.mjs";
@@ -16,6 +17,8 @@ const ok = (name, cond) => { n++; if (!cond) { fails.push(name); console.log("  
 const base = mkdtempSync(join(tmpdir(), "fg-lc-"));
 try {
   const repoRoot = realpathSync(base);
+  execFileSync("git", ["-C", repoRoot, "init", "-q"]); // real worktree so the signed git-common-dir binding verifies
+  const gitCommonDir = realpathSync(join(repoRoot, ".git"));
   const lifecycleRoot = join(repoRoot, "lifecycle"); mkdirSync(lifecycleRoot, { recursive: true });
   const kp = generateKeyPairSync("ed25519");
   const spkiDer = createPublicKey(kp.privateKey).export({ format: "der", type: "spki" });
@@ -23,7 +26,7 @@ try {
   const authorityDoc = { schema: "lrcq-founder-key-authority-1", schema_version: 1, max_current_keys: 1, active_keys: [{ fingerprint: fp, public_key_spki_b64: spkiDer.toString("base64"), algorithm: "ed25519", current: true }], revoked_keys: [] };
   const keyDeps = { repo: "/x", exists: () => true, lstat: () => ({ isSymbolicLink: () => false }), readFile: () => JSON.stringify(authorityDoc) };
   const authText = Buffer.from("authorize one run\n");
-  const payload = { schema: ACTIVATION_V4_SCHEMA, signature_payload_version: V4_SIGNATURE_PAYLOAD_VERSION, founder_signature_algorithm: "ed25519", signer_key_fingerprint: fp, authorization_text_digest: authorizationTextDigest(authText), activation_nonce: "n", repository_root_realpath: repoRoot, lifecycle_root_realpath: lifecycleRoot, lifecycle_contract_version: LIFECYCLE_CONTRACT_VERSION, evidence_commit_sha: "8d1899f7", evidence_commit_tree: "9e720249", reviewed_runtime_sha: "bfc0556", reviewed_runtime_tree: "20518b8d", run_id: "lrcq-first-internal-5h-run", backlog_digest: "sha256:f3801d96", provider_executable_path: "/x/bin/claude", resolved_provider_target: "/x/versions/2.1.215", provider_version: "2.1.215", provider_executable_identity: "sha256:90608b5c", capability_lease_digest: "sha256:aa", blast_radius_budget_digest: "sha256:bb", issued_epoch: 1000, expiry_epoch: 1600, hard_deadline_epoch: 19000, max_budget_usd: 10, run_duration_s: 18000, per_job_timeout_s: 2700, max_parallel_width: 2, max_output_bytes: 10485760, termination_grace_s: 30, no_protected_main_merge: true, no_pr_merge: true, no_push_unless_authorized: true, no_m1: true, no_akior: true, no_customer_data: true, no_live_action: true, no_permission_bypass: true, no_deploy: true, no_external_comms: true };
+  const payload = { schema: ACTIVATION_V4_SCHEMA, signature_payload_version: V4_SIGNATURE_PAYLOAD_VERSION, founder_signature_algorithm: "ed25519", signer_key_fingerprint: fp, authorization_text_digest: authorizationTextDigest(authText), activation_nonce: "n", repository_root_realpath: repoRoot, repository_git_common_dir_realpath: gitCommonDir, lifecycle_root_realpath: lifecycleRoot, lifecycle_contract_version: LIFECYCLE_CONTRACT_VERSION, evidence_commit_sha: "8d1899f7", evidence_commit_tree: "9e720249", reviewed_runtime_sha: "bfc0556", reviewed_runtime_tree: "20518b8d", run_id: "lrcq-first-internal-5h-run", backlog_digest: "sha256:f3801d96", provider_executable_path: "/x/bin/claude", resolved_provider_target: "/x/versions/2.1.215", provider_version: "2.1.215", provider_executable_identity: "sha256:90608b5c", capability_lease_digest: "sha256:aa", blast_radius_budget_digest: "sha256:bb", issued_epoch: 1000, expiry_epoch: 1600, hard_deadline_epoch: 19000, max_budget_usd: 10, run_duration_s: 18000, per_job_timeout_s: 2700, max_parallel_width: 2, max_output_bytes: 10485760, termination_grace_s: 30, no_protected_main_merge: true, no_pr_merge: true, no_push_unless_authorized: true, no_m1: true, no_akior: true, no_customer_data: true, no_live_action: true, no_permission_bypass: true, no_deploy: true, no_external_comms: true };
   const signed = signActivation(payload, kp.privateKey);
   const v = verifyActivation(signed, { authorizationBytes: authText, nowEpoch: 1200 }, { keyDeps }).capability;
   const id = v.activation_identity;
@@ -62,9 +65,24 @@ try {
   ok("P4 forged {_stage:'SUPERVISOR_EXECUTION'} -> REFUSED", providerEligibilityV4({ _stage: "SUPERVISOR_EXECUTION" }, job, gb).code === LC_CODES.FORGED);
   ok("P5 gated job -> REFUSED", providerEligibilityV4(sup.capability, { risk_class: "NARROW", gate_trigger: "NONE" }, gb).code === LC_CODES.BINDING_MISMATCH);
 
-  // ---- a fully copied REAL marker+intent (from this run) into a fresh signed root with a DIFFERENT
-  // activation still needs the matching ephemeral key -> attaching without it fails ----
-  ok("Z2 copied ephemeral-signed marker but attach without the private key path still needs FD key", true /* covered by C2 (wrong key) + Z1 (no sig) */);
+  // ---- repository / worktree / git-common-dir binding (migrated + extended from activation-v4-stages) ----
+  // Build a signable variant payload with overrides, sign it, and verify -> fresh VERIFIED capability.
+  const signVariant = (over) => { const p = { ...payload, ...over }; return verifyActivation(signActivation(p, kp.privateKey), { authorizationBytes: authText, nowEpoch: 1200 }, { keyDeps }).capability; };
+  // G1: a DIFFERENT repo's .git as the signed common dir -> consume REFUSED (GIT_COMMON_DIR_MISMATCH).
+  const otherRepo = realpathSync(mkdtempSync(join(tmpdir(), "fg-other-")));
+  execFileSync("git", ["-C", otherRepo, "init", "-q"]);
+  const gOther = signVariant({ repository_git_common_dir_realpath: realpathSync(join(otherRepo, ".git")) });
+  ok("G1 wrong git-common-dir (another repo) -> consume REFUSED", consumeActivationV4(gOther, { now: 1200 }).code === LC_CODES.GIT_COMMON_DIR_MISMATCH);
+  // G2: a repository_root that is NOT a git worktree -> REFUSED (REPO_NOT_A_WORKTREE).
+  const plainDir = realpathSync(mkdtempSync(join(tmpdir(), "fg-plain-")));
+  const gPlain = signVariant({ repository_root_realpath: plainDir, repository_git_common_dir_realpath: join(plainDir, ".git"), lifecycle_root_realpath: plainDir });
+  ok("G2 repository_root not a git worktree -> consume REFUSED", [LC_CODES.REPO_NOT_A_WORKTREE, LC_CODES.GIT_COMMON_DIR_MISMATCH, LC_CODES.REPO_BINDING_UNAVAILABLE].includes(consumeActivationV4(gPlain, { now: 1200 }).code));
+  rmSync(otherRepo, { recursive: true, force: true }); rmSync(plainDir, { recursive: true, force: true });
+  // G3: lifecycle root ESCAPING the signed repo root -> REFUSED (ROOT_ESCAPES_REPO).
+  const gEscape = signVariant({ lifecycle_root_realpath: realpathSync(tmpdir()) });
+  ok("G3 lifecycle root escaping the signed repo -> consume REFUSED", consumeActivationV4(gEscape, { now: 1200 }).code === LC_CODES.ROOT_ESCAPES_REPO);
+  // Z2 (retained note): copied ephemeral-signed marker still needs the matching FD key -> covered by C2/Z1.
+  ok("Z2 copied ephemeral-signed marker still needs the inherited FD key", true /* covered by C2 (wrong key) + Z1 (no sig) */);
 } finally { try { rmSync(base, { recursive: true, force: true }); } catch { /* */ } }
 
 console.log("\nLRCQ LIFECYCLE-AUTHORITY-V4 SELFTEST: " + (n - fails.length) + "/" + n + " passed");

@@ -12,6 +12,7 @@
 // accepts caller-created records.
 import { generateKeyPairSync, sign as edSign, verify as edVerify, createHash, createPublicKey } from "node:crypto";
 import { writeFileSync, readFileSync, existsSync, lstatSync, statSync, realpathSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { join, sep } from "node:path";
 import { canonicalize } from "./canonical-json.mjs";
 import { assertVerifiedCapability, observedStartIdentity } from "./activation-v4.mjs";
@@ -26,6 +27,8 @@ export const LC_CODES = {
   ROOT_SYMLINK: "ROOT_SYMLINK", ROOT_NOT_DIR: "ROOT_NOT_DIR", ROOT_ESCAPES_REPO: "ROOT_ESCAPES_REPO",
   RECORD_MISSING: "RECORD_MISSING", RECORD_SYMLINK: "RECORD_SYMLINK", RECORD_NOT_REGULAR: "RECORD_NOT_REGULAR",
   RECORD_PARSE: "RECORD_PARSE", SCHEMA_MISMATCH: "SCHEMA_MISMATCH", IDENTITY_MISMATCH: "IDENTITY_MISMATCH",
+  REPO_BINDING_UNAVAILABLE: "REPO_BINDING_UNAVAILABLE", REPO_NOT_A_WORKTREE: "REPO_NOT_A_WORKTREE",
+  GIT_COMMON_DIR_MISMATCH: "GIT_COMMON_DIR_MISMATCH", WORKTREE_TOPLEVEL_MISMATCH: "WORKTREE_TOPLEVEL_MISMATCH",
   EPHEMERAL_SIGNATURE_INVALID: "EPHEMERAL_SIGNATURE_INVALID", ALREADY_CONSUMED: "ALREADY_CONSUMED",
   ALREADY_LAUNCHED: "ALREADY_LAUNCHED", DUPLICATE_CLAIM: "DUPLICATE_CLAIM", PID_MISMATCH: "PID_MISMATCH",
   START_IDENTITY_MISMATCH: "START_IDENTITY_MISMATCH", TERMINAL: "TERMINAL", KEY_MISMATCH: "KEY_MISMATCH",
@@ -44,8 +47,33 @@ const EPHKEY = new WeakMap();
 export function isConsumedCapabilityV4(x) { return typeof x === "object" && x !== null && CONSUMED.has(x); }
 export function isSupervisorExecutionCapabilityV4(x) { return typeof x === "object" && x !== null && SUPEXEC.has(x); }
 
+// ---- signed repository binding (real git only) ----------------------------------------------------
+// FG-LRCQ-ACT-028: bind the run to the EXACT checkout the founder signed. The signed capability carries
+// repository_root (the worktree top level) AND repository_git_common_dir (the main .git common dir). We
+// mechanically resolve both from REAL git against the signed repository_root and require an exact
+// realpath match. A copied tree, a re-init'd repo, or an ALTERNATE worktree of the same repo resolves to
+// a different top level / common dir and is refused. No caller-supplied git output is trusted.
+function verifyRepositoryBinding(cap) {
+  const repo = cap.repository_root, common = cap.repository_git_common_dir;
+  if (typeof repo !== "string" || !repo || typeof common !== "string" || !common) return { err: LC_CODES.REPO_BINDING_UNAVAILABLE };
+  let rrepo; try { rrepo = realpathSync(repo); } catch { return { err: LC_CODES.REPO_BINDING_UNAVAILABLE }; }
+  const git = (args) => execFileSync("git", ["-C", rrepo, ...args], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+  let top, gcd;
+  try { top = git(["rev-parse", "--show-toplevel"]); gcd = git(["rev-parse", "--git-common-dir"]); }
+  catch { return { err: LC_CODES.REPO_NOT_A_WORKTREE }; }
+  let rtop, rgcd, rcommon;
+  try { rtop = realpathSync(top); } catch { return { err: LC_CODES.REPO_NOT_A_WORKTREE }; }
+  // git-common-dir may be relative to rrepo; resolve then realpath.
+  try { rgcd = realpathSync(gcd.startsWith(sep) ? gcd : join(rrepo, gcd)); } catch { return { err: LC_CODES.GIT_COMMON_DIR_MISMATCH }; }
+  try { rcommon = realpathSync(common); } catch { return { err: LC_CODES.GIT_COMMON_DIR_MISMATCH }; }
+  if (rtop !== rrepo) return { err: LC_CODES.WORKTREE_TOPLEVEL_MISMATCH };
+  if (rgcd !== rcommon) return { err: LC_CODES.GIT_COMMON_DIR_MISMATCH };
+  return { ok: true, repo: rrepo, common: rgcd };
+}
+
 // ---- signed lifecycle-root resolution (real fs only) ----------------------------------------------
 function resolveSignedRoot(cap) {
+  const rb = verifyRepositoryBinding(cap); if (rb.err) return { err: rb.err };
   const root = cap.lifecycle_root, repo = cap.repository_root;
   if (typeof root !== "string" || !root || typeof repo !== "string" || !repo) return { err: LC_CODES.NO_SIGNED_ROOT };
   if (!existsSync(root)) return { err: LC_CODES.ROOT_MISSING };
