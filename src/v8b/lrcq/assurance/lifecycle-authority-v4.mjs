@@ -10,7 +10,7 @@
 // reread+verify, one-consumption + one-launch state, and the opaque CONSUMED / SUPERVISOR_EXECUTION
 // capability transitions. It exposes only complete governed operations — no low-level mint/derive that
 // accepts caller-created records.
-import { generateKeyPairSync, sign as edSign, verify as edVerify, createHash, createPublicKey } from "node:crypto";
+import { generateKeyPairSync, sign as edSign, verify as edVerify, createHash, createPublicKey, createPrivateKey } from "node:crypto";
 import { writeFileSync, readFileSync, existsSync, lstatSync, statSync, realpathSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, sep } from "node:path";
@@ -230,6 +230,32 @@ export function providerEligibilityV4(cap, job, bindings = {}) {
   if (job && job.risk_class !== undefined && job.risk_class !== "WIDE_SAFE") return R(LC_CODES.BINDING_MISMATCH, { detail: "job not WIDE_SAFE" });
   if (job && job.gate_trigger && job.gate_trigger !== "NONE") return R(LC_CODES.BINDING_MISMATCH, { detail: "job gated" });
   return R(LC_CODES.OK, { capability: cap });
+}
+
+// ---- PHASE 6: one-use ephemeral-key transfer over an INHERITED ANONYMOUS descriptor ---------------
+// The launcher owns the CONSUMED capability (it generated the ephemeral key inside consumeActivationV4).
+// To hand lifecycle authority to the DETACHED supervisor it writes the ephemeral private key to a single
+// anonymous pipe the supervisor inherits as a numbered fd — NEVER via argv, env, a temp file, stdout, or
+// any path a sibling process or a log can observe. The key bytes exist only: (a) in this process's memory,
+// (b) in transit through the kernel pipe buffer, (c) in the supervisor's memory. The launch intent is
+// marked launched so the same consumed capability cannot mint a second transfer.
+export function sendEphemeralKeyToStream(consumedCap, writable) {
+  if (!isConsumedCapabilityV4(consumedCap)) throw new Error("consumed capability required");
+  const key = EPHKEY.get(consumedCap);
+  if (!key) throw new Error("no ephemeral key for this capability");
+  const der = key.export({ format: "der", type: "pkcs8" }); // Buffer — the ONLY materialization, launcher-side
+  return new Promise((resolve, reject) => {
+    writable.on("error", reject);
+    writable.write(der, (e) => { der.fill(0); if (e) return reject(e); writable.end(resolve); });
+  });
+}
+
+// Supervisor side: read the inherited descriptor to EOF and reconstruct the ephemeral private KeyObject.
+// The bytes are scrubbed immediately after import. Returns a KeyObject to pass straight to attachSupervisorV4.
+export function receiveEphemeralKeyFromFd(fd) {
+  const der = readFileSync(fd); // reads the inherited pipe to EOF
+  try { const key = createPrivateKey({ key: der, format: "der", type: "pkcs8" }); return key; }
+  finally { der.fill(0); }
 }
 
 // Test-only helper: export the ephemeral private key ONLY for the in-process test harness that simulates
