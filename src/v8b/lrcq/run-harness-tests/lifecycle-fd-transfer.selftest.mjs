@@ -1,95 +1,105 @@
 // FounderGate LRCQ — inherited-anonymous-descriptor ephemeral-key transfer to a DETACHED supervisor
-// (FG-LRCQ-ACT-028 Phase 6-9). Proves, with a REAL forked child over a REAL anonymous pipe, that:
-//  - the per-activation ephemeral key reaches the supervisor ONLY over inherited fd 3 (never argv/env/file);
-//  - the supervisor INDEPENDENTLY re-verifies the founder signature and then attaches -> SUPERVISOR_EXECUTION;
-//  - a WRONG key over the fd is refused (KEY_MISMATCH);
-//  - NO key on the fd is refused (unreadable);
-//  - the key material never appears in the child config, argv, or environment.
-// Disposable Ed25519 keys + a git-init'd disposable repo, auto-removed.
-import { generateKeyPairSync, createPublicKey } from "node:crypto";
-import { mkdtempSync, rmSync, writeFileSync, readFileSync, mkdirSync, realpathSync } from "node:fs";
-import { execFileSync, spawn } from "node:child_process";
-import { tmpdir } from "node:os";
+// (FG-LRCQ-ACT-028/029 Phase 6-9). Proves, with a REAL child over the REAL anonymous pipe the authority
+// module itself creates, that:
+//  A1 the per-activation ephemeral key reaches the supervisor ONLY over the inherited descriptor and the
+//     supervisor INDEPENDENTLY re-verifies the founder signature before attaching -> SUPERVISOR_EXECUTION;
+//  A2 a key belonging to a DIFFERENT activation is refused (KEY_MISMATCH) — proven with a genuine framed
+//     transfer from one world into a supervisor re-verifying another;
+//  A3 consumption / launch intent / claim are each one-shot;
+//  A4 a COPIED claim or marker lifted from another activation's lifecycle root cannot mint authority;
+//  A5 no key material appears in the child config, activation, authority document, records, argv, env,
+//     stdout or stderr;
+//  A6 the transferred key is not reusable: the CONSUMED capability is permanently spent.
+// Disposable Ed25519 keys + disposable git-init'd repositories, auto-removed. No provider is invoked.
+import { copyFileSync, readFileSync, existsSync, realpathSync } from "node:fs";
+import { spawn } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { signActivation, verifyActivation, authorizationTextDigest, ACTIVATION_V4_SCHEMA, V4_SIGNATURE_PAYLOAD_VERSION, LIFECYCLE_CONTRACT_VERSION } from "../../../../src/v8b/lrcq/assurance/activation-v4.mjs";
-import { fingerprintOfSpkiDer } from "../../../../src/v8b/lrcq/assurance/founder-key-authority.mjs";
-import { consumeActivationV4, createLaunchIntentV4, sendEphemeralKeyToStream } from "../../../../src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs";
+import { makeDisposableV4World } from "./test-support/v4-fixture.mjs";
+import { consumeActivationV4, createLaunchIntentV4, spawnGovernedSupervisorV4, LC_CODES, TRANSFER_STATES } from "../../../../src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const CHILD = join(HERE, "test-support", "v4-supervisor-child.mjs");
+const CHILD = realpathSync(join(HERE, "test-support", "v4-supervisor-child.mjs"));
 let n = 0; const fails = [];
 const ok = (name, cond) => { n++; if (!cond) { fails.push(name); console.log("  FAIL " + name); } else console.log("  ok   " + name); };
 
-// Spawn the child supervisor with an inherited anonymous pipe on fd 3; `writeKey` gets the parent-side
-// writable stream for fd 3. Resolves with the child's parsed JSON result + a scan of its argv/env.
-function runChild(cfgPath, writeKey) {
-  return new Promise((resolve) => {
-    const child = spawn(process.execPath, [CHILD, "--config", cfgPath], { stdio: ["ignore", "pipe", "pipe", "pipe"], env: { PATH: process.env.PATH } });
-    let out = "", err = "";
-    child.stdout.on("data", (d) => (out += d));
-    child.stderr.on("data", (d) => (err += d));
-    child.on("close", () => { let parsed = null; try { parsed = JSON.parse(out.trim().split("\n").pop()); } catch { /* */ } resolve({ parsed, out, err }); });
-    Promise.resolve(writeKey(child.stdio[3])).catch(() => { try { child.stdio[3].end(); } catch { /* */ } });
-  });
+const collect = (child) => new Promise((res) => {
+  let out = "", err = "";
+  if (child.stdout) child.stdout.on("data", (d) => (out += d));
+  if (child.stderr) child.stderr.on("data", (d) => (err += d));
+  child.on("close", () => { let parsed = null; try { parsed = JSON.parse(out.trim().split("\n").pop()); } catch { /* */ } res({ parsed, out, err }); });
+});
+const recPath = (w, kind) => join(w.lifecycleRoot, w.verified.activation_identity.replace(":", "_") + kind);
+
+// Build a world already consumed + intent-bound to the test-support supervisor child.
+function readyWorld(prefix, nonce) {
+  const w = makeDisposableV4World({ prefix, nonce });
+  const c = consumeActivationV4(w.verified, { now: w.now });
+  if (!c.ok) throw new Error("fixture consume failed: " + c.code);
+  const li = createLaunchIntentV4(c.capability, { now: w.now, supervisorEntrypoint: CHILD });
+  if (!li.ok) throw new Error("fixture intent failed: " + li.code);
+  return { w, c };
 }
 
-const base = mkdtempSync(join(tmpdir(), "fg-fd-"));
 (async () => {
+  const worlds = [];
   try {
-    const repoRoot = realpathSync(base);
-    execFileSync("git", ["-C", repoRoot, "init", "-q"]);
-    const gitCommonDir = realpathSync(join(repoRoot, ".git"));
-    const lifecycleRoot = join(repoRoot, "lifecycle"); mkdirSync(lifecycleRoot, { recursive: true });
-    const kp = generateKeyPairSync("ed25519");
-    const spkiDer = createPublicKey(kp.privateKey).export({ format: "der", type: "spki" });
-    const fp = fingerprintOfSpkiDer(spkiDer);
-    const authorityDoc = { schema: "lrcq-founder-key-authority-1", schema_version: 1, max_current_keys: 1, active_keys: [{ fingerprint: fp, public_key_spki_b64: spkiDer.toString("base64"), algorithm: "ed25519", current: true }], revoked_keys: [] };
-    const authorityPath = join(repoRoot, "authority.json"); writeFileSync(authorityPath, JSON.stringify(authorityDoc));
-    const keyDeps = { repo: "/x", exists: () => true, lstat: () => ({ isSymbolicLink: () => false }), readFile: () => JSON.stringify(authorityDoc) };
-    const authText = Buffer.from("authorize one run\n");
-    const payload = { schema: ACTIVATION_V4_SCHEMA, signature_payload_version: V4_SIGNATURE_PAYLOAD_VERSION, founder_signature_algorithm: "ed25519", signer_key_fingerprint: fp, authorization_text_digest: authorizationTextDigest(authText), activation_nonce: "n", repository_root_realpath: repoRoot, repository_git_common_dir_realpath: gitCommonDir, lifecycle_root_realpath: lifecycleRoot, lifecycle_contract_version: LIFECYCLE_CONTRACT_VERSION, evidence_commit_sha: "8d1899f7", evidence_commit_tree: "9e720249", reviewed_runtime_sha: "bfc0556", reviewed_runtime_tree: "20518b8d", run_id: "lrcq-first-internal-5h-run", backlog_digest: "sha256:f3801d96", provider_executable_path: "/x/bin/claude", resolved_provider_target: "/x/versions/2.1.215", provider_version: "2.1.215", provider_executable_identity: "sha256:90608b5c", capability_lease_digest: "sha256:aa", blast_radius_budget_digest: "sha256:bb", issued_epoch: 1000, expiry_epoch: 1600, hard_deadline_epoch: 19000, max_budget_usd: 10, run_duration_s: 18000, per_job_timeout_s: 2700, max_parallel_width: 2, max_output_bytes: 10485760, termination_grace_s: 30, no_protected_main_merge: true, no_pr_merge: true, no_push_unless_authorized: true, no_m1: true, no_akior: true, no_customer_data: true, no_live_action: true, no_permission_bypass: true, no_deploy: true, no_external_comms: true };
-    const signed = signActivation(payload, kp.privateKey);
-    const activationPath = join(repoRoot, "activation.json"); writeFileSync(activationPath, JSON.stringify(signed));
-    const v = verifyActivation(signed, { authorizationBytes: authText, nowEpoch: 1200 }, { keyDeps }).capability;
+    // ---- A1 POSITIVE: governed transfer -> independent re-verification -> SUPERVISOR_EXECUTION ----
+    const A = readyWorld("fg-fd-a-", "a1"); worlds.push(A.w);
+    const cfgA = A.w.writeChildConfig("sup-config.json", { eligibility: { job: { risk_class: "WIDE_SAFE", gate_trigger: "NONE" }, bindings: { providerIdentity: A.w.payload.provider_executable_identity, evaluatedCandidate: A.w.payload.reviewed_runtime_sha } } });
+    const gA = await spawnGovernedSupervisorV4(A.c.capability, { args: ["--config", cfgA], stdoutFd: "pipe", stderrFd: "pipe", detached: false });
+    ok("A0 governed transfer ok over the module-created inherited descriptor", gA.ok);
+    const rA = await collect(gA.child);
+    ok("A1 correct key over the inherited descriptor -> child reaches SUPERVISOR_EXECUTION", rA.parsed && rA.parsed.ok === true && rA.parsed.stage === "SUPERVISOR_EXECUTION" && rA.parsed.branded === true);
+    ok("A1b that capability is provider-ELIGIBLE for the signed provider + candidate bindings", rA.parsed && rA.parsed.provider_eligible && rA.parsed.provider_eligible.ok === true);
+    ok("A1c an ephemeral-signed supervisor claim was written into the SIGNED lifecycle root", existsSync(recPath(A.w, ".supervisor-claim.json")));
+    ok("A6 the consumed capability is permanently spent after the single transfer", A.c.capability.__state.transfer === TRANSFER_STATES.SPENT);
 
-    // Governed consume + launch intent (launcher side).
-    const c = consumeActivationV4(v, { now: 1200 });
-    ok("setup: governed consume -> CONSUMED", c.ok);
-    ok("setup: launch intent created", createLaunchIntentV4(c.capability, { now: 1200 }).ok);
-    const cfg = { activationPath, authorityPath, authorizationB64: authText.toString("base64"), now: 1200, keyFd: 3 };
-    const cfgPath = join(repoRoot, "sup-config.json"); writeFileSync(cfgPath, JSON.stringify(cfg));
+    // ---- A2 WRONG KEY: one world's genuine framed key delivered to a supervisor re-verifying another ----
+    const B = readyWorld("fg-fd-b-", "b1"); worlds.push(B.w);
+    const A2 = readyWorld("fg-fd-a2-", "a2"); worlds.push(A2.w);
+    const cfgB = B.w.writeChildConfig("sup-config-b.json");
+    const gWrong = await spawnGovernedSupervisorV4(A2.c.capability, { args: ["--config", cfgB], stdoutFd: "pipe", stderrFd: "pipe", detached: false });
+    ok("A2a the wrong-key transfer itself still completes (the launcher cannot detect the swap)", gWrong.ok);
+    const rWrong = await collect(gWrong.child);
+    ok("A2 a foreign activation's ephemeral key -> attach REFUSED (KEY_MISMATCH)", rWrong.parsed && rWrong.parsed.ok === false && rWrong.parsed.code === LC_CODES.KEY_MISMATCH);
+    ok("A2b no supervisor claim was written for the mis-keyed activation", !existsSync(recPath(B.w, ".supervisor-claim.json")));
 
-    // A1 POSITIVE: correct ephemeral key over inherited fd 3 -> child independently re-verifies + attaches.
-    const r1 = await runChild(cfgPath, (fd3) => sendEphemeralKeyToStream(c.capability, fd3));
-    ok("A1 correct key over inherited fd -> child reaches SUPERVISOR_EXECUTION", r1.parsed && r1.parsed.ok === true && r1.parsed.stage === "SUPERVISOR_EXECUTION" && r1.parsed.branded === true);
+    // ---- A3 one-shot lifecycle: genuine attach, then no second key / no second consume / no second intent ----
+    const gB = await spawnGovernedSupervisorV4(B.c.capability, { args: ["--config", cfgB], stdoutFd: "pipe", stderrFd: "pipe", detached: false });
+    const rB = await collect(gB.child);
+    ok("A3a the correctly-keyed supervisor attaches -> SUPERVISOR_EXECUTION", rB.parsed && rB.parsed.ok === true);
+    const dup = await new Promise((res) => {
+      const child = spawn(process.execPath, [CHILD, "--config", cfgB], { stdio: ["ignore", "pipe", "pipe", "pipe"], env: { PATH: process.env.PATH } });
+      collect(child).then(res);
+      child.stdio[3].end();                      // a second supervisor gets no key at all
+    });
+    ok("A3 a second supervisor with no delivered key -> REFUSED before any claim", dup.parsed && dup.parsed.ok === false && dup.parsed.code === LC_CODES.KEY_FRAME_EMPTY);
+    ok("A3b consumption is one-shot (ALREADY_CONSUMED)", consumeActivationV4(B.w.verified, { now: B.w.now }).code === LC_CODES.ALREADY_CONSUMED);
+    ok("A3c the launch intent is one-shot (ALREADY_LAUNCHED)", createLaunchIntentV4(B.c.capability, { now: B.w.now, supervisorEntrypoint: CHILD }).code === LC_CODES.ALREADY_LAUNCHED);
+    ok("A3d a second key transfer is impossible (ALREADY_TRANSFERRED)", (await spawnGovernedSupervisorV4(B.c.capability, { args: ["--config", cfgB], detached: false })).code === LC_CODES.ALREADY_TRANSFERRED);
 
-    // A2 WRONG key: a foreign ephemeral key written to the fd -> child re-verifies OK but attach KEY_MISMATCH.
-    // (fresh lifecycle root so the marker/intent exist but the supplied key mismatches the marker fingerprint)
-    const base2 = realpathSync(mkdtempSync(join(tmpdir(), "fg-fd2-")));
-    execFileSync("git", ["-C", base2, "init", "-q"]);
-    const lc2 = join(base2, "lifecycle"); mkdirSync(lc2);
-    const p2 = { ...payload, repository_root_realpath: base2, repository_git_common_dir_realpath: realpathSync(join(base2, ".git")), lifecycle_root_realpath: lc2, activation_nonce: "n2" };
-    const signed2 = signActivation(p2, kp.privateKey);
-    const ap2 = join(base2, "activation.json"); writeFileSync(ap2, JSON.stringify(signed2));
-    const v2 = verifyActivation(signed2, { authorizationBytes: authText, nowEpoch: 1200 }, { keyDeps }).capability;
-    const c2 = consumeActivationV4(v2, { now: 1200 }); createLaunchIntentV4(c2.capability, { now: 1200 });
-    const cfg2 = { activationPath: ap2, authorityPath, authorizationB64: authText.toString("base64"), now: 1200, keyFd: 3 };
-    const cfgPath2 = join(base2, "sup-config.json"); writeFileSync(cfgPath2, JSON.stringify(cfg2));
-    const foreignDer = generateKeyPairSync("ed25519").privateKey.export({ format: "der", type: "pkcs8" });
-    const r2 = await runChild(cfgPath2, (fd3) => new Promise((res) => fd3.write(foreignDer, () => fd3.end(res))));
-    ok("A2 wrong ephemeral key over fd -> attach REFUSED (KEY_MISMATCH)", r2.parsed && r2.parsed.ok === false && r2.parsed.code === "KEY_MISMATCH");
+    // ---- A4 COPIED CLAIM: lift A's ephemeral-signed claim into C's signed root before C attaches ----
+    const C = readyWorld("fg-fd-c-", "c1"); worlds.push(C.w);
+    copyFileSync(recPath(A.w, ".supervisor-claim.json"), recPath(C.w, ".supervisor-claim.json"));
+    const cfgC = C.w.writeChildConfig("sup-config-c.json");
+    const gC = await spawnGovernedSupervisorV4(C.c.capability, { args: ["--config", cfgC], stdoutFd: "pipe", stderrFd: "pipe", detached: false });
+    const rC = await collect(gC.child);
+    ok("A4 a COPIED supervisor claim in the signed root -> attach REFUSED (DUPLICATE_CLAIM)", rC.parsed && rC.parsed.ok === false && rC.parsed.code === LC_CODES.DUPLICATE_CLAIM);
 
-    // A3 NO key: parent closes fd 3 without writing -> child cannot read a key.
-    const r3 = await runChild(cfgPath2, (fd3) => new Promise((res) => fd3.end(res)));
-    ok("A3 empty fd (no key delivered) -> child refuses (FD_KEY_UNREADABLE)", r3.parsed && r3.parsed.ok === false && r3.parsed.code === "FD_KEY_UNREADABLE");
+    // ---- A4b COPIED MARKER: A's marker copied into a fresh signed root blocks (never mints) consumption ----
+    const D = makeDisposableV4World({ prefix: "fg-fd-d-", nonce: "d1" }); worlds.push(D);
+    copyFileSync(recPath(A.w, ".consumed.json"), join(D.lifecycleRoot, D.verified.activation_identity.replace(":", "_") + ".consumed.json"));
+    ok("A4b a COPIED consumed marker blocks (never mints) consumption", consumeActivationV4(D.verified, { now: D.now }).code === LC_CODES.ALREADY_CONSUMED);
 
-    // A4 leak proof: the child config / activation / authority carry NO private-key material; the key
-    // travelled ONLY over the pipe. (argv is [node, child, --config, path] — no key; env is PATH only.)
-    const cfgText = readFileSync(cfgPath, "utf8") + readFileSync(activationPath, "utf8") + readFileSync(authorityPath, "utf8");
-    ok("A4 no private-key material in config/activation/authority (fd-only transfer)", !/PRIVATE KEY/.test(cfgText) && !/ephemeralPrivate/i.test(cfgText));
-    rmSync(base2, { recursive: true, force: true });
-  } finally { try { rmSync(base, { recursive: true, force: true }); } catch { /* */ } }
+    // ---- A5 LEAK PROOF: nothing observable carries key material ----
+    const der = Buffer.from("302e020100300506032b657004220420", "hex").toString("latin1");
+    const KEYPAT = new RegExp(["PRIVATE KEY", "FGV4KEY1", "ephemeral_private", der.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")].join("|"));
+    const visible = readFileSync(cfgA, "utf8") + readFileSync(A.w.activationPath, "utf8") + readFileSync(A.w.authorityPath, "utf8") + readFileSync(recPath(A.w, ".consumed.json"), "utf8") + readFileSync(recPath(A.w, ".launch-intent.json"), "utf8") + readFileSync(recPath(A.w, ".supervisor-claim.json"), "utf8");
+    ok("A5 no key material in config/activation/authority/marker/intent/claim (descriptor-only transfer)", !KEYPAT.test(visible));
+    ok("A5b no key material in the supervisor's argv or environment", !KEYPAT.test(JSON.stringify((rA.parsed && rA.parsed.argv) || [])) && !KEYPAT.test(JSON.stringify((rA.parsed && rA.parsed.env_keys) || [])));
+    ok("A5c no key material on the supervisor's stdout/stderr", !KEYPAT.test(rA.out) && !KEYPAT.test(rA.err));
+  } finally { for (const w of worlds) w.cleanup(); }
 
   console.log("\nLRCQ LIFECYCLE-FD-TRANSFER SELFTEST: " + (n - fails.length) + "/" + n + " passed");
   if (fails.length) { console.log("FAILED: " + fails.join(", ")); process.exit(1); }

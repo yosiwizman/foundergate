@@ -9,7 +9,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { signActivation, verifyActivation, authorizationTextDigest, observedStartIdentity, ACTIVATION_V4_SCHEMA, V4_SIGNATURE_PAYLOAD_VERSION, LIFECYCLE_CONTRACT_VERSION } from "../../../../src/v8b/lrcq/assurance/activation-v4.mjs";
 import { fingerprintOfSpkiDer } from "../../../../src/v8b/lrcq/assurance/founder-key-authority.mjs";
-import { consumeActivationV4, createLaunchIntentV4, attachSupervisorV4, providerEligibilityV4, isConsumedCapabilityV4, isSupervisorExecutionCapabilityV4, __testEphemeralKeyOf, LC_CODES } from "../../../../src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs";
+import { consumeActivationV4, createLaunchIntentV4, providerEligibilityV4, isConsumedCapabilityV4, LC_CODES } from "../../../../src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs";
 
 let n = 0; const fails = [];
 const ok = (name, cond) => { n++; if (!cond) { fails.push(name); console.log("  FAIL " + name); } else console.log("  ok   " + name); };
@@ -31,9 +31,12 @@ try {
   const v = verifyActivation(signed, { authorizationBytes: authText, nowEpoch: 1200 }, { keyDeps }).capability;
   const id = v.activation_identity;
 
-  // ---- provenance gap CLOSED: a copied/minimal JSON marker in the signed root cannot attach ----
+  // ---- provenance gap CLOSED: a copied/minimal JSON marker in the signed root cannot mint authority ----
+  // FG-LRCQ-ACT-029: there is NO exported operation that derives authority from a marker/claim a caller
+  // wrote — the only consume path is 'wx' exclusive-create, so a planted marker BLOCKS rather than mints,
+  // and the ephemeral private key it would need was never on disk.
   writeFileSync(join(lifecycleRoot, id.replace(":", "_") + ".consumed.json"), JSON.stringify({ schema: "lrcq-consumed-activation-v4-1", activation_identity: id }));
-  ok("Z1 copied/minimal marker in the signed root -> attach REFUSED (no ephemeral signature)", attachSupervisorV4(v, kp.privateKey).ok === false);
+  ok("Z1 planted/minimal marker in the signed root cannot mint consumption (blocks, never mints)", consumeActivationV4(v, { now: 1200 }).code === LC_CODES.ALREADY_CONSUMED);
   rmSync(join(lifecycleRoot, id.replace(":", "_") + ".consumed.json"));
 
   // ---- governed consume writes an ephemeral-SIGNED marker; opaque CONSUMED holds the private key ----
@@ -44,26 +47,25 @@ try {
   ok("B4 double consume -> ALREADY_CONSUMED", consumeActivationV4(v, { now: 1201 }).code === LC_CODES.ALREADY_CONSUMED);
 
   // ---- launch intent signed by the ephemeral key; one-launch ----
-  const li = createLaunchIntentV4(c.capability, { now: 1200, supervisorEntrypointDigest: "sha256:sup" });
+  const li = createLaunchIntentV4(c.capability, { now: 1200 });
   ok("L1 launch intent created (ephemeral-signed)", li.ok);
   ok("L2 second launch intent (same consumed cap) -> ALREADY_LAUNCHED", createLaunchIntentV4(c.capability, { now: 1201 }).code === LC_CODES.ALREADY_LAUNCHED);
   ok("L3 forged (non-consumed) object cannot create an intent", createLaunchIntentV4({ _stage: "CONSUMED", activation_identity: id, lifecycle_root: lifecycleRoot, __state: { launched: false } }, {}).code === LC_CODES.FORGED);
 
-  // ---- supervisor attach: needs the ephemeral private key (as if received over the inherited FD) ----
-  const ephKey = __testEphemeralKeyOf(c.capability); // simulates the inherited-descriptor transfer
-  const sup = attachSupervisorV4(v, ephKey, { now: 1200 });
-  ok("C1 attach with the correct ephemeral key -> opaque SUPERVISOR_EXECUTION", sup.ok && isSupervisorExecutionCapabilityV4(sup.capability));
-  ok("C2 attach with a WRONG (foreign) ephemeral key -> KEY_MISMATCH", attachSupervisorV4(v, generateKeyPairSync("ed25519").privateKey, { now: 1200 }).code === LC_CODES.KEY_MISMATCH || attachSupervisorV4(v, generateKeyPairSync("ed25519").privateKey, { now: 1200 }).code === LC_CODES.DUPLICATE_CLAIM);
-  ok("C3 duplicate supervisor claim -> DUPLICATE_CLAIM", attachSupervisorV4(v, ephKey, { now: 1201 }).code === LC_CODES.DUPLICATE_CLAIM);
+  // ---- supervisor attach is NOT reachable in-process ----------------------------------------------
+  // FG-LRCQ-ACT-029: the SUPERVISOR_EXECUTION stage can only be minted by a process that received the
+  // ephemeral key over the governed inherited anonymous descriptor. The positive attach + wrong-key +
+  // duplicate/copied-claim matrix therefore lives in lifecycle-fd-transfer.selftest.mjs (real child), and
+  // the containment matrix in lifecycle-key-containment.selftest.mjs. This file proves the NEGATIVE side:
+  // no in-process caller can reach stage C, so provider eligibility is unreachable from stages A/B.
 
   // ---- provider eligibility requires stage C ----
   const job = { risk_class: "WIDE_SAFE", gate_trigger: "NONE" };
   const gb = { providerIdentity: "sha256:90608b5c", evaluatedCandidate: "bfc0556" };
-  ok("P1 SUPERVISOR_EXECUTION -> provider ELIGIBLE", providerEligibilityV4(sup.capability, job, gb).ok);
   ok("P2 consumed-only -> REFUSED", providerEligibilityV4(c.capability, job, gb).code === LC_CODES.FORGED);
   ok("P3 verified-only -> REFUSED", providerEligibilityV4(v, job, gb).code === LC_CODES.FORGED);
   ok("P4 forged {_stage:'SUPERVISOR_EXECUTION'} -> REFUSED", providerEligibilityV4({ _stage: "SUPERVISOR_EXECUTION" }, job, gb).code === LC_CODES.FORGED);
-  ok("P5 gated job -> REFUSED", providerEligibilityV4(sup.capability, { risk_class: "NARROW", gate_trigger: "NONE" }, gb).code === LC_CODES.BINDING_MISMATCH);
+  ok("P5 a plain object copying every SUPERVISOR_EXECUTION field -> REFUSED (brand is a WeakSet)", providerEligibilityV4({ _stage: "SUPERVISOR_EXECUTION", activation_identity: id, provider_identity: "sha256:90608b5c", evaluated_candidate: "bfc0556", supervisor_pid: process.pid }, job, gb).code === LC_CODES.FORGED);
 
   // ---- repository / worktree / git-common-dir binding (migrated + extended from activation-v4-stages) ----
   // Build a signable variant payload with overrides, sign it, and verify -> fresh VERIFIED capability.

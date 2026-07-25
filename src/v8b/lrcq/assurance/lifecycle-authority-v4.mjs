@@ -12,7 +12,7 @@
 // accepts caller-created records.
 import { generateKeyPairSync, sign as edSign, verify as edVerify, createHash, createPublicKey, createPrivateKey } from "node:crypto";
 import { writeFileSync, readFileSync, existsSync, lstatSync, statSync, realpathSync } from "node:fs";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawn } from "node:child_process";
 import { join, sep } from "node:path";
 import { canonicalize } from "./canonical-json.mjs";
 import { assertVerifiedCapability, observedStartIdentity } from "./activation-v4.mjs";
@@ -33,7 +33,16 @@ export const LC_CODES = {
   ALREADY_LAUNCHED: "ALREADY_LAUNCHED", DUPLICATE_CLAIM: "DUPLICATE_CLAIM", PID_MISMATCH: "PID_MISMATCH",
   START_IDENTITY_MISMATCH: "START_IDENTITY_MISMATCH", TERMINAL: "TERMINAL", KEY_MISMATCH: "KEY_MISMATCH",
   BINDING_MISMATCH: "BINDING_MISMATCH",
+  // FG-LRCQ-ACT-029 lifecycle-key containment
+  INTENT_MISSING: "INTENT_MISSING", ALREADY_TRANSFERRED: "ALREADY_TRANSFERRED", KEY_RELEASED: "KEY_RELEASED",
+  ENTRYPOINT_INVALID: "ENTRYPOINT_INVALID", ENTRYPOINT_DIGEST_MISMATCH: "ENTRYPOINT_DIGEST_MISMATCH",
+  DESCRIPTOR_UNAVAILABLE: "DESCRIPTOR_UNAVAILABLE", TRANSFER_WRITE_FAILED: "TRANSFER_WRITE_FAILED",
+  FD_UNREADABLE: "FD_UNREADABLE", KEY_FRAME_EMPTY: "KEY_FRAME_EMPTY", KEY_FRAME_TOO_SHORT: "KEY_FRAME_TOO_SHORT",
+  KEY_FRAME_MAGIC: "KEY_FRAME_MAGIC", KEY_FRAME_OVERSIZED: "KEY_FRAME_OVERSIZED",
+  KEY_FRAME_TRUNCATED: "KEY_FRAME_TRUNCATED", KEY_FRAME_DIGEST: "KEY_FRAME_DIGEST",
+  KEY_FRAME_NOT_ED25519: "KEY_FRAME_NOT_ED25519",
 };
+export const TRANSFER_STATES = { NOT_TRANSFERRED: "NOT_TRANSFERRED", SPENT: "TRANSFERRED_SPENT" };
 const sha256hex = (b) => createHash("sha256").update(b).digest("hex");
 const sha256 = (b) => "sha256:" + sha256hex(b);
 function R(code, extra = {}) { return { ok: code === LC_CODES.OK, code, ...extra }; }
@@ -138,7 +147,7 @@ export function consumeActivationV4(verifiedCap, opts = {}) {
   const pub = pubKeyFromB64(rd.doc.ephemeral_public_key_spki_b64); if (!pub || !verifyEphemeral(rd.doc, pub)) return R(LC_CODES.EPHEMERAL_SIGNATURE_INVALID);
   if (rd.doc.activation_identity !== verifiedCap.activation_identity) return R(LC_CODES.IDENTITY_MISMATCH);
   // opaque CONSUMED capability — holds the ephemeral private key privately; launch state is mutable-in-module
-  const state = { launched: false };
+  const state = { launched: false, transfer: TRANSFER_STATES.NOT_TRANSFERRED };
   const cap = Object.freeze({
     _stage: "CONSUMED", activation_identity: verifiedCap.activation_identity, payload_digest: verifiedCap.payload_digest,
     provider_identity: verifiedCap.provider_identity, run_id: verifiedCap.run_id, lifecycle_root: root,
@@ -157,12 +166,26 @@ export function createLaunchIntentV4(consumedCap, opts = {}) {
   const root = consumedCap.lifecycle_root; const iPath = intentPath(root, consumedCap.activation_identity);
   if (existsSync(iPath)) return R(LC_CODES.ALREADY_LAUNCHED);
   const now = typeof opts.now === "number" ? opts.now : 0;
+  // FG-LRCQ-ACT-029: the supervisor entrypoint is resolved and DIGESTED HERE from the real file — a caller
+  // can no longer record an entrypoint digest that does not match a real, non-symlink, regular file. The
+  // governed transfer then launches exactly this path and the supervisor proves it IS this program.
+  let entryReal = null, entryDigest = null;
+  if (opts.supervisorEntrypoint !== undefined && opts.supervisorEntrypoint !== null) {
+    const p = opts.supervisorEntrypoint;
+    if (typeof p !== "string" || !p) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "not a path" });
+    let lst; try { lst = lstatSync(p); } catch { return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "missing" }); }
+    if (lst.isSymbolicLink()) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "symlink" });
+    if (!lst.isFile()) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "not a regular file" });
+    try { entryReal = realpathSync(p); } catch { return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "unresolvable" }); }
+    if (entryReal !== p) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "not a realpath" });
+    entryDigest = sha256(readFileSync(entryReal));
+  }
   const body = {
     schema: LAUNCH_INTENT_SCHEMA, lifecycle_contract_version: LIFECYCLE_CONTRACT_VERSION,
     activation_identity: consumedCap.activation_identity, payload_digest: consumedCap.payload_digest,
     consumed_marker_digest: consumedCap.consumed_marker_digest, lifecycle_root_digest: sha256(Buffer.from(root)),
     run_id: consumedCap.run_id, provider_identity: consumedCap.provider_identity,
-    supervisor_entrypoint_realpath: opts.supervisorEntrypointRealpath || null, supervisor_entrypoint_digest: opts.supervisorEntrypointDigest || null,
+    supervisor_entrypoint_realpath: entryReal, supervisor_entrypoint_digest: entryDigest,
     launch_nonce: sha256hex(Buffer.from(consumedCap.ephemeral_fingerprint + ":intent")).slice(0, 32),
     creation_epoch: now, hard_deadline_epoch: opts.hardDeadlineEpoch || null, state: "UNCLAIMED",
     ephemeral_fingerprint: consumedCap.ephemeral_fingerprint,
@@ -176,11 +199,13 @@ export function createLaunchIntentV4(consumedCap, opts = {}) {
 }
 
 // ---- PHASE 7/8: governed supervisor attach -> opaque SUPERVISOR_EXECUTION --------------------------
-// The supervisor supplies the ephemeral PRIVATE key it received over the inherited descriptor. This
-// verifies (a) the marker + intent ephemeral signatures against the marker's recorded ephemeral pubkey,
-// (b) that the supplied private key's public key matches that pubkey, (c) writes an ephemeral-signed claim
-// atomically, and (d) that the claim is owned by THIS process (pid + observed start identity).
-export function attachSupervisorV4(verifiedCap, ephemeralPrivateKey, opts = {}) {
+// MODULE-PRIVATE. The supervisor never handles a KeyObject: the ONLY exported attach surface is
+// attachSupervisorFromInheritedFdV4, which reads the governed key frame off the inherited descriptor,
+// uses the reconstructed key here, and scrubs it. This verifies (a) the marker + intent ephemeral
+// signatures against the marker's recorded ephemeral pubkey, (b) that the supplied private key's public
+// key matches that pubkey, (c) writes an ephemeral-signed claim atomically, and (d) that the claim is
+// owned by THIS process (pid + observed start identity).
+function attachSupervisorWithKey(verifiedCap, ephemeralPrivateKey, opts = {}) {
   assertVerifiedCapability(verifiedCap);
   const rr = resolveSignedRoot(verifiedCap); if (rr.err) return R(rr.err);
   const root = rr.root; const id = verifiedCap.activation_identity;
@@ -193,6 +218,15 @@ export function attachSupervisorV4(verifiedCap, ephemeralPrivateKey, opts = {}) 
   // prove the supplied ephemeral private key matches the marker's recorded public key
   let suppliedPubDer; try { suppliedPubDer = createPublicKey(ephemeralPrivateKey).export({ format: "der", type: "spki" }); } catch { return R(LC_CODES.KEY_MISMATCH, { detail: "not a key" }); }
   if (sha256(suppliedPubDer) !== m.doc.ephemeral_fingerprint) return R(LC_CODES.KEY_MISMATCH);
+  // FG-LRCQ-ACT-029: when the signed intent named a supervisor entrypoint, THIS process must actually BE
+  // that program (same realpath, same content digest). A different program holding the transferred key
+  // cannot mint a supervisor claim.
+  if (it.doc.supervisor_entrypoint_realpath) {
+    let self = null; try { self = realpathSync(process.argv[1] || ""); } catch { self = null; }
+    if (self !== it.doc.supervisor_entrypoint_realpath) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "running program is not the intent's supervisor entrypoint" });
+    let selfDigest = null; try { selfDigest = sha256(readFileSync(self)); } catch { selfDigest = null; }
+    if (selfDigest !== it.doc.supervisor_entrypoint_digest) return R(LC_CODES.ENTRYPOINT_DIGEST_MISMATCH, { detail: "running program digest" });
+  }
   const pid = process.pid; const observed = observedStartIdentity(pid);
   if (!observed) return R(LC_CODES.START_IDENTITY_MISMATCH, { detail: "unknown" });
   const cPath = claimPath(root, id);
@@ -233,31 +267,149 @@ export function providerEligibilityV4(cap, job, bindings = {}) {
 }
 
 // ---- PHASE 6: one-use ephemeral-key transfer over an INHERITED ANONYMOUS descriptor ---------------
-// The launcher owns the CONSUMED capability (it generated the ephemeral key inside consumeActivationV4).
-// To hand lifecycle authority to the DETACHED supervisor it writes the ephemeral private key to a single
-// anonymous pipe the supervisor inherits as a numbered fd — NEVER via argv, env, a temp file, stdout, or
-// any path a sibling process or a log can observe. The key bytes exist only: (a) in this process's memory,
-// (b) in transit through the kernel pipe buffer, (c) in the supervisor's memory. The launch intent is
-// marked launched so the same consumed capability cannot mint a second transfer.
-export function sendEphemeralKeyToStream(consumedCap, writable) {
-  if (!isConsumedCapabilityV4(consumedCap)) throw new Error("consumed capability required");
-  const key = EPHKEY.get(consumedCap);
-  if (!key) throw new Error("no ephemeral key for this capability");
-  const der = key.export({ format: "der", type: "pkcs8" }); // Buffer — the ONLY materialization, launcher-side
-  return new Promise((resolve, reject) => {
-    writable.on("error", reject);
-    writable.write(der, (e) => { der.fill(0); if (e) return reject(e); writable.end(resolve); });
-  });
-}
+// FG-LRCQ-ACT-029 LIFECYCLE-PRIVATE-KEY CONTAINMENT. This module exports NO function that returns a
+// lifecycle private KeyObject or its DER bytes — not for production, not for tests. The key leaves this
+// process through exactly ONE governed operation (spawnGovernedSupervisorV4) which:
+//   * requires a genuine opaque CONSUMED capability;
+//   * requires an already-created, ephemeral-SIGNED launch intent bound to THIS marker + THIS key;
+//   * requires transfer state NOT_TRANSFERRED;
+//   * creates the inherited ANONYMOUS descriptor ITSELF (child_process pipe stdio) — a caller can never
+//     supply the sink, so the key can never be written to a file, a socket, stdout/stderr, or a log;
+//   * spawns exactly the supervisor entrypoint the signed intent recorded (non-symlink regular file whose
+//     sha256 matches the intent digest);
+//   * writes the framed key exactly once, zeroes every temporary buffer, closes the writer;
+//   * deletes the private key from module-private storage;
+//   * marks the consumed capability permanently TRANSFERRED_SPENT so a second transfer always fails.
+// The key bytes exist only: (a) briefly in this process's memory, (b) in the kernel pipe buffer, (c) in the
+// supervisor's memory inside attachSupervisorFromInheritedFdV4. Never argv, env, config JSON, disk, git,
+// logs, receipts, stdout or stderr.
 
-// Supervisor side: read the inherited descriptor to EOF and reconstruct the ephemeral private KeyObject.
-// The bytes are scrubbed immediately after import. Returns a KeyObject to pass straight to attachSupervisorV4.
-export function receiveEphemeralKeyFromFd(fd) {
-  const der = readFileSync(fd); // reads the inherited pipe to EOF
-  try { const key = createPrivateKey({ key: der, format: "der", type: "pkcs8" }); return key; }
+// Governed key frame: MAGIC || uint32be(derLen) || der || sha256(MAGIC||len||der). Framing makes an empty,
+// malformed, truncated, or oversized supervisor-side descriptor input mechanically detectable.
+const KEY_FRAME_MAGIC = Buffer.from("FGV4KEY1", "utf8");
+const KEY_FRAME_HEADER = KEY_FRAME_MAGIC.length + 4;
+const KEY_FRAME_TAG = 32;
+const KEY_FRAME_MIN = KEY_FRAME_HEADER + 16 + KEY_FRAME_TAG;
+const KEY_DER_MAX = 256;                       // an ed25519 pkcs8 DER is 48 bytes; 256 is a generous ceiling
+const KEY_FRAME_MAX = KEY_FRAME_HEADER + KEY_DER_MAX + KEY_FRAME_TAG;
+
+function encodeKeyFrame(der) {
+  const len = Buffer.alloc(4); len.writeUInt32BE(der.length, 0);
+  const head = Buffer.concat([KEY_FRAME_MAGIC, len, der]);
+  const tag = createHash("sha256").update(head).digest();
+  const frame = Buffer.concat([head, tag]);
+  head.fill(0); tag.fill(0);
+  return frame;
+}
+// Returns { key } or { err }. NEVER exported.
+function decodeKeyFrame(buf) {
+  if (!Buffer.isBuffer(buf) || buf.length === 0) return { err: LC_CODES.KEY_FRAME_EMPTY };
+  if (buf.length > KEY_FRAME_MAX) return { err: LC_CODES.KEY_FRAME_OVERSIZED };
+  if (buf.length < KEY_FRAME_MIN) return { err: LC_CODES.KEY_FRAME_TOO_SHORT };
+  if (!buf.subarray(0, KEY_FRAME_MAGIC.length).equals(KEY_FRAME_MAGIC)) return { err: LC_CODES.KEY_FRAME_MAGIC };
+  const derLen = buf.readUInt32BE(KEY_FRAME_MAGIC.length);
+  if (derLen === 0 || derLen > KEY_DER_MAX) return { err: LC_CODES.KEY_FRAME_OVERSIZED };
+  if (buf.length !== KEY_FRAME_HEADER + derLen + KEY_FRAME_TAG) return { err: LC_CODES.KEY_FRAME_TRUNCATED };
+  const head = buf.subarray(0, KEY_FRAME_HEADER + derLen);
+  const tag = buf.subarray(KEY_FRAME_HEADER + derLen);
+  if (!createHash("sha256").update(head).digest().equals(tag)) return { err: LC_CODES.KEY_FRAME_DIGEST };
+  const der = Buffer.from(buf.subarray(KEY_FRAME_HEADER, KEY_FRAME_HEADER + derLen));
+  try {
+    const key = createPrivateKey({ key: der, format: "der", type: "pkcs8" });
+    if (key.asymmetricKeyType !== "ed25519") return { err: LC_CODES.KEY_FRAME_NOT_ED25519 };
+    return { key };
+  } catch { return { err: LC_CODES.KEY_FRAME_DIGEST, detail: "der import" }; }
   finally { der.fill(0); }
 }
 
-// Test-only helper: export the ephemeral private key ONLY for the in-process test harness that simulates
-// the inherited-descriptor transfer. Never used by production (the real transfer is the inherited FD).
-export function __testEphemeralKeyOf(consumedCap) { if (!isConsumedCapabilityV4(consumedCap)) throw new Error("not a consumed cap"); return EPHKEY.get(consumedCap); }
+// Re-read + re-verify the durable marker + intent for a CONSUMED capability. Returns { marker, intent } or
+// { err }. This is what makes "a verified signed launch intent must already exist" mechanical rather than
+// an in-memory flag: the intent record must be on disk, ephemeral-signed, and bound to THIS marker.
+function verifiedIntentFor(consumedCap) {
+  const root = consumedCap.lifecycle_root, id = consumedCap.activation_identity;
+  const m = readRecord(markerPath(root, id), CONSUMED_MARKER_SCHEMA); if (m.err) return { err: m.err };
+  if (m.digest !== consumedCap.consumed_marker_digest) return { err: LC_CODES.BINDING_MISMATCH, detail: "marker digest" };
+  const ephPub = pubKeyFromB64(m.doc.ephemeral_public_key_spki_b64);
+  if (!ephPub || !verifyEphemeral(m.doc, ephPub)) return { err: LC_CODES.EPHEMERAL_SIGNATURE_INVALID, detail: "marker" };
+  const iPath = intentPath(root, id);
+  if (!existsSync(iPath)) return { err: LC_CODES.INTENT_MISSING };
+  const it = readRecord(iPath, LAUNCH_INTENT_SCHEMA); if (it.err) return { err: it.err };
+  if (!verifyEphemeral(it.doc, ephPub)) return { err: LC_CODES.EPHEMERAL_SIGNATURE_INVALID, detail: "intent" };
+  if (it.doc.activation_identity !== id) return { err: LC_CODES.IDENTITY_MISMATCH, detail: "intent" };
+  if (it.doc.consumed_marker_digest !== m.digest) return { err: LC_CODES.BINDING_MISMATCH, detail: "intent->marker digest" };
+  if (it.doc.ephemeral_fingerprint !== consumedCap.ephemeral_fingerprint) return { err: LC_CODES.BINDING_MISMATCH, detail: "intent->ephemeral fingerprint" };
+  return { marker: m, intent: it };
+}
+
+// The GOVERNED launch: this module creates the inherited anonymous descriptor and performs the single
+// one-use key transfer. opts:
+//   { args = [], stdoutFd, stderrFd, env, cwd, keyFd = 3, detached = true }
+// Returns a Promise of { ok, code, child, supervisor_pid, key_fd, entrypoint, transfer }.
+export async function spawnGovernedSupervisorV4(consumedCap, opts = {}) {
+  if (!isConsumedCapabilityV4(consumedCap)) return R(LC_CODES.FORGED, { detail: "consumed capability required" });
+  const st = consumedCap.__state;
+  if (st.transfer !== TRANSFER_STATES.NOT_TRANSFERRED) return R(LC_CODES.ALREADY_TRANSFERRED, { transfer: st.transfer });
+  const vi = verifiedIntentFor(consumedCap); if (vi.err) return R(vi.err, { detail: vi.detail });
+  // the signed intent names the ONE supervisor entrypoint this transfer may launch
+  const entry = vi.intent.doc.supervisor_entrypoint_realpath;
+  if (typeof entry !== "string" || !entry) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "intent records no supervisor entrypoint" });
+  let est; try { est = lstatSync(entry); } catch { return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "missing" }); }
+  if (est.isSymbolicLink()) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "symlink" });
+  if (!est.isFile()) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "not a regular file" });
+  if (realpathSync(entry) !== entry) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "not a realpath" });
+  const eDigest = sha256(readFileSync(entry));
+  if (vi.intent.doc.supervisor_entrypoint_digest !== eDigest) return R(LC_CODES.ENTRYPOINT_DIGEST_MISMATCH, { expected: vi.intent.doc.supervisor_entrypoint_digest, actual: eDigest });
+  const key = EPHKEY.get(consumedCap);
+  if (!key) return R(LC_CODES.KEY_RELEASED, { detail: "ephemeral key no longer held" });
+
+  const keyFd = Number.isInteger(opts.keyFd) && opts.keyFd >= 3 ? opts.keyFd : 3;
+  const stdio = ["ignore", opts.stdoutFd ?? "ignore", opts.stderrFd ?? "ignore"];
+  while (stdio.length < keyFd) stdio.push("ignore");
+  stdio[keyFd] = "pipe";                                  // the inherited ANONYMOUS descriptor — created HERE
+  let child;
+  try {
+    child = spawn(process.execPath, [entry, ...(opts.args || [])], {
+      detached: opts.detached !== false, stdio,
+      env: opts.env || { PATH: process.env.PATH, HOME: process.env.HOME },
+      ...(opts.cwd ? { cwd: opts.cwd } : {}),
+    });
+  } catch (e) { return R(LC_CODES.TRANSFER_WRITE_FAILED, { detail: "spawn: " + (e && e.message) }); }
+  const writer = child.stdio[keyFd];
+  if (!writer || typeof writer.write !== "function" || writer.writable !== true) {
+    try { child.kill("SIGKILL"); } catch { /* */ }
+    return R(LC_CODES.DESCRIPTOR_UNAVAILABLE, { detail: "governed inherited descriptor not established" });
+  }
+  // Materialize, frame, write ONCE, scrub, close. Then release the key from module storage and spend the
+  // capability — irrespective of write success, so a failed transfer can never be retried with the key.
+  const der = key.export({ format: "der", type: "pkcs8" });
+  const frame = encodeKeyFrame(der);
+  der.fill(0);
+  const sent = await new Promise((resolve) => {
+    let settled = false;
+    const done = (r) => { if (!settled) { settled = true; resolve(r); } };
+    writer.on("error", (e) => done({ ok: false, detail: e && e.message }));
+    try { writer.write(frame, (e) => { if (e) return done({ ok: false, detail: e.message }); writer.end(() => done({ ok: true })); }); }
+    catch (e) { done({ ok: false, detail: e && e.message }); }
+  });
+  frame.fill(0);
+  EPHKEY.delete(consumedCap);
+  st.transfer = TRANSFER_STATES.SPENT;
+  if (!sent.ok) { try { child.kill("SIGKILL"); } catch { /* */ } return R(LC_CODES.TRANSFER_WRITE_FAILED, { detail: sent.detail, transfer: st.transfer }); }
+  if (opts.detached !== false && typeof child.unref === "function") child.unref();
+  return R(LC_CODES.OK, { child, supervisor_pid: child.pid, key_fd: keyFd, entrypoint: entry, entrypoint_digest: eDigest, transfer: st.transfer });
+}
+
+// SUPERVISOR SIDE — the ONLY exported attach surface. It reads the governed frame off the inherited
+// anonymous descriptor, validates it (empty / malformed / truncated / oversized / wrong-algorithm all
+// fail closed), attaches with the reconstructed key, and scrubs every buffer. The private key is never
+// returned to the caller, so no supervisor-side code can re-export or re-transmit it.
+export function attachSupervisorFromInheritedFdV4(verifiedCap, fd, opts = {}) {
+  if (!Number.isInteger(fd) || fd < 0) return R(LC_CODES.FD_UNREADABLE, { detail: "invalid descriptor" });
+  let buf;
+  try { buf = readFileSync(fd); } catch (e) { return R(LC_CODES.FD_UNREADABLE, { detail: e && e.message }); }
+  try {
+    const d = decodeKeyFrame(buf);
+    if (d.err) return R(d.err, { detail: d.detail });
+    return attachSupervisorWithKey(verifiedCap, d.key, opts);
+  } finally { try { buf.fill(0); } catch { /* */ } }
+}
