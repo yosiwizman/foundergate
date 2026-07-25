@@ -1,0 +1,206 @@
+{
+ "schema": "lrcq-pr197-v4-freeze-record-2",
+ "wave": "FG-CHK5-197 \u2014 fifth independent-Checker production-seam acknowledgment-classification correction (freeze record v6)",
+ "supersedes": [
+  "lrcq-pr197-v4-freeze-record v5 (FG-FFIN4-197, candidate 9d87afa18fe0e63f770d68901e408ac328906167) \u2014 invalidated by the correction in this wave",
+  "lrcq-pr197-v4-freeze-record-1 \u2014 invalidated by the corrections in this wave",
+  "FG-CHK-197 freeze record v2 (candidate 8e6944ef04eb91604af36064051524b12a38c23d)",
+  "FG-FCHK-197 freeze record v3 (candidate c6bf5a37d06b5a86a2ac1b7a5721bb53c38868c0)",
+  "FG-FFIN-197 freeze record v4 (candidate 4014d91b0e9e42549ca6b1a0f1f22ae406fe3016)"
+ ],
+ "pr": 197,
+ "state": "open, draft, unmerged",
+ "branch": "lane/lrcq-founder-signature-authority-8d1899f",
+ "reviewed_executable_code_candidate_sha": "ebd4ff5672ba657b039521a8b377a094a2ea67ea",
+ "reviewed_executable_code_candidate_tree": "012e0560fd21f7328088ec290f30f9eac84dc1ef",
+ "reviewed_executable_code_candidate_proof": "PROCEDURAL, hash-independent: the executable candidate is the commit whose message begins \"FG-CHK5-197-01: classify every supervisor-acknowledgment failure truthfully in the production launcher\". For every commit AFTER it on this branch, git diff --stat <candidate> <commit> -- src tools package.json package-lock.json is EMPTY; each changes ONLY paths under .foundergate/evidence/ or docs/. A commit cannot embed its own hash, so the two SHAs above were recorded after the commit existed and are verifiable with git rev-parse.",
+ "evidence_only_commits_after_the_executable_candidate": {
+  "note": "Each changes ONLY paths under .foundergate/evidence/ and/or docs/. Verify with: git diff --stat ebd4ff5672ba657b039521a8b377a094a2ea67ea HEAD -- src tools package.json package-lock.json (must be EMPTY). Resolve the full list with: git log --oneline ebd4ff56..HEAD",
+  "count_at_freeze_time": 1,
+  "commits": [
+   {
+    "sha": "(this record's own commit)",
+    "subject": "FG-CHK5-197 evidence: fifth Checker report, production-seam correction ledger, matrix, contract, freeze record v6, fresh Checker packet",
+    "note": "A commit cannot embed its own hash; resolve procedurally with git log."
+   }
+  ]
+ },
+ "prior_freeze_record_label_defect": {
+  "finding": "FG-CHK-197-08",
+  "was": "reviewed_candidate_sha was defined procedurally as 'HEAD~1 of the frozen branch', which resolved to an EVIDENCE-ONLY commit (846b881), not the last code commit (d5cd803).",
+  "now": "the reviewed executable-code candidate is named by concrete SHA and tree, and the evidence-only tail is enumerated separately."
+ },
+ "base_pr196_head": "8d1899f793305e9f87adc5163a60bfb077e4d4e5",
+ "protected_main": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423",
+ "suite": {
+  "command": "npm test",
+  "runs": 2,
+  "self_tests": 154,
+  "passing": 154,
+  "failures": 0,
+  "skipped_or_weakened": 0,
+  "coverage_reduced": false,
+  "self_tests_previous_wave": 153,
+  "self_tests_change_reason": "one NEW auto-discovered regression family added: production-ack-classification (82 assertions)",
+  "assertions_x_of_y_form_run_1": 1989,
+  "assertions_x_of_y_form_run_2": 1989,
+  "assertions_pass_checks_form": 614,
+  "combined_mechanical": 2603,
+  "identical_family_totals_across_runs": true,
+  "counting_method": "MECHANICAL, parsed from captured npm test output; the two reporting styles are counted separately.",
+  "result": "ALL GREEN twice consecutively",
+  "x_of_y_delta_explained": "1907 at 153 suites -> 1989 at 154 (+82, exactly the new family). The checks-form total is unchanged at 614."
+ },
+ "founder_key_authority_active_keys": [],
+ "authority_module_digests": {
+  "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs": "sha256:ee7cb5f5e99735659757212d7d7b37c3ea6457ae997c34e570f17b5d011faf94",
+  "src/v8b/lrcq/assurance/activation-v4.mjs": "sha256:5c4ba9c5b7d87bd92213022c6e8ab3ef36077df3a1ff594c618ea2e5a240eb45",
+  "src/v8b/lrcq/assurance/deep-freeze-authority.mjs": "sha256:eda83dcd02e2cb4ef6879b00f6b7468390af3e49dba52e7088d1ee2953742286",
+  "src/v8b/lrcq/assurance/fs-authority-guards.mjs": "sha256:574ae9794632b060b9b99c71c1e64072958e61719fc2c23901a5848e45da7ea2",
+  "src/v8b/lrcq/assurance/fixed-executables.mjs": "sha256:00b1b56d24a07a605dc8c8a0981c9d1363702a3b1e3def21e692ae58893e907d",
+  "src/v8b/lrcq/provider/authority-boundary.mjs": "sha256:08fac21823a142070ccc233e667d6c09ef2ffc64851dbc18907d9c74a58ea29c",
+  "src/v8b/lrcq/provider/real-provider.mjs": "sha256:ea3bafdcd1bcc07eac2b5bdd65d24794ec190a992ce577ce7d4b2087d524cd37",
+  "src/v8b/lrcq/provider/activation-schema.mjs": "sha256:fab360c8d99c4b4fcdb601c39dbe6315f53268d966e7058e60f6f05d825ea631",
+  "src/v8b/lrcq/run-harness/v4-legacy-projection.mjs": "sha256:cb9cb03dffb96489546209cbae93e4b3ee1cd414deb164bdd273b51573d7ce9d",
+  "tools/terminal0/lrcq/run-five-hour.mjs": "sha256:f9ca96a6e1b891d6f9e05740fce1665dd2a3207a4732956ba266b89fff921656",
+  "src/v8b/lrcq/run-harness-tests/production-ack-classification.selftest.mjs": "sha256:43d3a8f027b0cb14b56c4b514592eb2d9baa5b7f4e89a2d7c805b20bf1b65112"
+ },
+ "builder_execution_metadata": {
+  "provider": "Anthropic \u2014 Claude Code CLI",
+  "model_label": "Claude Opus 5",
+  "model_identifier": "claude-opus-5",
+  "note": "Builder execution metadata, deliberately distinct from the provider-under-test identity (2.1.220) the activation binds. Builder self-tests are NOT independent acceptance."
+ },
+ "prohibitions_observed": [
+  "no founder key enrolled",
+  "no founder passphrase requested or handled",
+  "no real founder signature created",
+  "no real activation created or consumed",
+  "no productive provider or model invoked",
+  "no five-hour run started",
+  "no merge",
+  "no deployment",
+  "protected main unmodified",
+  "PR #196 unmodified and unmerged",
+  "no GitHub branch-protection changes",
+  "no AKIOR access",
+  "no M1 access",
+  "no unrelated FounderGate features",
+  "no prompt-library modernization",
+  "no test weakened for green"
+ ],
+ "next_gate": "READY_FOR_FRESH_INDEPENDENT_CHECKER",
+ "required_fresh_checker_clean_verdict": "AUTHORITY_CHAIN_CLEAN_PROVIDER_REFREEZE_REQUIRED",
+ "fresh_checker_packet": "docs/lanes/PR197_PRODUCTION_SEAM_CHECKER_PACKET.md",
+ "superseded_historical_checker_reports": [
+  {
+   "sha256": "caa4db0031b172ca69c9b456d298cb3b3e6185215e9074293b6c93390fbdc20f",
+   "verdict": "FINDINGS",
+   "status": "HISTORICAL EVIDENCE ONLY \u2014 reviewed a tree that no longer exists."
+  },
+  {
+   "preserved_copy": ".foundergate/evidence/lrcq-assurance-factory/FCHK_197_FRESH_CHECKER_REPORT_HISTORICAL.json",
+   "sha256": "6ac782a2d396a8b0558eed8493d19a86a5f52a3e99e38cfe2f040f72e25da50b",
+   "verdict": "FINDINGS",
+   "findings": "2 MEDIUM + 3 LOW",
+   "reviewed_candidate": "8e6944ef04eb91604af36064051524b12a38c23d",
+   "status": "HISTORICAL FINDINGS EVIDENCE ONLY."
+  },
+  {
+   "preserved_copy": ".foundergate/evidence/lrcq-assurance-factory/FFIN_197_THIRD_CHECKER_REPORT_HISTORICAL.json",
+   "sha256": "c49cc5633341639704fcb0564722c8f02c642884b6c7cd8a8f2d44bd70bb294d",
+   "verdict": "FINDINGS",
+   "findings": "1 MEDIUM + 3 LOW",
+   "reviewed_candidate": "c6bf5a37d06b5a86a2ac1b7a5721bb53c38868c0",
+   "status": "HISTORICAL FINDINGS EVIDENCE ONLY."
+  },
+  {
+   "path_at_review_time": "/tmp/foundergate-pr197-final-four-independent-checker.json",
+   "preserved_copy": ".foundergate/evidence/lrcq-assurance-factory/FFIN4_197_FOURTH_CHECKER_REPORT_HISTORICAL.json",
+   "sha256": "886d69828216a012be56f8c6362f0df6e178ec030426e36c4dfa71a75f68b6ba",
+   "verdict": "FINDINGS",
+   "findings": "1 MEDIUM + 1 LOW",
+   "reviewed_candidate": "4014d91b0e9e42549ca6b1a0f1f22ae406fe3016",
+   "status": "HISTORICAL FINDINGS EVIDENCE ONLY \u2014 NOT current acceptance. Both findings are corrected in candidate 9d87afa18fe0e63f770d68901e408ac328906167. A FRESH independent Checker is required on the CORRECTED candidate."
+  }
+ ],
+ "five_finding_correction": {
+  "ledger": ".foundergate/evidence/lrcq-assurance-factory/FCHK_197_FINAL_FIVE_CORRECTION_LEDGER.json",
+  "findings_corrected": [
+   "FG-FCHK-197-A (MEDIUM)",
+   "FG-FCHK-197-B (MEDIUM)",
+   "FG-FCHK-197-C (LOW)",
+   "FG-FCHK-197-D (LOW)",
+   "FG-FCHK-197-E (LOW)"
+  ],
+  "correction_order": "C before B (the boundary derives its ceilings from the capability, so the capability had to be immutable first)",
+  "invalid_route_matrix": "26/26 refused, 0 counted provider spawns",
+  "positive_route": "exactly 1 deterministic stub process on the legitimate narrowed projection"
+ },
+ "four_finding_correction": {
+  "ledger": ".foundergate/evidence/lrcq-assurance-factory/FFIN_197_FINAL_FOUR_CORRECTION_LEDGER.json",
+  "findings_corrected": [
+   "F1 (MEDIUM)",
+   "F2 (LOW)",
+   "F3 (LOW)",
+   "F4 (LOW)"
+  ],
+  "headline": "A governed transfer now reports OK only after a VERIFIED ephemeral-signed supervisor claim. Pipe-write completion, timers, PID existence and liveness are explicitly not proof.",
+  "immediate_death_route": "6/6 runs refused SUPERVISOR_TERMINATED_BEFORE_CLAIM; never OK",
+  "invalid_route_matrix": "26/26 refused, 0 counted provider spawns (unchanged)",
+  "positive_route": "exactly 1 deterministic stub process on the legitimate narrowed projection (unchanged)"
+ },
+ "start_identity_correction": {
+  "ledger": ".foundergate/evidence/lrcq-assurance-factory/FFIN4_197_START_IDENTITY_CORRECTION_LEDGER.json",
+  "findings_corrected": [
+   "FG-FFIN4-197-01 (MEDIUM)",
+   "FG-FFIN4-197-02 (LOW)"
+  ],
+  "headline": "The parent's start-identity comparison is UNCONDITIONAL. An observation that cannot be obtained is a REFUSAL (SUPERVISOR_START_IDENTITY_UNAVAILABLE), never a skipped check.",
+  "historical_truth": "Candidate 4014d91b enforced the start identity ONLY when parent observation succeeded. The fourth Checker proved the null-observation branch accepted a forged identity with ok:true and start_identity_independently_observed:false. The previous wrong-PID/unsigned test did not reach the vulnerable comparison. This Builder reproduced the fail-open independently before correcting it.",
+  "every_ok_now": "supervisor_acknowledged === true AND start_identity_independently_observed === true",
+  "regression_family": "checker-197-final-five FS1/FS2/FS3/FS4/FS5 (192 assertions in that family)"
+ },
+ "predecessor_executable_candidate": {
+  "sha": "9d87afa18fe0e63f770d68901e408ac328906167",
+  "tree": "10acfe9bcb35fdf169a3b165b12fbb43824f424a",
+  "status": "reviewed by the FIFTH independent Checker; verdict FINDINGS (1 LOW, FG-CHK5-197-01). Authority core passed."
+ },
+ "authority_core_unchanged_this_wave": {
+  "claim": "No authority-core file changed. Proven mechanically by digest comparison against freeze record v5.",
+  "byte_identical_to_v5": [
+   "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs",
+   "src/v8b/lrcq/assurance/activation-v4.mjs",
+   "src/v8b/lrcq/assurance/deep-freeze-authority.mjs",
+   "src/v8b/lrcq/assurance/fs-authority-guards.mjs",
+   "src/v8b/lrcq/assurance/fixed-executables.mjs",
+   "src/v8b/lrcq/provider/authority-boundary.mjs",
+   "src/v8b/lrcq/provider/real-provider.mjs",
+   "src/v8b/lrcq/provider/activation-schema.mjs",
+   "src/v8b/lrcq/run-harness/v4-legacy-projection.mjs"
+  ],
+  "changed_this_wave": [
+   "tools/terminal0/lrcq/run-five-hour.mjs (the production launcher \u2014 the corrected file)"
+  ],
+  "added_this_wave": [
+   "src/v8b/lrcq/run-harness-tests/production-ack-classification.selftest.mjs (new regression family)"
+  ]
+ },
+ "fifth_checker_report": {
+  "preserved_copy": ".foundergate/evidence/lrcq-assurance-factory/CHK5_197_FIFTH_CHECKER_REPORT_HISTORICAL.json",
+  "sha256": "34d4054a04b3a0720d568c8db086c4ce3aece6203709b6175edd2323b4d1f2b1",
+  "preserved_verbatim": true,
+  "verdict": "FINDINGS",
+  "findings": "1 LOW (CONFIRMED)",
+  "status": "HISTORICAL FINDINGS EVIDENCE ONLY against candidate 9d87afa1. NOT current acceptance."
+ },
+ "historical_checker_reports_unmodified": {
+  ".foundergate/evidence/lrcq-assurance-factory/FCHK_197_FRESH_CHECKER_REPORT_HISTORICAL.json": "6ac782a2d396a8b0558eed8493d19a86a5f52a3e99e38cfe2f040f72e25da50b",
+  ".foundergate/evidence/lrcq-assurance-factory/FFIN_197_THIRD_CHECKER_REPORT_HISTORICAL.json": "c49cc5633341639704fcb0564722c8f02c642884b6c7cd8a8f2d44bd70bb294d",
+  ".foundergate/evidence/lrcq-assurance-factory/FFIN4_197_FOURTH_CHECKER_REPORT_HISTORICAL.json": "886d69828216a012be56f8c6362f0df6e178ec030426e36c4dfa71a75f68b6ba",
+  "note": "Each was verified byte-unchanged in this wave. No earlier historical report was rewritten."
+ },
+ "fresh_independent_checker_required": true,
+ "required_clean_verdict_from_that_checker": "AUTHORITY_CHAIN_CLEAN_PROVIDER_REFREEZE_REQUIRED",
+ "builder_verdict_note": "The Builder does not issue the independent Checker or Advisor verdict. Builder self-tests are NOT independent acceptance."
+}

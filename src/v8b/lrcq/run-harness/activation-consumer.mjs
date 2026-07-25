@@ -6,6 +6,8 @@
 // is created — a consumed activation can never be reset to unused, and no new deadline window is minted.
 import { createHash } from "node:crypto";
 import { writeFileSync, readFileSync, existsSync, mkdirSync, appendFileSync, renameSync } from "node:fs";
+import { isVerifiedCapability, V4_CODES } from "../assurance/activation-v4.mjs";
+import { consumeActivationV4, LC_CODES } from "../assurance/lifecycle-authority-v4.mjs";
 import { dirname, join } from "node:path";
 
 export const ACTIVATION_CONSUMER_SCHEMA = "lrcq-activation-consumer-1";
@@ -74,6 +76,24 @@ export function consumeActivation(activation, opts = {}) {
   }
   appendLog(logPath, JSON.stringify({ event: "CONSUMED", activation_id, run_id: activation.run_id, at: now, immutable_hard_deadline_epoch: activation.hard_deadline_epoch }) + "\n");
   return { ok: true, ...receipt, marker_path: markerPath };
+}
+
+// FG-LRCQ-ACT-028: the V4 execution consumption path. It REQUIRES a genuine, non-forgeable verified
+// capability (from activation-v4 verifyActivation) — a raw activation object or a forged {verified:true}
+// object is refused BEFORE any consumed-marker is written. This now DELEGATES to the exclusive lifecycle
+// authority owner (lifecycle-authority-v4.consumeActivationV4), which writes an EPHEMERAL-KEY-SIGNED marker
+// into the SIGNED lifecycle root and returns the opaque CONSUMED capability. A copied JSON marker cannot
+// reconstruct consumed authority (it carries no valid ephemeral signature). The `ledgerDir` opt is no
+// longer an authority input — the lifecycle root is whatever the founder signature bound.
+export function consumeVerifiedActivation(capability, opts = {}) {
+  if (!isVerifiedCapability(capability)) return { ok: false, reason: "REFUSED: verified V4 capability required (forged/unverified rejected)", code: V4_CODES.FORGED_CAPABILITY };
+  const now = typeof opts.now === "number" ? opts.now : Math.floor(Date.now() / 1000);
+  const r = consumeActivationV4(capability, { now });
+  if (!r.ok) {
+    const replay = r.code === LC_CODES.ALREADY_CONSUMED;
+    return { ok: false, reason: "REFUSED: " + r.code + (r.detail ? " (" + r.detail + ")" : ""), code: r.code, replay_blocked: replay, activation_id: capability.activation_identity };
+  }
+  return { ok: true, activation_id: capability.activation_identity, run_id: capability.run_id, evaluated_candidate: capability.evaluated_candidate, evidence_candidate: capability.evidence_candidate, consumed_epoch: now, consumed_once: true, may_not_be_consumed_again: true, no_new_authorization_window: true, marker_path: r.marker_path, consumed_capability: r.capability };
 }
 
 // Read-only: is this exact activation already consumed? (used by witness/recovery — never mutates)

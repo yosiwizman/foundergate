@@ -1,0 +1,22 @@
+{
+  "schema": "lrcq-branch-protection-status-1",
+  "finding": "FG-CHK-197-09",
+  "severity": "INFORMATIONAL",
+  "observed_by": "independent read-only Checker, report sha256 caa4db0031b172ca69c9b456d298cb3b3e6185215e9074293b6c93390fbdc20f",
+  "observation": "GET /repos/yosiwizman/foundergate/branches/main returns protected=false. The commit SHA matches the expected protected-main value ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423 and is unchanged.",
+  "github_branch_protection_enabled": false,
+  "protected_main_sha": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423",
+  "protected_main_unchanged": true,
+  "changed_in_this_wave": false,
+  "why_not_changed_in_this_wave": "Branch-protection administration is a repository-settings change, outside this PR and explicitly outside this correction wave's authority. It is queued separately rather than silently dismissed.",
+  "queued_separately_as": "FOUNDERGATE-ADMIN-BRANCH-PROTECTION-MAIN - enable an enforced GitHub protection rule on main (require PR, block force-push and deletion) so the no_protected_main_merge exclusion is enforced by the platform as well as by code.",
+  "route_level_prohibitions": [
+    "The signed V4 payload REQUIRES no_protected_main_merge, no_pr_merge and no_push_unless_authorized to be true; verifyActivation returns EXCLUSION_VIOLATION otherwise, so no activation can be verified without them.",
+    "The non-authoritative legacy projection emits a deny-list that semantically covers git push, git merge, git checkout/switch, gh pr merge, destructive reset/clean/rm -rf and permission bypass; activation-schema's denyListSemanticGaps refuses any record whose deny-list leaves one of those classes uncovered, and the provider builds argv with --disallowedTools from it.",
+    "real-provider refuses pre-spawn, with zero provider invocation, when a job worktree is checked out on main or master ('worktree is on protected main'), and when the worktree's branch differs from the assigned branch or the worktree belongs to another repository.",
+    "The harness result is hard-coded to report merged:false, accepted:false, pushed:false and protected_main_written:false; no code path sets any of them true, and the separation module's canMerge/canAccept never authorize a merge.",
+    "Per-job worktrees are created from the SIGNED reviewed candidate on lane/ branches under the manifest's permitted worktree root; a branch outside the signed prefix is refused by containmentCheck before spawn."
+  ],
+  "residual_risk_accepted_for_this_wave": "Without a platform rule, a human or tool acting OUTSIDE this run route could still push to main. The run route itself cannot, which is what this candidate is responsible for. The platform rule is the queued administrative task.",
+  "next_safe_action": "Founder or repository administrator enables the protection rule; no code change is required."
+}

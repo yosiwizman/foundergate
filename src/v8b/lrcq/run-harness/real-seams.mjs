@@ -6,7 +6,9 @@
 import { existsSync, appendFileSync, writeFileSync, renameSync, readFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { execFileSync } from "node:child_process";
+import { fixedGit } from "../assurance/fixed-executables.mjs";
 import { validateLease } from "../assurance/assurance-core.mjs";
+import { isSupervisorExecutionCapabilityV4 } from "../assurance/lifecycle-authority-v4.mjs";
 
 const ensureDir = (p) => { try { mkdirSync(dirname(p), { recursive: true }); } catch { /* exists */ } };
 
@@ -62,7 +64,8 @@ export function durableReplayWriter(paths) {
 // budget, required + negative tests, worktree status, output artifacts, evidence existence, and
 // process teardown. Returns { pass, checks } — a provider SUCCESS alone can NEVER pass this.
 export function realMachineVerifier(opts = {}) {
-  const git = opts.gitRunner || ((args, cwd) => execFileSync("git", args, { cwd, encoding: "utf8" }).trim());
+  // FG-CHK-197-02: the DEFAULT git runner is the FIXED ABSOLUTE /usr/bin/git in a minimal environment.
+  const git = opts.gitRunner || ((args, cwd) => fixedGit(args, { cwd }));
   const fileExists = opts.exists || existsSync;
   return async (job, prov, ctx) => {
     const checks = []; const fail = (name, ok, detail) => { checks.push({ name, ok, detail }); };
@@ -120,6 +123,9 @@ export function realIndependentCheckerRoute(opts = {}) {
     if (session.session_id === builderSession.session_id || session.prompt_digest === builderSession.prompt_digest) return { result: "INSUFFICIENT_EVIDENCE", session, reason: "checker not independent of builder" };
     // REAL: the signed activation MUST be present before spawn
     if (!gc.signed_activation || typeof gc.signed_activation !== "object" || Object.keys(gc.signed_activation).length === 0) return { result: "INSUFFICIENT_EVIDENCE", session, reason: "no signed activation in governed context" };
+    // FG-LRCQ-ACT-029: the checker session is a REAL provider spawn, so it needs the same genuine
+    // SUPERVISOR_EXECUTION capability. Without it, refuse BEFORE minting/consuming the checker lease.
+    if (!isSupervisorExecutionCapabilityV4(gc.execution_capability)) return { result: "INSUFFICIENT_EVIDENCE", session, reason: "V4_SUPERVISOR_EXECUTION_CAPABILITY_REQUIRED for the checker session" };
     if (typeof dispatchCheckerSession !== "function") return { result: "INSUFFICIENT_EVIDENCE", session, reason: "no governed checker session configured" };
     // mint + validate + consume a distinct read-only single-use checker lease BEFORE spawn
     const checkerLease = mintCheckerLease(gc, session);

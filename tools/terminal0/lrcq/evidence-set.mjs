@@ -5,6 +5,8 @@
 // itself. Head-agnostic: the frozen head is read from git at build/verify time, never hard-coded.
 // This script writes ONLY the out-of-tree manifest path it is given; it verifies read-only.
 import { execFileSync } from "node:child_process";
+// FG-CHK-197-02: fixed absolute executables in a minimal environment — never PATH-resolved.
+import { fixedGit } from "../../../src/v8b/lrcq/assurance/fixed-executables.mjs";
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { resolve, join, relative } from "node:path";
@@ -12,7 +14,7 @@ import { prMetadataDigest, rawDigest, CANON_ALGORITHM } from "./pr-metadata-cano
 
 const sha256 = (buf) => "sha256:" + createHash("sha256").update(buf).digest("hex");
 const sha256file = (p) => sha256(readFileSync(p));
-const git = (repo, ...a) => execFileSync("git", ["-C", repo, ...a], { encoding: "utf8" }).trim();
+const git = (repo, ...a) => fixedGit(["-C", repo, ...a]);
 
 // canonical serialization (sorted keys) so the digest is stable and order-independent.
 // Exported (behavior-preserving) so the deterministic capsule generator reuses this exact

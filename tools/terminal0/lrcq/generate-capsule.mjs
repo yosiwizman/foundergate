@@ -15,6 +15,8 @@ import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync, existsSync, mkdtempSync, renameSync, rmSync, lstatSync, realpathSync, readdirSync, statSync } from "node:fs";
 import { join, resolve, dirname, isAbsolute, sep, basename } from "node:path";
 import { execFileSync } from "node:child_process";
+// FG-CHK-197-02: fixed absolute executables in a minimal environment — never PATH-resolved.
+import { fixedGit } from "../../../src/v8b/lrcq/assurance/fixed-executables.mjs";
 import { fileURLToPath } from "node:url";
 import { buildActivationMaterialPacket } from "./generate-run-manifest.mjs";
 import { loadAndVerifyManifest, manifestDigest } from "../../../src/v8b/lrcq/run-harness/run-manifest.mjs";
@@ -79,7 +81,7 @@ export function validateInputs(inputs) {
   const i = inputs || {};
   req(i.repoRoot && isAbsolute(i.repoRoot) && existsSync(i.repoRoot), "repoRoot missing/not absolute/absent");
   if (e.length) return { ok: false, errors: e };
-  const git = i.git || ((a) => execFileSync("git", ["-C", i.repoRoot, ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim());
+  const git = i.git || ((a) => fixedGit(["-C", i.repoRoot, ...a]));
   const tryGit = (a) => { try { return git(a); } catch { return null; } };
   // git identity/authority
   const head = tryGit(["rev-parse", "HEAD"]);
@@ -131,7 +133,7 @@ export function validateInputs(inputs) {
   }
   // committed material packet must bind evaluated_sha (two-SHA: tracked packet == evaluated)
   const packetPath = join(i.repoRoot, ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json");
-  if (existsSync(packetPath)) { const pk = JSON.parse(readFileSync(packetPath, "utf8")); req(pk.run_harness_candidate_sha === i.evaluatedSha, "committed material packet binds " + (pk.run_harness_candidate_sha || "?").slice(0, 12) + " not evaluated_sha"); req(!JSON.stringify(pk).includes(head), "committed material packet must NOT contain evidence_commit_sha"); }
+  if (existsSync(packetPath)) { const pk = JSON.parse(readFileSync(packetPath, "utf8")); req(pk.reviewed_runtime_sha === i.evaluatedSha, "committed material packet binds " + (pk.reviewed_runtime_sha || "?").slice(0, 12) + " not evaluated_sha"); req(!JSON.stringify(pk).includes(head), "committed material packet must NOT contain evidence_commit_sha"); }
   // manifest authority (load from disk, verify)
   const manPath = join(i.repoRoot, ".foundergate/run-materials/first-internal-5h/run-manifest.json");
   if (existsSync(manPath)) {
@@ -171,11 +173,13 @@ export function generateCapsule(inputs) {
   const i = inputs;
   const manifest = JSON.parse(readFileSync(join(i.repoRoot, ".foundergate/run-materials/first-internal-5h/run-manifest.json"), "utf8"));
   const prov = providerFromManifest(manifest);
-  const manDigest = manifestDigest(manifest);
+  // FG-LRCQ-ACT-029: bind the manifest FILE digest — loadManifestV4 (production) re-reads exactly these
+  // bytes off disk, so an object-serialization digest would never match and would fail the run closed.
+  const manDigest = sha256file(join(i.repoRoot, ".foundergate/run-materials/first-internal-5h/run-manifest.json"));
   const ctx = { prNumber: i.prNumber, evaluatedSha: i.evaluatedSha, evidenceCommitSha, providerTarget: prov.target, providerVersion: prov.version };
 
   // FINAL template binds evidence_commit_sha (the exact future candidate) + records evaluated ancestor
-  const finalTpl = buildActivationMaterialPacket({ repo: i.repoRoot, prov, manRel: ".foundergate/run-materials/first-internal-5h/run-manifest.json", manDigest, leaseManifestAbs: join(i.repoRoot, manifest.capability_lease_manifest_path), blastManifestAbs: join(i.repoRoot, manifest.blast_budget_manifest_path), backlogRel: manifest.backlog_path, runHarnessSha: evidenceCommitSha, runHarnessTree: evidenceCommitTree });
+  const finalTpl = buildActivationMaterialPacket({ repo: i.repoRoot, prov, manRel: ".foundergate/run-materials/first-internal-5h/run-manifest.json", manDigest, leaseManifestAbs: join(i.repoRoot, manifest.capability_lease_manifest_path), blastManifestAbs: join(i.repoRoot, manifest.blast_budget_manifest_path), backlogRel: manifest.backlog_path, runHarnessSha: evidenceCommitSha, runHarnessTree: evidenceCommitTree, reviewedRuntimeSha: i.evaluatedSha || evidenceCommitSha, reviewedRuntimeTree: evaluatedTree || evidenceCommitTree });
   finalTpl.reviewed_production_ancestor_sha = i.evaluatedSha;
   finalTpl.reviewed_production_ancestor_tree = evaluatedTree;
 

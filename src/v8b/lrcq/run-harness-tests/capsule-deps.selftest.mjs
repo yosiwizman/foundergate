@@ -2,9 +2,9 @@
 // corrections (FG-LRCQ-ACT-026): (A) generate-run-manifest import-safety (CLI guard), (B) evidence-set
 // founder-capsule recursion closure + tamper detection. Turns the prior ad-hoc proofs into suite tests.
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, writeFileSync, readFileSync, readdirSync, statSync, existsSync } from "node:fs";
+import { mkdtempSync, writeFileSync, readFileSync, readdirSync, statSync, existsSync, lstatSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, basename } from "node:path";
 import { createHash } from "node:crypto";
 import { buildEvidenceSet, verifyEvidenceSet, FOUNDER_CAPSULE_EXCLUSIONS } from "../../../../tools/terminal0/lrcq/evidence-set.mjs";
 
@@ -22,17 +22,27 @@ const mod = await import("../../../../tools/terminal0/lrcq/generate-run-manifest
 ok("A1 import exposes buildActivationMaterialPacket (pure) + resolveProvider", typeof mod.buildActivationMaterialPacket === "function" && typeof mod.resolveProvider === "function");
 ok("A2 importing writes NOTHING to run-materials (CLI guard)", hashTree(matDir) === beforeMat);
 ok("A3 importing does NOT rewrite the tracked material packet", (existsSync(packetPath) ? createHash("sha256").update(readFileSync(packetPath)).digest("hex") : "(absent)") === beforePacket);
-ok("A4 the tracked material packet still binds provider 2.1.215 (not the drifted 2.1.217)", existsSync(packetPath) ? JSON.parse(readFileSync(packetPath, "utf8")).provider_version === "2.1.215" : true);
+// FG-LRCQ-ACT-029 provider re-freeze: the historical 2.1.215 target is gone from this host, so the tracked
+// packet is re-frozen onto the CURRENTLY INSTALLED immutable versioned target. The invariant that matters is
+// that the tracked packet's provider binding matches a real, non-symlink versioned file on disk by digest.
+ok("A4 the tracked material packet binds a REAL immutable versioned target by digest", (() => {
+  if (!existsSync(packetPath)) return true;
+  const p = JSON.parse(readFileSync(packetPath, "utf8"));
+  if (!p.resolved_provider_target || !existsSync(p.resolved_provider_target)) return false;
+  if (lstatSync(p.resolved_provider_target).isSymbolicLink()) return false;
+  const d = "sha256:" + createHash("sha256").update(readFileSync(p.resolved_provider_target)).digest("hex");
+  return d === p.provider_executable_identity && p.provider_version === basename(p.resolved_provider_target);
+})());
 // buildActivationMaterialPacket is pure: calling it twice on identical inputs is byte-stable and writes nothing
 const g = (a) => execFileSync("git", ["-C", REPO, ...a], { encoding: "utf8" }).stdout || execFileSync("git", ["-C", REPO, ...a], { encoding: "utf8" }).trim();
 const gitR = (a) => execFileSync("git", ["-C", REPO, ...a], { encoding: "utf8" }).trim();
 const manifest = JSON.parse(readFileSync(join(matDir, "run-manifest.json"), "utf8"));
 const rm = await import("../../../../src/v8b/lrcq/run-harness/run-manifest.mjs");
 const prov = { path: manifest.provider_executable_path, target: manifest.resolved_provider_target, version: manifest.provider_version, identity: manifest.provider_executable_identity };
-const mkPkt = (headSha, headTree) => mod.buildActivationMaterialPacket({ repo: REPO, prov, manRel: ".foundergate/run-materials/first-internal-5h/run-manifest.json", manDigest: rm.manifestDigest(manifest), leaseManifestAbs: join(REPO, manifest.capability_lease_manifest_path), blastManifestAbs: join(REPO, manifest.blast_budget_manifest_path), backlogRel: manifest.backlog_path, runHarnessSha: headSha, runHarnessTree: headTree });
+const mkPkt = (headSha, headTree) => mod.buildActivationMaterialPacket({ repo: REPO, prov, manRel: ".foundergate/run-materials/first-internal-5h/run-manifest.json", manDigest: "sha256:" + createHash("sha256").update(readFileSync(join(REPO, ".foundergate/run-materials/first-internal-5h/run-manifest.json"))).digest("hex"), leaseManifestAbs: join(REPO, manifest.capability_lease_manifest_path), blastManifestAbs: join(REPO, manifest.blast_budget_manifest_path), backlogRel: manifest.backlog_path, runHarnessSha: headSha, runHarnessTree: headTree });
 const p1 = JSON.stringify(mkPkt("aaa", "bbb")); const p2 = JSON.stringify(mkPkt("aaa", "bbb"));
 ok("A5 buildActivationMaterialPacket is deterministic (identical inputs -> identical packet)", p1 === p2);
-ok("A6 the packet carries the full authoritative V3 field set (>= 50 fields incl. resolved_provider_target)", (() => { const o = mkPkt("aaa", "bbb"); return Object.keys(o).length >= 50 && ["lrcq_base_sha", "provider_candidate_sha", "policy_version", "capability_lease_digest", "blast_radius_budget_digest", "resolved_provider_target", "run_id", "delegation_depth", "external_calls", "recipients"].every((k) => k in o); })());
+ok("A6 the packet carries the full authoritative V4 field set (>= 50 fields incl. the signed manifest + lifecycle bindings)", (() => { const o = mkPkt("aaa", "bbb"); return Object.keys(o).length >= 50 && ["schema", "signature_payload_version", "founder_signature_algorithm", "repository_root_realpath", "repository_git_common_dir_realpath", "lifecycle_root_realpath", "run_manifest_path", "run_manifest_digest", "lrcq_base_sha", "provider_candidate_sha", "capability_lease_digest", "blast_radius_budget_digest", "resolved_provider_target", "run_id", "lifecycle_authority_v4_digest"].every((k) => k in o); })());
 ok("A7 the tracked run-materials remained unchanged across all packet builds", hashTree(matDir) === beforeMat);
 
 // ---- (B) evidence-set founder-capsule recursion closure + tamper detection (REAL functions) ----

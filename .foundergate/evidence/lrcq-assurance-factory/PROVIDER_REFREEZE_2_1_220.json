@@ -1,0 +1,84 @@
+{
+  "schema": "lrcq-provider-refreeze-1",
+  "wave": "FG-LRCQ-ACT-029",
+  "why": "The historical reviewed target 2.1.215 is no longer installed on this host, so the tracked run manifest and unsigned activation material packet could not be verified against a real immutable versioned file. The provider binding is re-frozen onto the CURRENTLY INSTALLED immutable versioned target.",
+  "retired_target": {
+    "version": "2.1.215",
+    "status": "ABSENT_FROM_HOST",
+    "note": "Not restored. No assumption was made about which replacement version would be current; the replacement was resolved mechanically from the launcher alias."
+  },
+  "resolution_method": [
+    "read the launcher alias ~/.local/bin/claude (a symlink, deliberately NOT bound)",
+    "resolve it to the versioned regular file it targets",
+    "confirm the target is a regular, non-symlink, executable versioned file",
+    "hash the bytes on disk twice, in separate reads, and require agreement",
+    "run the target's --version metadata probe and require it to report the bound version (no model request)",
+    "confirm device/inode/size/mtime identity is unchanged across the observation window",
+    "confirm no updater/installer process is running"
+  ],
+  "observations": [
+    {
+      "at_utc": "2026-07-25T01:08Z",
+      "alias_target": "/Users/yosiwizman/.local/share/claude/versions/2.1.219",
+      "note": "First observation of this session. The installation MOVED after this point (see below); recorded for honesty, not used as the freeze target."
+    },
+    {
+      "at_utc": "2026-07-25T02:31Z",
+      "alias_target": "/Users/yosiwizman/.local/share/claude/versions/2.1.220",
+      "sha256_read_1": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+      "sha256_read_2": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+      "reads_agree": true,
+      "version_output": "2.1.220 (Claude Code)",
+      "size_bytes": 256908272,
+      "inode": 104673092,
+      "mtime_epoch": 1784943440,
+      "regular_non_symlink_executable": true,
+      "updater_active": false
+    },
+    {
+      "at_utc": "2026-07-25T03:10Z",
+      "alias_target": "/Users/yosiwizman/.local/share/claude/versions/2.1.220",
+      "sha256_read_1": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+      "sha256_read_2": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+      "reads_agree": true,
+      "identity_unchanged_since_previous_observation": true,
+      "version_output": "2.1.220 (Claude Code)",
+      "updater_active": false,
+      "verdict": "STABLE_ENOUGH_TO_FREEZE"
+    }
+  ],
+  "installation_moved_during_this_session": {
+    "observed": true,
+    "from": "2.1.219",
+    "to": "2.1.220",
+    "assessment": "ONE update, not a continuously changing installation. 2.1.220 was then stable across two independent observation windows (identical digest, inode, size and mtime; no updater running), so a stable re-freeze WAS possible. If the alias moves again before the founder signs, the manifest/packet must be regenerated and the preflight re-run: the launcher's pre-consumption provider verification fails CLOSED on drift (PROVIDER_DIGEST_MISMATCH / PROVIDER_VERSION_MISMATCH), so drift can never silently change what a signed activation executes."
+  },
+  "frozen_binding": {
+    "provider_executable_path": "/Users/yosiwizman/.local/bin/claude",
+    "provider_executable_path_role": "MUTABLE ALIAS — recorded for identity consistency only; never executed",
+    "resolved_provider_target": "/Users/yosiwizman/.local/share/claude/versions/2.1.220",
+    "resolved_provider_target_role": "IMMUTABLE reviewed versioned binary — this is what the spawn boundary executes",
+    "provider_version": "2.1.220",
+    "provider_executable_identity": "sha256:8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081"
+  },
+  "regenerated_artifacts": [
+    ".foundergate/run-materials/first-internal-5h/run-manifest.json",
+    ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json"
+  ],
+  "manifest_binding_change": {
+    "was": "manifestDigest(manifestObject) — a JSON-serialization digest",
+    "now": "sha256 of the manifest FILE bytes",
+    "why": "The production launcher (loadManifestV4) re-reads the manifest file off disk and compares that digest, so an object-serialization digest would have failed every real run closed. Binding the file bytes is also the stronger property."
+  },
+  "builder_identity_is_separate_from_the_provider_under_test": {
+    "builder_model": "Claude Opus 5 (claude-opus-5)",
+    "builder_claude_code_version": "2.1.219",
+    "provider_under_test_version": "2.1.220",
+    "note": "The Builder's own Claude Code version is NOT the provider identity the activation binds. They are recorded separately on purpose."
+  },
+  "no_productive_invocation": {
+    "model_requests_made": 0,
+    "provider_spawns_made": 0,
+    "only_provider_contact": "a --version metadata probe of the versioned binary, used solely to confirm the bound version"
+  }
+}

@@ -2,6 +2,8 @@
 // WITHOUT deleting existing classifications; (b) generate the COMPLETE unsigned gate packet.
 import { readFileSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+// FG-CHK-197-02: fixed absolute executables in a minimal environment — never PATH-resolved.
+import { fixedGit } from "../../../src/v8b/lrcq/assurance/fixed-executables.mjs";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
@@ -10,7 +12,7 @@ import { buildUnsignedPacket } from "../../../src/v8b/lrcq/run-harness/activatio
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 const P = (p) => resolve(REPO, p);
 const sha = (p) => "sha256:" + createHash("sha256").update(readFileSync(P(p))).digest("hex");
-const git = (...a) => execFileSync("git", ["-C", REPO, ...a], { encoding: "utf8" }).trim();
+const git = (...a) => fixedGit(["-C", REPO, ...a]);
 
 // ---- (a) scope classification ----
 const path = ".foundergate/backlog/assurance-control-master-v1.json";

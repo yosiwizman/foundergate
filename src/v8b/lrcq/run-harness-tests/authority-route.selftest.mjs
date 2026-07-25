@@ -46,7 +46,13 @@ const launcherFiles = readdirSync(launcherDir).filter((f) => f.endsWith(".mjs"))
 
 // ---- static: exactly ONE provider spawn route ----
 { const spawners = lrcqProd.filter((f) => /\bspawn\(/.test(readFileSync(f, "utf8")));
-  ok("11 exactly one production module spawns a provider process", spawners.length === 1 && /real-provider\.mjs$/.test(spawners[0])); }
+  // FG-LRCQ-ACT-029: the governed lifecycle authority also spawns — but ONLY process.execPath with the
+  // supervisor entrypoint its own signed launch intent names (the inherited-descriptor key transfer). The
+  // PROVIDER spawn route must still be exactly one module, and no other module may spawn a non-node target.
+  const providerSpawners = spawners.filter((f) => !/lifecycle-authority-v4\.mjs$/.test(f));
+  ok("11 exactly one production module spawns a provider process", providerSpawners.length === 1 && /real-provider\.mjs$/.test(providerSpawners[0]));
+  const lc = spawners.find((f) => /lifecycle-authority-v4\.mjs$/.test(f));
+  ok("11b the lifecycle authority spawns ONLY process.execPath (the governed supervisor entrypoint)", !lc || (() => { const s = readFileSync(lc, "utf8"); const calls = s.match(/\bspawn\(([^,]+)/g) || []; return calls.length === 1 && /process\.execPath/.test(calls[0]); })()); }
 
 // ---- static: exactly ONE production launcher (calls runHarness) ----
 { const launchers = [...lrcqProd, ...launcherFiles].filter((f) => !/harness\.mjs$/.test(f) && /runHarness\(/.test(readFileSync(f, "utf8")));

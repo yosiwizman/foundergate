@@ -11,6 +11,8 @@
 // PR #189, and a live-GitHub metadata provider. Fixture injection (repo/capsuleDir/prNumber/githubMetadata
 // Provider) is a FUNCTION PARAMETER only — NOT reachable through CLI args, env, or capsule contents.
 import { execFileSync } from "node:child_process";
+// FG-CHK-197-02: fixed absolute executables in a minimal environment — never PATH-resolved.
+import { fixedGit } from "../../../src/v8b/lrcq/assurance/fixed-executables.mjs";
 import { readFileSync, existsSync, readdirSync, statSync, lstatSync, realpathSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { resolve, join, dirname } from "node:path";
@@ -73,7 +75,7 @@ export function inventoryRunIndicators(repo) {
 // (prNumber) -> { title, body } | null. null => the live-metadata check is SKIPPED as a NON-ACCEPTING
 // informational result (recorded, never counted as PASS).
 export function verifyCapsule({ repo, capsuleDir: CAP, prNumber = 189, githubMetadataProvider = null, requireMetadata = true }) {
-  const git = (...a) => execFileSync("git", ["-C", repo, ...a], { encoding: "utf8" }).trim();
+  const git = (...a) => fixedGit(["-C", repo, ...a]);
   const checks = []; const problems = [];
   const check = (name, cond, detail) => { checks.push({ name, status: cond ? "PASS" : "FAIL", detail }); if (!cond) problems.push(name); };
   const skip = (name, detail) => { checks.push({ name, status: "SKIP", detail }); };
@@ -107,7 +109,12 @@ export function verifyCapsule({ repo, capsuleDir: CAP, prNumber = 189, githubMet
     if (requireMetadata) problems.push("live-metadata binding could not be verified (metadata provider unavailable) — SKIP is NOT acceptance");
   }
   const tpl = existsSync(join(CAP, "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json")) ? JSON.parse(readFileSync(join(CAP, "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json"), "utf8")) : {};
-  check("FINAL template binds exact frozen head", tpl.run_harness_candidate_sha === head);
+  // FG-LRCQ-ACT-029: the FINAL template is a V4 activation payload template — the frozen head is
+  // evidence_commit_sha, and reviewed_runtime_sha records the reviewed production ancestor it executes.
+  check("FINAL template binds exact frozen head", tpl.evidence_commit_sha === head);
+  check("FINAL template is a V4 payload template", tpl.schema === "lrcq-activation-4" && tpl.signature_payload_version === "lrcq-activation-v4-signature-payload-1" && tpl.founder_signature_algorithm === "ed25519");
+  check("FINAL template binds the SIGNED run manifest + lifecycle roots", typeof tpl.run_manifest_path === "string" && /^sha256:[0-9a-f]{64}$/.test(tpl.run_manifest_digest || "") && typeof tpl.repository_root_realpath === "string" && typeof tpl.repository_git_common_dir_realpath === "string" && typeof tpl.lifecycle_root_realpath === "string");
+  check("FINAL template has NO founder key fingerprint or authorization digest (enrollment + signing pending)", tpl.signer_key_fingerprint == null && tpl.authorization_text_digest == null);
   check("FINAL template is UNSIGNED", tpl.founder_signature == null, "sig=" + tpl.founder_signature);
   check("FINAL template UNCONSUMED (no issued/expiry stamped)", tpl.issued_epoch == null && tpl.expiry_epoch == null);
 

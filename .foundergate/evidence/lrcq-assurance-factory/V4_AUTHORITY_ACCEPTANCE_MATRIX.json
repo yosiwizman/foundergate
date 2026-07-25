@@ -1,0 +1,659 @@
+{
+ "schema": "lrcq-v4-authority-acceptance-matrix-2",
+ "wave": "FG-LRCQ-ACT-029 + FG-CHK-197 + FG-FCHK-197 + FG-FFIN-197 + FG-FFIN4-197 (start-identity fail-closed completion) + FG-CHK5-197 (production-seam acknowledgment-classification correction)",
+ "pr": 197,
+ "suite": {
+  "self_tests": 154,
+  "self_tests_passing": 154,
+  "runs": 2,
+  "red": 0,
+  "assertion_counting_method": "MECHANICAL, from the captured npm test output. Two reporting styles exist in this suite and are counted separately rather than merged into one headline number.",
+  "assertions_x_of_y_form": 1989,
+  "assertions_pass_checks_form": 614,
+  "combined": 2603,
+  "literal_ok_lines": 2005,
+  "literal_PASS_lines": 929,
+  "identical_across_both_runs": true,
+  "note": "FG-CHK5-197: 153 -> 154 self-tests, because the new auto-discovered regression family production-ack-classification (82 assertions) was added. The X/Y form is the comparable metric: 1907 at 153 suites -> 1989 at 154 (+82, exactly the new family). The checks-form total is unchanged at 614.",
+  "stale_numbers_corrected_this_wave": "The FG-FFIN4-197 wave grew two families without updating this matrix's counts. Mechanically re-measured and corrected here: suite.assertions_x_of_y_form was 1823 and the true pre-correction value was 1907; v4_family_counts.checker-197-final-five was 157/157 and is 192/192; v4_family_counts.checker-197-corrections was 76/76 and is 78/78. Corrected rather than left to drift, since a stale acceptance count is the same evidence-accuracy class this lane has now hit five times."
+ },
+ "v4_family_counts": {
+  "lifecycle-key-containment": "39/39",
+  "lifecycle-fd-transfer": "19/19",
+  "lifecycle-authority-v4": "17/17",
+  "activation-v4-signature": "36/36",
+  "founder-signing-tools": "15/15",
+  "v3-retirement": "22/22",
+  "detached-supervisor": "31/31",
+  "detached-supervisor-failure": "14/14",
+  "preflight": "14/14",
+  "production-seam-closure": "30/30",
+  "provider-binding": "19/19",
+  "activation-path": "45/45",
+  "real-launch": "70/70",
+  "launcher-integration": "13/13",
+  "real-provider": "80/80",
+  "protocol-route": "8/8",
+  "productive-rehearsal": "18/18",
+  "full-rehearsal": "13/13",
+  "authority-route": "15/15",
+  "capsule-generator": "35/35",
+  "capsule-deps": "17/17",
+  "checker-197-corrections": "78/78",
+  "checker-197-final-five": "192/192",
+  "production-ack-classification": "82/82"
+ },
+ "controls": [
+  {
+   "id": "K-01",
+   "control": "No production export returns a lifecycle private KeyObject or DER bytes",
+   "status": "PROVEN",
+   "evidence": "lifecycle-key-containment S1a-S1d (static export-surface scan of every exported binding)"
+  },
+  {
+   "id": "K-02",
+   "control": "Test-only extraction exists only under a structurally test-only surface production never imports",
+   "status": "PROVEN",
+   "evidence": "lifecycle-key-containment S2 (walks every production .mjs under src/ and tools/; zero import a test-support path)"
+  },
+  {
+   "id": "K-03",
+   "control": "Key transfer requires a genuine opaque CONSUMED capability",
+   "status": "PROVEN",
+   "evidence": "lifecycle-key-containment T1/T1b (forged look-alike -> FORGED; not branded)"
+  },
+  {
+   "id": "K-04",
+   "control": "A verified signed launch intent must already exist",
+   "status": "PROVEN",
+   "evidence": "lifecycle-key-containment T2 (INTENT_MISSING) + T4 (tampered intent body -> EPHEMERAL_SIGNATURE_INVALID)"
+  },
+  {
+   "id": "K-05",
+   "control": "Transfer state must be NOT_TRANSFERRED",
+   "status": "PROVEN",
+   "evidence": "lifecycle-key-containment T2b/T3b/T5e (refusals leave it unspent) + T6b (ALREADY_TRANSFERRED)"
+  },
+  {
+   "id": "K-06",
+   "control": "Mismatched intent fails",
+   "status": "PROVEN",
+   "evidence": "lifecycle-key-containment T3 (intent->marker digest swap)"
+  },
+  {
+   "id": "K-07",
+   "control": "Transfer occurs only through the governed launcher-created inherited anonymous descriptor",
+   "status": "PROVEN",
+   "evidence": "spawnGovernedSupervisorV4 creates the pipe itself (no caller-supplied sink exists in the signature); lifecycle-key-containment T7a (key_fd 3) + authority-route 11b (the module spawns only process.execPath)"
+  },
+  {
+   "id": "K-08",
+   "control": "The key is transferred once; every second transfer fails",
+   "status": "PROVEN",
+   "evidence": "lifecycle-key-containment T6a/T6b/T6c + lifecycle-fd-transfer A3d"
+  },
+  {
+   "id": "K-09",
+   "control": "The temporary DER buffer is zeroed and the writer closed",
+   "status": "PROVEN",
+   "evidence": "der.fill(0) + frame.fill(0) + writer.end(); observable effect proven by lifecycle-key-containment T7b (the supervisor reads exactly one framed key then EOF)"
+  },
+  {
+   "id": "K-10",
+   "control": "The private key is removed from module-private storage",
+   "status": "PROVEN",
+   "evidence": "EPHKEY.delete(cap) on every transfer path; lifecycle-key-containment T6b/T6c (no second child; KEY_RELEASED unreachable afterwards)"
+  },
+  {
+   "id": "K-11",
+   "control": "The supervisor entrypoint is the exact signed, non-symlink, digest-matching file",
+   "status": "PROVEN",
+   "evidence": "lifecycle-key-containment T5a-T5e (symlink, directory, missing, content drift) + detached-supervisor 06"
+  },
+  {
+   "id": "K-12",
+   "control": "Missing / empty / malformed / truncated / oversized supervisor descriptor input fails",
+   "status": "PROVEN",
+   "evidence": "lifecycle-key-containment F1-F6 (EMPTY, MAGIC, TOO_SHORT, TRUNCATED, OVERSIZED, DIGEST)"
+  },
+  {
+   "id": "K-13",
+   "control": "No key material reaches argv, environment, config JSON, disk, git, logs, receipts, stdout or stderr",
+   "status": "PROVEN",
+   "evidence": "lifecycle-key-containment L1a-L1g (including a byte scan of every file in the disposable world) + lifecycle-fd-transfer A5-A5c + detached-supervisor 11"
+  },
+  {
+   "id": "M-01",
+   "control": "Signed V4 -> governed key authority -> VERIFIED capability",
+   "status": "PROVEN",
+   "evidence": "activation-v4-signature 36/36; detached-supervisor 01-02 through the real CLI"
+  },
+  {
+   "id": "M-02",
+   "control": "Preflight with ZERO provider invocation",
+   "status": "PROVEN",
+   "evidence": "preflight 02c/02d (zero_invocation true; provider verified by digest only, never executed)"
+  },
+  {
+   "id": "M-03",
+   "control": "Governed one-time consumption -> opaque CONSUMED capability",
+   "status": "PROVEN",
+   "evidence": "lifecycle-authority-v4 B1-B4; founder-signing-tools B1-B4; detached-supervisor 07"
+  },
+  {
+   "id": "M-04",
+   "control": "Signed atomic launch intent",
+   "status": "PROVEN",
+   "evidence": "lifecycle-authority-v4 L1-L3; detached-supervisor 08"
+  },
+  {
+   "id": "M-05",
+   "control": "One-use inherited-descriptor transfer -> detached supervisor",
+   "status": "PROVEN",
+   "evidence": "detached-supervisor 03/04/05 (SPENT, distinct PID, launcher gone + supervisor alive)"
+  },
+  {
+   "id": "M-06",
+   "control": "Independent V4 re-verification inside the supervisor process",
+   "status": "PROVEN",
+   "evidence": "supervisor-main.mjs re-reads + re-verifies from disk; detached-supervisor 09/10 (its own claim, its own pid + observed start identity); v3-retirement R3d"
+  },
+  {
+   "id": "M-07",
+   "control": "Signed atomic supervisor claim -> opaque SUPERVISOR_EXECUTION capability",
+   "status": "PROVEN",
+   "evidence": "lifecycle-fd-transfer A1/A1b; detached-supervisor 09/10"
+  },
+  {
+   "id": "M-08",
+   "control": "Non-authoritative execution projection (recreates no V2/V3 authority)",
+   "status": "PROVEN",
+   "evidence": "real-launch F1-F1e; launcher-integration 09; real-provider P0a-P0d + V1"
+  },
+  {
+   "id": "M-09",
+   "control": "Every real provider-spawn boundary requires a genuine SUPERVISOR_EXECUTION capability",
+   "status": "PROVEN",
+   "evidence": "real-provider B1-B7 (seven forged/absent-capability shapes, each refused with started=false and PROVIDER_NOT_ATTEMPTED) + V1-V3; v3-retirement R5e"
+  },
+  {
+   "id": "M-10",
+   "control": "V3 fails before side effects on every new production execution path",
+   "status": "PROVEN",
+   "evidence": "v3-retirement R5a-R5e (verification gate, launch route, production CLI, REAL harness, spawn boundary)"
+  },
+  {
+   "id": "M-11",
+   "control": "The launcher exposes no V3 route and no caller-supplied authority seam",
+   "status": "PROVEN",
+   "evidence": "v3-retirement R1a-R1f; production-seam-closure 01-09 + 21-26"
+  },
+  {
+   "id": "M-12",
+   "control": "Historical V3 remains readable for evidence/incident reconstruction only",
+   "status": "PROVEN",
+   "evidence": "v3-retirement R4b (validator inside the non-REAL branch) + R6a/R6b"
+  },
+  {
+   "id": "A-01",
+   "control": "Raw / unsigned / modified V4 refused",
+   "status": "PROVEN",
+   "evidence": "activation-v4-signature N-series; detached-supervisor-failure 02/04"
+  },
+  {
+   "id": "A-02",
+   "control": "Copied marker, intent or claim refused",
+   "status": "PROVEN",
+   "evidence": "lifecycle-fd-transfer A4/A4b; lifecycle-authority-v4 Z1"
+  },
+  {
+   "id": "A-03",
+   "control": "Private-key extraction or repeated transfer refused",
+   "status": "PROVEN",
+   "evidence": "K-01, K-08, K-10"
+  },
+  {
+   "id": "A-04",
+   "control": "Missing or invalid inherited descriptor refused",
+   "status": "PROVEN",
+   "evidence": "lifecycle-key-containment F1-F6; lifecycle-fd-transfer A3"
+  },
+  {
+   "id": "A-05",
+   "control": "Forged capability objects refused (brand is a module-private WeakSet)",
+   "status": "PROVEN",
+   "evidence": "lifecycle-authority-v4 P2-P5; real-provider B2/B3/V2; activation-path 41; launcher-integration 11"
+  },
+  {
+   "id": "A-06",
+   "control": "VERIFIED-only or CONSUMED-only provider access refused",
+   "status": "PROVEN",
+   "evidence": "lifecycle-authority-v4 P2/P3; real-provider B4/B5"
+  },
+  {
+   "id": "A-07",
+   "control": "Duplicate consumption, intent, transfer, claim refused",
+   "status": "PROVEN",
+   "evidence": "lifecycle-fd-transfer A3b/A3c/A3d/A4; lifecycle-authority-v4 B4/L2"
+  },
+  {
+   "id": "A-08",
+   "control": "Stale PID / PID reuse refused, with the start-identity observation enforced FAIL-CLOSED on both sides",
+   "status": "PROVEN",
+   "evidence": "observedStartIdentity binds fixed /bin/ps lstart into the claim; supervisor.mjs stale_active refusal; detached-supervisor 10/20 (same pid AND same start identity); checker-197-final-five FS1 (forged identity refused) and FS2 (observation UNAVAILABLE -> SUPERVISOR_START_IDENTITY_UNAVAILABLE, never OK); FS3c (every OK carries an independently observed identity)",
+   "superseded_status_note": "FG-FFIN4-197-02: in candidate 4014d91b this control was PROVEN only CONDITIONALLY. The parent-side comparison ran solely when the OS observation succeeded, so under genuine fd/process pressure the check disabled itself and a key-holding supervisor's forged identity was ACCEPTED with ok:true and start_identity_independently_observed:false. The successor candidate makes the comparison unconditional and treats an unobtainable observation as a refusal, which is what makes this row true rather than aspirational."
+  },
+  {
+   "id": "A-09",
+   "control": "Activation TOCTOU refused",
+   "status": "PROVEN",
+   "evidence": "atomic 'wx' exclusive-create for marker/intent/claim + reread-and-verify after each write; lifecycle-authority-v4 B4; detached-supervisor-failure 11"
+  },
+  {
+   "id": "A-10",
+   "control": "Wrong repository / git-common-dir / candidate / tree / lifecycle root refused",
+   "status": "PROVEN",
+   "evidence": "lifecycle-authority-v4 G1-G3; activation-path 44/45/46; activation-v4-signature N21"
+  },
+  {
+   "id": "A-11",
+   "control": "Wrong provider / backlog / job / limit / deadline / exclusion refused",
+   "status": "PROVEN",
+   "evidence": "activation-v4-signature limit + exclusion + temporal cases; detached-supervisor-failure 07/12; real-provider 47/48/55/56/57; activation-path 45"
+  },
+  {
+   "id": "A-12",
+   "control": "Symlink, permission, ownership and path-substitution attacks refused",
+   "status": "PROVEN",
+   "evidence": "lifecycle-key-containment T5a/T5b; preflight 06 (symlinked provider target); provider-binding 02b/06/07; founder-signing-tools S4; founder-key-authority symlink/path-substitution refusals"
+  },
+  {
+   "id": "A-13",
+   "control": "For every invalid path, ZERO provider spawn",
+   "status": "PROVEN",
+   "evidence": "real-provider B1-B7 + the refused() helper (started=false, pid=null, PROVIDER_NOT_ATTEMPTED); activation-path 40 (dispatched=false); launcher-integration 12; detached-supervisor-failure provider_invocation=0"
+  },
+  {
+   "id": "P-01",
+   "control": "One complete bounded POSITIVE execution and teardown with the deterministic stub",
+   "status": "PROVEN",
+   "evidence": "detached-supervisor 01-29: real production CLI, real detached supervisor, 3 frozen jobs sealed, witness HEALTHY_CONTINUE while active, progress after the witness, STOPPED_EXHAUSTED terminal, descendants reaped, replay blocked. Also launcher-integration 01-07 (3 jobs, VERIFIED_PRODUCTIVE_RUN) and full-rehearsal (all 25 jobs)"
+  },
+  {
+   "id": "P-02",
+   "control": "Provider re-frozen onto a currently installed immutable target",
+   "status": "PROVEN",
+   "evidence": "PROVIDER_REFREEZE_2_1_220.json; capsule-generator 23 (production path, no injected providerDeps); capsule-deps A4"
+  },
+  {
+   "id": "G-01",
+   "control": "active_keys remains EMPTY; no founder key enrolled, no real signature, no real activation",
+   "status": "PROVEN",
+   "evidence": "docs/governance/FOUNDER_KEY_AUTHORITY.json active_keys: []; detached-supervisor 00 + 30 (the real repository launcher refuses with the KEY_ENROLLMENT gate)"
+  },
+  {
+   "id": "X-01",
+   "control": "The one-use key transfer is ATOMIC with respect to its guard: concurrent invocation yields exactly one OK, one ALREADY_TRANSFERRED, one child, one frame, one claim",
+   "status": "PROVEN",
+   "evidence": "checker-197-corrections C1a-C1e; reproduced as FAILING before the fix (2 OK, 2 children, 1 distinct frame digest) and recorded in CHECKER_197_CORRECTION_LEDGER.json"
+  },
+  {
+   "id": "X-02",
+   "control": "A failed or ambiguous transfer is never retryable with the same key; a partially launched child is killed AND reaped",
+   "status": "PROVEN",
+   "evidence": "key deleted from module storage + state SPENT before the first await; killAndReap on failure; checker-197-corrections C1f/C1g/C1j/C1k"
+  },
+  {
+   "id": "X-03",
+   "control": "Every authority-bearing process observation uses a FIXED ABSOLUTE executable, verified regular+non-symlink+executable, in a minimal environment",
+   "status": "PROVEN",
+   "evidence": "assurance/fixed-executables.mjs; checker-197-corrections C2a-C2c4"
+  },
+  {
+   "id": "X-04",
+   "control": "A hostile PATH cannot forge the repository / git-common-dir binding or the process-start identity, and the fake executables receive ZERO invocations",
+   "status": "PROVEN",
+   "evidence": "checker-197-corrections C2d-C2j (real child, hostile git+ps with a call log)"
+  },
+  {
+   "id": "X-05",
+   "control": "The minimal environment also drops GIT_DIR / GIT_WORK_TREE / GIT_COMMON_DIR and pins GIT_CONFIG_GLOBAL/SYSTEM",
+   "status": "PROVEN",
+   "evidence": "checker-197-corrections C2b"
+  },
+  {
+   "id": "X-06",
+   "control": "The supervisor config cannot carry authority: exec, now and any unknown field are refused before the lifecycle claim",
+   "status": "PROVEN",
+   "evidence": "validateSupervisorConfig allow-list; checker-197-corrections C3a-C3o including a hand-written config at the REAL supervisor entrypoint"
+  },
+  {
+   "id": "X-07",
+   "control": "Production time is the system clock and production execution behaviour comes only from reviewed modules + SIGNED bindings",
+   "status": "PROVEN",
+   "evidence": "supervisor-main passes {} to executeSignedRunV4; checker-197-corrections C3k/C3m"
+  },
+  {
+   "id": "X-08",
+   "control": "Lifecycle authority objects are owner-checked and mode-checked at every authority-bearing use",
+   "status": "PROVEN",
+   "evidence": "assurance/fs-authority-guards.mjs wired into resolveSignedRoot, readRecord and the supervisor config read; checker-197-corrections C4a-C4i"
+  },
+  {
+   "id": "X-09",
+   "control": "The signed lifecycle root is identified by canonical filesystem OBJECT identity (device+inode), not case-sensitive string identity",
+   "status": "PROVEN",
+   "evidence": "checker-197-corrections C5a-C5e; one physical directory derives one digest for every spelling, a different object is refused"
+  },
+  {
+   "id": "X-10",
+   "control": "The CONSUMED capability exposes NO mutable state; launch/transfer state is module-private",
+   "status": "PROVEN",
+   "evidence": "CAPSTATE WeakMap; checker-197-corrections C6a-C6k (freeze, ownKeys, prototype, JSON, external write, frozen read-only snapshot)"
+  },
+  {
+   "id": "X-11",
+   "control": "A launch intent MUST name the supervisor entrypoint and the attach-side self-proof is unconditional",
+   "status": "PROVEN",
+   "evidence": "checker-197-corrections C7a-C7f; lifecycle-authority-v4 L0"
+  },
+  {
+   "id": "X-12",
+   "control": "The freeze record names the last EXECUTABLE-CODE commit by concrete SHA/tree and enumerates the evidence-only tail",
+   "status": "PROVEN",
+   "evidence": "PR197_V4_FREEZE_RECORD.json v2; git diff --stat <candidate> HEAD -- src tools is empty"
+  },
+  {
+   "id": "X-13",
+   "control": "Protected-main mutation, merge and unauthorized push are prohibited by the run route independently of GitHub branch protection",
+   "status": "PROVEN",
+   "evidence": "BRANCH_PROTECTION_STATUS.json (5 route-level prohibitions); checker-197-corrections C9a-C9e"
+  },
+  {
+   "id": "FF-A-01",
+   "control": "An ASYNCHRONOUS ChildProcess spawn error after the transfer point of no return returns a structured fail-closed refusal instead of killing the launcher",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FA2-FA5 (DYNAMIC: bad cwd -> SUPERVISOR_SPAWN_FAILED, nothing thrown)"
+  },
+  {
+   "id": "FF-A-02",
+   "control": "Under every spawn/transfer failure outcome the authority is TRANSFERRED_SPENT, the private key is deleted and no retry with the same key is possible",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FA5, FA6, FA8, FA19, FA20 (DYNAMIC)"
+  },
+  {
+   "id": "FF-A-03",
+   "control": "A failed transfer leaves NO residual process and delivers NO key frame",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FA7, FA9, FA21 (DYNAMIC)"
+  },
+  {
+   "id": "FF-A-04",
+   "control": "The launcher process exits normally with a structured refusal, never a raw unhandled-error stack trace",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FA10-FA15 (DYNAMIC, in a separate process)"
+  },
+  {
+   "id": "FF-A-05",
+   "control": "The normal successful governed transfer remains functional",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FA22-FA24, FD18, FD19 (DYNAMIC)"
+  },
+  {
+   "id": "FF-B-01",
+   "control": "The provider boundary INDEPENDENTLY enforces every founder-signed numerical ceiling, derived from the immutable genuine capability, immediately before spawn",
+   "status": "PROVEN",
+   "evidence": "final-five-boundary F-B5, F-B5b, F-B10 (DYNAMIC)"
+  },
+  {
+   "id": "FF-B-02",
+   "control": "All 26 of the fresh Checker\u2019s invalid routes are refused with ZERO productive-provider spawn",
+   "status": "PROVEN",
+   "evidence": "final-five-boundary F-B1-F-B4 (DYNAMIC refusals; COUNTED zero spawns from the recording stub\u2019s own log)"
+  },
+  {
+   "id": "FF-B-03",
+   "control": "Every signed exclusion individually set to false, or individually removed, is refused before spawn",
+   "status": "PROVEN",
+   "evidence": "final-five-boundary F-B6, F-B6b, F-B7, F-B8 (DYNAMIC)"
+  },
+  {
+   "id": "FF-B-04",
+   "control": "A widened deadline and any unknown authority-bearing field are refused; the honest projection is still accepted",
+   "status": "PROVEN",
+   "evidence": "final-five-boundary F-B6c, F-B6d, F-B6e (DYNAMIC)"
+  },
+  {
+   "id": "FF-B-05",
+   "control": "One legitimate NARROWED projection still reaches exactly ONE deterministic stub process, and no widened value ever reaches argv",
+   "status": "PROVEN",
+   "evidence": "final-five-boundary F-P1-F-P6 (DYNAMIC + COUNTED)"
+  },
+  {
+   "id": "FF-C-01",
+   "control": "Every capability stage (VERIFIED, CONSUMED, SUPERVISOR_EXECUTION) is DEEPLY frozen: zero mutable nested objects",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FC1, FC7 and final-five-boundary F-C1 (DYNAMIC)"
+  },
+  {
+   "id": "FF-C-02",
+   "control": "Mutating every nested numerical limit and every exclusion on VERIFIED and SUPERVISOR_EXECUTION changes neither the authority value nor the resulting projection",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FC4-FC6 and final-five-boundary F-C3-F-C6 (DYNAMIC)"
+  },
+  {
+   "id": "FF-C-03",
+   "control": "The deep-freeze helper accepts only plain JSON authority data, copies before freezing, and never freezes the caller-owned source in place",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FC9-FC19 (DYNAMIC)"
+  },
+  {
+   "id": "FF-D-01",
+   "control": "The lifecycle-root filesystem OBJECT identity is enforced on PRODUCTION authority reads; the refusal code is reachable, not dead",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FD5, FD10, FD11 (DYNAMIC); FD13, FD14 (SOURCE-PROVEN reachability)"
+  },
+  {
+   "id": "FF-D-02",
+   "control": "Replacing the lifecycle directory at the signed path with a new object holding copied records is refused BEFORE the cryptographic key comparison, with no child, no claim and no key delivery",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FD5-FD12 (DYNAMIC)"
+  },
+  {
+   "id": "FF-D-03",
+   "control": "A case-variant spelling of the SAME inode remains the same authority object; a different inode is refused; normal execution is unaffected",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FD15-FD19 (DYNAMIC)"
+  },
+  {
+   "id": "FF-E-01",
+   "control": "Zero-provider-spawn claims are COUNTED from a recording stub\u2019s own log, never inferred from key-frame receipts",
+   "status": "PROVEN",
+   "evidence": "checker-197-corrections C1i; final-five-boundary F-B3, F-B9, F-B11, F-P3 (COUNTED)"
+  },
+  {
+   "id": "FF-E-02",
+   "control": "Source-regex assertions are labelled SOURCE-PROVEN and are never presented as runtime proof; the owner-mismatch branch is recorded as source-proven (root required), not an achieved runtime result",
+   "status": "PROVEN",
+   "evidence": "checker-197-corrections C4h, C4h2 and header; checker-197-final-five FE1-FE5"
+  },
+  {
+   "id": "FN-F1-01",
+   "control": "A governed transfer reports OK ONLY after the exact spawned supervisor produces a VERIFIED ephemeral-signed claim \u2014 pipe-write completion is never success",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FF1r-FF1u (DYNAMIC)"
+  },
+  {
+   "id": "FN-F1-02",
+   "control": "A supervisor that exits without reading the key is refused SUPERVISOR_TERMINATED_BEFORE_CLAIM, never OK, repeatably (6 runs)",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FF1a-FF1g (DYNAMIC, 6/6)"
+  },
+  {
+   "id": "FN-F1-03",
+   "control": "Reading the key frame is NOT sufficient: a supervisor that reads but never claims is refused",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FF1h-FF1k (DYNAMIC)"
+  },
+  {
+   "id": "FN-F1-04",
+   "control": "A malformed, or validly shaped but wrong-PID / wrong-start-identity, claim is refused; no forged claim yields an acknowledged supervisor. The start-identity comparison is UNCONDITIONAL.",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FS1a-FS1i (DYNAMIC) \u2014 a supervisor that LEGITIMATELY holds the transferred ephemeral key mints a CORRECTLY SIGNED claim carrying the EXACT spawned PID and forges ONLY supervisor_start_identity, so the refusal can come from nothing but the start-identity comparison (FS1g asserts the refusal detail is the comparison itself). Plus FF1l-FF1q for malformed/shape cases.",
+   "superseded_citation_note": "FG-FFIN4-197-02: this row previously cited FF1o-FF1q alone. That forged body is UNSIGNED (ephemeral_signature 'AA==') and wrong in BOTH pid and start identity, so classifySupervisorClaim returned at the signature check and the start-identity comparison was NEVER evaluated. The citation did not reach the control it claimed. FS1 supplies one that does."
+  },
+  {
+   "id": "FN-F1-05",
+   "control": "Every post-materialization failure leaves TRANSFERRED_SPENT, the key deleted, no residual process, and a retry refused ALREADY_TRANSFERRED",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FF1d-FF1g, FF1j, FF1k, FF1n, FF1w (DYNAMIC)"
+  },
+  {
+   "id": "FN-F1-06",
+   "control": "No timing heuristic is the authority decision; the claim wait is a fixed module constant with no caller-configurable path, clock, timeout or bypass",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FF1x, FF1y (SOURCE-PROVEN)"
+  },
+  {
+   "id": "FN-F1-07",
+   "control": "The launcher names the failure honestly: SUPERVISOR_NEVER_ACKNOWLEDGED at stage supervisor_acknowledgment, distinct from a spawn failure",
+   "status": "PROVEN",
+   "evidence": "detached-supervisor-failure 10, 10b, 10c (DYNAMIC)"
+  },
+  {
+   "id": "FN-F1-08",
+   "control": "A supervisor handed a FOREIGN activation's key can never mint a valid claim, so the launcher now DETECTS a key swap it previously could not",
+   "status": "PROVEN",
+   "evidence": "lifecycle-fd-transfer A2a (DYNAMIC)"
+  },
+  {
+   "id": "FN-F2-01",
+   "control": "No evidence row asserts the unreachable premature-termination -> TRANSFER_WRITE_FAILED mapping; the historical candidate c6bf5a37 is described truthfully as having returned OK on that route",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FFE1, FFE1b, FFE2, FFE3 (DYNAMIC over the ledger)"
+  },
+  {
+   "id": "FN-F3-01",
+   "control": "Spawn-count prose matches the instrument: the stub writes beside its own signed executable and the count never depends on environment propagation",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FFE4-FFE6 (SOURCE-PROVEN)"
+  },
+  {
+   "id": "FN-F3-02",
+   "control": "A POSITIVE CONTROL proves the spawn counter can record, so a counted zero is a measurement rather than a broken instrument",
+   "status": "PROVEN",
+   "evidence": "checker-197-corrections C1i2; checker-197-final-five FFE7 (DYNAMIC + COUNTED)"
+  },
+  {
+   "id": "FN-F4-01",
+   "control": "deepFreezeAuthority refuses own __proto__, constructor and prototype keys recursively, and copies with defineProperty so no inherited setter can be invoked",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FF4a-FF4e (DYNAMIC)"
+  },
+  {
+   "id": "FN-F4-02",
+   "control": "No prototype change, no inherited attacker field and no global prototype pollution; ordinary authority objects still copy, deep-freeze and serialise identically",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FF4f, FF4g, FF4j (DYNAMIC)"
+  },
+  {
+   "id": "FN-F4-03",
+   "control": "The helper accepts its own output on round-trip (the self-inconsistency is gone) and still refuses prototypes, accessors, symbols, functions, cycles and unsupported values",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FF4h, FF4k (DYNAMIC)"
+  },
+  {
+   "id": "FN-S1-01",
+   "control": "The parent's start-identity comparison is UNCONDITIONAL: a correctly signed claim with the exact spawned PID and a forged start identity is refused at that comparison",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FS1e-FS1g (DYNAMIC)"
+  },
+  {
+   "id": "FN-S1-02",
+   "control": "When the parent cannot independently observe the OS start identity the transfer FAILS CLOSED with SUPERVISOR_START_IDENTITY_UNAVAILABLE and never returns OK",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FS2b-FS2f (DYNAMIC, under genuine fd-table saturation)"
+  },
+  {
+   "id": "FN-S1-03",
+   "control": "That refusal is caused by the missing observation, not an earlier check: the child minted its correctly signed claim and the PID matched",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FS2g, FS2h (DYNAMIC)"
+  },
+  {
+   "id": "FN-S1-04",
+   "control": "Every OK acknowledgment carries start_identity_independently_observed === true and a real /bin/ps lstart record equal to the claim's",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FS3b-FS3f (DYNAMIC, 4 runs)"
+  },
+  {
+   "id": "FN-S1-05",
+   "control": "The fast claim-and-exit race never yields an OK with an unobserved identity",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FS4a-FS4c (DYNAMIC, 6 runs)"
+  },
+  {
+   "id": "FN-S1-06",
+   "control": "Failure after key materialization still leaves TRANSFERRED_SPENT, a refused retry, no residual process and zero provider spawn",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FS1i, FS2i-FS2k (DYNAMIC)"
+  },
+  {
+   "id": "FN-S1-07",
+   "control": "No PATH entry, config field, activation field, CLI flag or test option can substitute or skip the fixed /bin/ps observation",
+   "status": "PROVEN",
+   "evidence": "checker-197-final-five FS5a-FS5d (SOURCE-PROVEN)"
+  },
+  {
+   "id": "FN-P1-01",
+   "control": "Every supervisor-acknowledgment failure the authority module can return is recorded by the production launcher as stage supervisor_acknowledgment / final_state SUPERVISOR_NEVER_ACKNOWLEDGED",
+   "status": "PROVEN",
+   "evidence": "production-ack-classification AK2 (DYNAMIC, 32 assertions over all FOUR codes: SUPERVISOR_TERMINATED_BEFORE_CLAIM, SUPERVISOR_CLAIM_TIMEOUT, SUPERVISOR_CLAIM_INVALID, SUPERVISOR_START_IDENTITY_UNAVAILABLE) \u2014 each asserted for ready:false, stage, final_state, consumed:true, launched:false, supervisor_acknowledged:false and the exact lifecycle code preserved in refused.reasons. The assertions call the REAL exported production classifier.",
+   "superseded_status_note": "FG-CHK5-197-01: in candidate 9d87afa1 this was true for three of the four codes only. SUPERVISOR_START_IDENTITY_UNAVAILABLE was omitted from the launcher's inline classification, so a start-identity refusal was recorded as stage governed_key_transfer / final_state SUPERVISOR_SPAWN_FAILED \u2014 a false statement, because the spawn succeeded, the key transferred and the supervisor minted a correctly signed claim. Authority behaviour was unaffected and remained fail-closed."
+  },
+  {
+   "id": "FN-P1-02",
+   "control": "A genuine spawn, descriptor or key-transfer failure is NOT reclassified as an acknowledgment failure",
+   "status": "PROVEN",
+   "evidence": "production-ack-classification AK3 (DYNAMIC, 21 assertions) \u2014 SUPERVISOR_SPAWN_FAILED, TRANSFER_WRITE_FAILED and DESCRIPTOR_UNAVAILABLE keep stage governed_key_transfer / final_state SUPERVISOR_SPAWN_FAILED; ALREADY_TRANSFERRED, KEY_FRAME_MAGIC, FORGED, ROOT_OBJECT_IDENTITY_MISMATCH, an unknown future code, undefined and null are all rejected by the predicate. AK5d additionally proves SUPERVISOR_SPAWN_FAILED does not originate in the acknowledgment wait at all."
+  },
+  {
+   "id": "FN-P1-03",
+   "control": "The acknowledgment-failure code set is a single named immutable collection that cannot be widened, reassigned or configured",
+   "status": "PROVEN",
+   "evidence": "production-ack-classification AK1a-AK1e (DYNAMIC: exported, Object.isFrozen, exactly four codes, a runtime push does not widen it, spawn/transfer codes absent) and AK4d-AK4f (SOURCE-PROVEN: declared exactly once as a frozen literal, every element a static LC_CODES reference, never mutated and never sourced from env/config/flags/argv)"
+  },
+  {
+   "id": "FN-P1-04",
+   "control": "The launcher's refusal branch DELEGATES to that one classifier, so the record cannot be built a second divergent way",
+   "status": "PROVEN",
+   "evidence": "production-ack-classification AK4a-AK4c (SOURCE-PROVEN: the branch is literally `if (!g.ok) return classifyGovernedTransferRefusal(g);`, the drifting inline three-code OR expression is gone, and the strings \"supervisor_acknowledgment\" and \"SUPERVISOR_NEVER_ACKNOWLEDGED\" each occur exactly ONCE in the launcher source) plus AK6e (DYNAMIC: the live record produced by the real launcher equals the classifier's output for the same code)"
+  },
+  {
+   "id": "FN-P1-05",
+   "control": "A future acknowledgment code cannot silently drift out of the launcher's classification",
+   "status": "PROVEN",
+   "evidence": "production-ack-classification AK5a-AK5c (SOURCE-PROVEN drift guard) \u2014 the acknowledgment-wait region of lifecycle-authority-v4.mjs is located, every LC_CODES.SUPERVISOR_* code it can return is extracted from that region, and the suite FAILS if any is not in the launcher's collection. This is the guard whose absence allowed FG-CHK5-197-01."
+  },
+  {
+   "id": "FN-P1-06",
+   "control": "The regression executes the REAL production launcher, not a copy of its expression",
+   "status": "PROVEN",
+   "evidence": "production-ack-classification imports classifyGovernedTransferRefusal / isSupervisorAcknowledgmentFailure / SUPERVISOR_ACKNOWLEDGMENT_FAILURE_CODES / launchDetachedSupervisorV4 from tools/terminal0/lrcq/run-five-hour.mjs and calls them; AK6a-AK6f (DYNAMIC) drive launchDetachedSupervisorV4 end to end to a genuine acknowledgment failure with zero provider invocation; AK8a-AK8d (DYNAMIC positive control) show the historical three-code expression MISCLASSIFIES the fourth code, i.e. this family would have FAILED against candidate 9d87afa1"
+  },
+  {
+   "id": "FN-P1-07",
+   "control": "The correction changed no authority-core file and no authority behaviour",
+   "status": "PROVEN",
+   "evidence": "production-ack-classification AK7a-AK7d (SOURCE-PROVEN: the start-identity code is still declared and returned, the comparison is still unconditional, the observation still runs through the fixed absolute /bin/ps, and the launcher gained no new import) plus the unchanged re-run of checker-197-final-five 192/192, detached-supervisor 31/31, detached-supervisor-failure 14/14, lifecycle-fd-transfer 19/19, checker-197-corrections 78/78, production-seam-closure 30/30, authority-route 15/15 and v3-retirement 22/22"
+  }
+ ],
+ "not_proven_here": [
+  "Real productive provider capability (a real builder session producing changes and a real checker session returning CLEAN). This requires invoking Claude, which is forbidden during preparation. First exercised under founder signature.",
+  "The final independent Checker and Advisor verdicts. The Builder cannot supply them; see the review packet.",
+  "The FRESH independent Checker verdict on the CORRECTED candidate. ALL FOUR prior reports (sha256 caa4db00..., 6ac782a2..., c49cc563... and 886d6982...) are HISTORICAL FINDINGS EVIDENCE ONLY \u2014 each reviewed a tree that no longer exists on this branch.",
+  "Evidence-class discipline: every row states DYNAMIC (attack executed), COUNTED (real process count) or SOURCE-PROVEN (source text, not an execution). A row must cite evidence that REACHES the control it claims \u2014 see the superseded_citation_note on FN-F1-04. Nothing here is independent acceptance.",
+  "FG-CHK5-197: an end-to-end drive of launchDetachedSupervisorV4 all the way to SUPERVISOR_START_IDENTITY_UNAVAILABLE. The launcher passes explicit stdoutFd/stderrFd, so the parent retains enough descriptors for /bin/ps to succeed under the fd pressure that reproduces the code at the authority boundary; forcing it through the launcher needs the full disposable-repository-clone apparatus. The classification is instead proven by calling the REAL exported production classifier for that exact code (AK2), by the structural proof that the live branch returns that classifier verbatim (AK4a-AK4c), and by a live end-to-end drive on a different acknowledgment code (AK6).",
+  "FG-CHK5-197: this matrix is BUILDER evidence and is not independent acceptance. A fresh independent Checker verdict on candidate ebd4ff56 is required."
+ ]
+}

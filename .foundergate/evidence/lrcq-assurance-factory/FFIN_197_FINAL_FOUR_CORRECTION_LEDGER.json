@@ -1,0 +1,187 @@
+{
+  "schema": "lrcq-ffin-197-final-four-correction-ledger-1",
+  "wave": "FG-FFIN-197 — third independent-Checker finding correction",
+  "pr": 197,
+  "branch": "lane/lrcq-founder-signature-authority-8d1899f",
+  "source_report": {
+    "path_at_review_time": "/tmp/foundergate-pr197-final-five-independent-checker.json",
+    "preserved_copy": ".foundergate/evidence/lrcq-assurance-factory/FFIN_197_THIRD_CHECKER_REPORT_HISTORICAL.json",
+    "sha256": "c49cc5633341639704fcb0564722c8f02c642884b6c7cd8a8f2d44bd70bb294d",
+    "verdict": "FINDINGS",
+    "findings": "1 MEDIUM + 3 LOW",
+    "status": "HISTORICAL FINDINGS EVIDENCE ONLY — NOT current acceptance. It reviewed candidate c6bf5a37d06b5a86a2ac1b7a5721bb53c38868c0. A FRESH independent Checker is required on the corrected candidate."
+  },
+  "reviewed_candidate_at_report_time": {
+    "sha": "c6bf5a37d06b5a86a2ac1b7a5721bb53c38868c0",
+    "tree": "0d598ceb16cc2faebc2099c1b88b62788ff72219"
+  },
+  "evidence_class_legend": {
+    "DYNAMIC": "the attack was executed and the refusal/behaviour observed in the test process tree",
+    "COUNTED": "a real process count read from a recording provider stub's own adjacent log, not inferred",
+    "SOURCE-PROVEN": "a property of the source text, NOT an execution"
+  },
+  "builder_reproduction_of_the_reported_defect": {
+    "finding": "F1",
+    "method": "Six independent disposable worlds, each with a genuine CONSUMED capability and a genuine ephemeral-signed launch intent whose supervisor entrypoint contains exactly `process.exit(9);`. Called spawnGovernedSupervisorV4(cap, { detached: true }) and then checked for a supervisor claim.",
+    "result_before_correction": "OK_COUNT=6/6, CLAIMS=0/6 — every run returned { ok: true, code: 'OK', transfer: 'TRANSFERRED_SPENT' } with a supervisor_pid that had already exited, and no supervisor claim ever existed. This independently confirms the third Checker's 6/6 observation.",
+    "result_after_correction": "OK_COUNT=0/6 — every run returns { ok: false, code: 'SUPERVISOR_TERMINATED_BEFORE_CLAIM', transfer: 'TRANSFERRED_SPENT' }, still CLAIMS=0/6."
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "MEDIUM",
+      "accepted": true,
+      "disputed": false,
+      "title": "pipe-write completion reported OK although the supervisor never read the key; the declared premature-termination arm was unreachable",
+      "file": "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs",
+      "mechanism_confirmed": "The governed key frame is 92 bytes and the inherited anonymous descriptor is an ordinary kernel pipe with a 64 KiB buffer, so writer.write(frame, cb) always completes into the buffer and writer.end()'s callback resolved the settle promise within microseconds — long before the 250 ms timer that the 'exit'/'close' arm armed. Because done() was guarded by a `settled` flag, the premature arm's later done({ code: TRANSFER_WRITE_FAILED }) was a no-op, so that documented outcome was NOT REACHABLE AT ALL. The launcher returned ok:true with supervisor_pid set to a process that had already exited without ever reading fd 3.",
+      "security_impact_assessment": "Key containment was NOT breached — the authority was already TRANSFERRED_SPENT, the private key already deleted, buffers zeroed, retry refused, and the unread frame died with the pipe. The defect was EVIDENCE TRUTHFULNESS and LIVENESS: the launcher recorded a completed transfer and a live supervisor for a supervisor that provably never received the key. This Builder accepts the Checker's severity assessment and did not downgrade it.",
+      "correction": [
+        "the unreachable 250 ms premature-termination timer is REMOVED — no timing heuristic is the authority decision anywhere on this path",
+        "write completion is no longer success: it only means the frame entered the pipe buffer, and the code and comments now say exactly that",
+        "new awaitVerifiedSupervisorClaim: a bounded, EXIT-DRIVEN wait for the ephemeral-SIGNED supervisor claim, which is the one acknowledgment a supervisor cannot fabricate",
+        "verifying that claim proves, in one artifact, that the exact spawned process (1) read and decoded the inherited key frame, (2) matched the ephemeral key to the consumed marker, (3) independently reverified the signed V4 activation, (4) proved its entrypoint identity, (5) minted a valid signed claim, and (6) bound it to the spawned PID and OS-observed start identity",
+        "the parent independently observes the child's OS start identity and compares it with the claim's, rather than trusting the claim against itself",
+        "a torn read of a half-written record is retried; a COMPLETE record that fails any binding is refused immediately, because claims are wx-once and can never become valid later",
+        "SUPERVISOR_CLAIM_WAIT_MS is a fixed module constant — no caller-configurable claim path, clock, timeout or verification bypass was introduced",
+        "the production launcher names the failure honestly: final_state SUPERVISOR_NEVER_ACKNOWLEDGED with stage supervisor_acknowledgment, distinct from a spawn failure",
+        "the test-support key-receipt child is now a GENUINE minimal supervisor (re-verifies, attaches, mints the claim) rather than a byte counter, because a byte counter is — correctly — no longer accepted as evidence of delivery"
+      ],
+      "new_codes": ["SUPERVISOR_TERMINATED_BEFORE_CLAIM", "SUPERVISOR_CLAIM_TIMEOUT", "SUPERVISOR_CLAIM_INVALID"],
+      "not_accepted_as_proof": ["the pipe-write callback", "the writer end callback", "elapsed time", "the existence of a child PID", "the child remaining alive for an arbitrary number of milliseconds"],
+      "files": [
+        "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs",
+        "tools/terminal0/lrcq/run-five-hour.mjs",
+        "src/v8b/lrcq/run-harness-tests/test-support/v4-key-receipt-child.mjs"
+      ],
+      "result_after": {
+        "A_immediate_death_without_reading": "DYNAMIC: 6/6 runs return ok:false with SUPERVISOR_TERMINATED_BEFORE_CLAIM; never OK; authority spent; retry ALREADY_TRANSFERRED; no claim; no residual process; zero provider spawn (FF1a-FF1g)",
+        "B_reads_the_frame_but_never_claims": "DYNAMIC: reading the frame is NOT sufficient — SUPERVISOR_TERMINATED_BEFORE_CLAIM, never OK, spent, retry refused (FF1h-FF1k)",
+        "C_malformed_claim": "DYNAMIC: a self-written claim with no valid ephemeral signature is refused, never OK (FF1l-FF1n)",
+        "D_wrong_pid_or_start_identity": "DYNAMIC: a validly SHAPED claim carrying every required field but a foreign PID and start identity is refused; no forged claim can make the transfer report an acknowledged supervisor (FF1o-FF1q)",
+        "E_genuine_supervisor": "DYNAMIC: exactly one OK, the verified claim bound to the EXACT spawned PID, start identity independently OS-observed, supervisor reached SUPERVISOR_EXECUTION, retry still ALREADY_TRANSFERRED (FF1r-FF1w)",
+        "schedule_sensitivity": "DYNAMIC: the immediate-death race is run 6 times per suite execution and is refused identically every time — the outcome is decided by evidence, not by scheduling",
+        "no_timing_heuristic": "SOURCE-PROVEN: the 250 ms timer and its 'child terminated before the key frame completed' text are gone; the claim wait is a fixed module constant with no caller-supplied option (FF1x, FF1y)",
+        "side_effect_detected": "DYNAMIC: a supervisor handed a FOREIGN activation's key can never mint a valid claim, so the launcher now DETECTS a key swap it previously could not (lifecycle-fd-transfer A2a), and a COPIED claim is refused at the transfer as well as at the attach (A4, A4a)"
+      },
+      "regression_tests": ["checker-197-final-five FF1a-FF1y", "lifecycle-fd-transfer A2a, A4, A4a", "checker-197-corrections C1a-C1e, C1d2"]
+    },
+    {
+      "id": "F2",
+      "severity": "LOW",
+      "accepted": true,
+      "disputed": false,
+      "title": "the correction ledger stated an outcome mapping for premature child termination that the corrected code did not achieve",
+      "file": ".foundergate/evidence/lrcq-assurance-factory/FCHK_197_FINAL_FIVE_CORRECTION_LEDGER.json",
+      "mechanism_confirmed": "findings[0].correction[2] asserted 'premature child termination -> TRANSFER_WRITE_FAILED' as an achieved property of the correction. Per F1 that arm never won, so the mapping was unreachable. The following bullet qualified the arm as decisive 'only if nothing else settles shortly after', but that describes a HEALTHY supervisor that did read the frame; it did not disclose that an unhealthy supervisor which never read the frame also yielded OK.",
+      "correction": [
+        "the bullet no longer asserts the mapping: it now records that the mapping was NEVER ACHIEVED in candidate c6bf5a37 and explains why (92-byte frame, 64 KiB pipe buffer, write callback wins deterministically)",
+        "the adjacent bullet records that the original wording did not disclose the unhealthy-supervisor case, and states the observed behaviour: `process.exit(9)` produced ok:true with a dead supervisor_pid, reproduced 6/6 by the third Checker and again by this Builder",
+        "result_after.premature_child_termination is marked SUPERSEDED and states plainly that candidate c6bf5a37 returned OK on that route",
+        "the row records that assertions FA17-FA21 were correctly scoped and never claimed the TRANSFER_WRITE_FAILED code, but also did not require a non-OK result, which is why they passed — and that FA18 now requires exactly the non-OK code",
+        "a superseded_by pointer to FG-FFIN-197-F1 and this report's digest was added"
+      ],
+      "historical_integrity": "The historical candidate is described truthfully and was NOT rewritten to imply it behaved correctly. The ledger now states that c6bf5a37 returned OK when the child died without reading, that the third Checker detected it, and that the successor candidate requires a verified signed claim before reporting OK.",
+      "files": [".foundergate/evidence/lrcq-assurance-factory/FCHK_197_FINAL_FIVE_CORRECTION_LEDGER.json"],
+      "result_after": {
+        "no_bullet_asserts_the_unreachable_mapping": "DYNAMIC: mechanically checked — every bullet mentioning the mapping also carries the correction marker (FFE1)",
+        "the_quote_is_marked_never_achieved": "DYNAMIC: FFE1b",
+        "the_old_candidate_is_described_truthfully": "DYNAMIC: FFE2",
+        "supersession_is_recorded": "DYNAMIC: FFE3"
+      },
+      "regression_tests": ["checker-197-final-five FFE1, FFE1b, FFE2, FFE3"]
+    },
+    {
+      "id": "F3",
+      "severity": "LOW",
+      "accepted": true,
+      "disputed": false,
+      "title": "stale FG_SPAWN_LOG comments contradicted the recording stub's actual mechanism — the exact class FG-FCHK-197-E was raised to fix",
+      "file": "src/v8b/lrcq/run-harness-tests/test-support/recording-provider-stub.mjs:4 and src/v8b/lrcq/run-harness-tests/checker-197-corrections.selftest.mjs:60",
+      "mechanism_confirmed": "The stub's header said it appends to 'the log named by FG_SPAWN_LOG' and the C1 comment said 'every process in the attack is given FG_SPAWN_LOG'. Neither was true: FG_SPAWN_LOG appeared nowhere in the repository except those two comments — no code set it and no code read it. The stub derives its log from import.meta.url, and lines 7-10 of the same file explicitly warn that an env-carried path would be scrubbed away by the production boundary. The two comments asserted precisely the mechanism the file warns against. The MEASUREMENT was correct; only the prose was wrong.",
+      "correction": [
+        "both stale sentences are removed; `grep -rn FG_SPAWN_LOG src/ tools/` now returns nothing",
+        "the stub header states that it writes to a durable log BESIDE ITS OWN EXECUTABLE",
+        "the C1 comment states that the stub is copied into the disposable world so the founder signature binds it, that the log is adjacent (<stub>.spawns.log, derived from import.meta.url), that the count does not depend on environment propagation, and that the production boundary deliberately scrubs the provider environment to PATH and HOME",
+        "a POSITIVE CONTROL (C1i2) was added: after asserting zero, the suite executes the very stub the signed activation binds and requires the count to move to exactly one — so the zero is a measurement by a demonstrably working instrument, not a broken or mis-addressed counter",
+        "no spawn-count behaviour was changed to match the stale prose"
+      ],
+      "files": [
+        "src/v8b/lrcq/run-harness-tests/test-support/recording-provider-stub.mjs",
+        "src/v8b/lrcq/run-harness-tests/checker-197-corrections.selftest.mjs"
+      ],
+      "result_after": {
+        "no_stale_prose_survives": "SOURCE-PROVEN: FFE4",
+        "the_documented_mechanism_matches_the_code": "SOURCE-PROVEN: FFE5, FFE6",
+        "instrument_positive_control": "DYNAMIC + COUNTED: FFE7 and C1i2 — executing the signed stub records exactly one line",
+        "counts_unchanged": "DYNAMIC + COUNTED: C1i still zero; the 26-route matrix still 26/26 refused with a counted zero and exactly one stub process on the positive narrowed route"
+      },
+      "regression_tests": ["checker-197-final-five FFE4-FFE7", "checker-197-corrections C1i, C1i2"]
+    },
+    {
+      "id": "F4",
+      "severity": "LOW",
+      "accepted": true,
+      "disputed": false,
+      "title": "deepFreezeAuthority silently dropped an own __proto__ data key and mutated the copy's prototype instead of refusing it",
+      "file": "src/v8b/lrcq/assurance/deep-freeze-authority.mjs",
+      "mechanism_confirmed": "`out` was created as {}, so it inherited Object.prototype's __proto__ ACCESSOR. When k === '__proto__', `out[k] = value` invoked that SETTER and reassigned the copy's prototype rather than creating an own data property. JSON.parse produces exactly this shape — an own, enumerable, writable __proto__ data property — so the one input class the module is built to consume could carry a key it neither refused nor copied faithfully. Observed before correction: no throw; the __proto__ key vanished from the copy; the prototype became the attacker's object; f.max_budget_usd resolved to 777777 by prototype-chain lookup; Object.isFrozen(f) and mutableAuthorityPaths(f) both still reported the copy as sound; and the module REFUSED its own output on round-trip with AUTHORITY_NON_PLAIN_PROTOTYPE — a self-inconsistency proving the copy was not the plain JSON authority data the contract promises.",
+      "reachability_confirmed": "NOT exploitable in production, and this Builder verified rather than assumed it. All three call sites (activation-v4.mjs makeCapability, and the CONSUMED and SUPERVISOR_EXECUTION mints in lifecycle-authority-v4.mjs) pass object literals whose key sets are hard-coded in source, and cap.limits / cap.exclusions are built by Object.fromEntries over the fixed V4_SIGNED_LIMIT_FIELDS and V4_SIGNED_EXCLUSIONS tables. No attacker-controlled key reaches the helper on any route. This was a latent contract gap in an explicitly-audited helper, not an authority escape.",
+      "correction": [
+        "own keys named __proto__, constructor or prototype are REFUSED with the new AUTHORITY_DANGEROUS_KEY code",
+        "the rejection is recursive — it applies at every depth, including inside arrays",
+        "the copy is built with Object.create(null) and Object.defineProperty, never with property assignment, so no inherited setter can ever be invoked",
+        "the standard prototype is restored only AFTER every key has been materialised as an own data property, preserving the ordinary plain-object behaviour consumers require (JSON.stringify, Object.keys, spread, `in`, property reads)",
+        "the caller-owned source is still neither mutated nor frozen, and the previously-rejecting classes (unusual prototypes, accessors, symbols, functions, cycles, undefined/NaN/Infinity) still reject"
+      ],
+      "files": ["src/v8b/lrcq/assurance/deep-freeze-authority.mjs"],
+      "result_after": {
+        "own___proto___from_JSON_parse": "DYNAMIC: refused with AUTHORITY_DANGEROUS_KEY (FF4a)",
+        "nested___proto__": "DYNAMIC: refused recursively (FF4b)",
+        "constructor": "DYNAMIC: refused (FF4c)",
+        "prototype": "DYNAMIC: refused (FF4d)",
+        "dangerous_key_inside_an_array": "DYNAMIC: refused (FF4e)",
+        "no_prototype_change": "DYNAMIC: an ordinary copy keeps Object.prototype (FF4g)",
+        "no_inherited_attacker_field": "DYNAMIC: dangerous inputs never produce a copy at all — they throw (FF4a-FF4e)",
+        "no_global_prototype_pollution": "DYNAMIC: ({}).max_budget_usd and Object.prototype.max_budget_usd remain undefined (FF4j)",
+        "ordinary_authority_objects": "DYNAMIC: still copy, deep-freeze, serialise identically, spread, and report zero mutable paths (FF4f, FF4g)",
+        "self_consistency": "DYNAMIC: the helper now ACCEPTS its own output on round-trip (FF4h)",
+        "source_untouched": "DYNAMIC: the caller-owned source is neither mutated nor frozen (FF4i)"
+      },
+      "regression_tests": ["checker-197-final-five FF4a-FF4k"]
+    }
+  ],
+  "preserved_clean_results_reverified": {
+    "note": "These surfaces were independently CLEAN in the third Checker's report and were NOT reopened. They were re-run as regressions only.",
+    "signed_limit_ceilings": "final-five-boundary F-B5/F-B5b/F-B10 — unchanged",
+    "ten_signed_exclusions": "F-B6/F-B6b/F-B7/F-B8 — unchanged",
+    "twenty_six_route_provider_matrix": "F-B1-F-B4 — 26/26 refused, COUNTED zero provider spawns",
+    "positive_narrowed_route": "F-P1-F-P7 — exactly ONE deterministic stub process",
+    "deep_immutability_of_valid_authority_data": "FC1-FC8, F-C1-F-C8 — unchanged",
+    "lifecycle_root_device_inode_continuity": "FD1-FD19 — unchanged",
+    "concurrent_one_use_transfer": "checker-197-corrections C1a-C1k — unchanged invariants, delivery now proven by the ATTACH rather than a byte count",
+    "fixed_git_and_ps": "C2 family — unchanged",
+    "supervisor_config_restrictions": "C3 family — unchanged",
+    "v3_retirement": "v3-retirement 22/22 — unchanged",
+    "mandatory_entrypoint_self_proof": "C7 family — unchanged",
+    "exactly_one_productive_provider_boundary": "unchanged",
+    "deterministic_positive_execution": "detached-supervisor full V4 chain — unchanged",
+    "replay_refusal": "A3b/A3c/A3d, detached-supervisor 28 — unchanged",
+    "provider_target_2_1_220": "PROVIDER_REFREEZE_2_1_220.json — untouched this wave"
+  },
+  "zero_spawn_totals": {
+    "productive_provider_or_model_invocations": 0,
+    "real_claude_invocations": 0,
+    "founder_keys_created": 0,
+    "real_signatures_created": 0,
+    "real_activations_created_or_consumed": 0,
+    "five_hour_runs_started": 0,
+    "residual_processes": 0,
+    "active_keys": []
+  },
+  "not_proven_here": [
+    "This ledger is BUILDER evidence. It is NOT independent acceptance and must not be read as a Checker verdict.",
+    "The FRESH independent Checker verdict on the corrected candidate. The report with digest c49cc563... is historical FINDINGS evidence against candidate c6bf5a37 only.",
+    "Real productive provider capability. No model was invoked."
+  ]
+}

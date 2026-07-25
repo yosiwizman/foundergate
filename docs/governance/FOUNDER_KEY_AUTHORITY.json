@@ -1,0 +1,13 @@
+{
+  "schema": "lrcq-founder-key-authority-1",
+  "schema_version": 1,
+  "note": "Governed FounderGate public-key authority. Contains PUBLIC keys only. This implementation-wave file holds NO real founder key (active_keys is empty). A later, separately-reviewed enrollment wave mechanically imports exactly ONE public entry (SPKI DER base64 + sha256 fingerprint) into active_keys. Exactly one current key is permitted.",
+  "formats": {
+    "public_key": "SPKI DER encoded as base64 (ed25519)",
+    "fingerprint": "sha256:<64 lowercase hex> computed over the raw SPKI DER bytes",
+    "active_key_entry": { "fingerprint": "sha256:<hex>", "public_key_spki_b64": "<base64>", "algorithm": "ed25519", "enrolled_note": "<free text>", "current": true }
+  },
+  "max_current_keys": 1,
+  "active_keys": [],
+  "revoked_keys": []
+}

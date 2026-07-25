@@ -4,15 +4,17 @@
 // write. Every function fails CLOSED (returns an explicit unknown/false) rather than a safe default.
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+// FG-CHK-197-02: fixed absolute executables in a minimal environment — never PATH-resolved.
+import { fixedGit, fixedPs } from "../assurance/fixed-executables.mjs";
 import { join } from "node:path";
 import { readSupervisorState, supervisorAlive } from "./supervisor.mjs";
 
-export function psStartIdentity(pid) { try { return execFileSync("ps", ["-o", "lstart=", "-p", String(pid)], { encoding: "utf8" }).trim(); } catch { return null; } }
+export function psStartIdentity(pid) { try { return fixedPs(["-o", "lstart=", "-p", String(pid)]); } catch { return null; } }
 export function childPids(pid) { try { return execFileSync("pgrep", ["-P", String(pid)], { encoding: "utf8" }).trim().split(/\s+/).filter(Boolean); } catch { return []; } }
 // Resolve a child process's actual command line (argv) so the witness can compare the REAL provider
 // executable to the manifest-bound expected path — NOT a self-comparison of a config value.
 // `-ww` disables ps's column truncation so a long provider path is fully visible (not cut off).
-export function processArgs(pid) { try { return execFileSync("ps", ["-ww", "-o", "args=", "-p", String(pid)], { encoding: "utf8" }).trim(); } catch { return null; } }
+export function processArgs(pid) { try { return fixedPs(["-ww", "-o", "args=", "-p", String(pid)]); } catch { return null; } }
 
 // Count DISTINCT live supervisor owners for a run by enumerating the authoritative supervisor state dir.
 // The supervisor's own atomic startup refusal prevents a second live owner; the witness independently
@@ -62,7 +64,7 @@ export function protectedMainState({ repoRoot, ref, baseline }) {
   if (!baseline) return { ok: null, reason: "no reviewed protected-main baseline", ref: ref || null, current: null };
   const useRef = ref || "refs/remotes/origin/main";
   let current = null;
-  try { current = execFileSync("git", ["-C", repoRoot || ".", "rev-parse", useRef], { encoding: "utf8" }).trim(); }
+  try { current = fixedGit(["-C", repoRoot || ".", "rev-parse", useRef]); }
   catch { return { ok: null, reason: "cannot read protected-main ref " + useRef, ref: useRef, current: null }; }
   return { ok: current === baseline, ref: useRef, current, baseline };
 }
