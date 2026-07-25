@@ -12,7 +12,7 @@ import { fingerprintOfSpkiDer } from "../../../../src/v8b/lrcq/assurance/founder
 import { consumeActivationV4, createLaunchIntentV4, providerEligibilityV4, isConsumedCapabilityV4, LC_CODES } from "../../../../src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs";
 
 let n = 0; const fails = [];
-const ok = (name, cond) => { n++; if (!cond) { fails.push(name); console.log("  FAIL " + name); } else console.log("  ok   " + name); };
+const ok = (name, cond, detail) => { n++; if (!cond) { fails.push(name); console.log("  FAIL " + name + (detail ? " [" + String(detail).slice(0, 200) + "]" : "")); } else console.log("  ok   " + name); };
 
 const base = mkdtempSync(join(tmpdir(), "fg-lc-"));
 try {
@@ -20,6 +20,7 @@ try {
   execFileSync("git", ["-C", repoRoot, "init", "-q"]); // real worktree so the signed git-common-dir binding verifies
   const gitCommonDir = realpathSync(join(repoRoot, ".git"));
   const lifecycleRoot = join(repoRoot, "lifecycle"); mkdirSync(lifecycleRoot, { recursive: true });
+  writeFileSync(join(repoRoot, "entry.mjs"), "process.exit(0);\n"); // a real, non-symlink regular entrypoint to digest
   const kp = generateKeyPairSync("ed25519");
   const spkiDer = createPublicKey(kp.privateKey).export({ format: "der", type: "spki" });
   const fp = fingerprintOfSpkiDer(spkiDer);
@@ -47,9 +48,13 @@ try {
   ok("B4 double consume -> ALREADY_CONSUMED", consumeActivationV4(v, { now: 1201 }).code === LC_CODES.ALREADY_CONSUMED);
 
   // ---- launch intent signed by the ephemeral key; one-launch ----
-  const li = createLaunchIntentV4(c.capability, { now: 1200 });
-  ok("L1 launch intent created (ephemeral-signed)", li.ok);
-  ok("L2 second launch intent (same consumed cap) -> ALREADY_LAUNCHED", createLaunchIntentV4(c.capability, { now: 1201 }).code === LC_CODES.ALREADY_LAUNCHED);
+  // FG-CHK-197-07: the supervisor entrypoint is MANDATORY at intent creation — an intent with none would
+  // leave the supervisor's entrypoint self-proof unarmed.
+  ok("L0 an intent with NO supervisorEntrypoint is REFUSED", createLaunchIntentV4(c.capability, { now: 1200 }).code === LC_CODES.ENTRYPOINT_INVALID);
+  const ENTRY = realpathSync(join(repoRoot, "entry.mjs"));
+  const li = createLaunchIntentV4(c.capability, { now: 1200, supervisorEntrypoint: ENTRY });
+  ok("L1 launch intent created (ephemeral-signed, entrypoint digested)", li.ok, li.code + " " + (li.detail || ""));
+  ok("L2 second launch intent (same consumed cap) -> ALREADY_LAUNCHED", createLaunchIntentV4(c.capability, { now: 1201, supervisorEntrypoint: ENTRY }).code === LC_CODES.ALREADY_LAUNCHED);
   ok("L3 forged (non-consumed) object cannot create an intent", createLaunchIntentV4({ _stage: "CONSUMED", activation_identity: id, lifecycle_root: lifecycleRoot, __state: { launched: false } }, {}).code === LC_CODES.FORGED);
 
   // ---- supervisor attach is NOT reachable in-process ----------------------------------------------

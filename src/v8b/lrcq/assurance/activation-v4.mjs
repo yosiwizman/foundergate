@@ -4,7 +4,7 @@
 // public key. V3 is refused for all new execution (evidence-only). The verified capability is a frozen,
 // module-private-branded object — a plain { verified:true } is never accepted anywhere.
 import { createHash, verify as edVerify, sign as edSign } from "node:crypto";
-import { execFileSync } from "node:child_process";
+import { fixedPs } from "./fixed-executables.mjs";
 import { canonicalize, signedMessage } from "./canonical-json.mjs";
 import { resolveVerifierKey } from "./founder-key-authority.mjs";
 
@@ -12,7 +12,10 @@ import { resolveVerifierKey } from "./founder-key-authority.mjs";
 // supplied. UNKNOWN/unreadable fails closed (returns null). Used to prove a launch-claim's recorded
 // supervisor identity belongs to the ACTUAL current process (catches stale-PID reuse).
 export function observedStartIdentity(pid) {
-  try { const out = execFileSync("ps", ["-o", "lstart=", "-p", String(pid)], { encoding: "utf8" }).trim(); return out ? "pid:" + pid + "|lstart:" + out : null; } catch { return null; }
+  // FG-CHK-197-02: `ps` runs through the FIXED ABSOLUTE executable (/bin/ps), verified regular+non-symlink+
+  // executable immediately before use, in a minimal environment. A bare "ps" was PATH-resolvable, so a hostile
+  // script named `ps` could have forged the process-start identity that stale-PID / PID-reuse detection rests on.
+  try { const out = fixedPs(["-o", "lstart=", "-p", String(pid)]); return out ? "pid:" + pid + "|lstart:" + out : null; } catch { return null; }
 }
 
 export const ACTIVATION_V4_SCHEMA = "lrcq-activation-4";

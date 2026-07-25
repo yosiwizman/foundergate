@@ -12,19 +12,60 @@
 // activation from disk itself); re-consumes the activation; mints a new deadline window; invokes real Claude
 // directly (it runs whatever provider the SIGNED activation binds — a deterministic stub in tests).
 import { readFileSync, appendFileSync } from "node:fs";
-import { execFileSync } from "node:child_process";
+import { assertAuthorityObject, FS_CLASS } from "../assurance/fs-authority-guards.mjs";
+import { fixedPs } from "../assurance/fixed-executables.mjs";
 import { startSupervisor } from "./supervisor.mjs";
 import { attachSupervisorFromInheritedFdV4, isSupervisorExecutionCapabilityV4 } from "../assurance/lifecycle-authority-v4.mjs";
 import { verifyActivationFile, loadManifestV4, executeSignedRunV4 } from "../../../../tools/terminal0/lrcq/run-five-hour.mjs";
 
 export const V4_KEY_FD = 3;
 
-function processStartIdentity(pid) { try { return execFileSync("ps", ["-o", "lstart=", "-p", String(pid)], { encoding: "utf8" }).trim(); } catch { return null; } }
+// FG-CHK-197-03: the EXHAUSTIVE allow-list of supervisor-config keys. The config may locate the signed
+// activation, the authorization bytes, the expected activation identity and the durable run directories — and
+// nothing else. `exec` and `now` were authority-bearing (exec.repoRoot/candidateRef reached `git worktree add`
+// and so chose which commit every job worktree was built from; `now` replaced the clock used by the
+// supervisor's INDEPENDENT re-verification). Any key outside this list — and those two in particular — is
+// refused fail-closed BEFORE the lifecycle claim and before any provider access, mirroring the launcher's
+// PRODUCTION_TEST_OVERRIDE_REFUSED treatment of a retired test variable.
+export const SUPERVISOR_CONFIG_KEYS = Object.freeze([
+  "schema", "activation_path", "authorization_path", "activation_identity", "run_id",
+  "supervisorDir", "runRoot", "heartbeatMs", "eventLog",
+]);
+export const FORBIDDEN_SUPERVISOR_CONFIG_KEYS = Object.freeze(["exec", "now", "man", "manifest", "bindings", "capability", "verified", "key", "keyFd", "clock", "nowFn", "provider", "candidateRef", "repoRoot"]);
+
+// Returns { ok } or { ok:false, code, keys }. Pure, so a test can assert it without spawning.
+export function validateSupervisorConfig(cfg) {
+  if (!cfg || typeof cfg !== "object" || Array.isArray(cfg)) return { ok: false, code: "SUPERVISOR_CONFIG_MALFORMED", keys: [] };
+  const present = Object.keys(cfg);
+  const forbidden = present.filter((k) => FORBIDDEN_SUPERVISOR_CONFIG_KEYS.includes(k));
+  if (forbidden.length) return { ok: false, code: "SUPERVISOR_CONFIG_AUTHORITY_FIELD_REFUSED", keys: forbidden };
+  const unknown = present.filter((k) => !SUPERVISOR_CONFIG_KEYS.includes(k));
+  if (unknown.length) return { ok: false, code: "SUPERVISOR_CONFIG_UNKNOWN_FIELD_REFUSED", keys: unknown };
+  if (typeof cfg.activation_path !== "string" || !cfg.activation_path) return { ok: false, code: "SUPERVISOR_CONFIG_NO_ACTIVATION_PATH", keys: [] };
+  if (cfg.heartbeatMs !== undefined && !(typeof cfg.heartbeatMs === "number" && cfg.heartbeatMs > 0 && cfg.heartbeatMs <= 600000)) return { ok: false, code: "SUPERVISOR_CONFIG_BAD_HEARTBEAT", keys: ["heartbeatMs"] };
+  return { ok: true, code: "OK", keys: [] };
+}
+
+// FG-CHK-197-02: the published process-start identity comes from the FIXED ABSOLUTE /bin/ps, not a
+// PATH-resolved `ps`, so it cannot be forged by an environment the supervisor inherits.
+function processStartIdentity(pid) { try { return fixedPs(["-o", "lstart=", "-p", String(pid)]); } catch { return null; } }
 
 async function supervise(cfgPath) {
+  // FG-CHK-197-04: the supervisor config is a SECRET_OR_MUTABLE authority object — owner + 0600, no symlink,
+  // regular file — checked before it is parsed.
+  const cg = assertAuthorityObject(cfgPath, FS_CLASS.SECRET_OR_MUTABLE);
+  if (!cg.ok) { console.error("SUPERVISOR_CONFIG_UNSAFE: " + cg.code + " " + (cg.mode || "")); process.exit(2); }
   const cfg = JSON.parse(readFileSync(cfgPath, "utf8"));
   const log = (o) => { try { appendFileSync(cfg.eventLog || "/dev/null", JSON.stringify({ ...o, pid: process.pid, at: Math.floor(Date.now() / 1000) }) + "\n"); } catch { /* */ } };
-  const now = typeof cfg.now === "number" ? cfg.now : Math.floor(Date.now() / 1000);
+  // FG-CHK-197-03: refuse an authority-bearing or unknown config field BEFORE the lifecycle claim.
+  const vcfg = validateSupervisorConfig(cfg);
+  if (!vcfg.ok) {
+    log({ evt: "SUPERVISOR_ABORT", reason: vcfg.code, refused_keys: vcfg.keys });
+    console.error(vcfg.code + ": " + JSON.stringify(vcfg.keys));
+    process.exit(2);
+  }
+  // Production time is the ACTUAL system clock. The config cannot select a clock.
+  const now = Math.floor(Date.now() / 1000);
 
   // (1) INDEPENDENT re-verification: read the founder-signed V4 activation + the exact authorization bytes
   // from disk and verify against the GOVERNED public-key authority. Nothing the launcher said is trusted.
@@ -62,7 +103,10 @@ async function supervise(cfgPath) {
   const counters = { c: {}, wrap(name, fn) { this.c[name] = 0; return async (...a) => { this.c[name]++; return fn(...a); }; } };
   let term = "HELD", reason = "unmapped terminal (fail-closed)";
   try {
-    const result = await executeSignedRunV4(cap, vr.activation, man, counters, cfg.exec || {});
+    // FG-CHK-197-03: production execution behaviour comes from the reviewed modules and the SIGNED
+    // capability/manifest bindings. NOTHING from the config can select an execution function, a git runner,
+    // a repository root, or a candidate ref — executeSignedRunV4 derives all of those from `cap` + `man`.
+    const result = await executeSignedRunV4(cap, vr.activation, man, counters, {});
     const fstate = result && result.final_state;
     const ostat = result && result.outcome_status;
     // EXHAUSTIVE terminal mapping. A held/failed/defect/unknown terminal NEVER falls through to

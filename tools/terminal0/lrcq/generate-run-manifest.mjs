@@ -8,6 +8,8 @@
 // guard, so importing this module has ZERO side effects (no writes, no provider resolution, no exit).
 import { readFileSync, writeFileSync, mkdirSync, existsSync, statSync, realpathSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+// FG-CHK-197-02: fixed absolute executables in a minimal environment — never PATH-resolved.
+import { fixedGit } from "../../../src/v8b/lrcq/assurance/fixed-executables.mjs";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve, relative, basename } from "node:path";
@@ -17,7 +19,7 @@ const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 const SELF = fileURLToPath(import.meta.url);
 const P = (p) => resolve(REPO, p);
 const rel = (abs) => relative(REPO, abs);
-const git = (...a) => execFileSync("git", ["-C", REPO, ...a], { encoding: "utf8" }).trim();
+const git = (...a) => fixedGit(["-C", REPO, ...a]);
 const sha = (absPath) => "sha256:" + createHash("sha256").update(readFileSync(absPath)).digest("hex");
 const write = (relPath, obj) => { const abs = P(relPath); mkdirSync(dirname(abs), { recursive: true }); writeFileSync(abs, JSON.stringify(obj, null, 2) + "\n"); return abs; };
 
@@ -43,7 +45,7 @@ export function buildActivationMaterialPacket(ctx) {
   const Pr = (p) => resolve(repo, p);
   const shaAbs = (absPath) => "sha256:" + createHash("sha256").update(readFileSync(absPath)).digest("hex");
   const digestOf = (relPath) => shaAbs(Pr(relPath));
-  const gitR = (...a) => execFileSync("git", ["-C", repo, ...a], { encoding: "utf8" }).trim();
+  const gitR = (...a) => fixedGit(["-C", repo, ...a]);
   const gcd = (() => { const d = gitR("rev-parse", "--path-format=absolute", "--git-common-dir"); return realpathSync(d); })();
   return {
     // ---- FG-LRCQ-ACT-029: this is a V4 activation PAYLOAD TEMPLATE. It confers no authority: the

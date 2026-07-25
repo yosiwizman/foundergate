@@ -4,6 +4,7 @@
 // narrow-sensitive, HELD and UNKNOWN jobs are refused. Never alters protected main; never reuses a
 // worktree; never creates two writers for one path. Deterministic rollback removes only lane-owned state.
 import { execFileSync } from "node:child_process";
+import { fixedGit } from "../assurance/fixed-executables.mjs";
 import { existsSync, realpathSync } from "node:fs";
 import { sep } from "node:path";
 import { resolveRunPlan } from "./run-plan.mjs";
@@ -22,7 +23,8 @@ export function eligibleForSetup(job) {
 
 // opts: { git(argsArr, cwd), repoRoot, candidateRef, exists }
 export function setupManager(jobs, run_id, manifest, opts = {}) {
-  const git = opts.git || ((a, cwd) => execFileSync("git", a, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim());
+  // FG-CHK-197-02: the DEFAULT git runner is the FIXED ABSOLUTE /usr/bin/git in a minimal environment.
+  const git = opts.git || ((a, cwd) => fixedGit(a, { cwd }));
   const exists = opts.exists || existsSync;
   const candidateRef = opts.candidateRef || "HEAD";
   const repoRoot = opts.repoRoot;

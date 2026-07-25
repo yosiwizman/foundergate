@@ -12,10 +12,12 @@
 // accepts caller-created records.
 import { generateKeyPairSync, sign as edSign, verify as edVerify, createHash, createPublicKey, createPrivateKey } from "node:crypto";
 import { writeFileSync, readFileSync, existsSync, lstatSync, statSync, realpathSync } from "node:fs";
-import { execFileSync, spawn } from "node:child_process";
+import { spawn } from "node:child_process";
 import { join, sep } from "node:path";
 import { canonicalize } from "./canonical-json.mjs";
 import { assertVerifiedCapability, observedStartIdentity } from "./activation-v4.mjs";
+import { fixedGit } from "./fixed-executables.mjs";
+import { assertAuthorityObject, FS_CLASS, objectIdOf } from "./fs-authority-guards.mjs";
 
 export const LIFECYCLE_CONTRACT_VERSION = "lrcq-lifecycle-v4-1";
 export const CONSUMED_MARKER_SCHEMA = "lrcq-consumed-activation-v4-1";
@@ -37,12 +39,19 @@ export const LC_CODES = {
   INTENT_MISSING: "INTENT_MISSING", ALREADY_TRANSFERRED: "ALREADY_TRANSFERRED", KEY_RELEASED: "KEY_RELEASED",
   ENTRYPOINT_INVALID: "ENTRYPOINT_INVALID", ENTRYPOINT_DIGEST_MISMATCH: "ENTRYPOINT_DIGEST_MISMATCH",
   DESCRIPTOR_UNAVAILABLE: "DESCRIPTOR_UNAVAILABLE", TRANSFER_WRITE_FAILED: "TRANSFER_WRITE_FAILED",
+  // FG-CHK-197-04 / FG-CHK-197-05 filesystem authority guards
+  ROOT_UNSAFE_OWNER: "ROOT_UNSAFE_OWNER", ROOT_UNSAFE_MODE: "ROOT_UNSAFE_MODE",
+  RECORD_UNSAFE_OWNER: "RECORD_UNSAFE_OWNER", RECORD_UNSAFE_MODE: "RECORD_UNSAFE_MODE",
+  ROOT_OBJECT_IDENTITY_MISMATCH: "ROOT_OBJECT_IDENTITY_MISMATCH",
   FD_UNREADABLE: "FD_UNREADABLE", KEY_FRAME_EMPTY: "KEY_FRAME_EMPTY", KEY_FRAME_TOO_SHORT: "KEY_FRAME_TOO_SHORT",
   KEY_FRAME_MAGIC: "KEY_FRAME_MAGIC", KEY_FRAME_OVERSIZED: "KEY_FRAME_OVERSIZED",
   KEY_FRAME_TRUNCATED: "KEY_FRAME_TRUNCATED", KEY_FRAME_DIGEST: "KEY_FRAME_DIGEST",
   KEY_FRAME_NOT_ED25519: "KEY_FRAME_NOT_ED25519",
 };
-export const TRANSFER_STATES = { NOT_TRANSFERRED: "NOT_TRANSFERRED", SPENT: "TRANSFERRED_SPENT" };
+// FG-CHK-197-01: TRANSFERRING is an IN-FLIGHT sentinel. It is set SYNCHRONOUSLY after the one-use guard and
+// before any child creation, spawn, key export, pipe write, or asynchronous yield, so a concurrent caller
+// entering the function observes a non-NOT_TRANSFERRED state and is refused ALREADY_TRANSFERRED before spawn.
+export const TRANSFER_STATES = { NOT_TRANSFERRED: "NOT_TRANSFERRED", TRANSFERRING: "TRANSFERRING", SPENT: "TRANSFERRED_SPENT" };
 const sha256hex = (b) => createHash("sha256").update(b).digest("hex");
 const sha256 = (b) => "sha256:" + sha256hex(b);
 function R(code, extra = {}) { return { ok: code === LC_CODES.OK, code, ...extra }; }
@@ -53,20 +62,43 @@ const CONSUMED = new WeakSet(); const SUPEXEC = new WeakSet();
 // NOT a property of the capability object, so it never appears in JSON, Object.keys, logs, or structured
 // clones. It leaves the process only over the inherited descriptor the launcher hands the supervisor.
 const EPHKEY = new WeakMap();
+// FG-CHK-197-06: mutable lifecycle state (launch + transfer) lives in a module-private WeakMap keyed by the
+// capability — NOT as an enumerable `__state` property of the frozen object. Object.freeze is shallow, so a
+// nested state object placed on the capability escaped the freeze: any holder could write to it and
+// JSON.stringify exposed it. Nothing mutable is reachable from the returned capability now.
+const CAPSTATE = new WeakMap();
 export function isConsumedCapabilityV4(x) { return typeof x === "object" && x !== null && CONSUMED.has(x); }
 export function isSupervisorExecutionCapabilityV4(x) { return typeof x === "object" && x !== null && SUPEXEC.has(x); }
+// READ-ONLY snapshot of a consumed capability's lifecycle state, for tests and evidence. Returns a frozen
+// copy: there is no setter, and mutating the returned object cannot affect module state.
+export function lifecycleStateV4(consumedCap) {
+  if (!isConsumedCapabilityV4(consumedCap)) return null;
+  const st = CAPSTATE.get(consumedCap);
+  return st ? Object.freeze({ launched: st.launched, transfer: st.transfer }) : null;
+}
 
 // ---- signed repository binding (real git only) ----------------------------------------------------
 // FG-LRCQ-ACT-028: bind the run to the EXACT checkout the founder signed. The signed capability carries
 // repository_root (the worktree top level) AND repository_git_common_dir (the main .git common dir). We
 // mechanically resolve both from REAL git against the signed repository_root and require an exact
 // realpath match. A copied tree, a re-init'd repo, or an ALTERNATE worktree of the same repo resolves to
-// a different top level / common dir and is refused. No caller-supplied git output is trusted.
+// a different top level and is refused. No caller-supplied git output is trusted.
+//
+// FG-CHK-197-02: `git` is invoked through the FIXED ABSOLUTE executable (/usr/bin/git), verified to be a
+// regular non-symlink executable immediately before use, in a MINIMAL environment. Previously this used a bare
+// `execFileSync("git", ...)`, so the identity of git itself was caller-selectable: a hostile script named
+// `git` first on PATH answered --show-toplevel with an attacker-chosen directory and the ephemeral-signed
+// consumed marker was written there. The minimal environment additionally drops GIT_DIR / GIT_WORK_TREE /
+// GIT_COMMON_DIR / GIT_CONFIG_*, any of which could otherwise redirect what git reports.
+//
+// NOTE ON ALTERNATE WORKTREES (Checker correction): an alternate worktree of the same repository SHARES the
+// common dir, so the common-dir comparison alone does not distinguish it. The binding holds via the TOPLEVEL
+// check: git -C <SIGNED repository_root> rev-parse --show-toplevel must equal the signed root exactly.
 function verifyRepositoryBinding(cap) {
   const repo = cap.repository_root, common = cap.repository_git_common_dir;
   if (typeof repo !== "string" || !repo || typeof common !== "string" || !common) return { err: LC_CODES.REPO_BINDING_UNAVAILABLE };
   let rrepo; try { rrepo = realpathSync(repo); } catch { return { err: LC_CODES.REPO_BINDING_UNAVAILABLE }; }
-  const git = (args) => execFileSync("git", ["-C", rrepo, ...args], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+  const git = (args) => fixedGit(["-C", rrepo, ...args]);
   let top, gcd;
   try { top = git(["rev-parse", "--show-toplevel"]); gcd = git(["rev-parse", "--git-common-dir"]); }
   catch { return { err: LC_CODES.REPO_NOT_A_WORKTREE }; }
@@ -81,6 +113,11 @@ function verifyRepositoryBinding(cap) {
 }
 
 // ---- signed lifecycle-root resolution (real fs only) ----------------------------------------------
+// FG-CHK-197-04: the root must additionally be owned by the running user and must not be group/other
+// WRITABLE (a directory must stay traversable, so 0755 inside the repository is accepted).
+// FG-CHK-197-05: the root's authority identity is its canonical filesystem OBJECT identity (device + inode),
+// not the signed byte-string. Two spellings of the same directory are the SAME authority root and derive the
+// SAME digest; a different filesystem object is refused even when the path string looks similar.
 function resolveSignedRoot(cap) {
   const rb = verifyRepositoryBinding(cap); if (rb.err) return { err: rb.err };
   const root = cap.lifecycle_root, repo = cap.repository_root;
@@ -89,23 +126,37 @@ function resolveSignedRoot(cap) {
   let st; try { st = lstatSync(root); } catch { return { err: LC_CODES.ROOT_MISSING }; }
   if (st.isSymbolicLink()) return { err: LC_CODES.ROOT_SYMLINK };
   let rr, rrepo; try { rr = realpathSync(root); rrepo = realpathSync(repo); } catch { return { err: LC_CODES.ROOT_MISSING }; }
-  if (!statSync(rr).isDirectory()) return { err: LC_CODES.ROOT_NOT_DIR };
+  let dst; try { dst = statSync(rr); } catch { return { err: LC_CODES.ROOT_MISSING }; }
+  if (!dst.isDirectory()) return { err: LC_CODES.ROOT_NOT_DIR };
   if (rr !== rrepo && !rr.startsWith(rrepo + sep)) return { err: LC_CODES.ROOT_ESCAPES_REPO };
-  return { root: rr };
+  const g = assertAuthorityObject(rr, FS_CLASS.DIRECTORY);
+  if (!g.ok) return { err: g.code === "FS_UNSAFE_OWNER" ? LC_CODES.ROOT_UNSAFE_OWNER : LC_CODES.ROOT_UNSAFE_MODE, detail: g.code + " " + (g.mode || "") };
+  return { root: rr, objectId: g.objectId, objectIdDigest: g.objectIdDigest };
 }
 const idFile = (id) => id.replace(":", "_");
 const markerPath = (root, id) => join(root, idFile(id) + ".consumed.json");
 const intentPath = (root, id) => join(root, idFile(id) + ".launch-intent.json");
 const claimPath = (root, id) => join(root, idFile(id) + ".supervisor-claim.json");
 
+// FG-CHK-197-04: every authority-record READ enforces owner + mode, not only symlink + regular-file.
+// Lifecycle records are SECRET_OR_MUTABLE: FounderGate creates them 0600 and refuses ANY group/other
+// permission on read, so a permissive directory cannot let another local account stage lifecycle records.
 function readRecord(path, schema) {
   if (!existsSync(path)) return { err: LC_CODES.RECORD_MISSING };
   let st; try { st = lstatSync(path); } catch { return { err: LC_CODES.RECORD_MISSING }; }
   if (st.isSymbolicLink()) return { err: LC_CODES.RECORD_SYMLINK };
   if (!statSync(path).isFile()) return { err: LC_CODES.RECORD_NOT_REGULAR };
+  const g = assertAuthorityObject(path, FS_CLASS.SECRET_OR_MUTABLE);
+  if (!g.ok) {
+    if (g.code === "FS_UNSAFE_OWNER") return { err: LC_CODES.RECORD_UNSAFE_OWNER, detail: "uid " + g.uid + " != " + g.expected_uid };
+    if (g.code === "FS_UNSAFE_MODE") return { err: LC_CODES.RECORD_UNSAFE_MODE, detail: "mode " + g.mode };
+    if (g.code === "FS_SYMLINK") return { err: LC_CODES.RECORD_SYMLINK };
+    if (g.code === "FS_NOT_REGULAR_FILE") return { err: LC_CODES.RECORD_NOT_REGULAR };
+    return { err: LC_CODES.RECORD_MISSING, detail: g.code };
+  }
   let bytes, doc; try { bytes = readFileSync(path, "utf8"); doc = JSON.parse(bytes); } catch { return { err: LC_CODES.RECORD_PARSE }; }
   if (doc.schema !== schema) return { err: LC_CODES.SCHEMA_MISMATCH };
-  return { bytes, doc, digest: sha256(Buffer.from(bytes)) };
+  return { bytes, doc, digest: sha256(Buffer.from(bytes)), objectId: g.objectId, mode: g.mode };
 }
 // The signed body = the record minus its own ephemeral_signature; the ephemeral key signs canonical(body).
 function bodyOf(doc) { const { ephemeral_signature, ...body } = doc; return body; }
@@ -133,7 +184,11 @@ export function consumeActivationV4(verifiedCap, opts = {}) {
     activation_identity: verifiedCap.activation_identity, payload_digest: verifiedCap.payload_digest,
     signer_key_fingerprint: verifiedCap.signer_key_fingerprint, authorization_text_digest: verifiedCap.authorization_text_digest,
     run_id: verifiedCap.run_id, provider_identity: verifiedCap.provider_identity,
-    lifecycle_root_digest: sha256(Buffer.from(root)), consumption_nonce: nonce, consumed_epoch: now,
+    // FG-CHK-197-05: the lifecycle-root digest is derived from the canonical filesystem OBJECT identity
+    // (device + inode), so one physical directory has exactly one digest regardless of path spelling. The
+    // object id itself is recorded so every later authority read can require the SAME filesystem object.
+    lifecycle_root_digest: rr.objectIdDigest, lifecycle_root_object_id: rr.objectId,
+    consumption_nonce: nonce, consumed_epoch: now,
     consumed_once: true, may_not_be_consumed_again: true, replay_protected: true,
     ephemeral_public_key_spki_b64: ephPubDer.toString("base64"), ephemeral_fingerprint: sha256(ephPubDer),
   };
@@ -146,15 +201,18 @@ export function consumeActivationV4(verifiedCap, opts = {}) {
   const rd = readRecord(mPath, CONSUMED_MARKER_SCHEMA); if (rd.err) return R(rd.err);
   const pub = pubKeyFromB64(rd.doc.ephemeral_public_key_spki_b64); if (!pub || !verifyEphemeral(rd.doc, pub)) return R(LC_CODES.EPHEMERAL_SIGNATURE_INVALID);
   if (rd.doc.activation_identity !== verifiedCap.activation_identity) return R(LC_CODES.IDENTITY_MISMATCH);
-  // opaque CONSUMED capability — holds the ephemeral private key privately; launch state is mutable-in-module
-  const state = { launched: false, transfer: TRANSFER_STATES.NOT_TRANSFERRED };
+  // Opaque CONSUMED capability. FG-CHK-197-06: it carries NO mutable state — the ephemeral private key AND
+  // the launch/transfer state both live in module-private WeakMaps, so Object.freeze is not defeated by a
+  // nested object, JSON.stringify exposes no lifecycle state, and Reflect.ownKeys reveals nothing writable.
   const cap = Object.freeze({
     _stage: "CONSUMED", activation_identity: verifiedCap.activation_identity, payload_digest: verifiedCap.payload_digest,
     provider_identity: verifiedCap.provider_identity, run_id: verifiedCap.run_id, lifecycle_root: root,
+    lifecycle_root_object_id: rr.objectId,
     consumed_marker_path: mPath, consumed_marker_digest: rd.digest, ephemeral_fingerprint: rd.doc.ephemeral_fingerprint,
-    __state: state, evaluated_candidate: verifiedCap.evaluated_candidate, evidence_candidate: verifiedCap.evidence_candidate,
+    evaluated_candidate: verifiedCap.evaluated_candidate, evidence_candidate: verifiedCap.evidence_candidate,
   });
   EPHKEY.set(cap, eph.privateKey); // private key held OUTSIDE the object — never serialized
+  CAPSTATE.set(cap, { launched: false, transfer: TRANSFER_STATES.NOT_TRANSFERRED });
   CONSUMED.add(cap);
   return R(LC_CODES.OK, { capability: cap, marker_path: mPath });
 }
@@ -162,28 +220,34 @@ export function consumeActivationV4(verifiedCap, opts = {}) {
 // ---- PHASE 5: governed launch intent (signed by the ephemeral key) --------------------------------
 export function createLaunchIntentV4(consumedCap, opts = {}) {
   if (!isConsumedCapabilityV4(consumedCap)) return R(LC_CODES.FORGED, { detail: "consumed capability required" });
-  if (consumedCap.__state.launched) return R(LC_CODES.ALREADY_LAUNCHED);
+  const cst = CAPSTATE.get(consumedCap);
+  if (!cst) return R(LC_CODES.FORGED, { detail: "no module state for this capability" });
+  if (cst.launched) return R(LC_CODES.ALREADY_LAUNCHED);
   const root = consumedCap.lifecycle_root; const iPath = intentPath(root, consumedCap.activation_identity);
   if (existsSync(iPath)) return R(LC_CODES.ALREADY_LAUNCHED);
   const now = typeof opts.now === "number" ? opts.now : 0;
   // FG-LRCQ-ACT-029: the supervisor entrypoint is resolved and DIGESTED HERE from the real file — a caller
   // can no longer record an entrypoint digest that does not match a real, non-symlink, regular file. The
   // governed transfer then launches exactly this path and the supervisor proves it IS this program.
-  let entryReal = null, entryDigest = null;
-  if (opts.supervisorEntrypoint !== undefined && opts.supervisorEntrypoint !== null) {
-    const p = opts.supervisorEntrypoint;
-    if (typeof p !== "string" || !p) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "not a path" });
-    let lst; try { lst = lstatSync(p); } catch { return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "missing" }); }
-    if (lst.isSymbolicLink()) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "symlink" });
-    if (!lst.isFile()) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "not a regular file" });
-    try { entryReal = realpathSync(p); } catch { return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "unresolvable" }); }
-    if (entryReal !== p) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "not a realpath" });
-    entryDigest = sha256(readFileSync(entryReal));
-  }
+  // FG-CHK-197-07: the supervisor entrypoint is MANDATORY. An intent without one would leave the
+  // supervisor's "this program IS the entrypoint" self-proof unarmed, so any program holding the ephemeral
+  // key could mint a claim. There is no longer a code path that produces an intent with a null entrypoint.
+  const p = opts.supervisorEntrypoint;
+  if (p === undefined || p === null) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "supervisorEntrypoint is mandatory" });
+  if (typeof p !== "string" || !p) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "not a path" });
+  let lst; try { lst = lstatSync(p); } catch { return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "missing" }); }
+  if (lst.isSymbolicLink()) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "symlink" });
+  if (!lst.isFile()) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "not a regular file" });
+  let entryReal; try { entryReal = realpathSync(p); } catch { return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "unresolvable" }); }
+  if (entryReal !== p) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "not a realpath" });
+  const entryDigest = sha256(readFileSync(entryReal));
   const body = {
     schema: LAUNCH_INTENT_SCHEMA, lifecycle_contract_version: LIFECYCLE_CONTRACT_VERSION,
     activation_identity: consumedCap.activation_identity, payload_digest: consumedCap.payload_digest,
-    consumed_marker_digest: consumedCap.consumed_marker_digest, lifecycle_root_digest: sha256(Buffer.from(root)),
+    consumed_marker_digest: consumedCap.consumed_marker_digest,
+    // FG-CHK-197-05: object-identity digest, matching the consumed marker.
+    lifecycle_root_digest: sha256(Buffer.from(consumedCap.lifecycle_root_object_id)),
+    lifecycle_root_object_id: consumedCap.lifecycle_root_object_id,
     run_id: consumedCap.run_id, provider_identity: consumedCap.provider_identity,
     supervisor_entrypoint_realpath: entryReal, supervisor_entrypoint_digest: entryDigest,
     launch_nonce: sha256hex(Buffer.from(consumedCap.ephemeral_fingerprint + ":intent")).slice(0, 32),
@@ -194,8 +258,8 @@ export function createLaunchIntentV4(consumedCap, opts = {}) {
   const bytes = JSON.stringify({ ...body, ephemeral_signature: sig }, null, 2) + "\n";
   try { writeFileSync(iPath, bytes, { flag: "wx", mode: 0o600 }); }
   catch (e) { if (e && e.code === "EEXIST") return R(LC_CODES.ALREADY_LAUNCHED); return R(LC_CODES.FORGED, { detail: "intent write: " + (e && e.message) }); }
-  consumedCap.__state.launched = true;
-  return R(LC_CODES.OK, { intent_path: iPath, launch_nonce: body.launch_nonce });
+  cst.launched = true;
+  return R(LC_CODES.OK, { intent_path: iPath, launch_nonce: body.launch_nonce, supervisor_entrypoint: entryReal, supervisor_entrypoint_digest: entryDigest });
 }
 
 // ---- PHASE 7/8: governed supervisor attach -> opaque SUPERVISOR_EXECUTION --------------------------
@@ -218,10 +282,13 @@ function attachSupervisorWithKey(verifiedCap, ephemeralPrivateKey, opts = {}) {
   // prove the supplied ephemeral private key matches the marker's recorded public key
   let suppliedPubDer; try { suppliedPubDer = createPublicKey(ephemeralPrivateKey).export({ format: "der", type: "spki" }); } catch { return R(LC_CODES.KEY_MISMATCH, { detail: "not a key" }); }
   if (sha256(suppliedPubDer) !== m.doc.ephemeral_fingerprint) return R(LC_CODES.KEY_MISMATCH);
-  // FG-LRCQ-ACT-029: when the signed intent named a supervisor entrypoint, THIS process must actually BE
-  // that program (same realpath, same content digest). A different program holding the transferred key
-  // cannot mint a supervisor claim.
-  if (it.doc.supervisor_entrypoint_realpath) {
+  // FG-LRCQ-ACT-029 + FG-CHK-197-07: THIS process must actually BE the program the signed intent names
+  // (same realpath, same content digest). The proof is UNCONDITIONAL: an intent that records no entrypoint is
+  // refused outright, so the proof can never be left unarmed by an intent that omitted one.
+  if (!it.doc.supervisor_entrypoint_realpath || !it.doc.supervisor_entrypoint_digest) {
+    return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "intent records no supervisor entrypoint — self-proof cannot be armed" });
+  }
+  {
     let self = null; try { self = realpathSync(process.argv[1] || ""); } catch { self = null; }
     if (self !== it.doc.supervisor_entrypoint_realpath) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "running program is not the intent's supervisor entrypoint" });
     let selfDigest = null; try { selfDigest = sha256(readFileSync(self)); } catch { selfDigest = null; }
@@ -359,25 +426,46 @@ function verifiedIntentFor(consumedCap) {
 // Returns a Promise of { ok, code, child, supervisor_pid, key_fd, entrypoint, transfer }.
 export async function spawnGovernedSupervisorV4(consumedCap, opts = {}) {
   if (!isConsumedCapabilityV4(consumedCap)) return R(LC_CODES.FORGED, { detail: "consumed capability required" });
-  const st = consumedCap.__state;
+  const st = CAPSTATE.get(consumedCap);
+  if (!st) return R(LC_CODES.FORGED, { detail: "no module state for this capability" });
+  // ---- FG-CHK-197-01 ATOMIC ONE-USE GUARD ---------------------------------------------------------
+  // The guard and the state transition must be indivisible. Previously the state moved to SPENT only AFTER
+  // the awaited descriptor write, so a second call entering before that await resolved observed
+  // NOT_TRANSFERRED, passed the guard, spawned a SECOND child and wrote the SAME key frame to it. The
+  // transition to the TRANSFERRING sentinel below happens SYNCHRONOUSLY, in the same microtask as the
+  // guard, before ANY child creation, spawn, key export, pipe write, or asynchronous yield. JavaScript runs
+  // this synchronous region to completion, so a concurrent caller cannot interleave inside it.
   if (st.transfer !== TRANSFER_STATES.NOT_TRANSFERRED) return R(LC_CODES.ALREADY_TRANSFERRED, { transfer: st.transfer });
-  const vi = verifiedIntentFor(consumedCap); if (vi.err) return R(vi.err, { detail: vi.detail });
+  st.transfer = TRANSFER_STATES.TRANSFERRING;
+  // Input validation happens while TRANSFERRING. A refusal here has materialized NO key and spawned NO
+  // child, so the capability returns to NOT_TRANSFERRED and the governing caller may correct and retry.
+  const unspend = (code, extra) => { st.transfer = TRANSFER_STATES.NOT_TRANSFERRED; return R(code, extra); };
+  const vi = verifiedIntentFor(consumedCap); if (vi.err) return unspend(vi.err, { detail: vi.detail });
   // the signed intent names the ONE supervisor entrypoint this transfer may launch
   const entry = vi.intent.doc.supervisor_entrypoint_realpath;
-  if (typeof entry !== "string" || !entry) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "intent records no supervisor entrypoint" });
-  let est; try { est = lstatSync(entry); } catch { return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "missing" }); }
-  if (est.isSymbolicLink()) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "symlink" });
-  if (!est.isFile()) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "not a regular file" });
-  if (realpathSync(entry) !== entry) return R(LC_CODES.ENTRYPOINT_INVALID, { detail: "not a realpath" });
+  if (typeof entry !== "string" || !entry) return unspend(LC_CODES.ENTRYPOINT_INVALID, { detail: "intent records no supervisor entrypoint" });
+  let est; try { est = lstatSync(entry); } catch { return unspend(LC_CODES.ENTRYPOINT_INVALID, { detail: "missing" }); }
+  if (est.isSymbolicLink()) return unspend(LC_CODES.ENTRYPOINT_INVALID, { detail: "symlink" });
+  if (!est.isFile()) return unspend(LC_CODES.ENTRYPOINT_INVALID, { detail: "not a regular file" });
+  if (realpathSync(entry) !== entry) return unspend(LC_CODES.ENTRYPOINT_INVALID, { detail: "not a realpath" });
   const eDigest = sha256(readFileSync(entry));
-  if (vi.intent.doc.supervisor_entrypoint_digest !== eDigest) return R(LC_CODES.ENTRYPOINT_DIGEST_MISMATCH, { expected: vi.intent.doc.supervisor_entrypoint_digest, actual: eDigest });
+  if (vi.intent.doc.supervisor_entrypoint_digest !== eDigest) return unspend(LC_CODES.ENTRYPOINT_DIGEST_MISMATCH, { expected: vi.intent.doc.supervisor_entrypoint_digest, actual: eDigest });
   const key = EPHKEY.get(consumedCap);
-  if (!key) return R(LC_CODES.KEY_RELEASED, { detail: "ephemeral key no longer held" });
+  if (!key) { st.transfer = TRANSFER_STATES.SPENT; return R(LC_CODES.KEY_RELEASED, { detail: "ephemeral key no longer held", transfer: st.transfer }); }
 
+  // ---- POINT OF NO RETURN --------------------------------------------------------------------------
+  // From here the key IS materialized and a child WILL be created, so the capability becomes permanently
+  // spent and the key is removed from module storage BEFORE the first asynchronous yield. A failed or
+  // ambiguous transfer can therefore never be retried with the same key.
   const keyFd = Number.isInteger(opts.keyFd) && opts.keyFd >= 3 ? opts.keyFd : 3;
   const stdio = ["ignore", opts.stdoutFd ?? "ignore", opts.stderrFd ?? "ignore"];
   while (stdio.length < keyFd) stdio.push("ignore");
   stdio[keyFd] = "pipe";                                  // the inherited ANONYMOUS descriptor — created HERE
+  const der = key.export({ format: "der", type: "pkcs8" });
+  const frame = encodeKeyFrame(der);
+  der.fill(0);
+  EPHKEY.delete(consumedCap);
+  st.transfer = TRANSFER_STATES.SPENT;
   let child;
   try {
     child = spawn(process.execPath, [entry, ...(opts.args || [])], {
@@ -385,17 +473,14 @@ export async function spawnGovernedSupervisorV4(consumedCap, opts = {}) {
       env: opts.env || { PATH: process.env.PATH, HOME: process.env.HOME },
       ...(opts.cwd ? { cwd: opts.cwd } : {}),
     });
-  } catch (e) { return R(LC_CODES.TRANSFER_WRITE_FAILED, { detail: "spawn: " + (e && e.message) }); }
+  } catch (e) { frame.fill(0); return R(LC_CODES.TRANSFER_WRITE_FAILED, { detail: "spawn: " + (e && e.message), transfer: st.transfer }); }
   const writer = child.stdio[keyFd];
   if (!writer || typeof writer.write !== "function" || writer.writable !== true) {
-    try { child.kill("SIGKILL"); } catch { /* */ }
-    return R(LC_CODES.DESCRIPTOR_UNAVAILABLE, { detail: "governed inherited descriptor not established" });
+    frame.fill(0);
+    await killAndReap(child);
+    return R(LC_CODES.DESCRIPTOR_UNAVAILABLE, { detail: "governed inherited descriptor not established", transfer: st.transfer });
   }
-  // Materialize, frame, write ONCE, scrub, close. Then release the key from module storage and spend the
-  // capability — irrespective of write success, so a failed transfer can never be retried with the key.
-  const der = key.export({ format: "der", type: "pkcs8" });
-  const frame = encodeKeyFrame(der);
-  der.fill(0);
+  // Write ONCE, scrub, close.
   const sent = await new Promise((resolve) => {
     let settled = false;
     const done = (r) => { if (!settled) { settled = true; resolve(r); } };
@@ -404,11 +489,29 @@ export async function spawnGovernedSupervisorV4(consumedCap, opts = {}) {
     catch (e) { done({ ok: false, detail: e && e.message }); }
   });
   frame.fill(0);
-  EPHKEY.delete(consumedCap);
-  st.transfer = TRANSFER_STATES.SPENT;
-  if (!sent.ok) { try { child.kill("SIGKILL"); } catch { /* */ } return R(LC_CODES.TRANSFER_WRITE_FAILED, { detail: sent.detail, transfer: st.transfer }); }
+  if (!sent.ok) {
+    // A partially launched child is killed AND reaped, so no orphan holds a partial frame.
+    await killAndReap(child);
+    return R(LC_CODES.TRANSFER_WRITE_FAILED, { detail: sent.detail, transfer: st.transfer });
+  }
   if (opts.detached !== false && typeof child.unref === "function") child.unref();
   return R(LC_CODES.OK, { child, supervisor_pid: child.pid, key_fd: keyFd, entrypoint: entry, entrypoint_digest: eDigest, transfer: st.transfer });
+}
+
+// Kill a partially launched supervisor and WAIT for it to be reaped, so a failed transfer leaves no process
+// behind. Bounded: escalates to the process group and gives up after a short interval rather than hanging.
+function killAndReap(child, timeoutMs = 2000) {
+  return new Promise((resolve) => {
+    if (!child || child.exitCode !== null || child.signalCode !== null) return resolve(false);
+    let done = false;
+    const finish = () => { if (!done) { done = true; resolve(true); } };
+    child.once("close", finish);
+    child.once("exit", finish);
+    try { if (child.pid) process.kill(-child.pid, "SIGKILL"); } catch { /* not a group leader / already gone */ }
+    try { child.kill("SIGKILL"); } catch { /* already gone */ }
+    const t = setTimeout(finish, timeoutMs);
+    if (t.unref) t.unref();
+  });
 }
 
 // SUPERVISOR SIDE — the ONLY exported attach surface. It reads the governed frame off the inherited

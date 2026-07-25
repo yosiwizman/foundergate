@@ -19,7 +19,7 @@ import { spawn } from "node:child_process";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { makeDisposableV4World } from "./test-support/v4-fixture.mjs";
-import { consumeActivationV4, createLaunchIntentV4, spawnGovernedSupervisorV4, isConsumedCapabilityV4, LC_CODES, TRANSFER_STATES } from "../../../../src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs";
+import { consumeActivationV4, createLaunchIntentV4, spawnGovernedSupervisorV4, isConsumedCapabilityV4, lifecycleStateV4, LC_CODES, TRANSFER_STATES } from "../../../../src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs";
 import * as LIFECYCLE from "../../../../src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -72,7 +72,7 @@ const w = makeDisposableV4World({ prefix: "fg-cont-" });
 
     // T2: transfer BEFORE the launch intent exists.
     ok("T2 transfer before launch intent -> REFUSED (INTENT_MISSING)", (await spawnGovernedSupervisorV4(c.capability, {})).code === LC_CODES.INTENT_MISSING);
-    ok("T2b transfer state still NOT_TRANSFERRED after the refusal", c.capability.__state.transfer === TRANSFER_STATES.NOT_TRANSFERRED);
+    ok("T2b transfer state still NOT_TRANSFERRED after the refusal", lifecycleStateV4(c.capability).transfer === TRANSFER_STATES.NOT_TRANSFERRED);
 
     // T5a: an intent naming a SYMLINK entrypoint is refused at intent creation.
     const linkPath = join(w.repoRoot, "sup-link.mjs");
@@ -96,7 +96,7 @@ const w = makeDisposableV4World({ prefix: "fg-cont-" });
       appendFileSync(copy, "\n// drift\n");                       // mutate AFTER the intent was signed
       const r = await spawnGovernedSupervisorV4(c2.capability, {});
       ok("T5d entrypoint content drift after the signed intent -> REFUSED (ENTRYPOINT_DIGEST_MISMATCH)", r.code === LC_CODES.ENTRYPOINT_DIGEST_MISMATCH);
-      ok("T5e a refused entrypoint leaves the transfer UNSPENT (no key released)", c2.capability.__state.transfer === TRANSFER_STATES.NOT_TRANSFERRED);
+      ok("T5e a refused entrypoint leaves the transfer UNSPENT (no key released)", lifecycleStateV4(c2.capability).transfer === TRANSFER_STATES.NOT_TRANSFERRED);
       w2.cleanup();
     }
 
@@ -114,7 +114,7 @@ const w = makeDisposableV4World({ prefix: "fg-cont-" });
       writeFileSync(ip, JSON.stringify({ ...doc, consumed_marker_digest: "sha256:" + "9".repeat(64) }, null, 2) + "\n");
       const r2 = await spawnGovernedSupervisorV4(c3.capability, {});
       ok("T3 mismatched intent->marker binding -> REFUSED", r2.code === LC_CODES.EPHEMERAL_SIGNATURE_INVALID || r2.code === LC_CODES.BINDING_MISMATCH);
-      ok("T3b neither refusal spent the transfer", c3.capability.__state.transfer === TRANSFER_STATES.NOT_TRANSFERRED);
+      ok("T3b neither refusal spent the transfer", lifecycleStateV4(c3.capability).transfer === TRANSFER_STATES.NOT_TRANSFERRED);
       w3.cleanup();
     }
 
@@ -122,7 +122,7 @@ const w = makeDisposableV4World({ prefix: "fg-cont-" });
     const cfgPath = w.writeChildConfig("supervisor-config.json", { eligibility: { job: { risk_class: "WIDE_SAFE", gate_trigger: "NONE" }, bindings: {} } });
     const g = await spawnGovernedSupervisorV4(c.capability, { args: ["--config", cfgPath], stdoutFd: "pipe", stderrFd: "pipe", detached: false });
     ok("T7a governed transfer succeeded over the module-created inherited descriptor", g.ok && g.key_fd === 3 && typeof g.supervisor_pid === "number");
-    ok("T6a transfer state is permanently TRANSFERRED_SPENT", c.capability.__state.transfer === TRANSFER_STATES.SPENT && g.transfer === TRANSFER_STATES.SPENT);
+    ok("T6a transfer state is permanently TRANSFERRED_SPENT", lifecycleStateV4(c.capability).transfer === TRANSFER_STATES.SPENT && g.transfer === TRANSFER_STATES.SPENT);
     const res = await collect(g.child);
     ok("T7b supervisor read exactly one framed key then EOF -> SUPERVISOR_EXECUTION", res.parsed && res.parsed.ok === true && res.parsed.stage === "SUPERVISOR_EXECUTION" && res.parsed.branded === true);
     ok("T7c provider eligibility reachable only from that stage", res.parsed && res.parsed.provider_eligible && res.parsed.provider_eligible.ok === true);

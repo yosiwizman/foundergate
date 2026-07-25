@@ -6,6 +6,7 @@
 import { existsSync, appendFileSync, writeFileSync, renameSync, readFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { execFileSync } from "node:child_process";
+import { fixedGit } from "../assurance/fixed-executables.mjs";
 import { validateLease } from "../assurance/assurance-core.mjs";
 import { isSupervisorExecutionCapabilityV4 } from "../assurance/lifecycle-authority-v4.mjs";
 
@@ -63,7 +64,8 @@ export function durableReplayWriter(paths) {
 // budget, required + negative tests, worktree status, output artifacts, evidence existence, and
 // process teardown. Returns { pass, checks } — a provider SUCCESS alone can NEVER pass this.
 export function realMachineVerifier(opts = {}) {
-  const git = opts.gitRunner || ((args, cwd) => execFileSync("git", args, { cwd, encoding: "utf8" }).trim());
+  // FG-CHK-197-02: the DEFAULT git runner is the FIXED ABSOLUTE /usr/bin/git in a minimal environment.
+  const git = opts.gitRunner || ((args, cwd) => fixedGit(args, { cwd }));
   const fileExists = opts.exists || existsSync;
   return async (job, prov, ctx) => {
     const checks = []; const fail = (name, ok, detail) => { checks.push({ name, ok, detail }); };

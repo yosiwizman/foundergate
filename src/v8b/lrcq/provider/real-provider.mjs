@@ -9,6 +9,7 @@
 import { spawn, execFileSync } from "node:child_process";
 import { writeFileSync, readFileSync, mkdirSync, existsSync, realpathSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
+import { fixedGit } from "../assurance/fixed-executables.mjs";
 import { validateActivation } from "./activation-schema.mjs";
 import { renderPrompt } from "./identity-envelope.mjs";
 import { parseTransport } from "./transport-envelope.mjs";
@@ -45,7 +46,10 @@ export function containmentCheck(job, activation) {
 // Verifies (via read-only git) that the assigned path is a registered worktree of the
 // approved repository, checked out on the exact assigned branch, not detached, not main.
 export function gitWorktreeIdentity(job, activation, gitRunner) {
-  const g = gitRunner || ((args, cwd) => execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim());
+  // FG-CHK-197-02: the DEFAULT runner is the FIXED ABSOLUTE /usr/bin/git in a minimal environment, so the
+  // pre-spawn worktree/branch/repository identity cannot be forged by a PATH-resolved `git`. `gitRunner`
+  // remains a function parameter for the deterministic test families; production never supplies it.
+  const g = gitRunner || ((args, cwd) => fixedGit(args, { cwd }));
   try {
     const wt = job.worktree;
     if (!existsSync(wt)) return "worktree does not exist: " + wt;

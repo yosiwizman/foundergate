@@ -15,6 +15,8 @@ import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync, existsSync, mkdtempSync, renameSync, rmSync, lstatSync, realpathSync, readdirSync, statSync } from "node:fs";
 import { join, resolve, dirname, isAbsolute, sep, basename } from "node:path";
 import { execFileSync } from "node:child_process";
+// FG-CHK-197-02: fixed absolute executables in a minimal environment — never PATH-resolved.
+import { fixedGit } from "../../../src/v8b/lrcq/assurance/fixed-executables.mjs";
 import { fileURLToPath } from "node:url";
 import { buildActivationMaterialPacket } from "./generate-run-manifest.mjs";
 import { loadAndVerifyManifest, manifestDigest } from "../../../src/v8b/lrcq/run-harness/run-manifest.mjs";
@@ -79,7 +81,7 @@ export function validateInputs(inputs) {
   const i = inputs || {};
   req(i.repoRoot && isAbsolute(i.repoRoot) && existsSync(i.repoRoot), "repoRoot missing/not absolute/absent");
   if (e.length) return { ok: false, errors: e };
-  const git = i.git || ((a) => execFileSync("git", ["-C", i.repoRoot, ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim());
+  const git = i.git || ((a) => fixedGit(["-C", i.repoRoot, ...a]));
   const tryGit = (a) => { try { return git(a); } catch { return null; } };
   // git identity/authority
   const head = tryGit(["rev-parse", "HEAD"]);

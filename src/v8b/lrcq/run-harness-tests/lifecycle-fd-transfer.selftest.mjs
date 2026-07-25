@@ -16,7 +16,7 @@ import { spawn } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { makeDisposableV4World } from "./test-support/v4-fixture.mjs";
-import { consumeActivationV4, createLaunchIntentV4, spawnGovernedSupervisorV4, LC_CODES, TRANSFER_STATES } from "../../../../src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs";
+import { consumeActivationV4, createLaunchIntentV4, spawnGovernedSupervisorV4, lifecycleStateV4, LC_CODES, TRANSFER_STATES } from "../../../../src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const CHILD = realpathSync(join(HERE, "test-support", "v4-supervisor-child.mjs"));
@@ -53,7 +53,7 @@ function readyWorld(prefix, nonce) {
     ok("A1 correct key over the inherited descriptor -> child reaches SUPERVISOR_EXECUTION", rA.parsed && rA.parsed.ok === true && rA.parsed.stage === "SUPERVISOR_EXECUTION" && rA.parsed.branded === true);
     ok("A1b that capability is provider-ELIGIBLE for the signed provider + candidate bindings", rA.parsed && rA.parsed.provider_eligible && rA.parsed.provider_eligible.ok === true);
     ok("A1c an ephemeral-signed supervisor claim was written into the SIGNED lifecycle root", existsSync(recPath(A.w, ".supervisor-claim.json")));
-    ok("A6 the consumed capability is permanently spent after the single transfer", A.c.capability.__state.transfer === TRANSFER_STATES.SPENT);
+    ok("A6 the consumed capability is permanently spent after the single transfer", lifecycleStateV4(A.c.capability).transfer === TRANSFER_STATES.SPENT);
 
     // ---- A2 WRONG KEY: one world's genuine framed key delivered to a supervisor re-verifying another ----
     const B = readyWorld("fg-fd-b-", "b1"); worlds.push(B.w);

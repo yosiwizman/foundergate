@@ -5,6 +5,8 @@
 // A tests array with names is not proof. An evidence dir existing is not proof. Builder self-report
 // is not proof.
 import { execFileSync } from "node:child_process";
+// FG-CHK-197-02: fixed absolute executables in a minimal environment — never PATH-resolved.
+import { fixedGit } from "../assurance/fixed-executables.mjs";
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { resolve, dirname } from "node:path";
@@ -15,7 +17,7 @@ export function reportDigest(report) { return "sha256:" + createHash("sha256").u
 export function execMachineVerifier(opts = {}) {
   const exec = opts.execRunner || ((argv, cwd, timeoutMs) => { try { const out = execFileSync(argv[0], argv.slice(1), { cwd, timeout: timeoutMs || 60000, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }); return { code: 0, out }; } catch (e) { return { code: typeof e.status === "number" ? e.status : 1, out: (e.stdout || "") + (e.stderr || "") }; } });
   const exists = opts.exists || existsSync;
-  const git = opts.gitRunner || ((args, cwd) => execFileSync("git", args, { cwd, encoding: "utf8" }).trim());
+  const git = opts.gitRunner || ((args, cwd) => fixedGit(args, { cwd }));
   const allowlist = opts.allowlist || ["node", "npm", "git", "shasum"];
   const hashFile = opts.hashFile || ((p) => "sha256:" + createHash("sha256").update(readFileSync(p)).digest("hex"));
   const writeEvidence = opts.writeEvidence || ((p, content) => { mkdirSync(dirname(p), { recursive: true }); writeFileSync(p, content); });

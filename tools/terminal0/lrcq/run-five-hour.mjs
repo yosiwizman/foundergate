@@ -56,11 +56,13 @@ import { readSupervisorState } from "../../../src/v8b/lrcq/run-harness/superviso
 import { BudgetLedger } from "../../../src/v8b/lrcq/run-harness/budget-ledger.mjs";
 import * as SEAMS from "../../../src/v8b/lrcq/run-harness/real-seams.mjs";
 import { verifyProviderTarget } from "../../../src/v8b/lrcq/provider/provider-verify.mjs";
+import { fixedGit, fixedExecutableReport } from "../../../src/v8b/lrcq/assurance/fixed-executables.mjs";
 import { readAuthorizationBytes } from "./founder-sign.mjs";
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 export const SUPERVISOR_MAIN = realpathSync(resolve(REPO, "src/v8b/lrcq/run-harness/supervisor-main.mjs"));
-const git = (...a) => execFileSync("git", ["-C", REPO, ...a], { encoding: "utf8" }).trim();
+// FG-CHK-197-02: fixed absolute git in a minimal environment for every launcher observation.
+const git = (...a) => fixedGit(["-C", REPO, ...a]);
 const sha256 = (s) => "sha256:" + createHash("sha256").update(typeof s === "string" ? s : JSON.stringify(s)).digest("hex");
 // The controlled base env the provider process runs in. scrubEnv keeps only PATH+HOME and strips every
 // prohibited secret (ANTHROPIC_API_KEY, cloud/GH tokens, ...); without PATH the provider cannot exec.
@@ -249,7 +251,9 @@ export function makeCounters() { const c = {}; return { c, wrap(name, fn) { c[na
 // deterministic stub provider.
 export async function executeSignedRunV4(cap, signedV4, man, counters, exec = {}) {
   const cfg = buildRealCfgV4(cap, signedV4, man.manifest, man.loaded, man.root, counters);
-  const gitRun = exec.git || ((a, cwd) => execFileSync("git", a, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim());
+  // FG-CHK-197-02/03: the DEFAULT git runner is the fixed absolute binary. `exec` is a FUNCTION
+  // PARAMETER used only by the deterministic test families — production (supervisor-main) passes {}.
+  const gitRun = exec.git || ((a, cwd) => fixedGit(a, { cwd }));
   const repoRoot = exec.repoRoot || man.manifest.repository_root;
   const candidateRef = exec.candidateRef || cap.evaluated_candidate;
   const setup = setupManager(cfg.backlog, cap.run_id, man.manifest, { git: gitRun, repoRoot, candidateRef });
@@ -323,13 +327,19 @@ export async function launchDetachedSupervisorV4(activationPath, authorizationPa
   const supervisorDir = life.supervisorDir || resolve(runRoot, "supervisor");
   try { mkdirSync(supervisorDir, { recursive: true }); mkdirSync(runRoot, { recursive: true }); } catch { /* */ }
   const cfgPath = resolve(supervisorDir, "supervisor-config-" + String(cap.run_id).replace(/[^a-zA-Z0-9_.-]/g, "_") + ".json");
+  // FG-CHK-197-03: the supervisor config carries ONLY public references and non-authoritative operational
+  // data. It previously carried `exec` and `now`, which the supervisor honoured — `exec.repoRoot` and
+  // `exec.candidateRef` reached `git worktree add` verbatim and so decided WHICH COMMIT every job worktree
+  // was checked out from, and `now` replaced the clock its INDEPENDENT re-verification used. Neither field is
+  // written any more, and the supervisor refuses fail-closed if either is present (see SUPERVISOR_CONFIG_KEYS
+  // in supervisor-main.mjs). Production time comes from the system clock; production execution behaviour comes
+  // from the reviewed modules and the SIGNED provider/candidate bindings.
   writeFileSync(cfgPath, JSON.stringify({
     schema: "lrcq-v4-supervisor-config-1",
     activation_path: realpathSync(activationPath), authorization_path: authorizationPath ? realpathSync(authorizationPath) : null,
     activation_identity: cap.activation_identity, run_id: cap.run_id,
     supervisorDir, runRoot, heartbeatMs: life.heartbeatMs || 30000,
     eventLog: resolve(runRoot, "supervisor-events.jsonl"),
-    exec: life.exec || null, now: life.fixedNow ?? null,
   }, null, 2) + "\n", { flag: "w", mode: 0o600 });
   // Gate 4: the signed launch intent NAMES + DIGESTS the one supervisor entrypoint this key may reach.
   // createLaunchIntentV4 is the authority on the entrypoint: it refuses a missing / symlinked / non-regular
