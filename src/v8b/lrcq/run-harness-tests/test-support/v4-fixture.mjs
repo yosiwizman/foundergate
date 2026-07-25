@@ -50,14 +50,22 @@ export function makeDisposableV4World(opts = {}) {
     repository_root_realpath: repoRoot, repository_git_common_dir_realpath: gitCommonDir,
     lifecycle_root_realpath: lifecycleRoot, lifecycle_contract_version: LIFECYCLE_CONTRACT_VERSION,
     evidence_commit_sha: "8d1899f7", evidence_commit_tree: "9e720249",
-    reviewed_runtime_sha: "bfc0556", reviewed_runtime_tree: "20518b8d",
-    run_id: opts.run_id || "lrcq-disposable-deterministic-run", backlog_digest: "sha256:" + "1".repeat(64),
+    reviewed_runtime_sha: opts.reviewedRuntimeSha || "bfc0556", reviewed_runtime_tree: "20518b8d",
+    run_manifest_path: opts.runManifestPath || "disposable-run-manifest.json",
+    run_manifest_digest: opts.runManifestDigest || "sha256:" + "5".repeat(64),
+    lrcq_base_sha: "3794ec1a6f0d83b72a823bbd36622b1210b1a4c5", lrcq_base_tree: "aaaa1111",
+    provider_candidate_sha: "50e18e55863b4abc0f0c2ef036b790ef15001ac5", provider_candidate_tree: "bbbb2222",
+    run_id: opts.run_id || "lrcq-disposable-deterministic-run", backlog_digest: opts.backlogDigest || "sha256:" + "1".repeat(64),
     provider_executable_path: opts.providerPath || "/disposable/bin/claude",
     resolved_provider_target: opts.resolvedProviderTarget || "/disposable/versions/stub",
     provider_version: opts.providerVersion || "0.0.0-stub",
     provider_executable_identity: opts.providerIdentity || "sha256:" + "2".repeat(64),
     capability_lease_digest: "sha256:" + "3".repeat(64), blast_radius_budget_digest: "sha256:" + "4".repeat(64),
-    issued_epoch: 1000, expiry_epoch: 1600, hard_deadline_epoch: 19000,
+    // Temporal defaults are small fixed epochs for pure-crypto tests. Families whose code paths consult the
+    // REAL system clock (the running-worker deadline monitor) pass realTemporal:true for real-epoch values.
+    issued_epoch: opts.realTemporal ? 1_700_000_000 : 1000,
+    expiry_epoch: opts.realTemporal ? 9_999_999_999 : 1600,
+    hard_deadline_epoch: opts.realTemporal ? 9_999_999_998 : 19000,
     max_budget_usd: 10, run_duration_s: 18000, per_job_timeout_s: 2700, max_parallel_width: 2,
     max_output_bytes: 10485760, termination_grace_s: 30,
     no_protected_main_merge: true, no_pr_merge: true, no_push_unless_authorized: true, no_m1: true, no_akior: true,
@@ -67,7 +75,7 @@ export function makeDisposableV4World(opts = {}) {
   const signed = signActivation(payload, kp.privateKey);
   const activationPath = join(repoRoot, "signed-activation-v4.json");
   writeFileSync(activationPath, JSON.stringify(signed, null, 2) + "\n");
-  const now = typeof opts.now === "number" ? opts.now : DEFAULT_NOW;
+  const now = typeof opts.now === "number" ? opts.now : (opts.realTemporal ? 1_700_000_100 : DEFAULT_NOW);
   const vr = verifyActivation(signed, { authorizationBytes, nowEpoch: now }, { keyDeps });
 
   const world = {

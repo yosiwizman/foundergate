@@ -12,6 +12,8 @@ import { join, resolve, sep } from "node:path";
 import { validateActivation } from "./activation-schema.mjs";
 import { renderPrompt } from "./identity-envelope.mjs";
 import { parseTransport } from "./transport-envelope.mjs";
+import { isSupervisorExecutionCapabilityV4, providerEligibilityV4 } from "../assurance/lifecycle-authority-v4.mjs";
+import { projectionMatchesCapability } from "../run-harness/v4-legacy-projection.mjs";
 
 export const OUTCOMES = ["SUCCESS", "FAILED", "WORKER_TIMEOUT", "RUN_DEADLINE_EXPIRED", "OUTPUT_OVERFLOW", "SPAWN_ERROR", "TERMINATED_BY_PAUSE", "TERMINATED_BY_STOP", "TEARDOWN_FAILED", "ACTIVATION_REFUSED", "UNKNOWN_FAILURE"];
 const PERMISSION_BYPASS = ["--dangerously-skip-permissions", "--allow-dangerously-skip-permissions"];
@@ -117,6 +119,16 @@ export async function runJob(activation, job, bindings, opts = {}) {
   // must never become the running-worker deadline clock.
   const nowS = () => (opts.nowProvider ? opts.nowProvider() : Math.floor(Date.now() / 1000));
 
+  // FG-LRCQ-ACT-029 SPAWN BOUNDARY: every real provider spawn REQUIRES a genuine SUPERVISOR_EXECUTION
+  // capability (module-branded, mintable only by a detached supervisor that received the per-activation
+  // ephemeral key over the governed inherited descriptor). A raw/forged capability object, a VERIFIED-only
+  // or CONSUMED-only capability, and a hand-written V2 record are all refused BEFORE any side effect. The
+  // V2 record must additionally be the NON-AUTHORITATIVE projection OF THIS capability.
+  const cap = opts.executionCapability;
+  if (!isSupervisorExecutionCapabilityV4(cap)) return seal("ACTIVATION_REFUSED", { refusals: ["V4_SUPERVISOR_EXECUTION_CAPABILITY_REQUIRED"] });
+  if (!projectionMatchesCapability(activation, cap)) return seal("ACTIVATION_REFUSED", { refusals: ["V4_PROJECTION_NOT_BOUND_TO_CAPABILITY"] });
+  const pe = providerEligibilityV4(cap, job, { providerIdentity: activation.provider_executable_identity, evaluatedCandidate: bindings.run_harness_candidate_sha });
+  if (!pe.ok) return seal("ACTIVATION_REFUSED", { refusals: ["V4_PROVIDER_INELIGIBLE: " + pe.code + (pe.detail ? " (" + pe.detail + ")" : "")] });
   const av = validateActivation(activation, bindings);
   if (!av.valid) return seal("ACTIVATION_REFUSED", { refusals: av.refusals });
   if (job.risk_class !== "WIDE_SAFE") return seal("ACTIVATION_REFUSED", { refusals: ["job not WIDE_SAFE: " + job.risk_class] });

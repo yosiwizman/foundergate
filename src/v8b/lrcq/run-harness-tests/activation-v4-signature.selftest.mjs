@@ -23,7 +23,7 @@ function basePayload(over = {}) {
     founder_signature_algorithm: "ed25519", signer_key_fingerprint: fp,
     authorization_text_digest: authorizationTextDigest(authText), activation_nonce: "nonce-123",
     repository_root_realpath: "/tmp/repo", repository_git_common_dir_realpath: "/tmp/repo/.git", lifecycle_root_realpath: "/tmp/repo/lifecycle", lifecycle_contract_version: "lrcq-lifecycle-v4-1",
-    evidence_commit_sha: "8d1899f7", evidence_commit_tree: "9e720249", reviewed_runtime_sha: "bfc0556", reviewed_runtime_tree: "20518b8d",
+    evidence_commit_sha: "8d1899f7", evidence_commit_tree: "9e720249", reviewed_runtime_sha: "bfc0556", reviewed_runtime_tree: "20518b8d", run_manifest_path: "m.json", run_manifest_digest: "sha256:" + "5".repeat(64), lrcq_base_sha: "3794ec1a", lrcq_base_tree: "aaaa1111", provider_candidate_sha: "50e18e55", provider_candidate_tree: "bbbb2222", 
     run_id: "lrcq-first-internal-5h-run", backlog_digest: "sha256:f3801d96",
     provider_executable_path: "/x/bin/claude", resolved_provider_target: "/x/versions/2.1.215", provider_version: "2.1.215", provider_executable_identity: "sha256:90608b5c",
     capability_lease_digest: "sha256:aa", blast_radius_budget_digest: "sha256:bb",

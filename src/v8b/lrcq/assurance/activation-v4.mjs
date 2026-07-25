@@ -50,6 +50,12 @@ export const V4_PAYLOAD_FIELDS = [
   // a copied tree / alternate worktree / re-init'd repo resolves to a different common dir -> refused.
   "repository_root_realpath", "repository_git_common_dir_realpath", "lifecycle_root_realpath", "lifecycle_contract_version",
   "evidence_commit_sha", "evidence_commit_tree", "reviewed_runtime_sha", "reviewed_runtime_tree",
+  // FG-LRCQ-ACT-029: the run MANIFEST and the full candidate stack are SIGNED. Without these the V4 record
+  // bound no manifest, so the non-authoritative legacy projection would have had to source execution
+  // boundaries (repository/branch/worktree/evidence roots, tool sets, timeouts) from an unsigned file, and
+  // the legacy candidate-stack fields would have been launcher-supplied rather than founder-signed.
+  "run_manifest_path", "run_manifest_digest",
+  "lrcq_base_sha", "lrcq_base_tree", "provider_candidate_sha", "provider_candidate_tree",
   "run_id", "backlog_digest",
   "provider_executable_path", "resolved_provider_target", "provider_version", "provider_executable_identity",
   "capability_lease_digest", "blast_radius_budget_digest",
@@ -120,7 +126,7 @@ export function verifyActivation(activation, bindings = {}, deps = {}) {
     if (authorizationTextDigest(bindings.authorizationBytes) !== activation.authorization_text_digest) return R(V4_CODES.AUTHORIZATION_DIGEST_MISMATCH);
   }
   // candidate/provider/backlog/lease/budget bindings
-  const B = [["evidenceCommitSha", "evidence_commit_sha"], ["evidenceCommitTree", "evidence_commit_tree"], ["reviewedRuntimeSha", "reviewed_runtime_sha"], ["reviewedRuntimeTree", "reviewed_runtime_tree"], ["runId", "run_id"], ["backlogDigest", "backlog_digest"], ["providerPath", "provider_executable_path"], ["resolvedProviderTarget", "resolved_provider_target"], ["providerVersion", "provider_version"], ["providerIdentity", "provider_executable_identity"], ["capabilityLeaseDigest", "capability_lease_digest"], ["blastBudgetDigest", "blast_radius_budget_digest"]];
+  const B = [["evidenceCommitSha", "evidence_commit_sha"], ["evidenceCommitTree", "evidence_commit_tree"], ["reviewedRuntimeSha", "reviewed_runtime_sha"], ["reviewedRuntimeTree", "reviewed_runtime_tree"], ["runId", "run_id"], ["backlogDigest", "backlog_digest"], ["providerPath", "provider_executable_path"], ["resolvedProviderTarget", "resolved_provider_target"], ["providerVersion", "provider_version"], ["providerIdentity", "provider_executable_identity"], ["capabilityLeaseDigest", "capability_lease_digest"], ["blastBudgetDigest", "blast_radius_budget_digest"], ["runManifestPath", "run_manifest_path"], ["runManifestDigest", "run_manifest_digest"], ["lrcqBaseSha", "lrcq_base_sha"], ["lrcqBaseTree", "lrcq_base_tree"], ["providerCandidateSha", "provider_candidate_sha"], ["providerCandidateTree", "provider_candidate_tree"]];
   for (const [b, f] of B) if (bindings[b] !== undefined && bindings[b] !== activation[f]) return R(V4_CODES.BINDING_MISMATCH, { detail: f });
   // limits (upper-bounded)
   if (!(activation.max_budget_usd > 0 && activation.max_budget_usd <= 10)) return R(V4_CODES.LIMIT_VIOLATION, { detail: "max_budget_usd" });
@@ -150,8 +156,24 @@ export function verifyActivation(activation, bindings = {}, deps = {}) {
     repository_git_common_dir: activation.repository_git_common_dir_realpath, // SIGNED — binds the exact checkout
     lifecycle_root: activation.lifecycle_root_realpath,     // SIGNED — the only place authority is read
     evaluated_candidate: activation.reviewed_runtime_sha,
+    evaluated_candidate_tree: activation.reviewed_runtime_tree,
     evidence_candidate: activation.evidence_commit_sha,
+    evidence_candidate_tree: activation.evidence_commit_tree,
     provider_identity: activation.provider_executable_identity,
+    provider_executable_path: activation.provider_executable_path,
+    resolved_provider_target: activation.resolved_provider_target,
+    provider_version: activation.provider_version,
+    // SIGNED manifest + candidate-stack binding — the ONLY source the non-authoritative legacy projection
+    // may read these from (see run-harness/v4-legacy-projection.mjs).
+    run_manifest_path: activation.run_manifest_path,
+    run_manifest_digest: activation.run_manifest_digest,
+    lrcq_base_sha: activation.lrcq_base_sha, lrcq_base_tree: activation.lrcq_base_tree,
+    provider_candidate_sha: activation.provider_candidate_sha, provider_candidate_tree: activation.provider_candidate_tree,
+    backlog_digest: activation.backlog_digest,
+    capability_lease_digest: activation.capability_lease_digest,
+    blast_radius_budget_digest: activation.blast_radius_budget_digest,
+    issued_epoch: activation.issued_epoch, expiry_epoch: activation.expiry_epoch,
+    hard_deadline_epoch: activation.hard_deadline_epoch,
     run_id: activation.run_id,
     limits: { max_budget_usd: activation.max_budget_usd, run_duration_s: activation.run_duration_s, per_job_timeout_s: activation.per_job_timeout_s, max_parallel_width: activation.max_parallel_width, max_output_bytes: activation.max_output_bytes, termination_grace_s: activation.termination_grace_s },
     exclusions: { no_deploy: true, no_push_unless_authorized: true, no_live_action: true },

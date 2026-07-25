@@ -248,7 +248,19 @@ function attachSupervisorWithKey(verifiedCap, ephemeralPrivateKey, opts = {}) {
   const cap = Object.freeze({
     _stage: "SUPERVISOR_EXECUTION", activation_identity: id, payload_digest: m.doc.payload_digest,
     evaluated_candidate: verifiedCap.evaluated_candidate, evidence_candidate: verifiedCap.evidence_candidate,
+    evaluated_candidate_tree: verifiedCap.evaluated_candidate_tree, evidence_candidate_tree: verifiedCap.evidence_candidate_tree,
     provider_identity: m.doc.provider_identity, run_id: m.doc.run_id, limits: verifiedCap.limits,
+    // SIGNED facts the non-authoritative legacy projection is allowed to read (nothing else may).
+    provider_executable_path: verifiedCap.provider_executable_path, resolved_provider_target: verifiedCap.resolved_provider_target,
+    provider_version: verifiedCap.provider_version,
+    run_manifest_path: verifiedCap.run_manifest_path, run_manifest_digest: verifiedCap.run_manifest_digest,
+    lrcq_base_sha: verifiedCap.lrcq_base_sha, lrcq_base_tree: verifiedCap.lrcq_base_tree,
+    provider_candidate_sha: verifiedCap.provider_candidate_sha, provider_candidate_tree: verifiedCap.provider_candidate_tree,
+    backlog_digest: verifiedCap.backlog_digest, capability_lease_digest: verifiedCap.capability_lease_digest,
+    blast_radius_budget_digest: verifiedCap.blast_radius_budget_digest,
+    issued_epoch: verifiedCap.issued_epoch, expiry_epoch: verifiedCap.expiry_epoch,
+    hard_deadline_epoch: verifiedCap.hard_deadline_epoch,
+    repository_root: verifiedCap.repository_root, lifecycle_root: root,
     consumed_marker_digest: m.digest, launch_intent_digest: it.digest, supervisor_claim_digest: cd.digest,
     supervisor_pid: pid, supervisor_start_identity: observed,
   });

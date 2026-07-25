@@ -18,6 +18,9 @@
 
 import { Controller, MODE, isEligible, jobsCollide } from "../controller.mjs";
 import { validateActivationV3, validateLease, validateBlastBudget, blastExceeded, authorityViolations } from "../assurance/assurance-core.mjs";
+import { isSupervisorExecutionCapabilityV4 } from "../assurance/lifecycle-authority-v4.mjs";
+import { projectionMatchesCapability, projectLegacyBindingsV4 } from "./v4-legacy-projection.mjs";
+import { validateActivation as validateLegacyProjection } from "../provider/activation-schema.mjs";
 import { runSetup } from "./setup-pipeline.mjs";
 import { SeparationJob } from "./separation.mjs";
 import { ReplayStream } from "./replay.mjs";
@@ -54,7 +57,7 @@ export const REQUIRED_REAL_SEAMS = [
 export const CHECKER_RESULTS = { CLEAN: "CLEAN", FINDINGS: "FINDINGS", INSUFFICIENT_EVIDENCE: "INSUFFICIENT_EVIDENCE" };
 
 export const HARNESS_STAGES = [
-  "runtime_kind", "real_seam_check", "load_activation", "validate_activation", "validate_candidate_stack",
+  "runtime_kind", "real_seam_check", "v4_execution_authority", "load_activation", "validate_activation", "validate_candidate_stack",
   "validate_backlog_digests", "validate_provider_identity", "acquire_run_lock", "setup_pipeline",
   "validate_capability_lease", "validate_blast_budget", "controller_real_init", "select_wide_safe",
   "verify_branch_worktree", "seal_intent", "dispatch_single_route", "machine_verification",
@@ -143,7 +146,9 @@ async function governedDispatch(cfg, job, intent, lease, budget, usage, txByKey,
   w.tx(intent.idempotency_key, "DISPATCHED", { job_id: job.job_id, transaction_id: intent.transaction_id, lease_id: lease.lease_id });
   // Pass the consumed single-use lease + builder session so the ONE dispatch route can render the
   // canonical identity envelope into the real prompt (FG-LRCQ-ACT-009) and bind cost/transport.
-  const out = await cfg.dispatch(job, { activation: cfg.activation, bindings, lease, builderSession, intent });
+  // FG-LRCQ-ACT-029: the dispatch route receives the genuine SUPERVISOR_EXECUTION capability. It is the
+  // ONLY thing the provider spawn boundary accepts as authority — never the record, never a flag.
+  const out = await cfg.dispatch(job, { activation: cfg.activation, bindings, lease, builderSession, intent, executionCapability: cfg.executionCapability });
   return { dispatched: true, provider: out, lease_id: lease.lease_id };
 }
 
@@ -249,6 +254,9 @@ async function runJobLifecycle(cfg, job, lease, budget, usage, txByKey, replay, 
     // checker (FG-LRCQ-ACT-002) — no hidden mutable job property transports authority.
     const governedContext = Object.freeze({
       signed_activation: cfg.activation, bindings, run_manifest: cfg.runManifest || null,
+      // FG-LRCQ-ACT-029: the checker route also spawns a provider, so it receives the same genuine
+      // capability plus the founder-signed V4 document it was minted from (for independent re-reading).
+      execution_capability: cfg.executionCapability, signed_activation_v4: cfg.signedActivationV4 || null,
       builder_transaction_id: intent.transaction_id, builder_session: builderSession, builder_prompt_digest: builderSession.prompt_digest,
       machine_verifier_report_digest: leaseDigest(mv.report || { pass: mv.pass }), job_id: job.job_id, attempt,
       branch: job.branch, worktree: job.worktree, evidence_dir: cfg.evidenceDir || "/ev",
@@ -300,11 +308,35 @@ export async function runHarness(cfg) {
     if (missing.length) return refuse("real_seam_check", missing.map((s) => "ACTIVATION_REFUSED: missing required REAL seam '" + s + "'"));
   }
   const w = makeWriters(cfg);
+  // 0c. FG-LRCQ-ACT-029 V4 EXECUTION AUTHORITY. Every REAL execution requires a genuine, module-branded
+  // SUPERVISOR_EXECUTION capability — mintable ONLY by a detached supervisor that independently re-verified
+  // the founder-signed V4 activation and received the per-activation ephemeral key over the governed
+  // inherited descriptor. V3/V2 records are refused here, BEFORE any lock, worktree, or provider side effect.
+  const v4cap = cfg.executionCapability;
+  if (cfg.runtime_kind === RUNTIME_KIND.REAL) {
+    if (!isSupervisorExecutionCapabilityV4(v4cap)) return refuse("v4_execution_authority", "V4_SUPERVISOR_EXECUTION_CAPABILITY_REQUIRED: real execution needs a genuine supervisor-execution capability (forged/verified-only/consumed-only refused)");
+    if (cfg.activation && cfg.activation.schema_version === "lrcq-activation-3") return refuse("v4_execution_authority", "V3_REFUSED_FOR_EXECUTION: historical V3 records are evidence-only");
+    if (!projectionMatchesCapability(cfg.activation, v4cap)) return refuse("v4_execution_authority", "V4_PROJECTION_NOT_BOUND_TO_CAPABILITY: the legacy record must be the non-authoritative projection of THIS capability");
+    // signed-fact cross-checks: the launcher's bindings must agree with what the founder actually signed
+    if (bindings.run_harness_candidate_sha !== undefined && bindings.run_harness_candidate_sha !== v4cap.evaluated_candidate) return refuse("v4_execution_authority", "V4_BINDING_MISMATCH: run_harness_candidate_sha != signed reviewed_runtime_sha");
+    if (bindings.first_real_run_backlog_digest !== undefined && bindings.first_real_run_backlog_digest !== v4cap.backlog_digest) return refuse("v4_execution_authority", "V4_BINDING_MISMATCH: backlog digest != signed backlog_digest");
+    if (bindings.provider_identity !== undefined && bindings.provider_identity !== v4cap.provider_identity) return refuse("v4_execution_authority", "V4_BINDING_MISMATCH: provider identity != signed provider_executable_identity");
+    if (cfg.run_id !== v4cap.run_id) return refuse("v4_execution_authority", "V4_BINDING_MISMATCH: run_id != signed run_id");
+  } else if (v4cap !== undefined && v4cap !== null && !isSupervisorExecutionCapabilityV4(v4cap)) {
+    return refuse("v4_execution_authority", "V4_SUPERVISOR_EXECUTION_CAPABILITY_REQUIRED: a supplied execution capability must be genuine");
+  }
   // 1. load activation
   if (!cfg.activation) return refuse("load_activation", "no activation record");
-  // 2/3/4/5. validate activation (three-layer candidate stack + backlog digests + provider identity + bounds)
-  const av = validateActivationV3(cfg.activation, bindings);
-  if (!av.valid) return refuse("validate_activation", av.refusals);
+  // 2/3/4/5. validate the execution record. REAL validates the NON-AUTHORITATIVE V4 projection against the
+  // adapter contract (authority already established above); DETERMINISTIC_TEST keeps the historical V3
+  // validator so evidence/unit families stay executable. V3 can never reach REAL.
+  if (cfg.runtime_kind === RUNTIME_KIND.REAL) {
+    const pv = validateLegacyProjection(cfg.activation, { ...projectLegacyBindingsV4(v4cap, { nowEpoch: cfg.now }), now_epoch: cfg.now, active_run: false, recovery_resolved: true });
+    if (!pv.valid) return refuse("validate_activation", pv.refusals);
+  } else {
+    const av = validateActivationV3(cfg.activation, bindings);
+    if (!av.valid) return refuse("validate_activation", av.refusals);
+  }
   if (authorityViolations().length) return refuse("controller_real_init", authorityViolations());
   // 6. acquire run lock
   if (cfg.lockManager) {

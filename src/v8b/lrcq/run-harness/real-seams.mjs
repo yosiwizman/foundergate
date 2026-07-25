@@ -7,6 +7,7 @@ import { existsSync, appendFileSync, writeFileSync, renameSync, readFileSync, mk
 import { dirname } from "node:path";
 import { execFileSync } from "node:child_process";
 import { validateLease } from "../assurance/assurance-core.mjs";
+import { isSupervisorExecutionCapabilityV4 } from "../assurance/lifecycle-authority-v4.mjs";
 
 const ensureDir = (p) => { try { mkdirSync(dirname(p), { recursive: true }); } catch { /* exists */ } };
 
@@ -120,6 +121,9 @@ export function realIndependentCheckerRoute(opts = {}) {
     if (session.session_id === builderSession.session_id || session.prompt_digest === builderSession.prompt_digest) return { result: "INSUFFICIENT_EVIDENCE", session, reason: "checker not independent of builder" };
     // REAL: the signed activation MUST be present before spawn
     if (!gc.signed_activation || typeof gc.signed_activation !== "object" || Object.keys(gc.signed_activation).length === 0) return { result: "INSUFFICIENT_EVIDENCE", session, reason: "no signed activation in governed context" };
+    // FG-LRCQ-ACT-029: the checker session is a REAL provider spawn, so it needs the same genuine
+    // SUPERVISOR_EXECUTION capability. Without it, refuse BEFORE minting/consuming the checker lease.
+    if (!isSupervisorExecutionCapabilityV4(gc.execution_capability)) return { result: "INSUFFICIENT_EVIDENCE", session, reason: "V4_SUPERVISOR_EXECUTION_CAPABILITY_REQUIRED for the checker session" };
     if (typeof dispatchCheckerSession !== "function") return { result: "INSUFFICIENT_EVIDENCE", session, reason: "no governed checker session configured" };
     // mint + validate + consume a distinct read-only single-use checker lease BEFORE spawn
     const checkerLease = mintCheckerLease(gc, session);
