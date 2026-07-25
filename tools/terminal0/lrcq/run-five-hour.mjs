@@ -332,7 +332,9 @@ export async function launchDetachedSupervisorV4(activationPath, authorizationPa
     exec: life.exec || null, now: life.fixedNow ?? null,
   }, null, 2) + "\n", { flag: "w", mode: 0o600 });
   // Gate 4: the signed launch intent NAMES + DIGESTS the one supervisor entrypoint this key may reach.
-  const supMain = life.supervisorMainPath ? realpathSync(life.supervisorMainPath) : SUPERVISOR_MAIN;
+  // createLaunchIntentV4 is the authority on the entrypoint: it refuses a missing / symlinked / non-regular
+  // path and DIGESTS the real file. Do not pre-resolve here — a bad path must reach that refusal, not throw.
+  const supMain = life.supervisorMainPath || SUPERVISOR_MAIN;
   const intent = createLaunchIntentV4(consumedCap, { now, supervisorEntrypoint: supMain, hardDeadlineEpoch: cap.hard_deadline_epoch });
   if (!intent.ok) return { ready: false, refused: { stage: "launch_intent", reasons: [intent.code + (intent.detail ? " (" + intent.detail + ")" : "")] }, final_state: "LAUNCH_INTENT_REFUSED", consumed: true, launched: false };
   // Gate 5: the GOVERNED one-use inherited-descriptor key transfer + detached spawn.
@@ -433,6 +435,14 @@ async function main() {
 
 // Run main() ONLY when this file is executed directly as the launcher — never when imported (e.g. by the
 // integration selftests, which drive executeSignedRunV4/buildRealCfgV4 without triggering the CLI).
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+// Compare REALPATHS: node resolves symlinks for the entry module's import.meta.url but not for argv[1], so a
+// plain path comparison silently turns the CLI into a no-op whenever the launcher is reached through a
+// symlinked directory (e.g. macOS /var -> /private/var).
+function isDirectEntry() {
+  if (!process.argv[1]) return false;
+  const self = fileURLToPath(import.meta.url);
+  try { return realpathSync(process.argv[1]) === realpathSync(self); } catch { return resolve(process.argv[1]) === self; }
+}
+if (isDirectEntry()) {
   main().then((c) => process.exit(c)).catch((e) => { console.error("launcher error:", e.message); process.exit(3); });
 }

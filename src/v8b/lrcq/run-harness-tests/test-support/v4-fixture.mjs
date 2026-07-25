@@ -42,6 +42,10 @@ export function makeDisposableV4World(opts = {}) {
   // keyDeps points the loader at the DISPOSABLE document — the governed repository file is never touched.
   const keyDeps = { repo: "/disposable", exists: () => true, lstat: () => ({ isSymbolicLink: () => false }), readFile: () => JSON.stringify(authorityDoc) };
   const authorizationBytes = Buffer.from(opts.authorizationText || "DISPOSABLE TEST AUTHORIZATION — one bounded deterministic run\n");
+  // A `prepare` hook runs AFTER the disposable repo + lifecycle root exist but BEFORE signing, so a family
+  // that needs SIGNED bindings derived from on-disk artifacts (e.g. run_manifest_digest) can create them
+  // first and return the payload overrides the founder signature must cover.
+  const prepared = typeof opts.prepare === "function" ? (opts.prepare({ base, repoRoot, gitCommonDir, lifecycleRoot }) || {}) : {};
 
   const payload = {
     schema: ACTIVATION_V4_SCHEMA, signature_payload_version: V4_SIGNATURE_PAYLOAD_VERSION,
@@ -71,6 +75,7 @@ export function makeDisposableV4World(opts = {}) {
     no_protected_main_merge: true, no_pr_merge: true, no_push_unless_authorized: true, no_m1: true, no_akior: true,
     no_customer_data: true, no_live_action: true, no_permission_bypass: true, no_deploy: true, no_external_comms: true,
     ...(opts.payloadOverrides || {}),
+    ...prepared,
   };
   const signed = signActivation(payload, kp.privateKey);
   const activationPath = join(repoRoot, "signed-activation-v4.json");
