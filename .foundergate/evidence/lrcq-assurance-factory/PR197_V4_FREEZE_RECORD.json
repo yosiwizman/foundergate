@@ -4,8 +4,10 @@
   "pr": 197,
   "state": "open, draft, unmerged",
   "branch": "lane/lrcq-founder-signature-authority-8d1899f",
-  "frozen_head": "dceb00c8e27bc26c2362fb64954142992c306236",
-  "frozen_tree": "6726524044c46e327e776cc5f75289f059cb2d48",
+  "reviewed_candidate_sha": "dceb00c8e27bc26c2362fb64954142992c306236",
+  "reviewed_candidate_tree": "6726524044c46e327e776cc5f75289f059cb2d48",
+  "evidence_commit_sha": "RESOLVE_WITH_git_rev-parse_HEAD (this record's own commit; a commit cannot embed its own hash)",
+  "two_sha_note": "The reviewer verifies `git rev-parse HEAD~1` == reviewed_candidate_sha and `git rev-parse HEAD~1^{tree}` == reviewed_candidate_tree, and that the only difference at HEAD is this freeze record itself.",
   "base_pr196_head": "8d1899f793305e9f87adc5163a60bfb077e4d4e5",
   "protected_main": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423",
   "suite": {
