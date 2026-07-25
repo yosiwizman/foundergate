@@ -62,5 +62,30 @@
   "next_gate": "READY_FOR_EXTERNAL_INDEPENDENT_CHECKER",
   "required_checker_verdict": "AUTHORITY_CHAIN_CLEAN_PROVIDER_REFREEZE_REQUIRED",
   "required_advisor_verdict": "AUTHORITY_IMPLEMENTATION_READY_FOR_PROVIDER_REFREEZE",
-  "post_review_lane": "descendant provider-re-freeze + package lane (draft PR off this frozen head), then package Checker CLEAN and package Advisor PACKAGE_READY_FOR_FOUNDER_KEY_ENROLLMENT"
+  "post_review_lane": "descendant provider-re-freeze + package lane (draft PR off this frozen head), then package Checker CLEAN and package Advisor PACKAGE_READY_FOR_FOUNDER_KEY_ENROLLMENT",
+  "builder_execution_metadata": {
+    "recorded_at_session_start_utc": "2026-07-25T01:07:28Z",
+    "provider": "Anthropic \u2014 Claude Code CLI",
+    "model_label": "Claude Opus 5",
+    "model_identifier": "claude-opus-5",
+    "claude_code_version": "2.1.219",
+    "effort_level": "UNKNOWN (not exposed to the session)",
+    "context_window_size": "UNKNOWN (not exposed numerically)",
+    "fast_mode_status": "UNKNOWN (not exposed)",
+    "fallback_configuration": "UNKNOWN (not exposed)",
+    "fallback_occurred": "NO \u2014 the model identifier remained claude-opus-5 for the whole session",
+    "prompt_cache_status": "UNKNOWN (not exposed)",
+    "tool_versions": {
+      "node": "v24.13.1",
+      "npm": "11.8.0",
+      "git": "2.50.1 (Apple Git-155)",
+      "gh": "present"
+    },
+    "tool_permissions": "read/write within the authorized worktree, Bash, git, gh. The Agent/subagent tool was PROHIBITED by this session's operating rules, which is why the independent Checker and Advisor are handed to an external context.",
+    "host": {
+      "hostname": "AKIOR-Mac-mini.local",
+      "kernel": "Darwin 25.3.0 arm64 (xnu-12377.91.3~2, T6041)"
+    },
+    "note": "This is the BUILDER's identity. It is deliberately distinct from the provider-under-test identity the activation binds (2.1.220, sha256:8addc857...)."
+  }
 }
