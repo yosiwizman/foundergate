@@ -1,0 +1,190 @@
+{
+  "schema": "lrcq-chk5-197-production-seam-correction-ledger-1",
+  "wave": "FG-CHK5-197 — fifth independent-Checker production-seam acknowledgment-classification correction",
+  "pr": 197,
+  "branch": "lane/lrcq-founder-signature-authority-8d1899f",
+  "scope_note": "The narrowest wave in this lane. It changes ONE classification in the production five-hour launcher and adds ONE regression family. No authority-core file was touched. No authority, transfer, claim, retry, polling, process-identity or provider behaviour changed.",
+
+  "source_report": {
+    "path_at_review_time": "/tmp/foundergate-pr197-start-identity-independent-checker.json",
+    "preserved_copy": ".foundergate/evidence/lrcq-assurance-factory/CHK5_197_FIFTH_CHECKER_REPORT_HISTORICAL.json",
+    "sha256": "34d4054a04b3a0720d568c8db086c4ce3aece6203709b6175edd2323b4d1f2b1",
+    "preserved_verbatim": true,
+    "verdict": "FINDINGS",
+    "findings": "1 LOW (CONFIRMED)",
+    "authority_core_result": "the fifth Checker found the FG-FFIN4-197-01 start-identity correction real, complete and independently reproduced at the authority boundary; it raised no authority-core finding",
+    "status": "HISTORICAL FINDINGS EVIDENCE ONLY — NOT current acceptance. It reviewed candidate 9d87afa18fe0e63f770d68901e408ac328906167. A FRESH independent Checker is required on the corrected candidate."
+  },
+  "reviewed_candidate_at_report_time": {
+    "sha": "9d87afa18fe0e63f770d68901e408ac328906167",
+    "tree": "10acfe9bcb35fdf169a3b165b12fbb43824f424a"
+  },
+
+  "evidence_class_legend": {
+    "DYNAMIC": "the code path was EXECUTED and the result observed in this process",
+    "STRUCTURAL": "a property of the source text, NOT an execution"
+  },
+
+  "findings": [
+    {
+      "id": "FG-CHK5-197-01",
+      "severity": "LOW",
+      "accepted": true,
+      "disputed": false,
+      "title": "the production five-hour launcher did not classify SUPERVISOR_START_IDENTITY_UNAVAILABLE as a supervisor-acknowledgment failure, so a start-identity refusal was recorded as SUPERVISOR_SPAWN_FAILED",
+      "file": "tools/terminal0/lrcq/run-five-hour.mjs",
+      "line_before_correction": 361,
+
+      "authority_impact": "NONE. The governed transfer was already fail-closed: ok === false, nothing launched, the capability TRANSFERRED_SPENT, a retry refused ALREADY_TRANSFERRED, the private key deleted, buffers zeroed, the descriptor closed, the child killed and reaped, and zero provider spawns. No forged start identity was ever accepted. The defect could not produce a false success and could not weaken any authority control.",
+      "execution_remained_fail_closed": true,
+      "evidence_classification_was_false": true,
+      "what_was_false": "The recorded final_state 'SUPERVISOR_SPAWN_FAILED' and stage 'governed_key_transfer' state that the spawn/key-transfer stage failed. In the SUPERVISOR_START_IDENTITY_UNAVAILABLE scenario the process spawn SUCCEEDED, the one-use inherited-descriptor key transfer COMPLETED, and the spawned supervisor really did mint a CORRECTLY EPHEMERAL-SIGNED claim bound to the exact spawned PID. The only thing that failed was the parent's INDEPENDENT /bin/ps observation of the process-start identity — an acknowledgment-stage failure. A founder reading that run record would have drawn a materially wrong conclusion about what happened.",
+
+      "missing_lifecycle_code": "LC_CODES.SUPERVISOR_START_IDENTITY_UNAVAILABLE",
+      "mechanism_confirmed": "FG-FFIN4-197-01 added a FOURTH acknowledgment-stage lifecycle code to src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs (declared at :55, returned from awaitVerifiedSupervisorClaim at :595). The launcher's classification was an inline three-code OR expression that was not extended, and the following line is a pure ternary on that boolean, so the new code fell to the else arm. This is the same defect CLASS the lane already corrected once as FG-FFIN-197-F1, whose stated purpose was that 'the refusal state is named after the actual failure so the evidence record cannot describe a claim failure as a spawn failure'. The existing regression that governs refusal-stage naming (detached-supervisor-failure case 10b) asserted it for the other three codes only, so nothing caught the drift.",
+
+      "reproduction_of_the_false_classification_before_correction": {
+        "method": "DYNAMIC. The `const claimFailure = ...;` expression was extracted VERBATIM from the pre-correction tools/terminal0/lrcq/run-five-hour.mjs with a regex, compiled with new Function('g','LC_CODES', ...), and evaluated against every acknowledgment-stage code the authority module can return. This executed the real production predicate rather than a paraphrase of it.",
+        "verbatim_predicate": "g.code === LC_CODES.SUPERVISOR_TERMINATED_BEFORE_CLAIM || g.code === LC_CODES.SUPERVISOR_CLAIM_TIMEOUT || g.code === LC_CODES.SUPERVISOR_CLAIM_INVALID",
+        "results": {
+          "SUPERVISOR_TERMINATED_BEFORE_CLAIM": {"claimFailure": true, "stage": "supervisor_acknowledgment", "final_state": "SUPERVISOR_NEVER_ACKNOWLEDGED"},
+          "SUPERVISOR_CLAIM_TIMEOUT": {"claimFailure": true, "stage": "supervisor_acknowledgment", "final_state": "SUPERVISOR_NEVER_ACKNOWLEDGED"},
+          "SUPERVISOR_CLAIM_INVALID": {"claimFailure": true, "stage": "supervisor_acknowledgment", "final_state": "SUPERVISOR_NEVER_ACKNOWLEDGED"},
+          "SUPERVISOR_START_IDENTITY_UNAVAILABLE": {"claimFailure": false, "stage": "governed_key_transfer", "final_state": "SUPERVISOR_SPAWN_FAILED", "verdict": "FALSE — this is the defect"}
+        },
+        "reachability_of_the_code": "Independently proven by the fifth Checker: under genuine external OS file-descriptor exhaustion (no production hook, no flag, no substitute executable) spawnGovernedSupervisorV4 returns { ok:false, code:'SUPERVISOR_START_IDENTITY_UNAVAILABLE' } — reproduced at fd headroom 2, 3 and 4 plus a 30s sustained-failure run, each with the child's correctly signed claim on disk and claim.supervisor_pid === the spawned pid."
+      },
+
+      "launcher_result_before_and_after": {
+        "before": {"ready": false, "refused": {"stage": "governed_key_transfer"}, "final_state": "SUPERVISOR_SPAWN_FAILED", "consumed": true, "launched": false, "supervisor_acknowledged": false},
+        "after": {"ready": false, "refused": {"stage": "supervisor_acknowledgment"}, "final_state": "SUPERVISOR_NEVER_ACKNOWLEDGED", "consumed": true, "launched": false, "supervisor_acknowledged": false},
+        "unchanged_fields": ["ready:false", "consumed:true", "launched:false", "supervisor_acknowledged:false", "the exact lifecycle code and detail preserved in refused.reasons"],
+        "unchanged_for_the_three_original_codes": true,
+        "unchanged_for_every_genuine_spawn_descriptor_or_transfer_failure": true
+      },
+
+      "correction": [
+        "the drifting inline three-code OR expression is GONE",
+        "the acknowledgment-failure code set is now ONE named immutable collection, SUPERVISOR_ACKNOWLEDGMENT_FAILURE_CODES = Object.freeze([...]), holding exactly the four current codes as static LC_CODES references",
+        "a pure predicate isSupervisorAcknowledgmentFailure(code) is the single decision point",
+        "classifyGovernedTransferRefusal(g) is the single place the refused governed-transfer record is built; the launcher's refusal branch is now `if (!g.ok) return classifyGovernedTransferRefusal(g);`, so the record cannot be constructed a second, divergent way",
+        "the collection is deliberately NOT configurable: no environment variable, config field, activation field or CLI flag participates, and none was added",
+        "a source-derived DRIFT GUARD now fails the suite if the authority module's acknowledgment wait ever returns a code the launcher does not classify — the guard whose absence allowed this finding"
+      ],
+      "genuine_spawn_failures_not_reclassified": "Confirmed by negative controls: SUPERVISOR_SPAWN_FAILED, TRANSFER_WRITE_FAILED and DESCRIPTOR_UNAVAILABLE all still answer the predicate false and still record stage 'governed_key_transfer' / final_state 'SUPERVISOR_SPAWN_FAILED'. SUPERVISOR_SPAWN_FAILED is also proven STRUCTURALLY not to originate in the acknowledgment wait at all.",
+
+      "no_authority_core_file_changed": true,
+      "files_changed": [
+        "tools/terminal0/lrcq/run-five-hour.mjs",
+        "src/v8b/lrcq/run-harness-tests/production-ack-classification.selftest.mjs (new regression family)"
+      ],
+      "authority_core_files_untouched": [
+        "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs",
+        "src/v8b/lrcq/assurance/activation-v4.mjs",
+        "src/v8b/lrcq/assurance/fixed-executables.mjs",
+        "src/v8b/lrcq/assurance/deep-freeze-authority.mjs",
+        "src/v8b/lrcq/assurance/fs-authority-guards.mjs",
+        "src/v8b/lrcq/provider/authority-boundary.mjs",
+        "src/v8b/lrcq/provider/real-provider.mjs"
+      ],
+
+      "exact_dynamic_test_reaching_the_real_launcher_classifier": {
+        "family": "src/v8b/lrcq/run-harness-tests/production-ack-classification.selftest.mjs",
+        "assertions": 82,
+        "how_it_reaches_production": "It IMPORTS the real exported production symbols (classifyGovernedTransferRefusal, isSupervisorAcknowledgmentFailure, SUPERVISOR_ACKNOWLEDGMENT_FAILURE_CODES, launchDetachedSupervisorV4) from tools/terminal0/lrcq/run-five-hour.mjs and CALLS them. The expression is NOT copied into the test and checked against itself.",
+        "why_it_cannot_pass_while_the_live_branch_diverges": "AK4a asserts the launcher's refusal branch is literally `if (!g.ok) return classifyGovernedTransferRefusal(g);`; AK4b asserts the inline OR expression is gone; AK4c asserts the stage and final_state string literals each occur exactly ONCE in the launcher source, so no second divergent construction can exist.",
+        "assertion_groups": {
+          "AK1 (5, DYNAMIC)": "the collection is exported, frozen, exactly the four codes, cannot be widened at runtime, and excludes spawn/transfer codes",
+          "AK2 (32, DYNAMIC)": "all four acknowledgment codes -> ready:false, stage supervisor_acknowledgment, final_state SUPERVISOR_NEVER_ACKNOWLEDGED, consumed:true, launched:false, supervisor_acknowledged:false, exact lifecycle code and detail preserved in refused.reasons",
+          "AK3 (21, DYNAMIC)": "negative controls SUPERVISOR_SPAWN_FAILED / TRANSFER_WRITE_FAILED / DESCRIPTOR_UNAVAILABLE stay governed_key_transfer / SUPERVISOR_SPAWN_FAILED; plus ALREADY_TRANSFERRED, KEY_FRAME_MAGIC, FORGED, ROOT_OBJECT_IDENTITY_MISMATCH, an unknown future code, undefined and null",
+          "AK4 (6, STRUCTURAL)": "the launcher delegates to the named classifier; the inline expression is gone; the strings are decided in one place; the collection is a frozen literal of static LC_CODES references, declared once, never mutated, never sourced from env/config/flags",
+          "AK5 (4, STRUCTURAL)": "the DRIFT GUARD — the acknowledgment-wait region of lifecycle-authority-v4.mjs is located, every LC_CODES.SUPERVISOR_* code it returns is extracted, and every one must be classified by the launcher; SUPERVISOR_SPAWN_FAILED is proven not to originate there",
+          "AK6 (6, DYNAMIC)": "the REAL launchDetachedSupervisorV4 is driven end to end to a genuine acknowledgment failure; the full live record is asserted and shown to equal exactly what the exported classifier produces for that code, proving the runtime wiring adds nothing and hides nothing; zero provider invocation",
+          "AK7 (4, STRUCTURAL)": "the authority core is untouched — the start-identity code is still declared and returned, the comparison is still unconditional, and the observation still runs through the fixed absolute /bin/ps",
+          "AK8 (4, DYNAMIC)": "POSITIVE CONTROL — the historical defective three-code expression is reconstructed solely to demonstrate that it MISCLASSIFIES the fourth code, i.e. this family would have FAILED against candidate 9d87afa1. It is never consulted in place of production."
+        }
+      },
+
+      "checker_recommendation_handling": {
+        "recommended": "extend detached-supervisor-failure case 10b, or add a case, to assert the stage/final_state naming for the new code",
+        "done": "A dedicated family was added instead, covering all FOUR codes plus three negative controls plus a source-derived drift guard plus a live end-to-end drive — strictly more than extending 10b. detached-supervisor-failure was left unchanged and still passes 14/14.",
+        "collateral_evidence_correction_requested": "the ledger should disclose that while the launcher's `if (!g.ok)` path made the flag moot for fail-closedness, the refusal-STAGE classification was not updated",
+        "done_where": "FFIN4_197_START_IDENTITY_CORRECTION_LEDGER.json findings[0].aggravating_factor_addressed now carries a chk5_followup_disclosure field"
+      }
+    }
+  ],
+
+  "standing_regressions_reverified": {
+    "note": "Re-run unchanged after the correction; nothing was reopened.",
+    "start_identity_unavailable_refusal": "checker-197-final-five FS2a-FS2l — unchanged, 192/192",
+    "signed_forged_identity_refusal": "checker-197-final-five FS1a-FS1i — unchanged",
+    "every_ok_independently_observed": "FS3a-FS3f — unchanged",
+    "immediate_death_refusal": "FF1a-FF1g — unchanged",
+    "read_without_claim_refusal": "FF1h-FF1k — unchanged",
+    "malformed_and_copied_claim_refusal": "FF1l-FF1n; lifecycle-fd-transfer A4/A4a/A4b 19/19 — unchanged",
+    "fast_claim_and_exit": "FS4a-FS4c — unchanged",
+    "twenty_six_route_invalid_provider_matrix": "final-five-boundary F-B1-F-B4 — 26/26 refused, COUNTED zero provider spawns",
+    "positive_deterministic_provider_stub_route": "F-P3 exactly ONE deterministic stub process; FB4 [COUNTED] spawn_total === 1",
+    "real_repository_key_enrollment_refusal": "detached-supervisor 03/30 — refused at the KEY_ENROLLMENT founder gate, nothing consumed, nothing spawned",
+    "launcher_acknowledgment_stage_naming_for_the_three_original_codes": "detached-supervisor-failure 10/10b/10c — unchanged, 14/14",
+    "atomic_one_use_key_transfer": "checker-197-corrections C1a-C1k — unchanged, 78/78",
+    "v3_retirement": "v3-retirement 22/22 — unchanged",
+    "production_seam_closure": "production-seam-closure 30/30 — unchanged",
+    "authority_route": "authority-route 15/15 — unchanged",
+    "detached_supervisor_full_chain": "detached-supervisor 31/31 — unchanged"
+  },
+
+  "suite": {
+    "command": "npm test",
+    "runs": 2,
+    "self_tests_before_this_wave": 153,
+    "self_tests_after_this_wave": 154,
+    "total_change_reason": "one NEW regression family added (production-ack-classification.selftest.mjs); the runner auto-discovers *.selftest.mjs under src/",
+    "passing": 154,
+    "failures": 0,
+    "skipped_or_weakened": 0,
+    "coverage_reduced": false,
+    "result": "ALL GREEN twice consecutively",
+    "counting_method": "MECHANICAL, parsed from captured npm test output; the two reporting styles are counted separately."
+  },
+
+  "prohibitions_observed": [
+    "no lifecycle-authority redesign",
+    "no change to supervisor-claim semantics",
+    "no change to polling or process-identity logic",
+    "no change to provider-boundary logic",
+    "no founder key enrolled",
+    "no founder passphrase requested or handled",
+    "no real founder signature created",
+    "no real activation created or consumed",
+    "no productive provider or model invoked",
+    "no five-hour run started",
+    "no merge",
+    "no deployment",
+    "protected main untouched",
+    "PR #196 untouched and unmerged",
+    "no branch-protection change",
+    "no AKIOR access",
+    "no M1 access",
+    "no earlier historical Checker report rewritten"
+  ],
+
+  "zero_spawn_totals": {
+    "productive_provider_or_model_invocations": 0,
+    "real_claude_invocations": 0,
+    "founder_keys_created": 0,
+    "real_signatures_created": 0,
+    "real_activations_created_or_consumed": 0,
+    "five_hour_runs_started": 0,
+    "residual_processes": 0,
+    "active_keys": []
+  },
+
+  "not_proven_here": [
+    "This ledger is BUILDER evidence. It is NOT independent acceptance and must not be read as a Checker or Advisor verdict.",
+    "The FRESH independent Checker verdict on the corrected candidate. The report with digest 34d4054a... is historical FINDINGS evidence against candidate 9d87afa1 only.",
+    "An end-to-end drive of launchDetachedSupervisorV4 all the way to SUPERVISOR_START_IDENTITY_UNAVAILABLE. The fifth Checker documented why that is expensive (the launcher passes explicit stdoutFd/stderrFd, so the parent keeps enough descriptors for /bin/ps to succeed; forcing it needs the full disposable-repository-clone apparatus). The classification is instead proven by calling the REAL exported production classifier for that exact code, by the structural proof that the live branch returns that classifier verbatim, and by a live end-to-end drive using a different acknowledgment code that confirms the wiring.",
+    "Real productive provider capability. No model was invoked.",
+    "Provider re-freeze completion — a separate outstanding procedural obligation of this lane, not discharged by this wave."
+  ]
+}

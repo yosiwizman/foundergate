@@ -1,0 +1,494 @@
+{
+  "schema": "foundergate-pr197-start-identity-independent-checker-1",
+  "verdict": "FINDINGS",
+  "verdict_line": "FOUNDERGATE-PR197-START-IDENTITY-CHECKER: FINDINGS",
+  "verdict_summary": "The FG-FFIN4-197-01 correction is real, mechanically reproduced and complete AT THE AUTHORITY BOUNDARY. Independent OS process-start observation is now mandatory for every successful supervisor acknowledgment: the comparison is unconditional, an unobtainable observation is a structured refusal, and no OK can carry an unobserved identity. All previously established V4 authority controls were reconfirmed. One LOW finding remains, in the PRODUCTION LAUNCHER rather than the authority core: the new refusal code SUPERVISOR_START_IDENTITY_UNAVAILABLE was not added to the launcher's acknowledgment-stage code set, so a run refused for this reason is recorded as final_state SUPERVISOR_SPAWN_FAILED / stage governed_key_transfer — a materially false description of a run in which the spawn succeeded, the key transferred and the supervisor minted a correctly signed claim. This is fail-closed, cannot produce a false success, and is the same defect class the lane already corrected once (FG-FFIN-197-F1). The required clean verdict AUTHORITY_CHAIN_CLEAN_PROVIDER_REFREEZE_REQUIRED is therefore NOT returned.",
+
+  "checker_identity": {
+    "role": "fresh independent read-only Checker",
+    "not": ["Builder", "sequential Advisor"],
+    "built_this_candidate": false,
+    "repository_mutation_authority": "none",
+    "prior_checkers_on_this_lane": 4,
+    "reviewed_claim": "the Builder claims the fourth Checker's process-start-identity findings are corrected",
+    "executing_agent": {"provider": "Anthropic — Claude Code CLI", "model_label": "Claude Opus 5", "model_identifier": "claude-opus-5"},
+    "host": "AKIOR-Mac-mini.local",
+    "review_date_utc": "2026-07-25",
+    "independence_note": "Every dynamic result below was produced by fixtures this Checker WROTE, in a scratchpad OUTSIDE the repository, importing the production modules directly. The Builder's own fixtures were read for audit but not relied upon for any verdict-bearing result.",
+    "read_only_boundary_observed": true
+  },
+
+  "frozen_state": {
+    "host_correct": true,
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-founder-signature-authority-8d1899f",
+    "worktree_realpath_confirmed": true,
+    "branch": "lane/lrcq-founder-signature-authority-8d1899f",
+    "git_common_dir": "/Users/yosiwizman/Projects/foundergate/.git",
+    "head": "240bce81bccd32d156f1231e8813dfdc95a47113",
+    "head_tree": "424581a4248328ce2e25ca8a8c29ba3fd57e5846",
+    "expected_evidence_head": "240bce81bccd32d156f1231e8813dfdc95a47113",
+    "expected_evidence_tail": "240bce81bccd32d156f1231e8813dfdc95a47113",
+    "evidence_head_matches": true,
+    "candidate_sha": "9d87afa18fe0e63f770d68901e408ac328906167",
+    "candidate_sha_matches": true,
+    "candidate_tree": "10acfe9bcb35fdf169a3b165b12fbb43824f424a",
+    "candidate_tree_matches": true,
+    "candidate_is_ancestor_of_head": true,
+    "worktree_clean": true,
+    "untracked_files": 0,
+    "active_git_operation": "none (no MERGE_HEAD / REBASE / CHERRY_PICK / BISECT / index.lock)",
+    "local_equals_upstream": true,
+    "local_equals_github": true,
+    "pr_197": {"state": "OPEN", "draft": true, "merged": false, "head": "240bce81bccd32d156f1231e8813dfdc95a47113", "base_ref": "lane/pr189-real-package-use-8ef9a24", "base_oid": "8d1899f793305e9f87adc5163a60bfb077e4d4e5"},
+    "pr_196": {"state": "OPEN", "draft": true, "merged": false, "head": "8d1899f793305e9f87adc5163a60bfb077e4d4e5", "matches_expected_base": true},
+    "protected_main": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423",
+    "protected_main_matches": true,
+    "active_keys": [],
+    "active_keys_matches_expected": true,
+    "founder_key_signature_activation_supervisor_or_productive_provider_process": "none found",
+    "competing_builder_or_writable_process": {
+      "result": "none in this worktree",
+      "explained_unrelated_process": "pid 85603 — a stale `node lrcq-inbox-server.mjs` started 2026-07-20 from ANOTHER session's scratchpad, cwd /Users/yosiwizman/Projects/foundergate-wt-lrcq-assurance-factory-50e18e5. lsof shows it holds NO descriptor in this worktree and no repository file. Not a competitor for this candidate.",
+      "session_host_process": "pid 66293 — the Claude Code host running this Checker session (provider binary 2.1.220), started 2026-07-24 21:38, BEFORE this review. It is the review harness, not a productive provider invocation."
+    },
+    "state_drift": false
+  },
+
+  "executable_evidence_split": {
+    "executable_candidate": "9d87afa18fe0e63f770d68901e408ac328906167",
+    "commits_after_candidate": 1,
+    "commit_after_candidate": "240bce81bccd32d156f1231e8813dfdc95a47113",
+    "files_changed_after_candidate": [
+      ".foundergate/evidence/lrcq-assurance-factory/FFIN4_197_FOURTH_CHECKER_REPORT_HISTORICAL.json (A)",
+      ".foundergate/evidence/lrcq-assurance-factory/FFIN4_197_START_IDENTITY_CORRECTION_LEDGER.json (A)",
+      ".foundergate/evidence/lrcq-assurance-factory/PR197_V4_FREEZE_RECORD.json (M)",
+      ".foundergate/evidence/lrcq-assurance-factory/V4_AUTHORITY_ACCEPTANCE_MATRIX.json (M)",
+      "docs/contracts/LRCQ_ACTIVATION_V4_CONTRACT.md (M)",
+      "docs/lanes/PR197_START_IDENTITY_CHECKER_PACKET.md (A)"
+    ],
+    "evidence_or_docs_only": true,
+    "src_tools_package_drift_after_candidate": "EMPTY — `git diff --name-only 9d87afa 240bce8 -- src tools package.json package-lock.json tests test` returned nothing",
+    "candidate_executable_diff": {
+      "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs": "+65/-13 — the correction",
+      "src/v8b/lrcq/run-harness-tests/checker-197-final-five.selftest.mjs": "+130 — FS1..FS5 regressions",
+      "src/v8b/lrcq/run-harness-tests/test-support/forging-start-identity-supervisor.mjs": "+73 (new, test-support)",
+      "src/v8b/lrcq/run-harness-tests/test-support/start-identity-pressure-driver.mjs": "+63 (new, test-support)"
+    },
+    "freeze_record_authority_module_digests_verified": "10/10 match, zero mismatches",
+    "freeze_record_procedural_candidate_proof_reproduced": true
+  },
+
+  "complete_suite_results": {
+    "command": "npm test",
+    "runs": 2,
+    "run_1": {"exit_code": 0, "result": "ALL GREEN: 153/153 self-test(s) passed", "failures": 0, "skipped_or_weakened": 0},
+    "run_2": {"exit_code": 0, "result": "ALL GREEN: 153/153 self-test(s) passed", "failures": 0, "skipped_or_weakened": 0},
+    "family_totals_identical": true,
+    "family_line_diff": "empty — every per-family summary line byte-identical between the two runs",
+    "assertion_counts_reproduced": {
+      "x_of_y_form_run_1": 1907,
+      "x_of_y_form_run_2": 1907,
+      "freeze_record_claim_x_of_y": 1907,
+      "checks_form_summary_sum_run_1": 614,
+      "checks_form_summary_sum_run_2": 614,
+      "freeze_record_claim_checks_form": 614,
+      "verdict": "the freeze record's mechanical assertion counts reproduce EXACTLY on both runs"
+    },
+    "worktree_clean_after_both_runs": true,
+    "individual_families": {
+      "checker-197-final-five": "192/192 passed (exit 0)",
+      "lifecycle-authority-v4": "17/17 passed (exit 0)",
+      "lifecycle-fd-transfer": "19/19 passed (exit 0)",
+      "lifecycle-key-containment": "39/39 passed (exit 0)",
+      "detached-supervisor": "31/31 passed (exit 0)",
+      "detached-supervisor-failure": "14/14 passed (exit 0)",
+      "authority-route": "15/15 passed (exit 0)",
+      "v3-retirement": "22/22 passed (exit 0)",
+      "production-seam-closure": "30/30 passed (exit 0)",
+      "real-provider": "NOT A TEST FAMILY — `real-provider` is a PRODUCTION module (src/v8b/lrcq/provider/real-provider.mjs). The provider-facing families were run in its place: provider-binding 19/19, real-launch 70/70, checker-197-corrections 78/78, all exit 0."
+    },
+    "start_identity_assertions_inspected_not_accepted_by_name": {
+      "method": "read the FS1–FS5 bodies line by line rather than trusting the labels",
+      "FS1": "DYNAMIC and substantive — spawns the forging child, asserts a correctly signed claim exists, asserts claim.supervisor_pid === g.supervisor_pid, asserts the refusal DETAIL matches /claim start identity .* != OS-observed /, i.e. proves the comparison was the deciding check",
+      "FS2": "DYNAMIC — self-calibrating fd-headroom ladder in a subprocess under `ulimit -n 512`; asserts the precondition (claim written AND code UNAVAILABLE) was genuinely achieved before asserting the consequences",
+      "FS3": "DYNAMIC over 4 runs — asserts the identity matches /^pid:\\d+\\|lstart:/ so a placeholder cannot pass",
+      "FS4": "DYNAMIC over 6 runs — asserts no OK carries an unobserved identity and every code is a known LC_CODES value",
+      "FS5": "correctly and explicitly labelled [STRUCTURAL]; it is source-text evidence and is not presented as runtime proof",
+      "verdict": "the assertions genuinely reach the controls they name; none is name-deep"
+    }
+  },
+
+  "signed_forged_identity_result": {
+    "phase": "3 — /bin/ps AVAILABLE",
+    "harness": "this Checker's own driver + own forging supervisor, scratchpad, importing production modules",
+    "chain_genuineness": {
+      "verified_capability_is_genuine_module_branded": true,
+      "verify_code": "OK",
+      "consumed_capability_is_genuine_module_branded": true,
+      "signed_launch_intent_created": true,
+      "key_reached_the_child_over_the_inherited_descriptor": "yes — the child read fd 3, verified the FGV4KEY1 magic and sha256 tag, and imported the pkcs8 ephemeral private key",
+      "claim_correctly_signed_with_the_transferred_key": true
+    },
+    "spawned_pid": 21567,
+    "claim_pid": 21567,
+    "claim_pid_equals_spawned_pid": true,
+    "forged_field": "supervisor_start_identity only",
+    "forged_value": "CHK-FORGED-IDENTITY-NEVER-OBSERVED-BY-ANY-OS",
+    "ok": false,
+    "code": "SUPERVISOR_CLAIM_INVALID",
+    "detail": "claim start identity CHK-FORGED-IDENTITY-NEVER-OBSERVED-BY-ANY-OS != OS-observed pid:21567|lstart:Sat Jul 25 13:43:31 2026",
+    "reached_the_start_identity_comparison": true,
+    "signature_check_passed": true,
+    "pid_check_passed": true,
+    "refusal_is_specifically_the_identity_mismatch": true,
+    "never_ok": true,
+    "supervisor_acknowledged": false,
+    "start_identity_independently_observed": false,
+    "accepted_start_identity": null,
+    "transfer": "TRANSFERRED_SPENT",
+    "retry_code": "ALREADY_TRANSFERRED",
+    "provider_spawn_count": 0,
+    "residual_process": false,
+    "requirement_met": true
+  },
+
+  "observation_unavailable_result": {
+    "phase": "3 — /bin/ps observation genuinely UNAVAILABLE",
+    "denial_mechanism": "EXTERNAL OPERATING-SYSTEM RESOURCE PRESSURE ONLY. This Checker's driver saturates its OWN process file-descriptor table (open(/dev/null) to EMFILE, then releases a small fixed headroom) so the fork+pipe that /bin/ps requires fails with EMFILE. NO production injection hook, NO flag, NO config field, NO substitute executable, NO source modification. The fixed absolute /bin/ps in the minimal controlled environment remained the only observer.",
+    "refinement_over_the_builder_method": "The Builder saturates BEFORE calling spawnGovernedSupervisorV4, which at ulimit -n 256 also starves the PRE-SPAWN fixed-/usr/bin/git observation (this Checker reproduced that: headroom 4 gave REPO_NOT_A_WORKTREE). This Checker instead arms the saturation on a timer that fires at the first await AFTER the governed spawn, so the pre-spawn git observation succeeds and ONLY the start-identity observation is denied. That isolates the control under test.",
+    "rlimit_nofile": 256,
+    "reproduced_at_headroom": [2, 3, 4],
+    "fds_held_during_transfer": [241, 240, 239],
+    "ps_confirmed_unavailable_under_pressure": true,
+    "supervisor_started": true,
+    "supervisor_received_the_key": "yes — it decoded the FGV4KEY1 frame and imported the ephemeral private key",
+    "supervisor_signed_the_claim_correctly": "yes — claim_signature_present true, and the production classifier's verifyEphemeral gate was passed (the refusal code is the post-signature identity-unavailable code, not EPHEMERAL/CLAIM signature failure)",
+    "supervisor_recorded_the_exact_spawned_pid": true,
+    "spawned_pid_examples": [29174, 29193, 29212],
+    "claim_pid_equals_spawned_pid": true,
+    "ok": false,
+    "code": "SUPERVISOR_START_IDENTITY_UNAVAILABLE",
+    "detail": "the parent could not independently observe the spawned process's OS start identity (/bin/ps unavailable), so the claim's self-reported identity cannot be verified",
+    "supervisor_acknowledged": false,
+    "start_identity_independently_observed": false,
+    "accepted_start_identity": null,
+    "forged_identity_accepted": false,
+    "transfer": "TRANSFERRED_SPENT",
+    "retry_code": "ALREADY_TRANSFERRED",
+    "provider_spawn_count": 0,
+    "residual_process": false,
+    "ps_restored_after_release": true,
+    "proof_the_refusal_is_the_missing_observation_and_not_an_earlier_check": {
+      "structural": "in classifySupervisorClaim the `observedStart === null` branch is the LAST gate — it is reached only after the ephemeral signature, ephemeral fingerprint, activation identity, payload digest, marker digest, intent digest, launch nonce, entrypoint digest and PID-equality checks have all passed",
+      "positive": "the child's correctly signed claim was on disk and its supervisor_pid equalled the spawned pid, so no earlier binding could have failed",
+      "differential_control": "the IDENTICAL chain and the IDENTICAL forged claim, with /bin/ps AVAILABLE (headroom 5, ps_unavailable=false), returns a DIFFERENT refusal — SUPERVISOR_CLAIM_INVALID with detail 'claim start identity ... != OS-observed pid:29234|lstart:...'. Only the availability of the observation differs, and only the refusal changes.",
+      "negative_control": "an entirely HONEST child whose claimed identity was its REAL /bin/ps identity was ALSO refused SUPERVISOR_START_IDENTITY_UNAVAILABLE while the observation was denied — proving the parent never falls back to the claim's own word, correct or not"
+    },
+    "requirement_met": true
+  },
+
+  "transient_recovery_result": {
+    "transient_then_recovers": {
+      "setup": "honest child; /bin/ps denied from t=45ms, pressure RELEASED at t=1000ms; child alive throughout",
+      "ok": true,
+      "code": "OK",
+      "supervisor_acknowledged": true,
+      "start_identity_independently_observed": true,
+      "accepted_start_identity": "pid:29435|lstart:Sat Jul 25 13:46:24 2026",
+      "claim_identity_equals_accepted_identity": true,
+      "elapsed_ms": 1017,
+      "conclusion": "a single transient observation failure does NOT condemn a healthy transfer — valid execution continued after recovery"
+    },
+    "first_success_is_cached": {
+      "setup": "observation succeeds at t~0 (no pressure yet); /bin/ps then DENIED from t=306ms and NEVER released; the child writes its claim only at t~900ms, i.e. entirely inside the denial window",
+      "ok": true,
+      "code": "OK",
+      "start_identity_independently_observed": true,
+      "accepted_start_identity": "pid:30015|lstart:Sat Jul 25 13:47:15 2026",
+      "claim_identity_equals_accepted_identity": true,
+      "elapsed_ms": 989,
+      "conclusion": "PROVEN: the first successful observation is cached and re-used. Without caching this run would have been refused UNAVAILABLE, because /bin/ps was unusable for the entire interval in which the claim appeared and was classified."
+    },
+    "self_reported_identity_never_trusted_before_recovery": {
+      "setup": "honest child whose claimed identity is its REAL /bin/ps identity; observation denied for the whole transfer and never recovers",
+      "ok": false,
+      "code": "SUPERVISOR_START_IDENTITY_UNAVAILABLE",
+      "supervisor_acknowledged": false,
+      "start_identity_independently_observed": false,
+      "conclusion": "PROVEN: even a truthful self-report is refused while unverifiable. The parent has no path that trusts the claim's own identity."
+    },
+    "requirement_met": true
+  },
+
+  "fast_claim_and_exit_result": {
+    "runs": 28,
+    "child_behaviour": "reads fd 3, decodes and imports the transferred key, self-observes via fixed /bin/ps, mints a correctly signed claim, then exits IMMEDIATELY (process.exit(0), zero linger)",
+    "outcomes": {"OK / acknowledged=true / observed=true": 28},
+    "ok_with_unobserved_identity": 0,
+    "acknowledged_with_observation_false": 0,
+    "every_result_is_verified_ok_or_structured_fail_closed": true,
+    "all_transfers_spent": "TRANSFERRED_SPENT on all 28",
+    "residual_process": "none attributable to the authority module",
+    "harness_measurement_limit_disclosed": "On 27 of 28 runs THIS Checker's own post-hoc /bin/ps probe returned null because the child had already exited before the probe ran, so the harness invariant `claim_identity_equals_my_ps_observation` could not be evaluated post hoc. This is a limitation of the Checker's measurement timing, NOT a production defect: production returned OK, and an OK is only reachable when observedStart !== null AND claim.supervisor_start_identity === observedStart, so the production parent's independent observation demonstrably matched in all 28 cases. On the 1 run where the probe landed in time it matched exactly.",
+    "requirement_met": true
+  },
+
+  "every_ok_invariant_result": {
+    "runs": 12,
+    "ok_count": 12,
+    "refusal_count": 0,
+    "invariants_checked_independently_on_every_ok": [
+      "supervisor_acknowledged === true",
+      "start_identity_independently_observed === true",
+      "ephemeral signature re-verified BY THIS CHECKER with node:crypto edVerify against the ephemeral SPKI public key read out of the signed consumed marker (not merely 'production accepted it')",
+      "claim ephemeral_fingerprint === marker ephemeral_fingerprint",
+      "exact activation identity",
+      "exact payload digest",
+      "exact consumed-marker digest (recomputed by this Checker)",
+      "exact launch-intent digest (recomputed by this Checker)",
+      "exact launch nonce",
+      "exact entrypoint digest — and independently re-hashed from the real entrypoint file on disk",
+      "exact spawned PID",
+      "returned start identity === claim start identity",
+      "claim start identity === THIS CHECKER'S OWN independent fixed-/bin/ps observation of the child",
+      "returned supervisor_claim_digest is a well-formed sha256",
+      "acknowledged and observed flags both true"
+    ],
+    "every_ok_all_invariants_hold": true,
+    "failed_invariants": [],
+    "ok_with_unobserved_identity": 0,
+    "medium_finding_for_unobserved_ok": "NOT RAISED — no OK result with an unobserved identity was produced in 40 genuine acknowledgments (12 + 28)",
+    "structural_confirmation": "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs is the ONLY producer of supervisor_acknowledged:true / start_identity_independently_observed (lines 559, 595, 738, 746). The OK path at 746 forwards ack.start_identity_independently_observed, which classifySupervisorClaim sets to the literal `true` at line 559 — reachable only after `if (observedStart === null) return { needsObservation: true }`. The flag is therefore incapable of being false on a success.",
+    "requirement_met": true
+  },
+
+  "retry_spent_zero_spawn_result": {
+    "after_forged_identity_refusal": {"transfer": "TRANSFERRED_SPENT", "retry_code": "ALREADY_TRANSFERRED", "provider_spawns": 0, "residual_process": false},
+    "after_observation_unavailable_refusal": {"transfer": "TRANSFERRED_SPENT", "retry_code": "ALREADY_TRANSFERRED", "provider_spawns": 0, "residual_process": false, "child_killed_and_reaped": "yes — the child was instructed to linger 45000ms and was gone immediately after the refusal"},
+    "after_sustained_30s_refusal": {"transfer": "TRANSFERRED_SPENT", "retry_code": "ALREADY_TRANSFERRED", "provider_spawns": 0, "residual_process": false},
+    "fast_exit_runs": {"all_spent": true, "count": 28},
+    "counted_invalid_provider_spawns_suite_wide": 0,
+    "requirement_met": true
+  },
+
+  "polling_liveness_measurement": {
+    "module_constants": {"SUPERVISOR_CLAIM_WAIT_MS": 30000, "CLAIM_POLL_MS": 15, "caller_configurable": false},
+    "sustained_observation_failure_run": {
+      "setup": "/bin/ps denied from t=40ms and never released; child instructed to linger 45000ms so the parent runs to its full bound",
+      "measured_elapsed_ms": 30062,
+      "bounded_by_the_module_constant": true,
+      "outcome": "SUPERVISOR_START_IDENTITY_UNAVAILABLE (never OK)",
+      "cpu_user_ms": 782,
+      "cpu_system_ms": 635,
+      "cpu_total_ms": 1417,
+      "cpu_utilisation_of_one_core": "4.7%",
+      "externally_sampled_cpu_percent": {"min": 3.4, "max": 7.0, "samples": 27, "sample_interval_s": 1},
+      "rss_kb_start": 59088,
+      "rss_kb_end": 63248,
+      "rss_growth_kb": 4160,
+      "direct_child_count": "constant 1 for the entire 30s (the supervisor itself); never grew",
+      "hostwide_bin_ps_process_count": "constant 1 for the entire 30s (the external sampler's own), i.e. the parent's failing observations created NO process at all",
+      "residual_processes_after": 0
+    },
+    "ps_attempt_measurement": {
+      "measured_cost_of_one_FAILING_observedStartIdentity_under_saturation_ms": 0.0195,
+      "measurement_method": "400 consecutive observedStartIdentity calls under a saturated fd table; all 400 returned null; total 8ms",
+      "why_it_is_free": "under EMFILE execFileSync fails at the fork/pipe stage, so no /bin/ps process is ever created and nothing needs reaping",
+      "derived_attempt_count_in_the_30s_bound": 1997,
+      "derivation": "30000 / (CLAIM_POLL_MS 15 + 0.0195)",
+      "corroboration": "the measured 30062ms elapsed and the constant single-child / single-ps process counts are consistent with ~2000 sequential, process-free attempts",
+      "exactness_caveat": "this is a DERIVED bound, not an instrumented counter. Counting exec attempts exactly would require either modifying the production module (prohibited) or root-level syscall tracing (unavailable). The bound is tight and corroborated."
+    },
+    "unbounded_subprocess_accumulation": "NONE — zero processes are created by failing observations; direct child count stayed at 1 across the whole bound",
+    "uncontrolled_busy_loop": "NONE — the loop is rate-limited by a real 15ms setTimeout, consumes 4.7% of one core, and terminates deterministically at the fixed 30000ms module bound",
+    "observation_noted_not_raised_as_a_finding": "Under sustained failure the poll loop re-reads and re-verifies the on-disk claim (including an Ed25519 verification) on each of ~2000 iterations — that, not /bin/ps, accounts for the 1417ms of CPU. It is bounded, non-accumulating and well inside any reasonable budget. Per the Checker packet this Checker does not recommend redesign merely because polling exists.",
+    "finding_raised": false
+  },
+
+  "evidence_accuracy_result": {
+    "candidate_4014d91b_described_truthfully_as_conditionally_enforcing": {
+      "verified": true,
+      "where": "FFIN4_197_START_IDENTITY_CORRECTION_LEDGER.json findings[0].mechanism_confirmed and findings[1].historical_integrity; V4_AUTHORITY_ACCEPTANCE_MATRIX A-08.superseded_status_note; LRCQ_ACTIVATION_V4_CONTRACT.md 'Superseded' block",
+      "note": "The record states plainly that in 4014d91b the comparison ran only `if (observedStart !== null)`, that under pressure the check disabled itself, and that a forged identity was ACCEPTED with ok:true. It is not described as having behaved correctly."
+    },
+    "fourth_checker_report_preserved_with_exact_digest": {
+      "path": ".foundergate/evidence/lrcq-assurance-factory/FFIN4_197_FOURTH_CHECKER_REPORT_HISTORICAL.json",
+      "measured_sha256": "886d69828216a012be56f8c6362f0df6e178ec030426e36c4dfa71a75f68b6ba",
+      "expected_sha256": "886d69828216a012be56f8c6362f0df6e178ec030426e36c4dfa71a75f68b6ba",
+      "matches": true,
+      "verdict_preserved_as": "FINDINGS, explicitly labelled HISTORICAL FINDINGS EVIDENCE ONLY against candidate 4014d91b"
+    },
+    "prior_unsigned_wrong_pid_test_not_represented_as_proof": {
+      "verified": true,
+      "evidence": "FN-F1-04.superseded_citation_note states verbatim that FF1o-FF1q use an UNSIGNED body (ephemeral_signature 'AA==') wrong in BOTH pid and start identity, so classifySupervisorClaim returned at the signature check and the start-identity comparison was NEVER evaluated, and that 'the citation did not reach the control it claimed'. Independently confirmed by reading FF1o-FF1q.",
+      "verdict": "the defective citation is disclosed, not reused as proof"
+    },
+    "fn_f1_04_cites_a_correctly_signed_exact_pid_reaching_attack": {
+      "verified": true,
+      "citation": "checker-197-final-five FS1a-FS1i (DYNAMIC)",
+      "reaching_proof": "FS1g asserts the refusal detail matches /claim start identity .* != OS-observed /, i.e. that the comparison itself decided. This Checker reproduced the same detail string independently."
+    },
+    "a_08_states_unavailable_observation_fails_closed": {
+      "verified": true,
+      "control_text": "Stale PID / PID reuse refused, with the start-identity observation enforced FAIL-CLOSED on both sides",
+      "cites": "FS1 (forged identity refused), FS2 (observation UNAVAILABLE -> SUPERVISOR_START_IDENTITY_UNAVAILABLE, never OK), FS3c (every OK carries an independently observed identity)",
+      "carries_superseded_status_note": true
+    },
+    "contract_and_matrix_state_every_ok_requires_independent_observation": {
+      "contract": "docs/contracts/LRCQ_ACTIVATION_V4_CONTRACT.md — new section 'The start-identity observation is mandatory and fails closed (FG-FFIN4-197-01)': 'That comparison is therefore unconditional... an observation that is still missing at the decision point is a refusal, not degraded assurance. Every OK result therefore carries both supervisor_acknowledged === true and start_identity_independently_observed === true.' The failure table gained the SUPERVISOR_START_IDENTITY_UNAVAILABLE row.",
+      "matrix": "FN-S1-04 'Every OK acknowledgment carries start_identity_independently_observed === true and a real /bin/ps lstart record equal to the claim's' — PROVEN, cites FS3b-FS3f (DYNAMIC, 4 runs)",
+      "verified": true
+    },
+    "runtime_claims_supported_by_runtime_tests": {
+      "verified": true,
+      "detail": "FN-S1-01 through FN-S1-06 each cite DYNAMIC assertions. This Checker independently reproduced every one of those behaviours with its own fixtures."
+    },
+    "structural_claims_labeled_structural": {
+      "verified": true,
+      "detail": "FN-S1-07 (no bypass surface) is the only structural row and is labelled SOURCE-PROVEN; the ledger carries an evidence_class_legend defining DYNAMIC vs SOURCE-PROVEN; FS5a-FS5d are labelled [STRUCTURAL] in the test output itself"
+    },
+    "no_historical_evidence_rewritten_to_hide_the_defect": {
+      "verified": true,
+      "method": "git log --follow on every *HISTORICAL* evidence file",
+      "result": "FCHK_197_FRESH_CHECKER_REPORT_HISTORICAL.json — 1 commit (4362b3e, its addition); FFIN_197_THIRD_CHECKER_REPORT_HISTORICAL.json — 1 commit (edd1de5); FFIN4_197_FOURTH_CHECKER_REPORT_HISTORICAL.json — 1 commit (240bce8). No historical Checker report has ever been modified after being committed.",
+      "contract_handling": "the contract records the old conditional behaviour in an explicit '> Superseded.' block rather than silently editing the previous text"
+    },
+    "evidence_accuracy_gap_found": "One — see FINDING FG-CHK5-197-01. The ledger's `aggravating_factor_addressed` states that the launcher's existing `if (!g.ok)` path 'therefore covers it'. That is true for FAIL-CLOSEDNESS but the ledger does not disclose, and the Builder did not correct, that the launcher's refusal-STAGE classification omits the new code and therefore records the refusal under a false final_state.",
+    "otherwise_accurate": true
+  },
+
+  "standing_regressions": {
+    "immediate_death_supervisor_never_ok": "CONFIRMED — FF1a-FF1c (6/6 runs, structured SUPERVISOR_TERMINATED_BEFORE_CLAIM, reported NOT acknowledged)",
+    "reading_without_claiming_never_ok": "CONFIRMED — FF1h-FF1j ('reading the key frame is NOT sufficient'), TRANSFERRED_SPENT",
+    "malformed_and_copied_claims_refuse": "CONFIRMED — FF1l/FF1m (malformed), lifecycle-fd-transfer A4/A4a/A4b (copied claim and copied marker)",
+    "concurrent_transfer_one_winner_one_pre_spawn_loser": "CONFIRMED — checker-197-corrections C1a-C1k: exactly ONE OK, exactly ONE ALREADY_TRANSFERRED, exactly ONE child created, exactly ONE supervisor received the key, at most ONE claim, permanently SPENT, zero provider spawn (COUNTED), no process left, key gone from module storage",
+    "invalid_provider_routes_26_of_26_refuse": "CONFIRMED — F-B1 'the matrix drove exactly 26 invalid routes', F-B2 '26/26 invalid routes were REFUSED'",
+    "counted_invalid_provider_spawns_equal_zero": "CONFIRMED — F-B3 (counted from the recording stub's own adjacent log), F-B4 (provider_invocation stayed PROVIDER_NOT_ATTEMPTED), F-B9, F-B11, C1i; and C1i2 proves the counter is a WORKING instrument via a positive control",
+    "one_legitimate_narrowed_route_spawns_exactly_one_deterministic_stub": "CONFIRMED — F-P3 'the positive route spawned EXACTLY ONE deterministic stub process'; FB4 [COUNTED] spawn_total === 1 across the ENTIRE boundary matrix",
+    "signed_ceilings_and_all_ten_exclusions_enforced": "CONFIRMED — F-B5/F-B5b (4 widened ceilings), F-B6/F-B6b/F-B6c/F-B6d, F-B7 (all 10 exclusions set false refused), F-B8 (all 10 removed refused), F-B10 (30 invalid-limit cases), FB1 (must-be-true list length === V4_SIGNED_EXCLUSIONS.length)",
+    "lifecycle_root_object_continuity_enforced": "CONFIRMED — FD1-FD19 (19 assertions), incl. FD5 ROOT_OBJECT_IDENTITY_MISMATCH, FD6 not a KEY_MISMATCH fallthrough, FD7 no child created by the refused transfer, FD9 capability NOT spent",
+    "deep_immutability_and_dangerous_key_rejection": "CONFIRMED — FC1-FC19 and FF4a-FF4k (30 assertions), incl. nested __proto__, own constructor/prototype keys, and dangerous keys inside array elements",
+    "fixed_usr_bin_git_and_bin_ps_still_used": "CONFIRMED — C2a-C2h: fixed executables verify as regular non-symlink executables, the minimal env drops every git redirection variable, a missing fixed executable fails closed, a hostile PATH `git` cannot vouch for an attacker-chosen root, no marker was written into the attacker root, and the hostile executables received ZERO invocations. Source-confirmed: FIXED_GIT='/usr/bin/git', FIXED_PS='/bin/ps', literal constants, env: MINIMAL_ENV.",
+    "v3_refuses_before_side_effects": "CONFIRMED — v3-retirement 22/22, notably R5b 'launchDetachedSupervisorV4 refuses a V3 record (not consumed, not launched, zero provider)', R5a, R5c, R5d, R5e",
+    "replay_remains_blocked": "CONFIRMED — A3b ALREADY_CONSUMED, A3c ALREADY_LAUNCHED, A3d ALREADY_TRANSFERRED, detached-supervisor 28 'replay blocked after terminal', detached-supervisor-failure 11 REPLAY_BLOCKED before any spawn",
+    "real_repository_refuses_at_key_enrollment": "CONFIRMED — 'no enrolled founder key -> refused with the KEY_ENROLLMENT founder gate' and 'the REAL repository launcher refuses (KEY_ENROLLMENT gate; nothing consumed, nothing spawned)'; the real docs/governance/FOUNDER_KEY_AUTHORITY.json active_keys is [] before and after review",
+    "unrelated_architecture_reopened": false
+  },
+
+  "provider_state": {
+    "target": "/Users/yosiwizman/.local/share/claude/versions/2.1.220",
+    "version_reported": "2.1.220 (Claude Code)",
+    "version_matches_expected": true,
+    "invocation_used": "--version only (permitted, non-productive); no model, prompt, session or productive invocation",
+    "sha256_hash_1": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+    "sha256_hash_2": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+    "two_matching_hashes": true,
+    "expected_sha256": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+    "hash_matches_expected": true,
+    "is_symlink": false,
+    "is_regular_file": true,
+    "mode": "-rwxr-xr-x",
+    "uid": 501,
+    "nlink": 1,
+    "device": 16777230,
+    "inode": 104673092,
+    "size": 256908272,
+    "mtime": "2026-07-24T21:37:20",
+    "identity_stable_across_the_version_invocation": true,
+    "active_updater": "none detected",
+    "provider_drift": "NONE — the frozen provider is byte-identical to the expected identity",
+    "reported_separately_from_authority_correctness": true,
+    "refreeze_note": "Provider identity is clean. The PROVIDER RE-FREEZE requirement is a separate procedural obligation of this lane and is not satisfied or discharged by this review."
+  },
+
+  "facts_not_proven": [
+    "That FG-CHK5-197-01 changes any authority outcome. It does not: the refusal is fail-closed, nothing is launched, the key stays spent and no provider is spawned. Only the recorded stage/final_state label is wrong.",
+    "An end-to-end drive of launchDetachedSupervisorV4 all the way to SUPERVISOR_START_IDENTITY_UNAVAILABLE. This Checker made four attempts under genuine fd pressure; the launcher passes explicit stdoutFd/stderrFd instead of pipes, which leaves the parent enough descriptors that /bin/ps kept succeeding, so the run passed the acknowledgment gate and stopped later at RUN_ACTIVE_TIMEOUT. Reproducing it end to end needs the full disposable-repository-clone apparatus. The finding is nevertheless CONFIRMED by composition of two directly executed facts: (a) spawnGovernedSupervisorV4 demonstrably returns that code under reachable OS pressure (proven 4x plus a 30s sustained run), and (b) the launcher's classification predicate, extracted VERBATIM from run-five-hour.mjs and EXECUTED, returns claimFailure=false for that exact code, and line 362 is a pure ternary on that boolean.",
+    "The exact number of /bin/ps attempts during sustained failure. ~1997 is a tight derived and corroborated bound, not an instrumented count; exact counting would require modifying the production module or root-level syscall tracing.",
+    "On 27 of 28 fast-exit runs, this Checker's own post-hoc /bin/ps probe could not independently re-observe the child because it had already exited. Production's own observation is proven to have matched (an OK is unreachable otherwise), but the Checker did not duplicate that observation in those 27 cases.",
+    "Any behaviour of a real five-hour productive run. No run was started, no founder key exists, no real activation was created or consumed, and no model was invoked.",
+    "That the Builder's self-tests constitute acceptance. They do not; only the independent reproductions in this report are relied upon.",
+    "Provider re-freeze completion, founder-key enrollment readiness, and the AKIOR/M1 surfaces — all out of scope and untouched."
+  ],
+
+  "findings": [
+    {
+      "id": "FG-CHK5-197-01",
+      "severity": "LOW",
+      "verdict": "CONFIRMED",
+      "category": "evidence-accuracy / production-seam claim consistency",
+      "title": "the production launcher's acknowledgment-stage code set omits the new SUPERVISOR_START_IDENTITY_UNAVAILABLE, so a start-identity refusal is recorded as SUPERVISOR_SPAWN_FAILED although the spawn, the key transfer and the supervisor's signed claim all succeeded",
+      "file": "tools/terminal0/lrcq/run-five-hour.mjs",
+      "line": 361,
+      "secondary_line": 362,
+      "mechanism": "The candidate adds a FOURTH acknowledgment-stage failure code to the authority module: LC_CODES.SUPERVISOR_START_IDENTITY_UNAVAILABLE (src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs:55, returned at :595). awaitVerifiedSupervisorClaim can therefore return exactly four acknowledgment-stage codes: SUPERVISOR_TERMINATED_BEFORE_CLAIM, SUPERVISOR_CLAIM_TIMEOUT, SUPERVISOR_CLAIM_INVALID and SUPERVISOR_START_IDENTITY_UNAVAILABLE. The launcher's classifier at run-five-hour.mjs:361 still tests only the first three. Line 362 is a pure ternary on that boolean, so the new code falls to the else arm and the run is recorded with stage 'governed_key_transfer' and final_state 'SUPERVISOR_SPAWN_FAILED'. In that scenario the spawn actually SUCCEEDED, the one-use key transfer actually COMPLETED, and the supervisor actually minted a correctly signed claim bound to the exact spawned PID — only the parent's independent observation was unobtainable. The recorded final_state is therefore materially false. This is the same defect class the lane already corrected once as FG-FFIN-197-F1, whose stated purpose was that 'the refusal state is named after the actual failure so the evidence record cannot describe a claim failure as a spawn failure', and it is governed by an existing regression assertion (detached-supervisor-failure 10b) which asserts stage === 'supervisor_acknowledgment' for the other three codes and was not extended to the fourth.",
+      "reproduction": [
+        "1. Confirm the code is genuinely reachable at the authority boundary. Under `ulimit -n 256`, drive a genuine disposable V4 chain whose supervisor mints a correctly signed claim, and saturate the PARENT's fd table from a timer that fires at the first await AFTER the governed spawn (so the pre-spawn fixed-/usr/bin/git observation still succeeds and only the fixed-/bin/ps start-identity observation is denied). At fd headroom 2, 3 and 4 spawnGovernedSupervisorV4 returns { ok:false, code:'SUPERVISOR_START_IDENTITY_UNAVAILABLE' } with the child's correctly signed claim on disk and claim.supervisor_pid === spawned pid. Also reproduced in a 30s sustained-failure run.",
+        "2. Execute the launcher's own predicate. Read tools/terminal0/lrcq/run-five-hour.mjs, extract the `const claimFailure = ...;` expression VERBATIM with a regex, build it with `new Function('g','LC_CODES', 'return (' + expr + ');')`, and evaluate it against each of the four codes.",
+        "3. Observe the mapping."
+      ],
+      "observed_result": {
+        "predicate_source_verbatim": "g.code === LC_CODES.SUPERVISOR_TERMINATED_BEFORE_CLAIM || g.code === LC_CODES.SUPERVISOR_CLAIM_TIMEOUT || g.code === LC_CODES.SUPERVISOR_CLAIM_INVALID",
+        "SUPERVISOR_TERMINATED_BEFORE_CLAIM": {"claimFailure": true, "stage": "supervisor_acknowledgment", "final_state": "SUPERVISOR_NEVER_ACKNOWLEDGED"},
+        "SUPERVISOR_CLAIM_TIMEOUT": {"claimFailure": true, "stage": "supervisor_acknowledgment", "final_state": "SUPERVISOR_NEVER_ACKNOWLEDGED"},
+        "SUPERVISOR_CLAIM_INVALID": {"claimFailure": true, "stage": "supervisor_acknowledgment", "final_state": "SUPERVISOR_NEVER_ACKNOWLEDGED"},
+        "SUPERVISOR_START_IDENTITY_UNAVAILABLE": {"claimFailure": false, "stage": "governed_key_transfer", "final_state": "SUPERVISOR_SPAWN_FAILED"},
+        "grep_confirmation": "SUPERVISOR_START_IDENTITY_UNAVAILABLE appears in src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs and in the Builder's own checker-197-final-five selftest only. It appears NOWHERE in tools/."
+      },
+      "required_result": "A refusal caused by an unobtainable independent start-identity observation must be recorded with stage 'supervisor_acknowledgment' and final_state 'SUPERVISOR_NEVER_ACKNOWLEDGED' (or a dedicated, equally truthful state such as SUPERVISOR_START_IDENTITY_UNVERIFIABLE), never 'SUPERVISOR_SPAWN_FAILED'. The refusal must also carry supervisor_acknowledged: false, which it already would.",
+      "authority_impact": "NONE. The transfer is fail-closed: ok === false, nothing is launched, the capability stays TRANSFERRED_SPENT, a retry is refused ALREADY_TRANSFERRED, the private key stays deleted and zero providers are spawned. No forged identity is ever accepted. The defect is confined to the truthfulness of the recorded refusal label.",
+      "provider_spawn_count": 0,
+      "narrow_correction_scope": "One expression. Add `|| g.code === LC_CODES.SUPERVISOR_START_IDENTITY_UNAVAILABLE` to the claimFailure disjunction at tools/terminal0/lrcq/run-five-hour.mjs:361 — or, better, derive the set from a single exported constant in lifecycle-authority-v4.mjs so a future fifth acknowledgment code cannot drift again. Extend detached-supervisor-failure case 10b (or add a case) to assert the stage/final_state naming for the new code. No authority-module change is required and none should be made for this finding.",
+      "collateral_evidence_correction": "FFIN4_197_START_IDENTITY_CORRECTION_LEDGER.json findings[0].aggravating_factor_addressed should note that while the launcher's `if (!g.ok)` path does make the flag moot for fail-closedness, the refusal-stage classification was NOT updated for the new code."
+    }
+  ],
+
+  "post_review_immutability": {
+    "head_before": "240bce81bccd32d156f1231e8813dfdc95a47113",
+    "head_after": "240bce81bccd32d156f1231e8813dfdc95a47113",
+    "head_unchanged": true,
+    "tree_before": "424581a4248328ce2e25ca8a8c29ba3fd57e5846",
+    "tree_after": "424581a4248328ce2e25ca8a8c29ba3fd57e5846",
+    "tree_unchanged": true,
+    "worktree_clean": true,
+    "untracked_or_modified_files": 0,
+    "git_diff_head": "empty",
+    "authority_module_digests_unchanged": "10/10 match the freeze record",
+    "fourth_checker_report_digest_unchanged": "886d69828216a012be56f8c6362f0df6e178ec030426e36c4dfa71a75f68b6ba",
+    "reflog_shows_no_review_attributable_movement": true,
+    "repository_content_or_timestamp_mutation_attributable_to_review": "none",
+    "keys_or_real_signatures_created": 0,
+    "real_activation_consumed": 0,
+    "productive_provider_or_model_invoked": 0,
+    "founder_key_enrollment": "none",
+    "passphrase_handling": "none",
+    "five_hour_run": "none",
+    "active_keys_after": [],
+    "pr_state_unchanged": "PR 197 OPEN/draft/unmerged, head 240bce81, base 8d1899f7; PR 196 OPEN/draft/unmerged, head 8d1899f7; protected main ba7d6547 — all identical to the pre-review snapshot",
+    "residual_processes_from_review": 0,
+    "disposable_fixtures": "all created outside git under the session scratchpad and $TMPDIR; every disposable world removed by its own cleanup(); no fixture directories remain",
+    "review_artifacts_written": ["/tmp/foundergate-pr197-start-identity-independent-checker.json"],
+    "review_invalidated": false
+  },
+
+  "next_safe_action": {
+    "recommended": "Correct FG-CHK5-197-01 in the production launcher only, then obtain a fresh independent Checker verdict on the resulting candidate.",
+    "steps": [
+      "1. Amend tools/terminal0/lrcq/run-five-hour.mjs:361 so the acknowledgment-stage code set includes SUPERVISOR_START_IDENTITY_UNAVAILABLE — preferably by exporting the set from lifecycle-authority-v4.mjs and consuming it, so a future code cannot drift out of the classification again.",
+      "2. Extend the detached-supervisor-failure family so the stage/final_state naming is asserted for every acknowledgment-stage code, not three of four.",
+      "3. Add the disclosure to FFIN4_197_START_IDENTITY_CORRECTION_LEDGER.json findings[0].aggravating_factor_addressed.",
+      "4. Re-run npm test twice; require 153/153 twice with identical family totals.",
+      "5. Commit the executable correction and its evidence as SEPARATE commits, preserving the executable/evidence split and this report as historical evidence with its printed digest.",
+      "6. Obtain a FRESH independent Checker verdict on the new candidate. This report is FINDINGS evidence against candidate 9d87afa1 only and is not acceptance.",
+      "7. Only then perform the outstanding PROVIDER RE-FREEZE. It is a separate procedural obligation and is not discharged by this review."
+    ],
+    "explicitly_not_authorized_by_this_report": [
+      "founder-key enrollment",
+      "creating a real founder signature or activation",
+      "starting a five-hour or any productive run",
+      "invoking a productive provider or model",
+      "merging PR 197 or PR 196, or touching protected main",
+      "treating this report as an Advisor verdict or as acceptance"
+    ]
+  }
+}

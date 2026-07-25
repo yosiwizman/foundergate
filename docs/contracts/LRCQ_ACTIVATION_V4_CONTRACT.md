@@ -359,6 +359,47 @@ caller-configurable claim path, clock, timeout or verification bypass.
 One consequence worth naming: a supervisor handed a *foreign* activation's key can never mint a valid claim,
 so the launcher now **detects a key swap** that it previously could not.
 
+### The production launcher must name the failure truthfully (FG-CHK5-197-01)
+
+The four codes above are **acknowledgment-stage** failures: the spawn happened, the one-use key transfer
+completed, and what failed afterwards was the supervisor's ability to produce — or the parent's ability to
+verify — an acknowledgment. They are categorically different from a **transfer-stage** failure
+(`SUPERVISOR_SPAWN_FAILED`, `DESCRIPTOR_UNAVAILABLE`, `TRANSFER_WRITE_FAILED`, `KEY_FRAME_*`), where nothing
+was handed over at all. The run evidence must not confuse the two: recording an acknowledgment failure as a
+spawn failure asserts that the process never started when in fact it did, the key really was transferred,
+and — in the `SUPERVISOR_START_IDENTITY_UNAVAILABLE` case — the supervisor really did mint a correctly
+ephemeral-signed claim bound to the exact spawned PID.
+
+`tools/terminal0/lrcq/run-five-hour.mjs` therefore classifies the refusal from **one named immutable
+collection**, `SUPERVISOR_ACKNOWLEDGMENT_FAILURE_CODES`, through **one pure predicate**,
+`isSupervisorAcknowledgmentFailure`, and builds the refused record in **one place**,
+`classifyGovernedTransferRefusal`. The launcher's refusal branch is exactly
+`if (!g.ok) return classifyGovernedTransferRefusal(g);`, so no second, divergent record can be constructed.
+The collection holds static `LC_CODES` references only and is deliberately **not** configurable: no
+environment variable, config field, activation field or CLI flag may add to or remove from it.
+
+| Refusal cause | `refused.stage` | `final_state` |
+| --- | --- | --- |
+| any of the four acknowledgment codes above | `supervisor_acknowledgment` | `SUPERVISOR_NEVER_ACKNOWLEDGED` |
+| a genuine spawn / descriptor / transfer failure | `governed_key_transfer` | `SUPERVISOR_SPAWN_FAILED` |
+
+Either way the launcher returns `ready: false`, `consumed: true`, `launched: false`,
+`supervisor_acknowledged: false`, and preserves the exact lifecycle code and detail in `refused.reasons`.
+
+A **drift guard** in `production-ack-classification` derives, from the authority module's own source, every
+`LC_CODES.SUPERVISOR_*` code the acknowledgment wait can return, and fails the suite if any of them is not
+classified by the launcher. A future fifth acknowledgment code cannot slip through the way the fourth did.
+
+> **Superseded.** In candidate `9d87afa1` this classification was an inline three-code OR expression.
+> `FG-FFIN4-197-01` added the fourth acknowledgment code without extending it, so a start-identity refusal
+> was recorded as `stage: "governed_key_transfer"` / `final_state: "SUPERVISOR_SPAWN_FAILED"` — a false
+> evidence record. The fifth independent Checker confirmed it by extracting the predicate verbatim from the
+> source and executing it. Authority behaviour was never affected: the transfer was already fail-closed,
+> nothing was launched, the capability stayed `TRANSFERRED_SPENT`, a retry was refused
+> `ALREADY_TRANSFERRED`, and zero providers were spawned. This is the same defect class as
+> `FG-FFIN-197-F1`, which is why the classification is now a single named collection rather than an
+> expression that has to be remembered.
+
 ## Setter-safe authority copying (FG-FFIN-197-F4)
 
 `deepFreezeAuthority` builds its copy with `Object.create(null)` and `Object.defineProperty`, never with
