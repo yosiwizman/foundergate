@@ -1,24 +1,25 @@
 {
   "schema": "lrcq-pr197-v4-freeze-record-2",
-  "wave": "FG-FFIN-197 \u2014 third independent-Checker four-finding correction",
+  "wave": "FG-FFIN4-197 \u2014 fourth independent-Checker start-identity fail-closed completion (freeze record v5)",
   "supersedes": [
     "lrcq-pr197-v4-freeze-record-1 \u2014 invalidated by the corrections in this wave",
     "FG-CHK-197 freeze record v2 (candidate 8e6944ef04eb91604af36064051524b12a38c23d)",
-    "FG-FCHK-197 freeze record v3 (candidate c6bf5a37d06b5a86a2ac1b7a5721bb53c38868c0)"
+    "FG-FCHK-197 freeze record v3 (candidate c6bf5a37d06b5a86a2ac1b7a5721bb53c38868c0)",
+    "FG-FFIN-197 freeze record v4 (candidate 4014d91b0e9e42549ca6b1a0f1f22ae406fe3016)"
   ],
   "pr": 197,
   "state": "open, draft, unmerged",
   "branch": "lane/lrcq-founder-signature-authority-8d1899f",
-  "reviewed_executable_code_candidate_sha": "4014d91b0e9e42549ca6b1a0f1f22ae406fe3016",
-  "reviewed_executable_code_candidate_tree": "ad66de68ec2a908fc23db86297af723512a34d25",
-  "reviewed_executable_code_candidate_proof": "PROCEDURAL, hash-independent: the executable candidate is the commit whose message begins \"FG-FFIN-197: correct the third independent Checker's four findings\". For every commit AFTER it on this branch, git diff --stat <candidate> <commit> -- src tools package.json package-lock.json is EMPTY; each changes ONLY paths under .foundergate/evidence/ or docs/. A commit cannot embed its own hash, so the two SHAs above were recorded after the commit existed and are verifiable with git rev-parse.",
+  "reviewed_executable_code_candidate_sha": "9d87afa18fe0e63f770d68901e408ac328906167",
+  "reviewed_executable_code_candidate_tree": "10acfe9bcb35fdf169a3b165b12fbb43824f424a",
+  "reviewed_executable_code_candidate_proof": "PROCEDURAL, hash-independent: the executable candidate is the commit whose message begins \"FG-FFIN4-197-01: require an independently observed OS start identity for every acknowledgment\". For every commit AFTER it on this branch, git diff --stat <candidate> <commit> -- src tools package.json package-lock.json is EMPTY; each changes ONLY paths under .foundergate/evidence/ or docs/. A commit cannot embed its own hash, so the two SHAs above were recorded after the commit existed and are verifiable with git rev-parse.",
   "evidence_only_commits_after_the_executable_candidate": {
-    "note": "Each changes ONLY paths under .foundergate/evidence/ and/or docs/. Verify with: git diff --stat 4014d91b0e9e42549ca6b1a0f1f22ae406fe3016 HEAD -- src tools package.json package-lock.json (must be EMPTY). Resolve the full list with: git log --oneline 4014d91b..HEAD",
+    "note": "Each changes ONLY paths under .foundergate/evidence/ and/or docs/. Verify with: git diff --stat 9d87afa18fe0e63f770d68901e408ac328906167 HEAD -- src tools package.json package-lock.json (must be EMPTY). Resolve the full list with: git log --oneline 9d87afa1..HEAD",
     "count_at_freeze_time": 1,
     "commits": [
       {
         "sha": "(this record's own commit)",
-        "subject": "FG-FFIN-197 evidence: four-finding ledger, third Checker report, matrix, contract, freeze record v4, Checker packet",
+        "subject": "FG-FFIN4-197 evidence: fourth Checker report, start-identity ledger, matrix, contract, freeze record v5, Checker packet",
         "note": "A commit cannot embed its own hash; resolve procedurally with git log."
       }
     ]
@@ -38,19 +39,20 @@
     "failures": 0,
     "skipped_or_weakened": 0,
     "coverage_reduced": false,
-    "assertions_x_of_y_form_run_1": 1873,
-    "assertions_x_of_y_form_run_2": 1873,
+    "assertions_x_of_y_form_run_1": 1907,
+    "assertions_x_of_y_form_run_2": 1907,
     "assertions_pass_checks_form": 614,
-    "combined_mechanical": 2487,
-    "counting_method": "MECHANICAL, parsed from captured npm test output; the two reporting styles are counted separately rather than merged.",
+    "combined_mechanical": 2521,
+    "counting_method": "MECHANICAL, parsed from captured npm test output; the two reporting styles are counted separately.",
     "result": "ALL GREEN twice consecutively"
   },
   "founder_key_authority_active_keys": [],
   "authority_module_digests": {
-    "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs": "sha256:45cdab1b32dc4e2f28ea588ac5301bb4e8ca8b8255ea20c5e829243d52371acb",
+    "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs": "sha256:ee7cb5f5e99735659757212d7d7b37c3ea6457ae997c34e570f17b5d011faf94",
     "src/v8b/lrcq/assurance/activation-v4.mjs": "sha256:5c4ba9c5b7d87bd92213022c6e8ab3ef36077df3a1ff594c618ea2e5a240eb45",
     "src/v8b/lrcq/assurance/deep-freeze-authority.mjs": "sha256:eda83dcd02e2cb4ef6879b00f6b7468390af3e49dba52e7088d1ee2953742286",
     "src/v8b/lrcq/assurance/fs-authority-guards.mjs": "sha256:574ae9794632b060b9b99c71c1e64072958e61719fc2c23901a5848e45da7ea2",
+    "src/v8b/lrcq/assurance/fixed-executables.mjs": "sha256:00b1b56d24a07a605dc8c8a0981c9d1363702a3b1e3def21e692ae58893e907d",
     "src/v8b/lrcq/provider/authority-boundary.mjs": "sha256:08fac21823a142070ccc233e667d6c09ef2ffc64851dbc18907d9c74a58ea29c",
     "src/v8b/lrcq/provider/real-provider.mjs": "sha256:ea3bafdcd1bcc07eac2b5bdd65d24794ec190a992ce577ce7d4b2087d524cd37",
     "src/v8b/lrcq/provider/activation-schema.mjs": "sha256:fab360c8d99c4b4fcdb601c39dbe6315f53268d966e7058e60f6f05d825ea631",
@@ -83,31 +85,37 @@
   ],
   "next_gate": "READY_FOR_FRESH_INDEPENDENT_CHECKER",
   "required_fresh_checker_clean_verdict": "AUTHORITY_CHAIN_CLEAN_PROVIDER_REFREEZE_REQUIRED",
-  "fresh_checker_packet": "docs/lanes/PR197_FINAL_FOUR_CHECKER_PACKET.md",
+  "fresh_checker_packet": "docs/lanes/PR197_START_IDENTITY_CHECKER_PACKET.md",
   "superseded_historical_checker_reports": [
     {
-      "path_at_review_time": "/tmp/foundergate-pr197-independent-checker.json",
       "sha256": "caa4db0031b172ca69c9b456d298cb3b3e6185215e9074293b6c93390fbdc20f",
       "verdict": "FINDINGS",
-      "status": "HISTORICAL EVIDENCE ONLY \u2014 reviewed a tree that no longer exists on this branch."
+      "status": "HISTORICAL EVIDENCE ONLY \u2014 reviewed a tree that no longer exists."
     },
     {
-      "path_at_review_time": "/tmp/foundergate-pr197-fresh-independent-checker.json",
       "preserved_copy": ".foundergate/evidence/lrcq-assurance-factory/FCHK_197_FRESH_CHECKER_REPORT_HISTORICAL.json",
       "sha256": "6ac782a2d396a8b0558eed8493d19a86a5f52a3e99e38cfe2f040f72e25da50b",
       "verdict": "FINDINGS",
       "findings": "2 MEDIUM + 3 LOW",
       "reviewed_candidate": "8e6944ef04eb91604af36064051524b12a38c23d",
-      "status": "HISTORICAL FINDINGS EVIDENCE ONLY \u2014 corrected in candidate c6bf5a37."
+      "status": "HISTORICAL FINDINGS EVIDENCE ONLY."
     },
     {
-      "path_at_review_time": "/tmp/foundergate-pr197-final-five-independent-checker.json",
       "preserved_copy": ".foundergate/evidence/lrcq-assurance-factory/FFIN_197_THIRD_CHECKER_REPORT_HISTORICAL.json",
       "sha256": "c49cc5633341639704fcb0564722c8f02c642884b6c7cd8a8f2d44bd70bb294d",
       "verdict": "FINDINGS",
       "findings": "1 MEDIUM + 3 LOW",
       "reviewed_candidate": "c6bf5a37d06b5a86a2ac1b7a5721bb53c38868c0",
-      "status": "HISTORICAL FINDINGS EVIDENCE ONLY \u2014 NOT current acceptance. All four findings are corrected in candidate 4014d91b0e9e42549ca6b1a0f1f22ae406fe3016. A FRESH independent Checker is required on the CORRECTED candidate."
+      "status": "HISTORICAL FINDINGS EVIDENCE ONLY."
+    },
+    {
+      "path_at_review_time": "/tmp/foundergate-pr197-final-four-independent-checker.json",
+      "preserved_copy": ".foundergate/evidence/lrcq-assurance-factory/FFIN4_197_FOURTH_CHECKER_REPORT_HISTORICAL.json",
+      "sha256": "886d69828216a012be56f8c6362f0df6e178ec030426e36c4dfa71a75f68b6ba",
+      "verdict": "FINDINGS",
+      "findings": "1 MEDIUM + 1 LOW",
+      "reviewed_candidate": "4014d91b0e9e42549ca6b1a0f1f22ae406fe3016",
+      "status": "HISTORICAL FINDINGS EVIDENCE ONLY \u2014 NOT current acceptance. Both findings are corrected in candidate 9d87afa18fe0e63f770d68901e408ac328906167. A FRESH independent Checker is required on the CORRECTED candidate."
     }
   ],
   "five_finding_correction": {
@@ -135,5 +143,16 @@
     "immediate_death_route": "6/6 runs refused SUPERVISOR_TERMINATED_BEFORE_CLAIM; never OK",
     "invalid_route_matrix": "26/26 refused, 0 counted provider spawns (unchanged)",
     "positive_route": "exactly 1 deterministic stub process on the legitimate narrowed projection (unchanged)"
+  },
+  "start_identity_correction": {
+    "ledger": ".foundergate/evidence/lrcq-assurance-factory/FFIN4_197_START_IDENTITY_CORRECTION_LEDGER.json",
+    "findings_corrected": [
+      "FG-FFIN4-197-01 (MEDIUM)",
+      "FG-FFIN4-197-02 (LOW)"
+    ],
+    "headline": "The parent's start-identity comparison is UNCONDITIONAL. An observation that cannot be obtained is a REFUSAL (SUPERVISOR_START_IDENTITY_UNAVAILABLE), never a skipped check.",
+    "historical_truth": "Candidate 4014d91b enforced the start identity ONLY when parent observation succeeded. The fourth Checker proved the null-observation branch accepted a forged identity with ok:true and start_identity_independently_observed:false. The previous wrong-PID/unsigned test did not reach the vulnerable comparison. This Builder reproduced the fail-open independently before correcting it.",
+    "every_ok_now": "supervisor_acknowledged === true AND start_identity_independently_observed === true",
+    "regression_family": "checker-197-final-five FS1/FS2/FS3/FS4/FS5 (192 assertions in that family)"
   }
 }

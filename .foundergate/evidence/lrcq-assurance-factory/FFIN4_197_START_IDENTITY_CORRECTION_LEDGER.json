@@ -1,0 +1,131 @@
+{
+  "schema": "lrcq-ffin4-197-start-identity-correction-ledger-1",
+  "wave": "FG-FFIN4-197 — fourth independent-Checker finding correction (start-identity fail-closed completion)",
+  "pr": 197,
+  "branch": "lane/lrcq-founder-signature-authority-8d1899f",
+  "scope_note": "This wave completes the existing F1 supervisor-acknowledgment correction cycle. It changes ONE conditional and its surrounding retry/decision logic. No other authority surface was reopened; the independently clean surfaces were re-run as regressions only.",
+  "source_report": {
+    "path_at_review_time": "/tmp/foundergate-pr197-final-four-independent-checker.json",
+    "preserved_copy": ".foundergate/evidence/lrcq-assurance-factory/FFIN4_197_FOURTH_CHECKER_REPORT_HISTORICAL.json",
+    "sha256": "886d69828216a012be56f8c6362f0df6e178ec030426e36c4dfa71a75f68b6ba",
+    "verdict": "FINDINGS",
+    "findings": "1 MEDIUM + 1 LOW",
+    "status": "HISTORICAL FINDINGS EVIDENCE ONLY — NOT current acceptance. It reviewed candidate 4014d91b0e9e42549ca6b1a0f1f22ae406fe3016. A FRESH independent Checker is required on the corrected candidate."
+  },
+  "reviewed_candidate_at_report_time": {
+    "sha": "4014d91b0e9e42549ca6b1a0f1f22ae406fe3016",
+    "tree": "ad66de68ec2a908fc23db86297af723512a34d25"
+  },
+  "evidence_class_legend": {
+    "DYNAMIC": "the attack was executed and the behaviour observed in the test process tree",
+    "SOURCE-PROVEN": "a property of the source text, NOT an execution"
+  },
+  "builder_reproduction_of_the_reported_defect": {
+    "finding": "FG-FFIN4-197-01",
+    "method": "A disposable genuine chain — real git repo, real lifecycle root, disposable founder key, genuinely signed V4 activation, consumeActivationV4, createLaunchIntentV4 — whose supervisor entrypoint is an adversarial child that reads fd 3, decodes the FGV4KEY1 frame, imports the transferred ephemeral private key and mints a CORRECTLY EPHEMERAL-SIGNED claim carrying its OWN real PID and the literal start identity 'FORGED-START-IDENTITY-NEVER-OBSERVED'. The parent's /bin/ps observation was denied by GENUINE OS RESOURCE PRESSURE: the fd table was saturated and only a few descriptors released, so the fork+pipe ps needs failed with EMFILE. No production hook, flag or substitute executable was introduced; the fixed absolute /bin/ps remained the only observer.",
+    "result_before_correction": "At fd headroom 5 and 6 the transfer returned { ok: true, code: 'OK', supervisor_acknowledged: true, start_identity_independently_observed: false } and ACCEPTED the forged identity. claim_pid === spawned_pid, and the child's correctly signed claim was on disk — so every earlier binding passed and only the start-identity comparison was skipped. This independently confirms the fourth Checker's end-to-end reproduction.",
+    "control_before_correction": "With /bin/ps available the identical attack was refused SUPERVISOR_CLAIM_INVALID with detail 'claim start identity FORGED-START-IDENTITY-NEVER-OBSERVED != OS-observed pid:...|lstart:...', proving the attack reaches the comparison and is not stopped by an earlier check.",
+    "result_after_correction": "At the same fd headroom the transfer returns { ok: false, code: 'SUPERVISOR_START_IDENTITY_UNAVAILABLE', supervisor_acknowledged: false, start_identity_independently_observed: false }, still TRANSFERRED_SPENT, retry ALREADY_TRANSFERRED, no residual process. With ps available the forged identity is refused SUPERVISOR_CLAIM_INVALID at the comparison."
+  },
+  "findings": [
+    {
+      "id": "FG-FFIN4-197-01",
+      "severity": "MEDIUM",
+      "accepted": true,
+      "disputed": false,
+      "title": "the parent's independent start-identity verification FAILED OPEN when the OS observation was unavailable, so a key-holding supervisor's forged process-start identity was accepted",
+      "file": "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs",
+      "mechanism_confirmed": "classifySupervisorClaim compared the claim's supervisor_start_identity against the parent's independent OS observation ONLY when that observation was non-null, and awaitVerifiedSupervisorClaim converted any observation failure into null-and-continue. observedStartIdentity returns null whenever /bin/ps throws or exits non-zero, which is genuinely reachable under the file-descriptor and process pressure a long multi-process run creates. When null, the one field a key-holding supervisor fully controls stopped being checked and the function returned ok:true. The supervisor side of the identical observation had always failed CLOSED (START_IDENTITY_MISMATCH on a null observation), which is decisive evidence this was an oversight rather than a design choice.",
+      "threat_model_note": "This was never a key escape and never an arbitrary-process acknowledgment: the forger had to BE the process the transfer actually spawned and had to hold the transferred ephemeral key. What it defeated is the stale-PID / PID-reuse defence that FG-CHK-197-02 was raised to protect, precisely under the resource pressure a five-hour run creates. The Builder accepts the Checker's MEDIUM severity and did not downgrade it.",
+      "correction": [
+        "the start-identity comparison is now UNCONDITIONAL — the `observedStart !== null &&` guard is gone",
+        "a null observation is no longer decided inside the classifier: it is reported as `needsObservation` so the caller can retry, because a single transient ps failure must not condemn an otherwise healthy transfer",
+        "awaitVerifiedSupervisorClaim retries the observation on every poll iteration and caches the FIRST success (a process's start time is immutable for its lifetime)",
+        "at the decision point — child gone, or the bound elapsed — an outstanding observation becomes a REFUSAL: new LC_CODES.SUPERVISOR_START_IDENTITY_UNAVAILABLE",
+        "every OK result now necessarily carries start_identity_independently_observed === true; the field is no longer capable of being false on a success",
+        "the refusal result also reports supervisor_acknowledged:false and start_identity_independently_observed:false, so a caller cannot mistake it for degraded success",
+        "the observation still runs exclusively through the fixed absolute /bin/ps in the minimal controlled environment; no PATH entry, config field, activation field, CLI flag or test option can substitute or skip it, and none was added"
+      ],
+      "files": ["src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs"],
+      "result_after": {
+        "observation_unavailable": "DYNAMIC: never OK; exact structured SUPERVISOR_START_IDENTITY_UNAVAILABLE; supervisor_acknowledged not true; start_identity_independently_observed not true; forged identity never accepted (FS2b-FS2f)",
+        "refusal_cause_isolated": "DYNAMIC: the child DID mint its correctly signed claim and the claim PID equalled the spawned PID, so the refusal is caused by the missing observation and not by a bad signature, wrong PID, malformed claim or any earlier check (FS2g, FS2h)",
+        "signed_forged_identity_with_correct_pid": "DYNAMIC: SUPERVISOR_CLAIM_INVALID, refused specifically AT the start-identity comparison (the refusal detail is the comparison itself) (FS1e-FS1g)",
+        "post_failure_state": "DYNAMIC: TRANSFERRED_SPENT, private key deleted, retry ALREADY_TRANSFERRED, no residual process, zero provider spawn (FS1i, FS2i-FS2k)",
+        "positive_route": "DYNAMIC: 4 repeated genuine runs, each exactly one OK, acknowledged, independently observed, claim identity equal to the observed identity, bound to the exact spawned PID, and the identity is a real /bin/ps lstart record (FS3a-FS3f)",
+        "fast_claim_and_exit": "DYNAMIC: 6 repeated runs, no OK ever carries an unobserved identity and no run reports acknowledged-without-observation (FS4a-FS4c)",
+        "ps_restored": "DYNAMIC: /bin/ps worked again after the pressure was released, confirming the denial was genuine transient resource pressure (FS2l)",
+        "no_bypass_surface": "SOURCE-PROVEN: the conditional guard is gone, the new code is returned rather than dead, no caller option can substitute the observation, and the fixed /bin/ps + minimal environment are intact (FS5a-FS5d)"
+      },
+      "regression_tests": ["checker-197-final-five FS1a-FS1i, FS2a-FS2l, FS3a-FS3f, FS4a-FS4c, FS5a-FS5d"],
+      "aggravating_factor_addressed": "The Checker noted that tools/terminal0/lrcq/run-five-hour.mjs never reads start_identity_independently_observed, so the flag was reported but unenforced. That is now moot at the authority boundary: the flag can no longer be false on an OK result, because an unobservable identity is a refusal rather than a weaker success. The launcher's existing `if (!g.ok)` refusal path therefore covers it."
+    },
+    {
+      "id": "FG-FFIN4-197-02",
+      "severity": "LOW",
+      "accepted": true,
+      "disputed": false,
+      "title": "the acceptance matrix and the V4 contract stated the start-identity binding as an unconditional PROVEN control, which was more than the code enforced and more than the cited assertions observed",
+      "file": [
+        ".foundergate/evidence/lrcq-assurance-factory/V4_AUTHORITY_ACCEPTANCE_MATRIX.json (FN-F1-04, A-08)",
+        "docs/contracts/LRCQ_ACTIVATION_V4_CONTRACT.md"
+      ],
+      "mechanism_confirmed": "FN-F1-04 asserted that a 'validly shaped but wrong-PID / wrong-start-identity' claim is refused, and the contract listed wrong-start-identity as an unconditional SUPERVISOR_CLAIM_INVALID outcome. Neither was unconditional in the code. Separately, the cited assertions FF1o-FF1q use a claim that is UNSIGNED (ephemeral_signature 'AA==') and wrong in BOTH pid and start identity, so classifySupervisorClaim returned at the signature check and the start-identity comparison was never evaluated. FF1u observed start_identity_independently_observed === true in a single healthy run and could not speak to the null case. The row claimed a control the evidence beneath it did not reach.",
+      "correction": [
+        "FN-F1-04 now cites FS1a-FS1i — a CORRECTLY SIGNED claim carrying the EXACT spawned PID with only the start identity forged, so the refusal can come from nothing but the start-identity comparison; FS1g asserts the refusal detail IS that comparison",
+        "FN-F1-04 carries a superseded_citation_note recording exactly why the previous citation did not reach the control",
+        "A-08 is restated as fail-closed on both sides and carries a superseded_status_note recording that in candidate 4014d91b it was PROVEN only CONDITIONALLY and that a forged identity was accepted under pressure",
+        "seven new FN-S1-01..07 controls map the new behaviour to the exact assertions that prove it",
+        "the contract gains a dedicated section stating that the comparison is unconditional, that an unobtainable observation is a refusal and not degraded assurance, and that every OK carries both flags true",
+        "the contract's failure table gains the SUPERVISOR_START_IDENTITY_UNAVAILABLE row",
+        "the contract's superseded block records the old conditional behaviour verbatim rather than quietly editing it"
+      ],
+      "historical_integrity": "Candidate 4014d91b is NOT described as having behaved correctly. The record states plainly that it enforced the start identity only when parent observation succeeded, that the fourth Checker proved the null-observation branch accepted a forged identity, that the previous wrong-PID/unsigned test did not reach the vulnerable comparison, that the successor requires independent observation for every OK, and that unavailable observation is a refusal rather than degraded assurance.",
+      "files": [
+        ".foundergate/evidence/lrcq-assurance-factory/V4_AUTHORITY_ACCEPTANCE_MATRIX.json",
+        "docs/contracts/LRCQ_ACTIVATION_V4_CONTRACT.md"
+      ],
+      "result_after": {
+        "citation_reaches_the_control": "DYNAMIC: FN-F1-04 now cites an attack that provably evaluates the start-identity comparison (FS1g)",
+        "status_qualified_where_it_was_conditional": "the A-08 and FN-F1-04 notes record the conditional history explicitly",
+        "recurrence_note": "this is the fourth evidence-accuracy finding in this lane (FG-FCHK-197-E, FG-FFIN-197-F2, FG-FFIN-197-F3, now FG-FFIN4-197-02). The standing lesson recorded in the Checker packet is that a matrix row must cite evidence that REACHES the control it claims, not merely evidence that passes."
+      },
+      "regression_tests": ["checker-197-final-five FS1g (the reaching citation), FS5a-FS5d (the code now matches the statements)"]
+    }
+  ],
+  "preserved_clean_surfaces_reverified": {
+    "note": "Independently CLEAN in the fourth Checker's report and NOT reopened; re-run as regressions only.",
+    "supervisor_signed_claim_acknowledgment": "checker-197-final-five FF1r-FF1w — unchanged",
+    "immediate_death_refusal": "FF1a-FF1g — unchanged",
+    "read_without_claim_refusal": "FF1h-FF1k — unchanged",
+    "malformed_and_copied_claim_refusal": "FF1l-FF1n; lifecycle-fd-transfer A4/A4a — unchanged",
+    "atomic_one_use_key_transfer": "checker-197-corrections C1a-C1k — unchanged",
+    "signed_provider_ceilings": "final-five-boundary F-B5/F-B5b/F-B10 — unchanged",
+    "ten_signed_exclusions": "F-B6/F-B6b/F-B7/F-B8 — unchanged",
+    "twenty_six_route_invalid_provider_matrix": "F-B1-F-B4 — 26/26 refused, COUNTED zero provider spawns",
+    "deep_immutability": "FC1-FC19, F-C1-F-C8 — unchanged",
+    "dangerous_key_rejection": "FF4a-FF4k — unchanged",
+    "lifecycle_root_device_inode_continuity": "FD1-FD19 — unchanged",
+    "fixed_git_and_ps_paths": "C2 family; FS5d — unchanged",
+    "supervisor_config_restrictions": "C3 family — unchanged",
+    "v3_retirement": "v3-retirement 22/22 — unchanged",
+    "entrypoint_self_proof": "C7 family — unchanged",
+    "replay_refusal": "A3b/A3c/A3d; detached-supervisor 28 — unchanged",
+    "provider_2_1_220_binding": "PROVIDER_REFREEZE_2_1_220.json — untouched this wave"
+  },
+  "zero_spawn_totals": {
+    "productive_provider_or_model_invocations": 0,
+    "real_claude_invocations": 0,
+    "founder_keys_created": 0,
+    "real_signatures_created": 0,
+    "real_activations_created_or_consumed": 0,
+    "five_hour_runs_started": 0,
+    "residual_processes": 0,
+    "active_keys": []
+  },
+  "not_proven_here": [
+    "This ledger is BUILDER evidence. It is NOT independent acceptance and must not be read as a Checker verdict.",
+    "The FRESH independent Checker verdict on the corrected candidate. The report with digest 886d6982... is historical FINDINGS evidence against candidate 4014d91b only.",
+    "Real productive provider capability. No model was invoked."
+  ]
+}

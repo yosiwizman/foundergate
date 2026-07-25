@@ -1,6 +1,6 @@
 {
   "schema": "lrcq-v4-authority-acceptance-matrix-2",
-  "wave": "FG-LRCQ-ACT-029 + FG-CHK-197 + FG-FCHK-197 + FG-FFIN-197 (third independent-Checker finding correction)",
+  "wave": "FG-LRCQ-ACT-029 + FG-CHK-197 + FG-FCHK-197 + FG-FFIN-197 + FG-FFIN4-197 (start-identity fail-closed completion)",
   "pr": 197,
   "suite": {
     "self_tests": 153,
@@ -235,9 +235,10 @@
     },
     {
       "id": "A-08",
-      "control": "Stale PID / PID reuse refused",
+      "control": "Stale PID / PID reuse refused, with the start-identity observation enforced FAIL-CLOSED on both sides",
       "status": "PROVEN",
-      "evidence": "observedStartIdentity binds ps lstart into the claim; supervisor.mjs stale_active refusal; detached-supervisor 10/20 (same pid AND same start identity)"
+      "evidence": "observedStartIdentity binds fixed /bin/ps lstart into the claim; supervisor.mjs stale_active refusal; detached-supervisor 10/20 (same pid AND same start identity); checker-197-final-five FS1 (forged identity refused) and FS2 (observation UNAVAILABLE -> SUPERVISOR_START_IDENTITY_UNAVAILABLE, never OK); FS3c (every OK carries an independently observed identity)",
+      "superseded_status_note": "FG-FFIN4-197-02: in candidate 4014d91b this control was PROVEN only CONDITIONALLY. The parent-side comparison ran solely when the OS observation succeeded, so under genuine fd/process pressure the check disabled itself and a key-holding supervisor's forged identity was ACCEPTED with ok:true and start_identity_independently_observed:false. The successor candidate makes the comparison unconditional and treats an unobtainable observation as a refusal, which is what makes this row true rather than aspirational."
     },
     {
       "id": "A-09",
@@ -493,9 +494,10 @@
     },
     {
       "id": "FN-F1-04",
-      "control": "A malformed, or validly shaped but wrong-PID / wrong-start-identity, claim is refused; no forged claim yields an acknowledged supervisor",
+      "control": "A malformed, or validly shaped but wrong-PID / wrong-start-identity, claim is refused; no forged claim yields an acknowledged supervisor. The start-identity comparison is UNCONDITIONAL.",
       "status": "PROVEN",
-      "evidence": "checker-197-final-five FF1l-FF1q (DYNAMIC)"
+      "evidence": "checker-197-final-five FS1a-FS1i (DYNAMIC) \u2014 a supervisor that LEGITIMATELY holds the transferred ephemeral key mints a CORRECTLY SIGNED claim carrying the EXACT spawned PID and forges ONLY supervisor_start_identity, so the refusal can come from nothing but the start-identity comparison (FS1g asserts the refusal detail is the comparison itself). Plus FF1l-FF1q for malformed/shape cases.",
+      "superseded_citation_note": "FG-FFIN4-197-02: this row previously cited FF1o-FF1q alone. That forged body is UNSIGNED (ephemeral_signature 'AA==') and wrong in BOTH pid and start identity, so classifySupervisorClaim returned at the signature check and the start-identity comparison was NEVER evaluated. The citation did not reach the control it claimed. FS1 supplies one that does."
     },
     {
       "id": "FN-F1-05",
@@ -556,12 +558,54 @@
       "control": "The helper accepts its own output on round-trip (the self-inconsistency is gone) and still refuses prototypes, accessors, symbols, functions, cycles and unsupported values",
       "status": "PROVEN",
       "evidence": "checker-197-final-five FF4h, FF4k (DYNAMIC)"
+    },
+    {
+      "id": "FN-S1-01",
+      "control": "The parent's start-identity comparison is UNCONDITIONAL: a correctly signed claim with the exact spawned PID and a forged start identity is refused at that comparison",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FS1e-FS1g (DYNAMIC)"
+    },
+    {
+      "id": "FN-S1-02",
+      "control": "When the parent cannot independently observe the OS start identity the transfer FAILS CLOSED with SUPERVISOR_START_IDENTITY_UNAVAILABLE and never returns OK",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FS2b-FS2f (DYNAMIC, under genuine fd-table saturation)"
+    },
+    {
+      "id": "FN-S1-03",
+      "control": "That refusal is caused by the missing observation, not an earlier check: the child minted its correctly signed claim and the PID matched",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FS2g, FS2h (DYNAMIC)"
+    },
+    {
+      "id": "FN-S1-04",
+      "control": "Every OK acknowledgment carries start_identity_independently_observed === true and a real /bin/ps lstart record equal to the claim's",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FS3b-FS3f (DYNAMIC, 4 runs)"
+    },
+    {
+      "id": "FN-S1-05",
+      "control": "The fast claim-and-exit race never yields an OK with an unobserved identity",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FS4a-FS4c (DYNAMIC, 6 runs)"
+    },
+    {
+      "id": "FN-S1-06",
+      "control": "Failure after key materialization still leaves TRANSFERRED_SPENT, a refused retry, no residual process and zero provider spawn",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FS1i, FS2i-FS2k (DYNAMIC)"
+    },
+    {
+      "id": "FN-S1-07",
+      "control": "No PATH entry, config field, activation field, CLI flag or test option can substitute or skip the fixed /bin/ps observation",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FS5a-FS5d (SOURCE-PROVEN)"
     }
   ],
   "not_proven_here": [
     "Real productive provider capability (a real builder session producing changes and a real checker session returning CLEAN). This requires invoking Claude, which is forbidden during preparation. First exercised under founder signature.",
     "The final independent Checker and Advisor verdicts. The Builder cannot supply them; see the review packet.",
-    "The FRESH independent Checker verdict on the CORRECTED candidate. ALL THREE prior reports (sha256 caa4db00..., 6ac782a2... and c49cc563...) are HISTORICAL FINDINGS EVIDENCE ONLY \u2014 each reviewed a tree that no longer exists on this branch.",
-    "Evidence-class discipline: every row above states DYNAMIC (attack executed), COUNTED (real process count) or SOURCE-PROVEN (source text, not an execution). Nothing here is independent acceptance."
+    "The FRESH independent Checker verdict on the CORRECTED candidate. ALL FOUR prior reports (sha256 caa4db00..., 6ac782a2..., c49cc563... and 886d6982...) are HISTORICAL FINDINGS EVIDENCE ONLY \u2014 each reviewed a tree that no longer exists on this branch.",
+    "Evidence-class discipline: every row states DYNAMIC (attack executed), COUNTED (real process count) or SOURCE-PROVEN (source text, not an execution). A row must cite evidence that REACHES the control it claims \u2014 see the superseded_citation_note on FN-F1-04. Nothing here is independent acceptance."
   ]
 }

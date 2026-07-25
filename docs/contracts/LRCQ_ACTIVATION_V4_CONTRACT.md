@@ -314,6 +314,31 @@ A governed transfer reports `OK` only after the **exact spawned process** produc
 None of the following is accepted as proof: the pipe-write callback, the writer `end` callback, elapsed time,
 the existence of a child PID, or the child merely staying alive for some number of milliseconds.
 
+### The start-identity observation is mandatory and fails closed (FG-FFIN4-197-01)
+
+Point 6 is the only binding a key-holding supervisor could otherwise forge. It legitimately holds the
+transferred ephemeral key once it has read the frame, so it can sign **any** body it likes: activation
+identity, payload digest, marker digest, intent digest, launch nonce, entrypoint digest, lifecycle-root
+object identity and even its own real PID all still pass. `supervisor_start_identity` is the one field it
+fully controls, and the only thing that checks it is the parent's **independent** observation of the
+process's start time through the fixed absolute `/bin/ps` in the minimal controlled environment.
+
+That comparison is therefore **unconditional**. If the parent cannot obtain the observation, the governed
+transfer refuses with `SUPERVISOR_START_IDENTITY_UNAVAILABLE`; it never falls back to the claim's own word.
+A process's start time is immutable for its lifetime, so the first successful observation is cached and
+re-used, and while none has been obtained the parent keeps retrying — a single transient `ps` failure must
+not condemn a healthy transfer — but an observation that is still missing at the decision point is a refusal,
+**not degraded assurance**. Every `OK` result therefore carries both `supervisor_acknowledged === true` and
+`start_identity_independently_observed === true`.
+
+> **Superseded.** In candidate `4014d91b` this comparison ran only `if (observedStart !== null)`. Under
+> genuine file-descriptor pressure — reachable exactly as a long multi-process run creates it — the parent's
+> `ps` failed, the check silently disabled itself, and a supervisor that forged only its start identity was
+> **accepted**, returning `ok: true` with `start_identity_independently_observed: false`. The fourth
+> independent Checker reproduced this end to end, and this Builder reproduced it again before correcting.
+> The supervisor side of the identical observation had always failed closed
+> (`START_IDENTITY_MISMATCH` on a null observation); the parent side now matches it.
+
 The wait is **exit-driven, not timing-driven**: when the child is gone we perform one final classification and
 decide immediately, so a dying supervisor is refused as fast as it dies. Failure codes:
 
@@ -322,6 +347,7 @@ decide immediately, so a dying supervisor is refused as fast as it dies. Failure
 | child exited without a verified claim | `SUPERVISOR_TERMINATED_BEFORE_CLAIM` |
 | no verified claim within the bound | `SUPERVISOR_CLAIM_TIMEOUT` |
 | a claim exists but is malformed, copied, stale, wrong-PID or wrong-start-identity | `SUPERVISOR_CLAIM_INVALID` |
+| the parent could not independently observe the process start identity | `SUPERVISOR_START_IDENTITY_UNAVAILABLE` |
 
 A torn read of a half-written record is retried; a **complete** record that fails any binding is refused
 immediately, because claims are created `wx`-once and can never become valid later. Every failure here is
