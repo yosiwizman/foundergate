@@ -266,11 +266,16 @@ A `try/catch` around `spawn()` catches only synchronous argument-type throws, an
 stream is a *different* EventEmitter.
 
 `spawnGovernedSupervisorV4` therefore registers `child.once("error")` **synchronously, before the key frame is
-written and before the first `await`**, together with the child exit/close and writer error observers, and
-races them: child spawn error → `SUPERVISOR_SPAWN_FAILED`; descriptor write failure → `TRANSFER_WRITE_FAILED`;
-premature child termination → `TRANSFER_WRITE_FAILED`; write completion → `OK`. Premature termination is
-decisive only if nothing else settles shortly after, so a healthy supervisor that reads the frame and exits
-quickly is still a completed transfer.
+written and before the first `await`**, together with the writer error observer, and races them: child spawn
+error → `SUPERVISOR_SPAWN_FAILED`; descriptor write failure → `TRANSFER_WRITE_FAILED`; write completion →
+proceed to the acknowledgment gate below.
+
+> **Superseded in part by FG-FFIN-197-F1.** This section originally also declared *premature child termination
+> → `TRANSFER_WRITE_FAILED`*, decided by a 250 ms timer. That arm was **never reachable**: the governed key
+> frame is 92 bytes and the inherited descriptor is an ordinary kernel pipe with a 64 KiB buffer, so the write
+> callback always settled the race within microseconds. Worse, write completion was treated as success, so a
+> supervisor whose entrypoint was simply `process.exit(9)` produced `ok: true` with a dead `supervisor_pid`
+> (reproduced 6/6). The timer is gone; the gate below replaces it.
 
 Past the point of no return every outcome leaves the authority `TRANSFERRED_SPENT`, the private key deleted
 from module storage, all temporary buffers zeroed, the writer closed and any partially created child killed and
@@ -288,3 +293,58 @@ Assurance evidence in this lane states what was actually observed:
 Zero-provider-spawn claims are **counted**, never inferred from key-frame receipts or refusal strings. A
 property that cannot be reproduced without root (e.g. a foreign-owned authority record) is recorded as
 source-proven and is not claimed as an achieved runtime result.
+
+
+## The deterministic supervisor acknowledgment (FG-FFIN-197-F1)
+
+**Pipe-write completion is not success.** It proves only that the bytes entered the kernel buffer, never that
+the supervisor read them. No timing heuristic can repair this — any elapsed-time arm loses the race to the
+write callback deterministically — so elapsed time is never the authority decision.
+
+A governed transfer reports `OK` only after the **exact spawned process** produces a verified, ephemeral-signed
+**supervisor claim**. Verifying that one artifact proves, together, that the supervisor:
+
+1. read and decoded the inherited key frame;
+2. matched the ephemeral key to the consumed marker;
+3. independently reverified the signed V4 activation;
+4. proved its entrypoint identity;
+5. minted a valid signed claim;
+6. bound that claim to the spawned PID and its OS-observed start identity.
+
+None of the following is accepted as proof: the pipe-write callback, the writer `end` callback, elapsed time,
+the existence of a child PID, or the child merely staying alive for some number of milliseconds.
+
+The wait is **exit-driven, not timing-driven**: when the child is gone we perform one final classification and
+decide immediately, so a dying supervisor is refused as fast as it dies. Failure codes:
+
+| Outcome | Code |
+| --- | --- |
+| child exited without a verified claim | `SUPERVISOR_TERMINATED_BEFORE_CLAIM` |
+| no verified claim within the bound | `SUPERVISOR_CLAIM_TIMEOUT` |
+| a claim exists but is malformed, copied, stale, wrong-PID or wrong-start-identity | `SUPERVISOR_CLAIM_INVALID` |
+
+A torn read of a half-written record is retried; a **complete** record that fails any binding is refused
+immediately, because claims are created `wx`-once and can never become valid later. Every failure here is
+*after* key materialisation, so the authority stays `TRANSFERRED_SPENT`, the private key stays deleted, the
+buffers stay zeroed, the writer stays closed, a still-live child is killed and reaped, and a retry returns
+`ALREADY_TRANSFERRED`. `SUPERVISOR_CLAIM_WAIT_MS` is a fixed module constant — there is deliberately **no**
+caller-configurable claim path, clock, timeout or verification bypass.
+
+One consequence worth naming: a supervisor handed a *foreign* activation's key can never mint a valid claim,
+so the launcher now **detects a key swap** that it previously could not.
+
+## Setter-safe authority copying (FG-FFIN-197-F4)
+
+`deepFreezeAuthority` builds its copy with `Object.create(null)` and `Object.defineProperty`, never with
+property assignment, and refuses the structural keys `__proto__`, `constructor` and `prototype` at every depth
+with `AUTHORITY_DANGEROUS_KEY`. The standard prototype is restored only after every key has been materialised
+as an own data property, so ordinary plain-object behaviour (`JSON.stringify`, `Object.keys`, spread, `in`)
+is preserved.
+
+This matters because `JSON.parse` produces exactly the dangerous shape — an own, enumerable, writable
+`__proto__` data property. Under plain assignment `out[k] = v` invoked `Object.prototype`'s `__proto__`
+**setter**, so the copy silently dropped the key, inherited the attacker's fields through the prototype chain,
+still reported `Object.isFrozen === true` and an empty `mutableAuthorityPaths`, and was then refused by this
+very module on round-trip as `AUTHORITY_NON_PLAIN_PROTOTYPE` — a self-inconsistency proving the copy was not
+the plain JSON authority data the contract promises. No production call site could reach it (all three pass
+object literals with hard-coded key sets), so this was a latent contract gap, not an authority escape.

@@ -1,6 +1,6 @@
 {
   "schema": "lrcq-v4-authority-acceptance-matrix-2",
-  "wave": "FG-LRCQ-ACT-029 + FG-CHK-197 + FG-FCHK-197 (fresh independent-Checker finding correction)",
+  "wave": "FG-LRCQ-ACT-029 + FG-CHK-197 + FG-FCHK-197 + FG-FFIN-197 (third independent-Checker finding correction)",
   "pr": 197,
   "suite": {
     "self_tests": 153,
@@ -17,13 +17,13 @@
   },
   "v4_family_counts": {
     "lifecycle-key-containment": "39/39",
-    "lifecycle-fd-transfer": "18/18",
+    "lifecycle-fd-transfer": "19/19",
     "lifecycle-authority-v4": "17/17",
     "activation-v4-signature": "36/36",
     "founder-signing-tools": "15/15",
     "v3-retirement": "22/22",
     "detached-supervisor": "31/31",
-    "detached-supervisor-failure": "12/12",
+    "detached-supervisor-failure": "14/14",
     "preflight": "14/14",
     "production-seam-closure": "30/30",
     "provider-binding": "19/19",
@@ -38,7 +38,7 @@
     "capsule-generator": "35/35",
     "capsule-deps": "17/17",
     "checker-197-corrections": "76/76",
-    "checker-197-final-five": "113/113"
+    "checker-197-final-five": "157/157"
   },
   "controls": [
     {
@@ -403,9 +403,9 @@
     },
     {
       "id": "FF-B-02",
-      "control": "All 26 of the fresh Checker’s invalid routes are refused with ZERO productive-provider spawn",
+      "control": "All 26 of the fresh Checker\u2019s invalid routes are refused with ZERO productive-provider spawn",
       "status": "PROVEN",
-      "evidence": "final-five-boundary F-B1-F-B4 (DYNAMIC refusals; COUNTED zero spawns from the recording stub’s own log)"
+      "evidence": "final-five-boundary F-B1-F-B4 (DYNAMIC refusals; COUNTED zero spawns from the recording stub\u2019s own log)"
     },
     {
       "id": "FF-B-03",
@@ -463,7 +463,7 @@
     },
     {
       "id": "FF-E-01",
-      "control": "Zero-provider-spawn claims are COUNTED from a recording stub’s own log, never inferred from key-frame receipts",
+      "control": "Zero-provider-spawn claims are COUNTED from a recording stub\u2019s own log, never inferred from key-frame receipts",
       "status": "PROVEN",
       "evidence": "checker-197-corrections C1i; final-five-boundary F-B3, F-B9, F-B11, F-P3 (COUNTED)"
     },
@@ -472,12 +472,96 @@
       "control": "Source-regex assertions are labelled SOURCE-PROVEN and are never presented as runtime proof; the owner-mismatch branch is recorded as source-proven (root required), not an achieved runtime result",
       "status": "PROVEN",
       "evidence": "checker-197-corrections C4h, C4h2 and header; checker-197-final-five FE1-FE5"
+    },
+    {
+      "id": "FN-F1-01",
+      "control": "A governed transfer reports OK ONLY after the exact spawned supervisor produces a VERIFIED ephemeral-signed claim \u2014 pipe-write completion is never success",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FF1r-FF1u (DYNAMIC)"
+    },
+    {
+      "id": "FN-F1-02",
+      "control": "A supervisor that exits without reading the key is refused SUPERVISOR_TERMINATED_BEFORE_CLAIM, never OK, repeatably (6 runs)",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FF1a-FF1g (DYNAMIC, 6/6)"
+    },
+    {
+      "id": "FN-F1-03",
+      "control": "Reading the key frame is NOT sufficient: a supervisor that reads but never claims is refused",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FF1h-FF1k (DYNAMIC)"
+    },
+    {
+      "id": "FN-F1-04",
+      "control": "A malformed, or validly shaped but wrong-PID / wrong-start-identity, claim is refused; no forged claim yields an acknowledged supervisor",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FF1l-FF1q (DYNAMIC)"
+    },
+    {
+      "id": "FN-F1-05",
+      "control": "Every post-materialization failure leaves TRANSFERRED_SPENT, the key deleted, no residual process, and a retry refused ALREADY_TRANSFERRED",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FF1d-FF1g, FF1j, FF1k, FF1n, FF1w (DYNAMIC)"
+    },
+    {
+      "id": "FN-F1-06",
+      "control": "No timing heuristic is the authority decision; the claim wait is a fixed module constant with no caller-configurable path, clock, timeout or bypass",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FF1x, FF1y (SOURCE-PROVEN)"
+    },
+    {
+      "id": "FN-F1-07",
+      "control": "The launcher names the failure honestly: SUPERVISOR_NEVER_ACKNOWLEDGED at stage supervisor_acknowledgment, distinct from a spawn failure",
+      "status": "PROVEN",
+      "evidence": "detached-supervisor-failure 10, 10b, 10c (DYNAMIC)"
+    },
+    {
+      "id": "FN-F1-08",
+      "control": "A supervisor handed a FOREIGN activation's key can never mint a valid claim, so the launcher now DETECTS a key swap it previously could not",
+      "status": "PROVEN",
+      "evidence": "lifecycle-fd-transfer A2a (DYNAMIC)"
+    },
+    {
+      "id": "FN-F2-01",
+      "control": "No evidence row asserts the unreachable premature-termination -> TRANSFER_WRITE_FAILED mapping; the historical candidate c6bf5a37 is described truthfully as having returned OK on that route",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FFE1, FFE1b, FFE2, FFE3 (DYNAMIC over the ledger)"
+    },
+    {
+      "id": "FN-F3-01",
+      "control": "Spawn-count prose matches the instrument: the stub writes beside its own signed executable and the count never depends on environment propagation",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FFE4-FFE6 (SOURCE-PROVEN)"
+    },
+    {
+      "id": "FN-F3-02",
+      "control": "A POSITIVE CONTROL proves the spawn counter can record, so a counted zero is a measurement rather than a broken instrument",
+      "status": "PROVEN",
+      "evidence": "checker-197-corrections C1i2; checker-197-final-five FFE7 (DYNAMIC + COUNTED)"
+    },
+    {
+      "id": "FN-F4-01",
+      "control": "deepFreezeAuthority refuses own __proto__, constructor and prototype keys recursively, and copies with defineProperty so no inherited setter can be invoked",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FF4a-FF4e (DYNAMIC)"
+    },
+    {
+      "id": "FN-F4-02",
+      "control": "No prototype change, no inherited attacker field and no global prototype pollution; ordinary authority objects still copy, deep-freeze and serialise identically",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FF4f, FF4g, FF4j (DYNAMIC)"
+    },
+    {
+      "id": "FN-F4-03",
+      "control": "The helper accepts its own output on round-trip (the self-inconsistency is gone) and still refuses prototypes, accessors, symbols, functions, cycles and unsupported values",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FF4h, FF4k (DYNAMIC)"
     }
   ],
   "not_proven_here": [
     "Real productive provider capability (a real builder session producing changes and a real checker session returning CLEAN). This requires invoking Claude, which is forbidden during preparation. First exercised under founder signature.",
     "The final independent Checker and Advisor verdicts. The Builder cannot supply them; see the review packet.",
-    "The FRESH independent Checker verdict on the CORRECTED candidate. BOTH prior reports (sha256 caa4db00... and sha256 6ac782a2...) are HISTORICAL FINDINGS EVIDENCE ONLY — each reviewed a tree that no longer exists on this branch.",
-    "FG-FCHK-197-E scope note: every row above states its evidence class. DYNAMIC means the attack was executed; COUNTED means a real process count; SOURCE-PROVEN means a property of the source text and NOT an execution. Nothing here is independent acceptance."
+    "The FRESH independent Checker verdict on the CORRECTED candidate. ALL THREE prior reports (sha256 caa4db00..., 6ac782a2... and c49cc563...) are HISTORICAL FINDINGS EVIDENCE ONLY \u2014 each reviewed a tree that no longer exists on this branch.",
+    "Evidence-class discipline: every row above states DYNAMIC (attack executed), COUNTED (real process count) or SOURCE-PROVEN (source text, not an execution). Nothing here is independent acceptance."
   ]
 }

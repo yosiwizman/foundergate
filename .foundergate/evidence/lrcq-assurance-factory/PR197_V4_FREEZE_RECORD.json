@@ -1,27 +1,25 @@
 {
   "schema": "lrcq-pr197-v4-freeze-record-2",
-  "wave": "FG-FCHK-197 — fresh independent-Checker five-finding correction",
+  "wave": "FG-FFIN-197 \u2014 third independent-Checker four-finding correction",
   "supersedes": [
-    "lrcq-pr197-v4-freeze-record-1 — invalidated by the corrections in this wave",
-    "FG-CHK-197 freeze record v2 (candidate 8e6944ef04eb91604af36064051524b12a38c23d)"
+    "lrcq-pr197-v4-freeze-record-1 \u2014 invalidated by the corrections in this wave",
+    "FG-CHK-197 freeze record v2 (candidate 8e6944ef04eb91604af36064051524b12a38c23d)",
+    "FG-FCHK-197 freeze record v3 (candidate c6bf5a37d06b5a86a2ac1b7a5721bb53c38868c0)"
   ],
   "pr": 197,
   "state": "open, draft, unmerged",
   "branch": "lane/lrcq-founder-signature-authority-8d1899f",
-  "reviewed_executable_code_candidate_sha": "c6bf5a37d06b5a86a2ac1b7a5721bb53c38868c0",
-  "reviewed_executable_code_candidate_tree": "0d598ceb16cc2faebc2099c1b88b62788ff72219",
-  "reviewed_executable_code_candidate_proof": "PROCEDURAL, hash-independent: the executable candidate is the commit whose message begins \"FG-FCHK-197: correct the fresh independent Checker’s five findings\". For every commit AFTER it on this branch, git diff --stat <candidate> <commit> -- src tools package.json package-lock.json is EMPTY; each changes ONLY paths under .foundergate/evidence/ or docs/. A commit cannot embed its own hash, so the two SHAs above were recorded after the commit existed and are verifiable with git rev-parse.",
+  "reviewed_executable_code_candidate_sha": "4014d91b0e9e42549ca6b1a0f1f22ae406fe3016",
+  "reviewed_executable_code_candidate_tree": "ad66de68ec2a908fc23db86297af723512a34d25",
+  "reviewed_executable_code_candidate_proof": "PROCEDURAL, hash-independent: the executable candidate is the commit whose message begins \"FG-FFIN-197: correct the third independent Checker's four findings\". For every commit AFTER it on this branch, git diff --stat <candidate> <commit> -- src tools package.json package-lock.json is EMPTY; each changes ONLY paths under .foundergate/evidence/ or docs/. A commit cannot embed its own hash, so the two SHAs above were recorded after the commit existed and are verifiable with git rev-parse.",
   "evidence_only_commits_after_the_executable_candidate": {
-    "count": 2,
-    "note": "Each changes ONLY paths under .foundergate/evidence/ and/or docs/. Verify with: git diff --stat c6bf5a37d06b5a86a2ac1b7a5721bb53c38868c0 HEAD -- src tools package.json package-lock.json (must be EMPTY).",
+    "note": "Each changes ONLY paths under .foundergate/evidence/ and/or docs/. Verify with: git diff --stat 4014d91b0e9e42549ca6b1a0f1f22ae406fe3016 HEAD -- src tools package.json package-lock.json (must be EMPTY). Resolve the full list with: git log --oneline 4014d91b..HEAD",
+    "count_at_freeze_time": 1,
     "commits": [
       {
-        "sha": "4362b3e60a2bfd108b6e2b8880d96b70524067e5",
-        "subject": "FG-FCHK-197 evidence: five-finding ledger, matrix, contract addendum, freeze record v3, fresh Checker packet"
-      },
-      {
-        "sha": "(this record’s own commit)",
-        "subject": "FG-FCHK-197 evidence: correct the freeze record’s dangling evidence_only_tail reference — a commit cannot embed its own hash, so this row is procedural; resolve it with git log --oneline c6bf5a37..HEAD"
+        "sha": "(this record's own commit)",
+        "subject": "FG-FFIN-197 evidence: four-finding ledger, third Checker report, matrix, contract, freeze record v4, Checker packet",
+        "note": "A commit cannot embed its own hash; resolve procedurally with git log."
       }
     ]
   },
@@ -40,25 +38,27 @@
     "failures": 0,
     "skipped_or_weakened": 0,
     "coverage_reduced": false,
-    "assertions_x_of_y_form": 1823,
+    "assertions_x_of_y_form_run_1": 1873,
+    "assertions_x_of_y_form_run_2": 1873,
     "assertions_pass_checks_form": 614,
-    "combined_mechanical": 2437,
+    "combined_mechanical": 2487,
     "counting_method": "MECHANICAL, parsed from captured npm test output; the two reporting styles are counted separately rather than merged.",
     "result": "ALL GREEN twice consecutively"
   },
   "founder_key_authority_active_keys": [],
   "authority_module_digests": {
-    "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs": "sha256:12c8261a28eccc9c67a3d823c352d74bb6dece4fa821c849259ea3135a4c3695",
+    "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs": "sha256:45cdab1b32dc4e2f28ea588ac5301bb4e8ca8b8255ea20c5e829243d52371acb",
     "src/v8b/lrcq/assurance/activation-v4.mjs": "sha256:5c4ba9c5b7d87bd92213022c6e8ab3ef36077df3a1ff594c618ea2e5a240eb45",
-    "src/v8b/lrcq/assurance/deep-freeze-authority.mjs": "sha256:74cff5dc5d9b81244c979f3f0146291ef8fc8fdf8dbb8228165c40ef904d773f",
+    "src/v8b/lrcq/assurance/deep-freeze-authority.mjs": "sha256:eda83dcd02e2cb4ef6879b00f6b7468390af3e49dba52e7088d1ee2953742286",
     "src/v8b/lrcq/assurance/fs-authority-guards.mjs": "sha256:574ae9794632b060b9b99c71c1e64072958e61719fc2c23901a5848e45da7ea2",
     "src/v8b/lrcq/provider/authority-boundary.mjs": "sha256:08fac21823a142070ccc233e667d6c09ef2ffc64851dbc18907d9c74a58ea29c",
     "src/v8b/lrcq/provider/real-provider.mjs": "sha256:ea3bafdcd1bcc07eac2b5bdd65d24794ec190a992ce577ce7d4b2087d524cd37",
     "src/v8b/lrcq/provider/activation-schema.mjs": "sha256:fab360c8d99c4b4fcdb601c39dbe6315f53268d966e7058e60f6f05d825ea631",
-    "src/v8b/lrcq/run-harness/v4-legacy-projection.mjs": "sha256:cb9cb03dffb96489546209cbae93e4b3ee1cd414deb164bdd273b51573d7ce9d"
+    "src/v8b/lrcq/run-harness/v4-legacy-projection.mjs": "sha256:cb9cb03dffb96489546209cbae93e4b3ee1cd414deb164bdd273b51573d7ce9d",
+    "tools/terminal0/lrcq/run-five-hour.mjs": "sha256:9ee5e3228e2e2e4dcc8e4ec064c2ae0eb5b44493390b97e559c8c3993048f13f"
   },
   "builder_execution_metadata": {
-    "provider": "Anthropic — Claude Code CLI",
+    "provider": "Anthropic \u2014 Claude Code CLI",
     "model_label": "Claude Opus 5",
     "model_identifier": "claude-opus-5",
     "note": "Builder execution metadata, deliberately distinct from the provider-under-test identity (2.1.220) the activation binds. Builder self-tests are NOT independent acceptance."
@@ -83,13 +83,13 @@
   ],
   "next_gate": "READY_FOR_FRESH_INDEPENDENT_CHECKER",
   "required_fresh_checker_clean_verdict": "AUTHORITY_CHAIN_CLEAN_PROVIDER_REFREEZE_REQUIRED",
-  "fresh_checker_packet": "docs/lanes/PR197_FRESH_CHECKER_PACKET.md",
+  "fresh_checker_packet": "docs/lanes/PR197_FINAL_FOUR_CHECKER_PACKET.md",
   "superseded_historical_checker_reports": [
     {
       "path_at_review_time": "/tmp/foundergate-pr197-independent-checker.json",
       "sha256": "caa4db0031b172ca69c9b456d298cb3b3e6185215e9074293b6c93390fbdc20f",
       "verdict": "FINDINGS",
-      "status": "HISTORICAL EVIDENCE ONLY — reviewed a tree that no longer exists on this branch."
+      "status": "HISTORICAL EVIDENCE ONLY \u2014 reviewed a tree that no longer exists on this branch."
     },
     {
       "path_at_review_time": "/tmp/foundergate-pr197-fresh-independent-checker.json",
@@ -98,7 +98,16 @@
       "verdict": "FINDINGS",
       "findings": "2 MEDIUM + 3 LOW",
       "reviewed_candidate": "8e6944ef04eb91604af36064051524b12a38c23d",
-      "status": "HISTORICAL FINDINGS EVIDENCE ONLY — NOT current acceptance. All five findings are corrected in candidate c6bf5a37d06b5a86a2ac1b7a5721bb53c38868c0. A FRESH independent Checker is required on the CORRECTED candidate."
+      "status": "HISTORICAL FINDINGS EVIDENCE ONLY \u2014 corrected in candidate c6bf5a37."
+    },
+    {
+      "path_at_review_time": "/tmp/foundergate-pr197-final-five-independent-checker.json",
+      "preserved_copy": ".foundergate/evidence/lrcq-assurance-factory/FFIN_197_THIRD_CHECKER_REPORT_HISTORICAL.json",
+      "sha256": "c49cc5633341639704fcb0564722c8f02c642884b6c7cd8a8f2d44bd70bb294d",
+      "verdict": "FINDINGS",
+      "findings": "1 MEDIUM + 3 LOW",
+      "reviewed_candidate": "c6bf5a37d06b5a86a2ac1b7a5721bb53c38868c0",
+      "status": "HISTORICAL FINDINGS EVIDENCE ONLY \u2014 NOT current acceptance. All four findings are corrected in candidate 4014d91b0e9e42549ca6b1a0f1f22ae406fe3016. A FRESH independent Checker is required on the CORRECTED candidate."
     }
   ],
   "five_finding_correction": {
@@ -113,5 +122,18 @@
     "correction_order": "C before B (the boundary derives its ceilings from the capability, so the capability had to be immutable first)",
     "invalid_route_matrix": "26/26 refused, 0 counted provider spawns",
     "positive_route": "exactly 1 deterministic stub process on the legitimate narrowed projection"
+  },
+  "four_finding_correction": {
+    "ledger": ".foundergate/evidence/lrcq-assurance-factory/FFIN_197_FINAL_FOUR_CORRECTION_LEDGER.json",
+    "findings_corrected": [
+      "F1 (MEDIUM)",
+      "F2 (LOW)",
+      "F3 (LOW)",
+      "F4 (LOW)"
+    ],
+    "headline": "A governed transfer now reports OK only after a VERIFIED ephemeral-signed supervisor claim. Pipe-write completion, timers, PID existence and liveness are explicitly not proof.",
+    "immediate_death_route": "6/6 runs refused SUPERVISOR_TERMINATED_BEFORE_CLAIM; never OK",
+    "invalid_route_matrix": "26/26 refused, 0 counted provider spawns (unchanged)",
+    "positive_route": "exactly 1 deterministic stub process on the legitimate narrowed projection (unchanged)"
   }
 }
