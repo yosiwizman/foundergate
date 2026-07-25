@@ -1,0 +1,255 @@
+{
+  "schema": "lrcq-fchk-197-final-five-correction-ledger-1",
+  "wave": "FG-FCHK-197 — fresh independent-Checker finding correction (second report)",
+  "pr": 197,
+  "branch": "lane/lrcq-founder-signature-authority-8d1899f",
+  "source_report": {
+    "path_at_review_time": "/tmp/foundergate-pr197-fresh-independent-checker.json",
+    "preserved_copy": ".foundergate/evidence/lrcq-assurance-factory/FCHK_197_FRESH_CHECKER_REPORT_HISTORICAL.json",
+    "sha256": "6ac782a2d396a8b0558eed8493d19a86a5f52a3e99e38cfe2f040f72e25da50b",
+    "verdict": "FINDINGS",
+    "findings": "2 MEDIUM + 3 LOW",
+    "status": "HISTORICAL FINDINGS EVIDENCE ONLY — NOT current acceptance. It reviewed candidate 8e6944ef04eb91604af36064051524b12a38c23d, a tree that no longer exists on this branch. A FRESH independent Checker is required."
+  },
+  "reviewed_candidate_at_report_time": {
+    "sha": "8e6944ef04eb91604af36064051524b12a38c23d",
+    "tree": "e1df714843cd32173c024c939bebe34238a516d2"
+  },
+  "corrected_executable_candidate": {
+    "sha": "c6bf5a37d06b5a86a2ac1b7a5721bb53c38868c0",
+    "tree": "0d598ceb16cc2faebc2099c1b88b62788ff72219"
+  },
+  "correction_order": "C was corrected BEFORE B, as the contract requires: the boundary validator derives its ceilings from the capability, so deriving them from a still-mutable object would have been enforcement against a value the attacker controls. C then B, with A, D and E independent.",
+  "evidence_class_legend": {
+    "DYNAMIC": "the attack was executed and the refusal/behaviour observed in the test process tree",
+    "COUNTED": "a real process count read from a recording provider stub's own log, not inferred",
+    "SOURCE-PROVEN": "a property of the source text (a regex or an ordering over the module), NOT an execution"
+  },
+  "findings": [
+    {
+      "id": "FG-FCHK-197-A",
+      "severity": "MEDIUM",
+      "accepted": true,
+      "disputed": false,
+      "title": "unhandled asynchronous ChildProcess 'error' kills the launcher past the transfer point of no return",
+      "mechanism_confirmed": "child_process.spawn reports most failures ASYNCHRONOUSLY by emitting 'error' on the returned ChildProcess. The try/catch around spawn() caught only synchronous argument-type throws, and the only 'error' listener was on the stdio STREAM — a different EventEmitter. A bad cwd or an unreachable executable therefore raised an unhandled 'error' AFTER the key was exported, the frame encoded, the key deleted from module storage and the capability marked TRANSFERRED_SPENT. Independently reproduced by this Builder before correcting: node returns a ChildProcess with pid === undefined and then emits ENOENT.",
+      "reproduction_before": "spawnGovernedSupervisorV4 with cwd pointing at a non-existent directory -> node:events unhandled 'error' event, Error: spawn ENOENT, launcher process exit 1 with a raw stack trace. launchDetachedSupervisorV4 never returned its structured refusal and its finally-block descriptor cleanup never ran.",
+      "correction": [
+        "child.once(\"error\") is registered SYNCHRONOUSLY inside the settle promise's executor — after spawn returns and BEFORE the key frame is written and BEFORE the first await",
+        "all error and close observers (child error, child exit, child close, writer error) are registered before the write",
+        "the outcomes RACE: child spawn error -> SUPERVISOR_SPAWN_FAILED; descriptor write failure -> TRANSFER_WRITE_FAILED; premature child termination -> TRANSFER_WRITE_FAILED; write completion -> OK",
+        "premature termination is decisive only if nothing else settles shortly after, so a healthy supervisor that reads the frame and exits fast is still a COMPLETED transfer",
+        "new LC_CODES.SUPERVISOR_SPAWN_FAILED; the synchronous-throw path returns it too",
+        "killAndReap returns immediately for a child with no pid (a failed spawn has no process to reap)"
+      ],
+      "files": [
+        "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs"
+      ],
+      "result_after": {
+        "asynchronous_spawn_error": "DYNAMIC: returns { ok:false, code: SUPERVISOR_SPAWN_FAILED, transfer: TRANSFERRED_SPENT }; nothing thrown, nothing uncaught (FA2-FA5)",
+        "authority_after_failure": "DYNAMIC: TRANSFERRED_SPENT under every outcome; the module's own lifecycle state agrees (FA5, FA6)",
+        "private_key": "DYNAMIC: deleted from module storage before the first await; retry returns ALREADY_TRANSFERRED (FA8)",
+        "key_delivery_on_the_failed_route": "DYNAMIC: zero — no receipt was ever written (FA9)",
+        "residual_process": "DYNAMIC: none; the failed spawn produced no pid (FA7), and the premature-termination route leaves nothing alive (FA21)",
+        "launcher_process": "DYNAMIC: exits 0 with a structured refusal it can record; stderr contains no unhandled-'error' stack trace (FA10-FA15)",
+        "premature_child_termination": "DYNAMIC: structured lifecycle code, authority spent, retry refused (FA17-FA20)",
+        "normal_transfer": "DYNAMIC: still OK, key frame still delivered to exactly the returned child (FA22-FA24)",
+        "listener_registration_order": "SOURCE-PROVEN: child.once(\"error\") appears before writer.write(frame) in the module source (FA25, FA26) — textual ordering, not observed execution order"
+      },
+      "regression_tests": [
+        "checker-197-final-five FA1-FA26 (26 assertions)"
+      ],
+      "notes": "No production-configurable executable path was introduced. The failure is triggered through the existing opts.cwd, exactly as the Checker triggered it."
+    },
+    {
+      "id": "FG-FCHK-197-B",
+      "severity": "MEDIUM",
+      "accepted": true,
+      "disputed": false,
+      "title": "the provider boundary enforces no founder-signed numerical ceiling and does not require all signed exclusions",
+      "mechanism_confirmed": "Three gaps composed. (1) projectionMatchesCapability bound a projection to a capability by authoritative/projection_schema/claim-digest/activation-identity ONLY — never by a limit or an exclusion. (2) validateActivation required the limits to be present, finite and positive but compared them to NOTHING, and no code path re-derived the signed ceilings at the boundary. (3) no_deploy appeared in neither REQUIRED_FIELDS nor the must-be-true list, and no_push_unless_authorized was presence-checked only, so `false` passed. 6 of the Checker's 26 invalid routes spawned the productive provider and a widened --max-budget-usd 1000 reached the CLI.",
+      "reproduction_before": "From inside a genuine detached supervisor holding a genuine SUPERVISOR_EXECUTION capability, a spread copy of the honest projection with one field changed: max_budget_usd 10->1000, per_job_timeout_s 2700->999999, max_parallel_width 2->64, max_output_bytes 10485760->1e12, no_deploy true->false, no_push_unless_authorized true->false. All six spawned the provider; the recording stub logged 'SPAWNED max-budget-usd=1000'.",
+      "correction": [
+        "new src/v8b/lrcq/provider/authority-boundary.mjs — one authoritative validator receiving the genuine branded capability, the proposed non-authoritative projection, the job and the fixed runtime bindings",
+        "it first requires the authority it is about to derive ceilings FROM to be immutable (cap, cap.limits and cap.exclusions all frozen) — deriving a ceiling from a writable object is not enforcement",
+        "every signed numerical limit is enumerated MECHANICALLY from V4_SIGNED_LIMITS: the projected value must be finite, valid for its declared kind, and <= the signed ceiling; zero, negative, NaN, Infinity, missing and wrong-typed all fail; narrowing remains permitted",
+        "the run deadline and expiry may be brought forward but never pushed out; run_duration_s is enforced as a ceiling whenever the record carries it",
+        "every signed exclusion is enumerated MECHANICALLY from V4_SIGNED_EXCLUSIONS: each must be exactly true in the signed authority AND exactly true in the projection — this is signed-exclusion enforcement, not a deny-list presence test",
+        "signed identity facts (provider identity/path/target/version, candidate stack, backlog digest, run id, claim digests) may be restated but never altered",
+        "provenance is required and any unknown v4_* authority-bearing field is refused",
+        "called in runJob after providerEligibilityV4 AND re-asserted as the last statement before spawn()",
+        "activation-schema.mjs: REQUIRED_FIELDS gains no_deploy and no_external_comms; the must-be-true list becomes the COMPLETE ten-exclusion set (exported as MUST_BE_TRUE_EXCLUSIONS)",
+        "projectionMatchesCapability additionally binds every signed limit and exclusion"
+      ],
+      "files": [
+        "src/v8b/lrcq/provider/authority-boundary.mjs",
+        "src/v8b/lrcq/provider/real-provider.mjs",
+        "src/v8b/lrcq/provider/activation-schema.mjs",
+        "src/v8b/lrcq/run-harness/v4-legacy-projection.mjs",
+        "src/v8b/lrcq/assurance/activation-v4.mjs"
+      ],
+      "result_after": {
+        "invalid_route_matrix": "DYNAMIC: 26/26 of the Checker's own invalid routes REFUSED (F-B1, F-B2)",
+        "provider_spawns_on_the_26_invalid_routes": "COUNTED: 0, read from the recording provider stub's own log (F-B3)",
+        "spawn_attempts_on_invalid_routes": "DYNAMIC: none — provider_invocation stayed PROVIDER_NOT_ATTEMPTED for all 26 (F-B4)",
+        "budget_widening": "DYNAMIC + independently at the validator: V4_PROJECTED_LIMIT_WIDENS_SIGNED_CEILING (F-B5, F-B5b)",
+        "timeout_widening": "DYNAMIC + independently at the validator (F-B5, F-B5b)",
+        "width_widening": "DYNAMIC + independently at the validator (F-B5, F-B5b)",
+        "output_limit_widening": "DYNAMIC + independently at the validator (F-B5, F-B5b)",
+        "deadline_widening": "DYNAMIC: V4_PROJECTED_DEADLINE_WIDENS_SIGNED_AUTHORITY (F-B6c)",
+        "every_exclusion_individually_false": "DYNAMIC: all 10 refused (F-B7)",
+        "every_exclusion_individually_removed": "DYNAMIC: all 10 refused (F-B8)",
+        "invalid_limit_values": "DYNAMIC: 30/30 refused across zero, negative, NaN, Infinity, missing and wrong-typed for every projected signed limit (F-B10)",
+        "unknown_authority_field": "DYNAMIC: V4_UNKNOWN_AUTHORITY_FIELD (F-B6d)",
+        "copied_projection_and_forged_capability": "DYNAMIC: refused (matrix routes r05-r11)",
+        "honest_projection": "DYNAMIC: still ACCEPTED — this is a ceiling, not a blanket refusal (F-B6e)",
+        "legitimate_narrowed_projection": "DYNAMIC + COUNTED: reaches the provider, SUCCEEDS, and spawns EXACTLY ONE deterministic stub process (F-P2, F-P3)",
+        "argv_evidence": "COUNTED: the one spawned process received the NARROWED budget; no widened value reached argv anywhere in the matrix (F-P4, F-P5)",
+        "real_provider": "not invoked — the signed provider target for the matrix world is the disposable recording stub (F-P6)"
+      },
+      "regression_tests": [
+        "checker-197-final-five FB1-FB4",
+        "checker-197-final-five/final-five-boundary.body F-B1-F-B11, F-P1-F-P7"
+      ]
+    },
+    {
+      "id": "FG-FCHK-197-C",
+      "severity": "LOW",
+      "accepted": true,
+      "disputed": false,
+      "title": "nested limits/exclusions objects escape the shallow freeze on the VERIFIED and SUPERVISOR_EXECUTION capabilities",
+      "mechanism_confirmed": "Object.freeze is shallow. FG-CHK-197-06 was closed by moving __state into a module-private WeakMap, but `limits` and `exclusions` remained plain nested object literals on the VERIFIED capability and `limits` was copied BY REFERENCE onto the SUPERVISOR_EXECUTION capability, so the two stages shared one mutable object. Writing cap.limits.max_budget_usd = 777777 on the genuine frozen branded capability then produced a GENUINE projection carrying 777777 that the boundary accepted.",
+      "correction": [
+        "new src/v8b/lrcq/assurance/deep-freeze-authority.mjs — a small audited helper that accepts ONLY plain JSON authority data (string, boolean, null, finite number, plain array, plain object)",
+        "it REFUSES functions, class instances and any non-plain prototype, accessor properties, symbol keys and symbol values, undefined, NaN, Infinity, BigInt, Date/Map/Set/Buffer and reference cycles — a refusal throws rather than publishing a partially frozen structure",
+        "it COPIES before freezing and freezes only the copy, so a caller-owned source object is never frozen in place and the authority retains no reference to the parsed activation document",
+        "makeCapability (VERIFIED), the CONSUMED mint and the SUPERVISOR_EXECUTION mint all publish deep-frozen capabilities",
+        "cap.exclusions now derives MECHANICALLY from the ten signed payload exclusions instead of a hardcoded three-field constant, and travels to SUPERVISOR_EXECUTION so the boundary can re-derive them",
+        "cap.limits likewise derives mechanically from the contract's limit table",
+        "module-private brands (CAP_BRAND, CONSUMED, SUPEXEC) and the private EPHKEY/CAPSTATE WeakMaps are unchanged",
+        "exported mutableAuthorityPaths() as a mechanical audit helper"
+      ],
+      "files": [
+        "src/v8b/lrcq/assurance/deep-freeze-authority.mjs",
+        "src/v8b/lrcq/assurance/activation-v4.mjs",
+        "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs"
+      ],
+      "result_after": {
+        "VERIFIED_nested_mutable_objects": "DYNAMIC: 0 (FC1)",
+        "CONSUMED_nested_mutable_objects": "DYNAMIC: 0 (FC7)",
+        "SUPERVISOR_EXECUTION_nested_mutable_objects": "DYNAMIC: 0, observed from inside a genuine supervisor (F-C1)",
+        "VERIFIED_limit_mutation": "DYNAMIC: all 6 nested numerical limits unchanged after a direct write (FC4)",
+        "VERIFIED_exclusion_mutation": "DYNAMIC: all 10 exclusions unchanged and still true (FC5)",
+        "SUPERVISOR_EXECUTION_limit_mutation": "DYNAMIC: all 6 unchanged (F-C3)",
+        "SUPERVISOR_EXECUTION_exclusion_mutation": "DYNAMIC: all 10 unchanged and still true (F-C4)",
+        "the_checkers_777777_route": "DYNAMIC: writing cap.limits.max_budget_usd = 777777 no longer changes the projected budget; the projection derived after the attempt is byte-identical to the one before (F-C5, F-C6)",
+        "projections": "DYNAMIC: read immutable authority values (F-C5)",
+        "helper_contract": "DYNAMIC: returns a frozen deep copy, does NOT freeze the caller-owned source, copies rather than aliases, and rejects functions/prototypes/accessors/symbols/undefined/NaN/Infinity/cycles (FC9-FC19)",
+        "exclusions_completeness": "DYNAMIC: cap.exclusions now carries all 10 signed exclusions, not a hardcoded 3 (FC3)"
+      },
+      "regression_tests": [
+        "checker-197-final-five FC1-FC19",
+        "checker-197-final-five/final-five-boundary.body F-C1-F-C8"
+      ],
+      "additional_observation_addressed": "The Checker noted cap.exclusions was a redundant mutable three-field constant rather than a projection of the ten signed fields. It now derives from the payload the signature covers."
+    },
+    {
+      "id": "FG-FCHK-197-D",
+      "severity": "LOW",
+      "accepted": true,
+      "disputed": false,
+      "title": "the filesystem-object-identity gate is built but wired into no authority read; its refusal code is dead",
+      "mechanism_confirmed": "The prior wave recorded lifecycle_root_object_id into the marker and intent and added an expectObjectId parameter to assertAuthorityObject, but NO production call site supplied it: expectObjectId appeared at exactly one call site in the repository, inside a selftest. ROOT_OBJECT_IDENTITY_MISMATCH was declared and never returned. Renaming the lifecycle root aside, creating a fresh directory at the same signed path and copying the records in at 0600 reached KEY_MISMATCH — the cryptographic comparison — with no object-identity refusal anywhere.",
+      "correction": [
+        "the EXPECTED root object identity is captured at governed consumption and stored in MODULE-PRIVATE capability state (CAPSTATE.rootObjectId), alongside the digest already recorded in the ephemeral-signed marker",
+        "resolveSignedRoot takes expectObjectId and returns ROOT_OBJECT_IDENTITY_MISMATCH on a mismatch",
+        "readRecord takes expectRootObjectId and refuses any record not written for that same root object",
+        "the CONSUMED capability now carries the signed repository binding so every later operation can RE-RESOLVE the signed root rather than trusting a remembered path string",
+        "createLaunchIntentV4 and verifiedIntentFor (the governed transfer path) re-resolve the root and pass the expectation into every marker and intent read",
+        "the supervisor-side attach derives the expectation from the marker (it has no in-process consumption state), requires the LIVE root to be that object BEFORE the ephemeral signature and BEFORE the key comparison, and passes it into the intent and claim reads",
+        "the supervisor CLAIM now records lifecycle_root_object_id and lifecycle_root_digest explicitly, so the identity is a recorded property of marker, intent AND claim rather than only transitively bound through digests"
+      ],
+      "files": [
+        "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs"
+      ],
+      "result_after": {
+        "directory_replacement_attack": "DYNAMIC: rename aside + mkdir at the same signed path + copy the marker and intent in at 0600 -> the governed transfer is refused ROOT_OBJECT_IDENTITY_MISMATCH (FD5)",
+        "no_key_mismatch_fallthrough": "DYNAMIC: the refusal is not KEY_MISMATCH; it precedes the cryptographic key comparison (FD6, FD11)",
+        "child_process": "DYNAMIC: none created by the refused transfer (FD7)",
+        "claim": "DYNAMIC: none minted against the replaced root (FD12)",
+        "key_delivery": "DYNAMIC: zero — no receipt written (FD8)",
+        "capability_state": "DYNAMIC: NOT spent — the refusal precedes the point of no return (FD9)",
+        "intent_creation_route": "DYNAMIC: refused ROOT_OBJECT_IDENTITY_MISMATCH (FD10)",
+        "provider_spawn": "zero — the attack terminates in the lifecycle module, which reaches no provider",
+        "case_variant_of_the_same_inode": "DYNAMIC: still accepted as the SAME authority object, and the full lifecycle still proceeds (FD16, FD17)",
+        "different_inode": "DYNAMIC: refused (FD3, FD5)",
+        "normal_lifecycle": "DYNAMIC: an untouched root still completes the governed transfer and delivers the key (FD18, FD19)",
+        "refusal_code_reachability": "SOURCE-PROVEN: ROOT_OBJECT_IDENTITY_MISMATCH is now returned in the module body and production reads pass expectObjectId/expectRootObjectId (FD13, FD14)"
+      },
+      "regression_tests": [
+        "checker-197-final-five FD1-FD19"
+      ],
+      "prior_claim_corrected": "The V4_AUTHORITY_ACCEPTANCE_MATRIX and the FG-CHK-197 ledger row 'different_filesystem_object_with_similar_path: FS_OBJECT_IDENTITY_MISMATCH' read as an achieved PRODUCTION property when it was a unit-level capability that no production route armed. It is now genuinely a production property, proven dynamically through the transfer, intent and attach routes."
+    },
+    {
+      "id": "FG-FCHK-197-E",
+      "severity": "LOW",
+      "accepted": true,
+      "disputed": false,
+      "title": "two regression assertions do not test what their labels claim, and one ledger result is presented as achieved when it is untestable without root",
+      "mechanism_confirmed": "C1i was labelled 'zero provider spawn during the attack' but its predicate was receipts.every(r => r.read_error === null || r.frame_bytes === 0) — a statement about receipt FIELDS satisfied whether or not a provider was spawned; nothing in the C1 family counted spawns. C4h was labelled 'the guard compares owner against the running uid' but asserted only that a correctly-owned file passes, which cannot show that a wrongly-owned file fails. The FG-CHK-197-04 ledger row then listed owner_mismatch among the achieved result_after values although producing an owner mismatch requires root.",
+      "correction": [
+        "new test-support/recording-provider-stub.mjs appends one line per execution to a log beside itself; tests copy it into their disposable world BEFORE signing, so the founder signature binds it as the provider target",
+        "the log path is deliberately NOT an environment variable: the production boundary scrubs the child environment to PATH and HOME, so an env-carried path would never arrive and a zero count would be an artefact of the scrubbing rather than a measurement",
+        "C1i now COUNTS that log; the receipt-field predicate no longer backs the zero-spawn claim",
+        "C4h is relabelled to what it proves (a correctly-owned record passes) and a new C4h2 records the uid comparison as [SOURCE-PROVEN], stating explicitly that dynamic reproduction requires root",
+        "the FG-CHK-197-04 ledger row now distinguishes DYNAMICALLY-PROVEN results from the SOURCE-PROVEN-ONLY owner_mismatch branch, which is no longer claimed as an achieved runtime result",
+        "C3j, C3k, C3l, C3m, C7e, C7f, C9b and C9c are labelled [SOURCE-PROVEN]; C3l's label now says textual ordering, not observed execution order, and points at C3n/C3o as the behavioural counterpart",
+        "the corrections family's header documents the evidence classes; the new family marks every assertion [DYNAMIC], [COUNTED] or [STRUCTURAL]"
+      ],
+      "files": [
+        "src/v8b/lrcq/run-harness-tests/checker-197-corrections.selftest.mjs",
+        "src/v8b/lrcq/run-harness-tests/test-support/recording-provider-stub.mjs",
+        ".foundergate/evidence/lrcq-assurance-factory/CHECKER_197_CORRECTION_LEDGER.json"
+      ],
+      "result_after": {
+        "C1i": "DYNAMIC + COUNTED: zero provider spawn during the concurrent-transfer attack, counted from the recording stub's own log",
+        "C4h": "DYNAMIC: a correctly-owned record passes the owner guard — labelled as exactly that",
+        "C4h2": "SOURCE-PROVEN: the guard's owner branch compares st.uid against the running uid and returns UNSAFE_OWNER",
+        "ledger_owner_row": "SOURCE-PROVEN ONLY (root required), explicitly not an achieved runtime result",
+        "structural_assertions": "all eight source-regex assertions are labelled [SOURCE-PROVEN] and none is presented as runtime proof",
+        "behavioural_tests_retained": "config refusal (C3a-C3i, C3n, C3o), lifecycle refusal (C4a-C4g, C4i, C5), provider-boundary refusal (real-provider 80/80, final-five F-B/F-P) — no test was weakened or removed",
+        "assertion_count_change": "checker-197-corrections went 75 -> 76 (C4h2 added); no assertion was deleted"
+      },
+      "regression_tests": [
+        "checker-197-final-five FE1-FE5"
+      ]
+    }
+  ],
+  "suite_after_correction": {
+    "command": "npm test",
+    "self_tests": 153,
+    "self_tests_passing": 153,
+    "runs": 2,
+    "failures": 0,
+    "skipped_or_weakened": 0,
+    "coverage_reduced": false,
+    "result": "ALL GREEN twice consecutively"
+  },
+  "zero_spawn_totals": {
+    "productive_provider_or_model_invocations": 0,
+    "real_claude_invocations": 0,
+    "founder_keys_created": 0,
+    "real_signatures_created": 0,
+    "real_activations_created_or_consumed": 0,
+    "five_hour_runs_started": 0,
+    "deterministic_stub_processes": "1 on the positive narrowed route inside the disposable matrix world; 0 across all 26 invalid routes and both sweeps",
+    "residual_processes": 0,
+    "active_keys": []
+  },
+  "not_proven_here": [
+    "This ledger is BUILDER evidence. It is NOT independent acceptance and must not be read as a Checker verdict.",
+    "The FRESH independent Checker verdict on the CORRECTED candidate. The report with digest 6ac782a2... is historical FINDINGS evidence against the previous candidate only.",
+    "Real productive provider capability. No model was invoked."
+  ]
+}

@@ -1,0 +1,610 @@
+{
+  "schema": "foundergate-pr197-fresh-independent-checker-1",
+  "verdict": "FINDINGS",
+  "required_clean_verdict_reachable": false,
+  "why_not_clean": "The complete prior nine-finding set is materially closed and independently reproduced, but the corrected candidate introduces/leaves five defects, two of them MEDIUM. Two of the review contract's explicit mechanical requirements are NOT met: (Phase 3) a spawn failure after key materialization must be handled — instead the launcher process dies on an unhandled ChildProcess 'error' event; (Phase 9) zero productive-provider spawn for every invalid route — instead 6 of 26 invalid routes reached a real productive-provider spawn because the boundary enforces no ceiling on the founder-signed limits and does not require all signed exclusions.",
+
+  "checker_identity": {
+    "role": "fresh independent read-only Checker, PR #197 post-correction",
+    "did_not_build_the_candidate": true,
+    "is_not_the_builder": true,
+    "is_not_the_sequential_advisor": true,
+    "repository_mutation_authority": "none",
+    "prior_checker_report_digest_treated_as_untrusted_history": "caa4db0031b172ca69c9b456d298cb3b3e6185215e9074293b6c93390fbdc20f",
+    "builder_claims_treated_as": "untrusted until independently reproduced",
+    "method": "every correction claim re-attacked with Checker-authored probes written outside the repository under automatically deleted temporary directories; no Builder test accepted as evidence on its own",
+    "host": "AKIOR-Mac-mini.local (this is the local review host; no remote AKIOR resource and no M1 was accessed)",
+    "uid": 501,
+    "node": "v24.13.1",
+    "review_window_utc": ["2026-07-25T04:05Z", "2026-07-25T04:31Z"]
+  },
+
+  "frozen_state": {
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-founder-signature-authority-8d1899f",
+    "branch": "lane/lrcq-founder-signature-authority-8d1899f",
+    "git_dir": "/Users/yosiwizman/Projects/foundergate/.git/worktrees/foundergate-wt-lrcq-founder-signature-authority-8d1899f",
+    "git_common_dir": "/Users/yosiwizman/Projects/foundergate/.git",
+    "executable_code_candidate": { "expected": "8e6944ef04eb91604af36064051524b12a38c23d", "observed": "8e6944ef04eb91604af36064051524b12a38c23d", "match": true },
+    "executable_code_tree": { "expected": "e1df714843cd32173c024c939bebe34238a516d2", "observed": "e1df714843cd32173c024c939bebe34238a516d2", "match": true },
+    "evidence_only_head": { "expected": "4dd7afaca7f58b1956b57a3f8eefe28b988643ae", "observed": "4dd7afaca7f58b1956b57a3f8eefe28b988643ae", "match": true },
+    "evidence_only_head_tree": { "expected": "f13895937c11ff190be6ad4f09714afc6b02d3e2", "observed": "f13895937c11ff190be6ad4f09714afc6b02d3e2", "match": true },
+    "candidate_is_ancestor_of_head": true,
+    "executable_diff_candidate_to_head": {
+      "command": "git diff 8e6944ef 4dd7afac -- src tools package.json package-lock.json",
+      "bytes": 0,
+      "empty": true,
+      "evidence_only_files_changed_after_the_candidate": [
+        "A .foundergate/evidence/lrcq-assurance-factory/CHECKER_197_CORRECTION_LEDGER.json",
+        "M .foundergate/evidence/lrcq-assurance-factory/PR197_V4_FREEZE_RECORD.json",
+        "M .foundergate/evidence/lrcq-assurance-factory/V4_AUTHORITY_ACCEPTANCE_MATRIX.json",
+        "M docs/contracts/LRCQ_ACTIVATION_V4_CONTRACT.md",
+        "A docs/lanes/PR197_FRESH_CHECKER_PACKET.md"
+      ],
+      "note": "Verified by direct inspection of the commits, not by trusting the freeze record."
+    },
+    "worktree_clean": true,
+    "no_git_operation_in_progress": true,
+    "local_equals_upstream_equals_github": { "head": "4dd7afaca7f58b1956b57a3f8eefe28b988643ae", "upstream": "4dd7afaca7f58b1956b57a3f8eefe28b988643ae", "github_pr_head": "4dd7afaca7f58b1956b57a3f8eefe28b988643ae", "ahead_behind": [0, 0] },
+    "pr_197": { "state": "OPEN", "draft": true, "merged_at": null, "base": "lane/pr189-real-package-use-8ef9a24", "base_oid": "8d1899f793305e9f87adc5163a60bfb077e4d4e5" },
+    "pr_196": { "state": "OPEN", "draft": true, "merged_at": null, "head_oid": "8d1899f793305e9f87adc5163a60bfb077e4d4e5", "unchanged": true },
+    "protected_main_sha": { "expected": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423", "observed": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423", "match": true },
+    "founder_key_authority": { "file": "docs/governance/FOUNDER_KEY_AUTHORITY.json", "active_keys": [], "revoked_keys": [], "max_current_keys": 1, "empty_as_required": true },
+    "no_founder_key_signature_activation_supervisor_or_provider_process": true,
+    "competing_writer_scan": {
+      "processes_with_cwd_in_any_foundergate_worktree": [
+        { "pid": 85603, "command": "node .../scratchpad/lrcq-inbox-server.mjs", "cwd": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-assurance-factory-50e18e5", "assessment": "a DIFFERENT lane's worktree — not a writer to the reviewed worktree" }
+      ],
+      "processes_with_cwd_in_the_reviewed_worktree": [],
+      "lrcq_supervisor_processes": 0,
+      "foundergate_spawned_provider_processes": 0,
+      "live_claude_2_1_220_process": { "pid": 66293, "assessment": "Claude Code's own bg-pty-host (the review harness itself), not a FounderGate-spawned provider" }
+    }
+  },
+
+  "complete_suite_twice": {
+    "command": "npm test (node scripts/run-selftests.mjs)",
+    "runs": [
+      { "run": 1, "exit_code": 0, "self_tests_found": 152, "self_tests_ok": 152, "self_tests_failed": 0, "final_line": "ALL GREEN: 152/152 self-test(s) passed.", "mechanically_counted_ok_assertions": 1725, "additional_PASS_style_assertions": 929, "fail_or_not_ok_lines": 0, "skipped_or_weakened": 0 },
+      { "run": 2, "exit_code": 0, "self_tests_found": 152, "self_tests_ok": 152, "self_tests_failed": 0, "final_line": "ALL GREEN: 152/152 self-test(s) passed.", "mechanically_counted_ok_assertions": 1725, "additional_PASS_style_assertions": 929, "fail_or_not_ok_lines": 0, "skipped_or_weakened": 0 }
+    ],
+    "assertion_count_claim_verification": { "builder_claim": 1725, "checker_mechanical_count": 1725, "method": "grep -cE '^  ok ' over the full runner output", "match": true },
+    "identical_outcome": true,
+    "byte_identical_logs": false,
+    "log_differences": "9 lines only: two nondeterministic temp filenames, one grandchild PID, and six wall-clock timestamps. No assertion, count, or outcome differs.",
+    "skip_mentions": { "count": 4, "assessment": "all four are assertion LABELS containing the word 'skip' (e.g. 'DANGEROUSLY_SKIP_PERMISSIONS auto-refused'); no test was skipped and no failure was suppressed" },
+    "repository_unchanged_by_the_suite": { "tree_before": "f13895937c11ff190be6ad4f09714afc6b02d3e2", "tree_after": "f13895937c11ff190be6ad4f09714afc6b02d3e2", "porcelain_before": "", "porcelain_after": "" },
+    "assertion_quality_note": "Counts were not accepted on their own. The corrections family was read line by line; most assertions are genuine behavioural attacks, but see finding FG-FCHK-197-E for two whose labels do not match their predicates, and note that C3j/C3k/C3l/C3m/C7e/C7f/C9b/C9c are source-text regex assertions rather than executions (C3l in particular compares source string offsets, not execution order). C3n/C3o do provide a real end-to-end behavioural check for that family."
+  },
+
+  "focused_tests": [
+    { "file": "src/v8b/lrcq/run-harness-tests/checker-197-corrections.selftest.mjs", "exit": 0, "assertions": 75, "failures": 0, "ledger_claim": 75, "match": true },
+    { "file": "src/v8b/lrcq/run-harness-tests/lifecycle-authority-v4.selftest.mjs", "exit": 0, "assertions": 17, "failures": 0 },
+    { "file": "src/v8b/lrcq/run-harness-tests/lifecycle-key-containment.selftest.mjs", "exit": 0, "assertions": 39, "failures": 0 },
+    { "file": "src/v8b/lrcq/run-harness-tests/lifecycle-fd-transfer.selftest.mjs", "exit": 0, "assertions": 18, "failures": 0 },
+    { "file": "src/v8b/lrcq/run-harness-tests/detached-supervisor.selftest.mjs", "exit": 0, "assertions": 31, "failures": 0 },
+    { "file": "src/v8b/lrcq/run-harness-tests/detached-supervisor-failure.selftest.mjs", "exit": 0, "assertions": 12, "failures": 0 },
+    { "file": "src/v8b/lrcq/run-harness-tests/v3-retirement.selftest.mjs", "exit": 0, "assertions": 22, "failures": 0 },
+    { "file": "src/v8b/lrcq/provider-tests/real-provider.selftest.mjs", "exit": 0, "assertions": 80, "failures": 0 },
+    { "file": "src/v8b/lrcq/run-harness-tests/launcher-integration.selftest.mjs", "exit": 0, "assertions": 13, "failures": 0 },
+    { "file": "src/v8b/lrcq/run-harness-tests/production-seam-closure.selftest.mjs", "exit": 0, "assertions": 30, "failures": 0 },
+    { "file": "src/v8b/lrcq/run-harness-tests/preflight.selftest.mjs (added by the Checker for the KEY_ENROLLMENT proof)", "exit": 0, "assertions": 14, "failures": 0 }
+  ],
+  "focused_tests_total_assertions": 351,
+
+  "concurrent_transfer_result": {
+    "method": "Checker-authored attack, not the Builder's. One genuine disposable CONSUMED capability from the real production route; Promise.all of two spawnGovernedSupervisorV4 calls; a Checker-written supervisor stand-in at the intent's entrypoint recording its own PID and the sha256 of exactly what it read on fd 3.",
+    "codes": ["OK", "ALREADY_TRANSFERRED"],
+    "ok_count": 1,
+    "already_transferred_count": 1,
+    "children_reported": 1,
+    "children_that_actually_ran": 1,
+    "key_frames_delivered": 1,
+    "frame_byte_length": 92,
+    "frame_layout_verified": "8 magic + 4 length + 48 ed25519 pkcs8 DER + 32 sha256 tag = 92",
+    "distinct_frame_digests": 1,
+    "second_process_received_the_private_key": false,
+    "supervisor_claims_created": 0,
+    "productive_provider_spawns": 0,
+    "processes_remaining": 0,
+    "state_before": { "launched": true, "transfer": "NOT_TRANSFERRED" },
+    "state_after": { "launched": true, "transfer": "TRANSFERRED_SPENT" },
+    "third_sequential_transfer": "ALREADY_TRANSFERRED",
+    "verdict": "FG-CHK-197-01 independently reproduced as CLOSED",
+    "source_proof_of_synchronous_transition": {
+      "file": "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs",
+      "guard_line": 438,
+      "transferring_set_line": 439,
+      "first_await_in_the_happy_path": 484,
+      "statements_between_are_all_synchronous": [
+        "443 verifiedIntentFor (existsSync/lstatSync/statSync/readFileSync — all sync)",
+        "447 lstatSync",
+        "450 realpathSync",
+        "451 readFileSync + sha256",
+        "453 EPHKEY.get",
+        "460-463 descriptor plan",
+        "464 key.export  (KEY EXPORT)",
+        "465 encodeKeyFrame (FRAME CREATION)",
+        "467 EPHKEY.delete",
+        "468 st.transfer = SPENT",
+        "471 spawn (CHILD CREATION)",
+        "477-482 descriptor acquisition",
+        "484 first await — DESCRIPTOR WRITE"
+      ],
+      "conclusion": "TRANSFERRING is written synchronously before key export, frame creation, child creation, spawn, descriptor write, and any promise or await. JavaScript runs the region to completion, so a concurrent caller cannot interleave inside it. Confirmed behaviourally above."
+    }
+  },
+
+  "pre_materialization_retry_result": {
+    "case_B_missing_launch_intent": { "first_attempt_code": "INTENT_MISSING", "state_after_failure": { "launched": false, "transfer": "NOT_TRANSFERRED" }, "key_materialized": false, "children_spawned": 0, "then_legitimate_intent_created": true, "retry_code": "OK", "retry_ok": true, "state_after_retry": { "launched": true, "transfer": "TRANSFERRED_SPENT" }, "frames_delivered": 1 },
+    "case_C_entrypoint_digest_mismatch": { "code": "ENTRYPOINT_DIGEST_MISMATCH", "state_after_failure": { "launched": true, "transfer": "NOT_TRANSFERRED" }, "children_spawned": 0 },
+    "verdict": "A validation refusal returns the capability to NOT_TRANSFERRED with no key materialized and no child spawned, and a subsequent legitimate transfer succeeds. Requirement met.",
+    "source_proof": "Every `unspend(...)` call site (lifecycle-authority-v4.mjs:443-452) precedes the key materialization at line 464. Line 454 (KEY_RELEASED) sets SPENT rather than unspending — fail-closed."
+  },
+
+  "post_materialization_failure_result": {
+    "requirement": "a spawn failure after key materialization must be handled, and no retry may follow an ambiguous or failed transfer",
+    "no_retry_after_failure": { "met": true, "state_after_failure": { "launched": true, "transfer": "TRANSFERRED_SPENT" }, "retry_code": "ALREADY_TRANSFERRED", "frames_delivered": 0, "children_that_ran": 0, "claims": 0, "productive_provider_spawns": 0 },
+    "failure_is_handled": { "met": false, "see_finding": "FG-FCHK-197-A" },
+    "observed": "With an uncaughtException handler artificially installed to absorb it, spawnGovernedSupervisorV4 returns TRANSFER_WRITE_FAILED in ~1ms with the capability SPENT. WITHOUT such a handler — which is production — the ChildProcess emits an unhandled 'error' event and the launcher process terminates with exit 1 and a raw stack trace, so the structured refusal, the fd cleanup and the truthful evidence record never happen.",
+    "triggers_proven": ["cwd pointing at a non-existent directory", "process.execPath made unreachable (models the node binary this run was launched with being removed mid-run)"],
+    "triggers_not_induced": ["EMFILE", "EAGAIN", "EACCES"],
+    "builder_coverage": "No test in the corrections family exercises this path; the family's own comment at checker-197-corrections.selftest.mjs:84-85 concedes a descriptor-failure case could not be constructed."
+  },
+
+  "hostile_path_and_git_environment_result": {
+    "method": "Checker-authored. Fake `git` (answering --show-toplevel with an attacker directory) and fake `ps` (emitting 'HOSTILE FAKE LSTART') placed FIRST on PATH, both logging every invocation; plus GIT_DIR, GIT_WORK_TREE, GIT_COMMON_DIR, GIT_CONFIG_GLOBAL and GIT_CONFIG_SYSTEM all set to attacker values, with an attacker gitconfig setting core.worktree.",
+    "genuinely_founder_signed_activation_naming_the_attacker_roots": "REFUSED — WORKTREE_TOPLEVEL_MISMATCH",
+    "ephemeral_signed_marker_written_into_the_attacker_root": false,
+    "markers_in_attacker_lifecycle_root": [],
+    "legitimate_signed_binding_under_the_same_hostile_environment": "still consumes OK — the fixed git answered",
+    "usr_bin_git_used": true,
+    "bin_ps_used": true,
+    "fixed_git_reported_the_real_toplevel_not_the_attacker_root": true,
+    "hostile_environment_variables_redirected_nothing": true,
+    "process_start_identity": "pid:90552|lstart:Sat Jul 25 00:18:22 2026 — real OS-derived lstart",
+    "start_identity_contains_hostile_output": false,
+    "hostile_executable_invocations_by_foundergate_authority_code": 0,
+    "hostile_executable_invocations_total": 2,
+    "hostile_invocation_provenance": "Both entries are the Checker's own deliberate control probes, executed AFTER the attack, which returned the attacker's values — proving the hostile binaries were genuinely first on PATH and live. FounderGate's authority code contributed zero invocations.",
+    "control_probe_results": { "path_resolved_git_show_toplevel": "<attacker-repo> (the lie)", "path_resolved_ps": "HOSTILE FAKE LSTART Thu Jan  1 00:00:00 1970" },
+    "minimal_env": { "PATH": "/usr/bin:/bin:/usr/sbin:/sbin", "LC_ALL": "C", "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_CONFIG_SYSTEM": "/dev/null", "GIT_TERMINAL_PROMPT": "0" },
+    "production_dependency_closure_scan": {
+      "roots": ["tools/terminal0/lrcq/run-five-hour.mjs", "src/v8b/lrcq/run-harness/supervisor-main.mjs"],
+      "closure_size": 32,
+      "bare_git_or_ps_authority_calls_remaining": 0,
+      "process_spawns_in_the_closure": [
+        "assurance/fixed-executables.mjs:55 — execFileSync of a pinned absolute path in MINIMAL_ENV",
+        "assurance/lifecycle-authority-v4.mjs:471 — spawn(process.execPath, [signed entrypoint])",
+        "provider/real-provider.mjs:163 — the ONE productive-provider spawn boundary",
+        "run-harness/machine-verifier-exec.mjs:18 — the backlog's declared test commands, PATH-resolved allowlist [node, npm, git, shasum]",
+        "tools/terminal0/lrcq/run-five-hour.mjs:315 — the provider binary with --version only (non-productive)"
+      ],
+      "bare_git_ps_outside_the_closure_and_therefore_not_in_scope": ["src/shwl/identity.mjs:70", "src/shwl/capability.mjs:121", "src/tools/soak-driver.mjs:476,485,486", "src/tools/report-provenance.mjs:44,47"],
+      "verdict": "FG-CHK-197-02 independently reproduced as CLOSED, including the environment-redirection variant the prior report did not test."
+    }
+  },
+
+  "supervisor_config_result": {
+    "launcher_writes_exec_field": false,
+    "launcher_writes_now_field": false,
+    "launcher_config_fields_actually_written": ["schema", "activation_path", "authorization_path", "activation_identity", "run_id", "supervisorDir", "runRoot", "heartbeatMs", "eventLog"],
+    "allow_list": ["schema", "activation_path", "authorization_path", "activation_identity", "run_id", "supervisorDir", "runRoot", "heartbeatMs", "eventLog"],
+    "allow_list_is_exhaustive_and_frozen": true,
+    "exec_refused": "SUPERVISOR_CONFIG_AUTHORITY_FIELD_REFUSED",
+    "now_refused": "SUPERVISOR_CONFIG_AUTHORITY_FIELD_REFUSED",
+    "aliases_refused": { "clock": "AUTHORITY_FIELD_REFUSED", "nowFn": "AUTHORITY_FIELD_REFUSED", "repoRoot": "AUTHORITY_FIELD_REFUSED", "candidateRef": "AUTHORITY_FIELD_REFUSED", "bindings": "AUTHORITY_FIELD_REFUSED", "capability": "AUTHORITY_FIELD_REFUSED", "provider": "AUTHORITY_FIELD_REFUSED", "keyFd": "AUTHORITY_FIELD_REFUSED", "man": "AUTHORITY_FIELD_REFUSED", "manifest": "AUTHORITY_FIELD_REFUSED", "verified": "AUTHORITY_FIELD_REFUSED", "key": "AUTHORITY_FIELD_REFUSED" },
+    "unknown_fields_refused": { "git": "UNKNOWN_FIELD_REFUSED", "gitRunner": "UNKNOWN_FIELD_REFUSED", "execRunner": "UNKNOWN_FIELD_REFUSED", "nowProvider": "UNKNOWN_FIELD_REFUSED", "liveClock": "UNKNOWN_FIELD_REFUSED", "providerDeps": "UNKNOWN_FIELD_REFUSED", "skipProviderVerification": "UNKNOWN_FIELD_REFUSED", "supervisorMainPath": "UNKNOWN_FIELD_REFUSED", "lifecycle_root": "UNKNOWN_FIELD_REFUSED", "LRCQ_TEST_LIFECYCLE": "UNKNOWN_FIELD_REFUSED", "__proto__": "UNKNOWN_FIELD_REFUSED", "constructor": "UNKNOWN_FIELD_REFUSED", "limits": "UNKNOWN_FIELD_REFUSED", "max_budget_usd": "UNKNOWN_FIELD_REFUSED", "hard_deadline_epoch": "UNKNOWN_FIELD_REFUSED", "evaluated_candidate": "UNKNOWN_FIELD_REFUSED" },
+    "malformed_refused": { "null": "SUPERVISOR_CONFIG_MALFORMED", "array": "SUPERVISOR_CONFIG_MALFORMED", "string": "SUPERVISOR_CONFIG_MALFORMED", "empty_activation_path": "SUPERVISOR_CONFIG_NO_ACTIVATION_PATH", "heartbeat_0": "SUPERVISOR_CONFIG_BAD_HEARTBEAT", "heartbeat_1e9": "SUPERVISOR_CONFIG_BAD_HEARTBEAT" },
+    "refusal_occurs_before_lifecycle_claim": true,
+    "refusal_occurs_before_provider_spawn": true,
+    "refusal_order_source_proof": "supervisor-main.mjs: the filesystem guard runs at line 56, validateSupervisorConfig at 61-66 with process.exit(2), and only then the independent re-verification (72) and attachSupervisorFromInheritedFdV4 (79). Behaviourally confirmed: a hand-written 0600 config carrying `exec` exits 2 and writes no supervisor state.",
+    "production_supervisor_time_source": "const now = Math.floor(Date.now() / 1000)  — the system clock; the config cannot select a clock",
+    "supervisor_reads_cfg_exec_or_cfg_now": false,
+    "positive_production_route_trace_not_vacuous": {
+      "supervisor_call": "executeSignedRunV4(cap, vr.activation, man, counters, {})  — an EMPTY exec object",
+      "executor_defaults_when_exec_is_empty": [
+        "const gitRun = exec.git || ((a, cwd) => fixedGit(a, { cwd }))   -> the pinned /usr/bin/git",
+        "const repoRoot = exec.repoRoot || man.manifest.repository_root   -> the manifest bound by the SIGNED run_manifest_digest",
+        "const candidateRef = exec.candidateRef || cap.evaluated_candidate -> the FOUNDER-SIGNED reviewed_runtime_sha"
+      ],
+      "candidate_consumer": "setupManager(cfg.backlog, cap.run_id, man.manifest, { git: gitRun, repoRoot, candidateRef }) — candidateRef reaches `git worktree add` and decides which commit every job worktree is built from",
+      "conclusion": "Removing exec/now did not make the route pass vacuously and did not let it execute the wrong candidate: the candidate is the signed one, the git runner is the pinned binary, and the repository root is the signed manifest's. Behaviourally exercised end-to-end by detached-supervisor (31/31) and production-seam-closure (30/30).",
+      "residual_test_injection_seam": "the `exec` FUNCTION PARAMETER remains on executeSignedRunV4 for the deterministic test families, which pass it directly. It is unreachable from any config or environment variable; the launcher additionally refuses LRCQ_TEST_LIFECYCLE before reading the activation."
+    },
+    "verdict": "FG-CHK-197-03 independently reproduced as CLOSED"
+  },
+
+  "filesystem_owner_mode_result": {
+    "lifecycle_root_modes": { "0777": "ROOT_UNSAFE_MODE", "0775_group_write": "ROOT_UNSAFE_MODE", "0757_other_write": "ROOT_UNSAFE_MODE", "0755": "OK (remains usable)", "0700": "OK" },
+    "generated_authority_record_modes": { "consumed_marker": "600", "launch_intent": "600", "supervisor_claim": "600" },
+    "record_attacks": { "marker_0666": "RECORD_UNSAFE_MODE", "marker_0604_other_read": "RECORD_UNSAFE_MODE", "intent_0640_group_read": "RECORD_UNSAFE_MODE", "marker_replaced_by_symlink": "RECORD_SYMLINK", "intent_replaced_by_directory": "RECORD_NOT_REGULAR" },
+    "checks_occur_before_the_cryptographic_comparison": {
+      "method": "The Checker built a well-formed governed key frame around a DELIBERATELY WRONG ed25519 key and ran the attach from the exact program the signed intent names, so the unconditional self-proof passes and the only remaining refusals are the filesystem gate or the key comparison.",
+      "correct_modes_wrong_key": "KEY_MISMATCH",
+      "marker_0666_wrong_key": "RECORD_UNSAFE_MODE",
+      "restored_baseline_wrong_key": "KEY_MISMATCH",
+      "conclusion": "The filesystem gate fires strictly BEFORE the cryptographic comparison. The prior Checker's proof-by-absence (0666 records still reaching KEY_MISMATCH) is closed, and the restored baseline proves the guard is what changed."
+    },
+    "governed_transfer_with_permissive_marker": "RECORD_UNSAFE_MODE (pre-spawn)",
+    "supervisor_config_filesystem_gate": { "0600": "passes the gate (then refuses later at the KEY_ENROLLMENT re-verification, exit 3)", "0666": "exit 2 SUPERVISOR_CONFIG_UNSAFE: FS_UNSAFE_MODE 666", "0640": "exit 2 FS_UNSAFE_MODE 640", "0604": "exit 2 FS_UNSAFE_MODE 604", "symlink": "exit 2 FS_UNSAFE_MODE/FS_SYMLINK" },
+    "path_confusion": { "sibling_directory_sharing_the_repository_path_prefix": "ROOT_ESCAPES_REPO", "root_outside_the_repository": "ROOT_ESCAPES_REPO", "root_is_a_symlink": "ROOT_SYMLINK", "root_is_not_a_directory": "ROOT_NOT_DIR" },
+    "expected_uid_enforced": {
+      "status": "SOURCE-PROVEN, not dynamically tested",
+      "reason": "chown to another uid requires root; the review has no root authority and creating an owner mismatch is impossible without it",
+      "expectedUid": "export function expectedUid() { return typeof process.getuid === \"function\" ? process.getuid() : null; }",
+      "comparison": "if (uid !== null && st.uid !== uid) return { ok: false, code: FS_GUARD_CODES.UNSAFE_OWNER, path: rp, uid: st.uid, expected_uid: uid };",
+      "file": "src/v8b/lrcq/assurance/fs-authority-guards.mjs:72-74",
+      "running_uid": 501,
+      "wired_into": ["resolveSignedRoot (lifecycle-authority-v4.mjs:132)", "readRecord (lifecycle-authority-v4.mjs:149)", "supervisor config read (supervisor-main.mjs:56)"],
+      "note": "The correction ledger presents owner_mismatch: 'RECORD_UNSAFE_OWNER / ROOT_UNSAFE_OWNER' as an achieved result_after. It is not achievable without root and is source-proven only — see FG-FCHK-197-E."
+    },
+    "claim_record_permission_attack": "unreachable by design: a pre-staged claim file is refused earlier by DUPLICATE_CLAIM (existsSync check before any read). The claim's own re-read goes through the same guarded readRecord path (lifecycle-authority-v4.mjs:312).",
+    "verdict": "FG-CHK-197-04 independently reproduced as CLOSED for mode, symlink, non-regular and order-of-checks; owner enforcement is source-proven."
+  },
+
+  "device_inode_identity_result": {
+    "host_resolves_the_case_variant_to_the_same_inode": true,
+    "case_variant_consume": "OK — accepted as the SAME authority root, not a distinct one",
+    "identical_lifecycle_root_digest_for_both_spellings": true,
+    "digest": "sha256:db03b2de045fd953b37035a80eabacdd4bdad7c03188abbd391000194d13b800",
+    "marker_records_canonical_object_id": "dev:16777230/ino:106097404",
+    "marker_and_intent_object_id_match": true,
+    "marker_and_intent_root_digest_match": true,
+    "supervisor_claim_records_root_object_id": false,
+    "claim_binding_note": "The claim body carries no lifecycle_root_object_id. Identity is bound to it only transitively, through the signed consumed_marker_digest and launch_intent_digest — equivalent cryptographic binding, but not a direct record of the property.",
+    "different_filesystem_object_with_a_similar_path": "FS_OBJECT_IDENTITY_MISMATCH — but ONLY when expectObjectId is supplied by the caller, which no production path does",
+    "object_identity_gate_wired_into_production_reads": false,
+    "root_object_swap_attack": { "marker_recorded_object_id": "dev:16777230/ino:106097623", "live_root_object_id_after_swap": "dev:16777230/ino:106097629", "object_id_changed": true, "attach_result": "KEY_MISMATCH — proceeded past every filesystem gate to the cryptographic comparison; no object-identity refusal fired" },
+    "dead_refusal_codes_in_LC_CODES": ["TERMINAL", "ROOT_OBJECT_IDENTITY_MISMATCH"],
+    "verdict": "FG-CHK-197-05 CLOSED for the case-insensitivity / one-digest-per-directory property; the object-identity gate for later authority reads is built but NOT wired — see FG-FCHK-197-D."
+  },
+
+  "private_state_result": {
+    "CONSUMED_capability": { "isFrozen": true, "own_keys": 12, "has___state": false, "nested_mutable_objects": [], "lifecycle_private_key_reachable": false, "json_mentions_lifecycle_state": false, "json_mentions_private_key": false, "prototype_chain": ["Object.prototype"], "prototype_carries___state": false, "structured_clone_keys": 12, "assessment": "CLEAN" },
+    "VERIFIED_capability": { "isFrozen": true, "own_keys": 32, "has___state": false, "nested_mutable_objects": ["limits", "exclusions"], "lifecycle_private_key_reachable": false, "json_mentions_lifecycle_state": false, "prototype_chain": ["Object.prototype"], "assessment": "DEFECT — see FG-FCHK-197-C" },
+    "SUPERVISOR_EXECUTION_capability": { "isFrozen": true, "branded": true, "own_keys": 32, "has___state": false, "nested_mutable_objects": ["limits"], "json_mentions_state_or_key": false, "prototype_is_object_prototype": true, "assessment": "DEFECT — see FG-FCHK-197-C" },
+    "lifecycleStateV4_returns_a_frozen_copy_only": true,
+    "mutating_the_snapshot_cannot_alter_real_state": { "write_result": "threw TypeError", "module_state_after": { "launched": true, "transfer": "NOT_TRANSFERRED" } },
+    "forged_object_cannot_obtain_a_snapshot": { "plain_object_with_the_right_shape": null, "Object.create(realCapability)": null, "null": null },
+    "external_code_cannot_reset_launched_transfer_terminal_or_replay_state": { "after_attempted___state_write": { "launched": true, "transfer": "NOT_TRANSFERRED" }, "relaunch": "ALREADY_LAUNCHED", "reconsume": "ALREADY_CONSUMED", "duplicate_transfer": "ALREADY_TRANSFERRED", "duplicate_claim": "DUPLICATE_CLAIM" },
+    "forged_capabilities": { "supexec_shaped_object_branded": false, "providerEligibilityV4_on_a_forged_object": "FORGED", "spawnGovernedSupervisorV4_on_a_forged_consumed_object": "FORGED", "consumeActivationV4_on_a_forged_verified_object": "throws FORGED_CAPABILITY" },
+    "module_exports_no_private_key_surface": { "exported_symbols": ["CONSUMED_MARKER_SCHEMA", "LAUNCH_INTENT_SCHEMA", "LC_CODES", "LIFECYCLE_CONTRACT_VERSION", "SUPERVISOR_CLAIM_SCHEMA", "TRANSFER_STATES", "attachSupervisorFromInheritedFdV4", "consumeActivationV4", "createLaunchIntentV4", "isConsumedCapabilityV4", "isSupervisorExecutionCapabilityV4", "lifecycleStateV4", "providerEligibilityV4", "spawnGovernedSupervisorV4"], "any_export_returns_a_KeyObject_or_DER": false },
+    "verdict": "FG-CHK-197-06 CLOSED for the CONSUMED capability (the object the finding named). The SAME defect class remains on the VERIFIED and SUPERVISOR_EXECUTION capabilities, and the ledger's result_after claim nested_mutable_objects: 0 is false for those two stages — see FG-FCHK-197-C."
+  },
+
+  "entrypoint_and_supervisor_result": {
+    "absent_entrypoint": { "code": "ENTRYPOINT_INVALID", "detail": "supervisorEntrypoint is mandatory", "intent_file_written": false },
+    "null_entrypoint": { "code": "ENTRYPOINT_INVALID", "detail": "supervisorEntrypoint is mandatory", "intent_file_written": false },
+    "empty_string_entrypoint": { "code": "ENTRYPOINT_INVALID", "detail": "not a path", "intent_file_written": false },
+    "missing_entrypoint": { "code": "ENTRYPOINT_INVALID", "detail": "missing", "intent_file_written": false },
+    "symlink_entrypoint": { "code": "ENTRYPOINT_INVALID", "detail": "symlink", "intent_file_written": false },
+    "non_regular_entrypoint_directory": { "code": "ENTRYPOINT_INVALID", "detail": "not a regular file", "intent_file_written": false },
+    "non_canonical_spelling_of_the_same_file": { "code": "ENTRYPOINT_INVALID", "detail": "not a realpath", "control": "the canonical spelling of the same file is accepted OK" },
+    "digest_mismatch_after_the_intent_was_signed": { "code": "ENTRYPOINT_DIGEST_MISMATCH", "state": "NOT_TRANSFERRED", "children_spawned": 0 },
+    "another_program_holding_the_GENUINE_ephemeral_key": { "code": "ENTRYPOINT_INVALID", "detail": "running program is not the intent's supervisor entrypoint", "assessment": "the genuine key alone does not confer authority" },
+    "attach_side_program_identity_proof_is_unconditional": { "source": "lifecycle-authority-v4.mjs:288-296 — an intent recording no entrypoint is refused outright before the proof, so the proof cannot be left unarmed", "no_opt_out_flag_exists": true },
+    "direct_supervisor_execution_without_the_inherited_descriptor": { "no_descriptor": "FD_UNREADABLE (ENXIO)", "negative_fd": "FD_UNREADABLE", "real_production_entrypoint_run_directly": "exit 3 — refused earlier still, at the INDEPENDENT V4 re-verification with UNKNOWN_OR_REVOKED_KEY (active_keys is empty); no supervisor state written" },
+    "duplicate_supervisor": { "second_attach_in_the_same_process_with_the_same_genuine_key": "DUPLICATE_CLAIM", "claims_on_disk": 1, "claim_mode": "600" },
+    "stale_pid_and_pid_reuse": { "duplicate_live_supervisor": "REFUSED: a live supervisor already owns run r1", "same_pid_different_process_start_identity": "REFUSED", "prior_RUN_ACTIVE_with_a_dead_pid": "REFUSED: needs founder-gated recovery, not silent re-ownership", "prior_terminal_state": "REFUSED: run already reached terminal state", "corrupt_state": "REFUSED (fail-closed)", "claim_level_binding": "lifecycle-authority-v4.mjs:314 re-reads the written claim and requires supervisor_pid AND the OS-observed start identity to match this process — a later PID-reuser cannot mint or inherit a claim", "assessment": "every branch fails closed; no branch grants ownership on a stale or reused PID" },
+    "every_refusal_occurred_before_provider_spawn": true,
+    "productive_provider_spawns_in_this_phase": 0,
+    "verdict": "FG-CHK-197-07 independently reproduced as CLOSED"
+  },
+
+  "v3_retirement_result": {
+    "v3_by_schema_field": "V3_REFUSED_FOR_EXECUTION",
+    "v3_record_with_arbitrary_non_empty_founder_signature": "V3_REFUSED_FOR_EXECUTION",
+    "v3_record_with_an_88_char_base64_signature": "V3_REFUSED_FOR_EXECUTION",
+    "v3_at_the_real_launcher_gate": "V3_REFUSED_FOR_EXECUTION",
+    "v2_adapter_record": "NOT_V4",
+    "raw_v4_no_signature": "EMPTY_SIGNATURE",
+    "raw_v4_bogus_64_byte_signature": "SIGNATURE_INVALID",
+    "raw_v4_short_signature": "BAD_SIGNATURE_ENCODING",
+    "raw_v4_tampered_budget": "SIGNATURE_INVALID",
+    "raw_v4_tampered_lifecycle_root": "SIGNATURE_INVALID",
+    "raw_v4_tampered_provider_target": "SIGNATURE_INVALID",
+    "raw_v4_exclusion_turned_off": "SIGNATURE_INVALID",
+    "plain_object_claiming_verified_true": "NOT_V4",
+    "forged_VERIFIED_capability_handed_to_the_lifecycle": "throws FORGED_CAPABILITY",
+    "observation": "v3_schema_version_field_only returns OK — a record whose `schema` is the correct V4 value and which additionally carries schema_version: 'lrcq-activation-3' verifies as V4. This is correct behaviour, not a gap: `schema` is inside the signed payload, so the founder signature covers it, and a stray unsigned schema_version field cannot change what was signed. The launcher's separate schema_version check (run-five-hour.mjs:274) is an extra early V3 screen, not the authority.",
+    "verdict": "FG-CHK-197 V3 retirement holds. Zero productive-provider spawn for every route in this phase."
+  },
+
+  "projection_provider_boundary_result": {
+    "productive_provider_spawn_boundaries_in_the_production_closure": 1,
+    "the_one_boundary": "src/v8b/lrcq/provider/real-provider.mjs:163 — spawn(execTarget, argv, { cwd: job.worktree, ... })",
+    "other_spawns_and_why_they_are_not_productive_provider_boundaries": [
+      "fixed-executables.mjs:55 — pinned /usr/bin/git and /bin/ps in MINIMAL_ENV",
+      "lifecycle-authority-v4.mjs:471 — node running the signed supervisor entrypoint",
+      "machine-verifier-exec.mjs:18 — the backlog's declared test commands (allowlist node/npm/git/shasum)",
+      "run-five-hour.mjs:315 — the provider binary with --version only, no model, pre-consumption"
+    ],
+    "method": "26 invalid routes driven through the REAL boundary from inside a genuine detached supervisor holding a genuine SUPERVISOR_EXECUTION capability, with a provider stub that records every execution (and, in a second pass, its --max-budget-usd argv).",
+    "routes_with_zero_productive_provider_spawn": {
+      "count": 20,
+      "no_capability": "ACTIVATION_REFUSED V4_SUPERVISOR_EXECUTION_CAPABILITY_REQUIRED",
+      "null_capability": "ACTIVATION_REFUSED V4_SUPERVISOR_EXECUTION_CAPABILITY_REQUIRED",
+      "VERIFIED_capability_only": "ACTIVATION_REFUSED V4_SUPERVISOR_EXECUTION_CAPABILITY_REQUIRED",
+      "CONSUMED_capability_only": "ACTIVATION_REFUSED (brand check; also proven directly as FORGED at providerEligibilityV4)",
+      "forged_SUPERVISOR_EXECUTION_shaped_object": "ACTIVATION_REFUSED V4_SUPERVISOR_EXECUTION_CAPABILITY_REQUIRED",
+      "structured_clone_of_the_real_capability": "ACTIVATION_REFUSED V4_SUPERVISOR_EXECUTION_CAPABILITY_REQUIRED",
+      "spread_copy_of_the_real_capability": "ACTIVATION_REFUSED V4_SUPERVISOR_EXECUTION_CAPABILITY_REQUIRED",
+      "copied_projection_wrong_claim_digest": "ACTIVATION_REFUSED V4_PROJECTION_NOT_BOUND_TO_CAPABILITY",
+      "copied_projection_wrong_activation_identity": "ACTIVATION_REFUSED V4_PROJECTION_NOT_BOUND_TO_CAPABILITY",
+      "projection_claiming_authoritative_true": "ACTIVATION_REFUSED V4_PROJECTION_NOT_BOUND_TO_CAPABILITY",
+      "hand_written_v2_record_with_a_real_signature_shape": "ACTIVATION_REFUSED V4_PROJECTION_NOT_BOUND_TO_CAPABILITY",
+      "wrong_provider_identity": "ACTIVATION_REFUSED V4_PROVIDER_INELIGIBLE BINDING_MISMATCH (provider_identity)",
+      "wrong_candidate": "ACTIVATION_REFUSED V4_PROVIDER_INELIGIBLE BINDING_MISMATCH (evaluated_candidate)",
+      "wrong_backlog_digest": "ACTIVATION_REFUSED backlog_digest differs",
+      "job_not_WIDE_SAFE": "ACTIVATION_REFUSED BINDING_MISMATCH (job not WIDE_SAFE)",
+      "job_gated": "ACTIVATION_REFUSED BINDING_MISMATCH (job gated)",
+      "job_LIVE_ACTION_or_NETWORK": "ACTIVATION_REFUSED job live/network effect",
+      "worktree_outside_the_allowed_root": "ACTIVATION_REFUSED worktree outside approved root",
+      "branch_outside_the_allowed_prefix": "ACTIVATION_REFUSED branch outside allowed prefix",
+      "wrong_deadline_elapsed": "ACTIVATION_REFUSED activation expired / hard deadline elapsed",
+      "permission_bypass_token_in_allowed_tools": "ACTIVATION_REFUSED",
+      "bypassPermissions_provider_mode": "ACTIVATION_REFUSED"
+    },
+    "routes_that_DID_spawn_the_productive_provider": {
+      "count": 6,
+      "wrong_budget": { "max_budget_usd": "10 -> 1000", "outcome": "provider SPAWNED", "argv_received": "--max-budget-usd 1000" },
+      "wrong_timeout": { "per_job_timeout_s": "2700 -> 999999", "outcome": "provider SPAWNED" },
+      "wrong_width": { "max_parallel_width": "2 -> 64", "outcome": "provider SPAWNED" },
+      "wrong_output_limit": { "max_output_bytes": "10485760 -> 1e12", "outcome": "provider SPAWNED" },
+      "wrong_exclusion_no_deploy": { "no_deploy": "true -> false", "outcome": "provider SPAWNED" },
+      "wrong_exclusion_no_push_unless_authorized": { "no_push_unless_authorized": "true -> false", "outcome": "provider SPAWNED" },
+      "see_finding": "FG-FCHK-197-B"
+    },
+    "genuine_projection_route_after_mutating_the_capability": {
+      "method": "No record tampering at all. The nested cap.limits on the genuine frozen branded SUPERVISOR_EXECUTION capability was written (max_budget_usd = 777777), then the GENUINE projectLegacyActivationV4 produced the record.",
+      "projected_max_budget_usd": 777777,
+      "projection_is_frozen": true,
+      "projection_authoritative": false,
+      "projectionMatchesCapability": true,
+      "provider_argv_received": "--max-budget-usd 777777",
+      "see_finding": "FG-FCHK-197-C"
+    },
+    "provider_argv_log_from_the_recording_stub": ["SPAWNED max-budget-usd=10", "SPAWNED max-budget-usd=1000", "SPAWNED max-budget-usd=777777"],
+    "projection_provenance_facts_verified": { "authoritative": false, "founder_signature": "NON_AUTHORITATIVE_V4_PROJECTION", "projection_schema": "lrcq-v4-legacy-projection-1", "is_frozen": true },
+    "verdict": "The capability brand and the projection-to-capability binding are sound and unforgeable. The LIMIT and EXCLUSION half of the boundary is not enforced."
+  },
+
+  "positive_route_trace": {
+    "method": "The complete route driven end to end through the REAL production CLI and the real production modules with a DISPOSABLE founder key and a DETERMINISTIC stub provider. No real founder key, signature or activation was created; no model was invoked.",
+    "stages": {
+      "disposable_founder_key": "generated in a temporary directory, never enrolled, never persisted outside tmp",
+      "disposable_public_key_authority": "injected via keyDeps; docs/governance/FOUNDER_KEY_AUTHORITY.json never read and active_keys stays empty",
+      "signed_v4_activation": "Ed25519 over the canonical payload + the exact authorization bytes -> VERIFIED capability",
+      "governed_consumption": "ephemeral-key-signed consumed marker, 0600, wx-atomic, inside the SIGNED lifecycle root -> opaque CONSUMED capability",
+      "signed_launch_intent": "names and digests the one supervisor entrypoint; 0600, wx-atomic",
+      "one_inherited_descriptor_transfer": "exactly one 92-byte governed key frame over an anonymous pipe the module created itself; key deleted from module storage; capability TRANSFERRED_SPENT",
+      "detached_supervisor": "distinct PID, survives launcher exit, new process group",
+      "independent_reverification": "the supervisor re-reads and re-verifies the signed activation from disk itself; nothing the launcher said is trusted",
+      "signed_supervisor_claim": "ephemeral-signed, 0600, wx-atomic, bound to this PID + the OS-observed start identity",
+      "genuine_supervisor_execution_capability": "module-branded, frozen, mintable only from the above",
+      "one_deterministic_stub_provider_process": "spawned as a descendant of the supervisor; never real Claude",
+      "truthful_evidence": "3 jobs sealed evidence through the V4 chain; the evidence index grew after the witness",
+      "terminal_state": "STOPPED_EXHAUSTED — a durable clean terminal, not a fail-closed HELD",
+      "descendant_cleanup": "all supervised descendants confirmed gone after teardown",
+      "replay_refusal": "a second launch after terminal is refused, not launched; a consumed activation is REPLAY_BLOCKED before any spawn"
+    },
+    "evidence": "src/v8b/lrcq/run-harness-tests/detached-supervisor.selftest.mjs — 31/31 assertions, exit 0, reproduced by this Checker",
+    "real_repository_still_refuses_at_KEY_ENROLLMENT": {
+      "proven": true,
+      "proofs": [
+        "the real launcher's preflight on a V4 template bound to the exact current HEAD + the real manifest + the installed reviewed provider target reports SIGNATURE-REQUIRED with \"founder_gate\": \"KEY_ENROLLMENT\", zero_invocation true, zero_provider_invocation true, and binding_defects []",
+        "the real supervisor-main entrypoint, run directly by this Checker with a valid 0600 config, exited 3 with SUPERVISOR_ABORT reason 'independent V4 re-verification failed: UNKNOWN_OR_REVOKED_KEY' and wrote no supervisor state",
+        "detached-supervisor assertion 00: the real repository's active_keys is still EMPTY; assertion 30: the REAL repository launcher refuses at the KEY_ENROLLMENT gate, nothing consumed, nothing spawned",
+        "docs/governance/FOUNDER_KEY_AUTHORITY.json re-read at the end of the review: active_keys [] and revoked_keys []"
+      ],
+      "reason": "active_keys is empty, so verification stops at the governed key authority before any binding can be compared, before consumption, and before any spawn"
+    }
+  },
+
+  "zero_spawn_totals": {
+    "productive_provider_or_model_invocations_by_this_review": 0,
+    "real_claude_model_invocations": 0,
+    "provider_binary_invocations_by_this_review": { "count": 1, "form": "--version only, on the reviewed versioned target", "output": "2.1.220 (Claude Code)" },
+    "deterministic_stub_provider_processes_spawned_in_disposable_worlds": 9,
+    "stub_spawn_breakdown": { "phase_9_invalid_route_probes": 6, "phase_9b_argv_confirmation": 3 },
+    "founder_keys_created": 0,
+    "real_signatures_created": 0,
+    "real_activations_created_or_consumed": 0,
+    "five_hour_runs_started": 0,
+    "sequential_advisor_runs": 0,
+    "akior_or_m1_access": 0,
+    "repository_mutations": 0,
+    "residual_processes": 0,
+    "per_phase_zero_spawn": {
+      "phase_3_concurrent_transfer": 0,
+      "phase_3_pre_materialization_retry": 0,
+      "phase_3_post_materialization_failure": 0,
+      "phase_4_hostile_path": 0,
+      "phase_5_supervisor_config": 0,
+      "phase_6_filesystem": 0,
+      "phase_7_private_state": 0,
+      "phase_8_entrypoint_and_supervisor": 0,
+      "phase_9_valid_capability_invalid_limits_or_exclusions": 6,
+      "phase_10_positive_route": "deterministic stub only, inside the repository's own selftest"
+    }
+  },
+
+  "provider_state": {
+    "expected_provisional_target": "/Users/yosiwizman/.local/share/claude/versions/2.1.220",
+    "observed_target": "/Users/yosiwizman/.local/share/claude/versions/2.1.220",
+    "expected_version": "2.1.220",
+    "observed_version_output": "2.1.220 (Claude Code)",
+    "expected_sha256": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+    "hash_1_shasum_a_256": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+    "hash_2_openssl_dgst_sha256": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+    "two_hashes_agree_and_match_expected": true,
+    "is_regular_file": true,
+    "is_symlink": false,
+    "mode": "0755",
+    "uid": 501,
+    "size_bytes": 256908272,
+    "inode": 104673092,
+    "device": 16777230,
+    "nlink": 1,
+    "mtime_utc": "2026-07-25T01:37:20.671468Z",
+    "mtime_epoch": 1784943440,
+    "mutable_alias": { "path": "/Users/yosiwizman/.local/bin/claude", "is_symlink": true, "resolves_to": "/Users/yosiwizman/.local/share/claude/versions/2.1.220", "note": "the route executes resolved_provider_target (the immutable versioned file), never the alias; preflight refuses a symlinked resolved_provider_target as a mutable alias" },
+    "updater_absence": { "autoUpdates": false, "autoUpdatesProtectedForNative": true, "installMethod": "native", "launchd_claude_agent": "none listed", "no_updater_binary_in_the_claude_share_dir": true },
+    "other_installed_versions_present": ["2.1.218", "2.1.219", "2.1.220"],
+    "provider_drift": "NONE",
+    "package_refresh_finding": "none — the provisional target, version and digest all match exactly",
+    "provider_refreeze_still_required": "yes, but for a procedural reason, not drift: the executable-code candidate 8e6944ef is not the SHA the current freeze record's provider/candidate bindings were signed against, and this Checker has raised findings that will change src/. Any re-freeze must re-bind to the corrected candidate."
+  },
+
+  "facts_not_proven": [
+    "Owner mismatch on an authority record or the lifecycle root (RECORD_UNSAFE_OWNER / ROOT_UNSAFE_OWNER) was NOT dynamically tested — chown to another uid requires root, which this review does not have. Reported as SOURCE-PROVEN: the exact uid comparison is present at fs-authority-guards.mjs:72-74 and is wired into resolveSignedRoot, readRecord and the supervisor config read.",
+    "EMFILE, EAGAIN and EACCES were not induced as spawn-failure triggers for FG-FCHK-197-A. Two ENOENT-class triggers were proven instead (non-existent cwd; unreachable process.execPath).",
+    "The five-hour run was not started; no real founder key, signature or activation exists; no productive provider or model was invoked. Every positive-route proof used a disposable key and a deterministic stub.",
+    "The case-variant / device-inode results depend on this host's case-insensitive APFS volume. Behaviour on a case-SENSITIVE volume was not tested (the correction's own C5a assertion has the same dependency).",
+    "The suite's TOTAL assertion count was not established. 1725 is the mechanically counted number of `ok`-style assertion lines and matches the Builder's claim exactly; the suite additionally emits 929 `PASS:`-style assertions from other harness styles.",
+    "The productive-provider spawn-boundary probes ran with skipGitIdentity, so gitWorktreeIdentity was not the gate under test in those 26 routes; it was verified separately as a pre-spawn refusal (real-provider.selftest.mjs 80/80, plus the hostile-PATH phase proving its git runner is pinned).",
+    "GitHub branch protection on main remains protected=false. Unchanged by this wave, as FG-CHK-197-09 records. Not re-tested as a route-level control beyond the corrections family's C9 assertions.",
+    "The sequential Advisor was not run and is outside this review's authority."
+  ],
+
+  "prior_nine_finding_disposition": [
+    { "id": "FG-CHK-197-01", "severity": "HIGH", "builder_claim": "corrected", "checker_finding": "CLOSED — independently reproduced: 1 OK / 1 ALREADY_TRANSFERRED / 1 child / 1 frame / 1 distinct digest / 0 claims / 0 provider spawns / 0 residual processes; synchronous TRANSFERRING transition proven from source", "residual": "the post-materialization spawn-failure path is not handled — FG-FCHK-197-A" },
+    { "id": "FG-CHK-197-02", "severity": "MEDIUM", "builder_claim": "corrected", "checker_finding": "CLOSED — attacker root refused WORKTREE_TOPLEVEL_MISMATCH, no marker in the attacker root, 0 hostile invocations by authority code, legitimate binding still works under the hostile environment, real OS lstart, hostile GIT_* variables redirected nothing, 0 bare git/ps authority calls in the 32-file production closure", "residual": "none" },
+    { "id": "FG-CHK-197-03", "severity": "MEDIUM", "builder_claim": "corrected", "checker_finding": "CLOSED — launcher writes neither field; exhaustive frozen allow-list; exec, now and all 12 aliases refused; 16 unknown fields refused; refusal before the lifecycle claim and before any provider access; production time is the system clock; the positive route still executes the SIGNED candidate via the pinned git", "residual": "none" },
+    { "id": "FG-CHK-197-04", "severity": "LOW", "builder_claim": "corrected", "checker_finding": "CLOSED — root 0777/0775/0757 -> ROOT_UNSAFE_MODE, 0755 and 0700 usable; records generated 0600; 0666/0604/0640 records -> RECORD_UNSAFE_MODE; symlink -> RECORD_SYMLINK; directory -> RECORD_NOT_REGULAR; order proven: filesystem gate fires BEFORE the cryptographic comparison; supervisor config gate behaviourally confirmed", "residual": "owner enforcement is source-proven only, and the ledger presents it as an achieved result — FG-FCHK-197-E" },
+    { "id": "FG-CHK-197-05", "severity": "LOW", "builder_claim": "corrected", "checker_finding": "PARTIALLY CLOSED — the case-variant of one inode is accepted as the same root and both spellings derive an identical digest; the marker and intent record and agree on the canonical object id", "residual": "the object-identity gate is never supplied to any production read and ROOT_OBJECT_IDENTITY_MISMATCH is dead code — FG-FCHK-197-D" },
+    { "id": "FG-CHK-197-06", "severity": "LOW", "builder_claim": "corrected", "checker_finding": "PARTIALLY CLOSED — the CONSUMED capability is fully clean: frozen, no __state, no nested mutables, no key, frozen snapshot, forged objects get null, no external reset possible", "residual": "the same defect class remains on the VERIFIED and SUPERVISOR_EXECUTION capabilities via limits/exclusions, and the ledger's nested_mutable_objects: 0 is false for those stages — FG-FCHK-197-C" },
+    { "id": "FG-CHK-197-07", "severity": "INFORMATIONAL", "builder_claim": "corrected", "checker_finding": "CLOSED — seven refusal shapes all ENTRYPOINT_INVALID with no intent file written; the attach-side self-proof is unconditional with no opt-out; a different program holding the GENUINE key is refused", "residual": "none" },
+    { "id": "FG-CHK-197-08", "severity": "INFORMATIONAL", "builder_claim": "corrected", "checker_finding": "CLOSED — the freeze record names 8e6944ef04eb91604af36064051524b12a38c23d / tree e1df714843cd32173c024c939bebe34238a516d2 as the last executable-code commit, the evidence-only commits after it are enumerated, and the Checker verified independently that the src/tools/package diff from that commit to HEAD is byte-empty", "residual": "none" },
+    { "id": "FG-CHK-197-09", "severity": "INFORMATIONAL", "builder_claim": "recorded, unchanged, queued", "checker_finding": "ACCURATE AND STILL TRUE — GET /repos/yosiwizman/foundergate/branches/main returns protected=false; the SHA is unchanged at ba7d6547; the wave did not alter it; recorded in BRANCH_PROTECTION_STATUS.json with the route-level prohibitions and queued as FOUNDERGATE-ADMIN-BRANCH-PROTECTION-MAIN", "residual": "open as queued administration, correctly outside this wave's authority" }
+  ],
+
+  "findings_table": [
+    {
+      "id": "FG-FCHK-197-A",
+      "severity": "MEDIUM",
+      "title": "unhandled asynchronous ChildProcess 'error' kills the launcher past the transfer point of no return",
+      "file": "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs",
+      "line": "469-476 (spawn with no child 'error' listener); 487 registers a listener on the stdio stream only",
+      "supporting_lines": ["tools/terminal0/lrcq/run-five-hour.mjs:354-356 (the production call site)", "tools/terminal0/lrcq/run-five-hour.mjs:495 (.catch handles promise rejections, not EventEmitter 'error' events)"],
+      "mechanism": "child_process.spawn reports spawn failures ASYNCHRONOUSLY, by emitting 'error' on the returned ChildProcess. The try/catch wrapping spawn() catches only synchronous throws (invalid argument types). No child.on('error') / child.once('error') is ever registered — only writer.on('error') on the fd-3 stream, a different EventEmitter — and neither the authority module nor the launcher installs a process-level uncaughtException handler. An actual spawn failure therefore raises an unhandled 'error' event after the key has been exported, the frame encoded, the key deleted from module storage and the capability marked TRANSFERRED_SPENT.",
+      "reproduction": "Two independent triggers, each in a disposable world with a genuine CONSUMED capability and a valid signed launch intent. (1) pass cwd pointing at a non-existent directory; (2) make process.execPath unreachable, modelling the node binary this run was launched with being removed or renamed mid-run — on this host node lives under ~/.nvm/versions/node/v24.13.1, so an nvm version removal during a five-hour run does exactly this. Both: `node p3-d2.mjs` -> \"node:events:486 throw er; // Unhandled 'error' event ... Error: spawn <path> ENOENT\", exit 1. Control run with no patch: returns OK, 1 child, exit 0. With an uncaughtException handler artificially installed to absorb the event, the function is observed to return TRANSFER_WRITE_FAILED in ~1ms.",
+      "actual_result": "The launcher process terminates with exit 1 and a raw stack trace. launchDetachedSupervisorV4 never returns its structured { final_state: 'SUPERVISOR_SPAWN_FAILED' } refusal, its `finally { closeSync(outFd); closeSync(errFd) }` never runs, and no truthful evidence record of the failure is produced — at the single most sensitive point in the authority chain, immediately after the founder authorization has been irreversibly consumed.",
+      "required_secure_result": "spawnGovernedSupervisorV4 must register child.once('error', ...) synchronously, before the first await, race it against the descriptor write, kill and reap any partial child, and RETURN { ok: false, code: TRANSFER_WRITE_FAILED, transfer: TRANSFERRED_SPENT } so the launcher can record the truthful refusal and exit cleanly.",
+      "zero_spawn_status": "MET — 0 productive-provider spawns, 0 key frames delivered, 0 children that ran, 0 claims, retry ALREADY_TRANSFERRED. This is not an authority bypass: no second process ever receives the key and the capability is correctly unusable afterwards.",
+      "narrow_correction_scope": "One child.once('error') registration inside spawnGovernedSupervisorV4 plus a call to the existing killAndReap, and one regression test in checker-197-corrections.selftest.mjs. No other file changes.",
+      "claim_accuracy_note": "The correction ledger asserts for FG-CHK-197-01 that 'killAndReap kills AND reaps a partially launched child on transfer failure' and that the post-materialization failure path is corrected. The transfer-failure path is only covered for a descriptor WRITE failure, not for a spawn failure; the corrections family's own comment at checker-197-corrections.selftest.mjs:84-85 concedes no descriptor-failure case could be constructed, so no test exercises either variant."
+    },
+    {
+      "id": "FG-FCHK-197-B",
+      "severity": "MEDIUM",
+      "title": "the productive-provider spawn boundary enforces no ceiling on the founder-signed limits and does not require all signed exclusions",
+      "file": "src/v8b/lrcq/provider/activation-schema.mjs",
+      "line": "53-64 (limits: presence and positivity only, compared to nothing); 108 (must-be-true list omits no_deploy and no_push_unless_authorized)",
+      "supporting_lines": ["src/v8b/lrcq/run-harness/v4-legacy-projection.mjs:102-107 (projectionMatchesCapability binds only authoritative/schema/claim-digest/activation-identity)", "src/v8b/lrcq/provider/real-provider.mjs:131-144 (the boundary), :83 (--max-budget-usd argv), :169 (max_output_bytes), :183 (per_job_timeout_s kill timer)"],
+      "mechanism": "Three gaps compose. (1) projectionMatchesCapability binds a projection to a capability by authoritative===false, projection_schema, v4_supervisor_claim_digest and v4_activation_identity ONLY — never by any limit or exclusion field. (2) validateActivation requires max_budget_usd, per_job_timeout_s, max_parallel_width, max_output_bytes and termination_grace_s to be present, finite and positive, but compares them to nothing; no code path anywhere re-derives the signed limits for comparison at the boundary. (3) no_deploy appears in neither REQUIRED_FIELDS nor the must-be-true list, and no_push_unless_authorized is presence-checked only and absent from the must-be-true list at line 108 — false is not undefined/null/'' so it passes the presence check.",
+      "reproduction": "From inside a genuine detached supervisor holding a genuine SUPERVISOR_EXECUTION capability, hand runJob a spread copy of the honest projection with one field changed, using a provider stub that appends to a log on every execution. 6 of 26 invalid routes spawned it: max_budget_usd 10->1000; per_job_timeout_s 2700->999999; max_parallel_width 2->64; max_output_bytes 10485760->1e12; no_deploy true->false; no_push_unless_authorized true->false. A second pass with a stub that records its own argv proved the widened value reaches the provider: 'SPAWNED max-budget-usd=1000' (honest control: 'SPAWNED max-budget-usd=10').",
+      "actual_result": "The productive provider is spawned, and --max-budget-usd — the single money control handed to the real Claude CLI for a five-hour paid run — is whatever the record says. per_job_timeout_s becomes the kill timer and max_output_bytes the overflow ceiling, so both bounds are equally unenforced. Two founder-signed exclusions can be dropped without refusal.",
+      "required_secure_result": "Zero productive-provider spawn for every one of these routes. The boundary must (a) require all ten signed exclusions to be true, and (b) compare every limit against an immutable reference re-derived from the signed activation, refusing any record that widens one.",
+      "zero_spawn_status": "NOT MET — 6 productive-provider spawns across the 26 invalid routes. The review contract's Phase 9 requirement ('wrong deadline, budget, timeout, width, output limit, or exclusion ... require zero productive-provider spawn for every invalid route') fails for budget, timeout, width, output limit and exclusions. Deadline is correctly refused.",
+      "narrow_correction_scope": "Add no_deploy, no_push_unless_authorized and no_external_comms to the must-be-true list in activation-schema.mjs:108, and add limit-ceiling comparisons at the real-provider boundary against a reference re-derived from the signed activation (NOT from cap.limits — see FG-FCHK-197-C, or the reference is itself mutable). Extend projectionMatchesCapability to cover the limit and exclusion fields.",
+      "exploitability_note": "Reachable only by code running inside the supervisor process, i.e. the same in-process threat model that FG-CHK-197-06 was accepted at LOW under. Rated MEDIUM because the control defeated is the run's cost ceiling and two founder exclusions, and because the contract's mechanical requirement is unambiguous."
+    },
+    {
+      "id": "FG-FCHK-197-C",
+      "severity": "LOW",
+      "title": "nested limits/exclusions objects escape the shallow freeze on the VERIFIED and SUPERVISOR_EXECUTION capabilities — the same defect class FG-CHK-197-06 claimed closed",
+      "file": "src/v8b/lrcq/assurance/activation-v4.mjs",
+      "line": "98 (makeCapability does a shallow Object.freeze); 181 (limits: a plain object literal); 182 (exclusions: a plain object literal)",
+      "supporting_lines": ["src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs:319 (limits copied BY REFERENCE onto the SUPERVISOR_EXECUTION capability)", "tools/terminal0/lrcq/run-five-hour.mjs:231 (BudgetLedger ceiling reads cap.limits.max_budget_usd)", "src/v8b/lrcq/run-harness/v4-legacy-projection.mjs:58-62 (narrow() treats cap.limits as the signed ceiling)", "src/v8b/lrcq/run-harness/supervisor-main.mjs:92 (the supervisor receipt reads cap.limits)"],
+      "mechanism": "Object.freeze is shallow. FG-CHK-197-06 was closed by moving __state off the CONSUMED capability into a module-private WeakMap, but limits and exclusions remain plain nested object literals on the VERIFIED capability, and limits is copied by reference onto the SUPERVISOR_EXECUTION capability. Any holder of either capability can write to them, and every downstream consumer treats them as the authoritative founder-signed ceiling.",
+      "reproduction": "On the genuine, frozen, module-branded SUPERVISOR_EXECUTION capability obtained through the full real route: cap.limits.max_budget_usd = 777777; cap.limits.max_parallel_width = 99 — both writes take effect. The GENUINE projectLegacyActivationV4 then produced a frozen, authoritative:false projection with max_budget_usd: 777777 that projectionMatchesCapability ACCEPTED, and the recording stub logged 'SPAWNED max-budget-usd=777777'. On the VERIFIED capability: max_budget_usd 10->999999, run_duration_s 18000->99999999, max_parallel_width 2->64, exclusions.no_deploy true->false, exclusions.no_live_action true->false.",
+      "actual_result": "Reflect.ownKeys probing reports nested_MUTABLE_object_properties: ['limits','exclusions'] on VERIFIED and ['limits'] on SUPERVISOR_EXECUTION. The founder-signed cost ceiling, duration, parallel width, output cap and grace period are all mutable, and no record tampering is needed to widen the provider's actual --max-budget-usd.",
+      "required_secure_result": "Deep-freeze (or return a fresh frozen clone on read) every nested object on all three capability stages, so nested_mutable_objects === 0 for VERIFIED, CONSUMED and SUPERVISOR_EXECUTION.",
+      "zero_spawn_status": "NOT MET — composite with FG-FCHK-197-B: this route produced a productive-provider spawn under a widened signed budget via a fully genuine projection. Note both fixes are required: deep-freezing alone leaves the hand-widened-record route open, and boundary enforcement alone is defeated if its reference is cap.limits.",
+      "narrow_correction_scope": "One deepFreeze helper applied in makeCapability (activation-v4.mjs:98) and at the SUPERVISOR_EXECUTION mint (lifecycle-authority-v4.mjs:315-333), plus extending C6d in checker-197-corrections.selftest.mjs to probe all three stages rather than only CONSUMED.",
+      "claim_accuracy_note": "The correction ledger's result_after for FG-CHK-197-06 asserts nested_mutable_objects: 0 and own_keys_with_mutable_state: 0. Both are false for the VERIFIED and SUPERVISOR_EXECUTION capabilities. The regression assertion C6d probes only the CONSUMED capability, whose own property values are all strings, so it cannot detect this.",
+      "additional_observation": "cap.exclusions is a hardcoded three-field object { no_deploy, no_push_unless_authorized, no_live_action } rather than a projection of the ten signed exclusion fields. Because the verifier already refuses any exclusion that is not true, the constant cannot misreport a signed false — but it is a redundant mutable copy of signed authority and should either derive from the payload or be removed."
+    },
+    {
+      "id": "FG-FCHK-197-D",
+      "severity": "LOW",
+      "title": "the FG-CHK-197-05 filesystem-object-identity gate is built but wired into no authority read; its refusal code is dead",
+      "file": "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs",
+      "line": "45 (ROOT_OBJECT_IDENTITY_MISMATCH declared and never returned); 132 and 149 (both assertAuthorityObject calls omit expectObjectId)",
+      "supporting_lines": ["src/v8b/lrcq/assurance/fs-authority-guards.mjs:81-83 (the expectObjectId comparison)", "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs:190, 249-250 (the object id is RECORDED into the marker and intent but never checked against the live root)"],
+      "mechanism": "The correction records lifecycle_root_object_id into the consumed marker and the launch intent and adds an expectObjectId parameter to assertAuthorityObject, but no production call site ever supplies it. Mechanical confirmation: expectObjectId appears at exactly one call site in the whole repository and it is inside checker-197-corrections.selftest.mjs:229; and of the 46 codes declared in LC_CODES only two are never referenced in the module body — TERMINAL and ROOT_OBJECT_IDENTITY_MISMATCH.",
+      "reproduction": "Consume an activation (the marker records dev:16777230/ino:106097623). Rename the lifecycle root aside and mkdir a fresh directory at the SAME path (dev:16777230/ino:106097629). Copy the marker and intent in at 0600. Attach: the result is KEY_MISMATCH — the attach proceeded past resolveSignedRoot and both readRecord calls to the cryptographic comparison, with no object-identity refusal anywhere.",
+      "actual_result": "The recorded lifecycle_root_object_id is inert: a different filesystem object at the signed path is not refused. The documented property 'a DIFFERENT filesystem object is refused even when its path string looks similar' holds only for a direct unit call that supplies expectObjectId, never on a production route.",
+      "required_secure_result": "resolveSignedRoot and readRecord must, on every authority read after the marker exists, pass expectObjectId derived from the marker's recorded lifecycle_root_object_id and return ROOT_OBJECT_IDENTITY_MISMATCH on a mismatch.",
+      "zero_spawn_status": "MET — 0 productive-provider spawns; the attack terminated at KEY_MISMATCH.",
+      "narrow_correction_scope": "Thread the marker's recorded object id into resolveSignedRoot/readRecord as expectObjectId at the two call sites, or delete the unused parameter and the dead code and correct the documented property. One regression test per branch.",
+      "residual_risk_bound": "Not remotely exploitable. A different local uid cannot stage records: the owner and mode guards refuse foreign-owned records, the lifecycle root is inside the repository at mode <= 0755 owned by the running user, and ROOT_ESCAPES_REPO confines it. A same-uid actor already holds equivalent authority.",
+      "claim_accuracy_note": "The ledger's wording ('assertAuthorityObject CAN require the SAME object at every later read') is honest. The V4_AUTHORITY_ACCEPTANCE_MATRIX and the ledger result_after row 'different_filesystem_object_with_similar_path: FS_OBJECT_IDENTITY_MISMATCH' read as an achieved production property and should be qualified as a unit-level capability that is not yet wired.",
+      "additional_observation": "The supervisor claim body records no lifecycle_root_object_id. The Phase 6 requirement that the canonical device/inode identity remain consistent across marker, intent AND claim holds only transitively, through the signed consumed_marker_digest and launch_intent_digest the claim carries. That is equivalent cryptographic binding, but the claim itself does not record the property."
+    },
+    {
+      "id": "FG-FCHK-197-E",
+      "severity": "LOW",
+      "title": "two regression assertions do not test what their labels claim, and one ledger result_after is presented as achieved when it is untestable",
+      "file": "src/v8b/lrcq/run-harness-tests/checker-197-corrections.selftest.mjs",
+      "line": "73 (C1i) and 201 (C4h)",
+      "supporting_lines": [".foundergate/evidence/lrcq-assurance-factory/CHECKER_197_CORRECTION_LEDGER.json:150 (result_after.owner_mismatch)"],
+      "mechanism": "C1i is labelled 'zero provider spawn during the attack (only the governed supervisor entrypoint ran)' but its predicate is receipts.every(r => r.read_error === null || r.frame_bytes === 0) — a statement about receipt fields that is satisfied whether or not a provider was spawned. Nothing in the C1 family counts provider spawns. C4h is labelled 'the guard compares owner against the running uid' but asserts only assertAuthorityObject(marker, SECRET_OR_MUTABLE).ok === true && statSync(marker).uid === process.getuid() — it shows a correctly-owned file passes and cannot show a wrongly-owned file fails. The ledger then lists owner_mismatch: 'RECORD_UNSAFE_OWNER / ROOT_UNSAFE_OWNER' among the achieved result_after values for FG-CHK-197-04, though producing an owner mismatch requires root.",
+      "reproduction": "Read the two assertion expressions against their labels. Independently: this Checker's own concurrent attack measured 0 productive-provider spawns directly, and confirmed the uid comparison line is present and correctly wired — so the underlying behaviour is sound; it is the evidence that overstates.",
+      "actual_result": "Two green assertions certify properties they do not measure, and one ledger row presents a source-proven property as a dynamically achieved result. On a regression family whose stated purpose is 'not merely no crash', this weakens the corrected candidate's evidence rather than its behaviour.",
+      "required_secure_result": "C1i must count actual provider spawns (e.g. a recording stub at the signed provider target, asserted to be zero). C4h must be relabelled to what it proves, with the uid comparison recorded as source-proven. The ledger's owner_mismatch row must be marked SOURCE-PROVEN (root required), not an achieved result.",
+      "zero_spawn_status": "n/a — an evidence-quality finding. The underlying properties were independently confirmed by this Checker.",
+      "narrow_correction_scope": "Two assertion bodies/labels in checker-197-corrections.selftest.mjs and one row in CHECKER_197_CORRECTION_LEDGER.json.",
+      "related_observation": "C3j, C3k, C3l, C3m, C7e, C7f, C9b and C9c are source-text regex assertions rather than executions; C3l in particular compares source string offsets, not execution order. C3n/C3o do supply a real behavioural end-to-end check for that family, and this Checker independently confirmed the execution order behaviourally, so these are noted for evidence hygiene rather than raised as defects."
+    }
+  ],
+
+  "observations_not_findings": [
+    "machine-verifier-exec.mjs:18 runs the backlog's declared test commands through a PATH-resolved allowlist [node, npm, git, shasum]. Its own repository observations (branch, diff --name-only, diff --numstat) correctly use fixedGit. Running node/npm by name is inherent to executing declared test commands; `git` is the one allowlist entry for which a pinned path exists but is not used. Not an authority observation, so not raised as a finding.",
+    "verifyFixedExecutable checks regular/non-symlink/executable but not ownership. /usr/bin/git is root:wheel 0755 and /bin/ps is root:wheel 4755 on this SIP-protected volume, so a non-root user cannot substitute them. Adding a root-owner and no-group/other-write check would be a cheap hardening.",
+    "run-five-hour.mjs:315 invokes the provider binary with --version only, before consumption, to confirm the signed identity. Non-productive; no model is reached.",
+    "A node process (pid 85603) running lrcq-inbox-server.mjs has its cwd in a DIFFERENT lane's worktree (foundergate-wt-lrcq-assurance-factory-50e18e5). It is not a writer to the reviewed worktree; no process had its cwd in the reviewed worktree.",
+    "A claude 2.1.220 process (pid 66293) is live. It is Claude Code's own bg-pty-host — the review harness itself — not a FounderGate-spawned provider.",
+    "var/foundergate/ is a gitignored, empty directory tree dating from 2026-07-24 09:31, well before this review. No tracked file in the repository was modified in the review window."
+  ],
+
+  "report_digest": { "algorithm": "sha256", "over": "the bytes of this file with the sha256_of_this_file field absent", "sha256_of_this_file": "COMPUTED_AND_PRINTED_SEPARATELY" },
+
+  "post_review_immutability": {
+    "worktree_clean": true,
+    "porcelain_output": "",
+    "head": "4dd7afaca7f58b1956b57a3f8eefe28b988643ae",
+    "head_tree": "f13895937c11ff190be6ad4f09714afc6b02d3e2",
+    "head_and_tree_unchanged": true,
+    "upstream_still_in_sync": { "ahead_behind": [0, 0] },
+    "no_repository_timestamp_or_content_mutation_from_the_review": { "method": "find over all tracked paths for files modified in the last 3 hours", "result": "none" },
+    "no_key_or_signature_created": true,
+    "no_activation_consumed": true,
+    "no_productive_provider_or_model_invoked": true,
+    "real_repository_lifecycle_root_contents": ["README.md (tracked, unmodified)"],
+    "no_process_remains": true,
+    "active_keys_still_empty": true,
+    "pr_state_unchanged": { "pr_197": "OPEN / draft / unmerged / head 4dd7afac", "pr_196": "OPEN / draft / unmerged / head 8d1899f7", "main": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423", "main_protected": false },
+    "all_checker_artifacts_written_outside_git": ["/tmp/foundergate-pr197-fresh-independent-checker.json", "the session scratchpad (probe scripts and logs)"],
+    "disposable_attack_directories": "all created under the OS temp directory via mkdtemp and removed at the end of each probe"
+  },
+
+  "next_safe_action": {
+    "recommended": "Return PR #197 to the Builder for a narrow, five-finding correction wave. Do NOT enroll a founder key, do NOT sign an activation, and do NOT start the five-hour run on this candidate.",
+    "ordered_steps": [
+      "1. FG-FCHK-197-A: register child.once('error') in spawnGovernedSupervisorV4 before the first await, race it against the descriptor write, kill+reap, and return TRANSFER_WRITE_FAILED with the capability SPENT. Add a regression test that induces a real spawn failure.",
+      "2. FG-FCHK-197-C: deep-freeze every nested object on all three capability stages. This must land BEFORE step 3, because step 3's ceiling reference must not be a mutable object.",
+      "3. FG-FCHK-197-B: add no_deploy, no_push_unless_authorized and no_external_comms to the must-be-true list, and enforce limit ceilings at the provider boundary against an immutable reference re-derived from the signed activation. Re-run the 26-route probe and require zero productive-provider spawn.",
+      "4. FG-FCHK-197-D: wire expectObjectId into resolveSignedRoot and readRecord and return ROOT_OBJECT_IDENTITY_MISMATCH — or delete the unused parameter and dead code and correct the documented property. Consider recording lifecycle_root_object_id in the claim body.",
+      "5. FG-FCHK-197-E: correct the two assertion labels, add a real provider-spawn counter to C1i, and mark the ledger's owner_mismatch row source-proven.",
+      "6. Re-run the full suite twice and re-run the ten focused families.",
+      "7. Re-freeze: the provider target 2.1.220 shows NO drift (both hashes match 8addc857..., --version reports 2.1.220), but the freeze record must be re-bound to the NEW corrected executable-code candidate SHA and tree once the above land.",
+      "8. Request a fresh independent Checker on the corrected candidate. The prior nine findings are materially closed and need not be re-litigated beyond the residuals named above.",
+      "9. Separately, unchanged: FOUNDERGATE-ADMIN-BRANCH-PROTECTION-MAIN remains queued (main is still protected=false)."
+    ],
+    "explicitly_not_authorized_by_this_review": ["founder key enrollment", "creating a real signature", "creating or consuming a real activation", "starting the five-hour run", "running the sequential Advisor", "any repository mutation", "AKIOR or M1 access"]
+  },
+
+  "verdict_line": "FOUNDERGATE-PR197-FRESH-CHECKER: FINDINGS"
+}

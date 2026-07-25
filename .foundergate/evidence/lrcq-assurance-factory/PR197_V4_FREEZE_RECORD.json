@@ -1,14 +1,17 @@
 {
   "schema": "lrcq-pr197-v4-freeze-record-2",
-  "wave": "FG-CHK-197 (independent-Checker finding correction)",
-  "supersedes": "lrcq-pr197-v4-freeze-record-1 \u2014 invalidated by the corrections in this wave",
+  "wave": "FG-FCHK-197 — fresh independent-Checker five-finding correction",
+  "supersedes": [
+    "lrcq-pr197-v4-freeze-record-1 — invalidated by the corrections in this wave",
+    "FG-CHK-197 freeze record v2 (candidate 8e6944ef04eb91604af36064051524b12a38c23d)"
+  ],
   "pr": 197,
   "state": "open, draft, unmerged",
   "branch": "lane/lrcq-founder-signature-authority-8d1899f",
-  "reviewed_executable_code_candidate_sha": "8e6944ef04eb91604af36064051524b12a38c23d",
-  "reviewed_executable_code_candidate_tree": "e1df714843cd32173c024c939bebe34238a516d2",
-  "reviewed_executable_code_candidate_proof": "git diff --stat 8e6944ef04eb91604af36064051524b12a38c23d HEAD -- src tools package.json package-lock.json is EMPTY; every path changed after it lies under .foundergate/evidence/ or docs/.",
-  "evidence_only_commits_after_the_executable_candidate": "listed in evidence_only_tail below; each changes ONLY .foundergate/evidence/ and/or docs/",
+  "reviewed_executable_code_candidate_sha": "c6bf5a37d06b5a86a2ac1b7a5721bb53c38868c0",
+  "reviewed_executable_code_candidate_tree": "0d598ceb16cc2faebc2099c1b88b62788ff72219",
+  "reviewed_executable_code_candidate_proof": "PROCEDURAL, hash-independent: the executable candidate is the commit whose message begins \"FG-FCHK-197: correct the fresh independent Checker’s five findings\". For every commit AFTER it on this branch, git diff --stat <candidate> <commit> -- src tools package.json package-lock.json is EMPTY; each changes ONLY paths under .foundergate/evidence/ or docs/. A commit cannot embed its own hash, so the two SHAs above were recorded after the commit existed and are verifiable with git rev-parse.",
+  "evidence_only_commits_after_the_executable_candidate": "listed in evidence_only_tail; each changes ONLY .foundergate/evidence/ and/or docs/",
   "prior_freeze_record_label_defect": {
     "finding": "FG-CHK-197-08",
     "was": "reviewed_candidate_sha was defined procedurally as 'HEAD~1 of the frozen branch', which resolved to an EVIDENCE-ONLY commit (846b881), not the last code commit (d5cd803).",
@@ -19,67 +22,83 @@
   "suite": {
     "command": "npm test",
     "runs": 2,
-    "self_tests": 152,
-    "passing": 152,
-    "assertions_passing_run_1": 1725,
-    "assertions_passing_run_2": 1725,
+    "self_tests": 153,
+    "passing": 153,
     "failures": 0,
     "skipped_or_weakened": 0,
+    "coverage_reduced": false,
+    "assertions_x_of_y_form": 1823,
+    "assertions_pass_checks_form": 614,
+    "combined_mechanical": 2437,
+    "counting_method": "MECHANICAL, parsed from captured npm test output; the two reporting styles are counted separately rather than merged.",
     "result": "ALL GREEN twice consecutively"
   },
   "founder_key_authority_active_keys": [],
   "authority_module_digests": {
-    "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs": "sha256:e0d81e33d67148feb3708a9b43f3b4c02532b6c4522f4a1621c209f17c2d6659",
-    "src/v8b/lrcq/assurance/activation-v4.mjs": "sha256:2324c79cf2af18880da0d872ee15e74a13eabb66ac09fcdc2918380cd7bd0b3d",
-    "src/v8b/lrcq/assurance/founder-key-authority.mjs": "sha256:1ea6ba55199012891ec9e0aad0366e4d5ed621fc463d3b9087ebb9d891a6aa8b",
-    "src/v8b/lrcq/assurance/canonical-json.mjs": "sha256:b49cb30cf560d89091595705363b8b22077e0b94a1e41db1f9d3c8cb9d46929a",
-    "src/v8b/lrcq/assurance/fixed-executables.mjs": "sha256:00b1b56d24a07a605dc8c8a0981c9d1363702a3b1e3def21e692ae58893e907d",
+    "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs": "sha256:12c8261a28eccc9c67a3d823c352d74bb6dece4fa821c849259ea3135a4c3695",
+    "src/v8b/lrcq/assurance/activation-v4.mjs": "sha256:5c4ba9c5b7d87bd92213022c6e8ab3ef36077df3a1ff594c618ea2e5a240eb45",
+    "src/v8b/lrcq/assurance/deep-freeze-authority.mjs": "sha256:74cff5dc5d9b81244c979f3f0146291ef8fc8fdf8dbb8228165c40ef904d773f",
     "src/v8b/lrcq/assurance/fs-authority-guards.mjs": "sha256:574ae9794632b060b9b99c71c1e64072958e61719fc2c23901a5848e45da7ea2",
-    "src/v8b/lrcq/run-harness/v4-legacy-projection.mjs": "sha256:d2328937a3551bb07d3180da9746e48787f0119d2bfb152f6f960fd11b8e590f",
-    "src/v8b/lrcq/run-harness/harness.mjs": "sha256:a11188a81e1c5f04312b7ae710364d21db118cb372a15c38403b43e735cdba84",
-    "src/v8b/lrcq/run-harness/supervisor-main.mjs": "sha256:9218bada7b80c2975b9a935c0bb4656d1c22d603a2257685ebf2128fd27ed89c",
-    "src/v8b/lrcq/run-harness/real-seams.mjs": "sha256:629e730bb9ba139edcb742cdb3ef8db6454253c75eb7511a9418af08d6c65507",
-    "src/v8b/lrcq/provider/real-provider.mjs": "sha256:6b1328e188a5d14f60e39e5382df5e7c1ae423fc2c0eb0e018a1636d4210854e",
-    "tools/terminal0/lrcq/run-five-hour.mjs": "sha256:deee8f60de68b9011b2f5e7eb22c320cdae6732de9dc92b142911878684aaade",
-    "tools/terminal0/lrcq/founder-sign.mjs": "sha256:0455b431ec5647e85ad70b9af595cdb8da75309313d92184e9cfdc161f98a791",
-    "tools/terminal0/lrcq/founder-key-enroll.mjs": "sha256:c25d44afd279acb3abdf5ac3bc8deb04bce3a31a466d332ebd5cd332e41d6395",
-    "tools/terminal0/lrcq/generate-run-manifest.mjs": "sha256:870703ee990cc3de8fb69ac30ce8058c6a8fcb1854413e4603a07c67c91d9a10",
-    ".foundergate/run-materials/first-internal-5h/run-manifest.json": "sha256:c485151e9b35ec938f5091839190c3b4f1911eec15a49e0186e664788806bc4b",
-    ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json": "sha256:2de7a315ab1e2951d88d88e43bf4aab9ad0b84d360945fe79184d4b457f1fe92"
-  },
-  "historical_checker_report": {
-    "path_at_review_time": "/tmp/foundergate-pr197-independent-checker.json",
-    "sha256": "caa4db0031b172ca69c9b456d298cb3b3e6185215e9074293b6c93390fbdc20f",
-    "verdict": "FINDINGS",
-    "verdict_line": "FOUNDERGATE-PR197-INDEPENDENT-CHECKER: FINDINGS",
-    "status": "HISTORICAL EVIDENCE ONLY \u2014 INVALIDATED as current acceptance by the mutations in this wave. It reviewed a tree that no longer exists on this branch. A FRESH independent Checker is required."
+    "src/v8b/lrcq/provider/authority-boundary.mjs": "sha256:08fac21823a142070ccc233e667d6c09ef2ffc64851dbc18907d9c74a58ea29c",
+    "src/v8b/lrcq/provider/real-provider.mjs": "sha256:ea3bafdcd1bcc07eac2b5bdd65d24794ec190a992ce577ce7d4b2087d524cd37",
+    "src/v8b/lrcq/provider/activation-schema.mjs": "sha256:fab360c8d99c4b4fcdb601c39dbe6315f53268d966e7058e60f6f05d825ea631",
+    "src/v8b/lrcq/run-harness/v4-legacy-projection.mjs": "sha256:cb9cb03dffb96489546209cbae93e4b3ee1cd414deb164bdd273b51573d7ce9d"
   },
   "builder_execution_metadata": {
-    "provider": "Anthropic \u2014 Claude Code CLI",
+    "provider": "Anthropic — Claude Code CLI",
     "model_label": "Claude Opus 5",
     "model_identifier": "claude-opus-5",
-    "claude_code_version": "2.1.219",
-    "note": "Builder identity, deliberately distinct from the provider-under-test identity (2.1.220) the activation binds."
+    "note": "Builder execution metadata, deliberately distinct from the provider-under-test identity (2.1.220) the activation binds. Builder self-tests are NOT independent acceptance."
   },
-  "prohibitions_observed": {
-    "founder_key_enrolled": false,
-    "founder_passphrase_requested": false,
-    "real_founder_signature_created": false,
-    "real_activation_created_or_consumed": false,
-    "productive_provider_or_model_invoked": false,
-    "five_hour_run_started": false,
-    "merged": false,
-    "deployed": false,
-    "protected_main_modified": false,
-    "pr196_modified_or_merged": false,
-    "github_branch_protection_changed": false,
-    "akior_accessed": false,
-    "m1_accessed": false,
-    "prompt_library_modernization_performed": false,
-    "unrelated_hardening_or_product_features_added": false,
-    "builder_tests_treated_as_independent_review": false
-  },
+  "prohibitions_observed": [
+    "no founder key enrolled",
+    "no founder passphrase requested or handled",
+    "no real founder signature created",
+    "no real activation created or consumed",
+    "no productive provider or model invoked",
+    "no five-hour run started",
+    "no merge",
+    "no deployment",
+    "protected main unmodified",
+    "PR #196 unmodified and unmerged",
+    "no GitHub branch-protection changes",
+    "no AKIOR access",
+    "no M1 access",
+    "no unrelated FounderGate features",
+    "no prompt-library modernization",
+    "no test weakened for green"
+  ],
   "next_gate": "READY_FOR_FRESH_INDEPENDENT_CHECKER",
   "required_fresh_checker_clean_verdict": "AUTHORITY_CHAIN_CLEAN_PROVIDER_REFREEZE_REQUIRED",
-  "fresh_checker_packet": "docs/lanes/PR197_FRESH_CHECKER_PACKET.md"
+  "fresh_checker_packet": "docs/lanes/PR197_FRESH_CHECKER_PACKET.md",
+  "superseded_historical_checker_reports": [
+    {
+      "path_at_review_time": "/tmp/foundergate-pr197-independent-checker.json",
+      "sha256": "caa4db0031b172ca69c9b456d298cb3b3e6185215e9074293b6c93390fbdc20f",
+      "verdict": "FINDINGS",
+      "status": "HISTORICAL EVIDENCE ONLY — reviewed a tree that no longer exists on this branch."
+    },
+    {
+      "path_at_review_time": "/tmp/foundergate-pr197-fresh-independent-checker.json",
+      "preserved_copy": ".foundergate/evidence/lrcq-assurance-factory/FCHK_197_FRESH_CHECKER_REPORT_HISTORICAL.json",
+      "sha256": "6ac782a2d396a8b0558eed8493d19a86a5f52a3e99e38cfe2f040f72e25da50b",
+      "verdict": "FINDINGS",
+      "findings": "2 MEDIUM + 3 LOW",
+      "reviewed_candidate": "8e6944ef04eb91604af36064051524b12a38c23d",
+      "status": "HISTORICAL FINDINGS EVIDENCE ONLY — NOT current acceptance. All five findings are corrected in candidate c6bf5a37d06b5a86a2ac1b7a5721bb53c38868c0. A FRESH independent Checker is required on the CORRECTED candidate."
+    }
+  ],
+  "five_finding_correction": {
+    "ledger": ".foundergate/evidence/lrcq-assurance-factory/FCHK_197_FINAL_FIVE_CORRECTION_LEDGER.json",
+    "findings_corrected": [
+      "FG-FCHK-197-A (MEDIUM)",
+      "FG-FCHK-197-B (MEDIUM)",
+      "FG-FCHK-197-C (LOW)",
+      "FG-FCHK-197-D (LOW)",
+      "FG-FCHK-197-E (LOW)"
+    ],
+    "correction_order": "C before B (the boundary derives its ceilings from the capability, so the capability had to be immutable first)",
+    "invalid_route_matrix": "26/26 refused, 0 counted provider spawns",
+    "positive_route": "exactly 1 deterministic stub process on the legitimate narrowed projection"
+  }
 }

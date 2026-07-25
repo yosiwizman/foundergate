@@ -1,13 +1,19 @@
 {
   "schema": "lrcq-v4-authority-acceptance-matrix-2",
-  "wave": "FG-LRCQ-ACT-029 + FG-CHK-197 (independent-Checker finding correction)",
+  "wave": "FG-LRCQ-ACT-029 + FG-CHK-197 + FG-FCHK-197 (fresh independent-Checker finding correction)",
   "pr": 197,
   "suite": {
-    "self_tests": 152,
-    "self_tests_passing": 152,
-    "assertions_passing": 1725,
+    "self_tests": 153,
+    "self_tests_passing": 153,
     "runs": 2,
-    "red": 0
+    "red": 0,
+    "assertion_counting_method": "MECHANICAL, from the captured npm test output. Two reporting styles exist in this suite and are counted separately rather than merged into one headline number.",
+    "assertions_x_of_y_form": 1823,
+    "assertions_pass_checks_form": 614,
+    "combined": 2437,
+    "literal_ok_lines": 1839,
+    "literal_PASS_lines": 929,
+    "note": "The prior matrix reported 1725 for the X/Y form at 152 suites. The X/Y form is the comparable metric; it rose to 1823 with the new checker-197-final-five family (113) and C4h2 (+1)."
   },
   "v4_family_counts": {
     "lifecycle-key-containment": "39/39",
@@ -31,7 +37,8 @@
     "authority-route": "15/15",
     "capsule-generator": "35/35",
     "capsule-deps": "17/17",
-    "checker-197-corrections": "75/75"
+    "checker-197-corrections": "76/76",
+    "checker-197-final-five": "113/113"
   },
   "controls": [
     {
@@ -357,11 +364,120 @@
       "control": "Protected-main mutation, merge and unauthorized push are prohibited by the run route independently of GitHub branch protection",
       "status": "PROVEN",
       "evidence": "BRANCH_PROTECTION_STATUS.json (5 route-level prohibitions); checker-197-corrections C9a-C9e"
+    },
+    {
+      "id": "FF-A-01",
+      "control": "An ASYNCHRONOUS ChildProcess spawn error after the transfer point of no return returns a structured fail-closed refusal instead of killing the launcher",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FA2-FA5 (DYNAMIC: bad cwd -> SUPERVISOR_SPAWN_FAILED, nothing thrown)"
+    },
+    {
+      "id": "FF-A-02",
+      "control": "Under every spawn/transfer failure outcome the authority is TRANSFERRED_SPENT, the private key is deleted and no retry with the same key is possible",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FA5, FA6, FA8, FA19, FA20 (DYNAMIC)"
+    },
+    {
+      "id": "FF-A-03",
+      "control": "A failed transfer leaves NO residual process and delivers NO key frame",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FA7, FA9, FA21 (DYNAMIC)"
+    },
+    {
+      "id": "FF-A-04",
+      "control": "The launcher process exits normally with a structured refusal, never a raw unhandled-error stack trace",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FA10-FA15 (DYNAMIC, in a separate process)"
+    },
+    {
+      "id": "FF-A-05",
+      "control": "The normal successful governed transfer remains functional",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FA22-FA24, FD18, FD19 (DYNAMIC)"
+    },
+    {
+      "id": "FF-B-01",
+      "control": "The provider boundary INDEPENDENTLY enforces every founder-signed numerical ceiling, derived from the immutable genuine capability, immediately before spawn",
+      "status": "PROVEN",
+      "evidence": "final-five-boundary F-B5, F-B5b, F-B10 (DYNAMIC)"
+    },
+    {
+      "id": "FF-B-02",
+      "control": "All 26 of the fresh Checker’s invalid routes are refused with ZERO productive-provider spawn",
+      "status": "PROVEN",
+      "evidence": "final-five-boundary F-B1-F-B4 (DYNAMIC refusals; COUNTED zero spawns from the recording stub’s own log)"
+    },
+    {
+      "id": "FF-B-03",
+      "control": "Every signed exclusion individually set to false, or individually removed, is refused before spawn",
+      "status": "PROVEN",
+      "evidence": "final-five-boundary F-B6, F-B6b, F-B7, F-B8 (DYNAMIC)"
+    },
+    {
+      "id": "FF-B-04",
+      "control": "A widened deadline and any unknown authority-bearing field are refused; the honest projection is still accepted",
+      "status": "PROVEN",
+      "evidence": "final-five-boundary F-B6c, F-B6d, F-B6e (DYNAMIC)"
+    },
+    {
+      "id": "FF-B-05",
+      "control": "One legitimate NARROWED projection still reaches exactly ONE deterministic stub process, and no widened value ever reaches argv",
+      "status": "PROVEN",
+      "evidence": "final-five-boundary F-P1-F-P6 (DYNAMIC + COUNTED)"
+    },
+    {
+      "id": "FF-C-01",
+      "control": "Every capability stage (VERIFIED, CONSUMED, SUPERVISOR_EXECUTION) is DEEPLY frozen: zero mutable nested objects",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FC1, FC7 and final-five-boundary F-C1 (DYNAMIC)"
+    },
+    {
+      "id": "FF-C-02",
+      "control": "Mutating every nested numerical limit and every exclusion on VERIFIED and SUPERVISOR_EXECUTION changes neither the authority value nor the resulting projection",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FC4-FC6 and final-five-boundary F-C3-F-C6 (DYNAMIC)"
+    },
+    {
+      "id": "FF-C-03",
+      "control": "The deep-freeze helper accepts only plain JSON authority data, copies before freezing, and never freezes the caller-owned source in place",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FC9-FC19 (DYNAMIC)"
+    },
+    {
+      "id": "FF-D-01",
+      "control": "The lifecycle-root filesystem OBJECT identity is enforced on PRODUCTION authority reads; the refusal code is reachable, not dead",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FD5, FD10, FD11 (DYNAMIC); FD13, FD14 (SOURCE-PROVEN reachability)"
+    },
+    {
+      "id": "FF-D-02",
+      "control": "Replacing the lifecycle directory at the signed path with a new object holding copied records is refused BEFORE the cryptographic key comparison, with no child, no claim and no key delivery",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FD5-FD12 (DYNAMIC)"
+    },
+    {
+      "id": "FF-D-03",
+      "control": "A case-variant spelling of the SAME inode remains the same authority object; a different inode is refused; normal execution is unaffected",
+      "status": "PROVEN",
+      "evidence": "checker-197-final-five FD15-FD19 (DYNAMIC)"
+    },
+    {
+      "id": "FF-E-01",
+      "control": "Zero-provider-spawn claims are COUNTED from a recording stub’s own log, never inferred from key-frame receipts",
+      "status": "PROVEN",
+      "evidence": "checker-197-corrections C1i; final-five-boundary F-B3, F-B9, F-B11, F-P3 (COUNTED)"
+    },
+    {
+      "id": "FF-E-02",
+      "control": "Source-regex assertions are labelled SOURCE-PROVEN and are never presented as runtime proof; the owner-mismatch branch is recorded as source-proven (root required), not an achieved runtime result",
+      "status": "PROVEN",
+      "evidence": "checker-197-corrections C4h, C4h2 and header; checker-197-final-five FE1-FE5"
     }
   ],
   "not_proven_here": [
     "Real productive provider capability (a real builder session producing changes and a real checker session returning CLEAN). This requires invoking Claude, which is forbidden during preparation. First exercised under founder signature.",
     "The final independent Checker and Advisor verdicts. The Builder cannot supply them; see the review packet.",
-    "The FRESH independent Checker verdict. The previous report (sha256 caa4db00...) is historical evidence only \u2014 it reviewed a tree that no longer exists on this branch."
+    "The FRESH independent Checker verdict on the CORRECTED candidate. BOTH prior reports (sha256 caa4db00... and sha256 6ac782a2...) are HISTORICAL FINDINGS EVIDENCE ONLY — each reviewed a tree that no longer exists on this branch.",
+    "FG-FCHK-197-E scope note: every row above states its evidence class. DYNAMIC means the attack was executed; COUNTED means a real process count; SOURCE-PROVEN means a property of the source text and NOT an execution. Nothing here is independent acceptance."
   ]
 }

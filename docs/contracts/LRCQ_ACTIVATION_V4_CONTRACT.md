@@ -198,3 +198,93 @@ snapshot for tests and evidence and `null` for a non-capability.
 `createLaunchIntentV4` refuses an absent or null `supervisorEntrypoint`, and the attach-side "this program IS
 the entrypoint" proof is unconditional: an intent recording no entrypoint is refused outright. No production
 flag disables it.
+
+## Immutable authority (FG-FCHK-197-C)
+
+`Object.freeze` is **shallow**. Every capability stage is therefore published as a **deep-frozen copy** built
+by `assurance/deep-freeze-authority.mjs`, which accepts only plain JSON authority data (string, boolean, null,
+finite number, plain array, plain object) and refuses functions, non-plain prototypes, accessor properties,
+symbol keys and values, `undefined`, `NaN`, `Infinity`, `BigInt` and reference cycles. It **copies before
+freezing** and freezes only the copy, so a caller-owned source object is never frozen in place and the
+authority retains no reference to the parsed activation document.
+
+The invariant, for VERIFIED, CONSUMED and SUPERVISOR_EXECUTION alike: `mutableAuthorityPaths(cap)` is empty.
+No caller can modify budget, timeout, width, output limit, grace period, duration, deadlines, exclusions,
+provider identity, candidate identity, backlog or job authority through a capability reference, and a
+projection derived after an attempted mutation is byte-identical to one derived before it.
+
+`cap.limits` and `cap.exclusions` are **projected mechanically from the signed payload** — the six limits of
+`V4_SIGNED_LIMITS` and all ten exclusions of `V4_SIGNED_EXCLUSIONS`. `exclusions` was previously a hardcoded
+three-field constant, i.e. a redundant copy of signed authority that did not track the payload.
+
+## The provider spawn boundary (FG-FCHK-197-B)
+
+`provider/authority-boundary.mjs` is the one authoritative validator at the productive-provider spawn. It
+receives the genuine branded `SUPERVISOR_EXECUTION` capability, the proposed non-authoritative projection, the
+job and the fixed runtime bindings, and it is called both after provider eligibility and again as the **last
+statement before `spawn()`**.
+
+It must not trust a hand-written V2-shaped projection, a projection merely because its claim digest matches, a
+mutable capability property, or a validator that only checks "positive and finite". Concretely:
+
+* it first requires the authority it derives ceilings **from** to be immutable — deriving a ceiling from a
+  writable object is not enforcement (this is why FG-FCHK-197-C is corrected first);
+* every signed numerical limit is enumerated from `V4_SIGNED_LIMITS`: the projected value must be finite,
+  valid for its declared kind, and **≤** the signed ceiling. Zero, negative, `NaN`, `Infinity`, missing and
+  wrong-typed all fail. Legitimate **narrowing** remains permitted;
+* the run deadline and expiry may be brought **forward** but never pushed out; `run_duration_s` is enforced as
+  a ceiling whenever the record carries it. It is a *separate* signed value, **not** a consistency constraint
+  between the signed epochs — the founder signs the hard deadline and the duration independently, so deriving
+  a duration from the epochs and refusing on it would reject legitimately signed activations;
+* every signed exclusion is enumerated from `V4_SIGNED_EXCLUSIONS` and must be exactly `true` in the signed
+  authority **and** exactly `true` in the projection. This is signed-exclusion enforcement, **not** a
+  deny-list presence test; missing, `false`, `null`, a truthy non-`true` substitute and a differently named
+  field all fail before spawn;
+* signed identity facts may be restated but never altered, provenance is required, and any unknown `v4_*`
+  authority-bearing field is refused.
+
+`projectionMatchesCapability` carries the same contract in boolean form, and the V2 validator's must-be-true
+list is the complete ten-exclusion set (`MUST_BE_TRUE_EXCLUSIONS`).
+
+## Lifecycle-root object continuity (FG-FCHK-197-D)
+
+Recording the device/inode identity is not enough — it must be **checked on production reads**. The expected
+identity is captured at governed consumption and held in module-private capability state; every later
+authority operation re-resolves the signed lifecycle root and requires that exact filesystem object, and
+passes the expectation into every marker, intent and claim read. The supervisor side, which has no in-process
+consumption state, derives the expectation from the marker and requires the live root to match it **before the
+ephemeral signature and before the cryptographic key comparison**. The supervisor claim now records
+`lifecycle_root_object_id` and `lifecycle_root_digest` explicitly, so the identity is a recorded property of
+all three records rather than only transitively bound through digests. Refusal code:
+`ROOT_OBJECT_IDENTITY_MISMATCH`.
+
+## The governed spawn/write race (FG-FCHK-197-A)
+
+`child_process.spawn` reports most failures **asynchronously**, by emitting `error` on the returned
+`ChildProcess` — a bad cwd or an unreachable executable yields a `ChildProcess` with no pid and then `ENOENT`.
+A `try/catch` around `spawn()` catches only synchronous argument-type throws, and a listener on the stdio
+stream is a *different* EventEmitter.
+
+`spawnGovernedSupervisorV4` therefore registers `child.once("error")` **synchronously, before the key frame is
+written and before the first `await`**, together with the child exit/close and writer error observers, and
+races them: child spawn error → `SUPERVISOR_SPAWN_FAILED`; descriptor write failure → `TRANSFER_WRITE_FAILED`;
+premature child termination → `TRANSFER_WRITE_FAILED`; write completion → `OK`. Premature termination is
+decisive only if nothing else settles shortly after, so a healthy supervisor that reads the frame and exits
+quickly is still a completed transfer.
+
+Past the point of no return every outcome leaves the authority `TRANSFERRED_SPENT`, the private key deleted
+from module storage, all temporary buffers zeroed, the writer closed and any partially created child killed and
+reaped. A failure returns **one structured fail-closed result**, never an uncaught exception, so the caller can
+record truthful failure evidence and exit normally.
+
+## Evidence classes (FG-FCHK-197-E)
+
+Assurance evidence in this lane states what was actually observed:
+
+* **DYNAMIC** — the attack was executed and its refusal or behaviour observed;
+* **COUNTED** — a real process count read from a recording stub's own log;
+* **SOURCE-PROVEN / STRUCTURAL** — a property of the source text, never presented as runtime proof.
+
+Zero-provider-spawn claims are **counted**, never inferred from key-frame receipts or refusal strings. A
+property that cannot be reproduced without root (e.g. a foreign-owned authority record) is recorded as
+source-proven and is not claimed as an achieved runtime result.
