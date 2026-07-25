@@ -293,6 +293,50 @@ export function classifyFounderGate(deps = {}) {
   return { gate: "SIGNATURE", reason: "current founder key present" };
 }
 
+// ---- supervisor-acknowledgment failure classification (FG-CHK5-197-01) ----------------------------
+// The governed transfer can fail for two materially different reasons, and the run evidence must not
+// confuse them. Either the spawn / descriptor / key transfer itself failed — nothing was handed over — or
+// the transfer SUCCEEDED and the spawned supervisor failed to produce a verifiable acknowledgment. Naming
+// the second case after the first is a FALSE evidence record: it states the spawn failed when the process
+// really started, the one-use key really was transferred, and (in the start-identity case) the supervisor
+// really did mint a correctly signed claim.
+//
+// The fifth independent Checker proved this had drifted. The classification was an inline three-code OR
+// expression, and FG-FFIN4-197-01 added a FOURTH acknowledgment-stage code
+// (SUPERVISOR_START_IDENTITY_UNAVAILABLE — the parent could not INDEPENDENTLY observe the spawned
+// process's OS start identity) without extending it. A start-identity refusal was therefore recorded as
+// stage "governed_key_transfer" / final_state "SUPERVISOR_SPAWN_FAILED".
+//
+// The code set is now a single named IMMUTABLE collection, so a future acknowledgment code cannot drift
+// out of the classification the way this one did. It is deliberately NOT configurable: no environment
+// variable, config field, activation field or CLI flag may add to or remove from it.
+export const SUPERVISOR_ACKNOWLEDGMENT_FAILURE_CODES = Object.freeze([
+  LC_CODES.SUPERVISOR_TERMINATED_BEFORE_CLAIM,   // the child exited without a verified claim
+  LC_CODES.SUPERVISOR_CLAIM_TIMEOUT,             // no verified claim within the bounded wait
+  LC_CODES.SUPERVISOR_CLAIM_INVALID,             // a complete claim failed a binding
+  LC_CODES.SUPERVISOR_START_IDENTITY_UNAVAILABLE, // the parent could not independently observe the start identity
+]);
+// Module-private lookup built from the frozen list above; unreachable from outside, so it cannot be mutated.
+const ACK_FAILURE_SET = new Set(SUPERVISOR_ACKNOWLEDGMENT_FAILURE_CODES);
+// Pure predicate. Every acknowledgment-stage failure — and nothing else — answers true. A genuine spawn,
+// descriptor or transfer failure (SUPERVISOR_SPAWN_FAILED, DESCRIPTOR_UNAVAILABLE, TRANSFER_WRITE_FAILED,
+// KEY_FRAME_*, ALREADY_TRANSFERRED, ...) answers false and stays named after the transfer stage.
+export function isSupervisorAcknowledgmentFailure(code) { return ACK_FAILURE_SET.has(code); }
+// The ONE place the refused governed-transfer record is built. The launcher's refusal branch returns this
+// verbatim, so a test that calls it exercises the REAL production classification rather than a copy.
+export function classifyGovernedTransferRefusal(g) {
+  const ackFailure = isSupervisorAcknowledgmentFailure(g && g.code);
+  return {
+    ready: false,
+    refused: {
+      stage: ackFailure ? "supervisor_acknowledgment" : "governed_key_transfer",
+      reasons: [g.code + (g.detail ? " (" + g.detail + ")" : "")],
+    },
+    final_state: ackFailure ? "SUPERVISOR_NEVER_ACKNOWLEDGED" : "SUPERVISOR_SPAWN_FAILED",
+    consumed: true, launched: false, supervisor_acknowledged: false,
+  };
+}
+
 // ---- the ONE production detached-launch path (V4) --------------------------------------------------
 // Verify -> SIGNED manifest -> pre-consumption provider verification -> governed one-time consumption ->
 // signed launch intent (naming + digesting supervisor-main.mjs) -> GOVERNED inherited-descriptor key
@@ -357,10 +401,10 @@ export async function launchDetachedSupervisorV4(activationPath, authorizationPa
   // its own PID and OS-observed start identity — not merely that the key frame entered the pipe. The refusal
   // state is named after the actual failure so the evidence record cannot describe a claim failure as a spawn
   // failure.
-  if (!g.ok) {
-    const claimFailure = g.code === LC_CODES.SUPERVISOR_TERMINATED_BEFORE_CLAIM || g.code === LC_CODES.SUPERVISOR_CLAIM_TIMEOUT || g.code === LC_CODES.SUPERVISOR_CLAIM_INVALID;
-    return { ready: false, refused: { stage: claimFailure ? "supervisor_acknowledgment" : "governed_key_transfer", reasons: [g.code + (g.detail ? " (" + g.detail + ")" : "")] }, final_state: claimFailure ? "SUPERVISOR_NEVER_ACKNOWLEDGED" : "SUPERVISOR_SPAWN_FAILED", consumed: true, launched: false, supervisor_acknowledged: false };
-  }
+  // FG-CHK5-197-01: the refusal record is built by the ONE named classifier above, from the ONE immutable
+  // acknowledgment-failure code set, so a new acknowledgment code cannot silently be recorded as a spawn
+  // failure again.
+  if (!g.ok) return classifyGovernedTransferRefusal(g);
   const launcherPid = process.pid, supervisorPid = g.supervisor_pid;
   // Wait a BOUNDED interval for durable RUN_ACTIVE (the supervisor publishes it from ITS process).
   const deadlineMs = Date.now() + (life.startupTimeoutMs || 15000);
