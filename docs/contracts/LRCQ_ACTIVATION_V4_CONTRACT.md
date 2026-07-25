@@ -137,3 +137,64 @@ founder acts: `founder_gate: "KEY_ENROLLMENT"` when no current key exists, `"SIG
 enrolled but the signature is absent or invalid. A pending founder act never masks a binding defect — the
 preflight cross-checks the candidate stack, the manifest file digest, and the reviewed provider target
 (digest only; the provider is never executed) independently of the signature.
+
+---
+
+# FG-CHK-197 — independent-Checker finding correction
+
+An independent read-only Checker (report sha256 `caa4db0031b172ca69c9b456d298cb3b3e6185215e9074293b6c93390fbdc20f`)
+returned FINDINGS. The corrections below change the contract; that report is historical evidence only.
+
+## The one-use transfer is atomic
+`TRANSFER_STATES` is `NOT_TRANSFERRED -> TRANSFERRING -> TRANSFERRED_SPENT`, held in a module-private WeakMap.
+The transition to `TRANSFERRING` happens **synchronously in the same microtask as the one-use guard**, before
+any child creation, spawn, key export, pipe write or asynchronous yield, so a concurrent caller is refused
+`ALREADY_TRANSFERRED` before spawn. Input-validation refusals return the capability to `NOT_TRANSFERRED`
+(nothing was materialized). Past the point of no return the key is exported, the frame encoded, the key
+**deleted from module storage** and the state set `TRANSFERRED_SPENT` — all before the first await — so a
+failed or ambiguous transfer can never be retried with the same key. A partially launched child is killed
+**and reaped**.
+
+## Fixed authority executables
+Every authority-bearing process observation runs a fixed absolute executable — `/usr/bin/git`, `/bin/ps` —
+verified to be a regular non-symlink executable immediately before use, in a minimal environment that also
+drops `GIT_DIR`, `GIT_WORK_TREE`, `GIT_COMMON_DIR` and pins `GIT_CONFIG_GLOBAL`/`GIT_CONFIG_SYSTEM` to
+`/dev/null`. No environment variable, activation field, config field, CLI flag or fixture can replace them,
+and a missing, symlinked, non-regular or non-executable binary fails closed.
+
+Correction to an earlier claim in this document: an **alternate worktree shares the common dir**. The binding
+holds via the toplevel check — `git -C <SIGNED repository_root> rev-parse --show-toplevel` must equal the
+signed root exactly — not via a common-dir difference.
+
+## The supervisor config carries no authority
+`SUPERVISOR_CONFIG_KEYS` is an exhaustive allow-list. `exec` and `now` are refused explicitly, and any unknown
+key is refused too, **before** the lifecycle claim and before any provider access. Production time is the
+system clock. The executor receives an empty `exec` object, so nothing in a config can select an execution
+function, a git runner, a repository root, a candidate ref or a clock. The config file itself must be an
+owner-matching 0600 regular file. Deterministic clock and execution substitution live only in the test
+families, which pass them as function parameters — never through a config.
+
+## Filesystem authority guards
+Three permission classes, enforced at every authority-bearing use:
+
+| Class | Objects | Rule |
+| --- | --- | --- |
+| `SECRET_OR_MUTABLE` | consumed marker, launch intent, supervisor claim, supervisor config, authorization bytes | owner == running uid; **no** group/other permission (`mode & 0o077`) |
+| `PUBLIC_SIGNED` | the signed activation | owner; no group/other **write** (`mode & 0o022`) — it is signature-protected and meant to be readable |
+| `DIRECTORY` | the lifecycle root | owner; no group/other **write** — 0755 stays traversable |
+
+The security property for path identity is **exact canonical filesystem OBJECT identity (device + inode)**, not
+case-sensitive string identity. `lifecycle_root_digest` derives from that identity, so one physical directory
+has exactly one digest regardless of spelling, while a different filesystem object is refused even when its
+path string looks similar. Records carry `lifecycle_root_object_id`.
+
+## No mutable state on a capability
+Launch and transfer state live in a module-private WeakMap alongside the ephemeral key. The capability has no
+`__state`, `Object.freeze` is not defeated by a nested object, `JSON.stringify` exposes no lifecycle state, and
+`Reflect.ownKeys`/prototype inspection reveal nothing writable. `lifecycleStateV4()` returns a frozen read-only
+snapshot for tests and evidence and `null` for a non-capability.
+
+## The supervisor entrypoint is mandatory
+`createLaunchIntentV4` refuses an absent or null `supervisorEntrypoint`, and the attach-side "this program IS
+the entrypoint" proof is unconditional: an intent recording no entrypoint is refused outright. No production
+flag disables it.

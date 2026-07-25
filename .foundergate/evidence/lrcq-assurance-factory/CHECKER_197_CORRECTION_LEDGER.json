@@ -1,0 +1,301 @@
+{
+  "schema": "lrcq-checker-197-correction-ledger-1",
+  "checker_report": {
+    "sha256": "caa4db0031b172ca69c9b456d298cb3b3e6185215e9074293b6c93390fbdc20f",
+    "verdict": "FINDINGS",
+    "summary": {
+      "HIGH": 1,
+      "MEDIUM": 2,
+      "LOW": 3,
+      "INFORMATIONAL": 3,
+      "TOTAL": 9
+    },
+    "status": "HISTORICAL EVIDENCE ONLY \u2014 invalidated as current acceptance by this wave's mutations."
+  },
+  "reviewed_executable_code_candidate": "8e6944ef04eb91604af36064051524b12a38c23d",
+  "findings": [
+    {
+      "id": "FG-CHK-197-01",
+      "severity": "HIGH",
+      "title": "one-use ephemeral-key transfer not atomic",
+      "accepted": true,
+      "disputed": false,
+      "mechanism": "The guard read st.transfer at entry but SPENT was written only after the awaited descriptor write; everything between was synchronous, so a second call entering before that await passed the guard, spawned a second child and wrote the same key frame.",
+      "reproduction_before": {
+        "method": "Promise.all of two spawnGovernedSupervisorV4 calls on one consumed capability, each child recording sha256 of what it read on fd 3",
+        "result": {
+          "ok_results": 2,
+          "already_transferred": 0,
+          "children_spawned": 2,
+          "frames_delivered": 2,
+          "distinct_frame_digests": 1,
+          "interpretation": "the SAME ephemeral private key reached TWO live OS processes from one consumption \u2014 the Checker's finding reproduced independently by the Builder before correcting"
+        }
+      },
+      "correction": [
+        "TRANSFER_STATES gains TRANSFERRING, set SYNCHRONOUSLY in the same microtask as the guard, before any child creation, spawn, key export, pipe write or asynchronous yield",
+        "input-validation refusals return the capability to NOT_TRANSFERRED (no key materialized, no child spawned)",
+        "past the point of no return: key exported, frame encoded, key DELETED from module storage, state set SPENT \u2014 all before the first await",
+        "killAndReap kills AND reaps a partially launched child on transfer failure (bounded, group-escalating)",
+        "no path allows a retry with the same key after a failed or ambiguous transfer"
+      ],
+      "files": [
+        "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs"
+      ],
+      "result_after": {
+        "ok_results": 1,
+        "already_transferred": 1,
+        "children_spawned": 1,
+        "frames_delivered": 1,
+        "claims": "<=1",
+        "provider_spawns": 0,
+        "processes_left": 0
+      },
+      "regression_tests": [
+        "checker-197-corrections C1a-C1k"
+      ]
+    },
+    {
+      "id": "FG-CHK-197-02",
+      "severity": "MEDIUM",
+      "title": "PATH-resolved git/ps on authority paths",
+      "accepted": true,
+      "disputed": false,
+      "mechanism": "execFileSync(\"git\", ...) chose the binary by inherited PATH; a hostile `git` answered --show-toplevel with an attacker-chosen directory and the ephemeral-signed marker was written there. Same exposure for `ps` under stale-PID / PID-reuse detection.",
+      "correction": [
+        "new assurance/fixed-executables.mjs pins /usr/bin/git and /bin/ps, verifies regular+non-symlink+executable immediately before use, and runs them in a MINIMAL environment",
+        "the minimal environment also drops GIT_DIR / GIT_WORK_TREE / GIT_COMMON_DIR and pins GIT_CONFIG_GLOBAL/SYSTEM to /dev/null, closing the env-redirection variant the report did not test",
+        "converted: repository/git-common-dir binding, observedStartIdentity, supervisor start identity, provider pre-spawn worktree identity, machine verifier, witness sources, setup manager, real seams, launcher, and the packaging generators"
+      ],
+      "files": [
+        "src/v8b/lrcq/assurance/fixed-executables.mjs",
+        "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs",
+        "src/v8b/lrcq/assurance/activation-v4.mjs",
+        "src/v8b/lrcq/run-harness/supervisor-main.mjs",
+        "src/v8b/lrcq/provider/real-provider.mjs",
+        "src/v8b/lrcq/run-harness/machine-verifier-exec.mjs",
+        "src/v8b/lrcq/run-harness/witness-sources.mjs",
+        "src/v8b/lrcq/run-harness/setup-manager.mjs",
+        "src/v8b/lrcq/run-harness/real-seams.mjs",
+        "tools/terminal0/lrcq/run-five-hour.mjs",
+        "tools/terminal0/lrcq/generate-run-manifest.mjs",
+        "tools/terminal0/lrcq/capsule-verifier.mjs",
+        "tools/terminal0/lrcq/generate-capsule.mjs",
+        "tools/terminal0/lrcq/classify-and-packet.mjs",
+        "tools/terminal0/lrcq/evidence-set.mjs"
+      ],
+      "result_after": {
+        "attacker_root_consume": "REFUSED",
+        "marker_in_attacker_root": false,
+        "hostile_git_invocations": 0,
+        "hostile_ps_invocations": 0,
+        "legitimate_binding_under_hostile_path": "still verifies (the fixed git answered)",
+        "process_start_identity": "real lstart from /bin/ps, no hostile output"
+      },
+      "regression_tests": [
+        "checker-197-corrections C2a-C2j"
+      ]
+    },
+    {
+      "id": "FG-CHK-197-03",
+      "severity": "MEDIUM",
+      "title": "supervisor config carried authority-bearing exec/now",
+      "accepted": true,
+      "disputed": false,
+      "mechanism": "The launcher wrote exec and now into the 0600 config; supervisor-main passed cfg.exec into executeSignedRunV4, whose exec.repoRoot and exec.candidateRef reached `git worktree add` verbatim and so decided which commit every job worktree was built from, and used cfg.now as the clock for its INDEPENDENT re-verification.",
+      "correction": [
+        "the launcher no longer writes exec or now",
+        "validateSupervisorConfig enforces an EXHAUSTIVE allow-list and refuses exec, now and any unknown authority-bearing key BEFORE the lifecycle claim and before any provider access",
+        "production time is the system clock; the executor receives an empty exec object",
+        "the config file itself is owner/0600-verified before it is parsed",
+        "the injectable exec parameter remains on executeSignedRunV4 for the deterministic test families, which pass it directly \u2014 never through a config"
+      ],
+      "files": [
+        "tools/terminal0/lrcq/run-five-hour.mjs",
+        "src/v8b/lrcq/run-harness/supervisor-main.mjs"
+      ],
+      "result_after": {
+        "hand_written_exec_config_at_real_entrypoint": "exit 2, SUPERVISOR_CONFIG_AUTHORITY_FIELD_REFUSED, no supervisor state written",
+        "unknown_field": "SUPERVISOR_CONFIG_UNKNOWN_FIELD_REFUSED",
+        "cfg_exec_or_cfg_now_read_anywhere": false
+      },
+      "regression_tests": [
+        "checker-197-corrections C3a-C3o"
+      ]
+    },
+    {
+      "id": "FG-CHK-197-04",
+      "severity": "LOW",
+      "title": "no owner or permission check on lifecycle records or the root",
+      "accepted": true,
+      "disputed": false,
+      "mechanism": "Records were created 0600 but every READ validated only symlink + regular file. No uid comparison, no rejection of group/other-writable modes, for the marker, intent, claim or the lifecycle root. Proven by absence: with records 0666 and the root 0777, an attach with a wrong key still reached KEY_MISMATCH.",
+      "correction": [
+        "new assurance/fs-authority-guards.mjs with three permission classes",
+        "SECRET_OR_MUTABLE (marker, intent, claim, supervisor config): owner == running uid and NO group/other permission at all (mode & 0o077)",
+        "DIRECTORY (lifecycle root): owner and no group/other WRITE (mode & 0o022), so 0755 stays traversable",
+        "PUBLIC_SIGNED (the signed activation): owner and no group/other WRITE \u2014 it is signature-protected and meant to be readable",
+        "wired into resolveSignedRoot, readRecord and the supervisor's config read"
+      ],
+      "files": [
+        "src/v8b/lrcq/assurance/fs-authority-guards.mjs",
+        "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs",
+        "src/v8b/lrcq/run-harness/supervisor-main.mjs"
+      ],
+      "result_after": {
+        "permissive_marker": "RECORD_UNSAFE_MODE before the cryptographic comparison",
+        "group_readable_intent": "RECORD_UNSAFE_MODE",
+        "world_writable_root": "ROOT_UNSAFE_MODE",
+        "root_0755": "accepted",
+        "owner_mismatch": "RECORD_UNSAFE_OWNER / ROOT_UNSAFE_OWNER"
+      },
+      "regression_tests": [
+        "checker-197-corrections C4a-C4i"
+      ]
+    },
+    {
+      "id": "FG-CHK-197-05",
+      "severity": "LOW",
+      "title": "signed lifecycle root's 'exact realpath' was case-insensitive",
+      "accepted": true,
+      "disputed": false,
+      "mechanism": "resolveSignedRoot compared realpath STRINGS; on this case-insensitive APFS volume realpathSync does not canonicalise case, so a case-variant signed root was accepted as a distinct root while being the same physical directory, and sha256(rootString) produced two digests for one location.",
+      "correction": [
+        "the authority identity is the canonical filesystem OBJECT identity (device + inode)",
+        "lifecycle_root_digest is derived from that identity, so one physical directory has exactly one digest regardless of spelling",
+        "the marker and intent record lifecycle_root_object_id, and assertAuthorityObject can require the SAME object at every later read",
+        "documented property: exact canonical filesystem OBJECT identity, NOT case-sensitive string identity"
+      ],
+      "files": [
+        "src/v8b/lrcq/assurance/fs-authority-guards.mjs",
+        "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs"
+      ],
+      "result_after": {
+        "case_variant_of_same_inode": "accepted as the SAME root",
+        "digest_for_both_spellings": "IDENTICAL",
+        "different_filesystem_object_with_similar_path": "FS_OBJECT_IDENTITY_MISMATCH"
+      },
+      "regression_tests": [
+        "checker-197-corrections C5a-C5e"
+      ]
+    },
+    {
+      "id": "FG-CHK-197-06",
+      "severity": "LOW",
+      "title": "nested __state escaped Object.freeze and was serializable",
+      "accepted": true,
+      "disputed": false,
+      "mechanism": "A plain { launched, transfer } object was placed on the frozen capability under a discoverable key. Object.freeze is shallow, so any holder could write to it and JSON.stringify exposed it.",
+      "correction": [
+        "launch and transfer state moved into a module-private WeakMap (CAPSTATE) alongside the ephemeral key",
+        "__state removed from the capability entirely",
+        "a read-only FROZEN snapshot (lifecycleStateV4) replaces it for tests and evidence; it returns null for a non-capability"
+      ],
+      "files": [
+        "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs"
+      ],
+      "result_after": {
+        "isFrozen_capability": true,
+        "__state_present": false,
+        "own_keys_with_mutable_state": 0,
+        "nested_mutable_objects": 0,
+        "lifecycle_state_in_JSON": false,
+        "external_write_resets_state": false
+      },
+      "regression_tests": [
+        "checker-197-corrections C6a-C6k"
+      ]
+    },
+    {
+      "id": "FG-CHK-197-07",
+      "severity": "INFORMATIONAL",
+      "title": "an intent could omit the supervisor entrypoint",
+      "accepted": true,
+      "disputed": false,
+      "mechanism": "createLaunchIntentV4 accepted an optional entrypoint and returned OK without one; the attach-side self-proof ran only when the intent recorded one. The state was unreachable in practice because the transfer refused a null entrypoint, but the weak combination existed.",
+      "correction": [
+        "the entrypoint is MANDATORY at intent creation (null/undefined/empty refused, no intent file written)",
+        "the attach-side self-proof is UNCONDITIONAL: an intent recording no entrypoint is refused outright",
+        "no production flag can disable the proof"
+      ],
+      "files": [
+        "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs"
+      ],
+      "result_after": {
+        "intent_without_entrypoint": "ENTRYPOINT_INVALID at creation",
+        "intent_file_written": false,
+        "self_proof_conditional": false
+      },
+      "regression_tests": [
+        "checker-197-corrections C7a-C7f",
+        "lifecycle-authority-v4 L0"
+      ]
+    },
+    {
+      "id": "FG-CHK-197-08",
+      "severity": "INFORMATIONAL",
+      "title": "freeze record's 'reviewed candidate' was itself an evidence-only commit",
+      "accepted": true,
+      "disputed": false,
+      "mechanism": "The record defined reviewed_candidate_sha procedurally as 'HEAD~1 of the frozen branch'; HEAD~1 was 846b881, an evidence-only commit. The last code commit was d5cd803. Both trees carried identical src/ and tools/ content, so the freeze was materially sound but the label was imprecise.",
+      "correction": [
+        "freeze record v2 names the LAST EXECUTABLE-CODE commit by concrete SHA and tree",
+        "the evidence-only commits after it are enumerated separately",
+        "the proof command is stated so a reviewer can verify the distinction independently"
+      ],
+      "files": [
+        ".foundergate/evidence/lrcq-assurance-factory/PR197_V4_FREEZE_RECORD.json"
+      ],
+      "result_after": {
+        "reviewed_executable_code_candidate_sha": "8e6944ef04eb91604af36064051524b12a38c23d",
+        "labelled_as_code_commit": true
+      },
+      "regression_tests": [
+        "verified by inspection: git diff --stat <candidate> HEAD -- src tools is empty"
+      ]
+    },
+    {
+      "id": "FG-CHK-197-09",
+      "severity": "INFORMATIONAL",
+      "title": "GitHub reports no branch protection on main",
+      "accepted": true,
+      "disputed": false,
+      "mechanism": "GET /repos/yosiwizman/foundergate/branches/main returns protected=false. The SHA matches the expected protected-main value and is unchanged.",
+      "correction": [
+        "recorded in BRANCH_PROTECTION_STATUS.json with the five route-level prohibitions that hold independently of platform settings",
+        "branch protection NOT changed in this wave (explicitly outside its authority)",
+        "queued separately as FOUNDERGATE-ADMIN-BRANCH-PROTECTION-MAIN",
+        "the residual risk is stated: a human or tool acting OUTSIDE this run route could still push to main; the run route itself cannot"
+      ],
+      "files": [
+        ".foundergate/evidence/lrcq-assurance-factory/BRANCH_PROTECTION_STATUS.json"
+      ],
+      "result_after": {
+        "github_branch_protection_enabled": false,
+        "changed_in_this_wave": false,
+        "route_level_prohibitions_proven": 5
+      },
+      "regression_tests": [
+        "checker-197-corrections C9a-C9e"
+      ]
+    }
+  ],
+  "findings_omitted_or_dismissed": [],
+  "also_corrected_from_the_report_body": [
+    "The module comment claiming an alternate worktree resolves to a different common dir was inaccurate (an alternate worktree SHARES the common dir). The comment now states that the binding holds via the TOPLEVEL check."
+  ],
+  "suite": {
+    "runs": 2,
+    "self_tests": 152,
+    "passing": 152,
+    "assertions": 1725,
+    "failures": 0,
+    "skipped_or_weakened": 0
+  },
+  "focused_regression_suite": {
+    "file": "src/v8b/lrcq/run-harness-tests/checker-197-corrections.selftest.mjs",
+    "assertions": 75,
+    "passing": 75
+  },
+  "next_gate": "READY_FOR_FRESH_INDEPENDENT_CHECKER"
+}

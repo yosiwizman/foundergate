@@ -1,45 +1,65 @@
 {
-  "schema": "lrcq-pr197-v4-freeze-record-1",
-  "wave": "FG-LRCQ-ACT-029",
+  "schema": "lrcq-pr197-v4-freeze-record-2",
+  "wave": "FG-CHK-197 (independent-Checker finding correction)",
+  "supersedes": "lrcq-pr197-v4-freeze-record-1 \u2014 invalidated by the corrections in this wave",
   "pr": 197,
   "state": "open, draft, unmerged",
   "branch": "lane/lrcq-founder-signature-authority-8d1899f",
-  "reviewed_candidate_sha": "HEAD~1 of the frozen branch (a commit cannot embed its own hash; the concrete SHA/tree pair is stated in the PR #197 body and is verifiable with git)",
-  "reviewed_candidate_tree": "HEAD~1^{tree} of the frozen branch",
-  "evidence_commit_sha": "HEAD of the frozen branch \u2014 the commit that carries this record",
-  "two_sha_note": "Verification procedure, independent of any hash written here: (1) git rev-parse HEAD and HEAD~1 on lane/lrcq-founder-signature-authority-8d1899f; (2) confirm `git diff --stat HEAD~1 HEAD` touches ONLY this freeze record; (3) confirm the pair matches the SHAs quoted in the PR #197 body; (4) run npm test at HEAD and require ALL GREEN 151/151. The authority_module_digests below were computed over HEAD~1 and are unchanged at HEAD (this record is the only difference).",
+  "reviewed_executable_code_candidate_sha": "8e6944ef04eb91604af36064051524b12a38c23d",
+  "reviewed_executable_code_candidate_tree": "e1df714843cd32173c024c939bebe34238a516d2",
+  "reviewed_executable_code_candidate_proof": "git diff --stat 8e6944ef04eb91604af36064051524b12a38c23d HEAD -- src tools package.json package-lock.json is EMPTY; every path changed after it lies under .foundergate/evidence/ or docs/.",
+  "evidence_only_commits_after_the_executable_candidate": "listed in evidence_only_tail below; each changes ONLY .foundergate/evidence/ and/or docs/",
+  "prior_freeze_record_label_defect": {
+    "finding": "FG-CHK-197-08",
+    "was": "reviewed_candidate_sha was defined procedurally as 'HEAD~1 of the frozen branch', which resolved to an EVIDENCE-ONLY commit (846b881), not the last code commit (d5cd803).",
+    "now": "the reviewed executable-code candidate is named by concrete SHA and tree, and the evidence-only tail is enumerated separately."
+  },
   "base_pr196_head": "8d1899f793305e9f87adc5163a60bfb077e4d4e5",
   "protected_main": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423",
   "suite": {
     "command": "npm test",
-    "self_tests": 151,
-    "passing": 151,
-    "assertions_passing": 1649,
-    "result": "ALL GREEN"
+    "runs": 2,
+    "self_tests": 152,
+    "passing": 152,
+    "assertions_passing_run_1": 1725,
+    "assertions_passing_run_2": 1725,
+    "failures": 0,
+    "skipped_or_weakened": 0,
+    "result": "ALL GREEN twice consecutively"
   },
   "founder_key_authority_active_keys": [],
   "authority_module_digests": {
-    "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs": "sha256:9f77cf90c2bf2727a7fac0673f6850d7aee8dc17bb77ff7acaa21823d67b5ebd",
-    "src/v8b/lrcq/assurance/activation-v4.mjs": "sha256:7d2720a60852cb4096b4bc731765bef4fe24b841f2b3be258f70d0abfccadbf1",
+    "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs": "sha256:e0d81e33d67148feb3708a9b43f3b4c02532b6c4522f4a1621c209f17c2d6659",
+    "src/v8b/lrcq/assurance/activation-v4.mjs": "sha256:2324c79cf2af18880da0d872ee15e74a13eabb66ac09fcdc2918380cd7bd0b3d",
     "src/v8b/lrcq/assurance/founder-key-authority.mjs": "sha256:1ea6ba55199012891ec9e0aad0366e4d5ed621fc463d3b9087ebb9d891a6aa8b",
     "src/v8b/lrcq/assurance/canonical-json.mjs": "sha256:b49cb30cf560d89091595705363b8b22077e0b94a1e41db1f9d3c8cb9d46929a",
+    "src/v8b/lrcq/assurance/fixed-executables.mjs": "sha256:00b1b56d24a07a605dc8c8a0981c9d1363702a3b1e3def21e692ae58893e907d",
+    "src/v8b/lrcq/assurance/fs-authority-guards.mjs": "sha256:574ae9794632b060b9b99c71c1e64072958e61719fc2c23901a5848e45da7ea2",
     "src/v8b/lrcq/run-harness/v4-legacy-projection.mjs": "sha256:d2328937a3551bb07d3180da9746e48787f0119d2bfb152f6f960fd11b8e590f",
     "src/v8b/lrcq/run-harness/harness.mjs": "sha256:a11188a81e1c5f04312b7ae710364d21db118cb372a15c38403b43e735cdba84",
-    "src/v8b/lrcq/run-harness/supervisor-main.mjs": "sha256:356031673b71f4e708c3f33a1d3658b6608150c12cd5f8f93f410fe07072322d",
-    "src/v8b/lrcq/run-harness/real-seams.mjs": "sha256:a94aa75966eb069fd041a0682295e57f516ce9796d026b9b49bde3d095b6cbb2",
-    "src/v8b/lrcq/provider/real-provider.mjs": "sha256:51be8d2ad1964928e8b3688dc51e0baf9cb9b69c6b74583897a18d0d6142ebed",
-    "tools/terminal0/lrcq/run-five-hour.mjs": "sha256:e7350487f936cc7988497566b166217f05094dd9d3dbfeab595bbac9231e6b99",
+    "src/v8b/lrcq/run-harness/supervisor-main.mjs": "sha256:9218bada7b80c2975b9a935c0bb4656d1c22d603a2257685ebf2128fd27ed89c",
+    "src/v8b/lrcq/run-harness/real-seams.mjs": "sha256:629e730bb9ba139edcb742cdb3ef8db6454253c75eb7511a9418af08d6c65507",
+    "src/v8b/lrcq/provider/real-provider.mjs": "sha256:6b1328e188a5d14f60e39e5382df5e7c1ae423fc2c0eb0e018a1636d4210854e",
+    "tools/terminal0/lrcq/run-five-hour.mjs": "sha256:deee8f60de68b9011b2f5e7eb22c320cdae6732de9dc92b142911878684aaade",
     "tools/terminal0/lrcq/founder-sign.mjs": "sha256:0455b431ec5647e85ad70b9af595cdb8da75309313d92184e9cfdc161f98a791",
     "tools/terminal0/lrcq/founder-key-enroll.mjs": "sha256:c25d44afd279acb3abdf5ac3bc8deb04bce3a31a466d332ebd5cd332e41d6395",
-    "tools/terminal0/lrcq/generate-run-manifest.mjs": "sha256:53690bc21a9f7524d03dd8cb6e6dab042e5c010934a7f20fba618e4e8465c2d9",
+    "tools/terminal0/lrcq/generate-run-manifest.mjs": "sha256:870703ee990cc3de8fb69ac30ce8058c6a8fcb1854413e4603a07c67c91d9a10",
     ".foundergate/run-materials/first-internal-5h/run-manifest.json": "sha256:c485151e9b35ec938f5091839190c3b4f1911eec15a49e0186e664788806bc4b",
     ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json": "sha256:2de7a315ab1e2951d88d88e43bf4aab9ad0b84d360945fe79184d4b457f1fe92"
   },
-  "builder_identity": {
+  "historical_checker_report": {
+    "path_at_review_time": "/tmp/foundergate-pr197-independent-checker.json",
+    "sha256": "caa4db0031b172ca69c9b456d298cb3b3e6185215e9074293b6c93390fbdc20f",
+    "verdict": "FINDINGS",
+    "verdict_line": "FOUNDERGATE-PR197-INDEPENDENT-CHECKER: FINDINGS",
+    "status": "HISTORICAL EVIDENCE ONLY \u2014 INVALIDATED as current acceptance by the mutations in this wave. It reviewed a tree that no longer exists on this branch. A FRESH independent Checker is required."
+  },
+  "builder_execution_metadata": {
+    "provider": "Anthropic \u2014 Claude Code CLI",
     "model_label": "Claude Opus 5",
-    "model_id": "claude-opus-5",
+    "model_identifier": "claude-opus-5",
     "claude_code_version": "2.1.219",
-    "note": "The Builder's own Claude Code version is NOT the provider identity the activation binds (2.1.220). Recorded separately on purpose."
+    "note": "Builder identity, deliberately distinct from the provider-under-test identity (2.1.220) the activation binds."
   },
   "prohibitions_observed": {
     "founder_key_enrolled": false,
@@ -52,40 +72,14 @@
     "deployed": false,
     "protected_main_modified": false,
     "pr196_modified_or_merged": false,
-    "historical_evidence_rewritten": false,
+    "github_branch_protection_changed": false,
     "akior_accessed": false,
     "m1_accessed": false,
-    "external_communication": false,
-    "checks_weakened_for_green": false,
-    "builder_self_review_treated_as_independent_proof": false
+    "prompt_library_modernization_performed": false,
+    "unrelated_hardening_or_product_features_added": false,
+    "builder_tests_treated_as_independent_review": false
   },
-  "next_gate": "READY_FOR_EXTERNAL_INDEPENDENT_CHECKER",
-  "required_checker_verdict": "AUTHORITY_CHAIN_CLEAN_PROVIDER_REFREEZE_REQUIRED",
-  "required_advisor_verdict": "AUTHORITY_IMPLEMENTATION_READY_FOR_PROVIDER_REFREEZE",
-  "post_review_lane": "descendant provider-re-freeze + package lane (draft PR off this frozen head), then package Checker CLEAN and package Advisor PACKAGE_READY_FOR_FOUNDER_KEY_ENROLLMENT",
-  "builder_execution_metadata": {
-    "recorded_at_session_start_utc": "2026-07-25T01:07:28Z",
-    "provider": "Anthropic \u2014 Claude Code CLI",
-    "model_label": "Claude Opus 5",
-    "model_identifier": "claude-opus-5",
-    "claude_code_version": "2.1.219",
-    "effort_level": "UNKNOWN (not exposed to the session)",
-    "context_window_size": "UNKNOWN (not exposed numerically)",
-    "fast_mode_status": "UNKNOWN (not exposed)",
-    "fallback_configuration": "UNKNOWN (not exposed)",
-    "fallback_occurred": "NO \u2014 the model identifier remained claude-opus-5 for the whole session",
-    "prompt_cache_status": "UNKNOWN (not exposed)",
-    "tool_versions": {
-      "node": "v24.13.1",
-      "npm": "11.8.0",
-      "git": "2.50.1 (Apple Git-155)",
-      "gh": "present"
-    },
-    "tool_permissions": "read/write within the authorized worktree, Bash, git, gh. The Agent/subagent tool was PROHIBITED by this session's operating rules, which is why the independent Checker and Advisor are handed to an external context.",
-    "host": {
-      "hostname": "AKIOR-Mac-mini.local",
-      "kernel": "Darwin 25.3.0 arm64 (xnu-12377.91.3~2, T6041)"
-    },
-    "note": "This is the BUILDER's identity. It is deliberately distinct from the provider-under-test identity the activation binds (2.1.220, sha256:8addc857...)."
-  }
+  "next_gate": "READY_FOR_FRESH_INDEPENDENT_CHECKER",
+  "required_fresh_checker_clean_verdict": "AUTHORITY_CHAIN_CLEAN_PROVIDER_REFREEZE_REQUIRED",
+  "fresh_checker_packet": "docs/lanes/PR197_FRESH_CHECKER_PACKET.md"
 }
