@@ -23,6 +23,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync, renameSync, realpathSync, statSync, rmSync, chmodSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join, dirname, resolve } from "node:path";
+import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { makeDisposableV4World } from "./test-support/v4-fixture.mjs";
 import { runV4Body, reportChecks } from "./test-support/v4-run-body.mjs";
@@ -40,6 +41,10 @@ const REPO = resolve(HERE, "../../../..");
 const RECEIPT_CHILD = realpathSync(join(HERE, "test-support", "v4-key-receipt-child.mjs"));
 const RECORDING_STUB = realpathSync(join(HERE, "test-support", "recording-provider-stub.mjs"));
 const SPAWN_FAIL_LAUNCHER = realpathSync(join(HERE, "test-support", "spawn-failure-launcher.mjs"));
+// FG-FFIN4-197-01: a supervisor that legitimately holds the transferred key and forges ONLY its start
+// identity, plus the driver that denies the parent's /bin/ps through genuine fd-table saturation.
+const FORGING_CHILD = realpathSync(join(HERE, "test-support", "forging-start-identity-supervisor.mjs"));
+const PRESSURE_DRIVER = realpathSync(join(HERE, "test-support", "start-identity-pressure-driver.mjs"));
 const BOUNDARY_BODY = join(HERE, "test-support", "bodies", "final-five-boundary.body.mjs");
 
 let n = 0; const fails = [];
@@ -485,6 +490,131 @@ try {
     ok("FFE6 [STRUCTURAL] the C1 comment documents the scrubbed environment and the adjacent durable log",
       /SCRUBS the child environment|scrubs the child environment/i.test(corrSrc) && /spawns\.log|adjacent/i.test(corrSrc));
     ok("FFE7 [STRUCTURAL] a POSITIVE CONTROL proves the spawn counter can actually record", /C1i2/.test(corrSrc) && /positive control/i.test(corrSrc));
+  }
+
+  // ==================================================================================================
+  // FG-FFIN4-197 — FOURTH independent-Checker findings (report sha256 886d6982...)
+  //   01 MEDIUM  the parent's start-identity check FAILED OPEN when the OS observation was unavailable
+  //   02 LOW     the matrix/contract stated that binding as unconditional, and the cited assertions
+  //              (an UNSIGNED claim wrong in BOTH pid and identity) never reached the comparison
+  // ==================================================================================================
+
+  // ---- FS-1: a genuine key-holding supervisor forges ONLY the start identity, PID correct -------------
+  // This is the citation FG-FFIN4-197-02 says FN-F1-04 was missing: the claim is correctly EPHEMERAL-SIGNED
+  // and carries the EXACT spawned PID, so every earlier binding passes and the refusal can only come from
+  // the start-identity comparison itself.
+  {
+    const w = world("fs1");
+    const c = consumeActivationV4(w.verified, { now: w.now });
+    const li = createLaunchIntentV4(c.capability, { now: w.now, supervisorEntrypoint: FORGING_CHILD });
+    ok("FS1a [DYNAMIC] the forging supervisor is bound by a genuine signed launch intent", li.ok === true, li.code);
+    const cfg = w.writeChildConfig("fs1-forge-config.json", { lifecycleRoot: w.lifecycleRoot, activationIdentity: w.verified.activation_identity });
+    const g = await spawnGovernedSupervisorV4(c.capability, { args: ["--config", cfg], detached: false });
+    const claimPath = join(w.lifecycleRoot, w.verified.activation_identity.replace(":", "_") + ".supervisor-claim.json");
+    const claim = existsSync(claimPath) ? JSON.parse(readFileSync(claimPath, "utf8")) : null;
+    ok("FS1b [DYNAMIC] the key-holding supervisor really did mint a correctly signed claim", !!claim && typeof claim.ephemeral_signature === "string" && claim.ephemeral_signature.length > 40, JSON.stringify(claim && Object.keys(claim)));
+    ok("FS1c [DYNAMIC] that claim carries the EXACT spawned PID (so every earlier binding passes)", !!claim && claim.supervisor_pid === g.supervisor_pid, (claim && claim.supervisor_pid) + " vs " + g.supervisor_pid);
+    ok("FS1d [DYNAMIC] only the start identity is forged", !!claim && claim.supervisor_start_identity === "FORGED-START-IDENTITY-NEVER-OBSERVED", claim && claim.supervisor_start_identity);
+    ok("FS1e [DYNAMIC] the transfer is REFUSED, never OK", g.ok === false, g.code);
+    ok("FS1f [DYNAMIC] the refusal is SUPERVISOR_CLAIM_INVALID", g.code === LC_CODES.SUPERVISOR_CLAIM_INVALID, g.code);
+    ok("FS1g [DYNAMIC] the rejection happens AT the start-identity comparison (not the signature or PID check)",
+      typeof g.detail === "string" && /claim start identity .* != OS-observed /.test(g.detail), g.detail);
+    ok("FS1h [DYNAMIC] the supervisor is not acknowledged", g.supervisor_acknowledged !== true);
+    ok("FS1i [DYNAMIC] the authority is TRANSFERRED_SPENT and a retry is refused",
+      lifecycleStateV4(c.capability).transfer === TRANSFER_STATES.SPENT &&
+      (await spawnGovernedSupervisorV4(c.capability, { detached: false })).code === LC_CODES.ALREADY_TRANSFERRED);
+  }
+
+  // ---- FS-2: the parent's independent OS observation is UNAVAILABLE ---------------------------------
+  // Driven in a SUBPROCESS under a low `ulimit -n`, where the fd table is genuinely saturated so the
+  // fork+pipe /bin/ps needs fails with EMFILE. No production hook, no substitute executable: the fixed
+  // /bin/ps is still the only observer, it simply cannot run. The headroom ladder is a self-calibrating
+  // search for the band where the governed spawn still succeeds while ps cannot.
+  {
+    const driverOut = join(tmpdir(), "fg-startid-result-" + process.pid + ".json");
+    let achieved = null; const attempts = [];
+    for (const headroom of [5, 6, 4, 7, 3, 8, 2, 9, 10, 12]) {
+      try { rmSync(driverOut, { force: true }); } catch { /* */ }
+      spawnSync("/bin/bash", ["-c", "ulimit -n 512; exec " + JSON.stringify(process.execPath) + " " + JSON.stringify(PRESSURE_DRIVER) + " " + JSON.stringify(driverOut) + " " + headroom],
+        { encoding: "utf8", timeout: 120000, stdio: ["ignore", "ignore", "ignore"] });
+      if (!existsSync(driverOut)) { attempts.push({ headroom, result: "no output" }); continue; }
+      const r = JSON.parse(readFileSync(driverOut, "utf8"));
+      attempts.push({ headroom, code: r.code, claim: r.claim_written_by_child });
+      // The precondition we need: the child really ran and minted its claim, AND the parent could not
+      // independently observe. Anything else (too much pressure, or ps still working) is not this case.
+      if (r.claim_written_by_child === true && r.code === "SUPERVISOR_START_IDENTITY_UNAVAILABLE") { achieved = r; break; }
+    }
+    try { rmSync(driverOut, { force: true }); } catch { /* */ }
+    ok("FS2a [DYNAMIC] a genuine unobservable-start-identity state was reached (fd-table saturation)", achieved !== null, JSON.stringify(attempts));
+    if (achieved) {
+      ok("FS2b [DYNAMIC] the transfer is NEVER OK when the parent cannot observe the start identity", achieved.ok === false, achieved.code);
+      ok("FS2c [DYNAMIC] the refusal is the exact structured SUPERVISOR_START_IDENTITY_UNAVAILABLE", achieved.code === "SUPERVISOR_START_IDENTITY_UNAVAILABLE", achieved.code);
+      ok("FS2d [DYNAMIC] supervisor_acknowledged is not true", achieved.supervisor_acknowledged !== true);
+      ok("FS2e [DYNAMIC] start_identity_independently_observed is not true", achieved.start_identity_independently_observed !== true);
+      ok("FS2f [DYNAMIC] the forged identity was NEVER accepted", achieved.accepted_start_identity !== "FORGED-START-IDENTITY-NEVER-OBSERVED" && !achieved.accepted_start_identity);
+      // Prove the refusal is caused by the missing observation, not by an earlier unrelated check.
+      ok("FS2g [DYNAMIC] the child DID mint its correctly signed claim (so no earlier binding failed)", achieved.claim_written_by_child === true);
+      ok("FS2h [DYNAMIC] that claim carried the EXACT spawned PID (the PID check passed)", achieved.claim_pid === achieved.spawned_pid, achieved.claim_pid + " vs " + achieved.spawned_pid);
+      ok("FS2i [DYNAMIC] the authority is TRANSFERRED_SPENT", achieved.transfer === TRANSFER_STATES.SPENT && achieved.spent === TRANSFER_STATES.SPENT);
+      ok("FS2j [DYNAMIC] a retry is refused ALREADY_TRANSFERRED", achieved.retry_code === LC_CODES.ALREADY_TRANSFERRED, achieved.retry_code);
+      ok("FS2k [DYNAMIC] no residual supervisor process survives", achieved.child_alive_after === false);
+      ok("FS2l [DYNAMIC] /bin/ps was genuinely restored afterwards (the denial was resource pressure, not a permanent break)", achieved.ps_available_now === true);
+    }
+  }
+
+  // ---- FS-3: every successful acknowledgment carries an independently observed identity --------------
+  {
+    const RUNS = 4; const oks = [];
+    for (let i = 0; i < RUNS; i++) {
+      const w = world("fs3_" + i);
+      const c = consumeActivationV4(w.verified, { now: w.now });
+      createLaunchIntentV4(c.capability, { now: w.now, supervisorEntrypoint: RECEIPT_CHILD });
+      const cfg = w.writeChildConfig("fs3-config.json");
+      const rp = join(w.repoRoot, "fs3.json");
+      const g = await spawnGovernedSupervisorV4(c.capability, { args: ["--config", cfg, "--receipt", rp, "--fd", "3"], detached: false });
+      const claim = g.supervisor_claim_path && existsSync(g.supervisor_claim_path) ? JSON.parse(readFileSync(g.supervisor_claim_path, "utf8")) : null;
+      oks.push({ ok: g.ok, code: g.code, ack: g.supervisor_acknowledged, observed: g.start_identity_independently_observed,
+        pid: g.supervisor_pid, claimPid: claim && claim.supervisor_pid, id: g.supervisor_start_identity, claimId: claim && claim.supervisor_start_identity });
+    }
+    ok("FS3a [DYNAMIC] every genuine run returned exactly one OK (" + RUNS + " runs)", oks.every((o) => o.ok === true && o.code === LC_CODES.OK), JSON.stringify(oks.map((o) => o.code)));
+    ok("FS3b [DYNAMIC] every OK reports supervisor_acknowledged === true", oks.every((o) => o.ack === true));
+    ok("FS3c [DYNAMIC] every OK reports start_identity_independently_observed === true", oks.every((o) => o.observed === true), JSON.stringify(oks.map((o) => o.observed)));
+    ok("FS3d [DYNAMIC] every OK is bound to the exact spawned PID", oks.every((o) => o.claimPid === o.pid));
+    ok("FS3e [DYNAMIC] the claim identity equals the independently observed identity on every OK",
+      oks.every((o) => typeof o.id === "string" && o.id.length > 0 && o.claimId === o.id), JSON.stringify(oks.map((o) => o.id)));
+    ok("FS3f [DYNAMIC] the observed identity is a real /bin/ps lstart record, not a placeholder",
+      oks.every((o) => /^pid:\d+\|lstart:/.test(o.id)), JSON.stringify(oks.map((o) => o.id)));
+  }
+
+  // ---- FS-4: fast claim-and-exit, repeated — no OK may carry an unobserved identity ------------------
+  {
+    const RUNS = 6; const outcomes = [];
+    for (let i = 0; i < RUNS; i++) {
+      const w = world("fs4_" + i);
+      const c = consumeActivationV4(w.verified, { now: w.now });
+      createLaunchIntentV4(c.capability, { now: w.now, supervisorEntrypoint: RECEIPT_CHILD });
+      const cfg = w.writeChildConfig("fs4-config.json");
+      const g = await spawnGovernedSupervisorV4(c.capability, { args: ["--config", cfg, "--fd", "3"], detached: false });
+      outcomes.push({ ok: g.ok, code: g.code, observed: g.start_identity_independently_observed, ack: g.supervisor_acknowledged });
+    }
+    ok("FS4a [DYNAMIC] the fast claim-and-exit race never yields an OK with an unobserved identity (" + RUNS + " runs)",
+      outcomes.every((o) => o.ok !== true || o.observed === true), JSON.stringify(outcomes));
+    ok("FS4b [DYNAMIC] no run reports acknowledged-without-observation", outcomes.every((o) => !(o.ack === true && o.observed !== true)), JSON.stringify(outcomes));
+    ok("FS4c [DYNAMIC] every outcome is a known structured lifecycle code", outcomes.every((o) => Object.values(LC_CODES).includes(o.code)), JSON.stringify(outcomes.map((o) => o.code)));
+  }
+
+  // ---- FS-5: the fail-open guard is gone from the source, and the code is reachable ------------------
+  {
+    const lsrc = src("src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs");
+    ok("FS5a [STRUCTURAL] the conditional `observedStart !== null &&` guard no longer gates the comparison",
+      !/observedStart !== null && d\.supervisor_start_identity !== observedStart/.test(lsrc));
+    ok("FS5b [STRUCTURAL] SUPERVISOR_START_IDENTITY_UNAVAILABLE is declared and RETURNED, not dead",
+      (lsrc.match(/SUPERVISOR_START_IDENTITY_UNAVAILABLE/g) || []).length >= 3);
+    ok("FS5c [STRUCTURAL] no caller option can substitute or skip the observation",
+      !/opts\.(observedStart|skipStartIdentity|startIdentity|psPath)/.test(lsrc) && /observedStartIdentity\(child\.pid\)/.test(lsrc));
+    const fsrc = src("src/v8b/lrcq/assurance/fixed-executables.mjs");
+    ok("FS5d [STRUCTURAL] the observation still runs through the fixed absolute /bin/ps in the minimal environment",
+      /FIXED_PS = "\/bin\/ps"/.test(fsrc) && /env: MINIMAL_ENV/.test(fsrc));
   }
 
   console.log("");

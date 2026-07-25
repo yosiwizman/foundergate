@@ -49,6 +49,10 @@ export const LC_CODES = {
   SUPERVISOR_TERMINATED_BEFORE_CLAIM: "SUPERVISOR_TERMINATED_BEFORE_CLAIM",
   SUPERVISOR_CLAIM_TIMEOUT: "SUPERVISOR_CLAIM_TIMEOUT",
   SUPERVISOR_CLAIM_INVALID: "SUPERVISOR_CLAIM_INVALID",
+  // FG-FFIN4-197-01: the parent could not INDEPENDENTLY observe the spawned process's OS start identity, so
+  // the one field a key-holding supervisor fully controls cannot be checked against anything. That is a
+  // REFUSAL, never degraded assurance.
+  SUPERVISOR_START_IDENTITY_UNAVAILABLE: "SUPERVISOR_START_IDENTITY_UNAVAILABLE",
   // FG-CHK-197-04 / FG-CHK-197-05 filesystem authority guards
   ROOT_UNSAFE_OWNER: "ROOT_UNSAFE_OWNER", ROOT_UNSAFE_MODE: "ROOT_UNSAFE_MODE",
   RECORD_UNSAFE_OWNER: "RECORD_UNSAFE_OWNER", RECORD_UNSAFE_MODE: "RECORD_UNSAFE_MODE",
@@ -535,10 +539,24 @@ function classifySupervisorClaim(cPath, ctx, childPid, observedStart) {
   // (6) the claim belongs to the process THIS transfer spawned, not some other live process
   if (d.supervisor_pid !== childPid) return bad("claim supervisor_pid " + d.supervisor_pid + " != spawned pid " + childPid);
   if (typeof d.supervisor_start_identity !== "string" || !d.supervisor_start_identity) return bad("claim records no process start identity");
-  if (observedStart !== null && d.supervisor_start_identity !== observedStart) {
+  // FG-FFIN4-197-01: this comparison is UNCONDITIONAL. It previously ran only `if (observedStart !== null)`,
+  // so whenever /bin/ps was unavailable — genuinely reachable under the file-descriptor / process pressure a
+  // five-hour run creates — the check silently disabled itself and the claim's SELF-REPORTED identity was
+  // accepted. That is the one field a key-holding supervisor fully controls: it legitimately holds the
+  // transferred ephemeral key, so it can sign any body it likes, and every other binding (activation,
+  // payload, marker, intent, nonce, entrypoint, root object id, PID) still passes. The SUPERVISOR side of
+  // the identical observation has always failed CLOSED (START_IDENTITY_MISMATCH on a null observation); this
+  // side now matches it.
+  //
+  // A null observation is NOT decided here. It is reported as `needsObservation` so the caller can retry —
+  // a single transient ps failure must not condemn an otherwise healthy transfer — and is converted into a
+  // refusal only at the decision point, when the child is gone or the bound has elapsed.
+  if (observedStart === null) return { needsObservation: true, reason: "OS start identity not yet independently observed" };
+  if (d.supervisor_start_identity !== observedStart) {
     return bad("claim start identity " + d.supervisor_start_identity + " != OS-observed " + observedStart);
   }
-  return { ok: true, doc: d, digest: cd.digest, path: cPath, start_identity_independently_observed: observedStart !== null };
+  // Reaching here means the identity was compared against a real, independent observation.
+  return { ok: true, doc: d, digest: cd.digest, path: cPath, start_identity_independently_observed: true };
 }
 
 // Bounded deterministic wait for that claim. Exit-driven, not timing-driven: when the child is gone we do one
@@ -547,29 +565,49 @@ function classifySupervisorClaim(cPath, ctx, childPid, observedStart) {
 async function awaitVerifiedSupervisorClaim(child, ctx) {
   const cPath = claimPath(ctx.root, ctx.activationIdentity);
   // Observe the spawned child's OS start identity while it is (normally) still alive, so the claim can be
-  // checked against an INDEPENDENT observation rather than only against itself.
+  // checked against an INDEPENDENT observation rather than only against itself. The observation always runs
+  // through the FIXED ABSOLUTE /bin/ps in the minimal controlled environment (observedStartIdentity ->
+  // fixedPs); no PATH entry, config field, activation field, CLI flag or test option can substitute it or
+  // skip it. A process's start time is immutable for its lifetime, so the FIRST successful observation is
+  // cached and re-used; while we have none we keep retrying, because a transient ps failure must not
+  // condemn a healthy transfer (FG-FFIN4-197-01).
   let observedStart = null;
-  try { observedStart = observedStartIdentity(child.pid); } catch { observedStart = null; }
+  const observe = () => {
+    if (observedStart !== null) return observedStart;
+    try { observedStart = observedStartIdentity(child.pid); } catch { observedStart = null; }
+    return observedStart;
+  };
+  observe();
   let exited = child.exitCode !== null || child.signalCode !== null;
   const markExited = () => { exited = true; };
   child.once("exit", markExited);
   child.once("close", markExited);
   const deadline = Date.now() + SUPERVISOR_CLAIM_WAIT_MS;
+  // At a decision point an outstanding observation can no longer be retried, so it becomes a REFUSAL. A
+  // claim that is otherwise complete and correct but unverifiable against an independent observation is
+  // refused SUPERVISOR_START_IDENTITY_UNAVAILABLE — never accepted on its own word.
+  const decide = (fallbackCode, fallbackDetail) => {
+    observe();
+    const final = classifySupervisorClaim(cPath, ctx, child.pid, observedStart);
+    if (final.ok) return final;
+    if (final.invalid) return final;
+    if (final.needsObservation) {
+      return { invalid: true, code: LC_CODES.SUPERVISOR_START_IDENTITY_UNAVAILABLE, start_identity_independently_observed: false,
+        detail: "the parent could not independently observe the spawned process's OS start identity (/bin/ps unavailable), so the claim's self-reported identity cannot be verified" };
+    }
+    return { invalid: true, code: fallbackCode, detail: fallbackDetail };
+  };
   for (;;) {
+    observe();                                    // keep retrying until we have the independent observation
     const v = classifySupervisorClaim(cPath, ctx, child.pid, observedStart);
     if (v.ok) return v;
     if (v.invalid) return v;
     if (exited) {
-      const final = classifySupervisorClaim(cPath, ctx, child.pid, observedStart);
-      if (final.ok) return final;                 // a healthy short-lived supervisor may claim then exit
-      if (final.invalid) return final;
-      return { invalid: true, code: LC_CODES.SUPERVISOR_TERMINATED_BEFORE_CLAIM, detail: "the spawned supervisor exited without producing a verified claim (exit " + child.exitCode + ", signal " + child.signalCode + ")" };
+      // a healthy short-lived supervisor may claim then exit; decide() re-classifies once more first
+      return decide(LC_CODES.SUPERVISOR_TERMINATED_BEFORE_CLAIM, "the spawned supervisor exited without producing a verified claim (exit " + child.exitCode + ", signal " + child.signalCode + ")");
     }
     if (Date.now() >= deadline) {
-      const final = classifySupervisorClaim(cPath, ctx, child.pid, observedStart);
-      if (final.ok) return final;
-      if (final.invalid) return final;
-      return { invalid: true, code: LC_CODES.SUPERVISOR_CLAIM_TIMEOUT, detail: "no verified supervisor claim within " + SUPERVISOR_CLAIM_WAIT_MS + "ms" };
+      return decide(LC_CODES.SUPERVISOR_CLAIM_TIMEOUT, "no verified supervisor claim within " + SUPERVISOR_CLAIM_WAIT_MS + "ms");
     }
     // NOT unref'd: this is an ACTIVE wait for authority evidence. An unref'd timer would let node consider
     // the loop empty and exit the launcher while the acknowledgment is still outstanding.
@@ -696,7 +734,8 @@ export async function spawnGovernedSupervisorV4(consumedCap, opts = {}) {
     // key stays deleted, the buffers stay zeroed and the writer stays closed. A supervisor that is still
     // alive but never produced a valid claim is killed and reaped so nothing is left holding the key.
     await killAndReap(child);
-    return R(ack.code, { detail: ack.detail, transfer: st.transfer, supervisor_pid: child.pid, supervisor_acknowledged: false });
+    return R(ack.code, { detail: ack.detail, transfer: st.transfer, supervisor_pid: child.pid, supervisor_acknowledged: false,
+      start_identity_independently_observed: ack.start_identity_independently_observed === true });
   }
   if (opts.detached !== false && typeof child.unref === "function") child.unref();
   return R(LC_CODES.OK, {
