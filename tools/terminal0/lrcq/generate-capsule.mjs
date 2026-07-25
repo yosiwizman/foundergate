@@ -171,7 +171,9 @@ export function generateCapsule(inputs) {
   const i = inputs;
   const manifest = JSON.parse(readFileSync(join(i.repoRoot, ".foundergate/run-materials/first-internal-5h/run-manifest.json"), "utf8"));
   const prov = providerFromManifest(manifest);
-  const manDigest = manifestDigest(manifest);
+  // FG-LRCQ-ACT-029: bind the manifest FILE digest — loadManifestV4 (production) re-reads exactly these
+  // bytes off disk, so an object-serialization digest would never match and would fail the run closed.
+  const manDigest = sha256file(join(i.repoRoot, ".foundergate/run-materials/first-internal-5h/run-manifest.json"));
   const ctx = { prNumber: i.prNumber, evaluatedSha: i.evaluatedSha, evidenceCommitSha, providerTarget: prov.target, providerVersion: prov.version };
 
   // FINAL template binds evidence_commit_sha (the exact future candidate) + records evaluated ancestor

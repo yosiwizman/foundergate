@@ -421,7 +421,10 @@ export function preflightV4(activationPath, authorizationPath, opts = {}) {
   if (defects.length) { report.result = "BINDING-DEFECT"; report.non_signature_refusal = defects.join(" | "); return report; }
   if (vr.ok) { report.result = "VERIFIED-SIGNED-ACTIVATION"; return report; }
   const founderActPending = [V4_CODES.UNKNOWN_OR_REVOKED_KEY, V4_CODES.EMPTY_SIGNATURE, V4_CODES.SIGNATURE_INVALID, V4_CODES.BAD_SIGNATURE_ENCODING].includes(vr.code) ||
-    (vr.code === V4_CODES.MISSING_FIELD && /founder_signature|issued_epoch|expiry_epoch|hard_deadline_epoch|activation_nonce/.test(vr.detail || "")) ||
+    // The founder-filled fields of the frozen template: absent here means the SIGNING CEREMONY has not run,
+    // not that a binding is wrong. Every other missing field is a real binding defect.
+    (vr.code === V4_CODES.MISSING_FIELD && /^(founder_signature|signer_key_fingerprint|authorization_text_digest|activation_nonce|issued_epoch|expiry_epoch|hard_deadline_epoch)$/.test(vr.detail || "")) ||
+    (vr.code === V4_CODES.EMPTY_SIGNATURE) ||
     [V4_CODES.EXPIRED, V4_CODES.NOT_YET_ISSUED, V4_CODES.DEADLINE_ELAPSED].includes(vr.code);
   report.result = founderActPending ? "SIGNATURE-REQUIRED" : "BINDING-DEFECT";
   report.non_signature_refusal = founderActPending ? null : vr.code + (vr.detail ? " (" + vr.detail + ")" : "");

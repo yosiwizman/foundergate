@@ -5,7 +5,8 @@
 import { execFileSync, spawnSync } from "node:child_process";
 import { mkdtempSync, writeFileSync, readFileSync, existsSync, readdirSync, statSync, rmSync, realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, basename } from "node:path";
+import { createHash } from "node:crypto";
 import { generateCapsule, validateInputs, REQUIRED_MEMBERS, REQUIRED_MEMBER_REGISTRY } from "../../../../tools/terminal0/lrcq/generate-capsule.mjs";
 import { verifyCapsule } from "../../../../tools/terminal0/lrcq/capsule-verifier.mjs";
 import { buildActivationMaterialPacket } from "../../../../tools/terminal0/lrcq/generate-run-manifest.mjs";
@@ -15,7 +16,10 @@ import { verifyEvidenceSet as verifyES } from "../../../../tools/terminal0/lrcq/
 let n = 0; const fails = [];
 const ok = (name, cond) => { n++; if (!cond) { fails.push(name); console.log("  FAIL " + name); } else console.log("  ok   " + name); };
 const WORKTREE = new URL("../../../../", import.meta.url).pathname.replace(/\/$/, "");
-const versionRunner = () => "2.1.215"; // safe mechanical probe (no provider execution)
+// FG-LRCQ-ACT-029 provider re-freeze: the probe answers with whatever version the CURRENT manifest binds,
+// read mechanically from the versioned filename (never by executing the provider).
+const fileDigest = (p) => "sha256:" + createHash("sha256").update(readFileSync(p)).digest("hex");
+const versionRunner = (p) => basename(String(p));
 
 const base = mkdtempSync(join(tmpdir(), "fg-capgen-"));
 try {
@@ -29,7 +33,7 @@ try {
   // regenerate the committed material packet bound to evaluated_sha, then commit it -> evidence_commit
   const manifest = JSON.parse(readFileSync(join(clone, ".foundergate/run-materials/first-internal-5h/run-manifest.json"), "utf8"));
   const prov = { path: manifest.provider_executable_path, target: manifest.resolved_provider_target, version: manifest.provider_version, identity: manifest.provider_executable_identity };
-  const pkt = buildActivationMaterialPacket({ repo: clone, prov, manRel: ".foundergate/run-materials/first-internal-5h/run-manifest.json", manDigest: manifestDigest(manifest), leaseManifestAbs: join(clone, manifest.capability_lease_manifest_path), blastManifestAbs: join(clone, manifest.blast_budget_manifest_path), backlogRel: manifest.backlog_path, runHarnessSha: evaluatedSha, runHarnessTree: g(["rev-parse", "HEAD^{tree}"]) });
+  const pkt = buildActivationMaterialPacket({ repo: clone, prov, manRel: ".foundergate/run-materials/first-internal-5h/run-manifest.json", manDigest: fileDigest(join(clone, ".foundergate/run-materials/first-internal-5h/run-manifest.json")), leaseManifestAbs: join(clone, manifest.capability_lease_manifest_path), blastManifestAbs: join(clone, manifest.blast_budget_manifest_path), backlogRel: manifest.backlog_path, runHarnessSha: evaluatedSha, runHarnessTree: g(["rev-parse", "HEAD^{tree}"]) });
   writeFileSync(join(clone, ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json"), JSON.stringify(pkt, null, 2) + "\n");
   g(["add", ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json"]);
   g(["commit", "-q", "-m", "package: bind material packet to evaluated_sha (evidence commit)"]);
@@ -56,9 +60,9 @@ try {
   if (r.ok) {
     const ss = JSON.parse(readFileSync(join(cap, "SYSTEM_STATE.json"), "utf8"));
     const ft = JSON.parse(readFileSync(join(cap, "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json"), "utf8"));
-    ok("03 two-SHA: material packet binds evaluated; FINAL template binds evidence_commit", pkt.run_harness_candidate_sha === evaluatedSha && ft.run_harness_candidate_sha === evidenceCommitSha && ft.reviewed_production_ancestor_sha === evaluatedSha);
+    ok("03 two-SHA: material packet binds evaluated; FINAL template binds evidence_commit", pkt.evidence_commit_sha === evaluatedSha && ft.evidence_commit_sha === evidenceCommitSha && ft.reviewed_runtime_sha === evaluatedSha && ft.reviewed_production_ancestor_sha === evaluatedSha);
     ok("04 SYSTEM_STATE binds both SHAs + trees; founder_signature null", ss.evaluated_sha === evaluatedSha && ss.evidence_commit_sha === evidenceCommitSha && ss.frozen_head === evidenceCommitSha && ss.founder_signature === null);
-    ok("05 FINAL template unsigned/unissued (full V3 field set present)", ft.founder_signature === null && ft.issued_epoch === null && ft.expiry_epoch === null && ft.hard_deadline_epoch === null && "resolved_provider_target" in ft && "policy_version" in ft);
+    ok("05 FINAL template unsigned/unissued (full V4 payload field set present)", ft.founder_signature === null && ft.issued_epoch === null && ft.expiry_epoch === null && ft.hard_deadline_epoch === null && ft.signer_key_fingerprint === null && ft.authorization_text_digest === null && ft.schema === "lrcq-activation-4" && "resolved_provider_target" in ft && "run_manifest_digest" in ft && "lifecycle_root_realpath" in ft);
 
     // A. ACTUAL final-template preflight (run in the clone; HEAD == evidence_commit)
     // realpath the script + template so run-five-hour's CLI guard (SELF === resolve(argv[1])) matches on
