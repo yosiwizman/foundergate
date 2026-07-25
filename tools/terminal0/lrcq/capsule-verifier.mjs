@@ -107,7 +107,12 @@ export function verifyCapsule({ repo, capsuleDir: CAP, prNumber = 189, githubMet
     if (requireMetadata) problems.push("live-metadata binding could not be verified (metadata provider unavailable) — SKIP is NOT acceptance");
   }
   const tpl = existsSync(join(CAP, "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json")) ? JSON.parse(readFileSync(join(CAP, "FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json"), "utf8")) : {};
-  check("FINAL template binds exact frozen head", tpl.run_harness_candidate_sha === head);
+  // FG-LRCQ-ACT-029: the FINAL template is a V4 activation payload template — the frozen head is
+  // evidence_commit_sha, and reviewed_runtime_sha records the reviewed production ancestor it executes.
+  check("FINAL template binds exact frozen head", tpl.evidence_commit_sha === head);
+  check("FINAL template is a V4 payload template", tpl.schema === "lrcq-activation-4" && tpl.signature_payload_version === "lrcq-activation-v4-signature-payload-1" && tpl.founder_signature_algorithm === "ed25519");
+  check("FINAL template binds the SIGNED run manifest + lifecycle roots", typeof tpl.run_manifest_path === "string" && /^sha256:[0-9a-f]{64}$/.test(tpl.run_manifest_digest || "") && typeof tpl.repository_root_realpath === "string" && typeof tpl.repository_git_common_dir_realpath === "string" && typeof tpl.lifecycle_root_realpath === "string");
+  check("FINAL template has NO founder key fingerprint or authorization digest (enrollment + signing pending)", tpl.signer_key_fingerprint == null && tpl.authorization_text_digest == null);
   check("FINAL template is UNSIGNED", tpl.founder_signature == null, "sig=" + tpl.founder_signature);
   check("FINAL template UNCONSUMED (no issued/expiry stamped)", tpl.issued_epoch == null && tpl.expiry_epoch == null);
 

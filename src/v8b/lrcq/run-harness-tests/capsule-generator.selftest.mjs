@@ -14,7 +14,7 @@ import { manifestDigest } from "../../../../src/v8b/lrcq/run-harness/run-manifes
 import { verifyEvidenceSet as verifyES } from "../../../../tools/terminal0/lrcq/evidence-set.mjs";
 
 let n = 0; const fails = [];
-const ok = (name, cond) => { n++; if (!cond) { fails.push(name); console.log("  FAIL " + name); } else console.log("  ok   " + name); };
+const ok = (name, cond, detail) => { n++; if (!cond) { fails.push(name); console.log("  FAIL " + name + (detail ? " [" + String(detail).slice(0, 700) + "]" : "")); } else console.log("  ok   " + name); };
 const WORKTREE = new URL("../../../../", import.meta.url).pathname.replace(/\/$/, "");
 // FG-LRCQ-ACT-029 provider re-freeze: the probe answers with whatever version the CURRENT manifest binds,
 // read mechanically from the versioned filename (never by executing the provider).
@@ -89,7 +89,7 @@ try {
     const ghMeta = () => ({ title: inputs.prTitle, body: inputs.prLiveBody });
     const cv = verifyCapsule({ repo: clone, capsuleDir: cap, prNumber: 190, githubMetadataProvider: ghMeta });
     if (!cv.valid) console.log("   [09 problems]:", JSON.stringify(cv.problems));
-    ok("09 ACTUAL verifyCapsule -> valid:true, problems:[] on the SAME capsule", cv.valid === true && cv.problems.length === 0);
+    ok("09 ACTUAL verifyCapsule -> valid:true, problems:[] on the SAME capsule", cv.valid === true && cv.problems.length === 0, JSON.stringify(cv.problems) + " " + JSON.stringify((cv.checks||[]).filter((c)=>c.status!=="PASS")));
     ok("09b live-metadata check RAN (PASS, not SKIP) via the injected provider", cv.checks.some((c) => /canonical LIVE metadata/.test(c.name) && c.status === "PASS"));
     const noGh = verifyCapsule({ repo: clone, capsuleDir: cap, prNumber: 190, githubMetadataProvider: null });
     ok("09c SKIP != acceptance: null provider -> metadata SKIP recorded AND overall valid:false", noGh.checks.some((c) => c.status === "SKIP") && noGh.valid === false);
