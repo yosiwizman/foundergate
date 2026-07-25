@@ -15,6 +15,7 @@ import { renderPrompt } from "./identity-envelope.mjs";
 import { parseTransport } from "./transport-envelope.mjs";
 import { isSupervisorExecutionCapabilityV4, providerEligibilityV4 } from "../assurance/lifecycle-authority-v4.mjs";
 import { projectionMatchesCapability } from "../run-harness/v4-legacy-projection.mjs";
+import { enforceSignedAuthorityBoundary } from "./authority-boundary.mjs";
 
 export const OUTCOMES = ["SUCCESS", "FAILED", "WORKER_TIMEOUT", "RUN_DEADLINE_EXPIRED", "OUTPUT_OVERFLOW", "SPAWN_ERROR", "TERMINATED_BY_PAUSE", "TERMINATED_BY_STOP", "TEARDOWN_FAILED", "ACTIVATION_REFUSED", "UNKNOWN_FAILURE"];
 const PERMISSION_BYPASS = ["--dangerously-skip-permissions", "--allow-dangerously-skip-permissions"];
@@ -133,6 +134,13 @@ export async function runJob(activation, job, bindings, opts = {}) {
   if (!projectionMatchesCapability(activation, cap)) return seal("ACTIVATION_REFUSED", { refusals: ["V4_PROJECTION_NOT_BOUND_TO_CAPABILITY"] });
   const pe = providerEligibilityV4(cap, job, { providerIdentity: activation.provider_executable_identity, evaluatedCandidate: bindings.run_harness_candidate_sha });
   if (!pe.ok) return seal("ACTIVATION_REFUSED", { refusals: ["V4_PROVIDER_INELIGIBLE: " + pe.code + (pe.detail ? " (" + pe.detail + ")" : "")] });
+  // FG-FCHK-197-B: INDEPENDENT enforcement of the founder-signed numerical ceilings and ALL signed
+  // exclusions, derived from the IMMUTABLE authority on the genuine capability — not from the record, not
+  // from the deny list, and not from a "positive and finite" check that compares to nothing. A widened
+  // budget, timeout, width, output limit or deadline, and any exclusion dropped or flipped to false, is
+  // refused HERE, before any evidence directory is created and before any process is spawned.
+  const ab = enforceSignedAuthorityBoundary(cap, activation, job, bindings);
+  if (!ab.ok) return seal("ACTIVATION_REFUSED", { refusals: ab.refusals });
   const av = validateActivation(activation, bindings);
   if (!av.valid) return seal("ACTIVATION_REFUSED", { refusals: av.refusals });
   if (job.risk_class !== "WIDE_SAFE") return seal("ACTIVATION_REFUSED", { refusals: ["job not WIDE_SAFE: " + job.risk_class] });
@@ -159,6 +167,13 @@ export async function runJob(activation, job, bindings, opts = {}) {
   let child;
   // FG-LRCQ-ACT-022: spawn the IMMUTABLE resolved versioned target (never the mutable alias).
   const execTarget = activation.provider_resolved_target || activation.provider_executable_path;
+  // FG-FCHK-197-B: re-assert the signed ceilings IMMEDIATELY before the spawn — this is the last statement
+  // before the productive provider becomes a real process, so nothing between the earlier check and here
+  // (argv construction, env scrubbing, evidence-directory creation) can have widened a signed value. The
+  // argv this spawn is about to receive carries --max-budget-usd, and the kill timer and overflow ceiling
+  // below are read from the same record, so all three are bounded by the founder signature at this point.
+  const abSpawn = enforceSignedAuthorityBoundary(cap, activation, job, bindings);
+  if (!abSpawn.ok) return seal("ACTIVATION_REFUSED", { refusals: abSpawn.refusals });
   evidence.provider_invocation = "PROVIDER_SPAWN_ATTEMPTED";
   try { child = spawn(execTarget, argv, { cwd: job.worktree, env, detached: true, stdio: ["ignore", "pipe", "pipe"] }); }
   catch (e) { return seal("SPAWN_ERROR", { error: e.message }); }

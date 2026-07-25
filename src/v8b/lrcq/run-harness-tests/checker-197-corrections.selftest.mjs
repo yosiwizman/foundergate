@@ -15,6 +15,15 @@
 //   C9 (FG-CHK-197-09, INFO)   protected-main prohibition holds independently of GitHub branch protection
 //
 // Disposable keys, disposable repositories, deterministic children. No provider is invoked.
+//
+// EVIDENCE CLASS (FG-FCHK-197-E). Every assertion here states exactly what it observed:
+//   * unmarked            — an attack was EXECUTED and its refusal/behaviour observed in this process tree;
+//   * "[SOURCE-PROVEN]"   — a property of the SOURCE TEXT (a regex over the module), not an execution;
+//   * "COUNTED from ..."  — a real process count read from a recording stub's own log.
+// C3j, C3k, C3l, C3m, C7e, C7f, C9b and C9c are source-text assertions and are marked [SOURCE-PROVEN]
+// accordingly; C3l compares source-string offsets, i.e. textual ordering, NOT observed execution order.
+// The behavioural counterpart for that family is C3n/C3o, which execute the route. Structural evidence is
+// never presented here as runtime proof.
 import { readFileSync, writeFileSync, mkdirSync, chmodSync, existsSync, readdirSync, statSync, realpathSync, rmSync } from "node:fs";
 import { spawn, spawnSync, execFileSync } from "node:child_process";
 import { join, dirname, resolve } from "node:path";
@@ -32,6 +41,10 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "../../../..");
 const RECEIPT_CHILD = realpathSync(join(HERE, "test-support", "v4-key-receipt-child.mjs"));
 const HOSTILE_CHILD = realpathSync(join(HERE, "test-support", "hostile-path-child.mjs"));
+// FG-FCHK-197-E: a RECORDING provider stub, so "zero provider spawn" is a counted fact, not an inference.
+const RECORDING_STUB = realpathSync(join(HERE, "test-support", "recording-provider-stub.mjs"));
+// FG-FCHK-197-E: source text backing the assertions that are STRUCTURAL rather than executed.
+const GUARD_SRC = readFileSync(join(REPO, "src/v8b/lrcq/assurance/fs-authority-guards.mjs"), "utf8");
 
 let n = 0; const fails = [];
 const ok = (name, cond, detail) => { n++; if (!cond) { fails.push(name); console.log("  FAIL " + name + (detail ? " [" + String(detail).slice(0, 300) + "]" : "")); } else console.log("  ok   " + name); };
@@ -43,7 +56,18 @@ const world = (nonce, opts = {}) => { const w = makeDisposableV4World({ prefix: 
 try {
   // ================================================================= C1 concurrent transfer (HIGH)
   {
-    const w = world("c1");
+    // FG-FCHK-197-E: the SIGNED provider target for this world is the RECORDING stub, and every process in
+    // the attack is given FG_SPAWN_LOG, so any productive-provider execution anywhere in this family would
+    // append a line to PROVIDER_SPAWN_LOG. C1i below counts that file instead of inspecting receipts.
+    // The stub is COPIED into the disposable world and its log lives beside that copy, so the count does
+    // not depend on an environment variable the production boundary would scrub away.
+    let stubCopy = null;
+    const w = world("c1", { prepare: ({ repoRoot }) => {
+      stubCopy = join(repoRoot, "recording-provider-stub.mjs");
+      writeFileSync(stubCopy, readFileSync(RECORDING_STUB), { mode: 0o755 });
+      return { provider_executable_path: stubCopy, resolved_provider_target: stubCopy, provider_version: "recording-1", provider_executable_identity: "sha256:" + "d".repeat(64) };
+    } });
+    const PROVIDER_SPAWN_LOG = stubCopy + ".spawns.log";
     const c = consumeActivationV4(w.verified, { now: w.now });
     createLaunchIntentV4(c.capability, { now: w.now, supervisorEntrypoint: RECEIPT_CHILD });
     const rd = join(w.repoRoot, "receipts"); mkdirSync(rd, { recursive: true });
@@ -70,7 +94,14 @@ try {
     // exactly one supervisor claim can exist: the wx create is atomic. Prove the claim file is single.
     const claims = readdirSync(w.lifecycleRoot).filter((f) => f.endsWith(".supervisor-claim.json"));
     ok("C1h at most ONE supervisor claim exists for the activation", claims.length <= 1, "claims=" + claims.length);
-    ok("C1i zero provider spawn during the attack (only the governed supervisor entrypoint ran)", receipts.every((r) => r.read_error === null || r.frame_bytes === 0));
+    // FG-FCHK-197-E: this assertion was labelled "zero provider spawn" but its predicate was
+    // receipts.every(r => r.read_error === null || r.frame_bytes === 0) — a statement about receipt FIELDS
+    // that holds whether or not a provider was spawned, and nothing in the C1 family counted spawns at all.
+    // It now reads a REAL counter: the recording provider stub appends one line per execution to
+    // PROVIDER_SPAWN_LOG, and zero spawn means that file recorded nothing. Zero-spawn is COUNTED, never
+    // inferred from key-frame receipts.
+    const providerSpawnCount = existsSync(PROVIDER_SPAWN_LOG) ? readFileSync(PROVIDER_SPAWN_LOG, "utf8").split("\n").filter(Boolean).length : 0;
+    ok("C1i zero provider spawn during the concurrent-transfer attack (COUNTED from the recording provider stub's own log)", providerSpawnCount === 0, "spawns=" + providerSpawnCount);
     // no process left behind
     await new Promise((r) => setTimeout(r, 250));
     ok("C1j no spawned process remains afterward", children.every((ch) => ch.exitCode !== null || ch.signalCode !== null || !alive(ch.pid)));
@@ -157,11 +188,11 @@ try {
     ok("C3i an out-of-range heartbeat is refused", validateSupervisorConfig({ ...good, heartbeatMs: 0 }).ok === false && validateSupervisorConfig({ ...good, heartbeatMs: 10 ** 9 }).ok === false);
     // the production launcher no longer WRITES either field
     const launcherSrc = readFileSync(join(REPO, "tools/terminal0/lrcq/run-five-hour.mjs"), "utf8");
-    ok("C3j the launcher no longer writes exec/now into the supervisor config", !/exec:\s*life\.exec/.test(launcherSrc) && !/now:\s*life\.fixedNow/.test(launcherSrc));
+    ok("C3j [SOURCE-PROVEN] the launcher no longer writes exec/now into the supervisor config", !/exec:\s*life\.exec/.test(launcherSrc) && !/now:\s*life\.fixedNow/.test(launcherSrc));
     const supSrc = readFileSync(join(REPO, "src/v8b/lrcq/run-harness/supervisor-main.mjs"), "utf8");
-    ok("C3k the supervisor never reads cfg.exec / cfg.now", !/cfg\.exec/.test(supSrc) && !/cfg\.now/.test(supSrc));
-    ok("C3l the supervisor validates the config BEFORE the lifecycle claim", supSrc.indexOf("validateSupervisorConfig(cfg)") < supSrc.indexOf("attachSupervisorFromInheritedFdV4(vr.capability"));
-    ok("C3m the supervisor passes an EMPTY exec object to the executor", /executeSignedRunV4\(cap, vr\.activation, man, counters, \{\}\)/.test(supSrc));
+    ok("C3k [SOURCE-PROVEN] the supervisor never reads cfg.exec / cfg.now", !/cfg\.exec/.test(supSrc) && !/cfg\.now/.test(supSrc));
+    ok("C3l [SOURCE-PROVEN] the config-validation call appears BEFORE the lifecycle claim in the source (textual order; the behavioural check is C3n/C3o)", supSrc.indexOf("validateSupervisorConfig(cfg)") < supSrc.indexOf("attachSupervisorFromInheritedFdV4(vr.capability"));
+    ok("C3m [SOURCE-PROVEN] the supervisor passes an EMPTY exec object to the executor", /executeSignedRunV4\(cap, vr\.activation, man, counters, \{\}\)/.test(supSrc));
     // a real hand-written config with exec fails closed, before any lifecycle claim
     {
       const w = world("c3run");
@@ -198,7 +229,14 @@ try {
     ok("C4f a world-WRITABLE lifecycle root is refused (ROOT_UNSAFE_MODE)", c2.code === LC_CODES.ROOT_UNSAFE_MODE, c2.code);
     chmodSync(w.lifecycleRoot, 0o755);
     ok("C4g a 0755 lifecycle root is accepted (a directory must stay traversable)", consumeActivationV4(w.signVariant({ activation_nonce: "c4c" }).result.capability, { now: w.now }).ok === true);
-    ok("C4h the guard compares owner against the running uid", assertAuthorityObject(marker, FS_CLASS.SECRET_OR_MUTABLE).ok === true && statSync(marker).uid === process.getuid());
+    // FG-FCHK-197-E: this was labelled "the guard compares owner against the running uid", but its predicate
+    // only shows that a CORRECTLY-owned file passes — it cannot show that a wrongly-owned file fails, and
+    // producing a foreign-owned file requires root. The label now states exactly what is measured, and the
+    // uid comparison itself is recorded as SOURCE-PROVEN rather than dynamically reproduced.
+    ok("C4h a correctly-owned record passes the owner guard (the wrong-owner branch is SOURCE-PROVEN below — dynamic reproduction requires root)",
+      assertAuthorityObject(marker, FS_CLASS.SECRET_OR_MUTABLE).ok === true && statSync(marker).uid === process.getuid());
+    ok("C4h2 [SOURCE-PROVEN] the guard's owner branch compares st.uid against the running uid and returns UNSAFE_OWNER",
+      /st\.uid !== uid/.test(GUARD_SRC) && /FS_GUARD_CODES\.UNSAFE_OWNER/.test(GUARD_SRC));
     ok("C4i a PUBLIC_SIGNED activation is refused only when group/other WRITABLE", (() => {
       chmodSync(w.activationPath, 0o644);
       const readable = assertAuthorityObject(w.activationPath, FS_CLASS.PUBLIC_SIGNED).ok;
@@ -264,8 +302,8 @@ try {
     const good = createLaunchIntentV4(c.capability, { now: w.now, supervisorEntrypoint: RECEIPT_CHILD });
     ok("C7d a real entrypoint yields an intent recording its realpath + digest", good.ok === true && good.supervisor_entrypoint === RECEIPT_CHILD && /^sha256:/.test(good.supervisor_entrypoint_digest));
     const lifeSrc = readFileSync(join(REPO, "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs"), "utf8");
-    ok("C7e the attach-side self-proof is UNCONDITIONAL (refuses when the intent records none)", /intent records no supervisor entrypoint — self-proof cannot be armed/.test(lifeSrc));
-    ok("C7f production callers cannot disable the self-proof (no opt-out flag exists)", !/skipEntrypointProof|allowNoEntrypoint|opts\.unsafe/.test(lifeSrc));
+    ok("C7e [SOURCE-PROVEN] the attach-side self-proof is UNCONDITIONAL (refuses when the intent records none)", /intent records no supervisor entrypoint — self-proof cannot be armed/.test(lifeSrc));
+    ok("C7f [SOURCE-PROVEN] production callers cannot disable the self-proof (no opt-out flag exists)", !/skipEntrypointProof|allowNoEntrypoint|opts\.unsafe/.test(lifeSrc));
   }
 
   // ================================================================= C9 protected-main independence (INFO)
@@ -276,9 +314,9 @@ try {
     const { denyListSemanticGaps } = await import("../provider/activation-schema.mjs");
     ok("C9a the projection's deny-list semantically covers push, merge, checkout/switch, gh pr merge, destructive reset and permission bypass", denyListSemanticGaps(SEMANTIC_DENY).length === 0, JSON.stringify(denyListSemanticGaps(SEMANTIC_DENY)));
     const harnessSrc = readFileSync(join(REPO, "src/v8b/lrcq/run-harness/harness.mjs"), "utf8");
-    ok("C9b the harness result reports merged/accepted/pushed/protected_main_written as false unconditionally", /merged:\s*false,\s*accepted:\s*false,\s*pushed:\s*false,\s*protected_main_written:\s*false/.test(harnessSrc));
+    ok("C9b [SOURCE-PROVEN] the harness result reports merged/accepted/pushed/protected_main_written as false unconditionally", /merged:\s*false,\s*accepted:\s*false,\s*pushed:\s*false,\s*protected_main_written:\s*false/.test(harnessSrc));
     const provSrc = readFileSync(join(REPO, "src/v8b/lrcq/provider/real-provider.mjs"), "utf8");
-    ok("C9c the provider refuses a worktree on protected main pre-spawn", /worktree is on protected main/.test(provSrc));
+    ok("C9c [SOURCE-PROVEN] the provider's protected-main pre-spawn refusal is present in source (the behavioural counterpart is exercised by the real-provider family)", /worktree is on protected main/.test(provSrc));
     ok("C9d the signed V4 payload carries the no_protected_main_merge / no_pr_merge / no_push_unless_authorized exclusions", (await import("../assurance/activation-v4.mjs")).V4_PAYLOAD_FIELDS.includes("no_protected_main_merge") && (await import("../assurance/activation-v4.mjs")).V4_PAYLOAD_FIELDS.includes("no_pr_merge") && (await import("../assurance/activation-v4.mjs")).V4_PAYLOAD_FIELDS.includes("no_push_unless_authorized"));
     const evidence = join(REPO, ".foundergate/evidence/lrcq-assurance-factory/BRANCH_PROTECTION_STATUS.json");
     ok("C9e the unprotected-main observation is recorded as queued administration, not silently dismissed", existsSync(evidence) && (() => { const d = JSON.parse(readFileSync(evidence, "utf8")); return d.github_branch_protection_enabled === false && d.changed_in_this_wave === false && Array.isArray(d.route_level_prohibitions) && d.route_level_prohibitions.length >= 4; })());

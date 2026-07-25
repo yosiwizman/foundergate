@@ -7,6 +7,7 @@ import { createHash, verify as edVerify, sign as edSign } from "node:crypto";
 import { fixedPs } from "./fixed-executables.mjs";
 import { canonicalize, signedMessage } from "./canonical-json.mjs";
 import { resolveVerifierKey } from "./founder-key-authority.mjs";
+import { deepFreezeAuthority } from "./deep-freeze-authority.mjs";
 
 // Mechanically OBSERVED process-start identity for a PID — read from the OS (ps lstart), never caller-
 // supplied. UNKNOWN/unreadable fails closed (returns null). Used to prove a launch-claim's recorded
@@ -68,6 +69,39 @@ export const V4_PAYLOAD_FIELDS = [
   "no_customer_data", "no_live_action", "no_permission_bypass", "no_deploy", "no_external_comms",
 ];
 
+// ---- the MECHANICAL enumeration of the V4 contract's signed authority values ------------------------
+// FG-FCHK-197-B/C: these two tables are the SINGLE source of truth for "which numbers and which exclusions
+// the founder signature covers". The verifier bounds the signed payload with them, the capability projects
+// exactly these keys into its nested authority objects, and the provider spawn boundary re-derives its
+// ceilings from them — so a limit or exclusion can never be enforced in one place and forgotten in another.
+//
+//   kind: "positive_finite"  -> finite number, > 0
+//         "positive_integer" -> integer, >= min
+//   max:  the founder-contract ceiling the SIGNED payload may never exceed.
+export const V4_SIGNED_LIMITS = Object.freeze([
+  Object.freeze({ field: "max_budget_usd", kind: "positive_finite", min: 0, max: 10 }),
+  Object.freeze({ field: "run_duration_s", kind: "positive_finite", min: 0, max: 18000 }),
+  Object.freeze({ field: "per_job_timeout_s", kind: "positive_finite", min: 0, max: 2700 }),
+  Object.freeze({ field: "max_parallel_width", kind: "positive_integer", min: 1, max: 2 }),
+  Object.freeze({ field: "max_output_bytes", kind: "positive_finite", min: 0, max: 10485760 }),
+  Object.freeze({ field: "termination_grace_s", kind: "positive_finite", min: 0, max: 30 }),
+]);
+export const V4_SIGNED_LIMIT_FIELDS = Object.freeze(V4_SIGNED_LIMITS.map((l) => l.field));
+
+// Every exclusion the founder signature covers. ALL of them must be exactly `true` in the signed payload,
+// and ALL of them must survive to the provider spawn boundary as exactly `true`.
+export const V4_SIGNED_EXCLUSIONS = Object.freeze([
+  "no_protected_main_merge", "no_pr_merge", "no_push_unless_authorized", "no_m1", "no_akior",
+  "no_customer_data", "no_live_action", "no_permission_bypass", "no_deploy", "no_external_comms",
+]);
+
+// Is a candidate value valid for a signed limit's declared kind? (Rejects NaN/Infinity/0/negative/missing.)
+export function signedLimitValueValid(spec, v) {
+  if (typeof v !== "number" || !Number.isFinite(v)) return false;
+  if (spec.kind === "positive_integer") return Number.isInteger(v) && v >= (spec.min ?? 1);
+  return v > (spec.min ?? 0);
+}
+
 // Extract the canonical signed payload (excludes founder_signature + any derived fields).
 export function extractPayload(activation) {
   const p = {};
@@ -95,7 +129,12 @@ export function signActivation(payload, privateKeyObject) {
 // marker/claim can no longer reconstruct authority. This module owns ONLY Stage A + the shared
 // observedStartIdentity probe; it deliberately no longer exports any derive-from-plain-JSON helper.
 const CAP_BRAND = new WeakSet();          // A: verified
-function makeCapability(fields) { const cap = Object.freeze({ ...fields, _stage: "VERIFIED" }); CAP_BRAND.add(cap); return cap; }
+// FG-FCHK-197-C: the capability is a FROZEN DEEP COPY. Object.freeze alone is shallow, so `limits` and
+// `exclusions` — the founder-signed cost ceiling, duration, width, output cap, grace period and every
+// signed exclusion — were writable through any capability reference. deepFreezeAuthority builds an
+// authority-owned copy of every nested object and freezes it recursively, so the capability shares no
+// mutable structure with the parsed activation document its fields were read from.
+function makeCapability(fields) { const cap = deepFreezeAuthority({ ...fields, _stage: "VERIFIED" }); CAP_BRAND.add(cap); return cap; }
 export function isVerifiedCapability(x) { return typeof x === "object" && x !== null && CAP_BRAND.has(x); }
 export function assertVerifiedCapability(x) { if (!isVerifiedCapability(x)) { const e = new Error("verified capability required"); e.code = V4_CODES.FORGED_CAPABILITY; throw e; } return x; }
 
@@ -131,15 +170,14 @@ export function verifyActivation(activation, bindings = {}, deps = {}) {
   // candidate/provider/backlog/lease/budget bindings
   const B = [["evidenceCommitSha", "evidence_commit_sha"], ["evidenceCommitTree", "evidence_commit_tree"], ["reviewedRuntimeSha", "reviewed_runtime_sha"], ["reviewedRuntimeTree", "reviewed_runtime_tree"], ["runId", "run_id"], ["backlogDigest", "backlog_digest"], ["providerPath", "provider_executable_path"], ["resolvedProviderTarget", "resolved_provider_target"], ["providerVersion", "provider_version"], ["providerIdentity", "provider_executable_identity"], ["capabilityLeaseDigest", "capability_lease_digest"], ["blastBudgetDigest", "blast_radius_budget_digest"], ["runManifestPath", "run_manifest_path"], ["runManifestDigest", "run_manifest_digest"], ["lrcqBaseSha", "lrcq_base_sha"], ["lrcqBaseTree", "lrcq_base_tree"], ["providerCandidateSha", "provider_candidate_sha"], ["providerCandidateTree", "provider_candidate_tree"]];
   for (const [b, f] of B) if (bindings[b] !== undefined && bindings[b] !== activation[f]) return R(V4_CODES.BINDING_MISMATCH, { detail: f });
-  // limits (upper-bounded)
-  if (!(activation.max_budget_usd > 0 && activation.max_budget_usd <= 10)) return R(V4_CODES.LIMIT_VIOLATION, { detail: "max_budget_usd" });
-  if (!(activation.run_duration_s > 0 && activation.run_duration_s <= 18000)) return R(V4_CODES.LIMIT_VIOLATION, { detail: "run_duration_s" });
-  if (!(activation.per_job_timeout_s > 0 && activation.per_job_timeout_s <= 2700)) return R(V4_CODES.LIMIT_VIOLATION, { detail: "per_job_timeout_s" });
-  if (!(activation.max_parallel_width >= 1 && activation.max_parallel_width <= 2)) return R(V4_CODES.LIMIT_VIOLATION, { detail: "max_parallel_width" });
-  if (!(activation.max_output_bytes > 0 && activation.max_output_bytes <= 10485760)) return R(V4_CODES.LIMIT_VIOLATION, { detail: "max_output_bytes" });
-  if (!(activation.termination_grace_s > 0 && activation.termination_grace_s <= 30)) return R(V4_CODES.LIMIT_VIOLATION, { detail: "termination_grace_s" });
-  // exclusions
-  for (const f of ["no_protected_main_merge", "no_pr_merge", "no_push_unless_authorized", "no_m1", "no_akior", "no_customer_data", "no_live_action", "no_permission_bypass", "no_deploy", "no_external_comms"]) if (activation[f] !== true) return R(V4_CODES.EXCLUSION_VIOLATION, { detail: f });
+  // limits (upper-bounded) — enumerated MECHANICALLY from the contract table, so a limit can never be
+  // added to the signed payload and silently left unbounded here.
+  for (const spec of V4_SIGNED_LIMITS) {
+    const v = activation[spec.field];
+    if (!signedLimitValueValid(spec, v) || v > spec.max) return R(V4_CODES.LIMIT_VIOLATION, { detail: spec.field });
+  }
+  // exclusions — every signed exclusion must be exactly true
+  for (const f of V4_SIGNED_EXCLUSIONS) if (activation[f] !== true) return R(V4_CODES.EXCLUSION_VIOLATION, { detail: f });
   // temporal (only when nowEpoch supplied)
   if (typeof bindings.nowEpoch === "number") {
     if (activation.issued_epoch > bindings.nowEpoch) return R(V4_CODES.NOT_YET_ISSUED);
@@ -178,8 +216,13 @@ export function verifyActivation(activation, bindings = {}, deps = {}) {
     issued_epoch: activation.issued_epoch, expiry_epoch: activation.expiry_epoch,
     hard_deadline_epoch: activation.hard_deadline_epoch,
     run_id: activation.run_id,
-    limits: { max_budget_usd: activation.max_budget_usd, run_duration_s: activation.run_duration_s, per_job_timeout_s: activation.per_job_timeout_s, max_parallel_width: activation.max_parallel_width, max_output_bytes: activation.max_output_bytes, termination_grace_s: activation.termination_grace_s },
-    exclusions: { no_deploy: true, no_push_unless_authorized: true, no_live_action: true },
+    // FG-FCHK-197-B/C: both nested authority objects are PROJECTED MECHANICALLY from the signed payload —
+    // every limit the contract enumerates and ALL TEN signed exclusions. `exclusions` was previously a
+    // hardcoded three-field constant, i.e. a redundant copy of signed authority that no longer tracked the
+    // payload; it now derives from the payload the signature covers, and the loop above has already refused
+    // any activation whose exclusion is not exactly true.
+    limits: Object.fromEntries(V4_SIGNED_LIMIT_FIELDS.map((f) => [f, activation[f]])),
+    exclusions: Object.fromEntries(V4_SIGNED_EXCLUSIONS.map((f) => [f, activation[f] === true])),
   });
   return R(V4_CODES.OK, { capability: cap, activation_identity: activationIdentity });
 }

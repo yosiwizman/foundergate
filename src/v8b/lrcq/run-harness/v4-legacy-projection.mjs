@@ -14,6 +14,11 @@
 // Consequence: a caller who fabricates this record still cannot spawn a provider, because it holds no
 // SUPERVISOR_EXECUTION capability and the spawn boundary checks the capability brand first.
 import { isSupervisorExecutionCapabilityV4 } from "../assurance/lifecycle-authority-v4.mjs";
+import { V4_SIGNED_LIMITS, V4_SIGNED_EXCLUSIONS, signedLimitValueValid } from "../assurance/activation-v4.mjs";
+
+// run_duration_s bounds the whole run, not one job, so it has no direct projection field; the provider
+// boundary enforces it as a deadline/duration ceiling instead.
+const LIMIT_IS_RUN_WIDE = new Set(["run_duration_s"]);
 
 export const PROJECTION_SCHEMA = "lrcq-v4-legacy-projection-1";
 export const NON_AUTHORITATIVE_SIGNATURE = "NON_AUTHORITATIVE_V4_PROJECTION";
@@ -99,9 +104,28 @@ export function projectLegacyBindingsV4(supExecCap, opts = {}) {
 }
 
 // Is this record a projection of THIS capability? Used at the provider spawn boundary.
+//
+// FG-FCHK-197-B: the binding previously covered provenance + digests ONLY, never a limit or an exclusion —
+// so a spread copy of the honest projection with one widened number still "matched" its capability. It now
+// also requires every founder-signed limit to be present, valid and NO WIDER than the signed ceiling, and
+// every signed exclusion to survive as exactly true. (The authoritative, refusal-reporting enforcement lives
+// in provider/authority-boundary.mjs; this predicate is the same contract in boolean form, so a caller that
+// only asks "is this projection bound to this capability?" cannot get a yes for a widened record.)
 export function projectionMatchesCapability(rec, supExecCap) {
-  return !!rec && rec.authoritative === false && rec.projection_schema === PROJECTION_SCHEMA &&
-    isSupervisorExecutionCapabilityV4(supExecCap) &&
-    rec.v4_supervisor_claim_digest === supExecCap.supervisor_claim_digest &&
-    rec.v4_activation_identity === supExecCap.activation_identity;
+  if (!rec || rec.authoritative !== false || rec.projection_schema !== PROJECTION_SCHEMA) return false;
+  if (!isSupervisorExecutionCapabilityV4(supExecCap)) return false;
+  if (rec.v4_supervisor_claim_digest !== supExecCap.supervisor_claim_digest) return false;
+  if (rec.v4_activation_identity !== supExecCap.activation_identity) return false;
+  const limits = supExecCap.limits, exclusions = supExecCap.exclusions;
+  if (!limits || !Object.isFrozen(limits) || !exclusions || !Object.isFrozen(exclusions)) return false;
+  for (const spec of V4_SIGNED_LIMITS) {
+    if (LIMIT_IS_RUN_WIDE.has(spec.field)) continue;      // bounded as a duration ceiling at the boundary
+    const signed = limits[spec.field];
+    if (!signedLimitValueValid(spec, signed)) return false;
+    const projected = rec[spec.field];
+    if (!signedLimitValueValid(spec, projected)) return false;
+    if (projected > signed) return false;
+  }
+  for (const f of V4_SIGNED_EXCLUSIONS) if (exclusions[f] !== true || rec[f] !== true) return false;
+  return true;
 }

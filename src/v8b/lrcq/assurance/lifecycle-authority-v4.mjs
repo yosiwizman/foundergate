@@ -18,6 +18,7 @@ import { canonicalize } from "./canonical-json.mjs";
 import { assertVerifiedCapability, observedStartIdentity } from "./activation-v4.mjs";
 import { fixedGit } from "./fixed-executables.mjs";
 import { assertAuthorityObject, FS_CLASS, objectIdOf } from "./fs-authority-guards.mjs";
+import { deepFreezeAuthority } from "./deep-freeze-authority.mjs";
 
 export const LIFECYCLE_CONTRACT_VERSION = "lrcq-lifecycle-v4-1";
 export const CONSUMED_MARKER_SCHEMA = "lrcq-consumed-activation-v4-1";
@@ -39,6 +40,9 @@ export const LC_CODES = {
   INTENT_MISSING: "INTENT_MISSING", ALREADY_TRANSFERRED: "ALREADY_TRANSFERRED", KEY_RELEASED: "KEY_RELEASED",
   ENTRYPOINT_INVALID: "ENTRYPOINT_INVALID", ENTRYPOINT_DIGEST_MISMATCH: "ENTRYPOINT_DIGEST_MISMATCH",
   DESCRIPTOR_UNAVAILABLE: "DESCRIPTOR_UNAVAILABLE", TRANSFER_WRITE_FAILED: "TRANSFER_WRITE_FAILED",
+  // FG-FCHK-197-A: an asynchronous ChildProcess 'error' (bad cwd, unreachable executable) is a governed,
+  // fail-closed SPAWN failure — never an unhandled event that terminates the launcher.
+  SUPERVISOR_SPAWN_FAILED: "SUPERVISOR_SPAWN_FAILED",
   // FG-CHK-197-04 / FG-CHK-197-05 filesystem authority guards
   ROOT_UNSAFE_OWNER: "ROOT_UNSAFE_OWNER", ROOT_UNSAFE_MODE: "ROOT_UNSAFE_MODE",
   RECORD_UNSAFE_OWNER: "RECORD_UNSAFE_OWNER", RECORD_UNSAFE_MODE: "RECORD_UNSAFE_MODE",
@@ -118,7 +122,12 @@ function verifyRepositoryBinding(cap) {
 // FG-CHK-197-05: the root's authority identity is its canonical filesystem OBJECT identity (device + inode),
 // not the signed byte-string. Two spellings of the same directory are the SAME authority root and derive the
 // SAME digest; a different filesystem object is refused even when the path string looks similar.
-function resolveSignedRoot(cap) {
+// FG-FCHK-197-D: `expectObjectId` is the identity captured when the activation was governed-consumed. Every
+// authority operation AFTER consumption passes it, so a DIFFERENT filesystem object at the signed path — the
+// rename-aside-and-recreate attack, with valid-looking records copied in at safe modes — is refused here,
+// BEFORE any record is parsed and long before the ephemeral key is compared. Passing it is no longer
+// optional on any production route: the refusal code is reachable, not dead.
+function resolveSignedRoot(cap, expectObjectId) {
   const rb = verifyRepositoryBinding(cap); if (rb.err) return { err: rb.err };
   const root = cap.lifecycle_root, repo = cap.repository_root;
   if (typeof root !== "string" || !root || typeof repo !== "string" || !repo) return { err: LC_CODES.NO_SIGNED_ROOT };
@@ -129,8 +138,11 @@ function resolveSignedRoot(cap) {
   let dst; try { dst = statSync(rr); } catch { return { err: LC_CODES.ROOT_MISSING }; }
   if (!dst.isDirectory()) return { err: LC_CODES.ROOT_NOT_DIR };
   if (rr !== rrepo && !rr.startsWith(rrepo + sep)) return { err: LC_CODES.ROOT_ESCAPES_REPO };
-  const g = assertAuthorityObject(rr, FS_CLASS.DIRECTORY);
-  if (!g.ok) return { err: g.code === "FS_UNSAFE_OWNER" ? LC_CODES.ROOT_UNSAFE_OWNER : LC_CODES.ROOT_UNSAFE_MODE, detail: g.code + " " + (g.mode || "") };
+  const g = assertAuthorityObject(rr, FS_CLASS.DIRECTORY, { expectObjectId: expectObjectId ?? null });
+  if (!g.ok) {
+    if (g.code === "FS_OBJECT_IDENTITY_MISMATCH") return { err: LC_CODES.ROOT_OBJECT_IDENTITY_MISMATCH, detail: "root is " + g.object_id + ", authority expects " + g.expected_object_id };
+    return { err: g.code === "FS_UNSAFE_OWNER" ? LC_CODES.ROOT_UNSAFE_OWNER : LC_CODES.ROOT_UNSAFE_MODE, detail: g.code + " " + (g.mode || "") };
+  }
   return { root: rr, objectId: g.objectId, objectIdDigest: g.objectIdDigest };
 }
 const idFile = (id) => id.replace(":", "_");
@@ -141,7 +153,11 @@ const claimPath = (root, id) => join(root, idFile(id) + ".supervisor-claim.json"
 // FG-CHK-197-04: every authority-record READ enforces owner + mode, not only symlink + regular-file.
 // Lifecycle records are SECRET_OR_MUTABLE: FounderGate creates them 0600 and refuses ANY group/other
 // permission on read, so a permissive directory cannot let another local account stage lifecycle records.
-function readRecord(path, schema) {
+// FG-FCHK-197-D: `opts.expectRootObjectId` additionally requires the record to have been written for the
+// SAME lifecycle-root filesystem object the authority is bound to. Every authority-bearing record — marker,
+// intent AND claim — carries lifecycle_root_object_id, so a record copied into a replacement directory is
+// refused on object identity even though its bytes and its ephemeral signature are internally valid.
+function readRecord(path, schema, opts = {}) {
   if (!existsSync(path)) return { err: LC_CODES.RECORD_MISSING };
   let st; try { st = lstatSync(path); } catch { return { err: LC_CODES.RECORD_MISSING }; }
   if (st.isSymbolicLink()) return { err: LC_CODES.RECORD_SYMLINK };
@@ -156,6 +172,10 @@ function readRecord(path, schema) {
   }
   let bytes, doc; try { bytes = readFileSync(path, "utf8"); doc = JSON.parse(bytes); } catch { return { err: LC_CODES.RECORD_PARSE }; }
   if (doc.schema !== schema) return { err: LC_CODES.SCHEMA_MISMATCH };
+  const expectRoot = opts.expectRootObjectId;
+  if (expectRoot !== undefined && expectRoot !== null && doc.lifecycle_root_object_id !== expectRoot) {
+    return { err: LC_CODES.ROOT_OBJECT_IDENTITY_MISMATCH, detail: schema + " records " + doc.lifecycle_root_object_id + ", authority expects " + expectRoot };
+  }
   return { bytes, doc, digest: sha256(Buffer.from(bytes)), objectId: g.objectId, mode: g.mode };
 }
 // The signed body = the record minus its own ephemeral_signature; the ephemeral key signs canonical(body).
@@ -197,22 +217,30 @@ export function consumeActivationV4(verifiedCap, opts = {}) {
   const bytes = JSON.stringify(marker, null, 2) + "\n";
   try { writeFileSync(mPath, bytes, { flag: "wx", mode: 0o600 }); }
   catch (e) { if (e && e.code === "EEXIST") return R(LC_CODES.ALREADY_CONSUMED); return R(LC_CODES.FORGED, { detail: "marker write: " + (e && e.message) }); }
-  // reread + verify the exact bytes
-  const rd = readRecord(mPath, CONSUMED_MARKER_SCHEMA); if (rd.err) return R(rd.err);
+  // reread + verify the exact bytes (and that the marker really recorded THIS root object)
+  const rd = readRecord(mPath, CONSUMED_MARKER_SCHEMA, { expectRootObjectId: rr.objectId }); if (rd.err) return R(rd.err);
   const pub = pubKeyFromB64(rd.doc.ephemeral_public_key_spki_b64); if (!pub || !verifyEphemeral(rd.doc, pub)) return R(LC_CODES.EPHEMERAL_SIGNATURE_INVALID);
   if (rd.doc.activation_identity !== verifiedCap.activation_identity) return R(LC_CODES.IDENTITY_MISMATCH);
   // Opaque CONSUMED capability. FG-CHK-197-06: it carries NO mutable state — the ephemeral private key AND
   // the launch/transfer state both live in module-private WeakMaps, so Object.freeze is not defeated by a
   // nested object, JSON.stringify exposes no lifecycle state, and Reflect.ownKeys reveals nothing writable.
-  const cap = Object.freeze({
+  // FG-FCHK-197-C: published as a frozen DEEP copy for the same reason the other two stages are.
+  // FG-FCHK-197-D: the signed repository binding travels with the capability so every LATER authority
+  // operation can RE-RESOLVE the signed lifecycle root rather than trusting a remembered path string.
+  const cap = deepFreezeAuthority({
     _stage: "CONSUMED", activation_identity: verifiedCap.activation_identity, payload_digest: verifiedCap.payload_digest,
     provider_identity: verifiedCap.provider_identity, run_id: verifiedCap.run_id, lifecycle_root: root,
     lifecycle_root_object_id: rr.objectId,
+    repository_root: verifiedCap.repository_root, repository_git_common_dir: verifiedCap.repository_git_common_dir,
     consumed_marker_path: mPath, consumed_marker_digest: rd.digest, ephemeral_fingerprint: rd.doc.ephemeral_fingerprint,
     evaluated_candidate: verifiedCap.evaluated_candidate, evidence_candidate: verifiedCap.evidence_candidate,
   });
   EPHKEY.set(cap, eph.privateKey); // private key held OUTSIDE the object — never serialized
-  CAPSTATE.set(cap, { launched: false, transfer: TRANSFER_STATES.NOT_TRANSFERRED });
+  // FG-FCHK-197-D: the EXPECTED filesystem object identity of the signed lifecycle root is captured HERE,
+  // at governed consumption, and kept in MODULE-PRIVATE state. Every later authority operation re-resolves
+  // the root and requires this exact device/inode, so replacing the directory at the signed path with a new
+  // filesystem object holding copied records is refused before any cryptographic key comparison.
+  CAPSTATE.set(cap, { launched: false, transfer: TRANSFER_STATES.NOT_TRANSFERRED, rootObjectId: rr.objectId });
   CONSUMED.add(cap);
   return R(LC_CODES.OK, { capability: cap, marker_path: mPath });
 }
@@ -223,7 +251,11 @@ export function createLaunchIntentV4(consumedCap, opts = {}) {
   const cst = CAPSTATE.get(consumedCap);
   if (!cst) return R(LC_CODES.FORGED, { detail: "no module state for this capability" });
   if (cst.launched) return R(LC_CODES.ALREADY_LAUNCHED);
-  const root = consumedCap.lifecycle_root; const iPath = intentPath(root, consumedCap.activation_identity);
+  // FG-FCHK-197-D: RE-RESOLVE the signed lifecycle root and require the SAME filesystem object captured at
+  // governed consumption — a remembered path string is not an authority identity.
+  const rr = resolveSignedRoot(consumedCap, cst.rootObjectId);
+  if (rr.err) return R(rr.err, rr.detail ? { detail: rr.detail } : {});
+  const root = rr.root; const iPath = intentPath(root, consumedCap.activation_identity);
   if (existsSync(iPath)) return R(LC_CODES.ALREADY_LAUNCHED);
   const now = typeof opts.now === "number" ? opts.now : 0;
   // FG-LRCQ-ACT-029: the supervisor entrypoint is resolved and DIGESTED HERE from the real file — a caller
@@ -275,8 +307,17 @@ function attachSupervisorWithKey(verifiedCap, ephemeralPrivateKey, opts = {}) {
   const root = rr.root; const id = verifiedCap.activation_identity;
   const m = readRecord(markerPath(root, id), CONSUMED_MARKER_SCHEMA); if (m.err) return R(m.err);
   if (m.doc.activation_identity !== id) return R(LC_CODES.IDENTITY_MISMATCH);
+  // FG-FCHK-197-D: the supervisor has no in-process consumption state, so the EXPECTED root-object identity
+  // is the one the governed consumption recorded in the marker. The LIVE signed root must still be that
+  // exact filesystem object. This is checked BEFORE the ephemeral signature and BEFORE the key comparison,
+  // so replacing the lifecycle directory at the signed path with a new object holding copied records is
+  // refused on object identity and never falls through to KEY_MISMATCH.
+  const expectRoot = m.doc.lifecycle_root_object_id;
+  if (typeof expectRoot !== "string" || !expectRoot) return R(LC_CODES.ROOT_OBJECT_IDENTITY_MISMATCH, { detail: "marker records no lifecycle-root object identity" });
+  if (rr.objectId !== expectRoot) return R(LC_CODES.ROOT_OBJECT_IDENTITY_MISMATCH, { detail: "root is " + rr.objectId + ", marker expects " + expectRoot });
+  const expect = { expectRootObjectId: expectRoot };
   const ephPub = pubKeyFromB64(m.doc.ephemeral_public_key_spki_b64); if (!ephPub || !verifyEphemeral(m.doc, ephPub)) return R(LC_CODES.EPHEMERAL_SIGNATURE_INVALID, { detail: "marker" });
-  const it = readRecord(intentPath(root, id), LAUNCH_INTENT_SCHEMA); if (it.err) return R(it.err);
+  const it = readRecord(intentPath(root, id), LAUNCH_INTENT_SCHEMA, expect); if (it.err) return R(it.err);
   if (it.doc.activation_identity !== id || !verifyEphemeral(it.doc, ephPub)) return R(LC_CODES.EPHEMERAL_SIGNATURE_INVALID, { detail: "intent" });
   if (it.doc.consumed_marker_digest !== m.digest) return R(LC_CODES.BINDING_MISMATCH, { detail: "intent->marker digest" });
   // prove the supplied ephemeral private key matches the marker's recorded public key
@@ -301,6 +342,10 @@ function attachSupervisorWithKey(verifiedCap, ephemeralPrivateKey, opts = {}) {
   const body = {
     schema: SUPERVISOR_CLAIM_SCHEMA, lifecycle_contract_version: LIFECYCLE_CONTRACT_VERSION, activation_identity: id,
     payload_digest: m.doc.payload_digest, consumed_marker_digest: m.digest, launch_intent_digest: it.digest,
+    // FG-FCHK-197-D: the claim records the canonical lifecycle-root OBJECT identity EXPLICITLY, so the
+    // device/inode identity is consistent across marker, intent AND claim as a recorded property of each
+    // record rather than only transitively through the digests the claim carries.
+    lifecycle_root_object_id: expectRoot, lifecycle_root_digest: sha256(Buffer.from(expectRoot)),
     launch_nonce: it.doc.launch_nonce, supervisor_pid: pid, supervisor_start_identity: observed,
     supervisor_entrypoint_digest: it.doc.supervisor_entrypoint_digest, claim_epoch: typeof opts.now === "number" ? opts.now : 0,
     terminal: false, ephemeral_fingerprint: m.doc.ephemeral_fingerprint,
@@ -309,14 +354,19 @@ function attachSupervisorWithKey(verifiedCap, ephemeralPrivateKey, opts = {}) {
   const bytes = JSON.stringify({ ...body, ephemeral_signature: sig }, null, 2) + "\n";
   try { writeFileSync(cPath, bytes, { flag: "wx", mode: 0o600 }); }
   catch (e) { if (e && e.code === "EEXIST") return R(LC_CODES.DUPLICATE_CLAIM); return R(LC_CODES.FORGED, { detail: "claim write: " + (e && e.message) }); }
-  const cd = readRecord(cPath, SUPERVISOR_CLAIM_SCHEMA); if (cd.err) return R(cd.err);
+  const cd = readRecord(cPath, SUPERVISOR_CLAIM_SCHEMA, expect); if (cd.err) return R(cd.err);
   if (!verifyEphemeral(cd.doc, ephPub)) return R(LC_CODES.EPHEMERAL_SIGNATURE_INVALID, { detail: "claim" });
   if (cd.doc.supervisor_pid !== pid || cd.doc.supervisor_start_identity !== observed) return R(LC_CODES.PID_MISMATCH);
-  const cap = Object.freeze({
+  // FG-FCHK-197-C: a frozen DEEP copy. `limits` was previously copied BY REFERENCE off the VERIFIED
+  // capability, so the two stages shared one mutable nested object and a write through either widened the
+  // founder-signed ceiling every downstream consumer reads. `exclusions` travels with it so the provider
+  // spawn boundary can re-derive ALL TEN signed exclusions from the genuine capability.
+  const cap = deepFreezeAuthority({
     _stage: "SUPERVISOR_EXECUTION", activation_identity: id, payload_digest: m.doc.payload_digest,
     evaluated_candidate: verifiedCap.evaluated_candidate, evidence_candidate: verifiedCap.evidence_candidate,
     evaluated_candidate_tree: verifiedCap.evaluated_candidate_tree, evidence_candidate_tree: verifiedCap.evidence_candidate_tree,
-    provider_identity: m.doc.provider_identity, run_id: m.doc.run_id, limits: verifiedCap.limits,
+    provider_identity: m.doc.provider_identity, run_id: m.doc.run_id,
+    limits: verifiedCap.limits, exclusions: verifiedCap.exclusions,
     // SIGNED facts the non-authoritative legacy projection is allowed to read (nothing else may).
     provider_executable_path: verifiedCap.provider_executable_path, resolved_provider_target: verifiedCap.resolved_provider_target,
     provider_version: verifiedCap.provider_version,
@@ -405,14 +455,21 @@ function decodeKeyFrame(buf) {
 // { err }. This is what makes "a verified signed launch intent must already exist" mechanical rather than
 // an in-memory flag: the intent record must be on disk, ephemeral-signed, and bound to THIS marker.
 function verifiedIntentFor(consumedCap) {
-  const root = consumedCap.lifecycle_root, id = consumedCap.activation_identity;
-  const m = readRecord(markerPath(root, id), CONSUMED_MARKER_SCHEMA); if (m.err) return { err: m.err };
+  const id = consumedCap.activation_identity;
+  const cst = CAPSTATE.get(consumedCap);
+  // FG-FCHK-197-D: re-resolve the signed root and require the consumption-time filesystem object, then
+  // require every record read below to have been written for that SAME object.
+  const rr = resolveSignedRoot(consumedCap, cst && cst.rootObjectId);
+  if (rr.err) return { err: rr.err, detail: rr.detail };
+  const root = rr.root;
+  const expect = { expectRootObjectId: (cst && cst.rootObjectId) || rr.objectId };
+  const m = readRecord(markerPath(root, id), CONSUMED_MARKER_SCHEMA, expect); if (m.err) return { err: m.err };
   if (m.digest !== consumedCap.consumed_marker_digest) return { err: LC_CODES.BINDING_MISMATCH, detail: "marker digest" };
   const ephPub = pubKeyFromB64(m.doc.ephemeral_public_key_spki_b64);
   if (!ephPub || !verifyEphemeral(m.doc, ephPub)) return { err: LC_CODES.EPHEMERAL_SIGNATURE_INVALID, detail: "marker" };
   const iPath = intentPath(root, id);
   if (!existsSync(iPath)) return { err: LC_CODES.INTENT_MISSING };
-  const it = readRecord(iPath, LAUNCH_INTENT_SCHEMA); if (it.err) return { err: it.err };
+  const it = readRecord(iPath, LAUNCH_INTENT_SCHEMA, expect); if (it.err) return { err: it.err };
   if (!verifyEphemeral(it.doc, ephPub)) return { err: LC_CODES.EPHEMERAL_SIGNATURE_INVALID, detail: "intent" };
   if (it.doc.activation_identity !== id) return { err: LC_CODES.IDENTITY_MISMATCH, detail: "intent" };
   if (it.doc.consumed_marker_digest !== m.digest) return { err: LC_CODES.BINDING_MISMATCH, detail: "intent->marker digest" };
@@ -473,26 +530,55 @@ export async function spawnGovernedSupervisorV4(consumedCap, opts = {}) {
       env: opts.env || { PATH: process.env.PATH, HOME: process.env.HOME },
       ...(opts.cwd ? { cwd: opts.cwd } : {}),
     });
-  } catch (e) { frame.fill(0); return R(LC_CODES.TRANSFER_WRITE_FAILED, { detail: "spawn: " + (e && e.message), transfer: st.transfer }); }
-  const writer = child.stdio[keyFd];
-  if (!writer || typeof writer.write !== "function" || writer.writable !== true) {
-    frame.fill(0);
-    await killAndReap(child);
-    return R(LC_CODES.DESCRIPTOR_UNAVAILABLE, { detail: "governed inherited descriptor not established", transfer: st.transfer });
-  }
-  // Write ONCE, scrub, close.
+  } catch (e) { frame.fill(0); return R(LC_CODES.SUPERVISOR_SPAWN_FAILED, { detail: "spawn: " + (e && e.message), transfer: st.transfer }); }
+
+  // ---- FG-FCHK-197-A GOVERNED SPAWN/WRITE RACE -----------------------------------------------------
+  // child_process.spawn reports MOST failures ASYNCHRONOUSLY, by emitting 'error' on the returned
+  // ChildProcess — a bad cwd or an unreachable node binary returns a ChildProcess with no pid and then
+  // emits ENOENT. The try/catch above catches only synchronous argument-type throws, and the writer's
+  // 'error' listener is on a DIFFERENT EventEmitter (the stdio stream), so that event previously had no
+  // handler at all: it was raised as an unhandled 'error' AFTER the point of no return and killed the
+  // launcher with a raw stack trace, so the caller's structured refusal, its evidence record and its
+  // descriptor cleanup never ran.
+  //
+  // Every observer below is registered SYNCHRONOUSLY, in the same executor, BEFORE the frame is written and
+  // BEFORE the first await, and they RACE:
+  //   * child 'error'            -> SUPERVISOR_SPAWN_FAILED
+  //   * descriptor write failure -> TRANSFER_WRITE_FAILED
+  //   * premature child death    -> TRANSFER_WRITE_FAILED
+  //   * write completion         -> OK
+  // Whatever the outcome, the authority is ALREADY TRANSFERRED_SPENT, the private key is ALREADY deleted
+  // from module storage and every temporary buffer is zeroed, so no branch here can be retried with the
+  // same key: a failure returns a structured fail-closed result, never an uncaught exception.
   const sent = await new Promise((resolve) => {
     let settled = false;
     const done = (r) => { if (!settled) { settled = true; resolve(r); } };
-    writer.on("error", (e) => done({ ok: false, detail: e && e.message }));
-    try { writer.write(frame, (e) => { if (e) return done({ ok: false, detail: e.message }); writer.end(() => done({ ok: true })); }); }
-    catch (e) { done({ ok: false, detail: e && e.message }); }
+    child.once("error", (e) => done({ code: LC_CODES.SUPERVISOR_SPAWN_FAILED, detail: "child spawn error: " + ((e && e.message) || "unknown") }));
+    // A supervisor that dies before the frame is complete never received the key. This arm is decisive only
+    // if nothing else has settled shortly after the child is gone — a HEALTHY supervisor may legitimately
+    // read the frame and exit before the writer's end callback lands, and that is a completed transfer.
+    const premature = () => {
+      if (settled) return;
+      const t = setTimeout(() => done({ code: LC_CODES.TRANSFER_WRITE_FAILED, detail: "child terminated before the key frame completed" }), 250);
+      if (t.unref) t.unref();
+    };
+    child.once("exit", premature);
+    child.once("close", premature);
+    const writer = child.stdio[keyFd];
+    if (!writer || typeof writer.write !== "function" || writer.writable !== true) {
+      return done({ code: LC_CODES.DESCRIPTOR_UNAVAILABLE, detail: "governed inherited descriptor not established" });
+    }
+    writer.on("error", (e) => done({ code: LC_CODES.TRANSFER_WRITE_FAILED, detail: (e && e.message) || "writer error" }));
+    // Write ONCE, scrub, close.
+    try { writer.write(frame, (e) => { if (e) return done({ code: LC_CODES.TRANSFER_WRITE_FAILED, detail: e.message }); writer.end(() => done({ ok: true })); }); }
+    catch (e) { done({ code: LC_CODES.TRANSFER_WRITE_FAILED, detail: (e && e.message) || "write threw" }); }
   });
   frame.fill(0);
   if (!sent.ok) {
-    // A partially launched child is killed AND reaped, so no orphan holds a partial frame.
+    // A partially created child is killed AND reaped, so no orphan holds a partial frame and no residual
+    // process survives a failed transfer.
     await killAndReap(child);
-    return R(LC_CODES.TRANSFER_WRITE_FAILED, { detail: sent.detail, transfer: st.transfer });
+    return R(sent.code, { detail: sent.detail, transfer: st.transfer });
   }
   if (opts.detached !== false && typeof child.unref === "function") child.unref();
   return R(LC_CODES.OK, { child, supervisor_pid: child.pid, key_fd: keyFd, entrypoint: entry, entrypoint_digest: eDigest, transfer: st.transfer });
@@ -503,6 +589,9 @@ export async function spawnGovernedSupervisorV4(consumedCap, opts = {}) {
 function killAndReap(child, timeoutMs = 2000) {
   return new Promise((resolve) => {
     if (!child || child.exitCode !== null || child.signalCode !== null) return resolve(false);
+    // FG-FCHK-197-A: a child whose spawn FAILED has no pid — there is no process to kill or reap, and
+    // waiting on its 'close' would only burn the timeout.
+    if (!child.pid) return resolve(false);
     let done = false;
     const finish = () => { if (!done) { done = true; resolve(true); } };
     child.once("close", finish);

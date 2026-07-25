@@ -19,6 +19,15 @@ export const REQUIRED_FIELDS = [
   "prohibited_env", "prohibited_commands", "stop_conditions",
   "no_protected_main_merge", "no_pr_merge", "no_push_unless_authorized",
   "no_m1", "no_akior", "no_customer_data", "no_live_action", "no_permission_bypass",
+  // FG-FCHK-197-B: the last two signed exclusions were absent from this list entirely.
+  "no_deploy", "no_external_comms",
+];
+
+// Every exclusion that must be EXACTLY true — the complete founder-signed set. no_permission_bypass is
+// additionally enforced by the active-bypass check below, which also inspects mode/tools/flags.
+export const MUST_BE_TRUE_EXCLUSIONS = [
+  "no_protected_main_merge", "no_pr_merge", "no_push_unless_authorized", "no_m1", "no_akior",
+  "no_customer_data", "no_live_action", "no_permission_bypass", "no_deploy", "no_external_comms",
 ];
 
 const PERMISSION_BYPASS = ["--dangerously-skip-permissions", "--allow-dangerously-skip-permissions", "bypassPermissions"];
@@ -105,6 +114,11 @@ export function validateActivation(rec, bindings = {}) {
   R(bindings.recovery_resolved === false, "recovery state unresolved");
 
   // ---- hard safety flags ----
-  for (const flag of ["no_protected_main_merge", "no_pr_merge", "no_m1", "no_akior", "no_customer_data", "no_live_action"]) R(rec[flag] !== true, flag + " must be true");
+  // FG-FCHK-197-B: no_deploy appeared in NEITHER the required fields nor this list, and
+  // no_push_unless_authorized was presence-checked only — `false` is not undefined/null/"", so it passed
+  // the presence check and was never required to be true. Both, plus no_external_comms, were therefore
+  // droppable founder-signed exclusions. The list is now the COMPLETE signed exclusion set, and
+  // `rec[flag] !== true` refuses missing, false, null and any truthy non-true substitute alike.
+  for (const flag of MUST_BE_TRUE_EXCLUSIONS) R(rec[flag] !== true, flag + " must be true");
   return { valid: refusals.length === 0, refusals };
 }

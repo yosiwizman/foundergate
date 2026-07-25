@@ -10,7 +10,7 @@
       "INFORMATIONAL": 3,
       "TOTAL": 9
     },
-    "status": "HISTORICAL EVIDENCE ONLY \u2014 invalidated as current acceptance by this wave's mutations."
+    "status": "HISTORICAL EVIDENCE ONLY — invalidated as current acceptance by this wave's mutations."
   },
   "reviewed_executable_code_candidate": "8e6944ef04eb91604af36064051524b12a38c23d",
   "findings": [
@@ -29,13 +29,13 @@
           "children_spawned": 2,
           "frames_delivered": 2,
           "distinct_frame_digests": 1,
-          "interpretation": "the SAME ephemeral private key reached TWO live OS processes from one consumption \u2014 the Checker's finding reproduced independently by the Builder before correcting"
+          "interpretation": "the SAME ephemeral private key reached TWO live OS processes from one consumption — the Checker's finding reproduced independently by the Builder before correcting"
         }
       },
       "correction": [
         "TRANSFER_STATES gains TRANSFERRING, set SYNCHRONOUSLY in the same microtask as the guard, before any child creation, spawn, key export, pipe write or asynchronous yield",
         "input-validation refusals return the capability to NOT_TRANSFERRED (no key materialized, no child spawned)",
-        "past the point of no return: key exported, frame encoded, key DELETED from module storage, state set SPENT \u2014 all before the first await",
+        "past the point of no return: key exported, frame encoded, key DELETED from module storage, state set SPENT — all before the first await",
         "killAndReap kills AND reaps a partially launched child on transfer failure (bounded, group-escalating)",
         "no path allows a retry with the same key after a failed or ambiguous transfer"
       ],
@@ -108,7 +108,7 @@
         "validateSupervisorConfig enforces an EXHAUSTIVE allow-list and refuses exec, now and any unknown authority-bearing key BEFORE the lifecycle claim and before any provider access",
         "production time is the system clock; the executor receives an empty exec object",
         "the config file itself is owner/0600-verified before it is parsed",
-        "the injectable exec parameter remains on executeSignedRunV4 for the deterministic test families, which pass it directly \u2014 never through a config"
+        "the injectable exec parameter remains on executeSignedRunV4 for the deterministic test families, which pass it directly — never through a config"
       ],
       "files": [
         "tools/terminal0/lrcq/run-five-hour.mjs",
@@ -134,7 +134,7 @@
         "new assurance/fs-authority-guards.mjs with three permission classes",
         "SECRET_OR_MUTABLE (marker, intent, claim, supervisor config): owner == running uid and NO group/other permission at all (mode & 0o077)",
         "DIRECTORY (lifecycle root): owner and no group/other WRITE (mode & 0o022), so 0755 stays traversable",
-        "PUBLIC_SIGNED (the signed activation): owner and no group/other WRITE \u2014 it is signature-protected and meant to be readable",
+        "PUBLIC_SIGNED (the signed activation): owner and no group/other WRITE — it is signature-protected and meant to be readable",
         "wired into resolveSignedRoot, readRecord and the supervisor's config read"
       ],
       "files": [
@@ -143,14 +143,16 @@
         "src/v8b/lrcq/run-harness/supervisor-main.mjs"
       ],
       "result_after": {
-        "permissive_marker": "RECORD_UNSAFE_MODE before the cryptographic comparison",
-        "group_readable_intent": "RECORD_UNSAFE_MODE",
-        "world_writable_root": "ROOT_UNSAFE_MODE",
-        "root_0755": "accepted",
-        "owner_mismatch": "RECORD_UNSAFE_OWNER / ROOT_UNSAFE_OWNER"
+        "evidence_class_note": "FG-FCHK-197-E: each row below states the class of evidence that backs it. DYNAMICALLY-PROVEN means the attack was executed and the refusal observed; SOURCE-PROVEN means the branch was read in the source and not executed.",
+        "permissive_marker": "DYNAMICALLY-PROVEN: RECORD_UNSAFE_MODE before the cryptographic comparison",
+        "group_readable_intent": "DYNAMICALLY-PROVEN: RECORD_UNSAFE_MODE",
+        "world_writable_root": "DYNAMICALLY-PROVEN: ROOT_UNSAFE_MODE",
+        "root_0755": "DYNAMICALLY-PROVEN: accepted",
+        "owner_match": "DYNAMICALLY-PROVEN: a correctly-owned record passes the owner guard (C4h)",
+        "owner_mismatch": "SOURCE-PROVEN ONLY (root required): the guard compares st.uid against the running uid and returns RECORD_UNSAFE_OWNER / ROOT_UNSAFE_OWNER. Creating a foreign-owned file requires root, so this branch was NOT dynamically reproduced and is NOT claimed as an achieved runtime result (C4h2)."
       },
       "regression_tests": [
-        "checker-197-corrections C4a-C4i"
+        "checker-197-corrections C4a-C4i, C4h2 (evidence class corrected per FG-FCHK-197-E)"
       ]
     },
     {
