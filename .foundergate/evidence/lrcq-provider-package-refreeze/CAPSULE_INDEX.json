@@ -1,0 +1,45 @@
+{
+  "schema": "fg-pprc-198-capsule-index-2",
+  "wave": "FG-PPRC-198",
+  "IMPORTANT": "This index deliberately contains NO member digests for a final-head capsule. That is the PPRCHK-198-01 correction.",
+  "why": "A final-head capsule binds the exact final evidence HEAD and tree. Those do not exist while this file is being written, and a capsule generated before this commit would bind the WRONG head \u2014 which is precisely what the prior wave shipped. Indexing a capsule here would either be false or would require this commit to contain its own hash.",
+  "stage_A_committed": {
+    "artifact": "the package material committed in this repository",
+    "binds_exact_final_head": false,
+    "declared_in": "PACKAGE_CANDIDATE_SCOPE.json",
+    "hash_covered_by": [
+      "PACKAGE_SHA256_MANIFEST.json",
+      "EVIDENCE_SET_INDEX.json",
+      "the package commit tree"
+    ]
+  },
+  "stage_B_procedural": {
+    "artifact": "the final-head capsule",
+    "generator": "tools/terminal0/lrcq/final-head-capsule.mjs",
+    "generator_digest": "sha256:81c76aa29242692aa07828df72dad4b5f9bb64728aefdd7fd1495584df548d52",
+    "generated": "OUTSIDE Git, after the final evidence-only tail exists",
+    "committed": false,
+    "indexed_here": false,
+    "declared_in": "PROCEDURAL_FINAL_HEAD_CAPSULE_CONTRACT.json",
+    "required_results": {
+      "binds_exact_final_head": true,
+      "capsule_verifier": "VALID",
+      "final_preflight_result": "SIGNATURE-REQUIRED",
+      "binding_defects": [],
+      "providerSpawn": 0
+    },
+    "the_checker_must_generate_it_independently": true
+  },
+  "superseded_capsule": {
+    "frozen_head": "58b36206669a27d1ce6171f0f3149721c24f35c7",
+    "status": "HISTORICAL / SUPERSEDED. It bound the prior package candidate rather than the prior evidence head. At evidence head 46f1f0df541814dbc40a6d7a6c99997e5e539964 it correctly produced BINDING-DEFECT and CAPSULE-VERIFIER INVALID.",
+    "reuse_attack_result_at_the_corrected_candidate": {
+      "preflight": "BINDING-DEFECT",
+      "binding_defects": [
+        "evidence_commit_sha/tree is not the exact current HEAD/tree"
+      ],
+      "providerSpawn": 0
+    },
+    "must_not_be_reused": true
+  }
+}

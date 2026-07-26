@@ -1,0 +1,154 @@
+{
+  "schema": "lrcq-package-checker-finding-correction-ledger-1",
+  "wave": "FG-PPRC-198",
+  "source_report": {
+    "path_at_review_time": "/tmp/foundergate-pr198-independent-package-checker.json",
+    "preserved_copy": ".foundergate/evidence/lrcq-provider-package-refreeze/PPRCHK_198_PACKAGE_CHECKER_REPORT_HISTORICAL.json",
+    "sha256": "1a38edbcb02178e5f2f09564418d84b535493e350afaf268d7c61ff016b66a9b",
+    "sha256_recomputed_here": "1a38edbcb02178e5f2f09564418d84b535493e350afaf268d7c61ff016b66a9b",
+    "verdict": "FOUNDERGATE-PR197-PROVIDER-PACKAGE-CHECKER: FINDINGS",
+    "findings_count": 3,
+    "preserved_verbatim": true,
+    "status": "HISTORICAL FINDINGS EVIDENCE ONLY against package candidate 58b36206669a27d1ce6171f0f3149721c24f35c7 and evidence head 46f1f0df541814dbc40a6d7a6c99997e5e539964. It is NOT acceptance of anything, and it is NOT acceptance of this corrected candidate."
+  },
+  "superseded": {
+    "package_candidate": "58b36206669a27d1ce6171f0f3149721c24f35c7",
+    "package_tree": "0838399d2089e8a360ee26f62bf0c0e6b1bd03b8",
+    "evidence_head": "46f1f0df541814dbc40a6d7a6c99997e5e539964",
+    "evidence_tree": "50a2a98a47c503e4220953f065d3de2845ef67ce",
+    "status": "HISTORICAL FINDINGS EVIDENCE ONLY"
+  },
+  "new_package_correction_candidate": {
+    "sha": "8e8c5569a75c1a23ebc90665ee6a77023b72ae10",
+    "tree": "0048ea190ccc4a3d725ef60427745b2e347f9d63",
+    "intermediate_superseded_by_this_candidate": "757957e59dc53272d1a7f098c396da0046587adb (same wave; superseded by a self-caught receipt-reporting correction, see finding SELF-1 below)"
+  },
+  "findings": [
+    {
+      "id": "PPRCHK-198-01",
+      "severity": "HIGH",
+      "accepted": true,
+      "disputed": false,
+      "title": "final-head capsule/preflight claims were false at the shipped evidence head",
+      "what_was_false": "PACKAGE_VERIFICATION_RESULTS.json recorded executed_preflight.result 'SIGNATURE-REQUIRED', checks.binds_exact_final_head true and binding_defects []; CAPSULE_INDEX.json recorded capsule_verifier VALID; PACKAGE_CHECKER_PACKET.md item 13 instructed the Checker to require SIGNATURE-REQUIRED with empty binding_defects. All were true only at package candidate 58b3620. They were committed IN 46f1f0d \u2014 the very commit that advanced HEAD and falsified them.",
+      "independently_reproduced_here": {
+        "method": "DYNAMIC. The production launcher was run against the superseded capsule's FINAL template at the current head.",
+        "result": "BINDING-DEFECT; binding_defects ['evidence_commit_sha/tree is not the exact current HEAD/tree']; checks.binds_exact_final_head false; invocations.providerSpawn 0; founder_gate KEY_ENROLLMENT",
+        "conclusion": "PF-5 fired correctly and failed CLOSED. The control was never broken; the evidence was false."
+      },
+      "authority_impact": "NONE in the fail-open direction. No false success, no provider spawn, no widened ceiling or exclusion, no executable behaviour change. The impact was that the package as submitted could not be signed, and that three committed claims were false at the commit containing them.",
+      "correction": {
+        "shape": "TWO artifacts at TWO stages, declared separately and never conflated.",
+        "stage_A_committed_package_candidate": {
+          "declared_in": "PACKAGE_CANDIDATE_SCOPE.json",
+          "binds_exact_final_head": false,
+          "explicitly_does_not_claim": [
+            "to be the final current-HEAD capsule",
+            "binds_exact_final_head",
+            "that PF-5 passes at a later evidence head",
+            "package acceptance"
+          ],
+          "evidence_commit_fields": "FINAL_HEAD_REPLACED_AT_FREEZE / FINAL_TREE_REPLACED_AT_FREEZE \u2014 placeholders by design, because a commit cannot embed its own hash"
+        },
+        "stage_B_procedural_final_head_capsule": {
+          "declared_in": "PROCEDURAL_FINAL_HEAD_CAPSULE_CONTRACT.json",
+          "generator": "tools/terminal0/lrcq/final-head-capsule.mjs (NEW)",
+          "generator_digest": "sha256:81c76aa29242692aa07828df72dad4b5f9bb64728aefdd7fd1495584df548d52",
+          "generated": "OUTSIDE Git, only AFTER the final evidence-only tail exists and its SHA/tree are mechanically known",
+          "committed": false,
+          "why_not_committed": "A receipt asserting the final head, committed at that head, is the recursive self-seal this design exists to avoid.",
+          "required_explicit_inputs": [
+            "--final-head",
+            "--final-tree",
+            "--evaluated-sha",
+            "--out-root",
+            "--capsule-name",
+            "--pr"
+          ],
+          "regenerated_immediately_before_founder_enrollment": true
+        },
+        "false_claims_removed": "The eleven prior-tail executed-results artifacts (including PACKAGE_VERIFICATION_RESULTS.json, CAPSULE_INDEX.json, PACKAGE_CHECKER_PACKET.md and STACKED_PR_DESCRIPTION.md) described a superseded candidate and were false at the current head. They were REMOVED in the package-correction candidate and rewritten, correctly, in this evidence tail. Git history retains them, and the preserved Checker report documents them.",
+        "pf5_not_weakened": "tools/terminal0/lrcq/run-five-hour.mjs is BYTE-IDENTICAL to the approved authority candidate ebd4ff56. Digest sha256:f9ca96a6e1b891d6f9e05740fce1665dd2a3207a4732956ba266b89fff921656"
+      },
+      "remains_subject_to": "INDEPENDENT PACKAGE CHECKER VERIFICATION. The Checker must repeat the Stage-B generation itself from the final reviewed head; the Builder's receipt is not acceptance."
+    },
+    {
+      "id": "PPRCHK-198-02",
+      "severity": "MEDIUM",
+      "accepted": true,
+      "disputed": false,
+      "title": "the package commit silently removed the STALE-INTERMEDIATE-CANDIDATE markers from UNSIGNED_GATE_PACKET.json",
+      "mechanism_confirmed": "Commit ce82c3b hand-added __status/__superseded_by/__reason to a GENERATED file. tools/terminal0/lrcq/classify-and-packet.mjs had no knowledge of them, so regeneration in 58b3620 dropped all three. The file still carries schema_version lrcq-activation-3 and unresolved founder-fill placeholders.",
+      "authority_impact": "NONE. founder_signature null, confers_no_authority true, no signed field carries its digest, PF-3 refuses any surviving '<founder' placeholder, and verifyActivation refuses schema lrcq-activation-3 outright. The defect was founder-readability and evidence honesty.",
+      "correction": {
+        "markers_are_now_generator_emitted": true,
+        "markers": {
+          "__status": "STALE-INTERMEDIATE-CANDIDATE",
+          "__superseded_by": "UNSIGNED_ACTIVATION_MATERIAL_PACKET.json",
+          "__reason": "precise: retired V3/intermediate packet, historical/compatibility evidence only, unresolved founder placeholders, confers no authority, refused by V4 production entrypoints"
+        },
+        "generator_refuses_without_them": "A FIXED required contract (REQUIRED_MARKER_KEYS / REQUIRED_STATUS / REQUIRED_SUPERSEDED_BY / REQUIRED_REASON_FACTS) is declared INDEPENDENTLY of the emitted table and checked against the emitted packet before writing.",
+        "self_caught_defect_in_the_first_draft_of_this_fix": "The first draft validated with the emitted table's OWN key list, so deleting a marker from that table also deleted its own check \u2014 the identical defect class as PPRCHK-198-03. Found by executing the attack rather than by inspection, and corrected before the candidate was frozen.",
+        "placeholders_now_visibly_classified": "__unresolved_founder_placeholders enumerates every placeholder leaf mechanically, with __unresolved_founder_placeholder_count and __placeholder_note.",
+        "determinism": "--run-harness-candidate is now a REQUIRED frozen input; the generator no longer reads live HEAD, so the committed bytes are reproducible.",
+        "complete_regeneration_recipe": "PACKAGE_VERIFICATION_INSTRUCTIONS.md section 6 now names and executes ALL FOUR producing generators in order: generate-run-manifest.mjs, classify-and-packet.mjs (with the frozen input), generate-founder-gate-packet.mjs, refreeze-package.mjs.",
+        "package_membership": "Every producing generator is now a package member in PACKAGE_SHA256_MANIFEST.json, so the documented recipe is itself hash-covered."
+      }
+    },
+    {
+      "id": "PPRCHK-198-03",
+      "severity": "LOW",
+      "accepted": true,
+      "disputed": false,
+      "title": "the generator refused a widened ceiling but accepted a REMOVED exclusion, emitting a founder-readable artifact keyed ten_mandatory_exclusions that listed nine",
+      "mechanism_confirmed": "Ceilings were checked with strict equality against a local table, so any edit refused. Exclusions were checked by ITERATING the generator's own table, so deleting an entry simply removed the iteration and nothing refused. The table was a hand-maintained duplicate of V4_SIGNED_EXCLUSIONS and was never asserted equal to it.",
+      "authority_impact": "NONE. The signed payload still carried all ten exclusions and verifyActivation enforces V4_SIGNED_EXCLUSIONS independently. The exposure was a founder-readable artifact that could understate what the run may never do.",
+      "correction": {
+        "authoritative_exports_consumed": [
+          "V4_SIGNED_EXCLUSIONS",
+          "V4_SIGNED_LIMIT_FIELDS"
+        ],
+        "authoritative_exports_modified": false,
+        "guard": "assertAuthoritativeTables() requires exact equality \u2014 same keys, same count, same order, no missing key, no extra key, no duplicate \u2014 plus a cardinality assertion (10 exclusions / 6 ceilings) because the emitted artifact key names assert those counts.",
+        "guard_runs_before_any_write": true,
+        "checks_now_iterate_the_authority": "for (const k of LIMIT_FIELDS) ... and for (const x of EXCLUSIONS) ... \u2014 a key the authority signs can no longer drop out of the check by being deleted from a table in the generator.",
+        "emitted_inventories_derived_from_the_authority": [
+          "LIMITS_AND_EXCLUSIONS.json six_signed_ceilings / ten_mandatory_exclusions",
+          "FOUNDER_ENROLLMENT_PACKET.json what_the_run_may_never_do / what_the_run_would_be_allowed_to_do"
+        ],
+        "counts_stated_on_the_artifacts": "so a short list is visible on its face"
+      }
+    },
+    {
+      "id": "SELF-1",
+      "severity": "LOW",
+      "raised_by": "the Builder, while exercising its own new Stage-B tool",
+      "accepted": true,
+      "title": "final-head-capsule.mjs reported checks_passed 0 for a capsule whose 31 checks all passed",
+      "mechanism": "verifyCapsule reports each check as { name, status, detail } with status PASS/FAIL/SKIP. The receipt counted a non-existent `c.pass` field.",
+      "authority_impact": "NONE \u2014 the pass/fail decision has always been driven by ver.valid and ver.problems, never by this count. But a receipt that under-reports its own evidence is exactly the defect class this wave exists to correct, so it was fixed before the candidate was frozen.",
+      "correction": "The receipt now reports checks_total / checks_passed / checks_failed / checks_skipped from the real status field. Verified: 31 total, 31 passed, 0 failed, 0 skipped.",
+      "disclosed_because": "It changed the frozen candidate SHA from 757957e to 8e8c5569a75c1a23ebc90665ee6a77023b72ae10, and an undisclosed SHA change would itself be an evidence defect."
+    }
+  ],
+  "authority_immutability": {
+    "claim": "No authority file changed. Recomputed before and after every correction and every regeneration.",
+    "digests": {
+      "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs": "sha256:ee7cb5f5e99735659757212d7d7b37c3ea6457ae997c34e570f17b5d011faf94",
+      "src/v8b/lrcq/assurance/activation-v4.mjs": "sha256:5c4ba9c5b7d87bd92213022c6e8ab3ef36077df3a1ff594c618ea2e5a240eb45",
+      "src/v8b/lrcq/provider/authority-boundary.mjs": "sha256:08fac21823a142070ccc233e667d6c09ef2ffc64851dbc18907d9c74a58ea29c",
+      "src/v8b/lrcq/assurance/deep-freeze-authority.mjs": "sha256:eda83dcd02e2cb4ef6879b00f6b7468390af3e49dba52e7088d1ee2953742286",
+      "src/v8b/lrcq/assurance/fs-authority-guards.mjs": "sha256:574ae9794632b060b9b99c71c1e64072958e61719fc2c23901a5848e45da7ea2",
+      "src/v8b/lrcq/assurance/fixed-executables.mjs": "sha256:00b1b56d24a07a605dc8c8a0981c9d1363702a3b1e3def21e692ae58893e907d",
+      "src/v8b/lrcq/provider/real-provider.mjs": "sha256:ea3bafdcd1bcc07eac2b5bdd65d24794ec190a992ce577ce7d4b2087d524cd37",
+      "tools/terminal0/lrcq/run-five-hour.mjs": "sha256:f9ca96a6e1b891d6f9e05740fce1665dd2a3207a4732956ba266b89fff921656",
+      "src/v8b/lrcq/provider/activation-schema.mjs": "sha256:fab360c8d99c4b4fcdb601c39dbe6315f53268d966e7058e60f6f05d825ea631",
+      "src/v8b/lrcq/run-harness/v4-legacy-projection.mjs": "sha256:cb9cb03dffb96489546209cbae93e4b3ee1cd414deb164bdd273b51573d7ce9d"
+    },
+    "all_unchanged": true,
+    "approved_authority_candidate": "ebd4ff5672ba657b039521a8b377a094a2ea67ea",
+    "approved_authority_tree": "012e0560fd21f7328088ec290f30f9eac84dc1ef"
+  },
+  "builder_verification_is_not_package_acceptance": true,
+  "next_gate": "FRESH INDEPENDENT PACKAGE CHECKER \u2014 required clean verdict FOUNDERGATE-PR197-PROVIDER-PACKAGE-CHECKER: CLEAN. The Builder must not issue it."
+}

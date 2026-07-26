@@ -1,0 +1,124 @@
+{
+  "schema": "fg-pprc-198-builder-verification-ledger-1",
+  "wave": "FG-PPRC-198",
+  "builder_verification_is_not_package_acceptance": true,
+  "what_the_builder_executed": {
+    "suite": {
+      "runs": 2,
+      "result": "155/155 ALL GREEN both runs",
+      "identical_family_totals": true,
+      "skipped": 0,
+      "failures": 0
+    },
+    "new_regression_family": {
+      "name": "package-authoritative-tables",
+      "assertions": 61,
+      "result": "61/61"
+    },
+    "negative_attack_matrix": {
+      "attacks": 74,
+      "refused": 74,
+      "not_refused": [],
+      "productive_provider_spawns": 0,
+      "harness_note": "The prior wave's harness copied only ONE tools/ member into its disposable package copy; the corrected package lists SEVEN. The harness was fixed to drive that list FROM THE MANIFEST (the same lesson as PPRCHK-198-03) before its control passed. First run: CTRL-1 failed with 6 mismatches \u2014 exactly the 6 newly-added generator members. Disclosed rather than silently re-run."
+    },
+    "stage_b_refusal_attacks": {
+      "attacks": 12,
+      "refused": 12,
+      "productive_provider_spawns": 0,
+      "codes": [
+        "DECLARED_FINAL_HEAD_IS_NOT_CURRENT_HEAD (x2)",
+        "DECLARED_FINAL_TREE_IS_NOT_CURRENT_TREE",
+        "OUT_ROOT_INSIDE_REPOSITORY",
+        "EVALUATED_SHA_EQUALS_FINAL_HEAD",
+        "CAPSULE_GENERATION_FAILED (non-package diff + material packet binds a different evaluated_sha)",
+        "FINAL_TREE_REQUIRED",
+        "EVALUATED_SHA_REQUIRED",
+        "CAPSULE_DESTINATION_EXISTS",
+        "FINAL_HEAD_REQUIRED",
+        "OUT_ROOT_REQUIRED",
+        "CAPSULE_NAME_INVALID"
+      ],
+      "no_capsule_directory_created_by_any_refusal": true
+    },
+    "table_mutation_attacks": {
+      "exclusion_removals": 10,
+      "limit_field_removals": 6,
+      "additions": 2,
+      "duplicates": 2,
+      "reorder": 1,
+      "ceilings_key_drop": 1,
+      "ceiling_widening": 1,
+      "all_refused": true,
+      "artifact_written_on_refusal": false,
+      "exact_prior_defect_reproduced_and_closed": "deleting no_deploy previously exited 0 and shipped 9 exclusions; it now exits 9 with AUTHORITATIVE_TABLE_MISMATCH and writes nothing"
+    },
+    "marker_attacks": {
+      "strip_each_marker": 3,
+      "replace_superseded_by": 1,
+      "hollow_out_reason": 1,
+      "omit_frozen_input": 1,
+      "all_refused": true
+    },
+    "positive_spawn_control": {
+      "counter_before": 0,
+      "counter_after": 1,
+      "counter_proven_to_increment": true,
+      "note": "run with the hook preloaded; without the --require preload the hook instrument cannot increment and the control is inconclusive, not failing"
+    },
+    "superseded_capsule_reuse": {
+      "result": "BINDING-DEFECT",
+      "providerSpawn": 0
+    },
+    "reproducibility": {
+      "full_four_generator_chain_re_run": "byte-identical tree",
+      "git_status_after": "empty"
+    },
+    "authority_digests": {
+      "recomputed_before_and_after": true,
+      "all_unchanged": true
+    }
+  },
+  "self_reported_defects_found_by_the_builder_during_this_wave": [
+    {
+      "id": "SELF-1",
+      "what": "final-head-capsule.mjs reported checks_passed 0 for a fully passing capsule (counted a non-existent field)",
+      "impact": "reporting only; the pass/fail decision was always driven by ver.valid/ver.problems",
+      "status": "CORRECTED before freeze; changed the candidate SHA from 757957e to 8e8c556"
+    },
+    {
+      "id": "SELF-2",
+      "what": "the first draft of the PPRCHK-198-02 marker guard iterated the emitted table's own keys, so deleting a marker also deleted its own check",
+      "impact": "would have re-opened PPRCHK-198-02 under mutation",
+      "status": "CORRECTED before freeze; found by EXECUTING the attack, not by inspection"
+    },
+    {
+      "id": "SELF-3",
+      "what": "a first attempt at the limit-field removal attacks used an invalid sed expression, so no mutation was applied and the runs trivially succeeded",
+      "impact": "would have recorded 6 untested attacks as passing",
+      "status": "CORRECTED; re-run with a precise mutation, 6/6 refused"
+    }
+  ],
+  "prohibitions_observed": [
+    "no authority source modified",
+    "PF-5 not weakened",
+    "no recursive self-seal",
+    "no merge",
+    "protected main unmodified",
+    "PR #197 and PR #196 unmodified",
+    "no founder key enrolled",
+    "no passphrase requested or handled",
+    "no real founder signature",
+    "no activation created or consumed",
+    "no productive provider or model invocation",
+    "no five-hour run",
+    "no deployment",
+    "no branch-protection change",
+    "no AKIOR or M1 access",
+    "no customer data",
+    "no limit or exclusion widened",
+    "no package acceptance claimed",
+    "no package Advisor verdict issued"
+  ],
+  "next_gate": "FRESH INDEPENDENT PACKAGE CHECKER (required clean verdict: FOUNDERGATE-PR197-PROVIDER-PACKAGE-CHECKER: CLEAN), then a package Advisor. The Builder issues neither."
+}

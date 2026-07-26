@@ -1,0 +1,682 @@
+{
+  "schema": "foundergate-pr198-independent-package-checker-1",
+  "verdict": "FINDINGS",
+  "verdict_line": "FOUNDERGATE-PR197-PROVIDER-PACKAGE-CHECKER: FINDINGS",
+
+  "checker_identity": {
+    "role": "fresh independent read-only package Checker for PR #198",
+    "did_not_build": ["the PR #197 authority candidate", "the provider/package re-freeze", "any package artifact"],
+    "is_not": ["the authority Checker", "the authority Advisor", "the Builder"],
+    "authority_held": "none — read-only. No repository, GitHub, key, signature, activation or deployment authority.",
+    "does_not_issue": "the package Advisor verdict",
+    "host": "AKIOR-Mac-mini.local (Darwin 25.3.0, arm64)",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-provider-package-refreeze-ebd4ff5",
+    "mutations_performed_in_the_reviewed_repository": "none",
+    "writes_performed": [
+      "/tmp/foundergate-pr198-independent-package-checker.json (this report)",
+      "disposable working files under the session scratchpad and disposable git clones, all outside the reviewed worktree"
+    ]
+  },
+
+  "frozen_state": {
+    "repository": "yosiwizman/foundergate",
+    "worktree_realpath": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-provider-package-refreeze-ebd4ff5",
+    "branch": "lane/lrcq-provider-package-refreeze-ebd4ff5",
+    "head": "46f1f0df541814dbc40a6d7a6c99997e5e539964",
+    "head_tree": "50a2a98a47c503e4220953f065d3de2845ef67ce",
+    "package_candidate": "58b36206669a27d1ce6171f0f3149721c24f35c7",
+    "package_candidate_tree": "0838399d2089e8a360ee26f62bf0c0e6b1bd03b8",
+    "worktree_clean_including_ignored": true,
+    "active_git_operation": "none (no MERGE_HEAD / REBASE_HEAD / CHERRY_PICK_HEAD / REVERT_HEAD / BISECT_LOG / rebase-merge / rebase-apply / sequencer / index.lock)",
+    "local_equals_upstream_equals_github": true,
+    "pr_198": { "state": "OPEN", "isDraft": true, "mergedAt": null, "mergeCommit": null, "baseRefName": "lane/lrcq-founder-signature-authority-8d1899f", "baseRefOid": "39dea6364d3a32420034f0ba4895486d1b918fa1", "headRefOid": "46f1f0df541814dbc40a6d7a6c99997e5e539964", "changedFiles": 29 },
+    "pr_197_head": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+    "pr_196_head": "8d1899f793305e9f87adc5163a60bfb077e4d4e5",
+    "protected_main": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423",
+    "active_keys": [],
+    "revoked_keys": [],
+    "max_current_keys": 1,
+    "no_founder_key_signature_activation_supervisor_or_productive_provider_process": true,
+    "competing_writable_builder": "none for this lane. Seven other FounderGate worktrees exist, all on different branches. One residual node listener (pid 85603, ~5 days old, script file deleted, cwd in the lrcq-assurance-factory lane) was observed via ps only and never contacted — it holds no writable descriptor into this lane and matches the Builder's own disclosure.",
+    "observations_not_defects_of_this_pr": [
+      "GitHub reports branch \"main\" with protected=false. The SHA matches the expected protected-main baseline exactly, but the \"protected\" designation is a project convention here, not an enforced GitHub branch-protection rule. Pre-existing repository configuration, outside this package's scope.",
+      "The local branch refs/heads/main is at 17ab4c749c00c0b904aee49fcdb52c5ff097d9bc, a strict ancestor of origin/main ba7d6547. A stale local checkout, not drift of the protected baseline."
+    ],
+    "state_drift": "none — every expected value in the packet reproduced exactly"
+  },
+
+  "changed_path_inventory": {
+    "base": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+    "head": "46f1f0df541814dbc40a6d7a6c99997e5e539964",
+    "total_paths": 29,
+    "classification": {
+      "regenerated_package_artifact": [
+        ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json",
+        ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_GATE_PACKET.json",
+        ".foundergate/evidence/lrcq-assurance-factory/FOUNDER_GATE_PACKET.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/EVIDENCE_SET_INDEX.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/PACKAGE_SHA256_MANIFEST.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/LIMITS_AND_EXCLUSIONS.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/PREFLIGHT_CONTROLS.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/CLAIM_EVIDENCE_CLASSIFICATION.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/FOUNDER_ENROLLMENT_PACKET.json"
+      ],
+      "provider_binding": [
+        ".foundergate/evidence/lrcq-provider-package-refreeze/PROVIDER_REFREEZE_2_1_220_ebd4ff5.json"
+      ],
+      "unsigned_activation_material": [
+        ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json"
+      ],
+      "corrected_evidence_source": [
+        ".foundergate/evidence/lrcq-assurance-factory/V4_AUTHORITY_ACCEPTANCE_MATRIX.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/V4_AUTHORITY_ACCEPTANCE_MATRIX.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/ADV_197_01_CORRECTION_LEDGER.json"
+      ],
+      "generation_tool": ["tools/terminal0/lrcq/refreeze-package.mjs"],
+      "preserved_review_report": [
+        ".foundergate/evidence/lrcq-provider-package-refreeze/CHECKER_197_SIXTH_AUTHORITY_REPORT.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/ADVISOR_197_SEQUENTIAL_REPORT.json"
+      ],
+      "run_material": [".foundergate/run-materials/first-internal-5h/run-manifest.json"],
+      "verification_instructions": [".foundergate/evidence/lrcq-provider-package-refreeze/PACKAGE_VERIFICATION_INSTRUCTIONS.md"],
+      "evidence_only_tail": [
+        ".foundergate/evidence/lrcq-provider-package-refreeze/AUTHORITY_CORE_DIGEST_COMPARISON.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/BUILDER_VERIFICATION_LEDGER.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/CAPSULE_INDEX.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/NEGATIVE_ATTACK_RESULTS.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/PACKAGE_CANDIDATE_BINDING.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/PACKAGE_CHECKER_PACKET.md",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/PACKAGE_VERIFICATION_RESULTS.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/POSITIVE_SPAWN_CONTROL.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/REPRODUCIBILITY_RESULTS.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/STACKED_PR_DESCRIPTION.md",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/TEST_TOTALS.json"
+      ]
+    },
+    "every_changed_path_classified": true,
+    "unclassified_or_undeclared_change": [
+      "The removal of the __status / __superseded_by / __reason staleness markers from UNSIGNED_GATE_PACKET.json is a semantic change inside a 'regenerated package artifact' that no classification, ledger or reproducibility record declares. See finding PPRCHK-198-02."
+    ]
+  },
+
+  "package_evidence_commit_split": {
+    "commits_after_base": 2,
+    "package_candidate": { "sha": "58b36206669a27d1ce6171f0f3149721c24f35c7", "tree": "0838399d2089e8a360ee26f62bf0c0e6b1bd03b8", "parent": "39dea6364d3a32420034f0ba4895486d1b918fa1", "paths_changed": 18 },
+    "evidence_tail": { "sha": "46f1f0df541814dbc40a6d7a6c99997e5e539964", "tree": "50a2a98a47c503e4220953f065d3de2845ef67ce", "parent": "58b36206669a27d1ce6171f0f3149721c24f35c7", "paths_changed": 11 },
+    "exactly_one_commit_after_the_package_candidate": true,
+    "tail_adds_only_new_files_under_the_wave_evidence_directory": true,
+    "tail_modifies_no_existing_file": true,
+    "tail_changes_no_package_artifact": true,
+    "tail_changes_no_source_or_tool": true,
+    "tail_changes_no_dependency": true,
+    "tail_changes_no_run_material": true,
+    "post_package_mutation": "none",
+    "verification": "git diff --name-status 58b3620..46f1f0d returns 11 entries, every one status 'A', every one under .foundergate/evidence/lrcq-provider-package-refreeze/; git show --stat reports 11 files changed, 2111 insertions(+), 0 deletions(-)."
+  },
+
+  "authority_binding": {
+    "authority_candidate_sha": "ebd4ff5672ba657b039521a8b377a094a2ea67ea",
+    "authority_candidate_tree_recomputed": "012e0560fd21f7328088ec290f30f9eac84dc1ef",
+    "tree_matches_expected": true,
+    "is_ancestor_of_the_package_lane": true,
+    "src_changed_after_the_authority_candidate": "NONE — git diff --name-status ebd4ff56..46f1f0d -- src/ is empty",
+    "tools_changed_after_the_authority_candidate": ["tools/terminal0/lrcq/refreeze-package.mjs (added)"],
+    "run_five_hour_mjs_byte_identical": {
+      "blob_at_candidate": "7f288bdc43cb99a05209baa3e8d56db9a25f5731",
+      "blob_at_head": "7f288bdc43cb99a05209baa3e8d56db9a25f5731",
+      "identical": true
+    },
+    "eight_authority_module_digests_independently_recomputed": {
+      "method": "each file hashed from the raw bytes at commit ebd4ff56 (git show) AND from the worktree, then compared with the digest recorded in PROVIDER_REFREEZE_2_1_220_ebd4ff5.json",
+      "files_checked": 8,
+      "all_three_values_agree_for_every_file": true,
+      "digests": {
+        "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs": "sha256:ee7cb5f5e99735659757212d7d7b37c3ea6457ae997c34e570f17b5d011faf94",
+        "src/v8b/lrcq/assurance/activation-v4.mjs": "sha256:5c4ba9c5b7d87bd92213022c6e8ab3ef36077df3a1ff594c618ea2e5a240eb45",
+        "src/v8b/lrcq/provider/authority-boundary.mjs": "sha256:08fac21823a142070ccc233e667d6c09ef2ffc64851dbc18907d9c74a58ea29c",
+        "src/v8b/lrcq/assurance/deep-freeze-authority.mjs": "sha256:eda83dcd02e2cb4ef6879b00f6b7468390af3e49dba52e7088d1ee2953742286",
+        "src/v8b/lrcq/assurance/fs-authority-guards.mjs": "sha256:574ae9794632b060b9b99c71c1e64072958e61719fc2c23901a5848e45da7ea2",
+        "src/v8b/lrcq/assurance/fixed-executables.mjs": "sha256:00b1b56d24a07a605dc8c8a0981c9d1363702a3b1e3def21e692ae58893e907d",
+        "src/v8b/lrcq/provider/real-provider.mjs": "sha256:ea3bafdcd1bcc07eac2b5bdd65d24794ec190a992ce577ce7d4b2087d524cd37",
+        "tools/terminal0/lrcq/run-five-hour.mjs": "sha256:f9ca96a6e1b891d6f9e05740fce1665dd2a3207a4732956ba266b89fff921656"
+      }
+    },
+    "activation_payload_binds_the_authority_candidate": {
+      "reviewed_runtime_sha": "ebd4ff5672ba657b039521a8b377a094a2ea67ea",
+      "reviewed_runtime_tree": "012e0560fd21f7328088ec290f30f9eac84dc1ef",
+      "correct": true
+    },
+    "six_ceilings_unchanged": true,
+    "ten_exclusions_true": true
+  },
+
+  "provider_refreeze": {
+    "target": "/Users/yosiwizman/.local/share/claude/versions/2.1.220",
+    "realpath": "/Users/yosiwizman/.local/share/claude/versions/2.1.220",
+    "realpath_equals_target": true,
+    "is_symlink": false,
+    "regular_file": true,
+    "executable": true,
+    "mode": "0755",
+    "owner_uid": 501,
+    "owner_gid": 20,
+    "link_count": 1,
+    "device": 16777230,
+    "inode": 104673092,
+    "size_bytes": 256908272,
+    "mtime_epoch": 1784943440,
+    "three_independent_digests": {
+      "shasum_a256": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+      "openssl_dgst_sha256": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+      "python_hashlib_streamed": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+      "all_three_agree": true,
+      "equals_expected": true
+    },
+    "version_probe": { "command": "<target> --version", "output": "2.1.220 (Claude Code)", "matches_expected": true, "model_request": false, "count": 1 },
+    "metadata_stable_before_and_after_hashing_and_version_probe": true,
+    "metadata_stable_at_review_end": true,
+    "updater_or_replacement_process": "none — the only updater on the host is macOS softwareupdated (pid 545), unrelated to the provider target",
+    "alternate_installed_versions_enumerated_and_refused": {
+      "2.1.218": "sha256:71abaff59312c9a9b6a1d818365048b42e4e95cc521a823660eded3e0880d9b7",
+      "2.1.219": "sha256:a8e806faaefac53c7a0f26523d8a45c60dbef3407b14ef990c75765d08febc82",
+      "note": "2.1.219 has the SAME byte size as 2.1.220 and a DIFFERENT digest, so size is not a discriminator and the digest is. Both alternates were dynamically attacked (A03, A07, P2-provider-path) and refused."
+    },
+    "mutable_alias": {
+      "path": "/Users/yosiwizman/.local/bin/claude",
+      "is_symlink": true,
+      "resolves_to": "/Users/yosiwizman/.local/share/claude/versions/2.1.220",
+      "used_as_the_binding": false,
+      "evidence": "The SIGNED payload's resolved_provider_target is the immutable versioned file. authority-boundary.mjs line 163 uses `cap.resolved_provider_target || cap.provider_executable_path`, so the versioned target wins whenever present, and the preflight rejects a symlink resolved_provider_target outright (attacks A04, A06, P2-provider-alias all refused with PROVIDER_TARGET_IS_MUTABLE_ALIAS / 'resolved_provider_target is a symlink (mutable alias)'). provider_executable_path retains the alias as a human-readable label only.",
+      "residual_note": "provider_executable_path IS a signed field carrying the mutable alias string. It is never the execution target while resolved_provider_target is present, and altering either invalidates the signature. Recorded for completeness, not raised as a finding."
+    },
+    "refreeze_record_binds": {
+      "authority_candidate_sha_and_tree": true,
+      "clean_checker_digest_and_verdict": true,
+      "advisor_digest_and_verdict": true,
+      "package_candidate": "via PACKAGE_CANDIDATE_BINDING.json in the evidence tail (a commit cannot embed its own hash)",
+      "unsigned_and_unactivated_state": true
+    },
+    "no_model_request_occurred": true,
+    "provider_executions_by_this_checker": 1,
+    "provider_executions_were_version_only": true
+  },
+
+  "generator_scope_and_runtime_reachability": {
+    "artifact": "tools/terminal0/lrcq/refreeze-package.mjs",
+    "sha256": "8911cc8125b7ff50b05d2b60e0ba530b9f3db7401c3d36b928674b22d5f7607c",
+    "lines": 722,
+    "treated_as": "NEW EXECUTABLE REPOSITORY CODE, not an evidence artifact",
+    "generation_only": true,
+    "imported_or_invoked_by_the_production_five_hour_runtime": false,
+    "transitive_import_closure_of_run_five_hour_mjs": { "modules": 33, "contains_refreeze_package": false },
+    "referenced_by_real_provider_mjs_or_activation_consumption": false,
+    "referenced_anywhere_in_src_or_tools": "only by its own self-reference in its package file list and its own usage comment",
+    "creates_no_new_authority_or_provider_execution_path": true,
+    "cannot_sign_enroll_issue_activate_consume_launch_merge_push_or_deploy": true,
+    "reads_wall_clock": false,
+    "draws_randomness": false,
+    "reads_environment_variables": false,
+    "static_scan": "grep for process.env | Date.now | new Date | Math.random | require( | child_process | execSync | spawnSync | spawn( | exec( | eval( | Function( | import( returns ZERO matches. The only process.* use is process.argv / process.exit on line 722.",
+    "all_variable_inputs_explicit": ["--observed-at", "--version-probe", "--digest-shasum", "--digest-openssl"],
+    "validates_all_frozen_inputs_before_generation": true,
+    "uses_only_the_fixed_absolute_git_executable": "yes — fixedGit() from src/v8b/lrcq/assurance/fixed-executables.mjs, FIXED_GIT = /usr/bin/git, verified regular/non-symlink/executable before use, run in MINIMAL_ENV with GIT_CONFIG_GLOBAL/SYSTEM pinned to /dev/null",
+    "never_executes_the_provider": true,
+    "hidden_shell_eval_exec_spawn_or_path_resolved_surface": "none",
+    "byte_idempotent_from_identical_frozen_inputs": true,
+    "substitution_resistance": {
+      "unreviewed_authority_candidate": "REFUSED (authority candidate tree mismatch)",
+      "authority_tree": "REFUSED",
+      "protected_main_baseline": "REFUSED (protected main drifted)",
+      "provider_path": "REFUSED (PROVIDER_DIGEST_MISMATCH / PROVIDER_TARGET_IS_MUTABLE_ALIAS)",
+      "provider_digest": "REFUSED",
+      "provider_version": "REFUSED",
+      "clean_checker_digest": "REFUSED (PRESERVED_REPORT_DIGEST_MISMATCH)",
+      "advisor_digest": "REFUSED",
+      "historical_findings_report_substituted_for_either": "REFUSED",
+      "non_empty_active_keys": "REFUSED (active_keys is not [])",
+      "widened_ceiling": "REFUSED (CEILING_MISMATCH)",
+      "removed_exclusion": "NOT REFUSED — see finding PPRCHK-198-03"
+    },
+    "repository_authority_route_regression": {
+      "test": "src/v8b/lrcq/run-harness-tests/authority-route.selftest.mjs",
+      "covers_the_generator": "yes — launcherFiles enumerates EVERY .mjs in tools/terminal0/lrcq, so checks 11/12/13/14 govern refreeze-package.mjs",
+      "result": "15/15 passed",
+      "check_14_no_alternate_shell_executor": "PASS"
+    },
+    "undeclared_runtime_reachability": "none",
+    "uncontrolled_input": "none"
+  },
+
+  "package_inventory_and_hashes": {
+    "sha_manifest": ".foundergate/evidence/lrcq-provider-package-refreeze/PACKAGE_SHA256_MANIFEST.json",
+    "manifest_file_sha256": "808bf274ccbb1e1db3097a9aa78b28c1ee35918832686ab7f591cb44535ef676",
+    "declared_file_count": 27,
+    "actual_entry_count": 27,
+    "entries_recomputed_independently": 27,
+    "entry_mismatches": 0,
+    "aggregate_declared": "sha256:3658caef5df17fbdc7d7f14ed9bbbf9b36ca1a4eff4853872b64b5f64d9bdf93",
+    "aggregate_recomputed_with_production_canon": "sha256:3658caef5df17fbdc7d7f14ed9bbbf9b36ca1a4eff4853872b64b5f64d9bdf93",
+    "aggregate_matches": true,
+    "evidence_set_index": {
+      "file_count": 26,
+      "entries_recomputed": 26,
+      "mismatches": 0,
+      "declared_digest": "sha256:99bea26fc34e0fa25375f6035d4ac892af2b7e939b27ad7ffc866ea54d7fcc70",
+      "recomputed_digest": "sha256:99bea26fc34e0fa25375f6035d4ac892af2b7e939b27ad7ffc866ea54d7fcc70",
+      "matches": true
+    },
+    "required_artifacts_present": {
+      "provider_refreeze_record": "PROVIDER_REFREEZE_2_1_220_ebd4ff5.json",
+      "canonical_unsigned_activation_payload": ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json",
+      "unsigned_activation_material_packet": "same as above",
+      "run_manifest": ".foundergate/run-materials/first-internal-5h/run-manifest.json",
+      "founder_gate_packet": ".foundergate/evidence/lrcq-assurance-factory/FOUNDER_GATE_PACKET.json",
+      "unsigned_gate_packet": ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_GATE_PACKET.json",
+      "capsule_index": "CAPSULE_INDEX.json (evidence tail; the capsule itself is out of tree by design)",
+      "package_sha256_manifest": "PACKAGE_SHA256_MANIFEST.json",
+      "evidence_set_index": "EVIDENCE_SET_INDEX.json",
+      "limits_and_exclusions_record": "LIMITS_AND_EXCLUSIONS.json",
+      "preflight_controls": "PREFLIGHT_CONTROLS.json",
+      "acceptance_matrix": "V4_AUTHORITY_ACCEPTANCE_MATRIX.json (regenerated) + the corrected source matrix",
+      "claim_evidence_classification": "CLAIM_EVIDENCE_CLASSIFICATION.json",
+      "package_verification_instructions": "PACKAGE_VERIFICATION_INSTRUCTIONS.md",
+      "founder_enrollment_packet": "FOUNDER_ENROLLMENT_PACKET.json",
+      "review_report_register": "V4_AUTHORITY_ACCEPTANCE_MATRIX.review_report_register",
+      "package_candidate_binding": "PACKAGE_CANDIDATE_BINDING.json"
+    },
+    "omitted_package_file": "none",
+    "unexpected_included_file": "none",
+    "capsule_members_verified": { "members": 8, "digest_mismatches": 0 }
+  },
+
+  "nonrecursive_seal": {
+    "sha_manifest_hashes_itself": false,
+    "declared_exclusion": ".foundergate/evidence/lrcq-provider-package-refreeze/PACKAGE_SHA256_MANIFEST.json",
+    "exclusion_scheme_correct": true,
+    "evidence_set_index_excludes_itself_and_the_sha_manifest": true,
+    "package_candidate_claims_its_own_commit_sha": false,
+    "committed_payload_evidence_commit_sha": "FINAL_HEAD_REPLACED_AT_FREEZE (placeholder, by design)",
+    "out_of_tree_final_template_binds": "58b36206669a27d1ce6171f0f3149721c24f35c7",
+    "evidence_head_resolved_procedurally": true,
+    "recursive_self_seal": "none",
+    "dynamic_attack": "A52 wrote a digest of the template into evidence_commit_sha; the launcher refused with BINDING-DEFECT and zero spawns"
+  },
+
+  "adv_197_01_correction": {
+    "stale_statement": "'ALL FOUR prior reports' in V4_AUTHORITY_ACCEPTANCE_MATRIX.not_proven_here[2]",
+    "occurrences_remaining_in_either_matrix": 0,
+    "remaining_occurrences_elsewhere_are_legitimate": [
+      "ADVISOR_197_SEQUENTIAL_REPORT.json (the Advisor's own verbatim finding text — preserved, correct)",
+      "ADV_197_01_CORRECTION_LEDGER.json (quotes the defect it corrects)",
+      "PACKAGE_CHECKER_PACKET.md / PACKAGE_VERIFICATION_INSTRUCTIONS.md / STACKED_PR_DESCRIPTION.md / refreeze-package.mjs (detection pattern and instructions)"
+    ],
+    "review_report_register": {
+      "historical_findings_reports_declared": 5,
+      "all_five_digests_present_in_full": true,
+      "every_historical_marked_is_acceptance_false": true,
+      "every_historical_classed_HISTORICAL_FINDINGS_EVIDENCE": true,
+      "current_clean_authority_checker": { "sha256": "fba5f6c2a397489b6a1e31da58fa6bd54434bc8fbf35d6e65689e67c79a87365", "verdict": "FOUNDERGATE-PR197-PRODUCTION-SEAM-CHECKER: AUTHORITY_CHAIN_CLEAN_PROVIDER_REFREEZE_REQUIRED", "matches_expected": true },
+      "current_authority_advisor": { "sha256": "e2177f9201e13aa1e4e452af5d32a5e040ce323263cc9bb46277f43469da3cc0", "verdict": "FOUNDERGATE-PR197-ADVISOR: AUTHORITY_IMPLEMENTATION_READY_FOR_PROVIDER_REFREEZE", "matches_expected": true },
+      "package_checker_status": "REQUIRED_AND_NOT_YET_ISSUED",
+      "no_historical_findings_report_represented_as_acceptance": true
+    },
+    "surgical_source_edit_scope": {
+      "git_numstat": "1 insertion, 1 deletion",
+      "semantic_deep_compare_differing_leaves": 1,
+      "only_leaf_changed": "not_proven_here[2]",
+      "changed_only_the_intended_statement": true
+    },
+    "preserved_review_report_copies_byte_identical": {
+      "CHECKER_197_SIXTH_AUTHORITY_REPORT.json": "fba5f6c2a397489b6a1e31da58fa6bd54434bc8fbf35d6e65689e67c79a87365",
+      "ADVISOR_197_SEQUENTIAL_REPORT.json": "e2177f9201e13aa1e4e452af5d32a5e040ce323263cc9bb46277f43469da3cc0",
+      "match_the_reviewed_originals_in_tmp": true
+    },
+    "result": "CORRECT"
+  },
+
+  "limits_and_exclusions": {
+    "six_ceilings_in_the_signed_payload": {
+      "max_budget_usd": { "value": 10, "required": "<= 10", "satisfied": true },
+      "run_duration_s": { "value": 18000, "required": "<= 18000", "satisfied": true },
+      "per_job_timeout_s": { "value": 2700, "required": "<= 2700", "satisfied": true },
+      "max_parallel_width": { "value": 2, "required": "<= 2", "satisfied": true },
+      "max_output_bytes": { "value": 10485760, "required": "<= 10485760", "satisfied": true },
+      "termination_grace_s": { "value": 30, "required": "<= 30", "satisfied": true }
+    },
+    "ten_mandatory_exclusions_all_true": true,
+    "exclusion_list": ["no_protected_main_merge", "no_pr_merge", "no_push_unless_authorized", "no_m1", "no_akior", "no_customer_data", "no_live_action", "no_permission_bypass", "no_deploy", "no_external_comms"],
+    "widening_surface_tested_dynamically": {
+      "package_field": "REFUSED — every ceiling and exclusion is a member of V4_PAYLOAD_FIELDS, so any change invalidates the Ed25519 signature (12/12 post-signing tampering cases returned SIGNATURE_INVALID)",
+      "correctly_re_signed_widened_ceiling": "REFUSED — V4_SIGNED_LIMITS hard maxima are enforced AFTER signature verification; all 6/6 returned LIMIT_VIOLATION with a VALID disposable signature",
+      "correctly_re_signed_false_exclusion": "REFUSED — 10/10 returned EXCLUSION_VIOLATION with a VALID disposable signature",
+      "removed_exclusion": "REFUSED — 10/10 returned MISSING_FIELD",
+      "environment_variable": "REFUSED — the generator reads no environment variable; the ceilings live in the signed payload only",
+      "cli_option": "REFUSED — the production --activation route accepts no caller-supplied override of manifest, bindings, provider or limits",
+      "unsigned_overlay": "REFUSED — the SUPERVISOR_EXECUTION capability's limits and exclusions are deeply frozen and re-derived at the spawn boundary"
+    },
+    "ceiling_survived_to_the_real_spawn_boundary": "PROVEN — the positive control's stub recorded max_budget_usd=10 in its durable log at the production boundary"
+  },
+
+  "positive_package_verification": {
+    "run_at_the_reviewed_pr_head_46f1f0d": {
+      "capsule_verifier": { "result": "INVALID", "checks": 31, "passed": 28, "failed": 3, "skipped": 0, "failures": ["SYSTEM_STATE binds exact frozen head", "FINAL template binds exact frozen head", "preflight -> SIGNATURE-REQUIRED"] },
+      "final_preflight": { "result": "BINDING-DEFECT", "binding_defects": ["evidence_commit_sha/tree is not the exact current HEAD/tree"], "founder_gate": "KEY_ENROLLMENT", "founder_gate_reason": "NO_CURRENT_KEY", "zero_invocation": true, "providerSpawn": 0 }
+    },
+    "run_in_a_disposable_clone_pinned_at_the_package_candidate_58b3620": {
+      "capsule_verifier": { "result": "VALID", "checks": 31, "passed": 31, "failed": 0, "skipped": 0 },
+      "final_preflight": { "result": "SIGNATURE-REQUIRED", "binding_defects": [], "founder_gate": "KEY_ENROLLMENT", "founder_gate_reason": "NO_CURRENT_KEY", "zero_invocation": true, "providerSpawn": 0 }
+    },
+    "manifest_verifier": { "clean": true, "note": "loadAndVerifyManifest returned valid with no refusals; all eight MANIFEST_NO_ACTION_FLAGS are true" },
+    "package_file_sha_verification": { "clean": true, "files": 27, "mismatches": 0 },
+    "evidence_set_verification": { "clean": true, "files": 26, "mismatches": 0, "digest_matches": true },
+    "canonical_activation_payload": { "clean": true, "schema": "lrcq-activation-4", "signature_payload_version": "lrcq-activation-v4-signature-payload-1" },
+    "package_unsigned": true,
+    "package_unactivated": true,
+    "founder_signature": null,
+    "signer_key_fingerprint": null,
+    "authorization_text_digest": null,
+    "activation_nonce": null,
+    "issued_epoch": null,
+    "expiry_epoch": null,
+    "hard_deadline_epoch": null,
+    "unsigned_flag": true,
+    "confers_no_authority": true,
+    "active_keys": [],
+    "real_repository_blocked_at_key_enrollment": true,
+    "final_preflight_returns_SIGNATURE_REQUIRED_at_the_pr_head": false,
+    "productive_provider_spawns": 0,
+    "signature_required_not_treated_as_productive_run_proof": true
+  },
+
+  "negative_attack_results": {
+    "total_independent_attacks": 128,
+    "refused_or_detected": 127,
+    "not_refused": 1,
+    "productive_provider_spawns_across_every_attack": 0,
+    "layers": {
+      "A_production_preflight": {
+        "subject": "the REAL production launcher (tools/terminal0/lrcq/run-five-hour.mjs --final-template-preflight) executed inside a disposable clone pinned at 58b3620, against tampered copies of the FINAL template written outside Git",
+        "attacks": 54,
+        "tampering_specifically_detected": 15,
+        "refused_at_the_signature_gate_before_field_specific_detection": 38,
+        "refused_by_another_control": 1,
+        "not_refused": 0,
+        "categories_deliberately_not_flattened": true,
+        "field_specific_detections": [
+          "A01 provider hash -> provider_executable_identity != the reviewed target's digest on disk",
+          "A03 provider path (alternate 2.1.219) -> provider_executable_identity mismatch",
+          "A04 provider path -> mutable alias -> resolved_provider_target is a symlink (mutable alias)",
+          "A05 provider missing -> resolved_provider_target does not exist on this host",
+          "A06 provider filesystem identity (symlink to the genuine binary) -> symlink refused",
+          "A07 byte-substituted binary under a correct version name -> identity mismatch",
+          "A09 authority sha not a commit -> reviewed_runtime_sha is not a commit in this repository",
+          "A11/A12 evidence head/tree -> not the exact current HEAD/tree",
+          "A13 lrcq_base -> differs from the resolved base",
+          "A14 provider_candidate -> differs from the resolved provider candidate",
+          "A15/A16 run manifest digest/path -> run_manifest_digest != the manifest file on disk",
+          "A51 founder-fill placeholder reintroduced -> identity mismatch",
+          "A52 recursive/self-referential seal -> evidence head mismatch"
+        ],
+        "signature_gate_only": "the remaining 38 (provider_version, authority sha/tree swapped to real values, backlog and lease digests, all 6 ceilings, all 10 exclusions removed, all 10 exclusions set false, forged signature, invented fingerprint, forged signature+fingerprint together, activated-state-without-signature, replayed activation material, repointed repository/lifecycle realpaths). Each is a member of the SIGNED payload, so the preflight cannot detect it before a signature exists — it refuses at SIGNATURE-REQUIRED with zero invocation, and the signed layer below proves each is caught once a signature does exist.",
+        "other_control": "A50 schema downgraded to lrcq-activation-3 -> BINDING-DEFECT"
+      },
+      "B_signed_layer": {
+        "subject": "the production verifyActivation() driven with a DISPOSABLE ed25519 key injected through keyDeps. The real governance file was never read and never written; active_keys was [] before and after.",
+        "positive_control": "a correctly signed disposable payload VERIFIES (ok=true, code=OK) — the verifier is not simply always-refusing",
+        "attacks": 47,
+        "refused": 45,
+        "verified_by_design_with_a_refusing_counterpart": 2,
+        "results": {
+          "six_ceilings_widened_and_correctly_re_signed": "6/6 LIMIT_VIOLATION",
+          "ten_exclusions_set_false_and_correctly_re_signed": "10/10 EXCLUSION_VIOLATION",
+          "ten_exclusions_removed": "10/10 MISSING_FIELD",
+          "twelve_signed_fields_tampered_after_signing": "12/12 SIGNATURE_INVALID",
+          "forged_signature": "SIGNATURE_INVALID",
+          "truncated_signature": "BAD_SIGNATURE_ENCODING",
+          "unknown_fingerprint": "UNKNOWN_OR_REVOKED_KEY",
+          "empty_authority_the_real_repository_shape": "UNKNOWN_OR_REVOKED_KEY",
+          "v3_downgrade": "V3_REFUSED_FOR_EXECUTION",
+          "expired_under_nowEpoch": "EXPIRED",
+          "authority_candidate_swapped_with_an_explicit_binding": "BINDING_MISMATCH (reviewed_runtime_sha)",
+          "authority_candidate_swapped_without_an_explicit_binding": "verifies, correctly — the launcher supplies the binding; the bound case above refuses",
+          "expired_payload_without_nowEpoch": "verifies, correctly — temporal checks are only applied when nowEpoch is supplied"
+        }
+      },
+      "C_package_bytes": {
+        "subject": "a disposable copy of the package tree outside Git",
+        "clean_copy_control": "0 mismatches",
+        "file_byte_tampers": 6,
+        "caught": 6,
+        "manifest_entry_tamper": "caught — both a file mismatch and an aggregate mismatch"
+      },
+      "D_generator_constants": {
+        "subject": "disposable copies of tools/terminal0/lrcq/refreeze-package.mjs inside a disposable clone; the clone was restored to clean after every case",
+        "control_unmodified_generator": "exit 0, regenerates",
+        "attacks": 14,
+        "refused": 13,
+        "not_refused": 1,
+        "refusals": {
+          "clean_checker_digest_substituted": "exit 6 PRESERVED_REPORT_DIGEST_MISMATCH",
+          "advisor_digest_substituted": "exit 6 PRESERVED_REPORT_DIGEST_MISMATCH",
+          "historical_findings_report_substituted_as_the_clean_checker": "exit 6 PRESERVED_REPORT_DIGEST_MISMATCH",
+          "historical_findings_report_substituted_as_the_advisor": "exit 6 PRESERVED_REPORT_DIGEST_MISMATCH",
+          "authority_tree_substituted": "exit 1 authority candidate tree mismatch",
+          "unreviewed_authority_candidate": "exit 1 authority candidate tree mismatch",
+          "protected_main_substituted": "exit 1 protected main drifted",
+          "provider_sha_substituted": "exit 3 PROVIDER_DIGEST_MISMATCH",
+          "provider_path_repointed_at_2_1_219": "exit 3 PROVIDER_DIGEST_MISMATCH (driver re-hash)",
+          "provider_path_repointed_at_the_mutable_alias": "exit 3 PROVIDER_TARGET_IS_MUTABLE_ALIAS",
+          "provider_version_substituted": "exit 3 PROVIDER_VERSION_MISMATCH",
+          "ceiling_widened_in_the_generator_table": "exit 4 CEILING_MISMATCH",
+          "fake_active_founder_key_in_the_disposable_governance_file": "exit 1 active_keys is not []"
+        },
+        "not_refused_case": "an exclusion REMOVED from the generator's EXCLUSIONS table -> exit 0, see finding PPRCHK-198-03"
+      },
+      "E_frozen_input_cli": { "attacks": 5, "refused": 5, "codes": ["exit 2 missing --observed-at (x2)", "exit 3 PROVIDER_VERSION_MISMATCH", "exit 3 PROVIDER_DIGEST_MISMATCH", "exit 3 disagreeing external digests"] }
+    }
+  },
+
+  "provider_spawn_counts": {
+    "instruments": [
+      "INDEPENDENT: a --require preload hook patching spawn/spawnSync/exec/execSync/execFile/execFileSync/fork in every attack process, appending a durable classified line per spawn",
+      "the launcher's own invocations.providerSpawn counter, recorded separately and never relied on alone",
+      "for the positive control: the recording stub's own durable append-log beside its executable, which survives the production boundary's environment scrubbing"
+    ],
+    "productive_provider_spawns_during_phase_10_preflight_attacks": 0,
+    "productive_provider_spawns_during_package_and_generator_attacks": 0,
+    "productive_provider_spawns_during_signed_layer_attacks": 0,
+    "max_launcher_reported_providerSpawn_across_all_attacks": 0,
+    "model_requests_by_this_checker": 0,
+    "provider_executions_by_this_checker": 1,
+    "provider_execution_detail": "a single `--version` metadata probe; output '2.1.220 (Claude Code)'; the binary re-hashed identically afterwards and its device/inode/size/mtime were unchanged"
+  },
+
+  "positive_counter_control": {
+    "performed_independently_by_this_checker": true,
+    "route": "makeDisposableV4World -> consumeActivationV4 -> createLaunchIntentV4 -> spawnGovernedSupervisorV4 (one-use inherited-descriptor ephemeral-key transfer) -> genuine SUPERVISOR_EXECUTION capability -> projectLegacyActivationV4 -> real-provider.runJob -> the production spawn boundary",
+    "provider_bound_by_the_signed_activation": "a copy of src/v8b/lrcq/run-harness-tests/test-support/recording-provider-stub.mjs inside the disposable world",
+    "real_claude_or_model_invoked": false,
+    "checks": {
+      "PC-1 body runs under a GENUINE SUPERVISOR_EXECUTION capability": true,
+      "PC-2 the signed provider target is the deterministic recording stub": true,
+      "PC-3 the durable stub counter reads ZERO before the boundary call": true,
+      "PC-4 the production boundary reports a real provider spawn (started=true)": true,
+      "PC-5 the durable stub counter INCREMENTED from 0 to exactly 1": true,
+      "PC-6 exactly ONE durable stub record exists": true,
+      "PC-7 the run completed deterministically (SUCCESS / PROVIDER_OUTPUT_RECEIVED)": true
+    },
+    "counter_before": 0,
+    "counter_after": 1,
+    "durable_stub_record": "{\"pid\":50742,\"max_budget_usd\":\"10\",\"add_dir\":\"<disposable worktree>\",\"argv_len\":25}",
+    "signed_ceiling_survived_to_the_boundary": "max_budget_usd=10 appears in the stub's own record",
+    "conclusion": "the zero counts reported above are MEASUREMENTS, not artefacts",
+    "residual_processes": 0
+  },
+
+  "reproducibility": {
+    "method": "two independent disposable clones at DIFFERENT filesystem paths (A and B), each regenerated with the repository's own production generators (generate-run-manifest.mjs, classify-and-packet.mjs, generate-founder-gate-packet.mjs, refreeze-package.mjs) from identical frozen inputs --observed-at 2026-07-26T00:18:16Z, --version-probe '2.1.220 (Claude Code)', and the two external provider digests",
+    "files_compared": 28,
+    "byte_identical": 23,
+    "differing": 5,
+    "differing_detail": [
+      { "file": ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_ACTIVATION_MATERIAL_PACKET.json", "differing_leaves": ["repository_root_realpath", "repository_git_common_dir_realpath", "lifecycle_root_realpath", "run_manifest_digest"], "classification": "three DECLARED SIGNED path bindings that the production launcher re-resolves and verifies at preflight, plus one digest derived from a file that itself carries a declared path binding", "enters_a_signature_payload": "yes for the three realpaths — they are members of V4_PAYLOAD_FIELDS; a run whose repository moves therefore fails CLOSED rather than silently succeeding", "can_affect_provider_authorization": "no — a mismatch refuses" },
+      { "file": ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_GATE_PACKET.json", "differing_leaves": ["repository_boundary"], "classification": "UNSIGNED evidence path field", "enters_a_signature_payload": "no — this file's founder_signature is null, it confers no authority, and no signed field carries its digest", "can_affect_provider_authorization": "no", "audit_note": "audited specifically as required. The Builder kept it in a separate category rather than folding it into the signed-binding allowlist. That is the correct call and is confirmed here: the signed allowlist was NOT expanded to absorb it." },
+      { "file": ".foundergate/evidence/lrcq-provider-package-refreeze/EVIDENCE_SET_INDEX.json", "differing_leaves": ["3 file digests + evidence_set_digest"], "classification": "derived digests only" },
+      { "file": ".foundergate/evidence/lrcq-provider-package-refreeze/PACKAGE_SHA256_MANIFEST.json", "differing_leaves": ["4 file digests + aggregate"], "classification": "derived digests only" },
+      { "file": ".foundergate/run-materials/first-internal-5h/run-manifest.json", "differing_leaves": ["repository_root", "permitted_worktree_root"], "classification": "declared signed path bindings" }
+    ],
+    "canonical_signed_bytes_identical_apart_from_the_declared_path_bindings": true,
+    "limits_and_exclusions_identical": true,
+    "provider_binding_identical": true,
+    "authority_binding_identical": true,
+    "review_report_register_identical": true,
+    "undeclared_variation": [],
+    "signed_allowlist_expanded_to_classify_a_difference": false,
+    "matches_the_builder_claim": "yes — 28 compared, 23 identical, the same 5 files and the same differing leaves",
+    "recipe_completeness_note": "PACKAGE_VERIFICATION_INSTRUCTIONS.md section 6 lists only generate-run-manifest.mjs and refreeze-package.mjs. Reproducing UNSIGNED_GATE_PACKET.json and FOUNDER_GATE_PACKET.json also requires classify-and-packet.mjs and generate-founder-gate-packet.mjs. Recorded under finding PPRCHK-198-02."
+  },
+
+  "full_regression_results": {
+    "npm_test_runs": 2,
+    "consecutive": true,
+    "run_1": "ALL GREEN: 154/154 self-test(s) passed",
+    "run_2": "ALL GREEN: 154/154 self-test(s) passed",
+    "failures": 0,
+    "skipped_tests": 0,
+    "skip_note": "four lines matching /skip/i are ASSERTION NAMES, not skipped tests; verified by reading each",
+    "pass_assertions_per_run": 929,
+    "family_totals_identical_across_both_runs": true,
+    "output_diff_between_runs": "34 lines, all of them process ids, temporary filenames and timestamps",
+    "targeted_families_executed": {
+      "authority_route": "15/15 passed (covers the new generator via launcherFiles)",
+      "package_verifiers": "capsule verifier + run-manifest verifier + SHA manifest + evidence-set index, all run independently",
+      "activation_material": "verifyActivation exercised directly across 48 signed-layer cases",
+      "provider_binding": "three independent hashers + the production verifyProviderTarget, plus 7 preflight provider attacks",
+      "real_launch_with_a_deterministic_stub_only": "the positive counter control, 0 -> 1",
+      "production_seam": "covered by the suite; no real provider or model invocation anywhere"
+    },
+    "authority_source_unchanged": true,
+    "real_provider_or_model_invocation": "none",
+    "key_enrollment": "none",
+    "passphrase": "none",
+    "signature": "none (only disposable ed25519 keys generated in memory, never written, never enrolled)",
+    "activation": "none",
+    "residual_process": "none",
+    "worktree_clean_after_both_runs": true
+  },
+
+  "facts_not_proven": [
+    "Real productive Claude capability. Forbidden in preparation; first exercised under founder signature. Nothing here establishes that a real builder or checker session will produce useful work.",
+    "That the eventual five-hour run will succeed. Only binding, refusal, reproducibility and re-freeze identity are established.",
+    "Complete OS-level isolation, sandbox escape resistance, or UI proof. Not claimed by the package and not tested here.",
+    "That the operator's own interactive Claude Code sessions on this host (which do execute the 2.1.220 binary) are unrelated to the package. They are pre-existing operator tooling, disclosed by the Builder and observed here via ps only; this review contacted the provider once, with --version.",
+    "That GitHub branch protection enforces the protected-main baseline. The GitHub API reports protected=false for main; the SHA matches, the enforcement does not exist as a GitHub rule.",
+    "Any package Advisor position. This Checker does not issue it.",
+    "Package acceptance. This report is a Checker verdict on the package, not authorization to enroll a key, sign, or run."
+  ],
+
+  "findings": [
+    {
+      "id": "PPRCHK-198-01",
+      "severity": "HIGH (blocking for founder enrollment; non-blocking for authority safety)",
+      "title": "The frozen capsule and FINAL unsigned activation template bind the package candidate 58b3620, not the PR head 46f1f0d, so the package does not verify at the head it is submitted as",
+      "artifacts": [
+        "the out-of-tree capsule FG-PPR-197-PACKAGE-CAPSULE/FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json (evidence_commit_sha 58b36206..., evidence_commit_tree 0838399d...)",
+        "the out-of-tree capsule SYSTEM_STATE.json (frozen_head 58b36206...)",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/PACKAGE_VERIFICATION_RESULTS.json (executed_preflight.result, checks.binds_exact_final_head, binding_defects)",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/CAPSULE_INDEX.json (capsule_verifier.result VALID)",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/PACKAGE_CHECKER_PACKET.md section 13"
+      ],
+      "mechanism": "run-five-hour.mjs line 447 enforces PF-5: activation.evidence_commit_sha/tree must equal the mechanically resolved current HEAD/tree. The capsule and its FINAL template were frozen at the package candidate 58b3620. The evidence-only tail commit 46f1f0d then advanced HEAD. From that moment the template no longer binds the current head, and the production capsule verifier's checks 'SYSTEM_STATE binds exact frozen head', 'FINAL template binds exact frozen head' and 'preflight -> SIGNATURE-REQUIRED' all fail. The evidence artifacts asserting the passing result were themselves committed in 46f1f0d — the very commit that falsified them.",
+      "reproduction": [
+        "cd /Users/yosiwizman/Projects/foundergate-wt-lrcq-provider-package-refreeze-ebd4ff5",
+        "node tools/terminal0/lrcq/run-five-hour.mjs --final-template-preflight <capsule>/FINAL_UNSIGNED_ACTIVATION_TEMPLATE.json",
+        "node -e \"import('./tools/terminal0/lrcq/capsule-verifier.mjs').then(m=>console.log(m.verifyCapsule({repo:process.cwd(),capsuleDir:'<capsule>',prNumber:198,githubMetadataProvider:liveGh})))\"",
+        "then repeat both in a disposable clone checked out at 58b36206669a27d1ce6171f0f3149721c24f35c7"
+      ],
+      "actual_result": "At HEAD 46f1f0d: preflight = BINDING-DEFECT, binding_defects = ['evidence_commit_sha/tree is not the exact current HEAD/tree']; CAPSULE-VERIFIER = INVALID, 28/31 passed, 3 failed. The committed PACKAGE_VERIFICATION_RESULTS.json instead states result 'SIGNATURE-REQUIRED', binds_exact_final_head true, binding_defects []. PACKAGE_CHECKER_PACKET.md section 13 instructs the Checker to require SIGNATURE-REQUIRED with empty binding_defects, which is mechanically unobtainable at the head it ships with.",
+      "required_result": "Either (a) the capsule and FINAL template are regenerated so evidence_commit_sha/tree bind the final evidence head, and PACKAGE_VERIFICATION_RESULTS.json plus PACKAGE_CHECKER_PACKET.md are updated to the result actually reproducible at that head; or (b) the artifacts state explicitly and prominently that the recorded preflight and capsule-verifier results hold ONLY at 58b3620, that at the PR head the package deliberately returns BINDING-DEFECT, and that a re-cut capsule bound to the final head is a prerequisite of founder key enrollment and signing.",
+      "provider_spawn_count": 0,
+      "authority_impact": "NONE in the fail-open direction. The control fires correctly and fails CLOSED: zero_invocation true, providerSpawn 0, founder gate still KEY_ENROLLMENT. No false success, no widened ceiling, no executable behaviour change. The impact is that the package as submitted cannot be signed and consumed, and that three committed evidence claims are false at the commit containing them.",
+      "narrow_correction_scope": "Regenerate the out-of-tree capsule against the final evidence head and correct exactly three files: PACKAGE_VERIFICATION_RESULTS.json (executed_preflight + checks.binds_exact_final_head), CAPSULE_INDEX.json (capsule_verifier result and the bound frozen_head), PACKAGE_CHECKER_PACKET.md section 13. No source, no tool, no ceiling, no exclusion, no provider binding, no authority binding needs to change."
+    },
+    {
+      "id": "PPRCHK-198-02",
+      "severity": "MEDIUM",
+      "title": "The package commit silently removed the STALE-INTERMEDIATE-CANDIDATE markers from UNSIGNED_GATE_PACKET.json, which still carries founder-fill placeholders and the retired V3 schema, and now ships as a first-class package artifact",
+      "artifacts": [
+        ".foundergate/evidence/lrcq-assurance-factory/UNSIGNED_GATE_PACKET.json",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/EVIDENCE_SET_INDEX.json (enumerates it)",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/PACKAGE_SHA256_MANIFEST.json (hashes it)",
+        ".foundergate/evidence/lrcq-provider-package-refreeze/PACKAGE_VERIFICATION_INSTRUCTIONS.md section 6"
+      ],
+      "mechanism": "Commit ce82c3b deliberately added __status: 'STALE-INTERMEDIATE-CANDIDATE', __superseded_by: 'UNSIGNED_ACTIVATION_MATERIAL_PACKET.json' and __reason: 'binds obsolete SHA + carried founder-fill placeholders; replaced by placeholder-free material packet'. Regenerating the file with tools/terminal0/lrcq/classify-and-packet.mjs — which has no knowledge of those hand-added markers — drops all three. The regenerated file still contains schema_version 'lrcq-activation-3', activation_v3_core_digest, no no_deploy / no_external_comms fields, and six placeholder values including provider_executable_path '<founder-fills-approved-executable-path>'. Nothing in the changed-path classification, the correction ledgers or the reproducibility record declares this removal. Separately, PACKAGE_VERIFICATION_INSTRUCTIONS.md section 6 documents only generate-run-manifest.mjs and refreeze-package.mjs, so a reviewer following the documented recipe never regenerates this file at all and cannot discover its provenance.",
+      "reproduction": [
+        "git diff 39dea636 58b3620 -- .foundergate/evidence/lrcq-assurance-factory/UNSIGNED_GATE_PACKET.json    # shows the three markers deleted",
+        "git log --oneline -S'STALE-INTERMEDIATE-CANDIDATE' -- .foundergate/evidence/lrcq-assurance-factory/UNSIGNED_GATE_PACKET.json    # ce82c3b adds, 58b3620 removes",
+        "python3 -c \"import json;d=json.load(open('.foundergate/evidence/lrcq-assurance-factory/UNSIGNED_GATE_PACKET.json'));print('__status' in d, d['schema_version'], d['provider_executable_path'])\""
+      ],
+      "actual_result": "__status absent; schema_version 'lrcq-activation-3'; six '<founder-fills…>' / '<founder-mints…>' placeholders present; the file is listed in EVIDENCE_SET_INDEX.json and PACKAGE_SHA256_MANIFEST.json with no indication that it is superseded; no artifact anywhere in the wave declares the removal.",
+      "required_result": "Either the staleness markers are restored (or replaced by an equivalent, generator-emitted supersession field), or the package explicitly declares that UNSIGNED_GATE_PACKET.json is a retained historical V3 gate packet superseded by UNSIGNED_ACTIVATION_MATERIAL_PACKET.json, and PACKAGE_VERIFICATION_INSTRUCTIONS.md section 6 lists every generator needed to reproduce the package.",
+      "provider_spawn_count": 0,
+      "authority_impact": "NONE. The file's founder_signature is null and confers_no_authority is true; no signed field carries its digest; preflight control PF-3 refuses any '<founder' placeholder that reaches an activation; and verifyActivation refuses schema lrcq-activation-3 outright (proven dynamically: V3_REFUSED_FOR_EXECUTION). The defect is founder-readability and evidence honesty, not authority.",
+      "narrow_correction_scope": "One field group in UNSIGNED_GATE_PACKET.json (or its generator), plus one paragraph in PACKAGE_VERIFICATION_INSTRUCTIONS.md section 6. Regenerating the file changes its digest, so EVIDENCE_SET_INDEX.json and PACKAGE_SHA256_MANIFEST.json would be regenerated with it; nothing else."
+    },
+    {
+      "id": "PPRCHK-198-03",
+      "severity": "LOW",
+      "title": "The re-freeze generator refuses a widened ceiling but accepts a REMOVED exclusion, silently emitting a founder-readable artifact keyed ten_mandatory_exclusions that lists nine",
+      "artifacts": [
+        "tools/terminal0/lrcq/refreeze-package.mjs lines 91-94 (EXCLUSIONS) and line 259",
+        "the artifacts it generates: .foundergate/evidence/lrcq-provider-package-refreeze/LIMITS_AND_EXCLUSIONS.json and FOUNDER_ENROLLMENT_PACKET.json"
+      ],
+      "mechanism": "Line 258 checks ceilings with strict equality against the CEILINGS table, so any edit refuses (CEILING_MISMATCH). Line 259 checks exclusions with `for (const x of EXCLUSIONS) if (packet[x] !== true)` — iterating the generator's own table. Deleting an entry from that table simply removes the iteration, so nothing refuses. The generator's EXCLUSIONS constant is a hand-maintained duplicate of activation-v4.mjs's authoritative V4_SIGNED_EXCLUSIONS and is never asserted equal to it.",
+      "reproduction": [
+        "in a disposable clone, edit tools/terminal0/lrcq/refreeze-package.mjs replacing '\"no_deploy\", \"no_external_comms\",' with '\"no_external_comms\",'",
+        "node tools/terminal0/lrcq/refreeze-package.mjs --observed-at 2026-07-26T00:18:16Z --version-probe '2.1.220 (Claude Code)' --digest-shasum 8addc857... --digest-openssl 8addc857...",
+        "python3 -c \"import json;print(len(json.load(open('.foundergate/evidence/lrcq-provider-package-refreeze/LIMITS_AND_EXCLUSIONS.json'))['ten_mandatory_exclusions']))\""
+      ],
+      "actual_result": "generator exit 0; LIMITS_AND_EXCLUSIONS.json ten_mandatory_exclusions contains 9 keys (no_deploy absent); FOUNDER_ENROLLMENT_PACKET.plain_language.what_the_run_may_never_do contains 9 entries; no warning is printed.",
+      "required_result": "The generator should assert its EXCLUSIONS table equals V4_SIGNED_EXCLUSIONS from activation-v4.mjs (and its CEILINGS keys equal V4_SIGNED_LIMIT_FIELDS), refusing on any divergence, so a founder-readable exclusion inventory can never silently understate the signed contract.",
+      "provider_spawn_count": 0,
+      "authority_impact": "NONE. The signed activation payload still carries all ten exclusions as true (verified: no_deploy true in the regenerated packet), and verifyActivation enforces V4_SIGNED_EXCLUSIONS independently — proven dynamically, 10/10 EXCLUSION_VIOLATION and 10/10 MISSING_FIELD. The exposure is a founder-readable artifact that could understate what the run may never do.",
+      "narrow_correction_scope": "Two assertion lines in tools/terminal0/lrcq/refreeze-package.mjs importing V4_SIGNED_EXCLUSIONS and V4_SIGNED_LIMIT_FIELDS and comparing them to the local tables. No package artifact content changes."
+    }
+  ],
+
+  "minor_observations_not_raised_as_findings": [
+    "CAPSULE_INDEX.json records the capsule verifier as 30 checks passed; this Checker's independent run at 58b3620 reported 31 checks, all passing. The capsule verifier has conditional branches (run-state inventory, GitHub metadata) whose taken path changes the check count. No check failed in either run.",
+    "provider_executable_path is a SIGNED field holding the mutable alias /Users/yosiwizman/.local/bin/claude. It is never the execution target while resolved_provider_target is present, and both are covered by the signature. Recorded for completeness."
+  ],
+
+  "post_review_immutability": {
+    "head": "46f1f0df541814dbc40a6d7a6c99997e5e539964",
+    "head_tree": "50a2a98a47c503e4220953f065d3de2845ef67ce",
+    "package_candidate": "58b36206669a27d1ce6171f0f3149721c24f35c7",
+    "worktree_clean_including_ignored": true,
+    "tracked_or_ignored_files_created_in_the_repository": 0,
+    "reflog_head_unchanged": "46f1f0d HEAD@{0}: commit (the Builder's own evidence commit) — no Checker entry",
+    "pr_metadata_mutation": "none",
+    "pr_197_unchanged": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+    "pr_196_unchanged": "8d1899f793305e9f87adc5163a60bfb077e4d4e5",
+    "protected_main_unchanged": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423",
+    "active_keys": [],
+    "revoked_keys": [],
+    "key_created_or_enrolled": false,
+    "passphrase_handled": false,
+    "real_signature_created": false,
+    "activation_issued_or_consumed": false,
+    "productive_provider_or_model_invocation": false,
+    "five_hour_run": false,
+    "merge_push_or_deploy": false,
+    "akior_or_m1_access": false,
+    "residual_process_from_this_review": 0,
+    "eight_authority_module_digests_unchanged_at_review_end": true,
+    "provider_digest_unchanged_at_review_end": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+    "provider_metadata_unchanged_at_review_end": "dev=16777230 inode=104673092 size=256908272 mtime=1784943440 links=1 perm=755"
+  },
+
+  "next_safe_action": "Return this report to the Builder for correction of PPRCHK-198-01 (blocking), PPRCHK-198-02 and PPRCHK-198-03. The narrow scope is: regenerate the out-of-tree capsule and FINAL template against the final evidence head; correct the three evidence claims that are false at that head (PACKAGE_VERIFICATION_RESULTS.json, CAPSULE_INDEX.json, PACKAGE_CHECKER_PACKET.md section 13); declare or restore the UNSIGNED_GATE_PACKET.json supersession status and complete the regeneration recipe; add the two generator self-consistency assertions. Do NOT enroll a founder key, do NOT sign, do NOT activate, do NOT run. Founder key enrollment remains BLOCKED until a clean independent package Checker verdict exists and the package Advisor has issued its own separate verdict — neither of which this report supplies.",
+
+  "verdict_final": "FOUNDERGATE-PR197-PROVIDER-PACKAGE-CHECKER: FINDINGS"
+}

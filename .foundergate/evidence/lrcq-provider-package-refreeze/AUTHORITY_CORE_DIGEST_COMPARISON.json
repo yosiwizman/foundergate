@@ -1,0 +1,25 @@
+{
+  "schema": "lrcq-package-correction-authority-digest-comparison-1",
+  "wave": "FG-PPRC-198",
+  "approved_authority_candidate": "ebd4ff5672ba657b039521a8b377a094a2ea67ea",
+  "approved_authority_tree": "012e0560fd21f7328088ec290f30f9eac84dc1ef",
+  "recomputed_before_correction_and_after_every_regeneration": true,
+  "digests": {
+    "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs": "sha256:ee7cb5f5e99735659757212d7d7b37c3ea6457ae997c34e570f17b5d011faf94",
+    "src/v8b/lrcq/assurance/activation-v4.mjs": "sha256:5c4ba9c5b7d87bd92213022c6e8ab3ef36077df3a1ff594c618ea2e5a240eb45",
+    "src/v8b/lrcq/provider/authority-boundary.mjs": "sha256:08fac21823a142070ccc233e667d6c09ef2ffc64851dbc18907d9c74a58ea29c",
+    "src/v8b/lrcq/assurance/deep-freeze-authority.mjs": "sha256:eda83dcd02e2cb4ef6879b00f6b7468390af3e49dba52e7088d1ee2953742286",
+    "src/v8b/lrcq/assurance/fs-authority-guards.mjs": "sha256:574ae9794632b060b9b99c71c1e64072958e61719fc2c23901a5848e45da7ea2",
+    "src/v8b/lrcq/assurance/fixed-executables.mjs": "sha256:00b1b56d24a07a605dc8c8a0981c9d1363702a3b1e3def21e692ae58893e907d",
+    "src/v8b/lrcq/provider/real-provider.mjs": "sha256:ea3bafdcd1bcc07eac2b5bdd65d24794ec190a992ce577ce7d4b2087d524cd37",
+    "tools/terminal0/lrcq/run-five-hour.mjs": "sha256:f9ca96a6e1b891d6f9e05740fce1665dd2a3207a4732956ba266b89fff921656",
+    "src/v8b/lrcq/provider/activation-schema.mjs": "sha256:fab360c8d99c4b4fcdb601c39dbe6315f53268d966e7058e60f6f05d825ea631",
+    "src/v8b/lrcq/run-harness/v4-legacy-projection.mjs": "sha256:cb9cb03dffb96489546209cbae93e4b3ee1cd414deb164bdd273b51573d7ce9d"
+  },
+  "all_unchanged": true,
+  "git_proof": "git diff --name-only 46f1f0d 8e8c5569a75c1a23ebc90665ee6a77023b72ae10 -- src/v8b/lrcq/assurance src/v8b/lrcq/provider tools/terminal0/lrcq/run-five-hour.mjs is EMPTY",
+  "pf5_unweakened": "run-five-hour.mjs is byte-identical to the approved authority candidate; PF-5's exact-current-HEAD comparison is intact and was observed firing (BINDING-DEFECT) against the superseded capsule.",
+  "signed_ceilings_unchanged": true,
+  "signed_exclusions_unchanged": true,
+  "provider_execution_boundary_unchanged": true
+}
