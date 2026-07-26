@@ -1,0 +1,342 @@
+{
+  "schema": "foundergate-pr197-production-seam-independent-checker-1",
+  "verdict": "AUTHORITY_CHAIN_CLEAN_PROVIDER_REFREEZE_REQUIRED",
+  "checker_identity": {
+    "role": "sixth fresh independent read-only Checker for FounderGate PR #197",
+    "did_not_build_this_candidate": true,
+    "not_the_builder": true,
+    "not_the_sequential_advisor": true,
+    "repository_mutation_authority": "none",
+    "provider": "Anthropic - Claude Code CLI",
+    "model_label": "Claude Opus 5",
+    "model_identifier": "claude-opus-5",
+    "host": "AKIOR-Mac-mini.local",
+    "review_date": "2026-07-25",
+    "independence_note": "Every claim below was reproduced mechanically in this process. Builder output, tests, commit messages, PR body, matrix, freeze record, contract and correction ledger were treated as claims, never as evidence."
+  },
+
+  "frozen_state": {
+    "host": "AKIOR-Mac-mini.local",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-founder-signature-authority-8d1899f",
+    "branch": "lane/lrcq-founder-signature-authority-8d1899f",
+    "git_common_dir": "/Users/yosiwizman/Projects/foundergate/.git",
+    "worktree_clean": true,
+    "active_git_operation": "none (no rebase-merge, rebase-apply, MERGE_HEAD, CHERRY_PICK_HEAD, REVERT_HEAD or BISECT_LOG)",
+    "competing_writable_builder": "none observed - no process holds or writes this worktree; git worktree list shows this path bound to this branch only",
+    "local_head": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+    "upstream_head": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+    "github_head": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+    "local_equals_upstream_equals_github": true,
+    "evidence_head_tree": "1689a63464f3b2e987523fb1c84ce0d50ab6a40f",
+    "executable_candidate_sha": "ebd4ff5672ba657b039521a8b377a094a2ea67ea",
+    "executable_candidate_tree": "012e0560fd21f7328088ec290f30f9eac84dc1ef",
+    "commits_after_the_executable_candidate": 1,
+    "evidence_only_tail": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+    "pr_197": { "state": "OPEN", "isDraft": true, "mergedAt": null, "base": "lane/pr189-real-package-use-8ef9a24" },
+    "pr_196_head": "8d1899f793305e9f87adc5163a60bfb077e4d4e5",
+    "protected_main": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423",
+    "active_keys": [],
+    "revoked_keys": [],
+    "founder_key_authority_file": "docs/governance/FOUNDER_KEY_AUTHORITY.json",
+    "no_founder_key_real_signature_activation_supervisor_or_productive_provider_process": true,
+    "every_expected_value_matched": true,
+    "state_drift": false
+  },
+
+  "executable_evidence_split": {
+    "later_commit": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+    "files_changed_by_the_later_commit": [
+      ".foundergate/evidence/lrcq-assurance-factory/CHK5_197_FIFTH_CHECKER_REPORT_HISTORICAL.json",
+      ".foundergate/evidence/lrcq-assurance-factory/CHK5_197_PRODUCTION_SEAM_CORRECTION_LEDGER.json",
+      ".foundergate/evidence/lrcq-assurance-factory/FFIN4_197_START_IDENTITY_CORRECTION_LEDGER.json",
+      ".foundergate/evidence/lrcq-assurance-factory/PR197_V4_FREEZE_RECORD.json",
+      ".foundergate/evidence/lrcq-assurance-factory/V4_AUTHORITY_ACCEPTANCE_MATRIX.json",
+      "docs/contracts/LRCQ_ACTIVATION_V4_CONTRACT.md",
+      "docs/lanes/PR197_PRODUCTION_SEAM_CHECKER_PACKET.md"
+    ],
+    "paths_outside_evidence_or_docs": "NONE",
+    "src_tools_package_json_or_lock_changes_after_the_candidate": "NONE (git diff --name-only ebd4ff5 39dea63 yields only .foundergate/evidence/ and docs/ paths)",
+    "result": "CLEAN - the executable/evidence split is exactly as declared"
+  },
+
+  "executable_scope_result": {
+    "diff_range_inspected": "9d87afa18fe0e63f770d68901e408ac328906167..ebd4ff5672ba657b039521a8b377a094a2ea67ea",
+    "executable_files_changed_by_the_candidate_commit_alone": [
+      "tools/terminal0/lrcq/run-five-hour.mjs (modified, +52/-30 region)",
+      "src/v8b/lrcq/run-harness-tests/production-ack-classification.selftest.mjs (new regression family, 234 lines)"
+    ],
+    "within_the_permitted_scope": true,
+    "lifecycle_authority_changed": false,
+    "activation_changed": false,
+    "filesystem_authority_changed": false,
+    "provider_boundary_changed": false,
+    "provider_binding_changed": false,
+    "key_transfer_changed": false,
+    "process_identity_changed": false,
+    "authority_core_digests_recomputed_and_compared_with_freeze_record_v5": {
+      "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs": "ee7cb5f5e99735659757212d7d7b37c3ea6457ae997c34e570f17b5d011faf94 - UNCHANGED",
+      "src/v8b/lrcq/assurance/activation-v4.mjs": "5c4ba9c5b7d87bd92213022c6e8ab3ef36077df3a1ff594c618ea2e5a240eb45 - UNCHANGED",
+      "src/v8b/lrcq/assurance/deep-freeze-authority.mjs": "eda83dcd02e2cb4ef6879b00f6b7468390af3e49dba52e7088d1ee2953742286 - UNCHANGED",
+      "src/v8b/lrcq/assurance/fs-authority-guards.mjs": "574ae9794632b060b9b99c71c1e64072958e61719fc2c23901a5848e45da7ea2 - UNCHANGED",
+      "src/v8b/lrcq/assurance/fixed-executables.mjs": "00b1b56d24a07a605dc8c8a0981c9d1363702a3b1e3def21e692ae58893e907d - UNCHANGED",
+      "src/v8b/lrcq/provider/authority-boundary.mjs": "08fac21823a142070ccc233e667d6c09ef2ffc64851dbc18907d9c74a58ea29c - UNCHANGED",
+      "src/v8b/lrcq/provider/real-provider.mjs": "ea3bafdcd1bcc07eac2b5bdd65d24794ec190a992ce577ce7d4b2087d524cd37 - UNCHANGED",
+      "src/v8b/lrcq/provider/activation-schema.mjs": "fab360c8d99c4b4fcdb601c39dbe6315f53268d966e7058e60f6f05d825ea631 - UNCHANGED",
+      "src/v8b/lrcq/run-harness/v4-legacy-projection.mjs": "cb9cb03dffb96489546209cbae93e4b3ee1cd414deb164bdd273b51573d7ce9d - UNCHANGED",
+      "tools/terminal0/lrcq/run-five-hour.mjs": "f9ca96a6e1b891d6f9e05740fce1665dd2a3207a4732956ba266b89fff921656 - CHANGED, expected, matches freeze record v6",
+      "src/v8b/lrcq/run-harness-tests/production-ack-classification.selftest.mjs": "43d3a8f027b0cb14b56c4b514592eb2d9baa5b7f4e89a2d7c805b20bf1b65112 - NEW, matches freeze record v6"
+    },
+    "unexplained_authority_core_change": "NONE",
+    "result": "CLEAN"
+  },
+
+  "complete_suite_results": {
+    "command": "npm test",
+    "runs": 2,
+    "run_1": { "exit": 0, "self_tests": "154/154", "failures": 0, "skipped": 0, "assertions_x_of_y_form": 1989, "assertions_pass_checks_form": 614, "literal_ok_lines": 2005, "literal_PASS_lines": 929 },
+    "run_2": { "exit": 0, "self_tests": "154/154", "failures": 0, "skipped": 0, "assertions_x_of_y_form": 1989, "assertions_pass_checks_form": 614, "literal_ok_lines": 2005, "literal_PASS_lines": 929 },
+    "identical_family_totals_across_runs": "CONFIRMED - the sorted set of 64 'N/N passed' family summary lines and the 54 'PASS (N checks)' lines are byte-identical between runs (diff empty)",
+    "combined_mechanical": 2603,
+    "skip_audit": "The 5 occurrences of the string 'skip' in the output are ASSERTION NAMES that assert a skip is refused (e.g. 'DANGEROUSLY_SKIP_PERMISSIONS auto-refused', 'SKIP != acceptance', 'no caller option can substitute or skip the observation'). ZERO tests were skipped.",
+    "worktree_clean_after_both_runs": true,
+    "individually_run_families": {
+      "production-ack-classification": "82/82 exit 0",
+      "checker-197-final-five": "192/192 exit 0",
+      "checker-197-corrections": "78/78 exit 0",
+      "lifecycle-authority-v4": "17/17 exit 0",
+      "lifecycle-fd-transfer": "19/19 exit 0",
+      "lifecycle-key-containment": "39/39 exit 0",
+      "detached-supervisor": "31/31 exit 0",
+      "detached-supervisor-failure": "14/14 exit 0",
+      "authority-route": "15/15 exit 0",
+      "provider-binding": "19/19 exit 0",
+      "real-launch": "70/70 exit 0",
+      "production-seam-closure": "30/30 exit 0",
+      "v3-retirement": "22/22 exit 0"
+    },
+    "assertions_read_not_merely_counted": "The production-ack-classification family was read line by line (all 8 groups AK1-AK8, mechanically counted 5/32/21/6/4/6/4/4 = 82, matching the ledger's claimed group sizes). The AK5 drift guard and AK8 positive control were independently attacked (see drift_guard_result). Relevant assertions in checker-197-final-five (FS1-FS5), lifecycle-*, detached-supervisor*, authority-route, provider-binding, real-launch, production-seam-closure and v3-retirement were read individually.",
+    "result": "CLEAN"
+  },
+
+  "four_acknowledgment_code_results": {
+    "method": "The real exported production symbols were imported from tools/terminal0/lrcq/run-five-hour.mjs and executed in this process. No copy of the expression was used.",
+    "collection_checks": {
+      "is_Array": true,
+      "Object_isFrozen": true,
+      "length": 4,
+      "unique_values": 4,
+      "exact_members": ["SUPERVISOR_TERMINATED_BEFORE_CLAIM", "SUPERVISOR_CLAIM_TIMEOUT", "SUPERVISOR_CLAIM_INVALID", "SUPERVISOR_START_IDENTITY_UNAVAILABLE"],
+      "contains_no_transfer_stage_failure": true,
+      "mutation_attacks_through_the_exported_reference": "15 attempted (push, pop, index write, index append, length=0, reverse, sort, splice, shift, unshift, fill, copyWithin, Object.defineProperty, delete, Object.setPrototypeOf). Every one threw TypeError and the collection was byte-identical afterwards; the predicate still answered correctly for all four codes and still answered false for SUPERVISOR_SPAWN_FAILED.",
+      "cannot_be_widened_shortened_or_reordered": "CONFIRMED"
+    },
+    "module_private_set": "NOT exported. No export is a Set; no Set is reachable one level into any exported object. ACK_FAILURE_SET is a module-scope const built from the frozen array at module evaluation and is referenced only by isSupervisorAcknowledgmentFailure. The only exported reachability surface is the frozen array, which refuses mutation.",
+    "per_code_classifier_results": {
+      "SUPERVISOR_TERMINATED_BEFORE_CLAIM": { "ready": false, "refused.stage": "supervisor_acknowledgment", "final_state": "SUPERVISOR_NEVER_ACKNOWLEDGED", "consumed": true, "launched": false, "supervisor_acknowledged": false, "exact_code_and_detail_preserved": true },
+      "SUPERVISOR_CLAIM_TIMEOUT": { "ready": false, "refused.stage": "supervisor_acknowledgment", "final_state": "SUPERVISOR_NEVER_ACKNOWLEDGED", "consumed": true, "launched": false, "supervisor_acknowledged": false, "exact_code_and_detail_preserved": true },
+      "SUPERVISOR_CLAIM_INVALID": { "ready": false, "refused.stage": "supervisor_acknowledgment", "final_state": "SUPERVISOR_NEVER_ACKNOWLEDGED", "consumed": true, "launched": false, "supervisor_acknowledged": false, "exact_code_and_detail_preserved": true },
+      "SUPERVISOR_START_IDENTITY_UNAVAILABLE": { "ready": false, "refused.stage": "supervisor_acknowledgment", "final_state": "SUPERVISOR_NEVER_ACKNOWLEDGED", "consumed": true, "launched": false, "supervisor_acknowledged": false, "exact_code_and_detail_preserved": true }
+    },
+    "no_detail_case": "classifyGovernedTransferRefusal({ok:false, code:'SUPERVISOR_CLAIM_TIMEOUT'}) yields reasons ['SUPERVISOR_CLAIM_TIMEOUT'] with no empty parenthesis artefact.",
+    "assertions_executed": 57,
+    "failures": 0,
+    "provider_spawn_count": 0,
+    "result": "CLEAN"
+  },
+
+  "negative_control_results": {
+    "codes_tested_outside_the_acknowledgment_set": [
+      "SUPERVISOR_SPAWN_FAILED", "TRANSFER_WRITE_FAILED", "DESCRIPTOR_UNAVAILABLE", "ALREADY_TRANSFERRED",
+      "KEY_FRAME_MAGIC", "FORGED", "ROOT_OBJECT_IDENTITY_MISMATCH", "TOTALLY_UNKNOWN_STRING_9f2",
+      "undefined", "null", "empty string", "supervisor_claim_timeout (lowercase)", "'SUPERVISOR_CLAIM_TIMEOUT ' (trailing space)",
+      "0", "NaN", "{}", "[]", "Symbol('SUPERVISOR_CLAIM_TIMEOUT')"
+    ],
+    "all_answered_predicate_false": true,
+    "three_genuine_spawn_descriptor_transfer_cases": {
+      "SUPERVISOR_SPAWN_FAILED": { "refused.stage": "governed_key_transfer", "final_state": "SUPERVISOR_SPAWN_FAILED", "ready": false, "consumed": true, "launched": false, "supervisor_acknowledged": false, "exact_reason_preserved": true },
+      "TRANSFER_WRITE_FAILED": { "refused.stage": "governed_key_transfer", "final_state": "SUPERVISOR_SPAWN_FAILED", "ready": false, "consumed": true, "launched": false, "supervisor_acknowledged": false, "exact_reason_preserved": true },
+      "DESCRIPTOR_UNAVAILABLE": { "refused.stage": "governed_key_transfer", "final_state": "SUPERVISOR_SPAWN_FAILED", "ready": false, "consumed": true, "launched": false, "supervisor_acknowledged": false, "exact_reason_preserved": true }
+    },
+    "acknowledgment_set_widened": false,
+    "assertions_executed": 50,
+    "failures": 0,
+    "provider_spawn_count": 0,
+    "result": "CLEAN"
+  },
+
+  "live_launcher_delegation_result": {
+    "source_form_of_the_refusal_branch": "tools/terminal0/lrcq/run-five-hour.mjs:407 - `if (!g.ok) return classifyGovernedTransferRefusal(g);`",
+    "second_inline_acknowledgment_code_expression": "NONE - the pre-correction `const claimFailure = g.code === ...` expression is absent from the tree",
+    "second_constructor_emitting_supervisor_acknowledgment_or_SUPERVISOR_NEVER_ACKNOWLEDGED": "NONE - a repository-wide git grep over src and tools (excluding run-harness-tests) finds the literals 'supervisor_acknowledgment' and 'SUPERVISOR_NEVER_ACKNOWLEDGED' at exactly two lines, run-five-hour.mjs:332 and :335, both inside classifyGovernedTransferRefusal",
+    "stage_and_final_state_decided_in_one_implementation_location": "CONFIRMED",
+    "configurability": "NONE. SUPERVISOR_ACKNOWLEDGMENT_FAILURE_CODES is a frozen array literal of four static LC_CODES property references, declared once at run-five-hour.mjs:313 and never reassigned or mutated. The launcher reads process.env at only three places (PROVIDER_ENV PATH/HOME, the child spawn env PATH/HOME, and the LRCQ_TEST_LIFECYCLE production refusal); none participates in the collection. No lifecycle config field, activation field, CLI flag or caller option reaches it.",
+    "live_drive_1_acknowledgment_stage": {
+      "method": "DYNAMIC. A disposable real run world (makeDisposableRunWorld) plus a real supervisor entrypoint that exits immediately, driven through the real launchDetachedSupervisorV4 with an injected disposable key authority and a stub provider version runner.",
+      "live_record": { "ready": false, "refused": { "stage": "supervisor_acknowledgment", "reasons": ["SUPERVISOR_TERMINATED_BEFORE_CLAIM (the spawned supervisor exited without producing a verified claim (exit 0, signal null))"] }, "final_state": "SUPERVISOR_NEVER_ACKNOWLEDGED", "consumed": true, "launched": false, "supervisor_acknowledged": false },
+      "equals_the_real_classifier_output_for_the_same_lifecycle_result": "BYTE-IDENTICAL (JSON.stringify equality of the whole record)"
+    },
+    "live_drive_2_transfer_stage": {
+      "method": "DYNAMIC. The same disposable world driven under GENUINE operating-system file-descriptor pressure (bash `ulimit -n 512`, the fd table saturated then released to a headroom of 5 and again of 6). No production hook, no flag, no substitute executable. Under that pressure spawnGovernedSupervisorV4's pre-spawn worktree binding could not fork, so the governed transfer returned the non-acknowledgment code REPO_NOT_A_WORKTREE.",
+      "live_record": { "ready": false, "refused": { "stage": "governed_key_transfer", "reasons": ["REPO_NOT_A_WORKTREE"] }, "final_state": "SUPERVISOR_SPAWN_FAILED", "consumed": true, "launched": false, "supervisor_acknowledged": false },
+      "predicate_answer_for_that_code": false,
+      "equals_the_real_classifier_output_for_the_same_lifecycle_result": "BYTE-IDENTICAL, reproduced at headroom 5 and headroom 6",
+      "note": "This is a genuine transfer-stage refusal reached through the REAL production launcher, proving the same single branch serves both arms of the classification."
+    },
+    "live_drive_3_start_identity_unavailable": {
+      "classifier_executed_independently": true,
+      "result": { "ready": false, "refused": { "stage": "supervisor_acknowledgment", "reasons": ["SUPERVISOR_START_IDENTITY_UNAVAILABLE (the parent could not independently observe the spawned process's OS start identity (/bin/ps unavailable), so the claim's self-reported identity cannot be verified)"] }, "final_state": "SUPERVISOR_NEVER_ACKNOWLEDGED", "consumed": true, "launched": false, "supervisor_acknowledged": false },
+      "delegation_proof": "EXCLUSIVE. The launcher contains exactly ONE refusal return for a failed governed transfer and it is a bare delegation with no post-processing. Both arms of that single delegation were proven byte-identical to the classifier in live drives 1 and 2, and spawnGovernedSupervisorV4 propagates ack.code verbatim (lifecycle-authority-v4.mjs:740, `return R(ack.code, ...)`). There is no code path by which SUPERVISOR_START_IDENTITY_UNAVAILABLE could reach a different record.",
+      "end_to_end_production_launch_reaching_this_exact_state": "NOT CLAIMED - see facts_not_proven. A ten-rung fd-headroom ladder (8,10,6,12,14,16,5,18,20,24 under ulimit -n 512) was run against the real launcher and did not reach it: at the headrooms where the launcher passed consumption, /bin/ps remained available and the forging supervisor died before minting a claim; at tighter headrooms the launcher refused earlier. The reviewed evidence discloses this same limitation rather than overstating it."
+    },
+    "provider_spawn_count_across_all_live_drives": 0,
+    "result": "CLEAN"
+  },
+
+  "drift_guard_result": {
+    "guard_location": "src/v8b/lrcq/run-harness-tests/production-ack-classification.selftest.mjs AK5a-AK5d",
+    "derivation": "SOURCE-DERIVED from the authority implementation. The guard locates the region of src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs between `function classifySupervisorClaim` (line 514) and `export async function spawnGovernedSupervisorV4` (line 622), extracts every LC_CODES.SUPERVISOR_* reference in it, and requires each to be covered by the launcher's collection.",
+    "independent_derivation_by_this_checker": {
+      "method": "The acknowledgment-wait implementation (lines 505-621) was READ in full. Every code it can return after key-frame write completion was enumerated by hand from the control flow, not from the guard.",
+      "derived_set": ["SUPERVISOR_CLAIM_INVALID", "SUPERVISOR_CLAIM_TIMEOUT", "SUPERVISOR_START_IDENTITY_UNAVAILABLE", "SUPERVISOR_TERMINATED_BEFORE_CLAIM"],
+      "equals_the_launchers_four_code_collection": true,
+      "propagation_verified": "spawnGovernedSupervisorV4 returns R(ack.code, ...) verbatim for every non-OK acknowledgment, so g.code at the launcher branch is exactly one of these four."
+    },
+    "guard_does_not_rely_on": {
+      "comments": "confirmed - the extraction regex matches LC_CODES.SUPERVISOR_* tokens; comment-only mentions carry no LC_CODES prefix",
+      "test_names": "confirmed",
+      "the_exported_collection_itself": "confirmed - the DERIVED set comes from the authority source; the collection is the thing being checked against it",
+      "the_correction_ledger": "confirmed - the ledger is never read by the guard",
+      "duplicated_expected_literals_with_no_connection_to_the_implementation": "AK5b does compare against a literal join, but AK5c performs the real coverage check by set difference against the source-derived list, and the attack below proves both fail on a genuine fifth code"
+    },
+    "fifth_code_attack": {
+      "method": "The repository source was NOT modified. src, tools and package.json were copied to a disposable mirror outside Git; the mirror was first shown to reproduce the family at 82/82. A FIFTH acknowledgment code (SUPERVISOR_CLAIM_UNREADABLE) was then declared in the mirror's LC_CODES and returned from the mirror's acknowledgment-wait decide() path.",
+      "guard_outcome": "FAILED as required - AK5b reported ['SUPERVISOR_CLAIM_INVALID','SUPERVISOR_CLAIM_TIMEOUT','SUPERVISOR_CLAIM_UNREADABLE','SUPERVISOR_START_IDENTITY_UNAVAILABLE','SUPERVISOR_TERMINATED_BEFORE_CLAIM']; AK5c reported uncovered=['SUPERVISOR_CLAIM_UNREADABLE']; the family fell to 80/82 and set a non-zero exit code.",
+      "repository_source_modified": false
+    },
+    "residual_scope_observation_not_a_finding": {
+      "probe": "A second disposable mirror introduced a NEW acknowledgment-stage code emitted from inside spawnGovernedSupervisorV4 (outside the guard's region boundary) rather than from the acknowledgment wait. The guard did not fail (82/82).",
+      "why_this_is_not_a_finding": "No such code exists in the reviewed candidate; the acknowledgment wait is the only origin of acknowledgment-stage codes today, verified by reading the implementation, and spawnGovernedSupervisorV4 propagates ack.code verbatim. Both the launcher comment and the contract scope the guarantee precisely to codes the acknowledgment wait returns ('a future fifth acknowledgment code cannot slip through the way the fourth did'), and the ledger describes the guard as covering 'the acknowledgment-wait region'. No evidence claim is overstated. Recorded so a future wave that moves acknowledgment classification into spawnGovernedSupervisorV4 knows to widen the guard's region.",
+      "provider_spawn_count": 0
+    },
+    "result": "CLEAN"
+  },
+
+  "authority_core_unchanged_result": {
+    "nine_authority_core_module_digests": "IDENTICAL to freeze record v5",
+    "only_executable_change": "tools/terminal0/lrcq/run-five-hour.mjs, confined to the classification block (new lines 296-343) and the one-line refusal branch at 407",
+    "diff_reviewed_line_by_line": true,
+    "behaviour_changed_outside_refusal_naming": "NONE - the returned record's ready/consumed/launched/supervisor_acknowledged fields and the preserved lifecycle code and detail are byte-identical to the pre-correction record for the three original acknowledgment codes and for every genuine spawn, descriptor and transfer failure; only SUPERVISOR_START_IDENTITY_UNAVAILABLE changes stage and final_state, which is the correction",
+    "result": "CLEAN"
+  },
+
+  "start_identity_regression_result": {
+    "correctly_signed_claim_with_exact_pid_and_forged_start_identity_refuses": "PASS - checker-197-final-five FS1a-FS1i: the claim is genuinely ephemeral-signed, carries the exact spawned PID, only the start identity is forged, and the transfer is refused SUPERVISOR_CLAIM_INVALID at the start-identity comparison itself; authority TRANSFERRED_SPENT and retry refused",
+    "unavailable_independent_start_observation_refuses": "PASS - FS2a-FS2l: a genuine unobservable state reached by fd-table saturation under ulimit -n 512; refusal is the exact structured SUPERVISOR_START_IDENTITY_UNAVAILABLE; the child DID mint its correctly signed claim with the exact spawned PID; the forged identity was never accepted; no residual process; /bin/ps genuinely restored afterwards",
+    "every_successful_acknowledgment_reports_independently_observed_identity": "PASS - FS3a-FS3f across 4 genuine runs, each OK reporting supervisor_acknowledged true, start_identity_independently_observed true, bound to the exact spawned PID, with the claim identity equal to a real /bin/ps lstart record",
+    "immediate_death_supervisor_never_returns_OK": "PASS - FF1a (6/6 runs) and FS4a-FS4c (fast claim-and-exit race, 6 runs)",
+    "reading_without_claiming_never_returns_OK": "PASS - FF1h",
+    "concurrent_transfer_one_winner_one_pre_spawn_loser": "PASS - C1a/C1b, with C1i confirming zero provider spawn during the attack, COUNTED from the recording stub's own log",
+    "unconditional_comparison_still_unconditional": "PASS - FS5a-FS5d and AK7c: the `observedStart !== null &&` guard is absent, the code is declared and returned, no caller option can substitute or skip the observation, and it still runs through the fixed absolute /bin/ps",
+    "result": "CLEAN - reconfirmed narrowly; authority architecture not reopened"
+  },
+
+  "provider_boundary_regression_result": {
+    "26_of_26_invalid_provider_routes_refuse": "PASS - F-B1 (exactly 26 invalid routes driven), F-B2 (26/26 REFUSED)",
+    "counted_invalid_provider_spawns": 0,
+    "counting_method": "COUNTED from the recording provider stub's own adjacent log, not inferred - F-B3, F-B4 (provider_invocation stayed PROVIDER_NOT_ATTEMPTED), F-B9, F-B11, C1i",
+    "one_legitimate_narrowed_route_creates_exactly_one_deterministic_provider_stub": "PASS - F-P3 and FB4 (across the ENTIRE boundary matrix exactly ONE provider process ever ran, the positive narrowed route); F-P6 confirms the process that ran was the SIGNED immutable resolved target, the recording stub, never the real Claude",
+    "lifecycle_root_object_continuity": "PASS - FD5 (governed transfer refused ROOT_OBJECT_IDENTITY_MISMATCH), FD13 (the code is RETURNED in the module body, not merely declared), C5b/FD16 (a case-variant spelling of the same inode is still the same authority object)",
+    "deep_immutability_and_dangerous_key_rejection": "PASS - C6a/C6d/C6f/C6g/C6j, F-C1/F-C2/F-C5, FC2/FC8/FC9/FC12/FC14, FF4a-FF4f (__proto__, nested __proto__, constructor, prototype and array-element dangerous keys all refused, not silently dropped)",
+    "V3_refuses_before_side_effects": "PASS - R1a/R1c/R1d/R2a/R3a/R3b/R4a/R4b/R5a/R5b (launchDetachedSupervisorV4 refuses a V3 record: not consumed, not launched, zero provider)/R5c/R5d; R6a/R6b confirm the V3 modules survive only as read-only evidence",
+    "replay_remains_blocked": "PASS - detached-supervisor 28 (second launch refuses, not launched)",
+    "real_repository_refuses_at_KEY_ENROLLMENT": "PASS - detached-supervisor 00 (the real repository's active_keys is still EMPTY) and 30 (the REAL repository launcher refuses at the KEY_ENROLLMENT gate; nothing consumed, nothing spawned)",
+    "result": "CLEAN"
+  },
+
+  "evidence_accuracy_result": {
+    "fifth_checker_report_preserved_verbatim": true,
+    "preserved_copy": ".foundergate/evidence/lrcq-assurance-factory/CHK5_197_FIFTH_CHECKER_REPORT_HISTORICAL.json",
+    "sha256_recomputed": "34d4054a04b3a0720d568c8db086c4ce3aece6203709b6175edd2323b4d1f2b1",
+    "sha256_expected": "34d4054a04b3a0720d568c8db086c4ce3aece6203709b6175edd2323b4d1f2b1",
+    "sha256_matches": true,
+    "historical_candidate_9d87afa1_described_as_having_false_classification": "CONFIRMED - the correction ledger names candidate 9d87afa18fe0e63f770d68901e408ac328906167, states evidence_classification_was_false: true, and reproduces the false stage/final_state for SUPERVISOR_START_IDENTITY_UNAVAILABLE",
+    "authority_impact_recorded_as_none": "CONFIRMED - 'authority_impact: NONE' with the full fail-closed enumeration; independently reproduced here (the pre-correction defect could only mislabel an already-refused outcome)",
+    "before_and_after_results_match_execution": "CONFIRMED - the ledger's before/after records are exactly what this Checker observed executing the real classifier (after) and the historical predicate (before, via the AK8 positive control and by reading the pre-correction source at 9d87afa1)",
+    "matrix_totals_reproduce_mechanically": {
+      "self_tests": "154 claimed / 154 observed",
+      "assertions_x_of_y_form": "1989 claimed / 1989 observed in both runs",
+      "assertions_pass_checks_form": "614 claimed / 614 observed in both runs",
+      "combined": "2603 claimed / 2603 observed",
+      "literal_ok_lines": "2005 claimed / 2005 observed in both runs",
+      "literal_PASS_lines": "929 claimed / 929 observed in both runs",
+      "v4_family_counts": "all 24 claimed family counts present and correct in the captured output; the 13 individually re-run families matched exactly"
+    },
+    "corrected_stale_counts_are_accurate": "CONFIRMED - the matrix discloses that the FG-FFIN4-197 wave left three counts stale (assertions_x_of_y_form 1823 -> true pre-correction 1907; checker-197-final-five 157/157 -> 192/192; checker-197-corrections 76/76 -> 78/78) and the corrected values reproduce mechanically (192/192 and 78/78 observed; 1907 + 82 = 1989 observed)",
+    "runtime_evidence_labeled_dynamic": "CONFIRMED - every executed assertion carries [DYNAMIC] or [COUNTED]",
+    "structural_evidence_labeled_structural_or_source_proven": "CONFIRMED - AK4a-AK4f, AK5a-AK5d, AK7a-AK7d, FS5a-FS5d and C9c carry [STRUCTURAL] or [SOURCE-PROVEN]; the ledger carries an explicit evidence_class_legend",
+    "no_earlier_historical_checker_report_was_rewritten": "CONFIRMED - each of FCHK_197_FRESH..., FFIN_197_THIRD... and FFIN4_197_FOURTH...CHECKER_REPORT_HISTORICAL.json is touched by exactly ONE commit in the branch history (4362b3e, edd1de5, 240bce8 respectively)",
+    "freeze_record_v6_identifies_the_exact_executable_candidate_and_evidence_tail": "CONFIRMED - candidate ebd4ff5672ba657b039521a8b377a094a2ea67ea, tree 012e0560fd21f7328088ec290f30f9eac84dc1ef, evidence tail count 1 with a procedural resolution rule that this Checker verified",
+    "unsupported_overstatement": "NONE FOUND. The matrix's not_proven_here explicitly discloses that an end-to-end launcher drive to SUPERVISOR_START_IDENTITY_UNAVAILABLE was NOT achieved and states what was proven instead - which matches this Checker's independent result exactly. The contract's drift-guard claim is scoped to 'the way the fourth did'. The matrix also states it is BUILDER evidence and not independent acceptance.",
+    "result": "CLEAN"
+  },
+
+  "provider_state": {
+    "target": "/Users/yosiwizman/.local/share/claude/versions/2.1.220",
+    "regular_non_symlink_file": true,
+    "mode": "-rwxr-xr-x",
+    "hardlink_count": 1,
+    "sha256_shasum": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+    "sha256_openssl": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+    "two_matching_hashes": true,
+    "expected_sha256": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+    "digest_matches_expected": true,
+    "version_output": "2.1.220 (Claude Code)",
+    "version_agrees": true,
+    "invocation": "--version only; no model, no productive invocation",
+    "device": 16777230,
+    "inode": 104673092,
+    "size": 256908272,
+    "mtime": "2026-07-24T21:37:20",
+    "stable_before_and_after_the_version_run": true,
+    "updater_active": "No Claude Code updater is running. The only updater processes on the host are macOS softwareupdated daemons (pids 545, 65843, 65872), unrelated to the provider target.",
+    "drift": "NONE",
+    "disclosure": "The frozen provider binary is concurrently being EXECUTED by the user's own Claude Code sessions on this host (a background pty host process references 2.1.220). That is the operator's interactive tooling, entirely outside this review; this Checker invoked it only with --version.",
+    "provider_refreeze": "STILL OUTSTANDING - required even though the provider has not drifted"
+  },
+
+  "facts_not_proven": [
+    "An end-to-end drive of the REAL launchDetachedSupervisorV4 all the way to SUPERVISOR_START_IDENTITY_UNAVAILABLE. A ten-rung fd-headroom ladder (headroom 8,10,6,12,14,16,5,18,20,24 under bash ulimit -n 512) against the real launcher did not reach that exact state. The classification for that code is instead proven by executing the REAL exported classifier, by the structural proof that the launcher's single refusal branch returns that classifier verbatim with no post-processing, by verbatim propagation of ack.code out of spawnGovernedSupervisorV4, and by BYTE-IDENTICAL live equality on both an acknowledgment-stage and a transfer-stage code. The reachability of the code itself is separately proven DYNAMIC at the authority boundary by checker-197-final-five FS2a-FS2l.",
+    "A live transfer-stage refusal carrying specifically SUPERVISOR_SPAWN_FAILED, TRANSFER_WRITE_FAILED or DESCRIPTOR_UNAVAILABLE through launchDetachedSupervisorV4. The live transfer-stage refusal reached here carried REPO_NOT_A_WORKTREE. Those three codes were exercised through the real classifier directly and at the authority boundary by checker-197-final-five FA1-FA15; the write-failure-by-premature-termination mapping is recorded in the repository's own evidence as NEVER ACHIEVED, which this Checker's 8 additional attempts corroborate.",
+    "Real productive provider or model capability. Forbidden by the review boundary and not exercised.",
+    "Real founder key enrollment, real signature, real activation or a five-hour run. Forbidden and not exercised; active_keys is [] before and after.",
+    "The sequential Advisor verdict and any merge readiness judgement. Outside this Checker's authority.",
+    "Behaviour of the acknowledgment-classification drift guard if a future wave emits an acknowledgment-stage code from spawnGovernedSupervisorV4 rather than from the acknowledgment wait. Probed on a disposable mirror and shown to be outside the guard's declared region; not a defect in this candidate because no such code exists and no evidence claim covers that case."
+  ],
+
+  "findings": [],
+  "findings_count": 0,
+  "findings_note": "No finding survived verification. Every required property of the correction was reproduced mechanically, the authority core is bit-identical to freeze record v5, and no evidence claim was found to overstate what was executed.",
+
+  "post_review_immutability": {
+    "head_unchanged": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+    "tree_unchanged": "1689a63464f3b2e987523fb1c84ce0d50ab6a40f",
+    "worktree_clean": true,
+    "git_diff_HEAD": "empty",
+    "git_status_ignored": "empty",
+    "worktree_file_metadata_digest_before": "068b955d160d71f289a3d8658cd3c8fa475ffc34621c3c7e6161265707f2283d",
+    "worktree_file_metadata_digest_after": "068b955d160d71f289a3d8658cd3c8fa475ffc34621c3c7e6161265707f2283d",
+    "no_tracked_content_or_timestamp_mutation_attributable_to_review": true,
+    "no_key_or_real_signature_created": true,
+    "no_real_activation_consumed": true,
+    "no_productive_provider_or_model_invocation": true,
+    "no_five_hour_run": true,
+    "residual_processes_from_this_review": "none - all disposable supervisors, sleep place-holders and pressure drivers were reaped; no fg-chk6 world remains on disk",
+    "pr_state_unchanged": "PR #197 OPEN/draft/unmerged at 39dea63; PR #196 OPEN/draft/unmerged at 8d1899f; protected main still ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423",
+    "review_artifacts_written": ["/tmp/foundergate-pr197-production-seam-independent-checker.json"],
+    "disposable_fixtures_written_outside_git": "scratchpad scripts and two source mirrors under the session scratchpad directory; no repository path touched"
+  },
+
+  "next_safe_action": "Perform the outstanding PROVIDER RE-FREEZE for /Users/yosiwizman/.local/share/claude/versions/2.1.220 (sha256 8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081, version 2.1.220), recording it against executable candidate ebd4ff5672ba657b039521a8b377a094a2ea67ea. Then route candidate ebd4ff56 to the sequential Advisor. No founder key enrollment, no signature, no activation and no run may be prepared until the provider re-freeze is recorded and the Advisor has ruled.",
+
+  "verdict_line": "FOUNDERGATE-PR197-PRODUCTION-SEAM-CHECKER: AUTHORITY_CHAIN_CLEAN_PROVIDER_REFREEZE_REQUIRED"
+}

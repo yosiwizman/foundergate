@@ -1,0 +1,49 @@
+{
+  "schema": "lrcq-advisor-finding-correction-ledger-1",
+  "wave": "FG-PPR-197",
+  "advisor_report_sha256": "e2177f9201e13aa1e4e452af5d32a5e040ce323263cc9bb46277f43469da3cc0",
+  "advisor_verdict": "FOUNDERGATE-PR197-ADVISOR: AUTHORITY_IMPLEMENTATION_READY_FOR_PROVIDER_REFREEZE",
+  "finding": {
+    "id": "ADV-197-01",
+    "severity": "LOW",
+    "blocking": false,
+    "waived": false,
+    "artifact": ".foundergate/evidence/lrcq-assurance-factory/V4_AUTHORITY_ACCEPTANCE_MATRIX.json (not_proven_here[2])",
+    "mechanism": "Stale enumeration carried forward from the prior wave: the statement said 'ALL FOUR prior reports' and omitted the fifth historical Checker FINDINGS report (sha256 34d4054a04b3a0720d568c8db086c4ce3aece6203709b6175edd2323b4d1f2b1) that was added in the same commit.",
+    "authority_impact": "NONE — no false success, no provider invocation, no widened ceiling or exclusion, no executable behaviour change."
+  },
+  "correction": {
+    "corrected_in_this_package_wave": true,
+    "what_changed": [
+      "The stale 'ALL FOUR prior reports' statement was replaced with a FULL, unabbreviated enumeration of all FIVE historical Checker FINDINGS reports, by full sha256.",
+      "A review_report_register was added that keeps three report classes strictly distinct: HISTORICAL_FINDINGS_EVIDENCE (five), CLEAN_AUTHORITY_REVIEW (one), SEQUENTIAL_ADVISORY_REVIEW (one).",
+      "The historical FINDINGS reports are explicitly marked is_acceptance:false and are NOT called acceptance anywhere.",
+      "The correction was applied both in the regenerated wave matrix and at the source artifact, so the defective string does not survive in the repository."
+    ],
+    "remains_subject_to": "INDEPENDENT PACKAGE CHECKER VERIFICATION. This correction is Builder work; it is not self-accepted and it is not package acceptance."
+  },
+  "historical_findings_reports": [
+    {
+      "ordinal": 1,
+      "sha256": "caa4db0031b172ca69c9b456d298cb3b3e6185215e9074293b6c93390fbdc20f"
+    },
+    {
+      "ordinal": 2,
+      "sha256": "6ac782a2d396a8b0558eed8493d19a86a5f52a3e99e38cfe2f040f72e25da50b"
+    },
+    {
+      "ordinal": 3,
+      "sha256": "c49cc5633341639704fcb0564722c8f02c642884b6c7cd8a8f2d44bd70bb294d"
+    },
+    {
+      "ordinal": 4,
+      "sha256": "886d69828216a012be56f8c6362f0df6e178ec030426e36c4dfa71a75f68b6ba"
+    },
+    {
+      "ordinal": 5,
+      "sha256": "34d4054a04b3a0720d568c8db086c4ce3aece6203709b6175edd2323b4d1f2b1"
+    }
+  ],
+  "current_clean_authority_checker_sha256": "fba5f6c2a397489b6a1e31da58fa6bd54434bc8fbf35d6e65689e67c79a87365",
+  "current_authority_advisor_sha256": "e2177f9201e13aa1e4e452af5d32a5e040ce323263cc9bb46277f43469da3cc0"
+}

@@ -1,0 +1,123 @@
+{
+  "schema": "lrcq-provider-refreeze-2",
+  "wave": "FG-PPR-197",
+  "why": "The only prior provider re-freeze artifact (.foundergate/evidence/lrcq-assurance-factory/PROVIDER_REFREEZE_2_1_220.json, wave FG-LRCQ-ACT-029) predates candidates 8e6944ef, c6bf5a37, 4014d91b, 9d87afa1 and ebd4ff56. Its candidate binding was deliberately NOT carried forward. A stable hash is not a re-freeze: the binding must be RECORDED against the approved executable authority candidate.",
+  "prior_artifact": {
+    "path": ".foundergate/evidence/lrcq-assurance-factory/PROVIDER_REFREEZE_2_1_220.json",
+    "sha256": "sha256:079a59360f5a4ab8afbd3f31f5850adbf9656f26a6cc8e40f93217c04d9034c9",
+    "old_candidate_binding_carried_forward": false,
+    "inspection": "Mechanically inspected. Its resolution method (alias -> versioned target, two reads, --version probe, metadata stability, no updater) was re-executed independently here; its recorded candidate context was NOT reused."
+  },
+  "authority_binding": {
+    "authority_candidate_sha": "ebd4ff5672ba657b039521a8b377a094a2ea67ea",
+    "authority_candidate_tree": "012e0560fd21f7328088ec290f30f9eac84dc1ef",
+    "prior_reviewed_evidence_head": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+    "prior_reviewed_evidence_tree": "1689a63464f3b2e987523fb1c84ce0d50ab6a40f",
+    "authority_file_digests": {
+      "src/v8b/lrcq/assurance/lifecycle-authority-v4.mjs": "sha256:ee7cb5f5e99735659757212d7d7b37c3ea6457ae997c34e570f17b5d011faf94",
+      "src/v8b/lrcq/assurance/activation-v4.mjs": "sha256:5c4ba9c5b7d87bd92213022c6e8ab3ef36077df3a1ff594c618ea2e5a240eb45",
+      "src/v8b/lrcq/provider/authority-boundary.mjs": "sha256:08fac21823a142070ccc233e667d6c09ef2ffc64851dbc18907d9c74a58ea29c",
+      "src/v8b/lrcq/assurance/deep-freeze-authority.mjs": "sha256:eda83dcd02e2cb4ef6879b00f6b7468390af3e49dba52e7088d1ee2953742286",
+      "src/v8b/lrcq/assurance/fs-authority-guards.mjs": "sha256:574ae9794632b060b9b99c71c1e64072958e61719fc2c23901a5848e45da7ea2",
+      "src/v8b/lrcq/assurance/fixed-executables.mjs": "sha256:00b1b56d24a07a605dc8c8a0981c9d1363702a3b1e3def21e692ae58893e907d",
+      "src/v8b/lrcq/provider/real-provider.mjs": "sha256:ea3bafdcd1bcc07eac2b5bdd65d24794ec190a992ce577ce7d4b2087d524cd37",
+      "tools/terminal0/lrcq/run-five-hour.mjs": "sha256:f9ca96a6e1b891d6f9e05740fce1665dd2a3207a4732956ba266b89fff921656"
+    }
+  },
+  "review_binding": {
+    "sixth_checker_report_sha256": "fba5f6c2a397489b6a1e31da58fa6bd54434bc8fbf35d6e65689e67c79a87365",
+    "sixth_checker_verdict": "FOUNDERGATE-PR197-PRODUCTION-SEAM-CHECKER: AUTHORITY_CHAIN_CLEAN_PROVIDER_REFREEZE_REQUIRED",
+    "sequential_advisor_report_sha256": "e2177f9201e13aa1e4e452af5d32a5e040ce323263cc9bb46277f43469da3cc0",
+    "sequential_advisor_verdict": "FOUNDERGATE-PR197-ADVISOR: AUTHORITY_IMPLEMENTATION_READY_FOR_PROVIDER_REFREEZE",
+    "preserved_checker_copy": ".foundergate/evidence/lrcq-provider-package-refreeze/CHECKER_197_SIXTH_AUTHORITY_REPORT.json",
+    "preserved_advisor_copy": ".foundergate/evidence/lrcq-provider-package-refreeze/ADVISOR_197_SEQUENTIAL_REPORT.json",
+    "preserved_copies_are_byte_identical": true,
+    "preserved_checker_copy_sha256": "fba5f6c2a397489b6a1e31da58fa6bd54434bc8fbf35d6e65689e67c79a87365",
+    "preserved_advisor_copy_sha256": "e2177f9201e13aa1e4e452af5d32a5e040ce323263cc9bb46277f43469da3cc0"
+  },
+  "provider": {
+    "target": "/Users/yosiwizman/.local/share/claude/versions/2.1.220",
+    "realpath": "/Users/yosiwizman/.local/share/claude/versions/2.1.220",
+    "regular_non_symlink_file": true,
+    "executable": true,
+    "mode": "0755",
+    "owner_uid": 501,
+    "owner_gid": 20,
+    "link_count": 1,
+    "device": 16777230,
+    "inode": 104673092,
+    "size_bytes": 256908272,
+    "mtime_epoch": 1784943440,
+    "sha256_shasum": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+    "sha256_openssl": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+    "sha256_driver_rehash": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+    "two_independent_tools_agree": true,
+    "three_independent_digests_agree": true,
+    "sha256": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+    "expected_sha256": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+    "digest_matches_expected": true,
+    "version_probe_output": "2.1.220 (Claude Code)",
+    "version": "2.1.220",
+    "version_agrees": true,
+    "production_verifier_code": "OK",
+    "production_verifier_ok": true,
+    "metadata_stable_across_hash_and_version_inspection": true,
+    "alternate_targets_present_and_refused": [
+      {
+        "path": "/Users/yosiwizman/.local/share/claude/versions/2.1.218",
+        "accepted": false,
+        "reason": "not the reviewed bound target; the activation binds exactly one immutable versioned file"
+      },
+      {
+        "path": "/Users/yosiwizman/.local/share/claude/versions/2.1.219",
+        "accepted": false,
+        "reason": "not the reviewed bound target; the activation binds exactly one immutable versioned file"
+      }
+    ]
+  },
+  "mutable_alias": {
+    "path": "/Users/yosiwizman/.local/bin/claude",
+    "role": "MUTABLE ALIAS — recorded for identity consistency only; NEVER bound and NEVER executed",
+    "currently_points_at": "/Users/yosiwizman/.local/share/claude/versions/2.1.220"
+  },
+  "observation_time_utc": "2026-07-26T00:18:16Z",
+  "observation_time_is_a_frozen_input": "This driver never reads the wall clock. The observation instant is supplied explicitly so regeneration is byte-reproducible.",
+  "commands_used": [
+    "stat -f ... <target>              (filesystem identity, recorded before and after)",
+    "shasum -a 256 <target>            (independent hasher 1: Digest::SHA)",
+    "openssl dgst -sha256 -r <target>  (independent hasher 2: OpenSSL)",
+    "node crypto re-hash of <target>   (independent hasher 3: performed by this driver itself)",
+    "<target> --version                (metadata probe ONLY, in a separate counted observation step)",
+    "verifyProviderTarget(...)         (the production immutable-provider verifier)",
+    "readlink -f <mutable alias>       (alias resolution only; the alias is never bound and never executed)"
+  ],
+  "commands_used_note": "Absolute tool paths are recorded in the evidence-only tail commit. This module lives in the production launcher directory, where the authority-route regression forbids any alternate shell/executor surface, so it spawns nothing but the fixed absolute git binary.",
+  "provider_execution_limited_to_version": {
+    "statement": "Provider EXECUTION in this wave was limited to `--version`. No model request, no productive provider request, no run-route spawn.",
+    "productive_provider_spawns": 0,
+    "model_requests": 0,
+    "version_metadata_probes": "counted and recorded in the evidence-only tail commit",
+    "this_driver_never_executes_the_provider": true
+  },
+  "updater_state": "No Claude Code updater or installer process is running. The only updater processes on the host are macOS softwareupdated/MobileSoftwareUpdate daemons, unrelated to the provider target.",
+  "alternate_targets_not_accepted": [
+    {
+      "path": "/Users/yosiwizman/.local/share/claude/versions/2.1.218",
+      "accepted": false,
+      "reason": "not the reviewed bound target; the activation binds exactly one immutable versioned file"
+    },
+    {
+      "path": "/Users/yosiwizman/.local/share/claude/versions/2.1.219",
+      "accepted": false,
+      "reason": "not the reviewed bound target; the activation binds exactly one immutable versioned file"
+    }
+  ],
+  "authorization_status": {
+    "provider_remains_unauthorized_for_productive_use": true,
+    "statement": "The provider remains UNAUTHORIZED for productive use until a founder-signed activation is enrolled, signed, verified and consumed through the governed V4 route. Re-freezing records identity; it grants nothing.",
+    "active_keys": [],
+    "package_signed": false,
+    "activation_issued": false,
+    "activation_consumed": false
+  }
+}

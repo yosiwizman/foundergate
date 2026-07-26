@@ -1,0 +1,63 @@
+{
+  "schema": "lrcq-claim-evidence-classification-1",
+  "wave": "FG-PPR-197",
+  "classes": {
+    "MECHANICAL": "recomputed from bytes on disk or from git objects by a tool, reproducible by a third party",
+    "COUNTED": "a real observed count (processes, spawns, tests)",
+    "SOURCE_PROVEN": "proven by reading production source text, not by executing it",
+    "DYNAMIC": "proven by actually executing the control and observing the refusal",
+    "NOT_PROVEN": "explicitly not established by this wave"
+  },
+  "claims": [
+    {
+      "claim": "the provider target is the reviewed immutable 2.1.220 binary with the expected digest",
+      "class": "MECHANICAL",
+      "evidence": "two independent external hashers plus the production verifyProviderTarget"
+    },
+    {
+      "claim": "the provider reports version 2.1.220",
+      "class": "DYNAMIC",
+      "evidence": "a counted --version metadata probe; the ONLY provider execution in this wave"
+    },
+    {
+      "claim": "the package binds the approved authority candidate ebd4ff56 / tree 012e0560",
+      "class": "MECHANICAL",
+      "evidence": "git rev-parse plus the regenerated activation payload's reviewed_runtime_* fields"
+    },
+    {
+      "claim": "the six ceilings and ten exclusions hold",
+      "class": "MECHANICAL",
+      "evidence": "read back from the regenerated payload and the manifest"
+    },
+    {
+      "claim": "invalid packages refuse before any productive provider spawn",
+      "class": "DYNAMIC",
+      "evidence": "negative attacks executed on disposable copies outside git, with a counted spawn instrument and a positive stub control"
+    },
+    {
+      "claim": "the package is unsigned and unactivated and active_keys is []",
+      "class": "MECHANICAL",
+      "evidence": "null signature fields plus docs/governance/FOUNDER_KEY_AUTHORITY.json"
+    },
+    {
+      "claim": "the real repository is blocked at KEY_ENROLLMENT",
+      "class": "DYNAMIC",
+      "evidence": "the production launcher preflight's classified founder gate"
+    },
+    {
+      "claim": "real productive provider capability works",
+      "class": "NOT_PROVEN",
+      "evidence": "requires invoking Claude productively, which is forbidden in preparation and is first exercised under founder signature"
+    },
+    {
+      "claim": "this package is accepted",
+      "class": "NOT_PROVEN",
+      "evidence": "Builder verification is NOT package acceptance; an independent package Checker verdict is required"
+    },
+    {
+      "claim": "complete OS isolation / UI proof",
+      "class": "NOT_PROVEN",
+      "evidence": "not claimed by this wave"
+    }
+  ]
+}

@@ -1,0 +1,298 @@
+{
+  "schema": "foundergate-pr197-sequential-advisor-1",
+  "verdict": "AUTHORITY_IMPLEMENTATION_READY_FOR_PROVIDER_REFREEZE",
+
+  "advisor_identity": {
+    "role": "fresh sequential read-only Advisor for FounderGate PR #197",
+    "not_the_builder": true,
+    "not_any_of_the_six_prior_checkers": true,
+    "repository_mutation_authority": "none",
+    "github_mutation_authority": "none",
+    "provider": "Anthropic - Claude Code CLI",
+    "model_label": "Claude Opus 5",
+    "model_identifier": "claude-opus-5",
+    "host": "AKIOR-Mac-mini.local",
+    "review_date": "2026-07-25",
+    "independence_note": "The sixth Checker's report, the Builder's matrix, freeze record, correction ledger, contract and PR body were treated as CLAIMS. Every load-bearing claim relied on below was reproduced mechanically in this process: the frozen state, the report hash, the executable/evidence split, the authority-core digests, the acknowledgment-code derivation from the authority source, the exported-classifier behaviour under attack, the full suite twice, the provider-route matrix counts and the post-review immutability."
+  },
+
+  "frozen_state": {
+    "host": "AKIOR-Mac-mini.local",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-founder-signature-authority-8d1899f",
+    "branch": "lane/lrcq-founder-signature-authority-8d1899f",
+    "git_common_dir": "/Users/yosiwizman/Projects/foundergate/.git",
+    "worktree_clean": true,
+    "worktree_clean_including_ignored": true,
+    "active_git_operation": "none (no MERGE_HEAD, REBASE_HEAD, CHERRY_PICK_HEAD, REVERT_HEAD, BISECT_LOG, rebase-merge, rebase-apply, sequencer or index.lock)",
+    "competing_writable_builder": "none observed - git worktree list binds this path to this branch only; no supervisor, launcher, activation or FounderGate build process is running. The one long-lived node process on the host (pid 21293, provider-connect/src/server.mjs) has cwd /Users/yosiwizman/Projects/akior-activepieces-engine and is unrelated to this repository; it was observed via ps only and not contacted.",
+    "local_head": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+    "upstream_head": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+    "github_head": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+    "local_equals_upstream_equals_github": true,
+    "evidence_head_tree": "1689a63464f3b2e987523fb1c84ce0d50ab6a40f",
+    "executable_candidate_sha": "ebd4ff5672ba657b039521a8b377a094a2ea67ea",
+    "executable_candidate_tree": "012e0560fd21f7328088ec290f30f9eac84dc1ef",
+    "commits_after_the_executable_candidate": 1,
+    "evidence_only_tail": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+    "evidence_only_tail_resolution": "PROCEDURAL, as the freeze record requires: `git log --oneline ebd4ff56..HEAD` yields exactly one commit, and `git diff --name-status ebd4ff5 HEAD` yields only .foundergate/evidence/ and docs/ paths.",
+    "pr_197": { "state": "OPEN", "isDraft": true, "mergedAt": null, "base": "lane/pr189-real-package-use-8ef9a24", "headRefOid": "39dea6364d3a32420034f0ba4895486d1b918fa1" },
+    "pr_196_head": "8d1899f793305e9f87adc5163a60bfb077e4d4e5",
+    "pr_196_state": "OPEN, draft, unmerged, unchanged",
+    "protected_main": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423",
+    "active_keys": [],
+    "revoked_keys": [],
+    "founder_key_authority_file": "docs/governance/FOUNDER_KEY_AUTHORITY.json",
+    "founder_key_authority_sha256": "6b2268a4a74b784478eb1df916930028de8d68398eedfcd4670736e11c66f802",
+    "no_founder_key_real_signature_activation_supervisor_or_productive_provider_process": true,
+    "stale_metadata_recorded_not_drift": [
+      "PR #197 body still states 'A FRESH INDEPENDENT CHECKER IS REQUIRED' and 'A sixth fresh independent Checker must now review the corrected candidate'. The sixth Checker has since returned CLEAN. This is CONSERVATIVE stale metadata written before that Checker ran; every factual field in the body (candidate, tree, base, protected main, suite result, active_keys) reproduces exactly.",
+      "PR197_V4_FREEZE_RECORD.json next_gate = READY_FOR_FRESH_INDEPENDENT_CHECKER and fresh_independent_checker_required = true, for the same reason and with the same conservative direction.",
+      "No repository or PR mutation occurred after the sixth Checker's review window: HEAD, tree, PR head OID, PR #196 head and protected main are all identical to the values that Checker recorded."
+    ],
+    "every_expected_value_matched": true,
+    "state_drift": false
+  },
+
+  "checker_report_authenticity": {
+    "path": "/tmp/foundergate-pr197-production-seam-independent-checker.json",
+    "size_bytes": 34927,
+    "sha256_recomputed": "fba5f6c2a397489b6a1e31da58fa6bd54434bc8fbf35d6e65689e67c79a87365",
+    "sha256_expected": "fba5f6c2a397489b6a1e31da58fa6bd54434bc8fbf35d6e65689e67c79a87365",
+    "sha256_matches": true,
+    "read_in_full": true,
+    "declared_verdict": "FOUNDERGATE-PR197-PRODUCTION-SEAM-CHECKER: AUTHORITY_CHAIN_CLEAN_PROVIDER_REFREEZE_REQUIRED",
+    "checker_independence": "Declared sixth fresh independent read-only Checker; did_not_build_this_candidate true, not_the_builder true, not_the_sequential_advisor true, repository_mutation_authority none. Consistent with the artifact record: the branch contains no commit after the candidate's evidence tail, and the Checker's own post-review section records HEAD/tree unchanged.",
+    "candidate_and_evidence_head_matched": true,
+    "findings_count_in_report": 0,
+    "advisor_reproduction_of_the_checkers_load_bearing_claims": {
+      "full_suite_passed_154_of_154_twice": "REPRODUCED INDEPENDENTLY. This Advisor ran `npm test` twice: exit 0 both times, 'ALL GREEN: 154/154 self-test(s) passed' both times, zero failures, zero skipped.",
+      "identical_family_totals_across_runs": "REPRODUCED. The sorted set of 64 'N/N passed' family-summary lines and the 54 'PASS (N checks)' lines are byte-identical between the two runs (diff empty).",
+      "mechanical_assertion_totals": "REPRODUCED EXACTLY: x-of-y form 1989 (both runs), PASS(N checks) form 614 (both runs), combined 2603, literal 'ok' lines 2005 (both runs), literal 'PASS:' lines 929 (both runs).",
+      "skip_audit": "REPRODUCED. Exactly 5 occurrences of the string 'skip' in the captured output; all five are ASSERTION NAMES asserting that a skip is refused. Zero tests skipped.",
+      "four_acknowledgment_codes_dynamically_classified": "REPRODUCED INDEPENDENTLY. This Advisor imported the REAL exported production symbols from tools/terminal0/lrcq/run-five-hour.mjs and executed them: the frozen collection is an Array, Object.isFrozen true, length 4, 4 unique members, exactly [SUPERVISOR_TERMINATED_BEFORE_CLAIM, SUPERVISOR_CLAIM_TIMEOUT, SUPERVISOR_CLAIM_INVALID, SUPERVISOR_START_IDENTITY_UNAVAILABLE]. All four classify to stage supervisor_acknowledgment / final_state SUPERVISOR_NEVER_ACKNOWLEDGED with ready:false, consumed:true, launched:false, supervisor_acknowledged:false and the exact code+detail preserved.",
+      "negative_controls_remained_transfer_stage_failures": "REPRODUCED INDEPENDENTLY. SUPERVISOR_SPAWN_FAILED, TRANSFER_WRITE_FAILED, DESCRIPTOR_UNAVAILABLE, ALREADY_TRANSFERRED, FORGED, ENTRYPOINT_INVALID, KEY_RELEASED, ROOT_OBJECT_IDENTITY_MISMATCH and REPO_NOT_A_WORKTREE all answer the predicate false and classify to stage governed_key_transfer / final_state SUPERVISOR_SPAWN_FAILED. Case-variant, trailing-space, empty string, undefined, null, 0, NaN, {} and Symbol all answer false.",
+      "real_launcher_delegation_inspected_and_dynamically_exercised": "REPRODUCED. Source: the refusal branch is exactly `if (!g.ok) return classifyGovernedTransferRefusal(g);` at run-five-hour.mjs:407, and a git grep over src and tools excluding run-harness-tests finds the literals 'supervisor_acknowledgment' and 'SUPERVISOR_NEVER_ACKNOWLEDGED' at exactly two lines, :332 and :335, both inside classifyGovernedTransferRefusal. Dynamic: production-ack-classification AK6a-AK6f drive the REAL launcher to a genuine acknowledgment refusal and assert the live record equals the classifier's; all passed in both of this Advisor's runs.",
+      "authority_core_digests_unchanged": "REPRODUCED EXACTLY. All nine authority-core module sha256 digests recomputed by this Advisor are byte-identical to the values in the Checker report and freeze record v6; the two changed/added files match their recorded digests.",
+      "start_identity_regressions_passed": "REPRODUCED. checker-197-final-five 192/192 in both runs, including FS1a (forged start identity refused on a genuinely signed claim with the exact PID), FS2a-FS2l (genuine unobservable state by fd-table saturation; /bin/ps genuinely restored afterwards), FS3a (4 genuine runs, every OK independently observed), FS5a/FS5c (the conditional guard is absent; no caller option can substitute or skip the observation).",
+      "26_of_26_invalid_provider_routes_refused_with_counted_zero_spawns": "REPRODUCED. F-B1 'the matrix drove exactly 26 invalid routes', F-B2 '26/26 invalid routes were REFUSED', F-B3 'ZERO provider processes were spawned across all 26 invalid routes (counted from the recording stub's own log)', F-B4 provider_invocation stayed PROVIDER_NOT_ATTEMPTED, plus F-B9, F-B11 and C1i; C1i2 is a working positive control for the counter.",
+      "one_legitimate_narrowed_route_produced_exactly_one_deterministic_stub": "REPRODUCED. F-P3 'the positive route spawned EXACTLY ONE deterministic stub process' and F-P6 'the provider that ran is the SIGNED immutable resolved target (the recording stub), not the real Claude'.",
+      "evidence_claims_and_matrix_totals_reproduced": "REPRODUCED, with one exception recorded as finding ADV-197-01 below.",
+      "provider_state_stable_but_provisional": "REPRODUCED. Two independent hashes (shasum and openssl) of /Users/yosiwizman/.local/share/claude/versions/2.1.220 agree at 8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081; regular non-symlink file, mode -rwxr-xr-x, link count 1, dev 16777230, ino 104673092, size 256908272, mtime 2026-07-24T21:37:20; --version reports '2.1.220 (Claude Code)'. Invoked with --version ONLY.",
+      "post_review_immutability_held": "REPRODUCED for this Advisor's own review; see post_review_immutability."
+    },
+    "facts_not_proven_were_not_downgraded": "CONFIRMED. This Advisor carries every one of the Checker's six disclosed 'facts not proven' forward VERBATIM in section facts_not_proven below. None is restated as a proven claim, and no clean verdict below rests on any of them.",
+    "result": "AUTHENTIC AND INDEPENDENTLY CORROBORATED"
+  },
+
+  "executable_evidence_split": {
+    "executable_candidate_under_review": "ebd4ff5672ba657b039521a8b377a094a2ea67ea (tree 012e0560fd21f7328088ec290f30f9eac84dc1ef)",
+    "candidate_commit_subject": "FG-CHK5-197-01: classify every supervisor-acknowledgment failure truthfully in the production launcher",
+    "commits_after_the_candidate": 1,
+    "later_commit_files": [
+      ".foundergate/evidence/lrcq-assurance-factory/CHK5_197_FIFTH_CHECKER_REPORT_HISTORICAL.json (A)",
+      ".foundergate/evidence/lrcq-assurance-factory/CHK5_197_PRODUCTION_SEAM_CORRECTION_LEDGER.json (A)",
+      ".foundergate/evidence/lrcq-assurance-factory/FFIN4_197_START_IDENTITY_CORRECTION_LEDGER.json (M)",
+      ".foundergate/evidence/lrcq-assurance-factory/PR197_V4_FREEZE_RECORD.json (M)",
+      ".foundergate/evidence/lrcq-assurance-factory/V4_AUTHORITY_ACCEPTANCE_MATRIX.json (M)",
+      "docs/contracts/LRCQ_ACTIVATION_V4_CONTRACT.md (M)",
+      "docs/lanes/PR197_PRODUCTION_SEAM_CHECKER_PACKET.md (A)"
+    ],
+    "src_tools_package_or_lock_changes_after_the_candidate": "NONE. `git diff --name-status ebd4ff5 HEAD` yields only .foundergate/evidence/ and docs/ paths.",
+    "executable_files_changed_by_the_candidate_itself": [
+      "tools/terminal0/lrcq/run-five-hour.mjs (modified: new classification block at 296-343, refusal branch reduced to one delegating line at 407)",
+      "src/v8b/lrcq/run-harness-tests/production-ack-classification.selftest.mjs (new 234-line regression family, 82 assertions)"
+    ],
+    "authority_core_unchanged": "CONFIRMED by recomputed digest, not by claim. All nine authority-core modules are byte-identical to freeze record v5/v6.",
+    "result": "CLEAN - the split is exactly as declared"
+  },
+
+  "authority_architecture": {
+    "reviewed_at": "executable candidate ebd4ff56, source read directly",
+    "ed25519_founder_signature_establishes_activation_authority": "CONFIRMED. verifyActivation (src/v8b/lrcq/assurance/activation-v4.mjs) verifies a detached Ed25519 signature over the canonicalized payload against the governed public-key authority, and derives activation_identity = sha256(payloadDigest || detached signature bytes). docs/governance/FOUNDER_KEY_AUTHORITY.json holds PUBLIC keys only, max_current_keys 1, active_keys [] - so the real repository refuses at the KEY_ENROLLMENT gate today (detached-supervisor 00 and 30).",
+    "activation_verification_precedes_one_use_consumption": "CONFIRMED by reading launchDetachedSupervisorV4 in order: Gate 0 verify (zero side effects) -> Gate 1 signed manifest -> Gate 2 PRE-CONSUMPTION provider target rehash and version check -> Gate 3 governed one-time consumption -> Gate 4 signed launch intent -> Gate 5 governed transfer. Every gate before Gate 3 returns consumed:false, launched:false, provider_invocation:0.",
+    "private_transfer_authority_is_spent_exactly_once": "CONFIRMED. spawnGovernedSupervisorV4 performs the guard and the state transition SYNCHRONOUSLY in one microtask (NOT_TRANSFERRED -> TRANSFERRING) before any child creation, key export, pipe write or await; a second entrant gets ALREADY_TRANSFERRED. Past the point of no return the key is exported, framed, the DER buffer zeroed, EPHKEY.delete called and the state set to SPENT BEFORE the first asynchronous yield, so no branch after that point can be retried with the same key.",
+    "ephemeral_key_reaches_the_supervisor_only_through_the_governed_descriptor": "CONFIRMED. The module creates the inherited anonymous pipe itself (stdio[keyFd] = 'pipe'); the caller cannot supply the sink. The key is written once as a framed record, the buffer is zeroed, the writer is closed. The key never appears in argv, env, config JSON, disk, logs, receipts, stdout or stderr - the launcher's supervisor config carries only public references.",
+    "successful_acknowledgment_requires_a_correctly_signed_claim": "CONFIRMED. g.ok is returned only after awaitVerifiedSupervisorClaim returns ok. Pipe-write completion, the writer callback, elapsed time, the existence of a child PID and mere liveness are explicitly NOT accepted (lifecycle-authority-v4.mjs:499-506).",
+    "claim_binding_completeness": "CONFIRMED by reading classifySupervisorClaim (lines 514-560). The claim must satisfy, in order: valid ephemeral signature over the canonical body; ephemeral fingerprint == this activation's; activation_identity match; payload_digest match; consumed_marker_digest match; launch_intent_digest match; launch_nonce match; supervisor_entrypoint_digest match; supervisor_pid == the exact spawned child PID; a non-empty recorded start identity; and equality with the parent's INDEPENDENTLY observed OS start identity. All eleven bindings are required - activation, marker, intent, nonce, payload, entrypoint, exact child PID and independently observed OS process-start identity are all covered.",
+    "missing_independent_process_observation_fails_closed": "CONFIRMED. The comparison is unconditional: the historical `observedStart !== null &&` guard is gone. A null observation is NOT silently accepted and NOT immediately condemned - it returns { needsObservation: true } so a transient /bin/ps failure can be retried, and at the decision point it becomes the structured refusal SUPERVISOR_START_IDENTITY_UNAVAILABLE. The observation runs through the FIXED ABSOLUTE /bin/ps; no PATH entry, config field, activation field, CLI flag or caller option can substitute or skip it (FS5a-FS5d, AK7c-AK7d).",
+    "root_device_inode_continuity_prevents_lifecycle_root_substitution": "CONFIRMED. Records are read with expectRootObjectId, and a governed transfer against a substituted lifecycle root is refused ROOT_OBJECT_IDENTITY_MISMATCH - proven dynamically (FD5) and proven to be RETURNED in the module body rather than merely declared (FD13); a case-variant spelling of the same inode is still the same authority object (C5b/FD16).",
+    "replay_second_transfer_and_v3_refuse_before_productive_side_effects": "CONFIRMED. Replay: detached-supervisor 28 (a second launch refuses, not launched). Second transfer: ALREADY_TRANSFERRED from the synchronous guard. V3: R1a-R5d, including R5b 'launchDetachedSupervisorV4 refuses a V3 record (not consumed, not launched, zero provider)'; the V3 modules survive only as read-only evidence (R6a/R6b).",
+    "signed_ceilings_and_all_ten_exclusions_cannot_be_widened": "CONFIRMED. Six signed ceilings with hard maxima (max_budget_usd<=10, run_duration_s<=18000, per_job_timeout_s<=2700, max_parallel_width<=2, max_output_bytes<=10485760, termination_grace_s<=30) and exactly ten signed exclusions (no_protected_main_merge, no_pr_merge, no_push_unless_authorized, no_m1, no_akior, no_customer_data, no_live_action, no_permission_bypass, no_deploy, no_external_comms). enforceSignedAuthorityBoundary derives the ceilings from the capability's DEEP-FROZEN signed authority (refusing AUTHORITY_MUTABLE if it is not frozen), refuses widening, and requires each exclusion to be exactly true in BOTH the signed authority and the projection. It is enforced twice: once before any evidence directory is created and again as the LAST statement before the spawn.",
+    "projection_may_narrow_authority_only": "CONFIRMED. v4-legacy-projection.mjs narrows with Math.min(candidate, signedCeiling) and falls back to the signed ceiling for any invalid candidate. The record carries authoritative:false and founder_signature = the literal 'NON_AUTHORITATIVE_V4_PROJECTION'. A fabricated projection opens nothing: the spawn boundary checks the SUPERVISOR_EXECUTION capability brand first and then requires the projection to be bound to THAT capability.",
+    "productive_provider_execution_has_one_governed_boundary": "CONFIRMED mechanically. Exactly one productive provider spawn site exists in the LRCQ route: src/v8b/lrcq/provider/real-provider.mjs:178. It is preceded by isSupervisorExecutionCapabilityV4, projectionMatchesCapability, providerEligibilityV4, enforceSignedAuthorityBoundary, validateActivation, WIDE_SAFE/gate/effect-class checks, containment, real git worktree identity and deadline checks, then a re-assertion of the signed boundary immediately before spawn. It spawns the IMMUTABLE resolved versioned target, never the mutable alias. The only other spawn in the lane (lifecycle-authority-v4.mjs:666) launches the signed-intent supervisor entrypoint under process.execPath, not the provider.",
+    "invalid_routes_cause_zero_provider_spawns": "CONFIRMED and COUNTED, not inferred - 26/26 invalid routes refused with zero spawned provider processes read from the recording stub's own log, with a working positive control for the counter.",
+    "evidence_distinguishes_structural_proof_from_dynamic_execution_proof": "CONFIRMED. The contract declares three evidence classes (DYNAMIC, COUNTED, SOURCE-PROVEN/STRUCTURAL) and states that a property which cannot be reproduced without root is recorded as source-proven and 'is not claimed as an achieved runtime result'. Assertion names in the executed suite carry [DYNAMIC], [COUNTED], [STRUCTURAL] or [SOURCE-PROVEN] tags, verified in this Advisor's own captured output.",
+    "backend_proof_is_not_represented_as_ui_proof": "CONFIRMED. Nothing in the reviewed candidate, contract, matrix, freeze record or ledger claims any UI, dashboard or operator-facing proof. The lane's only UI-adjacent assertions are in an unrelated v8b2 read-only shell family and claim nothing about V4 authority.",
+    "coherent_and_honestly_scoped": true
+  },
+
+  "trust_model_honesty": {
+    "stated_boundary": "An inherited descriptor plus an ephemeral key establishes GOVERNED ROUTE PROOF across the detached process boundary: the key can only be written to a sink the authority module itself created, only one transfer can ever occur, and only the exact spawned process running the exact signed entrypoint can produce an acceptable acknowledgment. It is NOT claimed to provide complete operating-system isolation from all malicious same-user processes.",
+    "advisor_search_for_stronger_claims": "A targeted search across docs/contracts/LRCQ_ACTIVATION_V4_CONTRACT.md and every .foundergate/evidence/lrcq-assurance-factory/*.json for isolation / same-user / malicious / other-process / OS-level language found NO claim of operating-system isolation from same-user processes. The contract's strongest statement is scoped to key-material LOCATION - 'The key bytes exist only: briefly in the launcher's memory, in the kernel pipe buffer, and in the supervisor's memory inside the attach call. Never argv, environment, config JSON, disk, git, logs, receipts, stdout, or stderr' - which is a containment-of-route claim, not an isolation claim, and is accurate.",
+    "residual_risks_a_same_user_attacker_retains": [
+      "A same-user process with debugger or memory-inspection privileges could in principle read the key from the launcher's or supervisor's address space, or from the kernel pipe buffer via the inherited descriptor of a process it controls. Nothing in this candidate claims otherwise.",
+      "The independent start-identity observation depends on /bin/ps being the genuine system binary at a fixed absolute path; a same-user attacker who can replace root-owned /bin/ps is outside this threat model, and the fs-authority guards' foreign-ownership properties are correctly recorded as SOURCE-PROVEN rather than as achieved runtime results.",
+      "The frozen provider binary is concurrently executed by the operator's own interactive Claude Code sessions on this host. That is the operator's tooling and outside the run route; it is disclosed in the Checker report and is not a defect of the candidate."
+    ],
+    "finding": "NONE - no evidence or contract artifact claims stronger OS isolation."
+  },
+
+  "production_seam_review": {
+    "reviewed_correction": "FG-CHK5-197-01, tools/terminal0/lrcq/run-five-hour.mjs only",
+    "supervisor_acknowledgment_failure_codes_contains_exactly_the_four_current_codes": "CONFIRMED DYNAMICALLY by this Advisor executing the real export: length 4, 4 unique values, exactly [SUPERVISOR_TERMINATED_BEFORE_CLAIM, SUPERVISOR_CLAIM_TIMEOUT, SUPERVISOR_CLAIM_INVALID, SUPERVISOR_START_IDENTITY_UNAVAILABLE], containing no transfer-stage code.",
+    "independent_derivation_of_the_true_acknowledgment_code_set": "This Advisor read the acknowledgment-wait implementation (lifecycle-authority-v4.mjs:514-616) in full and enumerated by hand, from the control flow rather than from the guard or the collection, every code it can return after key-frame write completion: SUPERVISOR_CLAIM_INVALID (classifySupervisorClaim bad()/decided read error), SUPERVISOR_START_IDENTITY_UNAVAILABLE (decide() on an outstanding needsObservation), SUPERVISOR_TERMINATED_BEFORE_CLAIM (decide() fallback on child exit) and SUPERVISOR_CLAIM_TIMEOUT (decide() fallback on deadline). That set is EXACTLY the launcher's collection, with nothing missing and nothing extra.",
+    "propagation_verified": "spawnGovernedSupervisorV4 returns R(ack.code, ...) verbatim for every non-OK acknowledgment (lifecycle-authority-v4.mjs:737), so g.code at the launcher branch is exactly one of those four for any acknowledgment-stage failure.",
+    "the_exported_array_is_frozen": "CONFIRMED DYNAMICALLY. Object.isFrozen true. This Advisor independently ran 15 mutation attacks through the exported reference (push, pop, index write, index append, length=0, reverse, sort, splice, shift, unshift, fill, copyWithin, Object.defineProperty, delete, Object.setPrototypeOf): 15/15 threw TypeError, the array was JSON-identical afterwards, and the predicate still answered correctly for all four codes and false for SUPERVISOR_SPAWN_FAILED.",
+    "the_internal_set_is_module_private_with_no_exported_mutation_surface": "CONFIRMED DYNAMICALLY. ACK_FAILURE_SET is a module-scope const built from the frozen array at module evaluation and referenced only by isSupervisorAcknowledgmentFailure. This Advisor enumerated every export of the launcher module and every own enumerable property one level inside each exported object: ZERO Set instances are reachable. The only exported reachability surface is the frozen array, which refuses mutation.",
+    "classifyGovernedTransferRefusal_is_the_only_constructor": "CONFIRMED. A git grep at the candidate over src and tools excluding run-harness-tests finds the literals 'supervisor_acknowledgment' and 'SUPERVISOR_NEVER_ACKNOWLEDGED' at exactly two lines - run-five-hour.mjs:332 and :335 - both inside classifyGovernedTransferRefusal. No second constructor exists anywhere in the executable tree.",
+    "the_live_launcher_branch_delegates_directly": "CONFIRMED. The branch is exactly `if (!g.ok) return classifyGovernedTransferRefusal(g);` (run-five-hour.mjs:407) - a bare delegation with no post-processing, no wrapping and no field overwrite. The pre-correction inline `const claimFailure = g.code === ...` expression is absent from the tree. Dynamically corroborated by AK6a-AK6f, which drive the REAL launcher and assert the live record equals the classifier's output for the same code.",
+    "transfer_stage_failures_remain_separate": "CONFIRMED DYNAMICALLY. Every genuine spawn/descriptor/transfer code this Advisor tested (SUPERVISOR_SPAWN_FAILED, TRANSFER_WRITE_FAILED, DESCRIPTOR_UNAVAILABLE, ALREADY_TRANSFERRED, FORGED, ENTRYPOINT_INVALID, KEY_RELEASED, ROOT_OBJECT_IDENTITY_MISMATCH, REPO_NOT_A_WORKTREE) classifies to stage governed_key_transfer / final_state SUPERVISOR_SPAWN_FAILED with the exact reason preserved.",
+    "no_input_can_configure_the_classification": "CONFIRMED. The collection is a frozen array literal of four static LC_CODES property references, declared exactly once and never reassigned or mutated. The whole launcher reads process.env at only three places - PROVIDER_ENV PATH/HOME (line 69), the child spawn env PATH/HOME (line 398) and the LRCQ_TEST_LIFECYCLE production refusal (line 524) - and none participates in the collection. No lifecycle config field, activation field, CLI flag or caller option reaches it.",
+    "the_source_derived_drift_guard_reaches_the_actual_implementation": "CONFIRMED. AK5 slices the authority module's own source between `function classifySupervisorClaim` and `export async function spawnGovernedSupervisorV4` - which is precisely the acknowledgment-wait implementation this Advisor read by hand (classifySupervisorClaim plus awaitVerifiedSupervisorClaim, lines 514-616) - extracts every LC_CODES.SUPERVISOR_* reference and requires the launcher's collection to cover all of them (AK5c, by set difference). AK5d additionally asserts SUPERVISOR_SPAWN_FAILED is NOT raised there. The guard derives from the implementation, not from comments, test names, the collection under test, or the correction ledger.",
+    "the_guarantee_is_not_overstated": "CONFIRMED. The launcher comment says 'a future acknowledgment code cannot drift out of the classification the way this one did'; the contract says 'A future fifth acknowledgment code cannot slip through the way the fourth did' and scopes the derivation to 'every LC_CODES.SUPERVISOR_* code the acknowledgment wait can return'. The Checker's disclosed residual - that a NEW acknowledgment-stage code emitted from inside spawnGovernedSupervisorV4 rather than from the acknowledgment wait would fall outside the guard's region - is genuinely outside every claim made, and no such code exists in this candidate. This Advisor agrees it is a scope observation, not a finding, and carries it forward in facts_not_proven so a future wave that moves acknowledgment classification into spawnGovernedSupervisorV4 knows to widen the region.",
+    "the_low_fifth_checker_finding_was_evidence_accuracy_only": "CONFIRMED. The correction ledger records authority_impact NONE with a full fail-closed enumeration, and this Advisor verified the mechanism independently: the mislabelled outcome was already refused (ok:false), nothing was launched, the capability was TRANSFERRED_SPENT, a retry was refused ALREADY_TRANSFERRED, the private key was deleted, buffers zeroed, the writer closed, the child killed and reaped, and zero providers spawned. No forged start identity was ever accepted. The defect could only mislabel an already-refused outcome; it could not permit a false success and could not cause a provider invocation.",
+    "result": "CLEAN"
+  },
+
+  "limits_exclusions_and_provider_boundary": {
+    "signed_ceilings": {
+      "max_budget_usd": "positive finite, hard max 10",
+      "run_duration_s": "positive finite, hard max 18000",
+      "per_job_timeout_s": "positive finite, hard max 2700",
+      "max_parallel_width": "positive integer, min 1, hard max 2",
+      "max_output_bytes": "positive finite, hard max 10485760",
+      "termination_grace_s": "positive finite, hard max 30"
+    },
+    "ten_signed_exclusions": ["no_protected_main_merge", "no_pr_merge", "no_push_unless_authorized", "no_m1", "no_akior", "no_customer_data", "no_live_action", "no_permission_bypass", "no_deploy", "no_external_comms"],
+    "widening_refused_narrowing_permitted": "CONFIRMED in source and by the executed boundary matrix.",
+    "enforcement_points": "Twice per job: once before any evidence directory is created, and again as the last statement before the productive spawn.",
+    "provider_boundary": "Exactly one productive spawn site (real-provider.mjs:178), gated on a module-branded SUPERVISOR_EXECUTION capability, the projection being bound to that capability, provider eligibility, and the signed boundary. The spawn target is the IMMUTABLE resolved versioned binary, never the mutable alias.",
+    "counted_zero_spawn_discipline": "Zero-spawn claims in this lane are COUNTED from a recording stub's own log with a working positive control, never inferred from receipt fields or refusal strings (FE1/FE2 assert the old receipt-field predicate no longer backs the claim)."
+  },
+
+  "evidence_chain_review": {
+    "executable_candidate_is_the_authority_implementation_under_review": "CONFIRMED - ebd4ff56.",
+    "evidence_commit_changes_no_executable_source_tools_or_package_files": "CONFIRMED - 39dea63 touches only .foundergate/evidence/ and docs/.",
+    "historical_checker_reports_remain_verbatim": "CONFIRMED by hash, not by claim. The four preserved copies recompute to 6ac782a2... (FCHK/fresh), c49cc563... (FFIN/third), 886d6982... (FFIN4/fourth) and 34d4054a... (CHK5/fifth), each byte-identical to its /tmp original, and each touched by EXACTLY ONE commit in branch history (4362b3e, edd1de5, 240bce8, 39dea63 respectively). No earlier historical report was rewritten. Note: the /tmp filenames are named after the WAVE each Checker reviewed, not the Checker's ordinal; the hashes, not the filenames, establish identity and they all agree with the freeze record's mapping.",
+    "each_superseded_candidate_remains_described_truthfully": "CONFIRMED. Freeze record v6 enumerates every superseded record (v1-v5) and every superseded candidate (8e6944ef, c6bf5a37, 4014d91b, 9d87afa1) with its verdict, finding counts and an explicit 'HISTORICAL FINDINGS EVIDENCE ONLY - NOT current acceptance' status.",
+    "freeze_record_identifies_the_exact_candidate_tree_and_evidence_tail": "CONFIRMED - reviewed_executable_code_candidate_sha ebd4ff56..., tree 012e0560..., evidence_only tail count 1, with a procedural resolution rule (`git diff --stat <candidate> HEAD -- src tools package.json package-lock.json` must be empty) that this Advisor executed and confirmed empty.",
+    "no_evidence_artifact_attempts_to_include_its_own_final_hash_recursively": "CONFIRMED. The freeze record's evidence-tail entry records the sha as '(this record's own commit)' with the explicit note 'A commit cannot embed its own hash; resolve procedurally with git log.' No artifact self-seals.",
+    "the_chain_does_not_rely_on_a_recursive_self_seal": "CONFIRMED. Identity is established by external, reproducible facts: commit SHA, tree SHA, file digests and a procedural resolution rule.",
+    "acceptance_claims_distinguish_candidate_sha_from_evidence_head": "CONFIRMED throughout the freeze record, matrix, Checker packet and PR body.",
+    "no_builder_self_test_is_represented_as_independent_acceptance": "CONFIRMED. Freeze record: 'Builder self-tests are NOT independent acceptance.' Matrix not_proven_here[3]: 'Nothing here is independent acceptance.' Matrix not_proven_here[5]: 'this matrix is BUILDER evidence and is not independent acceptance.'",
+    "no_checker_or_advisor_verdict_is_attributed_to_the_builder": "CONFIRMED. Freeze record: 'The Builder does not issue the independent Checker or Advisor verdict.' Matrix not_proven_here[1]: 'The final independent Checker and Advisor verdicts. The Builder cannot supply them.'",
+    "mismatch_between_claim_and_artifact": "ONE, recorded as finding ADV-197-01 below."
+  },
+
+  "findings_not_waived": [
+    {
+      "id": "ADV-197-01",
+      "severity": "LOW",
+      "class": "evidence completeness (Builder evidence artifact); NOT an authority defect, NOT an overstatement of proof",
+      "artifact": ".foundergate/evidence/lrcq-assurance-factory/V4_AUTHORITY_ACCEPTANCE_MATRIX.json",
+      "location": "not_proven_here[2]",
+      "claim_as_written": "The FRESH independent Checker verdict on the CORRECTED candidate. ALL FOUR prior reports (sha256 caa4db00..., 6ac782a2..., c49cc563... and 886d6982...) are HISTORICAL FINDINGS EVIDENCE ONLY - each reviewed a tree that no longer exists on this branch.",
+      "mechanism": "The evidence commit 39dea63 ADDED a fifth prior Checker report (CHK5_197_FIFTH_CHECKER_REPORT_HISTORICAL.json, sha256 34d4054a04b3a0720d568c8db086c4ce3aece6203709b6175edd2323b4d1f2b1) in the same commit, but carried this sentence forward unchanged from the FG-FFIN4-197 matrix. The enumeration therefore says 'ALL FOUR' when five prior reports now exist, and omits the fifth entirely - the very report that produced this wave's correction. The string 34d4054a appears zero times in the matrix.",
+      "supporting_evidence": "git diff 240bce8 39dea63 -- V4_AUTHORITY_ACCEPTANCE_MATRIX.json shows the not_proven_here[2] string unchanged across the wave (only whitespace/indentation differs), while the same commit adds CHK5_197_FIFTH_CHECKER_REPORT_HISTORICAL.json. grep -c '34d4054a' on the matrix returns 0.",
+      "why_it_is_not_more_than_LOW": "Every proposition the sentence actually asserts is TRUE - those four reports are historical-findings-only and each reviewed a tree that no longer exists. The defect is an incomplete enumeration, not a false statement, and it errs toward listing FEWER superseded reports rather than promoting any report to acceptance. It cannot permit a false success, cannot cause a provider invocation, cannot widen any ceiling or exclusion, and changes no executable behaviour. It is fully compensated in the same commit by PR197_V4_FREEZE_RECORD.json, which records the fifth report explicitly as 'HISTORICAL FINDINGS EVIDENCE ONLY against candidate 9d87afa1. NOT current acceptance', and by matrix not_proven_here[5], which states that a fresh independent Checker verdict on candidate ebd4ff56 is required.",
+      "narrow_correction_scope": "Edit exactly one string, V4_AUTHORITY_ACCEPTANCE_MATRIX.json not_proven_here[2], to enumerate FIVE prior reports including sha256 34d4054a..., in the next evidence wave. No executable source, tool, package file or authority artifact may be touched. The provider/package re-freeze wave regenerates this matrix in any case, so the correction lands there naturally and is subject to the package Checker and package Advisor.",
+      "waived": false,
+      "blocks_the_provider_refreeze_wave": false,
+      "advisor_reasoning_for_not_blocking": "The clean verdict below is about the AUTHORITY IMPLEMENTATION's readiness for a provider/package re-freeze. This finding is in Builder evidence metadata, in a section explicitly listing what is NOT proven, and it cannot alter what any downstream gate does. Returning FINDINGS - forcing a full Builder-correction plus a seventh independent Checker cycle over one stale enumeration in a superseded-report list - would be disproportionate and would not make the authority chain safer. It is recorded here as NOT WAIVED and REQUIRED in the next wave rather than dismissed."
+    }
+  ],
+  "findings_count": 1,
+  "findings_blocking_count": 0,
+
+  "facts_not_proven": [
+    "An end-to-end drive of the REAL launchDetachedSupervisorV4 all the way to SUPERVISOR_START_IDENTITY_UNAVAILABLE. The sixth Checker's ten-rung fd-headroom ladder (8,10,6,12,14,16,5,18,20,24 under bash ulimit -n 512) did not reach that exact state, and the Builder's matrix discloses the same limitation. The classification for that code is proven instead by executing the REAL exported classifier, by the structural proof that the launcher's single refusal branch returns that classifier verbatim with no post-processing, by verbatim propagation of ack.code out of spawnGovernedSupervisorV4, and by BYTE-IDENTICAL live equality on both an acknowledgment-stage and a transfer-stage code. The reachability of the code itself is separately proven DYNAMIC at the authority boundary by checker-197-final-five FS2a-FS2l. This Advisor did NOT attempt to close this gap and does NOT restate it as proven.",
+    "A live transfer-stage refusal carrying specifically SUPERVISOR_SPAWN_FAILED, TRANSFER_WRITE_FAILED or DESCRIPTOR_UNAVAILABLE through launchDetachedSupervisorV4. The live transfer-stage refusal the sixth Checker reached carried REPO_NOT_A_WORKTREE. Those three codes are exercised through the real classifier directly and at the authority boundary by checker-197-final-five FA1-FA15; the write-failure-by-premature-termination mapping is recorded in the repository's own evidence as NEVER ACHIEVED.",
+    "Behaviour of the acknowledgment-classification drift guard if a future wave emits an acknowledgment-stage code from inside spawnGovernedSupervisorV4 rather than from the acknowledgment wait. That case lies outside the guard's declared region and outside every claim the launcher comment, the contract and the ledger make. It is not a defect in this candidate because no such code exists, and this Advisor read the implementation to confirm the acknowledgment wait is today the only origin of acknowledgment-stage codes.",
+    "Real productive provider or model capability - a real builder session producing changes and a real checker session returning CLEAN. Forbidden by this review boundary and not exercised. First exercised under founder signature.",
+    "Real founder key enrollment, real signature, real activation or a five-hour run. Forbidden and not exercised; active_keys is [] before and after this review.",
+    "Any package, capsule or descendant-provider evidence against candidate ebd4ff56. It does not exist yet - that is the entire purpose of the next wave.",
+    "Foreign-ownership properties of authority records that cannot be reproduced without root. The lane records these as SOURCE-PROVEN and does not present them as achieved runtime results; this Advisor did not attempt to elevate them.",
+    "The package Checker verdict, the package Advisor verdict and any merge-readiness judgement for PR #197. Outside this Advisor's authority."
+  ],
+
+  "provider_refrozen_status": {
+    "status": "NOT REFROZEN AGAINST THIS CANDIDATE - PROVISIONAL",
+    "target": "/Users/yosiwizman/.local/share/claude/versions/2.1.220",
+    "observed_by_this_advisor": {
+      "regular_non_symlink_file": true,
+      "mode": "-rwxr-xr-x",
+      "hardlink_count": 1,
+      "sha256_shasum": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+      "sha256_openssl": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081",
+      "two_independent_hashes_agree": true,
+      "version_output": "2.1.220 (Claude Code)",
+      "device": 16777230,
+      "inode": 104673092,
+      "size_bytes": 256908272,
+      "mtime": "2026-07-24T21:37:20",
+      "invocation": "--version ONLY; no model request, no productive invocation, no spawn through the run route"
+    },
+    "drift_since_the_sixth_checkers_observation": "NONE - digest, version, device, inode, size and mtime all identical.",
+    "why_it_remains_provisional": "The only provider re-freeze artifact in the repository, .foundergate/evidence/lrcq-assurance-factory/PROVIDER_REFREEZE_2_1_220.json, was written in wave FG-LRCQ-ACT-029 (commit 9b47d3e) and has not been touched since. It predates candidates 8e6944ef, c6bf5a37, 4014d91b, 9d87afa1 and ebd4ff56. A stable hash and an agreeing --version are NOT a re-freeze: the binding must be RECORDED against the approved executable candidate, and the run manifest and unsigned activation material packet must be regenerated so the launcher's pre-consumption provider verification compares against material bound to the reviewed authority implementation.",
+    "advisor_position": "Stable hash and version are necessary but not sufficient. The provider remains PROVISIONAL until a descendant re-freeze is recorded against exact candidate ebd4ff5672ba657b039521a8b377a094a2ea67ea."
+  },
+
+  "governance_and_next_gate_review": {
+    "no_pr_197_merge_is_authorized": "CONFIRMED - PR #197 remains OPEN, draft, unmerged, and this Advisor authorizes no merge.",
+    "no_protected_main_change_is_authorized": "CONFIRMED - main remains ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423, unchanged, and no change is authorized.",
+    "no_pr_196_mutation_is_authorized": "CONFIRMED - PR #196 remains OPEN, draft, unmerged at 8d1899f793305e9f87adc5163a60bfb077e4d4e5, and no mutation is authorized.",
+    "branch_protection_is_not_treated_as_proof_of_authority_routing": "CONFIRMED and independently checked. The lane's own evidence records that GitHub reports protected=false on main (CHECKER_197_CORRECTION_LEDGER finding FG-CHK-197-09, carried forward in the fresh Checker report), and the acceptance matrix states the control as 'Protected-main mutation, merge and unauthorized push are prohibited by the run route INDEPENDENTLY of GitHub branch protection'. The prohibition is enforced by the signed exclusions no_protected_main_merge / no_pr_merge / no_push_unless_authorized at the provider boundary, not by a GitHub setting. This is the correct posture.",
+    "provider_2_1_220_remains_provisional_despite_stable_hash_and_version": "CONFIRMED - see provider_refrozen_status.",
+    "next_wave_must_create_a_descendant_provider_package_refreeze_against_exact_candidate": "ebd4ff5672ba657b039521a8b377a094a2ea67ea (tree 012e0560fd21f7328088ec290f30f9eac84dc1ef). The re-freeze must be a DESCENDANT of this candidate, must not modify it, and must not reopen the authority architecture.",
+    "package_and_capsule_evidence_must_be_regenerated_after_the_authority_candidate_is_approved": "REQUIRED - commit, capsule, SHA manifests and controls, plus the run manifest and unsigned activation material packet, regenerated against the approved candidate and the re-frozen provider identity.",
+    "package_checker_and_package_advisor_remain_required": "REQUIRED - a package Checker returning CLEAN, then a sequential package Advisor. Neither may be supplied by the Builder, and neither is supplied by this report.",
+    "founder_enrollment_remains_blocked": "BLOCKED until the package Advisor returns PACKAGE_READY_FOR_FOUNDER_KEY_ENROLLMENT. active_keys is [] and must remain [] until that gate opens. This Advisor did NOT emit any founder-key-enrollment readiness signal.",
+    "no_five_hour_run_before": "founder enrollment, an exact founder activation signature, and a final no-drift preflight. In that order, with no step skipped.",
+    "scope_discipline": "This review did not expand PR #197 into documentation, UI, new architecture or roadmap work. Finding ADV-197-01 is a one-string correction inside an artifact the next wave regenerates anyway.",
+    "carry_forward_for_the_next_wave": [
+      "Correct V4_AUTHORITY_ACCEPTANCE_MATRIX.json not_proven_here[2] to enumerate five prior Checker reports including 34d4054a... (ADV-197-01).",
+      "Refresh the PR #197 body and freeze record next_gate, which still conservatively state that a fresh Checker is required.",
+      "If a future wave ever emits an acknowledgment-stage code from inside spawnGovernedSupervisorV4, widen the AK5 drift guard's region boundary accordingly."
+    ]
+  },
+
+  "findings_table": [
+    {
+      "id": "ADV-197-01",
+      "severity": "LOW",
+      "artifact": ".foundergate/evidence/lrcq-assurance-factory/V4_AUTHORITY_ACCEPTANCE_MATRIX.json (not_proven_here[2])",
+      "mechanism": "Stale enumeration carried forward from the prior wave: says 'ALL FOUR prior reports' and omits the fifth Checker report (sha256 34d4054a...) added in the same commit.",
+      "evidence": "git diff 240bce8..39dea63 shows the string unchanged while CHK5_197_FIFTH_CHECKER_REPORT_HISTORICAL.json is added; grep -c '34d4054a' on the matrix = 0.",
+      "authority_impact": "NONE - no false success, no provider invocation, no widened ceiling or exclusion, no executable behaviour change; compensated in the same commit by the freeze record and by not_proven_here[5].",
+      "correction_scope": "One string in one Builder evidence artifact, in the next (package/capsule) evidence wave.",
+      "waived": false,
+      "blocking": false
+    }
+  ],
+
+  "post_review_immutability": {
+    "head_unchanged": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+    "tree_unchanged": "1689a63464f3b2e987523fb1c84ce0d50ab6a40f",
+    "worktree_clean": true,
+    "git_status_porcelain": "empty",
+    "git_status_including_ignored": "empty",
+    "git_diff_HEAD": "empty",
+    "tracked_file_metadata_digest_after_review": "85f7b5a41f67b7d56319d1a21e345cfeeb81fb424afdf581d54b84e6d7032d5f",
+    "no_tracked_content_or_timestamp_mutation_attributable_to_review": true,
+    "no_pr_metadata_mutation": "CONFIRMED - PR #197 title, body, labels, reviewers, draft state and head OID unchanged; PR #196 unchanged; no gh write command was issued.",
+    "no_key_or_real_signature_created": true,
+    "no_activation_created_or_consumed": true,
+    "no_provider_or_package_refreeze_performed": true,
+    "no_productive_provider_or_model_invocation": true,
+    "only_provider_contact": "a single --version metadata probe of /Users/yosiwizman/.local/share/claude/versions/2.1.220",
+    "no_five_hour_run": true,
+    "residual_processes_from_this_review": "none - the two npm test runs and the single read-only node probe exited; no fg-ackcls, fg-chk, supervisor-main or run-five-hour process remains.",
+    "review_artifacts_written": ["/tmp/foundergate-pr197-sequential-advisor.json"],
+    "disposable_files_written_outside_git": "captured suite output and one read-only probe script under the session scratchpad directory; no repository path was created, modified, deleted, chmod'ed or touched.",
+    "prohibited_systems": "no AKIOR access, no M1 access, no deployment, no passphrase handling."
+  },
+
+  "next_safe_action": "Open the separate provider/package re-freeze wave as a DESCENDANT of executable candidate ebd4ff5672ba657b039521a8b377a094a2ea67ea (tree 012e0560fd21f7328088ec290f30f9eac84dc1ef), leaving that candidate byte-unchanged. In that wave: (1) record the provider re-freeze for /Users/yosiwizman/.local/share/claude/versions/2.1.220 (sha256 8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081, version 2.1.220) explicitly against candidate ebd4ff56; (2) regenerate the run manifest, unsigned activation material packet, capsule, SHA manifests and package controls against that binding; (3) correct ADV-197-01 in the regenerated acceptance matrix; (4) route the result to an independent package Checker for CLEAN, then to a sequential package Advisor. No founder key enrollment, no founder signature, no activation and no five-hour run may be prepared until the package Advisor returns PACKAGE_READY_FOR_FOUNDER_KEY_ENROLLMENT, and no run may start before founder enrollment, an exact activation signature and a final no-drift preflight.",
+
+  "verdict_line": "FOUNDERGATE-PR197-ADVISOR: AUTHORITY_IMPLEMENTATION_READY_FOR_PROVIDER_REFREEZE"
+}

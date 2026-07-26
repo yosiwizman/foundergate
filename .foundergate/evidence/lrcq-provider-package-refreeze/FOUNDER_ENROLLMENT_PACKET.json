@@ -1,0 +1,62 @@
+{
+  "schema": "lrcq-founder-enrollment-packet-1",
+  "wave": "FG-PPR-197",
+  "confers_no_authority": true,
+  "founder_signature": null,
+  "contains_no_key_material": true,
+  "contains_no_passphrase": true,
+  "plain_language": {
+    "what_this_is": "A plain-language description of what is now frozen and what the next founder decision would be. It authorizes nothing by itself.",
+    "what_changed_in_this_wave": "The package was re-bound to the exact authority implementation that passed the sixth independent Checker and the sequential Advisor, and the provider binary was re-verified and re-frozen against that exact authority candidate.",
+    "what_is_still_required_before_anything_runs": [
+      "an INDEPENDENT package Checker must review this package and return a clean verdict — the Builder cannot issue it",
+      "the founder must enroll exactly one public founder key (no key is enrolled: active_keys is empty)",
+      "the founder must sign the activation payload with that key",
+      "nothing runs until both of those founder acts happen"
+    ],
+    "what_the_run_would_be_allowed_to_do": {
+      "cost_ceiling_usd": 10,
+      "max_wall_clock_s": 18000,
+      "per_job_timeout_s": 2700,
+      "max_parallel_width": 2,
+      "max_output_bytes": 10485760,
+      "termination_grace_s": 30
+    },
+    "what_the_run_may_never_do": [
+      "no_protected_main_merge",
+      "no_pr_merge",
+      "no_push_unless_authorized",
+      "no_m1",
+      "no_akior",
+      "no_customer_data",
+      "no_live_action",
+      "no_permission_bypass",
+      "no_deploy",
+      "no_external_comms"
+    ],
+    "honest_limits": [
+      "Real productive Claude behaviour is NOT proven here and is first observed under signature.",
+      "This wave proves binding, refusal and reproducibility — not that the run will succeed.",
+      "No UI proof and no complete OS isolation is claimed."
+    ]
+  },
+  "current_state": {
+    "active_keys": [],
+    "founder_key_enrolled": false,
+    "package_signed": false,
+    "activation_issued": false,
+    "activation_consumed": false,
+    "run_started": false,
+    "provider_productively_invoked": false,
+    "next_gate": "INDEPENDENT_PACKAGE_CHECKER, then FOUNDER_KEY_ENROLLMENT"
+  },
+  "authority_binding": {
+    "authority_candidate_sha": "ebd4ff5672ba657b039521a8b377a094a2ea67ea",
+    "authority_candidate_tree": "012e0560fd21f7328088ec290f30f9eac84dc1ef"
+  },
+  "provider_binding": {
+    "target": "/Users/yosiwizman/.local/share/claude/versions/2.1.220",
+    "version": "2.1.220",
+    "sha256": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081"
+  }
+}
