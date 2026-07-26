@@ -29,7 +29,7 @@
     ".foundergate/evidence/lrcq-provider-package-refreeze/PACKAGE_CANDIDATE_SCOPE.json": "sha256:5778ded5096f06e8782a663c310fe26d4a6ba3da97c17b3bb0ce47286e88295c",
     ".foundergate/evidence/lrcq-provider-package-refreeze/PACKAGE_VERIFICATION_INSTRUCTIONS.md": "sha256:1502aa699bd152d74e69ec7336ffa2f11818849f89c8de640251b7d886c2e281",
     ".foundergate/evidence/lrcq-provider-package-refreeze/PREFLIGHT_CONTROLS.json": "sha256:c4417aca8c4a261981a0b3944017644868c47f5524fbd23c18f27afae0e0d9c4",
-    ".foundergate/evidence/lrcq-provider-package-refreeze/PROCEDURAL_FINAL_HEAD_CAPSULE_CONTRACT.json": "sha256:42b4ec5833d335db44434ca682f9680d086ca9fe671a0640384d21a152bbc476",
+    ".foundergate/evidence/lrcq-provider-package-refreeze/PROCEDURAL_FINAL_HEAD_CAPSULE_CONTRACT.json": "sha256:b53c7ebaaf258599fa485cd43bc65bc61a97c51512f43c860cb7c68e8cbcc50a",
     ".foundergate/evidence/lrcq-provider-package-refreeze/PROVIDER_REFREEZE_2_1_220_ebd4ff5.json": "sha256:f3486eababd27cffb2ecec24accf32f22f38374ebf65b4d8a0b4773bea6ab0c4",
     ".foundergate/evidence/lrcq-provider-package-refreeze/V4_AUTHORITY_ACCEPTANCE_MATRIX.json": "sha256:ff7b46034ebe3764cc8459a011ecf2f2904be8c048188422501d3855d82263a7",
     ".foundergate/run-materials/first-internal-5h/allowed-tools-manifest.json": "sha256:5ccca037452e8cb3991b647bec7c472c657665d15148a57161794d42d78302d5",
@@ -43,11 +43,11 @@
     "docs/governance/FOUNDER_KEY_AUTHORITY.json": "sha256:6b2268a4a74b784478eb1df916930028de8d68398eedfcd4670736e11c66f802",
     "tools/terminal0/lrcq/capsule-verifier.mjs": "sha256:49f409e3898866c16a2b9ea2f037bc00640b675ea919e2e1831ac4d4117b0eb8",
     "tools/terminal0/lrcq/classify-and-packet.mjs": "sha256:bba7581879dc165c83c762b3e616ec49a00e8744fe6c112bdd230e5a71602a4e",
-    "tools/terminal0/lrcq/final-head-capsule.mjs": "sha256:8aa3ee017b2c4df29a396897f9fb66c56b4c68859d48ac4f8bfce2ef88705a8a",
+    "tools/terminal0/lrcq/final-head-capsule.mjs": "sha256:81c76aa29242692aa07828df72dad4b5f9bb64728aefdd7fd1495584df548d52",
     "tools/terminal0/lrcq/generate-capsule.mjs": "sha256:3adbfa4ac2ce41d4cc74259fe04cd1c3dbf0363a8292940513e856c4b4c6f5b9",
     "tools/terminal0/lrcq/generate-founder-gate-packet.mjs": "sha256:c7f1c374be6f0d218fb86a384fbd96e828c77b5fb0b13ddf07c4da91b4706056",
     "tools/terminal0/lrcq/generate-run-manifest.mjs": "sha256:870703ee990cc3de8fb69ac30ce8058c6a8fcb1854413e4603a07c67c91d9a10",
     "tools/terminal0/lrcq/refreeze-package.mjs": "sha256:266d394271b0e19ce69235b7faaf03fe5007defa0a6e5efbcc0c6ccfd173cfbd"
   },
-  "evidence_set_digest": "sha256:cb1540ce40fecdd783cb1b13c6bb562d4672251e338ddc15a0559fafc34f86c2"
+  "evidence_set_digest": "sha256:de3d6b1595dd6ffa7d7c1f1b77a202db0c3501fd284a28d5a4e2460f19144c0e"
 }

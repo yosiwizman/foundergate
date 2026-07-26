@@ -187,7 +187,16 @@ export function main(argv) {
     system_state: { frozen_head: systemState.frozen_head, frozen_tree: systemState.frozen_tree, evaluated_sha: systemState.evaluated_sha, evaluated_tree: systemState.evaluated_tree, founder_signature: systemState.founder_signature },
     final_template: { schema: finalTpl.schema_version, evidence_commit_sha: finalTpl.evidence_commit_sha, evidence_commit_tree: finalTpl.evidence_commit_tree, reviewed_runtime_sha: finalTpl.reviewed_runtime_sha, reviewed_runtime_tree: finalTpl.reviewed_runtime_tree, founder_signature: finalTpl.founder_signature, unsigned: finalTpl.unsigned },
     binds_exact_final_head: bindsExactFinalHead,
-    capsule_verifier: { result: ver.valid ? "VALID" : "INVALID", checks_passed: (ver.checks || []).filter((c) => c.pass).length, checks_failed: (ver.problems || []).length, problems: ver.problems || [] },
+    // verifyCapsule reports each check as { name, status, detail } with status PASS / FAIL / SKIP.
+    // Counting a non-existent `.pass` field would silently report 0 passed for a fully passing capsule.
+    capsule_verifier: {
+      result: ver.valid ? "VALID" : "INVALID",
+      checks_total: (ver.checks || []).length,
+      checks_passed: (ver.checks || []).filter((c) => c.status === "PASS").length,
+      checks_failed: (ver.checks || []).filter((c) => c.status === "FAIL").length,
+      checks_skipped: (ver.checks || []).filter((c) => c.status === "SKIP").length,
+      problems: ver.problems || [],
+    },
     final_preflight: preflight ? { result: preflight.result, founder_gate: preflight.founder_gate, binding_defects: preflight.binding_defects, invocations: preflight.invocations, zero_invocation: preflight.zero_invocation } : { result: "UNPARSEABLE", raw_tail: preflightRaw.slice(-400) },
     provider_spawns: preflight && preflight.invocations ? preflight.invocations.providerSpawn : null,
     signed: false, activated: false, key_enrolled: false, run_started: false,
