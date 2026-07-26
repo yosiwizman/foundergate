@@ -1,0 +1,32 @@
+{
+  "schema": "fg-ppr-197-package-candidate-binding-1",
+  "package_candidate_sha": "58b36206669a27d1ce6171f0f3149721c24f35c7",
+  "package_candidate_tree": "0838399d2089e8a360ee26f62bf0c0e6b1bd03b8",
+  "authority_candidate_sha": "ebd4ff5672ba657b039521a8b377a094a2ea67ea",
+  "authority_candidate_tree": "012e0560fd21f7328088ec290f30f9eac84dc1ef",
+  "prior_reviewed_evidence_head": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+  "nonrecursive_seal": {
+    "statement": "The package candidate does NOT claim or embed its own future commit SHA. The committed activation payload keeps the freeze placeholder in evidence_commit_sha; the out-of-tree FINAL template is what binds the exact package candidate. Two SHAs, no self-reference.",
+    "committed_packet_binds": "reviewed_runtime_sha/tree = the approved authority candidate",
+    "committed_packet_evidence_commit_sha": "FINAL_HEAD_REPLACED_AT_FREEZE (placeholder, by design)",
+    "out_of_tree_template_binds": "58b36206669a27d1ce6171f0f3149721c24f35c7"
+  },
+  "evidence_tail_resolution": {
+    "method": "PROCEDURAL, via Git history — never self-embedded.",
+    "commands": [
+      "git log --oneline 58b36206669a27d1ce6171f0f3149721c24f35c7..HEAD    # exactly one evidence-only commit",
+      "git diff --name-status 58b36206669a27d1ce6171f0f3149721c24f35c7 HEAD  # only .foundergate/evidence/lrcq-provider-package-refreeze/ paths"
+    ],
+    "why": "A commit cannot contain its own hash. The tail is therefore resolved by walking history from the frozen package candidate, not by writing a SHA into the object that would produce it."
+  },
+  "package_immutability": {
+    "not_one_package_byte_changed_after_the_package_commit": true,
+    "evidence_commit_touches_only": ".foundergate/evidence/lrcq-provider-package-refreeze/ (new files only)",
+    "modifies_no_package_artifact": true,
+    "modifies_no_authority_file": true,
+    "modifies_no_generator": true,
+    "modifies_no_source_file": true,
+    "modifies_no_tool": true,
+    "modifies_no_package_dependency": true
+  }
+}
