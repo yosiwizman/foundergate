@@ -80,7 +80,7 @@
     "role": "MUTABLE ALIAS — recorded for identity consistency only; NEVER bound and NEVER executed",
     "currently_points_at": "/Users/yosiwizman/.local/share/claude/versions/2.1.220"
   },
-  "observation_time_utc": "2026-07-26T00:18:16Z",
+  "observation_time_utc": "2026-07-26T14:41:21Z",
   "observation_time_is_a_frozen_input": "This driver never reads the wall clock. The observation instant is supplied explicitly so regeneration is byte-reproducible.",
   "commands_used": [
     "stat -f ... <target>              (filesystem identity, recorded before and after)",

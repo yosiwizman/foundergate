@@ -38,6 +38,10 @@ import { fixedGit } from "../../../src/v8b/lrcq/assurance/fixed-executables.mjs"
 import { buildActivationMaterialPacket } from "./generate-run-manifest.mjs";
 import { verifyProviderTarget } from "../../../src/v8b/lrcq/provider/provider-verify.mjs";
 import { canon } from "./evidence-set.mjs";
+// PPRCHK-198-03: the AUTHORITATIVE signed-contract inventories. This driver consumes them rather than
+// re-declaring them, so a founder-readable exclusion or ceiling inventory can never silently understate
+// the signed contract. These exports are READ ONLY here and are never modified by this wave.
+import { V4_SIGNED_EXCLUSIONS, V4_SIGNED_LIMIT_FIELDS } from "../../../src/v8b/lrcq/assurance/activation-v4.mjs";
 
 const SELF = fileURLToPath(import.meta.url);
 const REPO = resolve(dirname(SELF), "../../..");
@@ -81,17 +85,82 @@ export const FROZEN = Object.freeze({
   ],
 });
 
+// ---------------------------------------------------------------------------------------------------
+// PPRCHK-198-03 — AUTHORITATIVE SIGNED-CONTRACT TABLES.
+//
+// The defect this replaces: the ceilings were checked with strict equality against a local table (so any
+// edit refused), but the exclusions were checked by ITERATING the local table — `for (const x of
+// EXCLUSIONS) if (packet[x] !== true)`. Deleting an entry from that table simply removed the iteration,
+// so nothing refused, and the founder-readable artifact keyed `ten_mandatory_exclusions` shipped listing
+// NINE. The generator's table was a hand-maintained duplicate of the authority's own definition and was
+// never asserted equal to it.
+//
+// The fix has three independent layers:
+//   1. DECLARED_* below are an explicit ASSERTION TARGET, not an authority definition. They exist only so
+//      that an edit to this file is CAUGHT rather than silently honoured.
+//   2. assertAuthoritativeTables() requires EXACT mechanical equality with the authoritative exports —
+//      same keys, same count, same order, no missing key, no extra key, no duplicate — and is called
+//      BEFORE a single artifact byte is written.
+//   3. The EMITTED inventories are derived from the AUTHORITATIVE exports (EXCLUSIONS / LIMIT_FIELDS
+//      below), never from the declared tables. So even if layer 2 were somehow bypassed, a generated
+//      founder-readable artifact still enumerates what the authority actually signs.
+// ---------------------------------------------------------------------------------------------------
+
 // The six SIGNED ceilings. Required values or stricter. No package field, environment variable, CLI
-// argument or unsigned overlay may widen any of them.
+// argument or unsigned overlay may widen any of them. The VALUES are this wave's frozen maxima; the
+// FIELD SET is asserted equal to V4_SIGNED_LIMIT_FIELDS below.
 export const CEILINGS = Object.freeze({
   max_budget_usd: 10, run_duration_s: 18000, per_job_timeout_s: 2700,
   max_parallel_width: 2, max_output_bytes: 10485760, termination_grace_s: 30,
 });
-// The ten mandatory exclusions. All must be exactly true.
-export const EXCLUSIONS = Object.freeze([
+// DECLARED assertion targets. Duplicates are detectable here because these are ARRAYS: an object key set
+// cannot express a duplicate, so a duplicated ceiling field would otherwise be invisible.
+export const DECLARED_LIMIT_FIELDS = Object.freeze([
+  "max_budget_usd", "run_duration_s", "per_job_timeout_s",
+  "max_parallel_width", "max_output_bytes", "termination_grace_s",
+]);
+export const DECLARED_EXCLUSIONS = Object.freeze([
   "no_protected_main_merge", "no_pr_merge", "no_push_unless_authorized", "no_m1", "no_akior",
   "no_customer_data", "no_live_action", "no_permission_bypass", "no_deploy", "no_external_comms",
 ]);
+
+// THE AUTHORITATIVE INVENTORIES. Every check and every generated artifact derives from these.
+export const EXCLUSIONS = Object.freeze([...V4_SIGNED_EXCLUSIONS]);
+export const LIMIT_FIELDS = Object.freeze([...V4_SIGNED_LIMIT_FIELDS]);
+// The artifact keys `six_signed_ceilings` and `ten_mandatory_exclusions` assert cardinality in their own
+// names. If the authority's cardinality ever changes, those names would lie — so it is a refusal, not a
+// silent regeneration.
+export const REQUIRED_EXCLUSION_COUNT = 10;
+export const REQUIRED_LIMIT_FIELD_COUNT = 6;
+
+export const TABLE_SOURCE = "V4_SIGNED_EXCLUSIONS / V4_SIGNED_LIMIT_FIELDS (src/v8b/lrcq/assurance/activation-v4.mjs)";
+
+// Returns an array of problem strings. EMPTY means the generator's tables are exactly the authority's.
+export function assertAuthoritativeTables() {
+  const problems = [];
+  const dups = (a) => [...new Set(a.filter((x, i) => a.indexOf(x) !== i))];
+  const check = (label, declared, authoritative, requiredCount) => {
+    for (const d of dups(declared)) problems.push(label + "_DUPLICATE_IN_GENERATOR_TABLE: " + d);
+    for (const d of dups(authoritative)) problems.push(label + "_DUPLICATE_IN_AUTHORITATIVE_EXPORT: " + d);
+    for (const k of authoritative) if (!declared.includes(k)) problems.push(label + "_MISSING_FROM_GENERATOR_TABLE: " + k);
+    for (const k of declared) if (!authoritative.includes(k)) problems.push(label + "_ADDED_WITHOUT_BEING_AUTHORITATIVE: " + k);
+    if (declared.length !== authoritative.length) problems.push(label + "_COUNT_MISMATCH: generator " + declared.length + " != authoritative " + authoritative.length);
+    if (declared.join(",") !== authoritative.join(",")) problems.push(label + "_ORDER_OR_CONTENT_MISMATCH: [" + declared.join(",") + "] != [" + authoritative.join(",") + "]");
+    if (authoritative.length !== requiredCount) problems.push(label + "_AUTHORITATIVE_CARDINALITY_CHANGED: " + authoritative.length + " != " + requiredCount + " (the generated artifact key names assert this count)");
+  };
+  check("EXCLUSION", [...DECLARED_EXCLUSIONS], [...V4_SIGNED_EXCLUSIONS], REQUIRED_EXCLUSION_COUNT);
+  check("LIMIT_FIELD", [...DECLARED_LIMIT_FIELDS], [...V4_SIGNED_LIMIT_FIELDS], REQUIRED_LIMIT_FIELD_COUNT);
+  // The ceilings object must carry exactly the authoritative field set, in the authoritative order, so a
+  // ceiling can neither be dropped (leaving it unenforced) nor invented.
+  const ceilKeys = Object.keys(CEILINGS);
+  if (ceilKeys.join(",") !== [...V4_SIGNED_LIMIT_FIELDS].join(",")) {
+    problems.push("CEILINGS_KEY_SET_MISMATCH: [" + ceilKeys.join(",") + "] != [" + [...V4_SIGNED_LIMIT_FIELDS].join(",") + "]");
+  }
+  if (ceilKeys.join(",") !== [...DECLARED_LIMIT_FIELDS].join(",")) {
+    problems.push("CEILINGS_KEY_SET_DIVERGES_FROM_DECLARED_TABLE: [" + ceilKeys.join(",") + "] != [" + [...DECLARED_LIMIT_FIELDS].join(",") + "]");
+  }
+  return problems;
+}
 
 export const OUT_DIR = ".foundergate/evidence/lrcq-provider-package-refreeze";
 const MANIFEST_REL = ".foundergate/run-materials/first-internal-5h/run-manifest.json";
@@ -206,6 +275,15 @@ function main(argv) {
   if (!versionProbe) { console.error("REFUSED: --version-probe \"<exact --version output>\" is required"); return 2; }
   if (!digestShasum || !digestOpenssl) { console.error("REFUSED: --digest-shasum <hex> and --digest-openssl <hex> are required"); return 2; }
 
+  // ---- PPRCHK-198-03: the signed-contract tables must equal the AUTHORITY's own definition --------
+  // This runs FIRST, before any state check and before any byte is written, because every downstream
+  // check and every generated founder-readable inventory derives from these tables.
+  const tableProblems = assertAuthoritativeTables();
+  if (tableProblems.length) {
+    console.error("AUTHORITATIVE_TABLE_MISMATCH (refusing to generate any artifact):\n  " + tableProblems.join("\n  "));
+    return 9;
+  }
+
   // ---- re-verify the frozen review chain against the real repository -----------------------------
   const problems = [];
   const req = (c, m) => { if (!c) problems.push(m); };
@@ -254,8 +332,10 @@ function main(argv) {
     runHarnessSha: "FINAL_HEAD_REPLACED_AT_FREEZE", runHarnessTree: "FINAL_TREE_REPLACED_AT_FREEZE",
     reviewedRuntimeSha: FROZEN.authority_candidate_sha, reviewedRuntimeTree: FROZEN.authority_candidate_tree,
   });
-  // ceilings + exclusions must survive the recipe exactly
-  for (const [k, v] of Object.entries(CEILINGS)) if (packet[k] !== v) { console.error("CEILING_MISMATCH: " + k + "=" + packet[k]); return 4; }
+  // Ceilings + exclusions must survive the recipe exactly. PPRCHK-198-03: both loops now iterate the
+  // AUTHORITATIVE inventories (LIMIT_FIELDS / EXCLUSIONS), so a key the authority signs can never drop
+  // out of the check by being deleted from a table in this file.
+  for (const k of LIMIT_FIELDS) if (packet[k] !== CEILINGS[k]) { console.error("CEILING_MISMATCH: " + k + "=" + packet[k]); return 4; }
   for (const x of EXCLUSIONS) if (packet[x] !== true) { console.error("EXCLUSION_NOT_TRUE: " + x); return 4; }
   if (packet.founder_signature !== null || packet.signer_key_fingerprint !== null || packet.authorization_text_digest !== null
       || packet.activation_nonce !== null || packet.issued_epoch !== null || packet.unsigned !== true) {
@@ -367,11 +447,18 @@ function main(argv) {
 
   // ---- limits + exclusions record ----------------------------------------------------------------
   write(OUT_DIR + "/LIMITS_AND_EXCLUSIONS.json", {
-    schema: "lrcq-limits-and-exclusions-1", wave: "FG-PPR-197",
-    six_signed_ceilings: Object.fromEntries(Object.entries(CEILINGS).map(([k, v]) => [k, {
-      required: "<= " + v, packet_value: packet[k], manifest_value: manifestCeiling(manifest, k), satisfied: packet[k] <= v,
+    schema: "lrcq-limits-and-exclusions-2", wave: "FG-PPR-197 + FG-PPRC-198 (PPRCHK-198-03)",
+    // PPRCHK-198-03: both inventories are DERIVED FROM THE AUTHORITATIVE EXPORTS, not from a local table.
+    inventory_source: TABLE_SOURCE,
+    inventory_is_derived_not_hand_maintained: true,
+    generator_tables_asserted_equal_to_authoritative_exports: true,
+    six_signed_ceilings: Object.fromEntries(LIMIT_FIELDS.map((k) => [k, {
+      required: "<= " + CEILINGS[k], packet_value: packet[k], manifest_value: manifestCeiling(manifest, k), satisfied: packet[k] <= CEILINGS[k],
     }])),
+    six_signed_ceilings_count: LIMIT_FIELDS.length,
     ten_mandatory_exclusions: Object.fromEntries(EXCLUSIONS.map((x) => [x, { required: true, packet_value: packet[x], satisfied: packet[x] === true }])),
+    ten_mandatory_exclusions_count: EXCLUSIONS.length,
+    cardinality_asserted: { exclusions: REQUIRED_EXCLUSION_COUNT, ceilings: REQUIRED_LIMIT_FIELD_COUNT, note: "The key names assert these counts; a change in the authority's cardinality is a generation REFUSAL, never a silently shorter list." },
     widening_surface: {
       package_field: "REFUSED — the ceilings and exclusions are part of the SIGNED activation payload; changing one changes the signed bytes and fails signature verification.",
       environment_variable: "REFUSED — the driver reads NO environment variable, and run-five-hour.mjs fails closed on LRCQ_TEST_LIFECYCLE for a production --activation run.",
@@ -398,7 +485,86 @@ function main(argv) {
       { id: "PF-10", control: "with an EMPTY governed key authority the classified founder gate is KEY_ENROLLMENT" },
       { id: "PF-11", control: "zero provider / builder / checker invocation is asserted structurally on every preflight path" },
     ],
-    expected_result_for_this_package: "SIGNATURE-REQUIRED with founder_gate KEY_ENROLLMENT and zero_invocation true",
+    // PPRCHK-198-01: stated per STAGE. PF-5 compares against the CURRENT HEAD, so the expected result
+    // depends on which artifact is being preflighted. Conflating the two is exactly the defect corrected.
+    expected_result_by_stage: {
+      committed_package_candidate: {
+        artifact: "A — the committed package material (" + PACKET_REL + ")",
+        binds_exact_final_head: false,
+        expected: "NOT APPLICABLE. The committed material deliberately carries the freeze placeholder in evidence_commit_*, because a commit cannot embed its own hash. It is NOT a final-head capsule and PF-5 is NOT expected to pass against it.",
+      },
+      procedural_final_head_capsule: {
+        artifact: "B — the out-of-tree capsule generated by tools/terminal0/lrcq/final-head-capsule.mjs AFTER the final evidence-only tail exists",
+        binds_exact_final_head: true,
+        expected: "SIGNATURE-REQUIRED with founder_gate KEY_ENROLLMENT, binding_defects [], invocations.providerSpawn 0 and zero_invocation true",
+      },
+    },
+    pf5_is_not_weakened: "PF-5 is unchanged. run-five-hour.mjs is byte-identical to the approved authority candidate; its digest is recorded in enforcing_modules above.",
+  });
+
+  // ---- PPRCHK-198-01: the TWO artifacts, declared explicitly and separately -----------------------
+  // The prior wave's defect was not a broken control — PF-5 fired and failed CLOSED. The defect was that
+  // ONE artifact was described as doing TWO jobs, and evidence asserting the second job's success was
+  // committed in the very commit that made it false. These two records keep the stages apart.
+  write(OUT_DIR + "/PACKAGE_CANDIDATE_SCOPE.json", {
+    schema: "lrcq-package-candidate-scope-1", wave: "FG-PPRC-198 (PPRCHK-198-01)",
+    stage: "A — COMMITTED PACKAGE CANDIDATE",
+    what_this_stage_is: "The deterministic unsigned package material committed in the repository, together with the package manifests and hashes over it.",
+    what_it_proves: [
+      "the package binds the APPROVED authority candidate " + FROZEN.authority_candidate_sha + " / tree " + FROZEN.authority_candidate_tree,
+      "the package binds the re-verified immutable provider target, version and digest",
+      "all " + REQUIRED_LIMIT_FIELD_COUNT + " signed ceilings and all " + REQUIRED_EXCLUSION_COUNT + " signed exclusions are present and correct, derived from the authoritative V4 exports",
+      "package-byte integrity: every package file matches PACKAGE_SHA256_MANIFEST.json and the non-recursive evidence-set index",
+      "the material is unsigned and unactivated and active_keys is []",
+    ],
+    what_it_explicitly_does_NOT_claim: [
+      "it does NOT claim to be the final current-HEAD capsule",
+      "it does NOT claim binds_exact_final_head",
+      "it does NOT claim that PF-5 passes at a later evidence head",
+      "it does NOT claim package acceptance — an independent package Checker verdict is required",
+    ],
+    evidence_commit_fields_are_placeholders_by_design: {
+      evidence_commit_sha: "FINAL_HEAD_REPLACED_AT_FREEZE",
+      evidence_commit_tree: "FINAL_TREE_REPLACED_AT_FREEZE",
+      why: "A commit cannot embed its own hash. Binding the final head is Stage B's job, performed outside Git.",
+    },
+    pf5_behaviour_against_this_stage: "PF-5 correctly refuses BINDING-DEFECT if this material is preflighted as if it were a final-head capsule. That refusal is the control working, not a defect.",
+    stage_b_contract: OUT_DIR + "/PROCEDURAL_FINAL_HEAD_CAPSULE_CONTRACT.json",
+  });
+
+  write(OUT_DIR + "/PROCEDURAL_FINAL_HEAD_CAPSULE_CONTRACT.json", {
+    schema: "lrcq-procedural-final-head-capsule-contract-1", wave: "FG-PPRC-198 (PPRCHK-198-01)",
+    stage: "B — PROCEDURAL FINAL-HEAD CAPSULE",
+    generator: "tools/terminal0/lrcq/final-head-capsule.mjs",
+    generator_digest: shaRel("tools/terminal0/lrcq/final-head-capsule.mjs"),
+    is_committed: false,
+    why_not_committed: "It binds the exact final evidence HEAD and tree. Committing it would place a commit's own hash inside that commit — the recursive self-seal this two-stage design exists to avoid. It is bound by digest from the evidence tail instead.",
+    when_it_is_generated: "AFTER the final evidence-only tail commit is pushed and its SHA/tree are mechanically resolved. Never before.",
+    when_it_is_REgenerated: "Immediately before founder key enrollment, and again after ANY later commit on this branch. Any commit advances HEAD and invalidates a previously generated capsule by design.",
+    required_inputs: ["--final-head <40-hex>", "--final-tree <40-hex>", "--evaluated-sha <40-hex>", "--out-root <absolute dir OUTSIDE the repository>", "--capsule-name <name>", "--pr <number>"],
+    refusals: [
+      "DECLARED_FINAL_HEAD_IS_NOT_CURRENT_HEAD — the declared head is independently re-resolved from git and must match",
+      "DECLARED_FINAL_TREE_IS_NOT_CURRENT_TREE — the declared tree is independently re-resolved and must match",
+      "WORKTREE_NOT_CLEAN — a dirty tree would bind bytes the commit does not contain",
+      "EVALUATED_SHA_EQUALS_FINAL_HEAD — the two-SHA seal requires distinct ancestor and evidence commits",
+      "EVALUATED_SHA_NOT_AN_ANCESTOR",
+      "OUT_ROOT_INSIDE_REPOSITORY / CAPSULE_DESTINATION_EXISTS",
+      "GITHUB_PR_HEAD_IS_NOT_THE_DECLARED_FINAL_HEAD",
+    ],
+    required_results: {
+      binds_exact_final_head: true,
+      capsule_verifier: "VALID",
+      final_preflight_result: "SIGNATURE-REQUIRED",
+      binding_defects: [],
+      "invocations.providerSpawn": 0,
+      founder_gate: "KEY_ENROLLMENT",
+    },
+    is_a_prerequisite_of: "FOUNDER KEY ENROLLMENT and signing. Without a Stage-B capsule bound to the exact current head, PF-5 refuses BINDING-DEFECT and nothing can be signed or consumed.",
+    the_fresh_package_checker_must_repeat_this: "The independent package Checker must run this generator itself, from the final reviewed head, and reproduce the required results. The Builder's receipt is not acceptance.",
+    historical_stage_b_artifact: {
+      capsule_frozen_head: "58b36206669a27d1ce6171f0f3149721c24f35c7",
+      status: "HISTORICAL / SUPERSEDED. It bound the prior package candidate, not the prior evidence head, so at evidence head 46f1f0df541814dbc40a6d7a6c99997e5e539964 it correctly produced BINDING-DEFECT and CAPSULE-VERIFIER INVALID. It must NOT be reused at any later head.",
+    },
   });
 
   // ---- claim / evidence classification -----------------------------------------------------------
@@ -422,6 +588,12 @@ function main(argv) {
       { claim: "real productive provider capability works", class: "NOT_PROVEN", evidence: "requires invoking Claude productively, which is forbidden in preparation and is first exercised under founder signature" },
       { claim: "this package is accepted", class: "NOT_PROVEN", evidence: "Builder verification is NOT package acceptance; an independent package Checker verdict is required" },
       { claim: "complete OS isolation / UI proof", class: "NOT_PROVEN", evidence: "not claimed by this wave" },
+      // PPRCHK-198-01: the two capsule stages are classified SEPARATELY.
+      { claim: "the COMMITTED package candidate (Stage A) binds the exact final evidence HEAD", class: "NOT_PROVEN", evidence: "DELIBERATELY NOT CLAIMED. A commit cannot embed its own hash; evidence_commit_* carries the freeze placeholder. See PACKAGE_CANDIDATE_SCOPE.json." },
+      { claim: "PF-5 passes against the committed package candidate", class: "NOT_PROVEN", evidence: "DELIBERATELY NOT CLAIMED. PF-5 compares against the current HEAD and correctly returns BINDING-DEFECT for non-final-head material. The prior wave's false claim here is PPRCHK-198-01." },
+      { claim: "a PROCEDURAL final-head capsule (Stage B) bound to the exact final HEAD/tree reaches SIGNATURE-REQUIRED with zero binding defects", class: "DYNAMIC", evidence: "generated OUTSIDE Git by tools/terminal0/lrcq/final-head-capsule.mjs after the final evidence tail exists, then verified with the production capsule verifier and the production final-template preflight. The receipt is recorded in the evidence tail; the capsule itself is never committed. The independent package Checker must repeat this generation from the final reviewed head." },
+      { claim: "UNSIGNED_GATE_PACKET.json is current activation material", class: "NOT_PROVEN", evidence: "DELIBERATELY NOT CLAIMED. It is a retired V3-schema STALE-INTERMEDIATE-CANDIDATE superseded by UNSIGNED_ACTIVATION_MATERIAL_PACKET.json, carries unresolved founder-fill placeholders, and is refused by V4 production entrypoints. Its generator now emits the staleness markers itself (PPRCHK-198-02)." },
+      { claim: "the generator's exclusion and ceiling inventories equal the authoritative V4 signed contract", class: "MECHANICAL", evidence: "assertAuthoritativeTables() requires exact equality with V4_SIGNED_EXCLUSIONS and V4_SIGNED_LIMIT_FIELDS before any artifact is written, and every emitted inventory is derived from those exports (PPRCHK-198-03)." },
     ],
   });
 
@@ -434,16 +606,20 @@ function main(argv) {
       what_changed_in_this_wave: "The package was re-bound to the exact authority implementation that passed the sixth independent Checker and the sequential Advisor, and the provider binary was re-verified and re-frozen against that exact authority candidate.",
       what_is_still_required_before_anything_runs: [
         "an INDEPENDENT package Checker must review this package and return a clean verdict — the Builder cannot issue it",
+        "a FINAL-HEAD CAPSULE must be regenerated, outside the repository, bound to the exact final commit of this branch (tools/terminal0/lrcq/final-head-capsule.mjs). The committed package material deliberately does NOT bind the final commit, because a commit cannot contain its own identifier. Until that capsule exists and verifies, the production preflight refuses with a BINDING-DEFECT and nothing can be signed",
         "the founder must enroll exactly one public founder key (no key is enrolled: active_keys is empty)",
         "the founder must sign the activation payload with that key",
-        "nothing runs until both of those founder acts happen",
+        "nothing runs until all of those steps happen",
       ],
-      what_the_run_would_be_allowed_to_do: {
-        cost_ceiling_usd: CEILINGS.max_budget_usd, max_wall_clock_s: CEILINGS.run_duration_s,
-        per_job_timeout_s: CEILINGS.per_job_timeout_s, max_parallel_width: CEILINGS.max_parallel_width,
-        max_output_bytes: CEILINGS.max_output_bytes, termination_grace_s: CEILINGS.termination_grace_s,
-      },
+      about_the_two_capsule_stages: "There are two artifacts, not one. The COMMITTED package material proves what the package binds and that its bytes are intact. A separate FINAL-HEAD CAPSULE, generated outside the repository after the last commit is made, is what a signature is actually applied to. Any new commit on this branch invalidates a previously generated capsule on purpose, and it must be regenerated. See PACKAGE_CANDIDATE_SCOPE.json and PROCEDURAL_FINAL_HEAD_CAPSULE_CONTRACT.json.",
+      about_the_retired_gate_packet: "UNSIGNED_GATE_PACKET.json is a retired earlier draft, kept only as history. It is marked STALE-INTERMEDIATE-CANDIDATE, still contains blanks for you to fill that were never filled, and is refused outright by the production entrypoints. The current material is UNSIGNED_ACTIVATION_MATERIAL_PACKET.json.",
+      // PPRCHK-198-03: both founder-readable inventories are derived from the AUTHORITATIVE exports, and
+      // their counts are stated so a short list is visible on its face.
+      what_the_run_would_be_allowed_to_do: Object.fromEntries(LIMIT_FIELDS.map((k) => [k, CEILINGS[k]])),
+      what_the_run_would_be_allowed_to_do_count: LIMIT_FIELDS.length,
       what_the_run_may_never_do: EXCLUSIONS,
+      what_the_run_may_never_do_count: EXCLUSIONS.length,
+      inventory_source: TABLE_SOURCE,
       honest_limits: [
         "Real productive Claude behaviour is NOT proven here and is first observed under signature.",
         "This wave proves binding, refusal and reproducibility — not that the run will succeed.",
@@ -559,7 +735,18 @@ function main(argv) {
     OUT_DIR + "/CHECKER_197_SIXTH_AUTHORITY_REPORT.json",
     OUT_DIR + "/ADVISOR_197_SEQUENTIAL_REPORT.json",
     OUT_DIR + "/PACKAGE_VERIFICATION_INSTRUCTIONS.md",
+    // PPRCHK-198-01: the two-stage declarations.
+    OUT_DIR + "/PACKAGE_CANDIDATE_SCOPE.json",
+    OUT_DIR + "/PROCEDURAL_FINAL_HEAD_CAPSULE_CONTRACT.json",
+    // Every generator that actually produces a package artifact is itself a package member, so the
+    // documented regeneration recipe is hash-covered (PPRCHK-198-02).
     "tools/terminal0/lrcq/refreeze-package.mjs",
+    "tools/terminal0/lrcq/final-head-capsule.mjs",
+    "tools/terminal0/lrcq/generate-run-manifest.mjs",
+    "tools/terminal0/lrcq/classify-and-packet.mjs",
+    "tools/terminal0/lrcq/generate-founder-gate-packet.mjs",
+    "tools/terminal0/lrcq/generate-capsule.mjs",
+    "tools/terminal0/lrcq/capsule-verifier.mjs",
   ];
   const missing = packageFiles.filter((f) => !existsSync(P(f)));
   if (missing.length) { console.error("PACKAGE_GENERATION_FAILURE: missing " + missing.join(", ")); return 7; }
@@ -681,24 +868,104 @@ Every entry of \`${shaManifestJsonPathForDoc()}\` must verify. The manifest is n
 only itself. Verify \`aggregate\` by re-canonicalizing the \`files\` map with
 \`canon()\` from \`tools/terminal0/lrcq/evidence-set.mjs\` and hashing it.
 
-## 6. Deterministic regeneration
+## 6. Deterministic regeneration — EVERY producing generator
+
+PPRCHK-198-02: the previous version of this section listed only two generators, so a reviewer following it
+never regenerated \`UNSIGNED_GATE_PACKET.json\` or \`FOUNDER_GATE_PACKET.json\` at all and could not
+discover their provenance. The COMPLETE recipe is below. Run them **in this order** — later generators read
+earlier generators' output.
 
 \`\`\`
+# 1. run manifest + activation material
 node tools/terminal0/lrcq/generate-run-manifest.mjs
-node tools/terminal0/lrcq/refreeze-package.mjs --observed-at <the recorded instant> --version-probe "${FROZEN.provider_version} (Claude Code)"
+
+# 2. the RETIRED V3 gate packet (regenerated only to prove the staleness markers survive).
+#    --run-harness-candidate is a REQUIRED frozen input: this generator no longer reads live HEAD, so the
+#    committed bytes are reproducible. Use the value already in the committed file:
+#      jq -r .run_harness_candidate_sha .foundergate/evidence/lrcq-assurance-factory/UNSIGNED_GATE_PACKET.json
+node tools/terminal0/lrcq/classify-and-packet.mjs --run-harness-candidate ${FROZEN.reviewed_evidence_head}
+
+# 3. the founder-readable gate packet (reads the manifest + material packet from step 1)
+node tools/terminal0/lrcq/generate-founder-gate-packet.mjs
+
+# 4. the package itself: provider re-freeze + every package artifact + manifests
+node tools/terminal0/lrcq/refreeze-package.mjs --observed-at <the recorded instant> \\
+  --version-probe "${FROZEN.provider_version} (Claude Code)" \\
+  --digest-shasum ${FROZEN.provider_sha256} --digest-openssl ${FROZEN.provider_sha256}
+
 git status --porcelain     # must be empty when regenerated at the SAME repository path
 \`\`\`
 
-The driver reads no clock, no randomness and no environment variable. Regenerating at a DIFFERENT
-filesystem path changes exactly the explicitly-declared, launcher-verified path bindings
-(\`repository_root\`, \`permitted_worktree_root\`, \`repository_root_realpath\`, \`lifecycle_root_realpath\`)
-and nothing else.
+None of these generators reads the wall clock, draws randomness, or reads an environment variable.
+Regenerating at a DIFFERENT filesystem path changes exactly the explicitly-declared, launcher-verified path
+bindings (\`repository_root\`, \`permitted_worktree_root\`, \`repository_root_realpath\`,
+\`lifecycle_root_realpath\`) and nothing else.
 
-## 7. Ceilings and exclusions
+## 7. Ceilings and exclusions — check them against the AUTHORITY, not against this document
 
-All six ceilings must hold at or below: max_budget_usd 10, run_duration_s 18000, per_job_timeout_s 2700,
-max_parallel_width 2, max_output_bytes 10485760, termination_grace_s 30. All ten exclusions must be
-exactly \`true\`: ${EXCLUSIONS.join(", ")}.
+PPRCHK-198-03: do not trust any hand-written list, including this one. The generator's tables are asserted
+equal to the authoritative exports before a single artifact byte is written, and every emitted inventory is
+derived from those exports. Reproduce that:
+
+\`\`\`
+node -e "
+import('./src/v8b/lrcq/assurance/activation-v4.mjs').then(async (A) => {
+  const G = await import('./tools/terminal0/lrcq/refreeze-package.mjs');
+  console.log('table problems:', G.assertAuthoritativeTables());          // must be []
+  console.log('exclusions equal:', G.EXCLUSIONS.join(',') === A.V4_SIGNED_EXCLUSIONS.join(','));
+  console.log('limit fields equal:', G.LIMIT_FIELDS.join(',') === A.V4_SIGNED_LIMIT_FIELDS.join(','));
+  console.log('counts:', G.EXCLUSIONS.length, G.LIMIT_FIELDS.length);     // must be 10 and 6
+});"
+\`\`\`
+
+Then mutate the generator's declared tables in a DISPOSABLE COPY outside git — delete each exclusion in
+turn (\`no_deploy\` especially), add an unauthorized one, delete each ceiling field in turn, add an
+unauthorized one, and duplicate an entry — and confirm generation REFUSES with
+\`AUTHORITATIVE_TABLE_MISMATCH\` every time. The regression family
+\`src/v8b/lrcq/run-harness-tests/package-authoritative-tables.selftest.mjs\` performs these
+mutations mechanically; re-run it and read it, do not take its name for proof.
+
+All ${REQUIRED_LIMIT_FIELD_COUNT} ceilings must hold at or below: ${LIMIT_FIELDS.map((k) => k + " " + CEILINGS[k]).join(", ")}.
+All ${REQUIRED_EXCLUSION_COUNT} exclusions must be exactly \`true\`: ${EXCLUSIONS.join(", ")}.
+
+## 7b. The retired V3 gate packet (PPRCHK-198-02)
+
+\`\`\`
+python3 -c "import json;d=json.load(open('.foundergate/evidence/lrcq-assurance-factory/UNSIGNED_GATE_PACKET.json'));print(d['__status'], '|', d['__superseded_by'], '|', d['schema_version'], '|', d['__unresolved_founder_placeholder_count'])"
+\`\`\`
+
+Require \`__status\` = \`STALE-INTERMEDIATE-CANDIDATE\`, \`__superseded_by\` =
+\`UNSIGNED_ACTIVATION_MATERIAL_PACKET.json\`, a non-empty \`__reason\`, and a mechanically enumerated
+\`__unresolved_founder_placeholders\` list. The markers are emitted by the GENERATOR, so re-running step 2
+of section 6 must PRESERVE all three — verify that, then confirm no package verifier treats this file as
+current activation material, and that a V3 record is still refused for execution.
+
+## 7c. The TWO capsule stages (PPRCHK-198-01)
+
+**Stage A — committed package candidate.** It deliberately does NOT bind the final evidence head:
+\`evidence_commit_sha\` is the freeze placeholder. No committed artifact may claim
+\`binds_exact_final_head: true\`, and PF-5 is NOT expected to pass against it. See
+\`${OUT_DIR}/PACKAGE_CANDIDATE_SCOPE.json\`.
+
+**Stage B — procedural final-head capsule.** Generate it YOURSELF, outside the repository, from the final
+reviewed head. Do not accept the Builder's receipt.
+
+\`\`\`
+FINAL_HEAD=$(git rev-parse HEAD); FINAL_TREE=$(git rev-parse HEAD^{tree})
+node tools/terminal0/lrcq/final-head-capsule.mjs \\
+  --final-head "$FINAL_HEAD" --final-tree "$FINAL_TREE" \\
+  --evaluated-sha ${FROZEN.authority_candidate_sha} \\
+  --out-root <an absolute directory OUTSIDE this repository> \\
+  --capsule-name CHECKER-FINAL-HEAD-CAPSULE --pr 198
+\`\`\`
+
+Require \`binds_exact_final_head: true\`, \`capsule_verifier.result: VALID\`,
+\`final_preflight.result: SIGNATURE-REQUIRED\`, \`binding_defects: []\`,
+\`invocations.providerSpawn: 0\` and \`overall: FINAL_HEAD_CAPSULE_VERIFIED\`. Then confirm the tool
+REFUSES a wrong \`--final-head\`, a wrong \`--final-tree\`, and an \`--out-root\` inside the repository, and
+that the superseded capsule frozen at \`58b3620\` does NOT verify at the final head. The capsule must not be
+committed — a receipt asserting the final head, committed at that head, is the recursive self-seal this
+design exists to avoid.
 
 ## 8. Refusal under attack
 

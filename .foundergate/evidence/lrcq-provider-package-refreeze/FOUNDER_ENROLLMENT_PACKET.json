@@ -10,18 +10,22 @@
     "what_changed_in_this_wave": "The package was re-bound to the exact authority implementation that passed the sixth independent Checker and the sequential Advisor, and the provider binary was re-verified and re-frozen against that exact authority candidate.",
     "what_is_still_required_before_anything_runs": [
       "an INDEPENDENT package Checker must review this package and return a clean verdict — the Builder cannot issue it",
+      "a FINAL-HEAD CAPSULE must be regenerated, outside the repository, bound to the exact final commit of this branch (tools/terminal0/lrcq/final-head-capsule.mjs). The committed package material deliberately does NOT bind the final commit, because a commit cannot contain its own identifier. Until that capsule exists and verifies, the production preflight refuses with a BINDING-DEFECT and nothing can be signed",
       "the founder must enroll exactly one public founder key (no key is enrolled: active_keys is empty)",
       "the founder must sign the activation payload with that key",
-      "nothing runs until both of those founder acts happen"
+      "nothing runs until all of those steps happen"
     ],
+    "about_the_two_capsule_stages": "There are two artifacts, not one. The COMMITTED package material proves what the package binds and that its bytes are intact. A separate FINAL-HEAD CAPSULE, generated outside the repository after the last commit is made, is what a signature is actually applied to. Any new commit on this branch invalidates a previously generated capsule on purpose, and it must be regenerated. See PACKAGE_CANDIDATE_SCOPE.json and PROCEDURAL_FINAL_HEAD_CAPSULE_CONTRACT.json.",
+    "about_the_retired_gate_packet": "UNSIGNED_GATE_PACKET.json is a retired earlier draft, kept only as history. It is marked STALE-INTERMEDIATE-CANDIDATE, still contains blanks for you to fill that were never filled, and is refused outright by the production entrypoints. The current material is UNSIGNED_ACTIVATION_MATERIAL_PACKET.json.",
     "what_the_run_would_be_allowed_to_do": {
-      "cost_ceiling_usd": 10,
-      "max_wall_clock_s": 18000,
+      "max_budget_usd": 10,
+      "run_duration_s": 18000,
       "per_job_timeout_s": 2700,
       "max_parallel_width": 2,
       "max_output_bytes": 10485760,
       "termination_grace_s": 30
     },
+    "what_the_run_would_be_allowed_to_do_count": 6,
     "what_the_run_may_never_do": [
       "no_protected_main_merge",
       "no_pr_merge",
@@ -34,6 +38,8 @@
       "no_deploy",
       "no_external_comms"
     ],
+    "what_the_run_may_never_do_count": 10,
+    "inventory_source": "V4_SIGNED_EXCLUSIONS / V4_SIGNED_LIMIT_FIELDS (src/v8b/lrcq/assurance/activation-v4.mjs)",
     "honest_limits": [
       "Real productive Claude behaviour is NOT proven here and is first observed under signature.",
       "This wave proves binding, refusal and reproducibility — not that the run will succeed.",

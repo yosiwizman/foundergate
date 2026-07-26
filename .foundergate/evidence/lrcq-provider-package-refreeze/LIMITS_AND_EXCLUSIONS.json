@@ -1,6 +1,9 @@
 {
-  "schema": "lrcq-limits-and-exclusions-1",
-  "wave": "FG-PPR-197",
+  "schema": "lrcq-limits-and-exclusions-2",
+  "wave": "FG-PPR-197 + FG-PPRC-198 (PPRCHK-198-03)",
+  "inventory_source": "V4_SIGNED_EXCLUSIONS / V4_SIGNED_LIMIT_FIELDS (src/v8b/lrcq/assurance/activation-v4.mjs)",
+  "inventory_is_derived_not_hand_maintained": true,
+  "generator_tables_asserted_equal_to_authoritative_exports": true,
   "six_signed_ceilings": {
     "max_budget_usd": {
       "required": "<= 10",
@@ -39,6 +42,7 @@
       "satisfied": true
     }
   },
+  "six_signed_ceilings_count": 6,
   "ten_mandatory_exclusions": {
     "no_protected_main_merge": {
       "required": true,
@@ -90,6 +94,12 @@
       "packet_value": true,
       "satisfied": true
     }
+  },
+  "ten_mandatory_exclusions_count": 10,
+  "cardinality_asserted": {
+    "exclusions": 10,
+    "ceilings": 6,
+    "note": "The key names assert these counts; a change in the authority's cardinality is a generation REFUSAL, never a silently shorter list."
   },
   "widening_surface": {
     "package_field": "REFUSED — the ceilings and exclusions are part of the SIGNED activation payload; changing one changes the signed bytes and fails signature verification.",

@@ -1,0 +1,42 @@
+{
+  "schema": "lrcq-procedural-final-head-capsule-contract-1",
+  "wave": "FG-PPRC-198 (PPRCHK-198-01)",
+  "stage": "B — PROCEDURAL FINAL-HEAD CAPSULE",
+  "generator": "tools/terminal0/lrcq/final-head-capsule.mjs",
+  "generator_digest": "sha256:8aa3ee017b2c4df29a396897f9fb66c56b4c68859d48ac4f8bfce2ef88705a8a",
+  "is_committed": false,
+  "why_not_committed": "It binds the exact final evidence HEAD and tree. Committing it would place a commit's own hash inside that commit — the recursive self-seal this two-stage design exists to avoid. It is bound by digest from the evidence tail instead.",
+  "when_it_is_generated": "AFTER the final evidence-only tail commit is pushed and its SHA/tree are mechanically resolved. Never before.",
+  "when_it_is_REgenerated": "Immediately before founder key enrollment, and again after ANY later commit on this branch. Any commit advances HEAD and invalidates a previously generated capsule by design.",
+  "required_inputs": [
+    "--final-head <40-hex>",
+    "--final-tree <40-hex>",
+    "--evaluated-sha <40-hex>",
+    "--out-root <absolute dir OUTSIDE the repository>",
+    "--capsule-name <name>",
+    "--pr <number>"
+  ],
+  "refusals": [
+    "DECLARED_FINAL_HEAD_IS_NOT_CURRENT_HEAD — the declared head is independently re-resolved from git and must match",
+    "DECLARED_FINAL_TREE_IS_NOT_CURRENT_TREE — the declared tree is independently re-resolved and must match",
+    "WORKTREE_NOT_CLEAN — a dirty tree would bind bytes the commit does not contain",
+    "EVALUATED_SHA_EQUALS_FINAL_HEAD — the two-SHA seal requires distinct ancestor and evidence commits",
+    "EVALUATED_SHA_NOT_AN_ANCESTOR",
+    "OUT_ROOT_INSIDE_REPOSITORY / CAPSULE_DESTINATION_EXISTS",
+    "GITHUB_PR_HEAD_IS_NOT_THE_DECLARED_FINAL_HEAD"
+  ],
+  "required_results": {
+    "binds_exact_final_head": true,
+    "capsule_verifier": "VALID",
+    "final_preflight_result": "SIGNATURE-REQUIRED",
+    "binding_defects": [],
+    "invocations.providerSpawn": 0,
+    "founder_gate": "KEY_ENROLLMENT"
+  },
+  "is_a_prerequisite_of": "FOUNDER KEY ENROLLMENT and signing. Without a Stage-B capsule bound to the exact current head, PF-5 refuses BINDING-DEFECT and nothing can be signed or consumed.",
+  "the_fresh_package_checker_must_repeat_this": "The independent package Checker must run this generator itself, from the final reviewed head, and reproduce the required results. The Builder's receipt is not acceptance.",
+  "historical_stage_b_artifact": {
+    "capsule_frozen_head": "58b36206669a27d1ce6171f0f3149721c24f35c7",
+    "status": "HISTORICAL / SUPERSEDED. It bound the prior package candidate, not the prior evidence head, so at evidence head 46f1f0df541814dbc40a6d7a6c99997e5e539964 it correctly produced BINDING-DEFECT and CAPSULE-VERIFIER INVALID. It must NOT be reused at any later head."
+  }
+}

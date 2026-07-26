@@ -1,4 +1,7 @@
 {
+  "__status": "STALE-INTERMEDIATE-CANDIDATE",
+  "__superseded_by": "UNSIGNED_ACTIVATION_MATERIAL_PACKET.json",
+  "__reason": "Retired V3/intermediate gate packet (schema_version lrcq-activation-3), retained ONLY as historical / compatibility evidence. It binds an obsolete candidate SHA, still carries unresolved founder-fill placeholders, and CONFERS NO AUTHORITY: founder_signature is null, confers_no_authority is true, and no signed field anywhere carries its digest. It is REFUSED by V4 production entrypoints — verifyActivation refuses schema lrcq-activation-3 outright, and preflight control PF-3 refuses any '<founder' placeholder that reaches an activation. The CURRENT activation material is UNSIGNED_ACTIVATION_MATERIAL_PACKET.json (schema lrcq-activation-4); no package verifier treats this file as current activation material. Originally marked stale in commit ce82c3b; the markers were silently dropped by regeneration and are now emitted by the generator itself (PPRCHK-198-02).",
   "schema_version": "lrcq-activation-3",
   "founder_signature": null,
   "unsigned": true,
@@ -117,5 +120,29 @@
   ],
   "confers_no_authority": true,
   "would_validate_when_signed": true,
-  "dry_run_refusals": []
+  "dry_run_refusals": [],
+  "__unresolved_founder_placeholders": [
+    {
+      "field": "/provider_executable_path",
+      "placeholder": "<founder-fills-approved-executable-path>"
+    },
+    {
+      "field": "/provider_version",
+      "placeholder": "<founder-fills>"
+    },
+    {
+      "field": "/provider_executable_identity",
+      "placeholder": "<founder-fills-sha256-of-executable>"
+    },
+    {
+      "field": "/capability_lease_digest",
+      "placeholder": "<founder-mints-per-run>"
+    },
+    {
+      "field": "/blast_radius_budget_digest",
+      "placeholder": "<founder-mints-per-run>"
+    }
+  ],
+  "__unresolved_founder_placeholder_count": 5,
+  "__placeholder_note": "UNRESOLVED. These values are founder-fill placeholders, never real bindings. Preflight control PF-3 refuses any activation in which a '<founder' placeholder survives, so this packet can never be executed. It is STALE evidence, not run material."
 }
