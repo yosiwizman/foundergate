@@ -1,0 +1,117 @@
+{
+  "schema": "fg-pprc-198-package-verification-2",
+  "wave": "FG-PPRC-198",
+  "what_this_records": "Results the Builder ACTUALLY executed at the package-correction candidate. Builder verification is NOT package acceptance.",
+  "stage_A_committed_package_candidate": {
+    "binds_exact_final_head": false,
+    "why": "A commit cannot embed its own hash. Stage A never claims final-head binding and PF-5 is not expected to pass against it. See PACKAGE_CANDIDATE_SCOPE.json.",
+    "checks": {
+      "provider_identity_matches_expected_target_version_and_hash": {
+        "pass": true,
+        "independent_digests": 3,
+        "production_verifier_code": "OK"
+      },
+      "authority_candidate_and_tree_match_exactly": {
+        "pass": true,
+        "sha": "ebd4ff5672ba657b039521a8b377a094a2ea67ea",
+        "tree": "012e0560fd21f7328088ec290f30f9eac84dc1ef",
+        "bound_in": "UNSIGNED_ACTIVATION_MATERIAL_PACKET.reviewed_runtime_sha/tree"
+      },
+      "package_files_match_the_sha_manifest": {
+        "pass": true,
+        "file_count": 35,
+        "mismatches": 0
+      },
+      "evidence_set_index_matches": {
+        "pass": true,
+        "file_count": 34,
+        "mismatches": 0,
+        "non_recursive": true
+      },
+      "run_manifest_verifier_clean": {
+        "pass": true
+      },
+      "activation_packet_canonical_and_unsigned": {
+        "pass": true,
+        "schema": "lrcq-activation-4",
+        "founder_signature": null,
+        "unsigned": true
+      },
+      "all_six_ceilings_match": {
+        "pass": true,
+        "derived_from": "V4_SIGNED_LIMIT_FIELDS"
+      },
+      "all_ten_exclusions_true": {
+        "pass": true,
+        "derived_from": "V4_SIGNED_EXCLUSIONS",
+        "count": 10
+      },
+      "authoritative_table_equality": {
+        "pass": true,
+        "assertAuthoritativeTables_problems": []
+      },
+      "stale_v3_packet_markers_present_and_survive_regeneration": {
+        "pass": true
+      },
+      "active_keys_is_empty": {
+        "pass": true,
+        "active_keys": []
+      },
+      "real_repository_blocked_at_key_enrollment": {
+        "pass": true,
+        "founder_gate": "KEY_ENROLLMENT",
+        "reason": "NO_CURRENT_KEY"
+      },
+      "full_chain_regeneration_byte_reproducible": {
+        "pass": true
+      }
+    }
+  },
+  "stage_B_procedural_final_head_capsule": {
+    "generated_outside_git": true,
+    "committed": false,
+    "results_recorded_here": "NONE \u2014 deliberately. The Stage-B capsule binds the FINAL evidence head, which does not exist while this file is being written. Recording its result here would be the recursive self-seal this design avoids.",
+    "how_to_obtain": "Run tools/terminal0/lrcq/final-head-capsule.mjs at the final evidence head; see PROCEDURAL_FINAL_HEAD_CAPSULE_CONTRACT.json.",
+    "required": {
+      "binds_exact_final_head": true,
+      "capsule_verifier": "VALID",
+      "final_preflight_result": "SIGNATURE-REQUIRED",
+      "binding_defects": [],
+      "providerSpawn": 0
+    },
+    "builder_exercised_the_tool_at_the_candidate_head": {
+      "note": "A HARNESS capsule was generated at the package-correction candidate head to exercise the tool and to give the negative-attack matrix a valid baseline. It is NOT the final capsule and is NOT committed.",
+      "capsule_verifier": {
+        "result": "VALID",
+        "checks_total": 31,
+        "checks_passed": 31,
+        "checks_failed": 0,
+        "checks_skipped": 0
+      },
+      "final_preflight": {
+        "result": "SIGNATURE-REQUIRED",
+        "binding_defects": [],
+        "providerSpawn": 0,
+        "founder_gate": "KEY_ENROLLMENT"
+      }
+    }
+  },
+  "superseded_capsule_reuse_attack": {
+    "attack": "reuse the 58b3620-bound capsule at the new head",
+    "result": "BINDING-DEFECT",
+    "binding_defects": [
+      "evidence_commit_sha/tree is not the exact current HEAD/tree"
+    ],
+    "binds_exact_final_head": false,
+    "providerSpawn": 0,
+    "conclusion": "PF-5 refuses a stale capsule. The control is intact and unweakened."
+  },
+  "no_provider_or_model_spawn": {
+    "pass": true,
+    "productive_provider_spawns": 0,
+    "model_requests": 0,
+    "version_metadata_probes": 1,
+    "probe_note": "one --version metadata probe in the counted provider observation step; the binary re-hashed identically afterwards with unchanged device/inode/size/mtime"
+  },
+  "builder_verification_is_not_package_acceptance": true
+}

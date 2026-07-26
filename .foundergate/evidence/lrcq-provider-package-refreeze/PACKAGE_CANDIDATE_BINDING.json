@@ -1,0 +1,37 @@
+{
+  "schema": "lrcq-package-candidate-binding-2",
+  "wave": "FG-PPRC-198",
+  "package_correction_candidate_sha": "8e8c5569a75c1a23ebc90665ee6a77023b72ae10",
+  "package_correction_candidate_tree": "0048ea190ccc4a3d725ef60427745b2e347f9d63",
+  "candidate_identification": "PROCEDURAL, hash-independent: the package candidate is the commit whose message begins 'FG-PPRC-198 package candidate (final)'. For every commit AFTER it, `git diff --stat <candidate> <commit> -- src tools .foundergate/run-materials package.json package-lock.json` must be EMPTY.",
+  "approved_authority_candidate": "ebd4ff5672ba657b039521a8b377a094a2ea67ea",
+  "approved_authority_tree": "012e0560fd21f7328088ec290f30f9eac84dc1ef",
+  "pr": 198,
+  "pr_base": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+  "pr_196_head": "8d1899f793305e9f87adc5163a60bfb077e4d4e5",
+  "protected_main": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423",
+  "provider": {
+    "target": "/Users/yosiwizman/.local/share/claude/versions/2.1.220",
+    "version": "2.1.220",
+    "sha256": "8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081"
+  },
+  "superseded": {
+    "package_candidate": "58b36206669a27d1ce6171f0f3149721c24f35c7",
+    "evidence_head": "46f1f0df541814dbc40a6d7a6c99997e5e539964",
+    "intermediate_in_this_wave": "757957e59dc53272d1a7f098c396da0046587adb",
+    "status": "HISTORICAL FINDINGS EVIDENCE ONLY"
+  },
+  "nonrecursive_seal": {
+    "rule": "A commit never contains its own hash or tree.",
+    "stage_A_committed": "binds the approved AUTHORITY candidate in reviewed_runtime_*; evidence_commit_* stays the freeze placeholder",
+    "stage_B_not_committed": "binds the exact final evidence HEAD/tree, generated outside Git, never committed",
+    "evidence_tail_resolution": "resolve procedurally with `git log --oneline <candidate>..HEAD`; this record does not and cannot name the tail's own SHA"
+  },
+  "active_keys": [],
+  "package_signed": false,
+  "activation_issued": false,
+  "activation_consumed": false,
+  "run_started": false,
+  "provider_productively_invoked": false,
+  "builder_verification_is_not_package_acceptance": true
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "lrcq-package-candidate-scope-1",
+  "wave": "FG-PPRC-198 (PPRCHK-198-01)",
+  "stage": "A — COMMITTED PACKAGE CANDIDATE",
+  "what_this_stage_is": "The deterministic unsigned package material committed in the repository, together with the package manifests and hashes over it.",
+  "what_it_proves": [
+    "the package binds the APPROVED authority candidate ebd4ff5672ba657b039521a8b377a094a2ea67ea / tree 012e0560fd21f7328088ec290f30f9eac84dc1ef",
+    "the package binds the re-verified immutable provider target, version and digest",
+    "all 6 signed ceilings and all 10 signed exclusions are present and correct, derived from the authoritative V4 exports",
+    "package-byte integrity: every package file matches PACKAGE_SHA256_MANIFEST.json and the non-recursive evidence-set index",
+    "the material is unsigned and unactivated and active_keys is []"
+  ],
+  "what_it_explicitly_does_NOT_claim": [
+    "it does NOT claim to be the final current-HEAD capsule",
+    "it does NOT claim binds_exact_final_head",
+    "it does NOT claim that PF-5 passes at a later evidence head",
+    "it does NOT claim package acceptance — an independent package Checker verdict is required"
+  ],
+  "evidence_commit_fields_are_placeholders_by_design": {
+    "evidence_commit_sha": "FINAL_HEAD_REPLACED_AT_FREEZE",
+    "evidence_commit_tree": "FINAL_TREE_REPLACED_AT_FREEZE",
+    "why": "A commit cannot embed its own hash. Binding the final head is Stage B's job, performed outside Git."
+  },
+  "pf5_behaviour_against_this_stage": "PF-5 correctly refuses BINDING-DEFECT if this material is preflighted as if it were a final-head capsule. That refusal is the control working, not a defect.",
+  "stage_b_contract": ".foundergate/evidence/lrcq-provider-package-refreeze/PROCEDURAL_FINAL_HEAD_CAPSULE_CONTRACT.json"
+}

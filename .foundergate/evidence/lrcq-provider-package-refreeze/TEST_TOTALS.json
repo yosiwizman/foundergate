@@ -1,0 +1,48 @@
+{
+  "schema": "lrcq-package-correction-test-totals-1",
+  "wave": "FG-PPRC-198",
+  "command": "npm test",
+  "runs": 2,
+  "run_1": {
+    "self_tests": "ALL GREEN: 155/155",
+    "exit": 0,
+    "assertions_x_of_y_form": 2050,
+    "assertions_pass_checks_form": 614,
+    "combined_mechanical": 2664,
+    "literal_ok_lines": 2066,
+    "literal_PASS_colon_lines": 929,
+    "family_summary_lines": 65,
+    "failures": 0,
+    "skipped": 0
+  },
+  "run_2": {
+    "self_tests": "ALL GREEN: 155/155",
+    "exit": 0,
+    "assertions_x_of_y_form": 2050,
+    "assertions_pass_checks_form": 614,
+    "combined_mechanical": 2664,
+    "literal_ok_lines": 2066,
+    "literal_PASS_colon_lines": 929,
+    "family_summary_lines": 65,
+    "failures": 0,
+    "skipped": 0
+  },
+  "identical_family_totals_across_runs": true,
+  "family_summary_lines_compared": 65,
+  "self_test_count_change": {
+    "previous_wave": 154,
+    "this_wave": 155,
+    "reason": "one NEW auto-discovered regression family added: package-authoritative-tables (61 assertions)"
+  },
+  "assertion_delta_explained": "1989 -> 2050 (+61, exactly the new family). The PASS(N checks) total is unchanged at 614.",
+  "skip_audit": "The 5 occurrences of the string 'skip' in the captured output are ASSERTION NAMES asserting that a skip is refused. ZERO tests were skipped.",
+  "new_family": {
+    "name": "package-authoritative-tables",
+    "assertions": 61,
+    "result": "61/61 passed",
+    "digest": "sha256:337dd67234debb9ab2d0fea1815535973f616918da5cc34938fa747ecd88c7c3"
+  },
+  "worktree_clean_after_both_runs": true,
+  "no_real_provider_or_model_invocation": true,
+  "result": "ALL GREEN twice consecutively"
+}

@@ -1,0 +1,110 @@
+{
+  "schema": "lrcq-limits-and-exclusions-2",
+  "wave": "FG-PPR-197 + FG-PPRC-198 (PPRCHK-198-03)",
+  "inventory_source": "V4_SIGNED_EXCLUSIONS / V4_SIGNED_LIMIT_FIELDS (src/v8b/lrcq/assurance/activation-v4.mjs)",
+  "inventory_is_derived_not_hand_maintained": true,
+  "generator_tables_asserted_equal_to_authoritative_exports": true,
+  "six_signed_ceilings": {
+    "max_budget_usd": {
+      "required": "<= 10",
+      "packet_value": 10,
+      "manifest_value": 10,
+      "satisfied": true
+    },
+    "run_duration_s": {
+      "required": "<= 18000",
+      "packet_value": 18000,
+      "manifest_value": 18000,
+      "satisfied": true
+    },
+    "per_job_timeout_s": {
+      "required": "<= 2700",
+      "packet_value": 2700,
+      "manifest_value": 2700,
+      "satisfied": true
+    },
+    "max_parallel_width": {
+      "required": "<= 2",
+      "packet_value": 2,
+      "manifest_value": 2,
+      "satisfied": true
+    },
+    "max_output_bytes": {
+      "required": "<= 10485760",
+      "packet_value": 10485760,
+      "manifest_value": 10485760,
+      "satisfied": true
+    },
+    "termination_grace_s": {
+      "required": "<= 30",
+      "packet_value": 30,
+      "manifest_value": 30,
+      "satisfied": true
+    }
+  },
+  "six_signed_ceilings_count": 6,
+  "ten_mandatory_exclusions": {
+    "no_protected_main_merge": {
+      "required": true,
+      "packet_value": true,
+      "satisfied": true
+    },
+    "no_pr_merge": {
+      "required": true,
+      "packet_value": true,
+      "satisfied": true
+    },
+    "no_push_unless_authorized": {
+      "required": true,
+      "packet_value": true,
+      "satisfied": true
+    },
+    "no_m1": {
+      "required": true,
+      "packet_value": true,
+      "satisfied": true
+    },
+    "no_akior": {
+      "required": true,
+      "packet_value": true,
+      "satisfied": true
+    },
+    "no_customer_data": {
+      "required": true,
+      "packet_value": true,
+      "satisfied": true
+    },
+    "no_live_action": {
+      "required": true,
+      "packet_value": true,
+      "satisfied": true
+    },
+    "no_permission_bypass": {
+      "required": true,
+      "packet_value": true,
+      "satisfied": true
+    },
+    "no_deploy": {
+      "required": true,
+      "packet_value": true,
+      "satisfied": true
+    },
+    "no_external_comms": {
+      "required": true,
+      "packet_value": true,
+      "satisfied": true
+    }
+  },
+  "ten_mandatory_exclusions_count": 10,
+  "cardinality_asserted": {
+    "exclusions": 10,
+    "ceilings": 6,
+    "note": "The key names assert these counts; a change in the authority's cardinality is a generation REFUSAL, never a silently shorter list."
+  },
+  "widening_surface": {
+    "package_field": "REFUSED — the ceilings and exclusions are part of the SIGNED activation payload; changing one changes the signed bytes and fails signature verification.",
+    "environment_variable": "REFUSED — the driver reads NO environment variable, and run-five-hour.mjs fails closed on LRCQ_TEST_LIFECYCLE for a production --activation run.",
+    "cli_argument": "REFUSED — the production --activation command accepts no caller-supplied override of manifest / bindings / provider / limits.",
+    "unsigned_overlay": "REFUSED — every authority-bearing value derives from the founder-SIGNED activation payload."
+  }
+}

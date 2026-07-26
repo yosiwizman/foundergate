@@ -242,13 +242,13 @@
     "reversible": "WIDE_SAFE local-fs only; each job on its own branch/worktree; nothing merged or pushed"
   },
   "real_run_capability_disclosure": {
-    "proven_in_preparation": "The run machinery is fully WIRED and FAIL-CLOSED, verified with ZERO provider/builder/checker invocation (preflight SIGNATURE-REQUIRED). The signed V3 record composes a valid V2 adapter-activation (dispatch route reachable); the independent checker routes a distinct read-only session through the SAME provider adapter; undefined checker output -> INSUFFICIENT_EVIDENCE (never CLEAN).",
+    "proven_in_preparation": "The V4 authority chain is fully WIRED and FAIL-CLOSED, verified with ZERO provider/builder/checker invocation: signed activation -> governed public-key authority -> VERIFIED capability -> governed one-time consumption -> signed launch intent -> ONE-USE inherited-descriptor ephemeral-key transfer -> detached supervisor that INDEPENDENTLY re-verifies -> signed supervisor claim -> SUPERVISOR_EXECUTION capability -> provider eligibility -> spawn boundary. A complete bounded execution + teardown is proven end to end against a DETERMINISTIC stub provider through the real production CLI. V3/V2 records are refused at every new production entrypoint.",
     "NOT_proven_in_preparation": "Actual productive work (a real builder session producing changes, and a real checker session returning CLEAN) is NOT exercised or proven here, because that requires invoking the real provider (Claude), which is forbidden during preparation. The FIRST place real productive capability is exercised is the founder-signed run itself.",
-    "founder_must_accept": "Signing authorizes the first internal run to invoke the real provider through this wired, fail-closed machinery. Whether jobs actually COMPLETE depends on real builder + checker behavior, first observed under signature."
+    "founder_must_accept": "Enrolling a founder key and signing authorizes the first internal run to invoke the real provider through this wired, fail-closed machinery. Whether jobs actually COMPLETE depends on real builder + checker behavior, first observed under signature."
   },
   "provider": {
     "path": "/Users/yosiwizman/.local/bin/claude",
-    "version": "2.1.215",
-    "identity": "sha256:90608b5c5ab504e96e77365cea6203d046e291d59b2bb42cf28dcb2ccdf9dd58"
+    "version": "2.1.220",
+    "identity": "sha256:8addc857f3fe64d5a0368af9ee50321b50afb4a6918ba3ef018ab84f5dbbe081"
   }
 }

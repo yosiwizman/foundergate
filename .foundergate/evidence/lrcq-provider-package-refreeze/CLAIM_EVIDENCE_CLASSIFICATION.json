@@ -1,0 +1,88 @@
+{
+  "schema": "lrcq-claim-evidence-classification-1",
+  "wave": "FG-PPR-197",
+  "classes": {
+    "MECHANICAL": "recomputed from bytes on disk or from git objects by a tool, reproducible by a third party",
+    "COUNTED": "a real observed count (processes, spawns, tests)",
+    "SOURCE_PROVEN": "proven by reading production source text, not by executing it",
+    "DYNAMIC": "proven by actually executing the control and observing the refusal",
+    "NOT_PROVEN": "explicitly not established by this wave"
+  },
+  "claims": [
+    {
+      "claim": "the provider target is the reviewed immutable 2.1.220 binary with the expected digest",
+      "class": "MECHANICAL",
+      "evidence": "two independent external hashers plus the production verifyProviderTarget"
+    },
+    {
+      "claim": "the provider reports version 2.1.220",
+      "class": "DYNAMIC",
+      "evidence": "a counted --version metadata probe; the ONLY provider execution in this wave"
+    },
+    {
+      "claim": "the package binds the approved authority candidate ebd4ff56 / tree 012e0560",
+      "class": "MECHANICAL",
+      "evidence": "git rev-parse plus the regenerated activation payload's reviewed_runtime_* fields"
+    },
+    {
+      "claim": "the six ceilings and ten exclusions hold",
+      "class": "MECHANICAL",
+      "evidence": "read back from the regenerated payload and the manifest"
+    },
+    {
+      "claim": "invalid packages refuse before any productive provider spawn",
+      "class": "DYNAMIC",
+      "evidence": "negative attacks executed on disposable copies outside git, with a counted spawn instrument and a positive stub control"
+    },
+    {
+      "claim": "the package is unsigned and unactivated and active_keys is []",
+      "class": "MECHANICAL",
+      "evidence": "null signature fields plus docs/governance/FOUNDER_KEY_AUTHORITY.json"
+    },
+    {
+      "claim": "the real repository is blocked at KEY_ENROLLMENT",
+      "class": "DYNAMIC",
+      "evidence": "the production launcher preflight's classified founder gate"
+    },
+    {
+      "claim": "real productive provider capability works",
+      "class": "NOT_PROVEN",
+      "evidence": "requires invoking Claude productively, which is forbidden in preparation and is first exercised under founder signature"
+    },
+    {
+      "claim": "this package is accepted",
+      "class": "NOT_PROVEN",
+      "evidence": "Builder verification is NOT package acceptance; an independent package Checker verdict is required"
+    },
+    {
+      "claim": "complete OS isolation / UI proof",
+      "class": "NOT_PROVEN",
+      "evidence": "not claimed by this wave"
+    },
+    {
+      "claim": "the COMMITTED package candidate (Stage A) binds the exact final evidence HEAD",
+      "class": "NOT_PROVEN",
+      "evidence": "DELIBERATELY NOT CLAIMED. A commit cannot embed its own hash; evidence_commit_* carries the freeze placeholder. See PACKAGE_CANDIDATE_SCOPE.json."
+    },
+    {
+      "claim": "PF-5 passes against the committed package candidate",
+      "class": "NOT_PROVEN",
+      "evidence": "DELIBERATELY NOT CLAIMED. PF-5 compares against the current HEAD and correctly returns BINDING-DEFECT for non-final-head material. The prior wave's false claim here is PPRCHK-198-01."
+    },
+    {
+      "claim": "a PROCEDURAL final-head capsule (Stage B) bound to the exact final HEAD/tree reaches SIGNATURE-REQUIRED with zero binding defects",
+      "class": "DYNAMIC",
+      "evidence": "generated OUTSIDE Git by tools/terminal0/lrcq/final-head-capsule.mjs after the final evidence tail exists, then verified with the production capsule verifier and the production final-template preflight. The receipt is recorded in the evidence tail; the capsule itself is never committed. The independent package Checker must repeat this generation from the final reviewed head."
+    },
+    {
+      "claim": "UNSIGNED_GATE_PACKET.json is current activation material",
+      "class": "NOT_PROVEN",
+      "evidence": "DELIBERATELY NOT CLAIMED. It is a retired V3-schema STALE-INTERMEDIATE-CANDIDATE superseded by UNSIGNED_ACTIVATION_MATERIAL_PACKET.json, carries unresolved founder-fill placeholders, and is refused by V4 production entrypoints. Its generator now emits the staleness markers itself (PPRCHK-198-02)."
+    },
+    {
+      "claim": "the generator's exclusion and ceiling inventories equal the authoritative V4 signed contract",
+      "class": "MECHANICAL",
+      "evidence": "assertAuthoritativeTables() requires exact equality with V4_SIGNED_EXCLUSIONS and V4_SIGNED_LIMIT_FIELDS before any artifact is written, and every emitted inventory is derived from those exports (PPRCHK-198-03)."
+    }
+  ]
+}

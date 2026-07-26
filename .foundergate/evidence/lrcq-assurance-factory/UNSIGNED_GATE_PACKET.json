@@ -1,4 +1,7 @@
 {
+  "__status": "STALE-INTERMEDIATE-CANDIDATE",
+  "__superseded_by": "UNSIGNED_ACTIVATION_MATERIAL_PACKET.json",
+  "__reason": "Retired V3/intermediate gate packet (schema_version lrcq-activation-3), retained ONLY as historical / compatibility evidence. It binds an obsolete candidate SHA, still carries unresolved founder-fill placeholders, and CONFERS NO AUTHORITY: founder_signature is null, confers_no_authority is true, and no signed field anywhere carries its digest. It is REFUSED by V4 production entrypoints — verifyActivation refuses schema lrcq-activation-3 outright, and preflight control PF-3 refuses any '<founder' placeholder that reaches an activation. The CURRENT activation material is UNSIGNED_ACTIVATION_MATERIAL_PACKET.json (schema lrcq-activation-4); no package verifier treats this file as current activation material. Originally marked stale in commit ce82c3b; the markers were silently dropped by regeneration and are now emitted by the generator itself (PPRCHK-198-02).",
   "schema_version": "lrcq-activation-3",
   "founder_signature": null,
   "unsigned": true,
@@ -8,10 +11,10 @@
   "lrcq_base_tree": "7d44473b63f524f3a3891f059f3e315622fdae30",
   "provider_candidate_sha": "50e18e55863b4abc0f0c2ef036b790ef15001ac5",
   "provider_candidate_tree": "4092da7b192ab085ccbc41e4aedad9da7229e6cd",
-  "run_harness_candidate_sha": "23590b17bf638b347941a7e9fa6fd3ac77f4a01d",
-  "run_harness_candidate_tree": "55b064ef57f2213186c88e38ad156e2b03e6b6d0",
-  "assurance_control_backlog_digest": "sha256:beae0e727f1502803587a36b302ea0c7d09198bbdaac4b31ffba005a38af5412",
-  "first_real_run_backlog_digest": "sha256:0057b1b61bf5ef04ec22bef515a39ca44b1ff7ff4049a802667e5e6ddcbc442d",
+  "run_harness_candidate_sha": "39dea6364d3a32420034f0ba4895486d1b918fa1",
+  "run_harness_candidate_tree": "1689a63464f3b2e987523fb1c84ce0d50ab6a40f",
+  "assurance_control_backlog_digest": "sha256:22483c69521d013b169a8aeea7e68bc745c61255918116912925099a4d6a70b9",
+  "first_real_run_backlog_digest": "sha256:f3801d96df6314568a7adc6c66decf35ae24a73ff584944c590dbfb08268d77b",
   "provider_executable_path": "<founder-fills-approved-executable-path>",
   "provider_version": "<founder-fills>",
   "provider_executable_identity": "<founder-fills-sha256-of-executable>",
@@ -37,18 +40,18 @@
   "no_customer_data": true,
   "no_live_action": true,
   "no_permission_bypass": true,
-  "activation_schema_digest": "sha256:1d46c90cb358988bf1b88434fdbb6eca8ada55d13969c21001a168109863055d",
+  "activation_schema_digest": "sha256:fab360c8d99c4b4fcdb601c39dbe6315f53268d966e7058e60f6f05d825ea631",
   "activation_v3_core_digest": "sha256:416f605f5b38f91f0a77eed466ed760e0c33d4ed0c1c87f1202f8eef27070d27",
-  "launcher_digest": "sha256:1fcb090be4e2e991b368de1016184be217a0ec59c4f1f996fd0374552c931ade",
-  "orchestrator_digest": "sha256:20915c8443d4abe61d9d561dc1f3d27355c0f8194af96ddab49c797388ab111f",
-  "provider_adapter_digest": "sha256:b39ec55365901ec97049ae98a97bf2b09af999013b8c55a0d725ede0f46d7e67",
+  "launcher_digest": "sha256:f9ca96a6e1b891d6f9e05740fce1665dd2a3207a4732956ba266b89fff921656",
+  "orchestrator_digest": "sha256:a11188a81e1c5f04312b7ae710364d21db118cb372a15c38403b43e735cdba84",
+  "provider_adapter_digest": "sha256:ea3bafdcd1bcc07eac2b5bdd65d24794ec190a992ce577ce7d4b2087d524cd37",
   "capability_lease_module_digest": "sha256:416f605f5b38f91f0a77eed466ed760e0c33d4ed0c1c87f1202f8eef27070d27",
   "transaction_policy_digest": "sha256:cc0206af9d23aef35e981ff364dcde54e07b3943cd2caf3a56c1a291c1113c04",
   "reconciliation_inbox_digest": "sha256:db6237a2bec8695eeb33b97fc2a5008f06200012a8363f23644cec86f0011ece",
   "replay_schema_digest": "sha256:c63f1ee0672b54c71c423e314ca8604678be003d637dfa8df73d66c7eef1ffef",
   "setup_pipeline_digest": "sha256:1b8bf496152f9938c47f53091f88b07112ed52e8f24a830d2b39331a5aa4a44d",
   "separation_digest": "sha256:4089ae70b9aa34870f7f56fff6fb8533115256a6dbd2c402870cbe8ac0b30fbc",
-  "attack_refusal_digest": "sha256:89eadfaf315c5771f7e3d5e48359310e1d4894fc948f80c97f2faad7e1b15972",
+  "attack_refusal_digest": "sha256:a02761e631743c501e99416ed8332f1ce353e9a80ebc547956d764810f35a702",
   "first_internal_run_blocker_matrix_digest": "sha256:05b72da5e1b088615f6658e9e933c60141c2502ed635f4fc8e98cd156cac9e2c",
   "first_internal_run_blocker_ids": [
     "A01",
@@ -67,7 +70,7 @@
     "B21",
     "B25"
   ],
-  "repository_boundary": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-assurance-factory-50e18e5",
+  "repository_boundary": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-provider-package-refreeze-ebd4ff5",
   "worktree_boundary": "per-job registered worktrees only; never protected main",
   "evidence_boundary": ".foundergate/evidence/lrcq-assurance-factory/<run-id>/",
   "stop_conditions": [
@@ -118,7 +121,28 @@
   "confers_no_authority": true,
   "would_validate_when_signed": true,
   "dry_run_refusals": [],
-  "__status": "STALE-INTERMEDIATE-CANDIDATE",
-  "__superseded_by": "UNSIGNED_ACTIVATION_MATERIAL_PACKET.json",
-  "__reason": "binds obsolete SHA + carried founder-fill placeholders (FG-LRCQ-P189-REAL-008/009); replaced by placeholder-free material packet"
+  "__unresolved_founder_placeholders": [
+    {
+      "field": "/provider_executable_path",
+      "placeholder": "<founder-fills-approved-executable-path>"
+    },
+    {
+      "field": "/provider_version",
+      "placeholder": "<founder-fills>"
+    },
+    {
+      "field": "/provider_executable_identity",
+      "placeholder": "<founder-fills-sha256-of-executable>"
+    },
+    {
+      "field": "/capability_lease_digest",
+      "placeholder": "<founder-mints-per-run>"
+    },
+    {
+      "field": "/blast_radius_budget_digest",
+      "placeholder": "<founder-mints-per-run>"
+    }
+  ],
+  "__unresolved_founder_placeholder_count": 5,
+  "__placeholder_note": "UNRESOLVED. These values are founder-fill placeholders, never real bindings. Preflight control PF-3 refuses any activation in which a '<founder' placeholder survives, so this packet can never be executed. It is STALE evidence, not run material."
 }

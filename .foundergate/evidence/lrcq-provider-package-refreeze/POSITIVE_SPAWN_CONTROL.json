@@ -1,0 +1,52 @@
+{
+  "schema": "fg-ppr-197-positive-spawn-control-1",
+  "what_this_proves": "The provider-spawn instrument is live: driving the REAL production spawn boundary against a deterministic recording stub makes the counter go UP. A zero count elsewhere is therefore a measurement, not an artefact.",
+  "route": "makeDisposableV4World -> consumeActivationV4 -> createLaunchIntentV4 -> spawnGovernedSupervisorV4 (one-use inherited-descriptor ephemeral-key transfer) -> genuine SUPERVISOR_EXECUTION capability -> real-provider.runJob -> spawn boundary",
+  "provider_target_bound_by_the_signed_activation": "/private/tmp/claude-501/-Users-yosiwizman-Projects-foundergate-wt-lrcq-founder-signature-authority-8d1899f/6306cbb8-d05c-4f63-a40a-951bb9f0eb67/scratchpad/attacks/positive-stub/recording-provider-stub.mjs",
+  "real_claude_invoked": false,
+  "hook_instrument_control_P2a": {
+    "what": "a PROVIDER-class spawn issued inside a hooked process",
+    "hook_provider_before": 0,
+    "hook_provider_after": 1,
+    "stub_log_before": 0,
+    "stub_log_after": 1,
+    "hook_increments": true,
+    "stub_log_increments": true,
+    "proves": "the --require hook counter increments on a provider-class spawn, so a zero count in the attack matrix is a measurement"
+  },
+  "production_boundary_control_P2b": {
+    "what": "the real production spawn boundary, driven end to end under a genuine SUPERVISOR_EXECUTION capability",
+    "counters_before": {
+      "stub_log": 1,
+      "hook_provider": 1
+    },
+    "counters_after": {
+      "stub_log": 2,
+      "hook_provider": 1
+    },
+    "stub_log_delta": 1,
+    "hook_provider_delta": 0,
+    "hook_delta_is_zero_by_design": "The production boundary spawns from inside the DETACHED SUPERVISOR process, whose environment the boundary deliberately scrubs. The parent's --require hook cannot reach it. The stub's own durable append-log is the cross-process instrument that governs this control, and it is what must increment here."
+  },
+  "body_checks": [
+    {
+      "name": "POS-a the signed activation binds the deterministic recording stub as the immutable target",
+      "ok": true
+    },
+    {
+      "name": "POS-b the production spawn boundary REALLY spawned the stub (started=true, PROVIDER_SPAWNED)",
+      "ok": true
+    },
+    {
+      "name": "POS-c the stub run completed deterministically (SUCCESS) and its process tree is gone",
+      "ok": true
+    }
+  ],
+  "body_ok": true,
+  "counter_proven_to_increment": true,
+  "spawn_evidence": {
+    "pid": 9575,
+    "outcome": "SUCCESS",
+    "provider_invocation": "PROVIDER_OUTPUT_RECEIVED"
+  }
+}
