@@ -1,0 +1,169 @@
+{
+  "review": {
+    "title": "FounderGate Edition 1.9 — Final Fresh Independent Technical Review (Lifecycle Step 4)",
+    "review_date_utc": "2026-07-28",
+    "reviewer_role": "Fresh Independent Technical Reviewer",
+    "independence": "PASS — this session did not author, edit, reconstruct, generate, or produce the candidate, and performed neither correction",
+    "verdict": "FOUNDERGATE-EDITION-1.9-FINAL-INDEPENDENT-REVIEW: CLEAN_WITH_NONBLOCKING_FINDINGS",
+    "step5_permitted": true,
+    "instruments": {
+      "poppler": "pdfinfo / pdftotext (default+layout) / pdftoppm / pdffonts",
+      "pdfium": "pypdfium2 5.12.1 (isolated reviewer venv)",
+      "pypdf": "6.14.2",
+      "pillow": "12.3.0",
+      "numpy": "2.5.1",
+      "hashing": "shasum -a 256",
+      "byte_count": "stat -f %z"
+    }
+  },
+  "identity": {
+    "file": "inputs/FounderGate_Edition_1.9_Second_Correction_Chat_Review/FounderGate_V1_Operating_Constitution_Master_Edition_1.9.pdf",
+    "sha256_independently_computed": "2698e426b97ca34b74516c1c056e5b5b2600559fb707191ac94864cf7b3ed8b2",
+    "sha256_expected": "2698e426b97ca34b74516c1c056e5b5b2600559fb707191ac94864cf7b3ed8b2",
+    "sha256_match": true,
+    "bytes_independently_computed": 1618467,
+    "bytes_expected": 1618467,
+    "bytes_match": true,
+    "pages_poppler": 237,
+    "pages_pdfium": 237,
+    "pages_text_extraction": 237,
+    "pages_expected": 237,
+    "pages_match": true,
+    "pdf_version": "1.3",
+    "page_size_pts": "612 x 792 (US Letter portrait)",
+    "page_size_uniform_all_pages": true,
+    "rotation": 0,
+    "rotation_uniform_all_pages": true,
+    "title": "FounderGate Version 1 Operating Constitution — Master Publication, Edition 1.9",
+    "subject_visible_status": "Candidate — not founder-approved and not execution authority",
+    "keywords": "FounderGate; operating constitution; governance; evidence; candidate; Edition 1.9; reconciliation",
+    "author": "Technical Publication Editor",
+    "creator": "FounderGate publication build — Edition 1.9 reconciliation",
+    "producer": "ReportLab PDF Library - (opensource)",
+    "creation_date": "D:20260728000000+00'00'",
+    "mod_date": "D:20260728000000+00'00'",
+    "lang": "en-US",
+    "page_labels": "present — decimal from 1",
+    "custom_metadata": "none",
+    "xmp_metadata_stream": "none",
+    "tagged": false,
+    "markinfo": false,
+    "structtreeroot": false,
+    "encrypted": false,
+    "optimized": false
+  },
+  "distinctness": {
+    "rejected_candidate_e0c69526": {
+      "sha256": "e0c69526a3b8768f80f788849dfeb6ed34198e94de90b75dce529285616b19f5",
+      "recomputed_from_inputs_copy": "e0c69526a3b8768f80f788849dfeb6ed34198e94de90b75dce529285616b19f5",
+      "distinct_from_candidate": true,
+      "bytes": 1618314
+    },
+    "earlier_rejected_17f19de3": {
+      "sha256": "17f19de3a2b19c459b3e28ae6e802254237e7308997bbd3e27a739aa02aba12a",
+      "distinct_from_candidate": true
+    },
+    "withdrawn_reconstruction_9f0d0eae": {
+      "sha256": "9f0d0eaec1ad15ceba22ca3b5673e8e31c83969ff9f9f27ae527f20ee1970854",
+      "distinct_from_candidate": true
+    },
+    "state_drift": false
+  },
+  "package_integrity": {
+    "full_input_manifest_files_checked": 17,
+    "full_input_manifest_all_ok": true,
+    "founder_decision_file": "FounderGate_Edition_1.9_Second_Correction_Decision_2026-07-28.md",
+    "founder_decision_digest_in_checksum": "5e791b6dd628b38bf5b12b9afe863315e4c82d56cca4f873623414578e608df2",
+    "founder_decision_digest_recomputed": "5e791b6dd628b38bf5b12b9afe863315e4c82d56cca4f873623414578e608df2",
+    "founder_decision_digest_match": true,
+    "founder_decision_checksum_absolute_path_note": "The .sha256 file records an absolute original-machine path; per instructions this is NOT candidate corruption",
+    "correction_manifest_note": "The supplied correction manifest does not cover every evidence-input file in the ZIP; per instructions this is NOT candidate corruption"
+  },
+  "correction_verification": {
+    "RF1_lifecycle_not_commenced": "CORRECTED at every current-edition locus (pp.2,3,24,25,196,224 stage-3/4 rows, 228, 236, 237); all 15 'not commenced' occurrences bind only to the independent technical review of this artifact, the artifact freeze, the acceptance founder gate, and the publication merge",
+    "RF2_register_all_open_unanswered": "CORRECTED at every locus (p223 Conflicts-left-open row; p223/p224 Clarifications; p224 Version 1 boundary); 0 residual 'all OPEN'/'all open'/'unanswered'",
+    "RF3_false_consistency_assertion": "CORRECTED as a consequence; p228 'Lifecycle terminology — PASS / stated consistently' row is now true",
+    "RF4_orphan_1draft_fragment": "CORRECTED — degenerate one-cell '1. Draft' table above Annex Figure 0-2 removed (p18)",
+    "legitimate_1draft_label_retained": "YES — Annex Table 0-1 (p17) row and Annex Figure 0-2 stage-1 box",
+    "no_unrelated_governance_or_founder_decision_changed": true
+  },
+  "authoritative_totals": {
+    "conflicts_total": 8,
+    "conflicts_resolved": ["CF-001", "CF-006"],
+    "conflicts_open": 6,
+    "clarifications_total": 57,
+    "clarifications_resolved": ["CLR-002", "CLR-003", "CLR-018", "CLR-024", "CLR-042"],
+    "clarifications_open": 52,
+    "all_match_required": true
+  },
+  "identifiers": {
+    "R": {"range": "R-001..R-564", "count": 564, "gaps": 0, "R565_absent": true, "renumbering": false},
+    "C": {"range": "C-001..C-046", "count": 46, "gaps": 0},
+    "G": {"range": "G-001..G-028", "count": 28, "gaps": 0, "note": "template token (G-0nn) on p205 is a format placeholder, not an identifier"},
+    "E": {"range": "E-001..E-022", "count": 22, "gaps": 0},
+    "CF": {"range": "CF-001..CF-008", "count": 8, "gaps": 0},
+    "CLR": {"range": "CLR-001..CLR-057", "count": 57, "gaps": 0},
+    "L": {"range": "L-01..L-22", "count": 22, "gaps": 0},
+    "S": {"range": "S-01..S-14", "count": 14, "gaps": 0, "note": "S-01..S-12 preserved closed source set; S-13/S-14 added in Edition 1.9 (Appendix J.5). The p223 'identifier preservation' row lists preserved ranges only (R-001..R-549, S-01..S-12); the p228 continuity row lists full ranges (R-001..R-564, S-01..S-14). Internally consistent."},
+    "FD": {"range": "FD-001..FD-011", "count": 11, "gaps": 0},
+    "IF": {"range": "IF-01..IF-12", "count": 12, "gaps": 0}
+  },
+  "claim_discipline": {
+    "visible_status_footer_pages": "237/237",
+    "visible_status_subject_metadata": "Candidate — not founder-approved and not execution authority",
+    "pdf_ua_conformance": "NOT TESTED (7 occurrences, all disclosures; no conformance claim)",
+    "tagged_structure": "OPEN — NOT PROVIDED (disclosed, non-blocking)",
+    "vector_preservation": "NOT claimed — 2 occurrences both disclose 'not the original vector figures'",
+    "github_branch_protection": "recorded 'Not currently active for this repository'; deferred under FD-008",
+    "qualification_host": "'No qualification host is currently designated'",
+    "production_commercial_customer_readiness": "all inside prohibited-claim lists or NOT PROVEN/PLANNED dispositions",
+    "founder_approval_merge_activation_version1_completion": "not claimed; matches were conditional/definitional governance rules only"
+  },
+  "preflight": {
+    "page_count_poppler": 237,
+    "page_count_pdfium": 237,
+    "renderers_agree": true,
+    "blank_pages": 0,
+    "black_block_pages_over_60pct_ink": 0,
+    "ink_coverage_pct_reviewer_measure_72dpi": {"min": 0.19, "max": 9.76, "mean": 6.14},
+    "lowest_ink_page_112_explanation": "legitimate 'END OF VOLUME 03' divider page with header/footer/folio",
+    "pages_with_extractable_text": "237/237",
+    "self_measured_character_count_A3.5": 587420,
+    "reviewer_wc_m_character_count": 587420,
+    "fonts": {"count": 5, "family": "DejaVu (Sans/Bold/Oblique/BoldOblique/SansMono)", "embedded": "5/5", "subset": "5/5 (AAAAAA+)", "tounicode": "5/5", "dangling": 0},
+    "bookmarks": {"count": 160, "resolved": 160, "dangling": 0},
+    "internal_links": {"count": 323, "resolved": 323, "unresolved": 0, "uri_links": 0},
+    "markdown_residue_lines": 0,
+    "genuine_unresolved_placeholders": 0,
+    "bare_TBD_XXX_tokens": {"count": 2, "location": "p228 self-referential disclosure sentence naming them; 0 genuine placeholders"},
+    "document_language": "en-US",
+    "page_labels": "decimal from 1"
+  },
+  "visual_inspection": {
+    "p17_annex_table_0-1": "PASS — legitimate '1. Draft' stage row retained; current-state list accurate",
+    "p18_annex_figure_0-2_and_RF4": "PASS — orphan '1. Draft' one-cell table removed; figure clean (stages 1-4 green Complete, 5 amber FINDINGS, 6-10 blue Not reached; legend, caption, reconstruction disclosure present)",
+    "p24_volume01_title_page": "PASS — publication status corrected (delta+clarification COMPLETE; tech review of this artifact + acceptance gate NOT COMMENCED)",
+    "p58_figure_1_authority_chain": "PASS — six boxes, all five annotations legible in-frame, one-way arrow, no garble",
+    "p68_IF-4_two_sha_seal": "PASS — seal chain and prohibited-recursion box legible, no garble",
+    "p142_IF-10_failure_containment": "PASS — decision diamond, FAIL CLOSED, four containment boxes legible, no garble/orphan",
+    "p223_annex_A3.1_table_3-1_start": "PASS — Conflicts-left-open row corrected (CF-001/CF-006 resolved, 6 open)",
+    "p224_annex_table_3-1": "PASS — delta/clarification rows Complete; tech-review/acceptance rows Not commenced; clarifications 5 resolved/52 open; Version 1 boundary shows CLR-002/042 resolved",
+    "p228_annex_table_3-2": "PASS — Lifecycle-terminology consistency row now true; all totals correct; both renderers 237/237; 0 black blocks; tagged OPEN; PDF/UA NOT TESTED",
+    "p236_91.4_steps": "PASS — steps 1-3 COMPLETE, step 4 (freeze) onward NOT COMMENCED; 6 conflicts/52 clarifications open",
+    "p237_91.6_final_status": "PASS — assembly/self-check/delta/clarification/reconciliation complete; tech review of this artifact + later stages not commenced"
+  },
+  "findings": [
+    {
+      "id": "FF-1",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "location": "Informative Annex 3, §A3.3 (p226) — 'Preserved from Edition 1.7 without alteration' list, first item: 'The formatted Version 1 boundary row in Annex Table 3-1'",
+      "observed": "§A3.3 still lists the Version 1 boundary row in Annex Table 3-1 among items 'Preserved from Edition 1.7 without alteration', but the authorized second correction (authorized-change diff item #7) altered that row from 'OPEN / CLR-002 and CLR-042 unanswered' to 'PASS WITH RECORDED EXCEPTION / CLR-002 and CLR-042 resolved by founder decision (FD-001, FD-002)'. The §A3.3 sentence is byte-identical to the rejected candidate (was true there, is now false).",
+      "required": "The §A3.3 provenance list must not claim a row was preserved from Edition 1.7 without alteration when the Edition 1.9 correction altered that row; it should be reworded (or the boundary-row item removed) to agree with §A3.3a and Annex Table 3-1.",
+      "why_it_matters": "Internal-consistency / change-control accuracy defect within the authoring self-check annex: §A3.3 contradicts §A3.3a and the visible Annex Table 3-1 row about whether Edition 1.9 altered the boundary row. It does NOT misstate any register value or lifecycle status (every register/lifecycle fact is stated correctly document-wide), so it does not misrepresent the candidate's governance state to a reader. The correction editor did not disclose it, and the authorized-change diff's '0 unexplained' conclusion overlooks the consequential staleness.",
+      "affected_category": "evidence accuracy / change control (informative self-check annex)",
+      "narrow_correction_scope": "Reword the single §A3.3 list item to remove/qualify 'the formatted Version 1 boundary row in Annex Table 3-1', consistent with §A3.3a's disclosure that CLR-002/CLR-042 were resolved by FD-001/FD-002. Change no register value, no lifecycle status, no other text.",
+      "regeneration_and_re_review": "Not required for Step 5 to proceed (non-blocking). If the document is regenerated for any reason, that new artifact must undergo a fresh independent technical review bound to its new SHA-256."
+    }
+  ]
+}
