@@ -1,0 +1,17 @@
+{
+  "role": "independent_gate_advisor",
+  "runs_after": "checker",
+  "depends_on_checker_verdict": "CLEAN",
+  "verdict": "RUN_FAMILY1_READY_WITH_LIMITS",
+  "run_family1_passed": true,
+  "ready_for_run_family2_preparation": true,
+  "next_step": "true founder real-provider authorization gate",
+  "carried_limits": [
+    "deterministic rehearsal only — no real provider was run; proves harness mechanics, not a real product run",
+    "not production/commercial-ready; no production or commercial readiness claimed",
+    "PR202 + founder-view in-browser status UNKNOWN (inherited from candidate; not exercised)",
+    "Checker and Gate Advisor are review-harness sub-agents, not a FounderGate product provider run; no FounderGate provider/route/key activated",
+    "real-provider run is out of scope and requires a separate explicit TRUE founder real-provider authorization plus candidate re-verification at authorization time"
+  ],
+  "next_safe_action": "Proceed to a TRUE founder real-provider authorization gate: present this rehearsal result to the founder for an explicit real-provider go/no-go; Run Family 2 PREPARATION may proceed in parallel, but no real-provider execution, spend, merge, or PR mutation until the founder authorizes."
+}

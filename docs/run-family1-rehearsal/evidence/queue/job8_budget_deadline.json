@@ -1,0 +1,9 @@
+{
+  "job": "job8_budget_deadline",
+  "utc": "2026-07-29T23:28:39Z",
+  "provider_spend": 0,
+  "no_real_provider": true,
+  "runtime_budget_minutes": 90,
+  "deadline_enforced": true,
+  "verdict": "PASS"
+}

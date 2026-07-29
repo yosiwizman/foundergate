@@ -1,0 +1,9 @@
+{
+  "job": "job4_checker_proof",
+  "utc": "2026-07-29T23:28:38Z",
+  "mode": "read-only",
+  "candidate_identity_ok": true,
+  "selftests_110_ok": true,
+  "mutated_candidate": false,
+  "verdict": "PASS"
+}

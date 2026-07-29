@@ -1,0 +1,38 @@
+{
+  "run_id": "FounderGate_RunFamily1_Deterministic_Rehearsal_20260729T1925ET",
+  "jobs": [
+    {
+      "id": "job1_worktree_lifecycle",
+      "desc": "create isolated job worktree from candidate, verify HEAD/tree, prove teardown"
+    },
+    {
+      "id": "job2_builder_handoff",
+      "desc": "bounded deterministic Builder handoff: harmless additive fixture in job-owned temp path + builder report + recovery state; no provider"
+    },
+    {
+      "id": "job3_machine_verifier",
+      "desc": "focused + full npm test, candidate identity, prohibited-path scan, verifier report"
+    },
+    {
+      "id": "job4_checker_proof",
+      "desc": "deterministic read-only checker over frozen job output -> machine verdict"
+    },
+    {
+      "id": "job5_gate_advisor_proof",
+      "desc": "deterministic read-only advisor over same unchanged output -> machine verdict"
+    },
+    {
+      "id": "job6_recovery",
+      "desc": "write recovery state mid-run, simulate resume, verify identical run_id/candidate/queue position"
+    },
+    {
+      "id": "job7_duplicate_resume_refusal",
+      "desc": "attempt duplicate active-run lock / mismatched resume -> refuse safely"
+    },
+    {
+      "id": "job8_budget_deadline",
+      "desc": "prove zero provider spend + runtime/deadline enforcement"
+    }
+  ],
+  "queue_sha256": "046edf8da61b3be8638af2ab8a5a1620aa31a9a86d01b7e3c58c32f485c867d9"
+}

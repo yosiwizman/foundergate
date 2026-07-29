@@ -1,0 +1,13 @@
+{
+  "role": "independent_checker",
+  "target": "run_family1_rehearsal",
+  "verdict": "CLEAN",
+  "candidate_identity_ok": true,
+  "queue_8of8_pass": true,
+  "selftests": "110/110",
+  "recovery_ok": true,
+  "duplicate_resume_refused": true,
+  "no_real_provider": true,
+  "pr_and_main_untouched": true,
+  "prohibited_touched": false
+}

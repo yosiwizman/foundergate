@@ -1,0 +1,10 @@
+{
+  "job": "job1_worktree_lifecycle",
+  "start": "2026-07-29T23:27:28Z",
+  "end": "2026-07-29T23:27:28Z",
+  "created_head": "5506cfcdda59848e6735af41a214923128773623",
+  "created_tree": "12e9356488f47f5d328933175bbe85c0cf7e3c8d",
+  "identity_match": true,
+  "teardown_ok": true,
+  "verdict": "PASS"
+}

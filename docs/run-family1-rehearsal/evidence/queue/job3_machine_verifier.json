@@ -1,0 +1,9 @@
+{
+  "job": "job3_machine_verifier",
+  "start": "2026-07-29T23:27:28Z",
+  "end": "2026-07-29T23:27:54Z",
+  "identity_match": true,
+  "selftests": "ALL GREEN: 110/110",
+  "npm_test_exit": 0,
+  "verdict": "PASS"
+}

@@ -1,0 +1,7 @@
+{
+  "job": "job6_recovery",
+  "utc": "2026-07-29T23:28:38Z",
+  "recovery_written": true,
+  "resume_identity_match": true,
+  "verdict": "PASS"
+}

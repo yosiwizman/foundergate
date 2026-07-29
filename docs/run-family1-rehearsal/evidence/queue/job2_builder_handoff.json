@@ -1,0 +1,10 @@
+{
+  "job": "job2_builder_handoff",
+  "start": "2026-07-29T23:27:28Z",
+  "end": "2026-07-29T23:27:28Z",
+  "builder_report": true,
+  "recovery_state_written": true,
+  "provider_invoked": false,
+  "repo_mutated": false,
+  "verdict": "PASS"
+}

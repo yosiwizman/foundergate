@@ -1,0 +1,9 @@
+{
+  "job": "job5_gate_advisor_proof",
+  "utc": "2026-07-29T23:28:38Z",
+  "mode": "read-only",
+  "depends_on": "job4_checker_proof=PASS",
+  "advises": "queue mechanics sound; candidate green; ready to continue",
+  "mutated": false,
+  "verdict": "PASS"
+}

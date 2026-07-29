@@ -1,0 +1,7 @@
+{
+  "job": "job7_duplicate_resume_refusal",
+  "utc": "2026-07-29T23:28:38Z",
+  "second_lock_refused": true,
+  "mismatched_resume_refused": true,
+  "verdict": "PASS"
+}

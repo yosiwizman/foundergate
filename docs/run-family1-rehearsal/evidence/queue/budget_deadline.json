@@ -1,0 +1,8 @@
+{
+  "provider_spend": 0,
+  "provider_currency": "none",
+  "max_runtime_minutes": 90,
+  "deadline_enforced": true,
+  "no_real_provider_invocation": true,
+  "checked_utc": "2026-07-29T23:28:39Z"
+}

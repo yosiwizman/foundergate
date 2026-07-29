@@ -1,0 +1,18 @@
+{
+  "run_id": "FounderGate_RunFamily1_Deterministic_Rehearsal_20260729T1925ET",
+  "class": "deterministic no-real-provider rehearsal",
+  "candidate": {"branch":"run/pr201-pr202-integration-wave-20260729T1835ET","commit":"5506cfcdda59848e6735af41a214923128773623","tree":"12e9356488f47f5d328933175bbe85c0cf7e3c8d","base":"origin/main 4f2394a5fa78581507ec08ee5a18cedc96cbdadf"},
+  "no_provider_activation": true,
+  "no_real_claude_provider_invocation": true,
+  "no_customer_private_production_data": true,
+  "no_merge": true,
+  "no_pr_mutation": true,
+  "budget": {"provider_spend": 0, "provider_currency": "none", "max_runtime_minutes": 90},
+  "max_correction_cycles": 3,
+  "queue_items": ["job1_worktree_lifecycle","job2_builder_handoff","job3_machine_verifier","job4_checker_proof","job5_gate_advisor_proof","job6_recovery","job7_duplicate_resume_refusal","job8_budget_deadline"],
+  "stop_conditions": ["true founder gate","irreversible/live action","same failure 3x","budget/deadline reached","missing/contradictory evidence","unsafe mutation","evidence corruption","scope departure","auth/session failure","queue exhausted"],
+  "recovery_rules": "each job writes evidence/recovery/recovery_state.json (run_id + candidate + queue position); resume must match exactly or refuse.",
+  "duplicate_resume_refusal_rule": "a second active-operation lock for the same run_id, or a resume whose run_id/candidate/queue-hash mismatches, is REFUSED (fail closed).",
+  "evidence_outputs": ["queue.json","job_*.json","logs/job_*.log","recovery_state.json","duplicate_resume_refusal.json","budget_deadline.json","no_real_provider_invocation.txt","final_rehearsal_freeze.json","checker_verdict.json","gate_advisor_verdict.json","SHA256SUMS.txt"],
+  "final_verdicts": ["RUN_FAMILY1_READY_WITH_LIMITS","RUN_FAMILY1_TRUE_FOUNDER_GATE","CORRECTION_REQUIRED","INSUFFICIENT_EVIDENCE","HOLD"]
+}

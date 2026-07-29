@@ -1,0 +1,6 @@
+{
+  "second_lock_attempt_refused": true,
+  "reason": "active lock already held by run_id=FounderGate_RunFamily1_Deterministic_Rehearsal_20260729T1925ET",
+  "mismatched_resume_refused": true,
+  "fail_closed": true
+}
