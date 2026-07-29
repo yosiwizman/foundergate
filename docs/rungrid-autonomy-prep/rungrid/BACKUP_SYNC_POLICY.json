@@ -1,0 +1,12 @@
+{
+  "disk_first": "Every material state transition is written to the run workspace on disk before proceeding.",
+  "local_git": "Work committed to run-scoped local branches only (run/<wave>/<lane>, run/<wave>/integration).",
+  "github_push": {
+    "default": "NONE",
+    "allowed_only": "explicitly-authorized non-main evidence/candidate branches, AFTER secret scan passes and remote==local is verified",
+    "never": ["main push", "PR create/update unless separately authorized", "PR #200/#201 mutation", "force-push"]
+  },
+  "sealed_zip": "Primary deliverable at each true gate: one integrity-verified ZIP (SHA256SUMS + unzip proof) revealed in Finder.",
+  "secret_scan_patterns": ["AKIA[0-9A-Z]{16}", "-----BEGIN [A-Z ]*PRIVATE KEY-----", "ghp_/gho_ tokens", "xox tokens", "AIza google keys"],
+  "known_fixtures_excluded": ["sk-live-SHOULD-NEVER-APPEAR", "/Users/private/store"]
+}

@@ -1,0 +1,43 @@
+{
+  "name": "FounderGate RunGrid Autonomy Controller",
+  "version": "1.0.0",
+  "created_utc": "2026-07-29T16:39Z",
+  "purpose": "Drive FounderGate work gate-to-gate with ONE founder action, eliminating repeated manual prompt relays, while preserving every hard safety boundary and the freeze -> Checker -> Gate Advisor discipline.",
+  "roles": {
+    "terminal0": {"count": 1, "authority": "integration sheriff; owns reconciliation, freezing, packaging; does NOT certify its own work"},
+    "builders": {"max_parallel": 3, "class": "wide-safe-additive only", "isolation": "one run-scoped worktree/branch each, disjoint owned paths"},
+    "narrow_sensitive_writer": {"max": 1, "note": "at most ONE narrow-sensitive writer active, and only under separate explicit authorization; default 0"},
+    "checker": {"count": 1, "mode": "read-only, independent, may not repair"},
+    "gate_advisor": {"count": 1, "mode": "read-only, separate, runs after Checker, emits only allowed verdicts"},
+    "monitor": {"count": 1, "mode": "read-only evidence/heartbeat writer"}
+  },
+  "invariants": [
+    "one Terminal-0 integration authority",
+    "no two lanes own the same path",
+    "wide-safe lanes only unless a narrow-sensitive writer is separately authorized (default none)",
+    "candidate freeze before any review",
+    "no post-freeze/post-review mutation without returning to correction + fresh Checker & Advisor",
+    "Terminal-0 does not certify its own work",
+    "all material state written to disk (no terminal-only evidence)",
+    "final ZIP only at true gates"
+  ],
+  "hard_prohibitions": [
+    "no merge", "no mark-ready/undraft", "no PR #200 mutation", "no PR #201 mutation",
+    "no protected-main update", "no deployment", "no provider activation", "no founder key enrollment",
+    "no customer/private/production data", "no AKIOR", "no M1", "no CI weakening", "no governance rewrite",
+    "no broad permission/classifier/allowlist change", "no final beta acceptance",
+    "no commercial/production-ready claims", "no package.json/package-lock mutation",
+    "no GitHub-visible mutation except explicitly-authorized non-main evidence branch pushes (secret-scanned)"
+  ],
+  "founder_interaction_policy": {
+    "routine_internal_gates": "NO founder prompt relay — Terminal-0 advances automatically Builder->freeze->Checker->Advisor->reconcile->package",
+    "true_founder_gates_only": [
+      "mark a PR ready-for-review or merge",
+      "protected-main update", "provider activation / key enrollment / deploy",
+      "any irreversible or outward-facing action beyond an authorized non-main evidence push",
+      "evidence contradiction / unsafe mutation / ambiguous state"
+    ],
+    "at_true_gate": "STOP, package a sealed ZIP, surface a single plain-English decision; do not proceed"
+  },
+  "authority_basis": "chains on the sealed L2/L3/L4/PR201 packages (all Checker CLEAN + Advisor READY_WITH_LIMITS)."
+}

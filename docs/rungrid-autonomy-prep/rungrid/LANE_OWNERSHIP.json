@@ -1,0 +1,14 @@
+{
+  "policy": "No two lanes own the same path. All lanes wide-safe-additive by default. Owned paths are NEW disjoint directories; existing shared primitives may be imported read-only.",
+  "reserved_paths_forbidden_to_all_lanes": [
+    ".github/workflows/", "docs/doctrine/", "src/mock-providers/", "src/activation-path/",
+    "package.json", "package-lock.json", "provider/key/deploy/classifier/permission/Constitution paths"
+  ],
+  "lane_slots": [
+    {"lane": "A", "theme": "founder dashboard / command center / no-invented-state", "example_owned_paths": ["src/ui/<new-dir>/"], "reuses_readonly": ["src/observability/status-core.mjs"]},
+    {"lane": "B", "theme": "URL-drop safety check / repository intake / evidence drawer", "example_owned_paths": ["src/founder_url_drop/<new-dir>/"], "reuses_readonly": []},
+    {"lane": "C", "theme": "live run console / evidence decision / install doctor / qualification", "example_owned_paths": ["src/autonomous-run/<new-dir>/", "visual-fixtures/", "tests/e2e-l3-visual/"], "reuses_readonly": ["src/observability/status-core.mjs"]}
+  ],
+  "narrow_sensitive_writer": {"default_active": false, "max_active": 1, "requires": "separate explicit founder authorization naming the exact sensitive path"},
+  "overlap_check_rule": "Before build, compute the union of owned paths; if any path appears in two lanes, HOLD."
+}

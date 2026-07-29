@@ -1,0 +1,20 @@
+{
+  "role": "independent_checker",
+  "target": "RunGrid_prep",
+  "verdict": "CLEAN",
+  "checks": [
+    {"id": 1, "result": "PASS", "detail": "SOURCE_PACKAGE_INVENTORY.md + package_index.json cover L2/L3/L4/PR201 with verdicts + Checker CLEAN/Advisor READY; PR201 zip sha256=3c66f6826e4b535b03b2737635356759758e57b3a93771bab92e7f8ccec52bc8 matches; FINAL_VERDICT=PR201_MERGE_GATE_PREP_READY_WITH_LIMITS"},
+    {"id": 2, "result": "PASS", "detail": "PR201 head a6a1595 OPEN/draft, PR200 head 7d865fe OPEN/draft, origin/main 4f2394a; CURRENT_STATE_MAP.md matches; no drift"},
+    {"id": 3, "result": "PASS", "detail": "only lock active-product-operation.lock; workspace file points to this prep workspace; no competing lock"},
+    {"id": 4, "result": "PASS", "detail": "Desktop + packaged launcher exist, executable, bash -n OK, byte-identical; script is read-only (verify/read-baseline/stage-prompt/create-workspace+monitor only); no merge/mark-ready/deploy/provider/key/PR-mutation/main-push/AKIOR"},
+    {"id": 5, "result": "PASS", "detail": "DRY_QUALIFICATION 14/14 PASS 0 fail; dry_qualification_result.json result=PASS no_product/pr/main_mutation=true; repo status clean, HEAD ba7d654"},
+    {"id": 6, "result": "PASS", "detail": "RUNGRID_CONTRACT/MACRO_QUEUE/LANE_OWNERSHIP/STOP_CONDITIONS/BACKUP_SYNC_POLICY all valid JSON; FOUNDER_HAND_BURDEN_PLAN.md present; enforces one Terminal-0, disjoint paths, <=1 narrow-sensitive writer (default 0), wide-safe default, independent Checker, separate Advisor, freeze-before-review, no post-review mutation, all hard prohibitions, final ZIP only at true gates"},
+    {"id": 7, "result": "PASS", "detail": "7 prompts present (TERMINAL0_SUPERVISOR, BUILDER_WIDE_SAFE_A/B/C, CHECKER_READONLY, GATE_ADVISOR_READONLY, POST_FAILURE_DISK_AUDIT); each has MACHINE/WHEN placeholders, evidence outputs, stop conditions"},
+    {"id": 8, "result": "PASS", "detail": "hand-burden plan + founder_actions_per_wave=1 reduce routine per-gate relays to 0; interrupt only at true gates"},
+    {"id": 9, "result": "PASS", "detail": "no merge/push/PR/main mutation in this prep run; AKIOR attested out of scope only"}
+  ],
+  "launcher_bash_n": "OK",
+  "dry_qualification": "PASS",
+  "pr_drift": false,
+  "prohibited_touched": false
+}

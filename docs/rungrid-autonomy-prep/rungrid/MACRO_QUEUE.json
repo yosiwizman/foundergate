@@ -1,0 +1,20 @@
+{
+  "macro_queue_version": "1.0.0",
+  "description": "Ordered stages the RunGrid controller executes autonomously between true founder gates. Each stage writes disk evidence and advances without a founder prompt relay.",
+  "stages": [
+    {"id": 0, "name": "preflight", "actions": ["verify tools", "verify repo clean", "verify no competing lock", "take run lock", "capture live PR/main/tmux/process state"], "gate": "internal", "hold_if": ["competing lock", "repo dirty in a way blocking work", "PR/main drift from expected"]},
+    {"id": 1, "name": "truth_map", "actions": ["read prior sealed packages", "build current-state map", "confirm invariants"], "gate": "internal"},
+    {"id": 2, "name": "lane_plan", "actions": ["select <=3 wide-safe lanes with disjoint owned paths", "write lane contracts"], "gate": "internal", "hold_if": ["path overlap", "any lane needs a prohibited path"]},
+    {"id": 3, "name": "build", "actions": ["each builder implements only in owned paths", "focused tests", "<=3 corrections/lane"], "gate": "internal", "hold_if": ["same failure survives 3 corrections", "scope departure"]},
+    {"id": 4, "name": "machine_verify", "actions": ["full selftests", "browser/a11y if safely runnable else UNKNOWN", "secret scan", "no-mutation proof"], "gate": "internal", "hold_if": ["test regression", "real secret", "prohibited path touched"]},
+    {"id": 5, "name": "freeze", "actions": ["freeze candidate identity (branch/commit/tree)"], "gate": "internal"},
+    {"id": 6, "name": "checker", "actions": ["independent read-only Checker re-verifies"], "gate": "internal", "hold_if": ["Checker HOLD/FINDINGS unresolved"]},
+    {"id": 7, "name": "gate_advisor", "actions": ["separate read-only Gate Advisor emits verdict"], "gate": "internal", "hold_if": ["Advisor CORRECTION_REQUIRED/INSUFFICIENT_EVIDENCE/HOLD"]},
+    {"id": 8, "name": "reconcile", "actions": ["local integration into isolated worktree (no merge)", "integrated tests"], "gate": "internal"},
+    {"id": 9, "name": "backup", "actions": ["secret scan", "commit to local run-scoped branch", "optional authorized non-main push"], "gate": "internal", "hold_if": ["secret detected", "push not authorized"]},
+    {"id": 10, "name": "package", "actions": ["seal ZIP + SHA256SUMS + integrity proof", "reveal in Finder"], "gate": "true_founder_gate_boundary"},
+    {"id": 11, "name": "await_true_gate", "actions": ["surface ONE plain-English decision (e.g. mark-ready/merge)"], "gate": "TRUE_FOUNDER_GATE", "stop": true}
+  ],
+  "advance_rule": "Terminal-0 advances stage N->N+1 automatically while gate=='internal' and no hold_if fires. It STOPS only at a true_founder_gate or a fired stop condition.",
+  "founder_actions_per_wave": 1
+}

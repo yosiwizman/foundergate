@@ -1,0 +1,15 @@
+{
+  "machine_readable_stop_conditions": [
+    {"id": "competing_lock", "check": "active-product-operation.lock exists and points to another live run", "action": "HOLD"},
+    {"id": "pr_drift", "check": "PR#201 head != a6a1595 OR PR#200 head != 7d865fe OR origin/main != 4f2394a (unless a newer authorized baseline is recorded)", "action": "HOLD"},
+    {"id": "true_founder_gate", "check": "next action requires merge/mark-ready/main-push/provider/key/deploy/private-data", "action": "STOP_PACKAGE_TRUE_FOUNDER_GATE"},
+    {"id": "repeated_failure", "check": "same material failure survives 3 correction cycles in a lane", "action": "CORRECTION_REQUIRED_or_HOLD"},
+    {"id": "unsafe_mutation", "check": "an action would touch a prohibited path or mutate main/PR", "action": "HOLD"},
+    {"id": "secret_detected", "check": "real secret in staged/diff material (excluding known redaction fixtures)", "action": "HOLD"},
+    {"id": "evidence_contradiction", "check": "sealed evidence disagrees with live state or SHA mismatch", "action": "HOLD"},
+    {"id": "scope_departure", "check": "diff includes a path outside declared owned paths", "action": "HOLD"},
+    {"id": "auth_session_failure", "check": "gh/git auth or model/tool session ambiguous", "action": "HOLD"},
+    {"id": "deadline", "check": "wall-clock budget reached", "action": "STOP_PACKAGE"},
+    {"id": "macro_queue_exhausted", "check": "all authorized stages complete", "action": "STOP_PACKAGE"}
+  ]
+}

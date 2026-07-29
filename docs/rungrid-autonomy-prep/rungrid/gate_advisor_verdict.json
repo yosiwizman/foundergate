@@ -1,0 +1,35 @@
+{
+  "role": "independent_gate_advisor",
+  "runs_after": "checker",
+  "depends_on_checker_verdict": "CLEAN",
+  "verdict": "RUNGRID_AUTONOMY_READY_WITH_LIMITS",
+  "scope": "preparation_only_not_a_live_wave",
+  "independently_verified": {
+    "source_packages": "L2/L3/L4/PR201 all Checker CLEAN + Advisor READY_WITH_LIMITS; PR201 chains to a6a1595",
+    "live_pr201_head": "a6a1595cf8e00e829db4e0f4d1b9ff60acd97ae7 OPEN draft (matches expected)",
+    "live_pr200_head": "7d865fe61e3a3d1615e97711724ad00909d97359 OPEN draft (untouched)",
+    "origin_main": "4f2394a5fa78581507ec08ee5a18cedc96cbdadf (matches expected)",
+    "repo_head": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423 dirty=0 (no product/pr/main mutation)",
+    "competing_lock": false,
+    "lock_is_self_referential": true,
+    "launcher_bash_n": "OK",
+    "launcher_read_only_safe": true,
+    "dry_qualification": "PASS 14/14 no_product/pr/main_mutation",
+    "design_jsons_machine_readable": true,
+    "invariants_enforced": true,
+    "hard_prohibitions_present": true,
+    "prompts_present": 7,
+    "founder_actions_per_wave": 1,
+    "honest_limits_stated": true
+  },
+  "carried_limits": [
+    "preparation only - controller staged not exercised; real launcher not run; autonomous wave not executed",
+    "every true founder gate still STOPS for the founder (mark-ready/merge/main-push/provider/key/deploy/private-data/irreversible); none authorized here",
+    "wide-safe-additive lanes only (<=3 disjoint new paths); narrow-sensitive writer default-OFF, needs separate explicit authorization naming the exact path",
+    "no merge / no provider / no deploy without separate explicit founder authorization",
+    "inherited: chromium-desktop only (firefox/webkit/mobile UNKNOWN); no pixel-diff baseline; not e2e vs live service; not production/commercial-ready",
+    "pinned baseline PR201 a6a1595 / PR200 7d865fe / origin-main 4f2394a; any drift STOPs launcher by design and requires a new authorized prep run",
+    "prep run currently holds active-product-operation.lock (self-referential); launcher refuses to start while a lock exists, so this lock must be retired before a live wave (correct fail-safe, not a defect)"
+  ],
+  "next_safe_action": "Founder reviews this prep package. To run the first autonomous wave: retire the current self-referential active-product-operation.lock held by this prep run, then do the single founder action - double-click ~/Desktop/Start_FounderGate_RunGrid_Autonomy.command. Terminal-0 drives the wave gate-to-gate and STOPS at the first true founder gate with a sealed ZIP and one plain-English decision. No merge / mark-ready / provider / deploy is authorized by this advisory."
+}
