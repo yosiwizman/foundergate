@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L3 — Founder Dashboard status cards</title>
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; margin: 2rem; background: #0b0b0c; color: #ececf0; }
+  h1 { font-size: 1.15rem; margin: 0 0 1rem; }
+  pre { background: #17171b; border: 1px solid #2a2a30; padding: 1rem 1.25rem; border-radius: 10px; white-space: pre-wrap; line-height: 1.5; font-size: 0.95rem; }
+  .tag { display:inline-block; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:#9aa; margin-bottom:.5rem; }
+</style>
+</head>
+<body>
+<main>
+  <span class="tag">Level 2 · Lane A · view-model rendered in a real browser</span>
+  <h1>Founder Command Center — status cards</h1>
+  <pre id="out" data-testid="dashboard-out">loading…</pre>
+</main>
+  <script type="module">
+    import { buildCards, renderCardsText } from "/src/ui/dashboard/status-cards.mjs";
+    // Deterministic sample: fresh heartbeat + RUNNING -> LIVE, age 30s.
+    const HB_MS = 1784428534019, NOW = HB_MS + 30000;
+    const cards = buildCards({ runId: "run-L3", state: { state: "RUNNING" }, heartbeat: { ts: HB_MS }, nowMs: NOW });
+    document.getElementById("out").textContent = renderCardsText(cards);
+    window.__L3_READY = true;
+  </script>
+</body>
+</html>
