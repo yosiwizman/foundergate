@@ -1,0 +1,11 @@
+import { guardIntake, renderGuardText } from "./intake-guard.mjs";
+let n=0;const f=[];const ok=(x,c)=>{n++;if(!c){f.push(x);console.log("  FAIL "+x)}else console.log("  ok   "+x)};
+ok("01 accepted -> PROCEED", guardIntake("https://github.com/pypa/sampleproject").policy==="PROCEED_TO_READONLY_SAFETY_CHECK");
+ok("02 http -> REFUSE fail-closed", guardIntake("http://github.com/a/b").policy==="REFUSE_FAIL_CLOSED");
+ok("03 garbage -> REFUSE", guardIntake("nope").policy==="REFUSE_FAIL_CLOSED");
+ok("04 empty -> REFUSE", guardIntake("").allowed===false);
+ok("05 never fetches", guardIntake("https://github.com/a/b").fetch_performed===false);
+ok("06 requires_safety_check only when allowed", guardIntake("https://github.com/a/b").requires_safety_check===true && guardIntake("http://x/a/b").requires_safety_check===false);
+ok("07 frozen", Object.isFrozen(guardIntake("https://github.com/a/b")));
+ok("08 render deterministic", renderGuardText(guardIntake("https://github.com/a/b"))===renderGuardText(guardIntake("https://github.com/a/b")));
+console.log(f.length?`\nRED: ${f.length}/${n}`:`\nINTAKE-GUARD-SELFTEST: PASS (${n} checks)`);process.exit(f.length?1:0);
