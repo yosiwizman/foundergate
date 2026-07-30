@@ -1,0 +1,25 @@
+{
+  "unit_tests": {
+    "file": "scripts/fg_duration_classify.selftest.mjs",
+    "result": "13 passed, 0 failed",
+    "cases": [
+      "both monitor & ledger >= 120min continuous -> LEVEL2_TWO_HOUR_PROVEN (pass=true)",
+      "monitor < 120 -> LEVEL2_DURATION_NOT_PROVEN",
+      "ledger < 120 -> LEVEL2_DURATION_NOT_PROVEN",
+      "timer completed but ledger missing -> INSUFFICIENT_EVIDENCE",
+      "monitor missing -> INSUFFICIENT_EVIDENCE",
+      "write-failure marker -> HELD_EVIDENCE_WRITE_FAILURE (pass=false)",
+      "mid-run 4h gap (L3B-shaped) -> INSUFFICIENT_EVIDENCE (continuity broken)",
+      "span == 120 exact boundary -> PROVEN",
+      "span 119 just under -> NOT_PROVEN",
+      "timestamp extraction ignores non-timestamped noise",
+      "reported spans are honest"
+    ]
+  },
+  "integration_tests_phase4": [
+    "Desktop run folder moved -> fixed-root logs continue",
+    "Desktop run folder missing -> fixed-root logs continue",
+    "fixed-root write failure -> HELD_EVIDENCE_WRITE_FAILURE, no PASS",
+    "duration proof uses fixed-root logs only"
+  ]
+}

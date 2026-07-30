@@ -1,0 +1,25 @@
+{
+  "run_id": "FounderGate_Level3C_LoggingFix_Level2_Proof_20260730T0845ET",
+  "when_et": "2026-07-30T08:45 EDT",
+  "machine": "Yossi Mac Studio",
+  "max_runtime_hours": 3.5,
+  "part_a_max_minutes": 60,
+  "part_b_min_wall_clock_minutes": 120,
+  "provider_invocations_planned": 0,
+  "provider_invocations_max_if_needed": 1,
+  "provider_needed": false,
+  "no_customer_private_production_data": true,
+  "no_external_sends": true,
+  "fixed_evidence_root": "~/.foundergate/runs/FounderGate_Level3C_LoggingFix_Level2_Proof_20260730T0845ET/",
+  "level2_proof_root": "~/.foundergate/runs/FounderGate_Level3C_LoggingFix_Level2_Proof_20260730T0845ET/level2-proof/",
+  "prohibited": ["level3_run","level4_run","merge","mark_ready","pr_mutation","pr_creation","provider_activation_beyond_1","founder_key_enrollment","deployment","billing","external_sends","customer_private_production_data","AKIOR","M1","ci_weakening","governance_rewrite","broad_permission_classifier_allowlist_change","production_commercial_customer_ready_claims","final_beta_acceptance","protected_main_update"],
+  "allowed_final_statuses": [
+    "LEVEL3C_LOGGING_FIX_READY_AND_LEVEL2_TWO_HOUR_PROVEN",
+    "LEVEL3C_LOGGING_FIX_READY_LEVEL2_NOT_RUN",
+    "LEVEL2_DURATION_NOT_PROVEN",
+    "CORRECTION_REQUIRED",
+    "INSUFFICIENT_EVIDENCE",
+    "HOLD"
+  ],
+  "backup_branch": "run/level3c-loggingfix-level2-proof-20260730T0845ET"
+}

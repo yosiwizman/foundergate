@@ -1,0 +1,16 @@
+2026-07-30T13:02:17Z FIXED_ROOT=/Users/yosiwizman/.foundergate/runs/FounderGate_Level3C_LoggingFix_Level2_Proof_20260730T0845ET_QUAL
+2026-07-30T13:02:17Z DESKTOP_FOLDER=/Users/yosiwizman/Desktop/_l3c_qual_disposable_run
+2026-07-30T13:02:17Z CHECK fixed root is OUTSIDE desktop folder: PASS
+2026-07-30T13:02:17Z launched monitor=3226 ledger=3227 driver=3228
+2026-07-30T13:03:02Z T1 fixed-root lines monitor=       9 ledger=       9 timer=       9
+2026-07-30T13:03:02Z CHECK monitor writes to fixed root: PASS
+2026-07-30T13:03:02Z CHECK ledger writes to fixed root: PASS
+2026-07-30T13:03:02Z CHECK timer writes to fixed root: PASS
+2026-07-30T13:03:02Z MOVED desktop folder /Users/yosiwizman/Desktop/_l3c_qual_disposable_run -> /Users/yosiwizman/Desktop/_l3c_qual_disposable_run_MOVED
+2026-07-30T13:03:42Z T2 fixed-root lines monitor=      17 ledger=      17 timer=      17
+2026-07-30T13:03:42Z CHECK fixed-root logging CONTINUES after desktop move: PASS
+2026-07-30T13:03:42Z CHECK duration proof reads fixed-root logs only: LEVEL2_TWO_HOUR_PROVEN
+2026-07-30T13:03:42Z FORCED write failure: chmod 555 /Users/yosiwizman/.foundergate/runs/FounderGate_Level3C_LoggingFix_Level2_Proof_20260730T0845ET_QUAL/level2-proof
+2026-07-30T13:04:07Z CHECK write failure -> HELD_EVIDENCE_WRITE_FAILURE: PASS ({"state":"HELD_EVIDENCE_WRITE_FAILURE","reason":"evidence dir not writable: /Users/yosiwizman/.foundergate/runs/FounderGate_Level3C_LoggingFix_Level2_Proof_20260730T0845ET_QUAL/level2-proof","utc":"2026-07-30T13:03:44Z"})
+2026-07-30T13:04:10Z CHECK loops halted after write failure: PASS
+2026-07-30T13:04:10Z QUALIFICATION COMPLETE

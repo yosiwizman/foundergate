@@ -1,0 +1,20 @@
+2026-07-30T14:02:09Z caffeinate started pid=10880 (self-expires ~135min)
+2026-07-30T14:02:09Z launched monitor=10884 ledger=10885 driver=10886 (writing to /Users/yosiwizman/.foundergate/runs/L3C_SMOKE/level2-proof)
+2026-07-30T14:02:29Z startup guard OK: monitor_lines=       4 ledger_lines=       4
+2026-07-30T14:04:30Z driver process ended
+2026-07-30T14:04:30Z stopped monitor/ledger/caffeinate
+/Users/yosiwizman/Desktop/founder gate over all documents /FounderGate_Level3C_LoggingFix_Level2_Proof_20260730T0845ET/scripts/fg_level2_proof.sh: line 15: 10880 Terminated: 15          caffeinate -dimsu -t 8100 > /dev/null 2>&1
+2026-07-30T14:04:30Z classification rc=1 verdict=LEVEL2_DURATION_NOT_PROVEN
+2026-07-30T14:04:30Z PART_B_COMPLETE
+{
+  "pass": false,
+  "min_minutes": 120,
+  "monitor_samples": 28,
+  "ledger_samples": 28,
+  "monitor_span_min": 2.3,
+  "ledger_span_min": 2.3,
+  "monitor_max_gap_min": 0.1,
+  "ledger_max_gap_min": 0.1,
+  "verdict": "LEVEL2_DURATION_NOT_PROVEN",
+  "reason": "monitor=2.3min ledger=2.3min < required 120min"
+}

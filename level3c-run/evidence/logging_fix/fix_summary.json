@@ -1,0 +1,19 @@
+{
+  "fix": "move-resilient logging + fail-closed evidence + duration-from-disk classification",
+  "one_writer": "Terminal-0 (standalone harness scripts; product repo untouched)",
+  "fixed_evidence_root": "$HOME/.foundergate/runs/<run_id>/  (outside Desktop/Finder)",
+  "behaviors": {
+    "1_fixed_root": "all duration-critical logs write to $HOME/.foundergate/runs/<run_id>/ (and /level2-proof subdir), never the Desktop folder",
+    "2_desktop_convenience_only": "Desktop run folder holds only human-readable summary + index/symlink; authoritative logs are in the fixed root",
+    "3_required_fixed_files": ["monitor.log","ledger.log","timer.log","health_checks.log","git_lock_checks.log","recovery_checks.log","run_root_identity.json","evidence_root_identity.json","status.json"],
+    "4_write_success_checked": "fg_append verifies the file byte count grew after each append",
+    "5_fail_closed": "on any write/mkdir/writable failure -> fg_held writes status.json state=HELD_EVIDENCE_WRITE_FAILURE, loop exits 3, no PASS; if root unreachable, marker + message go to stderr and process still exits nonzero",
+    "6_duration_from_disk": "fg_duration_classify.mjs decides verdict ONLY from monitor+ledger timestamp spans",
+    "7_timer_never_pass": "driver reaching wall-clock minimum writes TIMER_MINIMUM_REACHED, explicitly 'NOT a pass'; classifier decides",
+    "8_desktop_move_survives": "logs live in fixed root, unaffected by Desktop folder relocation",
+    "9_fixed_root_unavailable_fail_closed": "root missing/unwritable -> HELD, nonzero exit"
+  },
+  "files": ["scripts/fg_run_env.sh","scripts/fg_monitor.sh","scripts/fg_ledger.sh","scripts/fg_driver.sh","scripts/fg_duration_classify.mjs","scripts/fg_duration_classify.selftest.mjs"],
+  "syntax": {"bash_n": "OK (4/4)", "node_check": "OK"},
+  "forbidden_untouched": ["package.json","package-lock.json","src/**","governance/CI","launcher redesign","permission/classifier/allowlist"]
+}

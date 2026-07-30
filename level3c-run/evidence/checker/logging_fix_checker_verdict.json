@@ -1,0 +1,22 @@
+{
+  "phase": 5,
+  "reviewer": "independent read-only Checker (Terminal-0 Agent faculty; NOT a provider invocation)",
+  "verdict": "CLEAN",
+  "checks": [
+    {"n": 1, "topic": "L3B defect preserved honestly", "result": "PASS"},
+    {"n": 2, "topic": "fixed evidence root outside Desktop", "result": "PASS"},
+    {"n": 3, "topic": "desktop move cannot break fixed-root logs", "result": "PASS"},
+    {"n": 4, "topic": "write failure -> HELD, loops exit (fail-closed)", "result": "PASS"},
+    {"n": 5, "topic": "duration/PASS only from monitor+ledger disk spans; timer != pass", "result": "PASS"},
+    {"n": 6, "topic": "classifier unit tests 13/13", "result": "PASS"},
+    {"n": 7, "topic": "no forbidden files/actions touched", "result": "PASS"},
+    {"n": 8, "topic": "no Level-2 proof started before qualification", "result": "PASS"}
+  ],
+  "findings": [],
+  "live_event": "During the Checker's audit the founder physically relocated the Desktop run folder into '~/Desktop/founder gate over all documents /' — the exact L3B trigger. All evidence remained intact and readable; the fixed evidence root (~/.foundergate/runs/...) was unaffected. Empirical re-confirmation of move-resilience.",
+  "non_blocking_caveats": [
+    "HELD status split: fg_held writes the HELD marker to the ROOT status.json (unprefixed); fg_status_running / TIMER_MINIMUM_REACHED write the SUBDIR status.json. For Part-B classification, point fg_duration_classify.mjs --status at the ROOT status.json so a late HELD is never missed. (Cannot manufacture a false pass; a truncated log already yields short spans -> NOT_PROVEN/INSUFFICIENT.)",
+    "fg_driver.sh header comment mentions 'WATCH MODE'; the implementation simply runs all loops continuously until the wall-clock minimum (there is no macro-queue to exhaust, so the loops themselves are the continuous watch). Cosmetic doc wording; immaterial to the gate."
+  ],
+  "decision": "CLEAN -> eligible to proceed to Part B (actual Level-2 two-hour proof)"
+}

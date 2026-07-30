@@ -1,0 +1,8 @@
+2026-07-30T13:57:18Z caffeinate started pid=8998 (self-expires ~135min)
+2026-07-30T13:57:18Z launched monitor=9002 ledger=9003 driver=9004 (writing to /Users/yosiwizman/.foundergate/runs/L3C_SMOKE/level2-proof)
+2026-07-30T13:57:38Z startup guard OK: monitor_lines=       4 ledger_lines=       4
+2026-07-30T13:59:38Z driver process ended
+2026-07-30T13:59:38Z stopped monitor/ledger/caffeinate
+/Users/yosiwizman/Desktop/founder gate over all documents /FounderGate_Level3C_LoggingFix_Level2_Proof_20260730T0845ET/scripts/fg_level2_proof.sh: line 15:  8998 Terminated: 15          caffeinate -dimsu -t 8100 > /dev/null 2>&1
+2026-07-30T13:59:39Z classification rc=0 verdict=
+2026-07-30T13:59:39Z PART_B_COMPLETE

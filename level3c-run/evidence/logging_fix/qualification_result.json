@@ -1,0 +1,21 @@
+{
+  "phase": 4,
+  "kind": "move-resilience REPAIR qualification (NOT Level 2, NOT endurance)",
+  "attempts": [
+    {"attempt": 1, "result": "FAIL", "found": "driver wrote run_root_identity.json into level2-proof/ subdir before it existed -> failed closed at startup; timer.log empty", "action": "fixed fg_init_root to create the run subdir up front"},
+    {"attempt": 2, "result": "PASS"}
+  ],
+  "checks_attempt2": {
+    "fixed_root_outside_desktop": "PASS",
+    "monitor_writes_fixed_root": "PASS",
+    "ledger_writes_fixed_root": "PASS",
+    "timer_writes_fixed_root": "PASS",
+    "fixed_root_logging_continues_after_desktop_move": "PASS (monitor/ledger/timer 9 -> 17 lines despite Desktop folder relocation)",
+    "duration_proof_reads_fixed_root_only": "PASS",
+    "fixed_root_write_failure_halts_HELD": "PASS (status.json state=HELD_EVIDENCE_WRITE_FAILURE)",
+    "loops_halt_after_write_failure_fail_closed": "PASS (0 loops alive)"
+  },
+  "unit_tests": "fg_duration_classify.selftest.mjs 13/13 pass",
+  "verdict": "MOVE_RESILIENT_LOGGING_QUALIFIED",
+  "note": "Gate value demonstrated: qualification caught a real startup bug in the new driver before any 2-hour run; fixed and re-proven."
+}

@@ -1,0 +1,11 @@
+{
+  "phase": 8,
+  "reviewer": "independent read-only Gate Advisor (separate from Checker; Terminal-0 Agent faculty, not a provider invocation)",
+  "verdict": "LEVEL2_TWO_HOUR_PROVEN_READY_FOR_LEVEL3_RETRY",
+  "level2_proven": true,
+  "level3_status": "NOT_PROVEN_BUT_NOW_ATTEMPTABLE — prior L3/L3B best ~62 min (evidence died on a folder move); the move-resilient fail-closed harness that just held a continuous 120.2 min is the same harness a 5-hour attempt would use, so the L3B failure mode is retired. Five-hour endurance remains unproven and is the next rung.",
+  "level4_status": "BLOCKED — Level 4 (overnight/8h) requires a proven Level 3, which does not yet exist. Unchanged.",
+  "true_founder_gate": "YES for escalation only. This operation authorized Part A + one 2-hour Part B (both qualified/CLEAN). It did NOT authorize a Level-3 run. Launching a ~5-hour endurance run is a decision only the founder can make and must be explicitly authorized. No provider spend / external sends in scope.",
+  "next_safe_action": "STOP and report: Level-2 two-hour unattended proof is genuinely PROVEN from disk (monitor 120.2 / ledger 120.1 min, 121 continuous samples each, Checker CLEAN, provider_used=0, no external sends). A Level-3 five-hour run is the honest next rung but requires explicit founder authorization; the advisor does NOT authorize it here.",
+  "notes": "Facts verified against duration_summary.json (pass=true, spans 120.2/120.1, 121/121 samples, max_gap 1). PASS classifier-derived, not timer-derived. Evidence lived in the move-immune fixed root; the L3B trigger (folder relocation) occurred this operation yet did not touch authoritative logs. Not a HOLD, no CORRECTION_REQUIRED."
+}

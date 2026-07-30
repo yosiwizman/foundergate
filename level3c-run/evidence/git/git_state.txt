@@ -1,0 +1,5 @@
+repo=/Users/yosiwizman/Projects/Recovery-Audit/FounderGate-Core-Discovery/clone-foundergate-20260728T003016Z
+branch=main
+local_main=ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423
+origin_main=4f2394a5fa78581507ec08ee5a18cedc96cbdadf
+dirty=0

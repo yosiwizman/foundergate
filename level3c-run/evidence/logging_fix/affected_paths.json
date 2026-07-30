@@ -1,0 +1,19 @@
+{
+  "scope": "logging + duration-evidence handling ONLY (no product/repo/governance change)",
+  "prior_run_source": "FounderGate_Level3B (extracted from ZIP 163d55b9)",
+  "defective_scripts": [
+    {"path": "scripts/monitor.sh", "role": "resource monitor loop", "defect": "writes to $RUN/evidence/resources/… (movable Desktop path); no write-success check", "class": "narrow-sensitive"},
+    {"path": "scripts/ledger.sh", "role": "ledger loop", "defect": "writes to $RUN/evidence/ledger/… (movable Desktop path); no write-success check", "class": "narrow-sensitive"},
+    {"path": "scripts/endurance_driver.sh", "role": "timer + health + git/lock + recovery loop AND final duration classification", "defect": "writes under movable $RUN; declares completion from wall-clock elapsed (date +%s − START) alone, never from monitor/ledger disk spans; no write-success check", "class": "narrow-sensitive"}
+  ],
+  "new_writer_files_this_run": [
+    {"path": "scripts/fg_run_env.sh", "role": "fixed evidence-root resolver + write-guard + desktop convenience index", "class": "narrow-sensitive"},
+    {"path": "scripts/fg_monitor.sh", "role": "corrected monitor loop -> fixed root, fail-closed", "class": "narrow-sensitive"},
+    {"path": "scripts/fg_ledger.sh", "role": "corrected ledger loop -> fixed root, fail-closed", "class": "narrow-sensitive"},
+    {"path": "scripts/fg_driver.sh", "role": "corrected timer/health/git-lock/recovery loop -> fixed root, fail-closed, watch-mode", "class": "narrow-sensitive"},
+    {"path": "scripts/fg_duration_classify.mjs", "role": "duration classifier from monitor+ledger disk spans ONLY", "class": "narrow-sensitive"},
+    {"path": "scripts/fg_duration_classify.selftest.mjs", "role": "deterministic tests for classifier + move/fail-closed semantics", "class": "wide-safe (test)"}
+  ],
+  "not_touched": ["package.json", "package-lock.json", "src/** product modules", "governance/CI config", "launcher redesign", "permission/classifier/allowlist"],
+  "writer_discipline": "one writer (Terminal-0) authoring standalone harness scripts in this run's workspace; product repo tree left unmodified"
+}
