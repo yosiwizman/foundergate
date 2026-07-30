@@ -83,5 +83,37 @@ const baseArgs = {
   ok("09 render has all three stages", t.includes("Stage 1") && t.includes("Stage 2") && t.includes("Stage 3"));
 })();
 
+// 10 BLOCKED url path shows a blocked status + human reason in the URL check section
+(() => {
+  const d = buildFounderDemo({ ...baseArgs, url: "http://github.com/acme/widgets" });
+  ok("10 blocked url shows BLOCKED + reason",
+    d.plain_english.includes("BLOCKED") &&
+    d.plain_english.includes("unsupported scheme") &&
+    d.intake.reason.length > 0 && d.plain_english.includes(d.intake.reason));
+})();
+
+// 11 missing verdict -> bottom line honestly says UNKNOWN, never invents a pass
+(() => {
+  const { decisionInputs, ...rest } = baseArgs;
+  const d = buildFounderDemo(rest);
+  ok("11 bottom line says UNKNOWN when verdict missing",
+    d.bottom_line.includes("UNKNOWN") && d.plain_english.includes("Bottom line:"));
+})();
+
+// 12 sectioned narrative + bottom line render deterministically and never over-claim
+(() => {
+  const d1 = buildFounderDemo(baseArgs);
+  const d2 = buildFounderDemo(baseArgs);
+  const hasSections = d1.plain_english.includes("URL check") &&
+    d1.plain_english.includes("Run status") &&
+    d1.plain_english.includes("Decision:") &&
+    d1.plain_english.includes("Bottom line:");
+  // Note: the disclaimer prose legitimately says "NOT a production/commercial ... claim", so
+  // over-claiming is checked on the decision package's own fields, not by regexing the prose.
+  const noOverclaim = d1.decision.certifies_green === false && d1.decision.certifies_production === false;
+  ok("12 sectioned + honest + deterministic",
+    hasSections && noOverclaim && d1.plain_english === d2.plain_english && d1.bottom_line === d2.bottom_line);
+})();
+
 console.log(fails.length ? `\nRED: ${fails.length}/${n} failed` : `\nFOUNDER-DEMO-SELFTEST: PASS (${n} checks)`);
 process.exit(fails.length ? 1 : 0);
