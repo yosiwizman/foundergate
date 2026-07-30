@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Founder Demo — negative/cannot-invent-state</title>
+<style>:root{color-scheme:dark}body{font-family:system-ui;margin:2rem;background:#0b0b0c;color:#ececf0}pre{background:#17171b;border:1px solid #2a2a30;padding:1rem;border-radius:10px;white-space:pre-wrap}</style>
+</head><body><main><h1>Cannot-invent-state check</h1><pre id="out" data-testid="neg-out">loading…</pre></main>
+<script type="module">
+import { buildFounderDemo, renderFounderDemoText } from "/src/ui/founder-demo/founder-demo.mjs";
+const NOW = 1784428534019 + 30000;
+// MISSING heartbeat + MISSING verdict on purpose -> must render UNKNOWN, never LIVE, never a fabricated value.
+const demo = buildFounderDemo({ runId:"neg", state:{state:"RUNNING"}, nowMs:NOW, url:"https://github.com/pypa/sampleproject", decisionInputs:{claims:[]} });
+document.getElementById("out").textContent = renderFounderDemoText(demo);
+window.__READY = true;
+</script></body></html>
