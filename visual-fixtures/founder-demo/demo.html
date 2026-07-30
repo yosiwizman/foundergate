@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FounderGate — Founder Demo</title>
+<style>:root{color-scheme:dark}body{font-family:ui-sans-serif,system-ui,sans-serif;margin:2rem;background:#0b0b0c;color:#ececf0}
+h1{font-size:1.15rem}pre{background:#17171b;border:1px solid #2a2a30;padding:1rem;border-radius:10px;white-space:pre-wrap;line-height:1.5}</style>
+</head><body><main>
+<h1>Founder Demo — end-to-end (URL check → run status → decision)</h1>
+<pre id="out" data-testid="demo-out">loading…</pre>
+</main>
+<script type="module">
+import { buildFounderDemo, renderFounderDemoText } from "/src/ui/founder-demo/founder-demo.mjs";
+const HB_MS = 1784428534019, NOW = HB_MS + 30000;
+const demo = buildFounderDemo({
+  runId: "run-demo", state: { state: "RUNNING" }, heartbeat: { ts: HB_MS },
+  evidence: [{ label: "pack", ts: Math.floor(NOW/1000) - 100 }], nowMs: NOW,
+  url: "https://github.com/pypa/sampleproject",
+  decisionInputs: { verdict: "COMPILEABILITY_OBSERVED", claims: [{ name: "selftests", status: "PROVEN" }], limitations: ["chromium-desktop only"], evidence_sha256: "a".repeat(64) },
+});
+document.getElementById("out").textContent = renderFounderDemoText(demo);
+window.__READY = true;
+</script></body></html>
