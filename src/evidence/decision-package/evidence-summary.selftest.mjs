@@ -1,0 +1,13 @@
+import { buildEvidenceSummary } from "./evidence-summary.mjs";
+let n=0;const f=[];const ok=(x,c)=>{n++;if(!c){f.push(x);console.log("  FAIL "+x)}else console.log("  ok   "+x)};
+const SHA="a".repeat(64);
+const s=buildEvidenceSummary({verdict:"COMPILEABILITY_OBSERVED",claims:[{name:"x",status:"PROVEN"},{name:"y",status:"NOT_PROVEN"}],limitations:["chromium only"],evidence_sha256:SHA});
+ok("01 verdict preserved", s.verdict==="COMPILEABILITY_OBSERVED");
+ok("02 line has counts", /1\/2 proven/.test(s.line) && /1 not proven/.test(s.line));
+ok("03 no green/production certification", s.certifies_green===false && s.certifies_production===false);
+ok("04 readiness not production/commercial", !/production|commercial/i.test(s.readiness));
+ok("05 missing verdict -> UNKNOWN", buildEvidenceSummary({claims:[]}).verdict==="UNKNOWN");
+ok("06 frozen", Object.isFrozen(s));
+ok("07 line mentions not-a-production-claim", /not a production/i.test(s.line));
+ok("08 deterministic", buildEvidenceSummary({verdict:"V",claims:[]}).line===buildEvidenceSummary({verdict:"V",claims:[]}).line);
+console.log(f.length?`\nRED: ${f.length}/${n}`:`\nEVIDENCE-SUMMARY-SELFTEST: PASS (${n} checks)`);process.exit(f.length?1:0);
