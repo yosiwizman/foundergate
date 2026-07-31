@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L3 — Safety Check evidence drawer</title>
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; margin: 2rem; background: #0b0b0c; color: #ececf0; }
+  h1 { font-size: 1.15rem; margin: 0 0 1rem; }
+  pre { background: #17171b; border: 1px solid #2a2a30; padding: 1rem 1.25rem; border-radius: 10px; white-space: pre-wrap; line-height: 1.5; font-size: 0.95rem; }
+  .tag { display:inline-block; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:#9aa; margin-bottom:.5rem; }
+</style>
+</head>
+<body>
+<main>
+  <span class="tag">Level 2 · Lane B · secret redaction proven in a real browser</span>
+  <h1>Safety Check — evidence drawer</h1>
+  <pre id="out" data-testid="drawer-out">loading…</pre>
+</main>
+  <script type="module">
+    import { buildDrawer, renderDrawerText } from "/src/founder_url_drop/evidence_drawer/evidence-drawer.mjs";
+    const pack = {
+      manifest_sha256: "b9a6603559c74ed0eb1d4fa4f763bb27b9ffc906f30691a18bb43606c13f7cac",
+      entries: [
+        { label: "exact_commit", value: "deadbeef", class: "PUBLIC" },
+        { label: "api_token", value: "sk-live-SHOULD-NEVER-APPEAR", class: "SECRET" },
+        { label: "blocked_path", value: "/Users/private/store", class: "BLOCKED" },
+      ],
+    };
+    const result = { url: "https://github.com/pypa/sampleproject", verdict: "COMPILEABILITY_OBSERVED" };
+    document.getElementById("out").textContent = renderDrawerText(buildDrawer({ safetyResult: result, evidencePack: pack }));
+    window.__L3_READY = true;
+  </script>
+</body>
+</html>
