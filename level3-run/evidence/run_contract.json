@@ -1,0 +1,6 @@
+{"run_id":"FounderGate_Level3_FiveHour_Proof_20260730T1455ET","when_et":"2026-07-30T14:55 EDT","minimum_duration_minutes":300,"max_runtime_hours":5.75,
+"provider_invocations":0,"purpose":"prove five-hour unattended endurance with move-resilient evidence (not product coding)",
+"fixed_evidence_root":"~/.foundergate/runs/FounderGate_Level3_FiveHour_Proof_20260730T1455ET/level3-proof/",
+"pass_requires":"monitor AND ledger disk spans >= 300 min; timer alone is never pass",
+"allowed_final_statuses":["LEVEL3_FIVE_HOUR_PROVEN_READY_FOR_LEVEL4_GATE","LEVEL3_DURATION_NOT_PROVEN","CORRECTION_REQUIRED","INSUFFICIENT_EVIDENCE","HOLD","TRUE_FOUNDER_GATE"],
+"backup_branch":"run/level3-fivehour-proof-20260730T1455ET"}

@@ -1,0 +1,12 @@
+Phase-4 Midpoint Liveness Record — Corrected Level-3 Five-Hour Proof (run #2)
+checked_utc: 2026-07-31T05:10:18Z
+elapsed_min: 151 (of 302 run-to; 300 span bar)
+monitor_samples: 151 | ledger_samples: 152 | health: 16 | recovery: 6
+latest_monitor_ts: 2026-07-31T05:09:20Z 
+latest_ledger_ts:  2026-07-31T05:10:09Z 
+status: {"state":"RUNNING","last_heartbeat_utc":"2026-07-31T05:10:17Z","elapsed_min":151}
+loops_alive: 3/3 | caffeinate_alive: 1
+evidence_write_failure(root HELD): none
+lock: none | origin_main: 4f2394a5 (unchanged 4f2394a5)
+PR_states: #200 OPEN/draft=true #201 OPEN/draft=true #202 OPEN/draft=true 
+midpoint_decision: HEALTHY — run continuing; NOT stopped; no founder prompt

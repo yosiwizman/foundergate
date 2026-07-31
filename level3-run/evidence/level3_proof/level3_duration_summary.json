@@ -1,0 +1,14 @@
+{
+  "pass": true,
+  "min_minutes": 300,
+  "monitor_samples": 302,
+  "ledger_samples": 302,
+  "monitor_span_min": 301.6,
+  "ledger_span_min": 301.3,
+  "monitor_max_gap_min": 1,
+  "ledger_max_gap_min": 1,
+  "verdict": "LEVEL2_TWO_HOUR_PROVEN",
+  "reason": "monitor and ledger both span >= threshold with continuous samples",
+  "level3_bar_min": 300.0,
+  "level3_verdict": "LEVEL3_FIVE_HOUR_PROVEN"
+}

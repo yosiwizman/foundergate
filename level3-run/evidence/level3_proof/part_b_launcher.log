@@ -1,0 +1,8 @@
+2026-07-31T02:39:01Z caffeinate started pid=45486 (self-expires ~135min)
+2026-07-31T02:39:01Z launched monitor=45490 ledger=45491 driver=45492 (writing to /Users/yosiwizman/.foundergate/runs/FounderGate_Level3_FiveHour_Proof_20260730T1455ET/level3-proof)
+2026-07-31T02:40:31Z startup guard OK: monitor_lines=       2 ledger_lines=       2
+2026-07-31T07:41:09Z driver process ended
+2026-07-31T07:41:09Z stopped monitor/ledger/caffeinate
+2026-07-31T07:41:10Z classification rc=0 verdict=LEVEL2_TWO_HOUR_PROVEN
+2026-07-31T07:41:10Z PART_B_COMPLETE
+2026-07-31T07:41:10Z level3_verdict=LEVEL3_FIVE_HOUR_PROVEN
