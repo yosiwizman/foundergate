@@ -1,0 +1,3 @@
+# Next Safe Action
+Level-4 eight-hour endurance is PROVEN from disk (monitor 481.8 / ledger 482.4 min, 482/483 continuous samples; Checker CLEAN 12/12; Gate Advisor LEVEL4_EIGHT_HOUR_PROVEN_READY_FOR_OVERNIGHT_WIDE_BUILD_GATE). Terminal-0 STOPS here.
+The one decision that is the founder's: whether to authorize an overnight wide-build wave. The 8-hour endurance PREREQUISITE is met, but a real wide build introduces product mutation and provider spend and is a founder-only authorization — NOT assumed or requested here. Not authorized/out of scope until the founder says so: overnight wide build, product mutation, provider spend, Level 5, merges, PRs, deployment.

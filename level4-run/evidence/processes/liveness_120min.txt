@@ -1,0 +1,11 @@
+Phase-4 Liveness — Level-4 Eight-Hour Proof (120-min mark)
+checked_utc: 2026-07-31T15:22:20Z
+elapsed_min: 122 (of 480 bar / 482 run-to)
+monitor_samples: 122 | ledger_samples: 123 | health: 13 | recovery: 5
+latest_monitor_ts: 2026-07-31T15:22:20Z 
+latest_ledger_ts:  2026-07-31T15:22:14Z 
+status: {"state":"RUNNING","last_heartbeat_utc":"2026-07-31T15:22:20Z","elapsed_min":122}
+loops_alive: 3/3 | caffeinate_alive: 1 | evidence_write_failure: none
+lock: none | origin_main: 4f2394a5 (unchanged 4f2394a5) | PR: #200 OPEN/draft=true #201 OPEN/draft=true #202 OPEN/draft=true 
+disk_free: 327Gi
+decision: HEALTHY — continuing; NOT stopped; no founder prompt

@@ -1,0 +1,23 @@
+{
+  "operation":"FounderGate Level-4 Eight-Hour Overnight Endurance Proof — Move-Resilient Harness",
+  "machine":"Yossi Mac Studio","when_et":"2026-07-31T08:55 EDT",
+  "final_status":"LEVEL4_EIGHT_HOUR_PROVEN_READY_FOR_OVERNIGHT_WIDE_BUILD_GATE",
+  "prior_source":"FounderGate_Level3_FiveHour_Proof_Review_ChatGPT_20260730T1455ET.zip",
+  "prior_source_sha256":"9f5eca7261186e77bcec66d5a0fd1dd818af5d7f66334b0bb89530ee433edcf8",
+  "level1":"chain proven, 30-min not proven","level2":"two-hour PROVEN (120.2/120.1 min)","level3":"five-hour PROVEN (301.6/301.3 min)",
+  "level4":"LEVEL4_EIGHT_HOUR_PROVEN",
+  "monitor_span_min":481.83,"ledger_span_min":482.43,"monitor_samples":482,"ledger_samples":483,"max_gap_min":1.03,
+  "run_utc":"2026-07-31T13:20:08Z -> 2026-07-31T21:22:34Z","bar_min":480,"run_to_min":482,
+  "evidence_root":"~/.foundergate/runs/FounderGate_Level4_EightHour_Proof_20260731T0855ET/level4-proof/ (move-immune)",
+  "pass_source":"classifier over monitor+ledger disk spans (timer never a pass)",
+  "cosmetic_note":"generic classifier verdict string LEVEL2_TWO_HOUR_PROVEN evaluated at min=480; authoritative level4_verdict=LEVEL4_EIGHT_HOUR_PROVEN",
+  "tests":{"classifier_unit":"13/13","dry_check":"prior L3 301-min logs -> proven vs 300, NOT proven vs 480"},
+  "checker_verdict":"CLEAN (12/12, independently recomputed spans + re-ran classifier)",
+  "gate_advisor_verdict":"LEVEL4_EIGHT_HOUR_PROVEN_READY_FOR_OVERNIGHT_WIDE_BUILD_GATE",
+  "provider_invocations":0,"external_sends":0,
+  "origin_main":"4f2394a5 unchanged","prs":"200/201/202 OPEN drafts untouched",
+  "overnight_wide_build_status":"endurance PREREQUISITE met; ELIGIBLE FOR FOUNDER AUTHORIZATION ONLY; NOT authorized here",
+  "limitations":["proves endurance + move-resilient evidence only; no product build under load; no provider/spend exercised; no multi-lane mutation; no production/commercial/customer-ready claim"],
+  "environmental_note":"began under a disk-full HOLD (0 bytes free); founder freed 327 GiB; run then proceeded; no false duration claim",
+  "next_safe_action":"present proof; overnight wide-build wave requires explicit founder authorization (product mutation + provider spend)"
+}

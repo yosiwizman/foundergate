@@ -1,0 +1,5 @@
+{"run_id":"FounderGate_Level4_EightHour_Proof_20260731T0855ET","when_et":"2026-07-31T08:55 EDT","minimum_duration_minutes":480,"run_to_minutes":482,"max_runtime_hours":8.75,
+"provider_invocations":0,"purpose":"prove eight-hour unattended endurance with move-resilient evidence (not product coding)",
+"fixed_evidence_root":"~/.foundergate/runs/FounderGate_Level4_EightHour_Proof_20260731T0855ET/level4-proof/","pass_requires":"monitor AND ledger disk spans >= 480 min; timer never pass",
+"allowed_final_statuses":["LEVEL4_EIGHT_HOUR_PROVEN_READY_FOR_OVERNIGHT_WIDE_BUILD_GATE","LEVEL4_DURATION_NOT_PROVEN","CORRECTION_REQUIRED","INSUFFICIENT_EVIDENCE","HOLD","TRUE_FOUNDER_GATE"],
+"backup_branch":"run/level4-eighthour-proof-20260731T0855ET"}

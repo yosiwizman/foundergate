@@ -1,0 +1,6 @@
+{"phase":6,"reviewer":"independent read-only Checker (Terminal-0 Agent faculty; not a provider invocation)","verdict":"CLEAN",
+"monitor_span_min":481.83,"ledger_span_min":482.43,"monitor_samples":482,"ledger_samples":483,"max_gap_min":1.03,"bar_min":480,"both_ge_480":true,
+"pass_source":"classifier+relabel (timer=TIMER_MINIMUM_REACHED only; timer.log self-declares NOT a pass)","root_HELD":"absent",
+"monotonic":"strictly increasing, 0 duplicate/out-of-order timestamps","unattended_caffeinate_on":"482/482","provider_used":"0 (483/483)","external_sends":"0 (483/483)",
+"customer_data":"none","origin_main":"4f2394a5 unchanged","prs":"200/201/202 OPEN drafts untouched","live_write":"mtimes match final ts","health":49,"git_lock":49,"recovery":17,
+"findings":[],"note":"generic verdict string LEVEL2_TWO_HOUR_PROVEN is cosmetic (min=480 enforced); authoritative level4_verdict=LEVEL4_EIGHT_HOUR_PROVEN","decision":"CLEAN (12/12)"}
