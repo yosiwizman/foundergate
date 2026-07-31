@@ -67,10 +67,11 @@ export function buildDoctorChecklist(presence = {}, required = DEFAULT_REQUIRED)
 }
 
 // Deterministic plain-English renders.
+function escRunId(s){return String(s==null?"":s).replace(/[\x00-\x1f\x7f]+/g," ").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
 export function renderConsoleText(v) {
   const age = v.heartbeat_age_seconds == null ? UNKNOWN : `${v.heartbeat_age_seconds}s`;
   return [
-    `${v.title}: run=${v.run_id}`,
+    `${v.title}: run=${escRunId(v.run_id)}`,
     `lifecycle=${v.lifecycle_display} | liveness=${v.liveness} | heartbeat_age=${age}`,
     `events: current=${v.current_event_count} historical=${v.historical_event_count} legacy_unscoped=${v.legacy_unscoped_events}`,
     `controls: pause=${v.pause_available ? "on" : "off"} stop=${v.stop_available ? "on" : "off"}`,

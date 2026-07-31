@@ -68,11 +68,12 @@ export function buildCommandCenter({ runId, state, handoff, heartbeat, events, e
   });
 }
 
+function escRunId(s){return String(s==null?"":s).replace(/[\x00-\x1f\x7f]+/g," ").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
 export function renderCommandCenterText(cc) {
   const age = cc.heartbeat_age_seconds == null ? UNKNOWN : `${cc.heartbeat_age_seconds}s`;
   const c = cc.evidence_counts;
   return [
-    `${cc.title}: run=${cc.run_id}`,
+    `${cc.title}: run=${escRunId(cc.run_id)}`,
     `lifecycle=${cc.lifecycle_display} | liveness=${cc.liveness} | heartbeat_age=${age}`,
     `events: current=${cc.current_events} historical=${cc.historical_events}`,
     `evidence_freshness=${cc.evidence_freshness} (fresh=${c.fresh} stale=${c.stale} unknown=${c.unknown} none=${c.none})`,
