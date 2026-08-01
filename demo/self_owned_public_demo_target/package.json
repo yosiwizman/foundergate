@@ -1,0 +1,12 @@
+{
+  "name": "foundergate-demo-tasks",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Self-owned, non-sensitive local demo target for FounderGate Safety Check rehearsals. Local-only; no network, no secrets, no deps.",
+  "license": "MIT",
+  "scripts": {
+    "start": "node cli.mjs",
+    "test": "node tests/task-ledger.selftest.mjs"
+  }
+}

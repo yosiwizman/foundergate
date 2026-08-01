@@ -1,0 +1,10 @@
+{
+  "_note": "Synthetic, non-sensitive sample data for the FounderGate Demo Tasks module. No real people, no secrets, no customer data.",
+  "tasks": [
+    { "title": "Set up project skeleton", "status": "done", "notes": ["committed on demo branch", "tests green"] },
+    { "title": "Add input validation to addTask", "status": "done", "notes": ["rejects empty titles"] },
+    { "title": "Write CLI summary output", "status": "doing", "notes": ["prints counts + honest decision"] },
+    { "title": "Add evidence-note export", "status": "todo", "notes": [] },
+    { "title": "Document known limitations", "status": "todo", "notes": [] }
+  ]
+}
