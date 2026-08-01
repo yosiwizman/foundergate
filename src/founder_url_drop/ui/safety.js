@@ -2,7 +2,7 @@
 const $ = (id) => document.getElementById(id);
 const FIXTURE = "https://github.com/pypa/sampleproject";
 const STAGES = ["validating URL","resolving exact commit","acquiring immutable snapshot","validating archive",
-  "fingerprinting snapshot","creating disposable sandbox","running harness-owned compileability check",
+  "fingerprinting snapshot","creating disposable sandbox","running harness-owned source parsing check",
   "exporting evidence","removing temporary snapshot","destroying disposable runtime","generating Evidence Pack","complete"];
 let poll = null, currentRun = null;
 
@@ -53,7 +53,7 @@ async function tick(runId){
   $("run-when").textContent = "run " + runId;
   plain(s);
   const green = s.classification === "COMPILEABILITY_OBSERVED" && s.compileall_exit === 0;
-  $("result").textContent = green ? "Compileability observed" : fe(s.classification);
+  $("result").textContent = green ? "Source parsing observed" : fe(s.classification);
   $("badge-compile").style.opacity = green ? "1" : "0.4";
   // cleanup only when teardown complete
   $("c-teardown").textContent = r.teardown_complete ? ("Temporary sandbox removed (session gone: " + fe(s.teardown_get_status) + ")") : "Temporary sandbox removal: pending";

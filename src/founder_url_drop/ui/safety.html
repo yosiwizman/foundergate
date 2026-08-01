@@ -17,7 +17,7 @@
 
 <main id="main" tabindex="-1">
   <h1>Check a public GitHub project</h1>
-  <p class="lead">Paste a <strong>public</strong> GitHub project link and run a real safety check inside a throwaway sandbox. Nothing from the project is installed, built, tested, or run — only a safe compileability look.</p>
+  <p class="lead">Paste a <strong>public</strong> GitHub project link and run a real safety check inside a throwaway sandbox. Nothing from the project is installed, built, tested, or run. The only thing done with the code is to byte-compile its Python source — enough to observe that the source parses. The project itself never executes.</p>
   <div class="warn" role="note">
     <span class="pill pill-info">Public repositories only</span>
     <span class="pill pill-muted">Private repositories are not supported</span>
@@ -65,7 +65,7 @@
       <h2 id="result-h">Result</h2>
       <p id="result" class="result" role="status">—</p>
       <div class="badges">
-        <span class="badge badge-green" id="badge-compile">Compileability observed</span>
+        <span class="badge badge-green" id="badge-compile">Source parsing observed</span>
         <span class="badge badge-amber">Build not proven</span>
         <span class="badge badge-amber">Tests not proven</span>
         <span class="badge badge-amber">Security not proven</span>
@@ -87,7 +87,7 @@
     </section>
     <section class="card" aria-labelledby="lim-h">
       <h2 id="lim-h">Limitations</h2>
-      <ul class="small"><li>Compileability observed (it parses)</li><li>Build <strong>not</strong> proven</li><li>Tests <strong>not</strong> proven</li><li>Security <strong>not</strong> proven</li><li>Production readiness <strong>not</strong> proven</li><li>No customer code · OpenSandbox candidate — not adopted</li></ul>
+      <ul class="small"><li>Source parsing observed (structure parses) — the project's Python source byte-compiles to bytecode. That is not a text search, and the project is never executed. It proves nothing about runtime behavior, dependency correctness, native compilation, integration, safety, or production readiness.</li><li>Build <strong>not</strong> proven</li><li>Tests <strong>not</strong> proven</li><li>Security <strong>not</strong> proven</li><li>Production readiness <strong>not</strong> proven</li><li>No customer code · OpenSandbox candidate — not adopted</li></ul>
     </section>
   </div>
 

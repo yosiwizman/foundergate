@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # FounderGate Phase 7.1 — Safety Check runtime job (spawned by the UI, NOT pre-run).
 # Runs the real bounded pipeline for the fixed fixture and writes disk-ledgered stage
-# events + evidence into RUN_DIR. Only the harness-owned compileability check touches the
-# repository. No repository-defined command runs. Emits nothing to stdout that the UI trusts
+# events + evidence into RUN_DIR. Only the harness-owned source-parsing check (python -m
+# compileall, which byte-compiles the Python source to bytecode) touches the repository, and
+# the repository is never executed. No repository-defined command runs. Emits nothing to stdout that the UI trusts
 # — the UI reads RUN_LEDGER.jsonl / RUN_RESULT.json from disk.
 set -uo pipefail
 export PATH="/opt/homebrew/bin:/Users/yosiwizman/.local/bin:$PATH"
@@ -122,8 +123,8 @@ limactl copy "$WT/prototypes/customer_repository_intake/runtime_driver.py" "$VM:
 limactl copy "$WT/prototypes/sandbox_provider_adapter/contract.py" "$VM:$RT/adapter/contract.py" >/dev/null 2>&1
 limactl copy "$WT/prototypes/sandbox_provider_adapter/opensandbox_provider.py" "$VM:$RT/adapter/opensandbox_provider.py" >/dev/null 2>&1
 stage 6 "creating disposable sandbox" "DONE"
-stage 7 "running harness-owned compileability check" "RUNNING"
-limactl shell "$VM" -- bash -c "cd $RT && ADAPTER_DIR=$RT/adapter PHASE6_RT=$RT WORKLOAD_IMG='$IMG' python3 runtime_driver.py orchestrate" >/dev/null 2>&1 || fail 7 "running harness-owned compileability check"
+stage 7 "running harness-owned source parsing check" "RUNNING"
+limactl shell "$VM" -- bash -c "cd $RT && ADAPTER_DIR=$RT/adapter PHASE6_RT=$RT WORKLOAD_IMG='$IMG' python3 runtime_driver.py orchestrate" >/dev/null 2>&1 || fail 7 "running harness-owned source parsing check"
 VR=$(limactl shell "$VM" -- bash -c "cat $RT/verifier_result.json" 2>/dev/null)
 GUARD=$(limactl shell "$VM" -- bash -c "cat $RT/orchestrate_result.json" 2>/dev/null | "$PY" -c "import sys,json;print(json.load(sys.stdin)['steps']['port_binding']['guard'])" 2>/dev/null)
 SID=$(echo "$VR" | "$PY" -c "import sys,json;print('sandbox')" 2>/dev/null)
@@ -136,7 +137,7 @@ PROX="http://127.0.0.1:8090/v1/sandboxes/$OSID/proxy/44772/command"
 EGR=$(limactl shell "$VM" -- bash -c "curl -s -m 20 -X POST '$PROX' -H 'content-type: application/json' -d '{\"command\":\"python3 -c \\\"import socket\ntry:socket.getaddrinfo(\\\\\\\"example.com\\\\\\\",443);print(\\\\\\\"ALLOWED\\\\\\\")\nexcept:print(\\\\\\\"DENIED\\\\\\\")\\\"\",\"cwd\":\"/\"}' | python3 -c \"import sys,json;print(''.join(json.loads(l).get('text','') for l in sys.stdin if l.strip() and json.loads(l).get('type')=='stdout'))\"" 2>/dev/null)
 SOCK=$(limactl shell "$VM" -- bash -c "curl -s -m 20 -X POST '$PROX' -H 'content-type: application/json' -d '{\"command\":\"test -S /var/run/docker.sock && echo PRESENT || echo ABSENT\",\"cwd\":\"/\"}' | python3 -c \"import sys,json;print(''.join(json.loads(l).get('text','') for l in sys.stdin if l.strip() and json.loads(l).get('type')=='stdout'))\"" 2>/dev/null)
 echo "$VR" > "$RUN_DIR/RUN_VERIFIER.json"
-stage 7 "running harness-owned compileability check" "DONE"
+stage 7 "running harness-owned source parsing check" "DONE"
 stage 8 "exporting evidence" "RUNNING"
 # teardown sandbox + server
 limactl shell "$VM" -- bash -c "curl -s -m 20 -X DELETE http://127.0.0.1:8090/v1/sandboxes/$OSID -o /dev/null -w '%{http_code}' > $RT/del_code" 2>/dev/null
@@ -163,7 +164,7 @@ res={"run_id":d[2],"fixture_url":"https://github.com/pypa/sampleproject","status
  "classification":d[10],"compileall_exit":int(d[11]) if d[11].lstrip('-').isdigit() else d[11],"in_sandbox_manifest_matches_pro":d[12]=="True",
  "teardown_get_status":d[13],"vm_destroyed":d[14]=="YES",
  "build_proven":False,"tests_proven":False,"security_proven":False,"production_ready":False,
- "note":"harness compileability only; no repository build/tests/scripts ran"}
+ "note":"harness-owned source parsing only (python -m compileall byte-compiles the source to bytecode); the project was never executed; no repository build/tests/scripts ran"}
 json.dump(res,open(f"{d[1]}/RUN_RESULT.json","w"),indent=2)
 json.dump({"compileability_observed":d[10]=="COMPILEABILITY_OBSERVED","build_proven":False,"tests_proven":False,"security_proven":False,"production_ready":False,"unknowns":["build","tests","security","production_readiness"]},open(f"{d[1]}/RUN_LIMITATIONS.json","w"),indent=2)
 print("RUN_RESULT written")

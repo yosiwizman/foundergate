@@ -1,7 +1,7 @@
 // FounderGate Phase 7 — Founder URL-Drop UI server (zero-dependency, loopback-only).
 //
 // Founder-facing WITNESS CANDIDATE — not an accepted product surface. Serves a read-only
-// UI that displays the REAL exact-commit / snapshot-fingerprint / compileability-observed
+// UI that displays the REAL exact-commit / snapshot-fingerprint / source-parsing-observed
 // evidence for the ONE fixed public evaluation fixture (pypa/sampleproject). It executes
 // NOTHING: the live runtime run is performed separately by the Phase-7 runtime builder and
 // its evidence is read here. Missing evidence -> UNKNOWN. Stale run -> STALE. Other public
@@ -57,7 +57,7 @@ export function buildState(scenario) {
     manifest_sha256: p6s?.canonical_manifest_sha256 || UNKNOWN,
     manifest_file_count: p6s?.manifest_file_count ?? UNKNOWN,
     stages: ["validating URL", "resolving exact commit", "acquiring immutable snapshot",
-             "checking archive safety", "creating disposable sandbox", "checking compileability",
+             "checking archive safety", "creating disposable sandbox", "checking source parsing",
              "exporting evidence", "deleting snapshot", "destroying sandbox"],
     result: p6rt?.harness_verifier?.classification || UNKNOWN,
     compileall_exit: p6rt?.harness_verifier?.compileall_exit ?? UNKNOWN,

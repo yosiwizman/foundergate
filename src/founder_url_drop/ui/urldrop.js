@@ -15,7 +15,7 @@ function render(state){
   setText("b-port", "port binding: " + (state.port_binding || "UNKNOWN"));
   setText("b-socket", "docker socket: " + (state.docker_socket || "UNKNOWN"));
   const r = state.result || "UNKNOWN";
-  setText("result", r === "COMPILEABILITY_OBSERVED" ? "Compileability observed" : r);
+  setText("result", r === "COMPILEABILITY_OBSERVED" ? "Source parsing observed" : r);
   // never show green unless the specific compileability fact holds AND run is fresh
   const green = r === "COMPILEABILITY_OBSERVED" && state.freshness === "FRESH" && state.compileall_exit === 0;
   $("badge-compile").style.opacity = green ? "1" : "0.4";
