@@ -1,0 +1,2 @@
+# Founder Hand-Burden Report — Three-Hour Macro-Batch
+Yossi was NOT used as prompt courier/terminal/Git operator/SHA reconciler/log reader/code reviewer/bug transporter/checkpoint confirmer. All shell/Git/node/Playwright/packaging work by Terminal-0, gate-to-gate, no routine questions, batched heredocs, one master ZIP (no intermediate ZIPs revealed). One benign scan nuance (a prose "child_process" mention in a report) was diagnosed and confirmed harmless autonomously. Founder decisions are accumulated in NEXT_SAFE_ACTION.md.

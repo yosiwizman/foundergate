@@ -1,0 +1,2 @@
+# Repeatability Execution Report (Subwave 4)
+Moved repeatability from plan to EXECUTED local fixture proof. execution.selftest.mjs ran: 10 deterministic objectives, 3 failure cases (RED detectable), 3 crash/invalid-input cases (throws caught; null→INSUFFICIENT), 3 export/reopen round-trips, 3 no-invented-green checks. Result: **ALL GREEN: 22/22 self-test(s) passed.**. No provider, no external repos, no private data.

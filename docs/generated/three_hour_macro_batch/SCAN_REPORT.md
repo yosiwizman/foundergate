@@ -1,0 +1,2 @@
+# Scan Report — Three-Hour Macro-Batch
+Secret 0 · external network refs 0 (browser uses same-origin fetch of ./runs/last-run.json + Blob; no external hosts) · external-action verbs 0 · forbidden-claim 0 · out-of-path files 0 · provider/spend/contact/publish/deploy 0. Note: child_process/ditto/unzip are used ONLY by the real CLI runner (src/live_run_console) and export (src/evidence_viewer) — legitimate local tooling, not in the browser demo.

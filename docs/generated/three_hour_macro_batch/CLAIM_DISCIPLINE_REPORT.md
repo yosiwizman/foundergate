@@ -1,0 +1,2 @@
+# Claim Discipline Report
+No production-ready/customer-ready/secure/compliant/SaaS-ready/operational-product claim as a positive assertion. The runner is "OPERATIONAL_LOCAL" (a real local CLI run), NOT "operational product". Sealed export is SEALED_EXPORT_LOCAL (internal-demo grade). Decision never SHIP (guarded + tested). Cross-account labeled per Amendment 01 §6. Pricing/paid-proof = deferred. SaaS = non-production gap map. Market validation kept visibly DEFERRED.

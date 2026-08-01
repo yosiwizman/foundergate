@@ -1,0 +1,2 @@
+# Gate Register (true founder gates — all CLOSED, none crossed)
+publishing (SW5) · AKIOR login/external (SW6) · merge/PR mutation/PR-ready/PR#200 (SW7) · provider spend · deployment/billing/auth (SW8/SaaS) · production/security/compliance claims (SW8) · final beta acceptance · SaaS launch · market/paid-customer validation (DEFERRED). Each is BLOCKED_BY_FOUNDER_GATE; other safe lanes continued past them.

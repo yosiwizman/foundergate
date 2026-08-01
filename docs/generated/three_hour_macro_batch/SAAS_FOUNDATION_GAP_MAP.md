@@ -1,0 +1,2 @@
+# SaaS Foundation Gap Map
+Non-production only. Gaps to close before any SaaS readiness (each separately gated): auth/RBAC · multi-tenant isolation · hosted run workers with cost caps · evidence object store · billing/metering · security posture + review · deployment/ops · support/incident SLA · data classification enforcement · production-readiness checklist (placeholder; not invented). SaaS readiness = BLOCKED_BY_FOUNDER_GATE. No auth/billing/deploy/customer-data in this run.

@@ -1,0 +1,2 @@
+# Changed Files Report
+Branch run/three-hour-autonomous-macro-batch-20260801T1715ET, base 90f49fdc. ~56 files, all within allowed paths: src/{live_run_console,evidence_viewer}/, demo/{founder_operator_dashboard,reviewer_console}/, docs/generated/*, tests/{founder_no_terminal_ux,reviewer_view,repeatability_crash_tests,cross_account_proof}/, fixtures/, publish_candidates/, playwright-founder-operator.config.mjs. 0 out-of-path. No .github/, governance/, protected files.

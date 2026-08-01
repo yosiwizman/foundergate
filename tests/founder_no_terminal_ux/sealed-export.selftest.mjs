@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import { existsSync, statSync } from 'node:fs';
+import { exportSealedPackage } from '../../src/evidence_viewer/export-package.mjs';
+let pass=0,fail=0; const t=(n,f)=>{try{f();pass++}catch(e){fail++;console.error('FAIL',n,e.message)}};
+const res = exportSealedPackage();
+t('produced a real sealed zip file', ()=>{ assert.ok(existsSync(res.zip)); assert.ok(statSync(res.zip).size>0); });
+t('zip has a 64-hex sha256', ()=>assert.match(res.zip_sha256, /^[0-9a-f]{64}$/));
+t('unzip -t verified clean', ()=>assert.equal(res.unzip_ok, true));
+t('package includes evidence note + run json + SHA256SUMS', ()=>{ assert.ok(res.files.includes('EVIDENCE_NOTE.md')); assert.ok(res.files.includes('RUN_EVIDENCE.json')); });
+t('refuses to seal a SHIP decision', ()=>assert.notEqual(res.decision,'SHIP'));
+console.log(fail===0?`ALL GREEN: ${pass}/${pass+fail} self-test(s) passed.`:`RED: ${fail} failed`);
+process.exit(fail===0?0:1);

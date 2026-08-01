@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import { runRealCheck } from '../../src/live_run_console/run-check.mjs';
+let pass=0,fail=0; const t=(n,f)=>{try{f();pass++}catch(e){fail++;console.error('FAIL',n,e.message)}};
+const run = runRealCheck();
+t('mode is REAL_LOCAL_RUN', ()=>assert.equal(run.mode,'REAL_LOCAL_RUN'));
+t('binds a real 40-hex commit SHA', ()=>assert.match(run.commit||'', /^[0-9a-f]{40}$/));
+t('actually ran the target tests (30/30)', ()=>{ assert.equal(run.tests.total,30); assert.equal(run.tests.passed,30); assert.equal(run.tests.failures,0); });
+t('decision is INTERNAL_DEMO_ONLY, never SHIP', ()=>{ assert.equal(run.decision,'INTERNAL_DEMO_ONLY'); assert.notEqual(run.decision,'SHIP'); });
+t('deterministic: two runs agree on commit+tests', ()=>{ const b=runRealCheck(); assert.equal(b.commit,run.commit); assert.equal(b.tests.result,run.tests.result); });
+console.log(fail===0?`ALL GREEN: ${pass}/${pass+fail} self-test(s) passed.`:`RED: ${fail} failed`);
+process.exit(fail===0?0:1);

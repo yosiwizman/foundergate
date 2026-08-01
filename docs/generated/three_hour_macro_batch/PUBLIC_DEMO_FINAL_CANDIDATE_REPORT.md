@@ -1,0 +1,2 @@
+# Public Demo Final Candidate Report (Subwave 5)
+Hardened the publish candidate (publish_candidates/self_owned_demo_repo/) WITHOUT publishing. Cleanroom scan: secret=0 · pii=0 · machine-paths=0 · internal-refs=0 · license=present · gitignore=present · tests=ALL GREEN: 30/30 self-test(s) passed.. Clean and publish-ready as an internal-demo-grade repo. Publishing remains a TRUE founder gate — not done.

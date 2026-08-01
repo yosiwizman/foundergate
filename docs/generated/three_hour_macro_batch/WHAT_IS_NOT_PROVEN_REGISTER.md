@@ -1,0 +1,2 @@
+# What Is Not Proven Register
+External demand · willingness-to-pay · paid customers · market fit · security · compliance · production readiness · SaaS hosted mechanics · unattended real-provider at scale · cross-account real run (prepared only) · fully browser-native runner (real run is CLI-produced). Absence stays visible; market validation deferred per Amendment 01 §7 (not a blocker for Gates 1-7).

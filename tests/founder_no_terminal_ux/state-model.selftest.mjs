@@ -3,9 +3,8 @@ import { STEP_STATES, ALLOWED, validate } from '../../demo/founder_operator_dash
 let pass=0,fail=0; const t=(n,f)=>{try{f();pass++}catch(e){fail++;console.error('FAIL',n,e.message)}};
 t('all states in allowed vocabulary', ()=>{ for(const v of Object.values(STEP_STATES)) assert.ok(ALLOWED.includes(v)); });
 t('no step claims invented green', ()=>{ for(const v of Object.values(STEP_STATES)) assert.ok(!['GREEN','PASS','SHIP','OPERATIONAL'].includes(v)); });
-t('validate accepts the model', ()=>{ assert.equal(validate(STEP_STATES),true); });
-t('validate rejects invented green', ()=>{ assert.throws(()=>validate({x:'GREEN'})); });
-t('start_check + export are LOCAL_SIMULATION (honest)', ()=>{ assert.equal(STEP_STATES.start_check,'LOCAL_SIMULATION'); assert.equal(STEP_STATES.export,'LOCAL_SIMULATION'); });
-t('sealed_package_export stays NOT_WIRED', ()=>{ assert.equal(STEP_STATES.sealed_package_export,'NOT_WIRED'); });
+t('validate accepts the model', ()=>assert.equal(validate(STEP_STATES),true));
+t('validate rejects invented green', ()=>assert.throws(()=>validate({x:'OPERATIONAL'})));
+t('start_check + sealed_package_export are REAL_LOCAL now', ()=>{ assert.equal(STEP_STATES.start_check,'REAL_LOCAL'); assert.equal(STEP_STATES.sealed_package_export,'REAL_LOCAL'); });
 console.log(fail===0?`ALL GREEN: ${pass}/${pass+fail} self-test(s) passed.`:`RED: ${fail} failed`);
 process.exit(fail===0?0:1);

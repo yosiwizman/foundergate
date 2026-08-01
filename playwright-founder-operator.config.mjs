@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-const PORT = process.env.FUX_PORT || 4861;
+const PORT = process.env.FUX_PORT || 4871;
 export default defineConfig({
   testDir: './tests/founder_no_terminal_ux',
   testMatch: 'ui.spec.mjs',

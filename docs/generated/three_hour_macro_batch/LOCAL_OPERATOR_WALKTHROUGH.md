@@ -1,0 +1,2 @@
+# Local Operator Walkthrough
+1. Operator (once): `node src/live_run_console/run-check.mjs "your objective"` → writes demo/founder_operator_dashboard/runs/last-run.json (REAL run). 2. Serve: `cd demo/founder_operator_dashboard && python3 -m http.server 4870`. 3. Founder: open the page, press Start (loads the REAL run), read the evidence, press Export. 4. For a REAL sealed ZIP: `node src/evidence_viewer/export-package.mjs`. No provider, no network, no deployment.

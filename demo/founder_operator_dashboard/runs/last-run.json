@@ -1,0 +1,23 @@
+{
+  "mode": "REAL_LOCAL_RUN",
+  "objective": "soak cycle 5",
+  "target": "publish_candidates/self_owned_demo_repo/tests/task-ledger.selftest.mjs",
+  "commit": "90f49fdcd408ea8a741e022a8971847aa0af041e",
+  "commit_short": "90f49fdcd408",
+  "tests": {
+    "passed": 30,
+    "total": 30,
+    "failures": 0,
+    "result": "30/30"
+  },
+  "checker": "not-run (this is the runner; Checker is a separate review)",
+  "advisor": "not-run (separate review)",
+  "decision": "INTERNAL_DEMO_ONLY",
+  "limitations": [
+    "REAL_LOCAL_RUN of a self-owned target",
+    "not provider-backed",
+    "not production/secure/compliant"
+  ],
+  "nextSafeAction": "export a sealed local evidence package (export-package.mjs)",
+  "generated_note": "timestamp omitted for determinism; bind at packaging time"
+}

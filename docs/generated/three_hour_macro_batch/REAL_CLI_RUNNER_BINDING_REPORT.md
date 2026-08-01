@@ -1,0 +1,4 @@
+# Real CLI Runner Binding Report (Subwave 1)
+Built a REAL deterministic local runner: `src/live_run_console/run-check.mjs`. It executes the self-owned demo target's self-test via child_process (real 30/30), binds the real `git HEAD` SHA, and writes a real evidence JSON (`demo/founder_operator_dashboard/runs/last-run.json`). Decision is INTERNAL_DEMO_ONLY and NEVER SHIP (guarded). Tested: real-runner.selftest 5/5 (asserts a real 40-hex SHA + real 30/30 + determinism).
+The browser dashboard's Start now **loads the REAL_LOCAL_RUN result** produced by the CLI runner (fetch('./runs/last-run.json'), same-origin loopback); if no real run file is present it falls back to a clearly-labeled LOCAL_SIMULATION.
+**Classification: OPERATIONAL_LOCAL for the CLI runner (real, tested); the browser path is REAL_LOCAL (loads the real result) with a LOCAL_SIMULATION fallback.** The simulation is retired as the primary path — it is now only a labeled fallback.
