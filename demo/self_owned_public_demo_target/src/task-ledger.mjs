@@ -32,6 +32,13 @@ export function setStatus(ledger, id, status) {
   return t;
 }
 
+export function removeTask(ledger, id) {
+  const idx = ledger.tasks.findIndex(t => t.id === id);
+  if (idx === -1) throw new Error(`no task with id ${id}`);
+  const [removed] = ledger.tasks.splice(idx, 1);
+  return removed; // ids of remaining tasks are NOT renumbered; ledger.seq is untouched
+}
+
 export function addEvidenceNote(ledger, id, note) {
   if (typeof note !== 'string' || note.trim() === '') {
     throw new Error('evidence note must be a non-empty string');

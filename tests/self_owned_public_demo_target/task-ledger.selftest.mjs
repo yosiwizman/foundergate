@@ -1,7 +1,7 @@
 // Self-contained self-test for task-ledger. Runnable: node tests/task-ledger.selftest.mjs
 // Prints "ALL GREEN: N/N" on success; exits non-zero on any failure.
 import assert from 'node:assert/strict';
-import { createLedger, addTask, setStatus, findTask, addEvidenceNote, summarize, decision, toJSON, fromData, STATUSES }
+import { createLedger, addTask, removeTask, setStatus, findTask, addEvidenceNote, summarize, decision, toJSON, fromData, STATUSES }
   from '../src/task-ledger.mjs';
 
 let pass = 0, fail = 0;
@@ -35,6 +35,10 @@ t('fromData handles empty', () => { const l = fromData({}); assert.equal(l.tasks
 t('summarize has other bucket = 0 for normal data', () => { const l = createLedger(); addTask(l, 'a', { status: 'done' }); const s = summarize(l); assert.equal(s.counts.other, 0); });
 t('summarize counts unknown status under other (defensive)', () => { const l = createLedger(); addTask(l, 'a', { status: 'done' }); l.tasks.push({ id: 99, title: 'raw', status: 'archived', notes: [] }); const s = summarize(l); assert.equal(s.counts.other, 1); });
 t('summarize buckets always sum to total', () => { const l = createLedger(); addTask(l, 'a', { status: 'done' }); addTask(l, 'b', { status: 'todo' }); l.tasks.push({ id: 98, title: 'x', status: 'weird', notes: [] }); const s = summarize(l); const sum = s.counts.todo + s.counts.doing + s.counts.blocked + s.counts.done + s.counts.other; assert.equal(sum, s.total); });
+
+t('removeTask removes the requested task', () => { const l = createLedger(); const a = addTask(l, 'a'); const b = addTask(l, 'b'); const r = removeTask(l, a); assert.equal(r.id, a); assert.equal(findTask(l, a), null); assert.ok(findTask(l, b)); assert.equal(l.tasks.length, 1); });
+t('removeTask throws on unknown id', () => { const l = createLedger(); addTask(l, 'a'); assert.throws(() => removeTask(l, 999)); });
+t('removeTask does not renumber remaining ids', () => { const l = createLedger(); const a = addTask(l, 'a'); const b = addTask(l, 'b'); const c = addTask(l, 'c'); removeTask(l, b); assert.deepEqual(l.tasks.map(t => t.id), [a, c]); assert.equal(addTask(l, 'd'), 4); });
 
 console.log(fail === 0 ? `ALL GREEN: ${pass}/${pass+fail} self-test(s) passed.` : `RED: ${pass}/${pass+fail} passed, ${fail} failed.`);
 process.exit(fail === 0 ? 0 : 1);
