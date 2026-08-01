@@ -1,0 +1,2 @@
+# Real Action Rollback Requirements
+Before any real local action: (1) capture prior state (content/existence) as a rollback token; (2) perform the bounded action; (3) offer rollback that restores prior content or removes a newly-created file; (4) verifyRolledBack must confirm the pre-action state. If rollback cannot be guaranteed, the action is REFUSED. Proven today only in SIMULATION (action-gate+rollback 9/9); real execution is a founder gate.

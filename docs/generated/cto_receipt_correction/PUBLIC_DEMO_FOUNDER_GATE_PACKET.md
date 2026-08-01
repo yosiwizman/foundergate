@@ -1,0 +1,2 @@
+# Public Demo Founder-Gate Packet (Lane C) — decision prep only
+Candidate publish_candidates/self_owned_demo_repo/ is clean (re-scan: secret=0, internal-refs=0; LICENSE+.gitignore present; tests ALL GREEN: 30/30 self-test(s) passed.). To publish (founder gate): create a NEW public repo under your own account; push ONLY the candidate; confirm 30/30; never claim production/secure/compliant. No publishing/repo-creation here.

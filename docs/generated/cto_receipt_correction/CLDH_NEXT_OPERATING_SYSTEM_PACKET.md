@@ -1,0 +1,2 @@
+# CLDH Next Operating-System Packet (Lane A)
+Reusable standards refined: CTO single-writer sensitive-runtime rule; parallel-safe lane pattern with disjoint paths; the autonomous macro-run template (preflight -> single-writer sensitive lane -> independent runtime checker -> parallel doc lanes -> integration -> tests/scans -> soak -> Checker -> Advisor -> non-main push -> one master ZIP); evidence-binding discipline (re-stamp final-head after any follow-up commit). These generalize across the recent session chain.

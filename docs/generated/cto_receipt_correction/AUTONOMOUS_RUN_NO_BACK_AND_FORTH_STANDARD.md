@@ -1,0 +1,2 @@
+# Autonomous Run — No Back-And-Forth Standard
+Run gate-to-gate; never use the founder as courier/operator/reviewer; batched heredoc writes; one master ZIP (no intermediate ZIPs); accumulate founder decisions into a single bundle; diagnose+fix issues autonomously; re-stamp evidence identifiers after any follow-up commit so final-head bindings never go stale; stop only at true founder gates, hard blockers, 3-cycle correction limits, timebox, or final ZIP.

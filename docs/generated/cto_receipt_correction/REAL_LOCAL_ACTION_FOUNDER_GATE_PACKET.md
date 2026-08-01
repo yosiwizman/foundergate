@@ -1,0 +1,2 @@
+# Real Local-Action Founder-Gate Packet (Lane E) — prep only
+Today the action executor is SIMULATED (DRY_RUN, disposable fixtures, forbidden types refused). Moving to REAL local-action execution is a TRUE founder gate. If authorized later, it must: keep the allowlist of non-destructive actions; run only in explicitly-chosen disposable/scoped dirs; require the session token + Origin; produce a rollback receipt BEFORE acting; verify rollback; and never perform forbidden actions (delete/rm/deploy/push/publish/exec/chmod/network). No real action executed here.

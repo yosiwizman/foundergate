@@ -1,0 +1,2 @@
+# Single-Writer Sensitive-Runtime Standard
+Sensitive runtime = executor/gate/session-token/rollback/loopback-auth/local-action code. Exactly ONE builder (Terminal-0) may write it per run; one independent read-only checker verifies; Terminal-0 integrates. No duplicate writers, no parallel edits to the same runtime surface. A single-writer register records every sensitive file + its sole author + the git diff scope. Violation is a STOP condition.

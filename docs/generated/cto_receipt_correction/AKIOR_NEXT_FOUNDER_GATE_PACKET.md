@@ -1,0 +1,2 @@
+# AKIOR Next Founder-Gate Packet (Lane B) — decision prep only
+Local AKIOR workspace: /Users/yosiwizman/Desktop/akior app images . This run does NOT touch AKIOR (login/external = founder gate). Founder decision (a TRUE gate): authorize a cross-account technical proof on a founder-controlled account? If yes: name account + public non-sensitive repo + objective + provider on/off (capped). Label = "cross-account, founder-controlled, public-repo technical proof" (Amendment 01 s6), never customer validation.

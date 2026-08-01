@@ -1,0 +1,2 @@
+# Founder Witness Script (5 minutes)
+"I'm going to double-click the launcher. [OS may ask me to allow it once.] The dashboard opens. I type an objective. I click Start — see: a real commit, tests passing, decision INTERNAL_DEMO_ONLY (it never says SHIP). I click Export — a real sealed ZIP is made and verified. I open the reviewer — I can see a package's checksum and file list, read-only. I did not touch a terminal, read a log, or reconcile a SHA. This is an internal demo — not production, not secure, not a customer product."

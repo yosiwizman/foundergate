@@ -1,0 +1,2 @@
+# Beta Freeze Founder-Gate Packet (Lane D) — decision prep only
+Freeze candidates: founder no-terminal dashboard (launcher + token auth + real run/export), reviewer read-only console (real drawers), self-owned demo target + Safety Check discipline, repeatability harness, sealed-export tooling. Out of beta: cross-account real run, SaaS hosted mechanics, provider-at-scale, any customer surface. Freeze = pick exact SHAs -> Checker+Advisor -> founder acceptance act -> Terminal-0 merge. No PR mutation, no merge here.
