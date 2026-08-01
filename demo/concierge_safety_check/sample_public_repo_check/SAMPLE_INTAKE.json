@@ -1,0 +1,14 @@
+{
+  "_note": "SYNTHETIC dry-run fixture. Not a real prospect, not a real repo. Illustrates the intake shape only.",
+  "prospect": "SAMPLE (fictional)",
+  "repo_url": "https://example.invalid/sample-org/todo-cli   (SYNTHETIC — not fetched, not real)",
+  "repo_visibility": "public (asserted by fixture)",
+  "objective": "Add input validation to the CLI's add-task command and prove the existing tests still pass.",
+  "paths_to_avoid": ["/.github", "/scripts/release"],
+  "no_secrets_confirmed": true,
+  "decision_wanted": "ship / do-not-ship / insufficient",
+  "time_window": "single bounded run, <= 30 min",
+  "note_recipient": "SAMPLE prospect lead (fictional)",
+  "cost_cap_usd": 0,
+  "provider": "OFF (no-provider deterministic rehearsal)"
+}

@@ -1,0 +1,12 @@
+# Call Notes Template (per prospect call)
+- **Prospect / date:** ____________________
+- **What they build:** ____________________
+- **Public repo offered:** ____________________
+- **Objective they'd want tested:** ____________________
+- **Their reaction to the evidence-note idea:** ____________________
+- **Their honest answer to "worth paying for eventually?":** ____________________
+- **What would make it a yes:** ____________________
+- **Objections raised:** ____________________
+- **Red flags (sensitive data? production expectation?):** ____________________
+- **Next step + date:** ____________________
+- **Decision:** proceed to run / defer / decline

@@ -1,0 +1,2 @@
+# LinkedIn DM (short, truthful)
+Hi [name] — building FounderGate, an evidence-first governance layer for autonomous AI dev. It makes a bounded code change and *proves* what it did (exact commit, tests, honest ship/do-not-ship, cost cap). I'm doing free concierge runs on **public, non-sensitive repos** — early internal demo, nothing leaves your machine, honest about limits. Want me to try one on a low-stakes public repo of yours? 20 min.

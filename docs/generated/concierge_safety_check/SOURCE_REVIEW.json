@@ -1,0 +1,57 @@
+{
+  "source_of_truth": "run/investor-demo-internal-beta-package-20260801T0010ET@54d7bdad receipt generated_docs (28)",
+  "external_fetch": false,
+  "invented": false,
+  "missing": [],
+  "sources": [
+    {
+      "name": "DESIGN_PARTNER_OFFER",
+      "status": "FOUND"
+    },
+    {
+      "name": "CONCIERGE_SAFETY_CHECK_SCOPE",
+      "status": "FOUND"
+    },
+    {
+      "name": "DATA_RULES",
+      "status": "FOUND"
+    },
+    {
+      "name": "INTAKE_QUESTIONS",
+      "status": "FOUND"
+    },
+    {
+      "name": "PILOT_PRICING_HYPOTHESES",
+      "status": "FOUND"
+    },
+    {
+      "name": "OUTREACH_EMAIL_DRAFT",
+      "status": "FOUND"
+    },
+    {
+      "name": "CALL_SCRIPT",
+      "status": "FOUND"
+    },
+    {
+      "name": "FORBIDDEN_CLAIMS",
+      "status": "FOUND"
+    },
+    {
+      "name": "CLAIMS_MATRIX",
+      "status": "FOUND"
+    },
+    {
+      "name": "SAFE_CLAIMS",
+      "status": "FOUND"
+    },
+    {
+      "name": "INTERNAL_BETA_LIMITATIONS",
+      "status": "FOUND"
+    },
+    {
+      "name": "EVIDENCE_INDEX",
+      "status": "FOUND"
+    }
+  ],
+  "evidence_chain_packages": 14
+}

@@ -1,0 +1,2 @@
+# What Yossi reads to the prospect (SAMPLE, plain English)
+"I ran a governed check on your public repo. It made the bounded change you asked for, and all the tests still passed. An independent checker and a separate advisor both reviewed it and agreed it's coherent for a trial — but I want to be clear: this is an early internal demo, not a production or security certification, and nothing left your machine except this note. Would a note like this be worth paying for eventually — and what would make it a yes?"
