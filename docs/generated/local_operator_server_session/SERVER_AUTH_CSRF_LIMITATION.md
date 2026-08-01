@@ -1,0 +1,2 @@
+# Server Auth / CSRF Limitation (disclosed)
+The local run-server is loopback-only, allowlisted, and no-shell — but it has no auth and no Origin/CSRF check. This is disclosed as a known limitation, not defended as secure. Because targets are a fixed allowlist of self-tests, decisions never SHIP, and there is no network egress, the impact of an unwanted local POST is bounded to re-running a self-test / re-sealing a demo package. A future safe follow-on: add a same-Origin check or a local token. NO security/compliance claim is made.

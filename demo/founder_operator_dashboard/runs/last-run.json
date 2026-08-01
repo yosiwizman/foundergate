@@ -1,14 +1,14 @@
 {
   "mode": "REAL_LOCAL_RUN",
-  "objective": "repeat 2",
-  "target": "fixtures/local_operator_server_session/fixture.selftest.mjs",
-  "commit": "a4763ca6da1059314f1bf54334b2aa801662e40a",
-  "commit_short": "a4763ca6da10",
+  "objective": "$(touch /tmp/pwned_advisor) `id`",
+  "target": "publish_candidates/self_owned_demo_repo/tests/task-ledger.selftest.mjs",
+  "commit": "47e77daef9e996acd96d32858e8f0efba0066d1a",
+  "commit_short": "47e77daef9e9",
   "tests": {
-    "passed": 2,
-    "total": 2,
+    "passed": 30,
+    "total": 30,
     "failures": 0,
-    "result": "2/2"
+    "result": "30/30"
   },
   "checker": "not-run (this is the runner; Checker is a separate review)",
   "advisor": "not-run (separate review)",

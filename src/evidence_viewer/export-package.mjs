@@ -42,7 +42,6 @@ export function exportSealedPackage(runPath = runJsonPath, zipPath = outZip) {
   execFileSync('ditto', ['-c', '-k', '--sequesterRsrc', '--keepParent', pkg, zipPath]);
   const verify = execFileSync('unzip', ['-tq', zipPath]).toString();
   const zipSha = sha256File(zipPath);
-  const internalOk = files.every(f => true); // sums written above are authoritative
   return { sealed: true, zip: zipPath, zip_sha256: zipSha, unzip_ok: /No errors detected/.test(verify), files, decision: run.decision };
 }
 

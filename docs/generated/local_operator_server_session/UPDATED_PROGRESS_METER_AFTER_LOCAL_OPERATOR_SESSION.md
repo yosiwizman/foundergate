@@ -2,7 +2,8 @@
 | Capability | Label |
 |-----------|-------|
 | Technical proof / governance / honesty | PROVEN_WITH_LIMITS |
-| No-terminal founder UX | LOCAL_OPERATIONAL_WITH_LIMITS (browser Start+Export via loopback server; operator starts server once) |
+| No-terminal founder UX (in-browser loop) | LOCAL_OPERATIONAL_WITH_LIMITS (Start+Export+review work in-browser via the loopback server) |
+| Pure no-terminal (cold start) | PARTIAL_WITH_LIMITS (starting the loopback server is still one terminal command; a no-terminal launcher is a safe follow-on) |
 | Local run-server | OPERATIONAL_LOCAL (loopback, allowlisted, no-shell, tested) |
 | Real runner | OPERATIONAL_LOCAL (real tests + live SHA, never SHIP) |
 | Real sealed export | SEALED_EXPORT_LOCAL (real ZIP, unzip -t verified) |

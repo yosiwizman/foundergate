@@ -5,3 +5,6 @@
 - Input bounds: objective non-empty and <=200 chars; request body capped at 10KB.
 - No network egress, no provider, no deployment, no external repo. Only local read-only git + node test execution + local ditto sealing.
 - Never SHIP: any runner SHIP is rejected by the server.
+
+## Disclosed limitation (NOT a security claim)
+The loopback API has NO authentication and NO Origin/CSRF check. Any local process, or a page open in the same browser, could POST to /api/start or /api/export. The blast radius is bounded (only allowlisted self-tests run, decisions never SHIP, no network egress, no external repo, no provider, no deployment), but this surface is UNASSESSED. This session makes NO security or compliance claim about the server; the boundaries above are observed engineering properties, not a certification. Adding an auth/Origin decision is a recorded safe follow-on.

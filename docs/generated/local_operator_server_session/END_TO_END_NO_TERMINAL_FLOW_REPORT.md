@@ -1,4 +1,4 @@
 # End-to-End No-Terminal Flow Report (Subwave 5)
 Proven E2E (browser 3/3): open dashboard -> enter objective -> Start -> local server invokes real runner -> dashboard shows real commit + real 30/30 -> Export -> server creates + verifies a real sealed ZIP (SEALED_EXPORT_LOCAL) -> reviewer drawer opens real package manifest + sample text -> Stop safely. No raw logs; no terminal instructions to the founder beyond opening the local app/server. a11y 0 serious/critical; 2 screenshots.
-## Classification: LOCAL_OPERATIONAL_WITH_LIMITS
-Browser Start and Export both work through the local loopback server. The single "with limits": an operator must start the local run-server once (one command); after that the founder operates entirely in the browser.
+## Classification: LOCAL_OPERATIONAL_WITH_LIMITS for the in-browser loop; PARTIAL for the pure no-terminal goal
+Once the loopback server is running, browser Start+Export+review is genuinely local-operational (real run + real sealed export). BUT the loop cannot BEGIN without one terminal command to start the server, so the end-to-end 'no-terminal' goal is NOT fully met — it moved toward operational, it did not arrive. A no-terminal server launcher is a recorded safe follow-on. No security claim is made about the server (see SERVER_AUTH_CSRF_LIMITATION.md).
