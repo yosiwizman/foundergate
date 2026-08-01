@@ -1,9 +1,9 @@
 {
   "mode": "REAL_LOCAL_RUN",
-  "objective": "soak cycle 5",
+  "objective": "post-correction verify 2",
   "target": "publish_candidates/self_owned_demo_repo/tests/task-ledger.selftest.mjs",
-  "commit": "90f49fdcd408ea8a741e022a8971847aa0af041e",
-  "commit_short": "90f49fdcd408",
+  "commit": "86fe4577bc4a57750e773a1825ccfe4e03d5d49a",
+  "commit_short": "86fe4577bc4a",
   "tests": {
     "passed": 30,
     "total": 30,

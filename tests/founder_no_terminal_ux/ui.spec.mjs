@@ -13,7 +13,7 @@ test('founder dashboard: Start loads REAL_LOCAL_RUN (real commit + real tests)',
   await page.getByTestId('start-btn').click();
   await expect(page.getByTestId('start-status')).toContainText('REAL_LOCAL_RUN', { timeout: 5000 });
   await expect(page.getByTestId('status-val')).toContainText('REAL_LOCAL_RUN');
-  await expect(page.getByTestId('commit-val')).toContainText('90f49fdcd408'); // REAL head SHA
+  await expect(page.getByTestId('commit-val')).toHaveText(/^[0-9a-f]{12}$/); // REAL head SHA (whatever HEAD is)
   await expect(page.getByTestId('decision-val')).toContainText('INTERNAL_DEMO_ONLY');
   await expect(page.getByTestId('export-btn')).toBeEnabled();
   await page.getByTestId('export-btn').click();
