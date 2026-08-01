@@ -1,0 +1,2 @@
+# No-Terminal Launcher Report
+demo/founder_operator_dashboard/launch-foundergate.command (chmod +x): a double-clickable launcher that starts the loopback run-server (if not already up, via nohup) and opens the founder dashboard in the default browser. This removes the founder's last terminal step for cold-start — the founder double-clicks; no typing. Local, loopback-only, no provider, no network egress, no deployment. (Note: first double-click may require the user to allow it in macOS Gatekeeper; that is a one-time OS trust prompt, not a FounderGate action.)

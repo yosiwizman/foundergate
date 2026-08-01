@@ -1,0 +1,2 @@
+# Investor Proof Index (updated)
+Honestly demonstrable now: a no-terminal (double-click launcher) local dashboard that runs a REAL governed check (real commit + real tests, never SHIP) behind a token+Origin-authenticated loopback server, produces a REAL sealed evidence package, and lets a reviewer open real package contents read-only; plus governed autonomy + honest-decision discipline across many controlled runs; two tiny bounded real-provider runs (historical); Controlled Amendment 01 as a digest-verified founder-record.

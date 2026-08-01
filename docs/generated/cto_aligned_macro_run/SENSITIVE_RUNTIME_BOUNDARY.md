@@ -1,0 +1,2 @@
+# Sensitive Runtime Boundary
+Inside the boundary (single writer): loopback action server + auth/Origin/token; runner invocation; sealed export; local action gate; simulated executor; rollback; session-token discipline; any code that could trigger a local machine action. Outside: all docs, planning, reviewer-view rendering, public-demo candidate, fixtures, investor/beta/SaaS maps. The boundary is enforced by path ownership (see LANE_OWNERSHIP_MAP) and by the single-writer register.

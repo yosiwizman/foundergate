@@ -17,8 +17,11 @@ function render(run, source){
   $('next-action-val').textContent = run.nextSafeAction || '—';
   $('export-btn').disabled = !(run && run.commit);
 }
-async function postJSON(url, body){ const r = await fetch(url, { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(body||{}) }); return r.json(); }
-window.addEventListener('DOMContentLoaded', () => {
+let SESSION_TOKEN = null;
+async function loadToken(){ try{ const r=await fetch('/api/session'); const j=await r.json(); SESSION_TOKEN=j.token; }catch{ SESSION_TOKEN=null; } }
+async function postJSON(url, body){ const r = await fetch(url, { method:'POST', headers:{'content-type':'application/json','x-fg-token': SESSION_TOKEN||''}, body: JSON.stringify(body||{}) }); return r.json(); }
+window.addEventListener('DOMContentLoaded', async () => {
+  await loadToken();
   $('start-btn').addEventListener('click', async () => {
     $('start-status').textContent = 'RUNNING (local run-server)…';
     try {
@@ -31,6 +34,8 @@ window.addEventListener('DOMContentLoaded', () => {
         $('start-status').textContent = 'INSUFFICIENT — objective was empty.';
       } else if (res.status === 'REFUSED') {
         $('start-status').textContent = 'REFUSED — target not in the local allowlist.';
+      } else if (res.status === 'UNAUTHORIZED') {
+        $('start-status').textContent = 'UNAUTHORIZED — session token/Origin check failed.';
       } else {
         $('start-status').textContent = (res.status || 'ERROR') + ' — ' + (res.reason || 'run did not complete');
       }

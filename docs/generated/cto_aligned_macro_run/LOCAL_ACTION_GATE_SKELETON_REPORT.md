@@ -1,0 +1,2 @@
+# Local Action Gate Skeleton Report
+action-gate.mjs models "local actions" a future operator flow might request but ONLY simulates them. ACTION_ALLOWLIST = write_note/append_note/noop. FORBIDDEN_ACTIONS (delete/rm/deploy/push/publish/exec/chmod/network) are refused by validateAction and never on the allowlist. simulateAction runs strictly inside a caller-provided disposable dir with path-traversal neutralization; every result is labeled DRY_RUN_LOCAL_SIMULATION. No real machine action is performed. Live-action execution remains a founder gate (not crossed).

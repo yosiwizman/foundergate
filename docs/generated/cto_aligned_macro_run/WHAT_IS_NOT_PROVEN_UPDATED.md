@@ -1,0 +1,2 @@
+# What Is Not Proven (updated)
+External demand · willingness-to-pay · paid customers · market fit · security · compliance · production readiness · SaaS hosted mechanics · provider-at-scale · cross-account real run (prep only) · real (non-simulated) local-action execution (gate) · auth hardening beyond loopback token/Origin (bounded). Market/paid-customer validation DEFERRED (not a blocker for Gates 1-7).

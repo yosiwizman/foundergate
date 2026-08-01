@@ -1,0 +1,2 @@
+# Autonomous Macro-Run Template
+Phase 0 preflight+branch+contract -> Phase 1 architecture/lane classification -> sensitive lane (single writer) -> independent runtime checker -> parallel-safe lanes -> integration (Terminal-0) -> tests/scans -> soak -> final Checker -> Gate Advisor -> commit/push non-main -> ONE master ZIP. Rules: no founder as courier/operator; batched heredocs; gate-to-gate; label-only meters; never SHIP; stop at founder gates; single writer on sensitive runtime.

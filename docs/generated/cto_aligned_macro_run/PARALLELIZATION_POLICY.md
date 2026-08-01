@@ -1,0 +1,2 @@
+# Parallelization Policy
+Parallel-safe lanes (A-H) are documentation + fixtures with disjoint paths; Terminal-0 authors them as the single integrator (no duplicate writers, no merge races). The sensitive runtime lane is strictly serial: one builder, freeze, then one independent checker, then Terminal-0 integration. Read-only Agents (Checker, Gate Advisor) never write code. This mirrors the CTO rule: wide where safe, single-writer where sensitive.

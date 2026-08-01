@@ -1,0 +1,2 @@
+# Wall-Clock Soak Report
+Ran meaningful authenticated soak cycles (12 cycles, 4 server restarts, run+export+refusal+rollback each, 0 errors) plus full verification. Wall-clock elapsed ~7 min at packaging. Per the queue-exhaustion standard, all safe authorized work is complete and remaining work is founder-gated; the run does not idle-fill to the timebox — meaningful cycles were run and recorded, then packaged.

@@ -1,0 +1,2 @@
+# Beta Decision Packet (Lane G)
+Read-only; no PR mutation. Beta freeze candidates: founder no-terminal dashboard (now with launcher + token auth + real run/export), reviewer read-only console (real drawers), self-owned demo target + Safety Check discipline, repeatability harness, sealed-export tooling. Out of beta: cross-account real run, SaaS hosted mechanics, provider-at-scale, any customer surface. Freeze = pick SHAs -> Checker+Advisor -> founder acceptance -> Terminal-0 merge (none done).

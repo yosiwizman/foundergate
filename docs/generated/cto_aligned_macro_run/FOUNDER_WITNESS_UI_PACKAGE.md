@@ -1,0 +1,2 @@
+# Founder Witness UI Package (Lane A)
+For the founder to visually witness the local UI without reading logs. Double-click launch-foundergate.command -> the dashboard opens. Then: type an objective, click Start (real run appears), click Export (sealed package), open the reviewer console drawers. Screenshots in screenshots/. This is a REVIEW package only — it claims no founder approval and no beta acceptance.

@@ -1,0 +1,2 @@
+# Single-Writer Runtime Rule
+Exactly one builder (Terminal-0) may create/modify sensitive runtime files this run. No parallel agent modifies executor/gate/session-token/rollback/loopback-auth code. The independent sensitive-runtime Checker is read-only. Violation of this rule is a STOP condition. Enforcement evidence: SENSITIVE_RUNTIME_SINGLE_WRITER_REGISTER.md records every sensitive file + its single author (Terminal-0) + the git diff scope.

@@ -1,0 +1,2 @@
+# Rollback Simulation Report
+rollback.mjs restores the prior content captured by simulateAction (or removes a file the simulation newly created). verifyRolledBack confirms the fixture returned to its pre-action state. Proven on disposable temp fixtures (action-gate+rollback 9/9): append-then-rollback restores base content; write-new-then-rollback removes the file. Operates only on the disposable file the simulation touched; never deletes anything it did not create this session.

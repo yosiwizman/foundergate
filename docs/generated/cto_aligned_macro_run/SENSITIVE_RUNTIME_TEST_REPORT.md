@@ -1,0 +1,2 @@
+# Sensitive Runtime Test Report
+session-token 11/11 (token gen/compare, loopback-Origin, authorize matrix incl. external-Origin CSRF refusal) · action-gate+rollback 9/9 (forbidden refused, allowlist, DRY_RUN simulate, traversal neutralized, rollback restore/remove) · server-core 17/17 · E2E browser 3/3 (auth token flow; a11y 0 serious/critical). Live auth smoke over 127.0.0.1: no/wrong/external-Origin token → UNAUTHORIZED; good token → real run + verified export.

@@ -1,0 +1,2 @@
+# Queue Exhaustion Standard
+The run continues while any SAFE authorized task remains. It ends only when all safe tasks are done or labeled TRUE_FOUNDER_GATE/DEFERRED, a hard blocker appears, a material issue survives 3 corrections, the timebox ends at a safe checkpoint, or the final ZIP is produced. Discovered safe follow-ons are recorded (not dropped). An exhaustion audit proves no further safe task remains before packaging.

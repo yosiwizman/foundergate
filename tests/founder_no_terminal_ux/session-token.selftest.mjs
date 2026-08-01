@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import { newToken, tokenEqual, isLoopbackOrigin, authorize } from '../../src/operator_console/session-token.mjs';
+let p=0,f=0; const t=(n,fn)=>{try{fn();p++}catch(e){f++;console.error('FAIL',n,e.message)}};
+const TOK=newToken();
+t('token is 48-hex', ()=>assert.match(TOK,/^[0-9a-f]{48}$/));
+t('two tokens differ', ()=>assert.notEqual(newToken(),newToken()));
+t('tokenEqual true for same', ()=>assert.equal(tokenEqual(TOK,TOK),true));
+t('tokenEqual false for diff', ()=>assert.equal(tokenEqual(TOK,newToken()),false));
+t('no-origin allowed (loopback non-CORS)', ()=>assert.equal(isLoopbackOrigin(''),true));
+t('loopback origin allowed', ()=>assert.equal(isLoopbackOrigin('http://127.0.0.1:4880'),true));
+t('external origin refused', ()=>assert.equal(isLoopbackOrigin('http://evil.example'),false));
+t('authorize ok with token + loopback', ()=>assert.equal(authorize({'x-fg-token':TOK,'origin':'http://127.0.0.1:4880'},TOK).ok,true));
+t('authorize fails missing token', ()=>assert.equal(authorize({'origin':'http://127.0.0.1:4880'},TOK).code,'UNAUTHORIZED'));
+t('authorize fails bad token', ()=>assert.equal(authorize({'x-fg-token':'nope'},TOK).code,'UNAUTHORIZED'));
+t('authorize fails external Origin (CSRF)', ()=>assert.equal(authorize({'x-fg-token':TOK,'origin':'http://evil.example'},TOK).code,'UNAUTHORIZED'));
+console.log(f===0?`ALL GREEN: ${p}/${p+f} self-test(s) passed.`:`RED: ${f} failed`);
+process.exit(f===0?0:1);

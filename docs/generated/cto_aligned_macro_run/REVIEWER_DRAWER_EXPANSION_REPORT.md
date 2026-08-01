@@ -1,0 +1,2 @@
+# Reviewer Drawer Expansion Report (Lane D)
+The reviewer drawer (built prior session) shows, per real sealed package: name, SHA-256, full manifest (unzip -Z1), and one read-only sample text file (prefers EVIDENCE_NOTE/SHA256SUMS/FINAL_STATUS/README). Binary files are listed in the manifest but not rendered. Read-only enforced (assertReadOnly on load; all mutation caps false). No mutation/merge/PR-ready/provider/deploy controls. Tests: package-details 5/5, readonly 4/4, package-index 4/4; E2E drawer-open pass.

@@ -1,0 +1,2 @@
+# Checker / Advisor Contract
+Checker (independent, read-only): verifies single-writer rule, tests actually pass (re-run), no forbidden gate, main/PR untouched, no invented green, honest refusals, package complete. Verdicts: CLEAN/CLEAN_WITH_LIMITS/FINDINGS/INSUFFICIENT_EVIDENCE/HOLD. Gate Advisor (separate, read-only): judges readiness-with-limits, what's proven vs gated, and the single next safe action. Neither writes code; both must be reproducible.

@@ -1,0 +1,2 @@
+# Soak Extension Report
+12 authenticated cycles / 4 restarts / 0 errors (RUNTIME_CYCLE_LOG.md, evidence/soak.log). Each cycle: authed Start (real 30/30), verified Export, no-token refusal, rollback simulation, no-invented-green. Wall-clock elapsed at this checkpoint: ~7 min. Meaningful cycles were run (not idle-fill); remaining work is founder-gated, so packaging follows per the exhaustion standard rather than padding the timebox.

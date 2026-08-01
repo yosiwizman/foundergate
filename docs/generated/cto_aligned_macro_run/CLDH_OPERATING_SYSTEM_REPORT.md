@@ -1,0 +1,2 @@
+# CLDH Operating-System Report (Lane C)
+Reusable FounderGate/CLDH operating-system assets refined this run: the CTO single-writer sensitive-runtime rule, the parallel-safe lane pattern, the macro-run template, the checker/advisor contract, the queue-exhaustion standard, and the hand-burden-reduction protocol. These generalize the run structure used across the recent sessions (record capture -> max-wide -> follow-ons -> three-hour -> local-operator -> this CTO run).

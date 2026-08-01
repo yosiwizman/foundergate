@@ -1,0 +1,2 @@
+# AKIOR Product/App Workflow Map (local planning)
+Intended (future, founder-gated) flow: pick a public non-sensitive repo under the AKIOR (second, founder-controlled) account -> run a governed check via the same loopback runner -> produce a sealed evidence package -> label "cross-account, founder-controlled, public-repo technical proof" (Amendment 01 s6), never customer validation. This map is planning only; no AKIOR action is taken.

@@ -1,0 +1,2 @@
+# SaaS Foundation Gap Map (updated)
+Non-production only. Gaps before any SaaS readiness (each separately gated): multi-user auth/RBAC (this run added only a LOCAL loopback session token, not multi-user auth) · tenant isolation · hosted capped run workers · evidence object store · billing/metering · security posture + independent review · deployment/ops · support/incident SLA · data classification enforcement · production-readiness checklist. SaaS readiness = BLOCKED_BY_FOUNDER_GATE. No auth-for-external-users/billing/deploy/customer-data in this run.
