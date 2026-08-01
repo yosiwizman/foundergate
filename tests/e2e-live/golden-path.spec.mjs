@@ -1,0 +1,30 @@
+import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
+import { writeFileSync, mkdirSync } from "node:fs"; import { join } from "node:path";
+const SHOTS = process.env.LIVE_SHOTS, A11Y = process.env.LIVE_A11Y;
+mkdirSync(SHOTS, { recursive: true }); mkdirSync(A11Y, { recursive: true });
+const FAB = /(MERGE[_ ]?READY|FINAL[_ ]?BETA|PRODUCTION[_ ]?READY|CUSTOMER[_ ]?READY)/i;
+test("doctor route renders local readiness honestly", async ({ page }, info) => {
+  await page.goto("/doctor", { waitUntil: "load" });
+  const t = await page.getByTestId("doctor-out").textContent();
+  expect(t).toContain("FOUNDERGATE DOCTOR");
+  expect(t).toContain("main_sha:");
+  expect(t, "no production claim").toMatch(/NOT a production/i);
+  await page.screenshot({ path: join(SHOTS, `doctor.${info.project.name}.png`), fullPage: true });
+});
+test("golden-path shows honest flow + provider NOT_ACTIVATED + founder gate", async ({ page }, info) => {
+  await page.goto("/golden-path", { waitUntil: "load" });
+  await expect(page.getByTestId("gp-provider")).toContainText("NOT_ACTIVATED");
+  const t = await page.getByTestId("golden-path-out").textContent();
+  for (const s of ["DOCTOR", "CONTROLLED INTAKE", "LIVE RUN CONSOLE", "DECISION PACKAGE", "FOUNDER SHIP REPORT"]) expect(t, `has ${s}`).toContain(s);
+  expect(t, "provider not activated").toContain("provider: NOT_ACTIVATED");
+  expect(t, "founder gate shown").toContain("FOUNDER GATE");
+  expect(FAB.test(t), "no fabricated ready").toBeFalsy();
+  const injected = await page.locator('[data-testid="golden-path-out"] script, [data-testid="golden-path-out"] img').count();
+  expect(injected).toBe(0);
+  await page.screenshot({ path: join(SHOTS, `golden-path.${info.project.name}.png`), fullPage: true });
+  const a = await new AxeBuilder({ page }).analyze();
+  writeFileSync(join(A11Y, `golden-path.${info.project.name}.a11y.json`), JSON.stringify({ violations: a.violations.length }, null, 2));
+  expect(a.violations.filter(v=>v.impact==="serious"||v.impact==="critical")).toHaveLength(0);
+  expect(a.violations).toHaveLength(0);
+});

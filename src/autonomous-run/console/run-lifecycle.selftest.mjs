@@ -1,0 +1,15 @@
+import { buildRunLifecycle, renderRunLifecycleText, UNKNOWN } from "./run-lifecycle.mjs";
+let p=0,f=0; const ok=(n,c)=>{c?p++:(f++,console.error("FAIL",n));};
+const c={run_id:"gp-001",deadline_utc:"2026-08-01T00:00:00Z",budget_usd:0,stop_condition:"queue exhausted"};
+ok("not_started",buildRunLifecycle({contract:c,state:"NOT_STARTED"}).state==="NOT_STARTED");
+ok("provider not activated by default",buildRunLifecycle({contract:c,state:"RUNNING_STUB"}).provider_status==="NOT_ACTIVATED");
+ok("running_stub pausable",buildRunLifecycle({contract:c,state:"RUNNING_STUB"}).pausable===true);
+const gate=buildRunLifecycle({contract:c,state:"READY_FOR_AUTHORIZATION",requiresProvider:true});
+ok("founder gate when provider required",/FOUNDER GATE/.test(gate.founder_gate));
+ok("no gate when authorized",buildRunLifecycle({contract:c,state:"RUNNING_STUB",requiresProvider:true,providerAuthorized:true}).founder_gate===null);
+ok("bad state -> UNKNOWN",buildRunLifecycle({contract:c,state:"SHIPPED"}).state===UNKNOWN);
+ok("missing run_id -> UNKNOWN",buildRunLifecycle({contract:{},state:"NOT_STARTED"}).run_id===UNKNOWN);
+const t=renderRunLifecycleText(gate);
+ok("render no fabricated ready",!/PRODUCTION[_ ]READY|MERGE[_ ]READY|SHIP\b/i.test(t));
+ok("hostile run_id inert",!renderRunLifecycleText(buildRunLifecycle({contract:{run_id:"<script>x</script>"},state:"NOT_STARTED"})).includes("<script>x"));
+console.log(`run-lifecycle.selftest: ${p} passed, ${f} failed`); process.exit(f?1:0);

@@ -1,0 +1,13 @@
+import { buildDoctor, renderDoctorReport, UNKNOWN } from "./doctor.mjs";
+let p=0,f=0; const ok=(n,c)=>{c?p++:(f++,console.error("FAIL",n));};
+const full=buildDoctor({signals:{node:true,npm:true,node_modules:true,browsers:true,local_server:true,evidence_root:true},identity:{repo:"yosiwizman/foundergate",main_sha:"65fd0166",evidence_root:"/x"}});
+ok("full all_present",full.all_present===true);
+ok("full no limitation but placeholder",full.limitations.length===1);
+const partial=buildDoctor({signals:{node:true,npm:true,node_modules:false,browsers:true},identity:{}});
+ok("partial not all_present",partial.all_present===false);
+ok("partial names missing signal",partial.limitations.some(l=>l.includes("node_modules")));
+ok("missing identity -> UNKNOWN",partial.repo===UNKNOWN&&partial.main_sha===UNKNOWN);
+const txt=renderDoctorReport(full);
+ok("render has DOCTOR",txt.includes("FOUNDERGATE DOCTOR"));
+ok("render not production claim",!/production[- ]ready|deployment[- ]ready/i.test(txt)||/NOT a production/i.test(txt));
+console.log(`doctor.selftest: ${p} passed, ${f} failed`); process.exit(f?1:0);

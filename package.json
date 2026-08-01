@@ -7,7 +7,9 @@
   "scripts": {
     "test": "node scripts/run-selftests.mjs",
     "stranger-test": "node scripts/start-stranger-test.mjs",
-    "founder-view:live": "node src/ui/founder-view/live/live-server.mjs"
+    "founder-view:live": "node src/ui/founder-view/live/live-server.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "golden-path:live": "node src/ui/founder-view/live/live-server.mjs"
   },
   "engines": {
     "node": ">=20"
