@@ -1,0 +1,4 @@
+# Changed Files Report — CTO-Aligned Run
+Branch run/cto-aligned-autonomous-macro-run-20260801T1815ET, base 42e3cdf, single commit 0381aea (Terminal-0). ~64 files, within: src/operator_console/, demo/founder_operator_dashboard/, demo/reviewer_console/, docs/generated/cto_aligned_macro_run/, tests/{founder_no_terminal_ux,reviewer_view,repeatability_crash_tests}/, fixtures/, publish_candidates/. 
+Note (Final Checker limit): `playwright-operator-server.config.mjs` at repo root is the loopback e2e test-harness config for the operator-console lane (testDir ./tests/founder_no_terminal_ux, webServer = loopback run-server). It is in-scope in intent (the run's own e2e harness) but sits outside the enumerated lane directories — disclosed as the single path limit; benign, loopback-only, no security/gate impact.
+No .github/, governance/, or protected files touched.

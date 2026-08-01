@@ -1,14 +1,14 @@
 {
   "mode": "REAL_LOCAL_RUN",
-  "objective": "soak 12",
-  "target": "publish_candidates/self_owned_demo_repo/tests/task-ledger.selftest.mjs",
-  "commit": "42e3cdf94bf60a1b93b3740dc1e42175e0a850cc",
-  "commit_short": "42e3cdf94bf6",
+  "objective": "validate auth",
+  "target": "fixtures/local_operator_server_session/fixture.selftest.mjs",
+  "commit": "0381aea0e75e8b492138d6da0a4117e182f3bd62",
+  "commit_short": "0381aea0e75e",
   "tests": {
-    "passed": 30,
-    "total": 30,
+    "passed": 2,
+    "total": 2,
     "failures": 0,
-    "result": "30/30"
+    "result": "2/2"
   },
   "checker": "not-run (this is the runner; Checker is a separate review)",
   "advisor": "not-run (separate review)",
