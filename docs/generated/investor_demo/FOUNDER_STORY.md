@@ -1,0 +1,2 @@
+# Founder Story (plain English)
+Yossi is a non-developer founder. He wanted to know: can an AI safely build software overnight without lying about what it did? FounderGate is the answer he's been proving, step by step — not by trusting the AI, but by making it *prove* every run: how long it really ran (from logs, not a timer), exactly which files changed, what tests passed, and — crucially — making it refuse to say "ready" when it isn't. The demos cost cents and touched no real data. The honesty is the product.

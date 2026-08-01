@@ -1,0 +1,28 @@
+{
+  "origin_main": "65fd0166",
+  "pr203": "MERGED",
+  "pr201": "CLOSED",
+  "pr202": "CLOSED",
+  "pr200": "OPEN",
+  "branches": {
+    "golden_path": "3871a342",
+    "witness": "ef4a35f9",
+    "real_project": "1526a1fc"
+  },
+  "proven": [
+    "L1-L4 endurance",
+    "governed merge",
+    "live golden path",
+    "2 bounded real-provider runs"
+  ],
+  "not_proven": [
+    "production",
+    "customer",
+    "final-beta",
+    "secure",
+    "compliant",
+    "deploy",
+    "SaaS"
+  ],
+  "next_gate": "design-partner concierge pilot (manual, non-sensitive)"
+}

@@ -1,0 +1,7 @@
+:root{color-scheme:light dark} body{font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;margin:0;line-height:1.55;color:#111;background:#fff}
+@media(prefers-color-scheme:dark){body{color:#eee;background:#0b0b0c}}
+header{background:#12233a;color:#fff;padding:1rem 1.5rem} .banner{background:#7a1f1f;color:#fff;padding:.5rem 1.5rem;font-weight:700;letter-spacing:.03em}
+main{max-width:820px;margin:0 auto;padding:1.5rem} nav a{margin-right:1rem} h1{margin:.2rem 0} code{background:#8882;padding:.1rem .3rem;border-radius:4px}
+table{border-collapse:collapse;width:100%} td,th{border:1px solid #8884;padding:.4rem .6rem;text-align:left} .ok{color:#187d3c;font-weight:700} .no{color:#a11}
+header a{color:#dbeafe;text-decoration:underline} header a:visited{color:#dbeafe}
+main a{color:#0b57d0} @media(prefers-color-scheme:dark){main a{color:#9cc3ff}}

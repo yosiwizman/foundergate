@@ -1,0 +1,100 @@
+[
+  {
+    "label": "Level-4 endurance",
+    "file": "FounderGate_Level4_EightHour_Proof_Review_ChatGPT_20260731T0855ET.zip",
+    "present": true,
+    "sha256": "ba1129debbef10f7d2cf15898714d15435ade47d815f834c1273e50da96873fa",
+    "bytes": 54433
+  },
+  {
+    "label": "Overnight wide-build",
+    "file": "FounderGate_Overnight_WideBuild_Wave1_Review_ChatGPT_20260731T1730ET.zip",
+    "present": true,
+    "sha256": "f60f8ea1e517e6e891f40a4d8feb6387ea38e47b871a3a3effed48e889216d65",
+    "bytes": 80991
+  },
+  {
+    "label": "Wave1B validation",
+    "file": "FounderGate_Overnight_WideBuild_Wave1B_Validation_Review_ChatGPT_20260731T1840ET.zip",
+    "present": true,
+    "sha256": "4473f6cbe75f9bedb1fbdd9831d32c975a0d9679a809dcca85e6eb0748e8dd52",
+    "bytes": 189944
+  },
+  {
+    "label": "PR203 draft-PR receipt",
+    "file": "FounderGate_Wave1B_Draft_PR_Open_Receipt_ChatGPT_20260731T1918ET.zip",
+    "present": true,
+    "sha256": "7ab28f00ce35c179da9e8b22820a5358147c28e59e0c3ba776609130366a441a",
+    "bytes": 5090
+  },
+  {
+    "label": "PR203 batched hardening",
+    "file": "FounderGate_PR203_Batched_Review_Hardening_Receipt_ChatGPT_20260731T1940ET.zip",
+    "present": true,
+    "sha256": "782e94d2978ca15256ba9933270dde475cb8459331a0f9be6f272129a1c722bd",
+    "bytes": 1066523
+  },
+  {
+    "label": "PR203 live-wired e2e",
+    "file": "FounderGate_PR203_Live_Wired_E2E_Review_Receipt_ChatGPT_20260731T2020ET.zip",
+    "present": true,
+    "sha256": "87ebef6439959d1f18f5aab29d656ee62f0971cc393b58074f0996aad92ec054",
+    "bytes": 447046
+  },
+  {
+    "label": "PR203 real-wiring macro",
+    "file": "FounderGate_PR203_Real_Product_Wiring_Macro_Review_ChatGPT_20260731T2205ET.zip",
+    "present": true,
+    "sha256": "8405418d031d2cebb39d2dc64e0fd91faad19a6b6088e86aade74ca49a641cb3",
+    "bytes": 4828759
+  },
+  {
+    "label": "PR203 merge-decision pkg",
+    "file": "FounderGate_PR203_Merge_Gate_Prep_Review_ChatGPT_20260731T2145ET.zip",
+    "present": true,
+    "sha256": "422a84d2eaaaf5fa8e21a47eada67897f35b966abf67877c70e4cbc8b7ac7ea4",
+    "bytes": 22473
+  },
+  {
+    "label": "PR203 founder merge-decision",
+    "file": "FounderGate_PR203_Founder_Merge_Decision_Package_ChatGPT_20260731T2235ET.zip",
+    "present": true,
+    "sha256": "ba9e96252cd235cfe60214dbb8f46ef3b290897b200b8af46cf35cebcb217f50",
+    "bytes": 13908
+  },
+  {
+    "label": "PR203 post-merge receipt",
+    "file": "FounderGate_PR203_Post_Merge_Verification_Receipt_ChatGPT_20260731T2248ET.zip",
+    "present": true,
+    "sha256": "21dd7cf7ecada4a14390e2b36732b9592f4f6d917d5e4904e38739e572124591",
+    "bytes": 4812567
+  },
+  {
+    "label": "PR201/202 disposition",
+    "file": "FounderGate_PR201_PR202_Superseded_Disposition_Receipt_ChatGPT_20260731T2305ET.zip",
+    "present": true,
+    "sha256": "00b229df1da16de1021ff7d7069f89f81936109b120bc111c76998ca59ee4c13",
+    "bytes": 9408
+  },
+  {
+    "label": "V1 golden-path prep",
+    "file": "FounderGate_V1_Golden_Path_Real_Provider_Prep_Review_ChatGPT_20260731T2315ET.zip",
+    "present": true,
+    "sha256": "fc74ddeae73ff1b8592411d032d74699e6eb1118b5d5141485ce0617f60681bb",
+    "bytes": 5926807
+  },
+  {
+    "label": "Real-provider witness",
+    "file": "FounderGate_Real_Provider_Witness_Review_ChatGPT_20260731T2335ET.zip",
+    "present": true,
+    "sha256": "109fb5f334ef991bc63ce289be1c459b20bb24e52f88450801f7b6708b211c74",
+    "bytes": 130692
+  },
+  {
+    "label": "Real project proof",
+    "file": "FounderGate_Overnight_Real_Project_Proof_Review_ChatGPT_20260731T2350ET.zip",
+    "present": true,
+    "sha256": "e7d2164443b5bbb4bb11cbbac85811c5b1082568514e0b502dbb920c7885cc9c",
+    "bytes": 103858
+  }
+]

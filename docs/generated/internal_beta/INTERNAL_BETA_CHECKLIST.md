@@ -1,0 +1,13 @@
+# Internal Beta Checklist
+- [x] Autonomous endurance proven (L1-L4, disk-span honest)
+- [x] Governed merge behind a founder gate
+- [x] Independent Checker + separate Gate Advisor on every step
+- [x] Sealed evidence ZIPs with SHA-256 (14 packages)
+- [x] Local golden path (Doctor + honest run lifecycle + recovery)
+- [x] Real-provider run under a hard cost cap (2 runs, ~$1 total)
+- [x] Honest decision discipline (no fabricated SHIP)
+- [ ] Production readiness — NOT done (out of scope)
+- [ ] Customer/real-data handling — NOT done
+- [ ] Security review / compliance — NOT done
+- [ ] Deployment / SaaS — NOT done
+- [ ] Paying design partners — NOT started
