@@ -1,0 +1,2 @@
+# Local Run-Server Report (Subwave 1)
+Built src/operator_console/run-server.mjs (http wrapper) + server-core.mjs (testable logic). Binds 127.0.0.1 ONLY. Serves the dashboard static files AND /api/start, /api/export, /api/health. Start/Export spawn ONLY the approved runner + exporter via execFile array-args — NO shell (objective metacharacters inert). Live socket smoke: health ok, start->complete (real commit + 30/30 + INTERNAL_DEMO_ONLY), empty->INSUFFICIENT, bad target->REFUSED, export->complete/unzip_ok, static 200, clean shutdown. Tests: server-core 17/17.

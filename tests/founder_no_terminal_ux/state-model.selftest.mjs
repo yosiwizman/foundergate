@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import { STEP_STATES, ALLOWED, validate } from '../../demo/founder_operator_dashboard/state-model.mjs';
-let pass=0,fail=0; const t=(n,f)=>{try{f();pass++}catch(e){fail++;console.error('FAIL',n,e.message)}};
-t('all states in allowed vocabulary', ()=>{ for(const v of Object.values(STEP_STATES)) assert.ok(ALLOWED.includes(v)); });
-t('no step claims invented green', ()=>{ for(const v of Object.values(STEP_STATES)) assert.ok(!['GREEN','PASS','SHIP','OPERATIONAL'].includes(v)); });
-t('validate accepts the model', ()=>assert.equal(validate(STEP_STATES),true));
-t('validate rejects invented green', ()=>assert.throws(()=>validate({x:'OPERATIONAL'})));
-t('start_check + sealed_package_export are REAL_LOCAL now', ()=>{ assert.equal(STEP_STATES.start_check,'REAL_LOCAL'); assert.equal(STEP_STATES.sealed_package_export,'REAL_LOCAL'); });
-console.log(fail===0?`ALL GREEN: ${pass}/${pass+fail} self-test(s) passed.`:`RED: ${fail} failed`);
-process.exit(fail===0?0:1);
+let p=0,f=0; const t=(n,fn)=>{try{fn();p++}catch(e){f++;console.error('FAIL',n,e.message)}};
+t('all states allowed', ()=>{ for(const v of Object.values(STEP_STATES)) assert.ok(ALLOWED.includes(v)); });
+t('no invented green', ()=>{ for(const v of Object.values(STEP_STATES)) assert.ok(!['GREEN','PASS','SHIP','OPERATIONAL'].includes(v)); });
+t('validate ok', ()=>assert.equal(validate(STEP_STATES),true));
+t('validate rejects invented', ()=>assert.throws(()=>validate({x:'GREEN'})));
+t('start/export/drawer are SERVER_LOCAL', ()=>{ assert.equal(STEP_STATES.start_check,'SERVER_LOCAL'); assert.equal(STEP_STATES.export,'SERVER_LOCAL'); assert.equal(STEP_STATES.reviewer_drawer,'SERVER_LOCAL'); });
+console.log(f===0?`ALL GREEN: ${p}/${p+f} self-test(s) passed.`:`RED: ${f} failed`);
+process.exit(f===0?0:1);

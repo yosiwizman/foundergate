@@ -1,0 +1,2 @@
+# Changed Files Report — Local-Operator Session
+Branch run/local-operator-server-session-20260801T1735ET, base a4763ca. ~52 files, all within allowed paths: src/{operator_console,live_run_console,evidence_viewer}/, demo/{founder_operator_dashboard,reviewer_console}/, docs/generated/local_operator_server_session/, tests/{founder_no_terminal_ux,reviewer_view}/, fixtures/local_operator_server_session/, playwright-operator-server.config.mjs. 0 out-of-path. No .github/, governance/, or protected files.

@@ -1,0 +1,2 @@
+# Reviewer Drawer Report (Subwave 4)
+Reviewer console opens per-package detail drawers (data-testid=pkg-drawer) from real sealed packages: SHA-256, real manifest (unzip -Z1), one read-only sample text file (unzip -p). Built for the session's sealed export + sample Desktop ZIPs (4 packages). E2E: drawer opens, shows SHA-256 + Manifest. Read-only enforced. Tests: package-details 5/5, readonly 4/4, package-index 4/4.

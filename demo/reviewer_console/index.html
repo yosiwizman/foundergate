@@ -1,12 +1,13 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reviewer Console — FounderGate (Read-Only)</title><link rel="stylesheet" href="assets/style.css"></head><body>
-<div class="banner" data-testid="banner">READ-ONLY REVIEWER · REAL SEALED-PACKAGE INDEX · NO MUTATION · NO MERGE · NO PR-READY · NOT PRODUCTION</div>
+<div class="banner" data-testid="banner">READ-ONLY REVIEWER · REAL SEALED-PACKAGE INDEX + OPENABLE CONTENTS · NO MUTATION · NOT PRODUCTION</div>
 <header><h1>FounderGate — Reviewer Console (read-only)</h1></header>
 <main data-testid="main">
-<p>Bound to the <strong>real sealed-package index</strong> (SHA-256 of actual local review ZIPs). <span class="ro">READ-ONLY</span> — no mutation, merge, or PR-ready controls exist here.</p>
-<p>Indexed sealed packages: <strong id="pkg-count" data-testid="pkg-count">0</strong></p>
-<table><thead><tr><th>Package</th><th>SHA-256 (prefix)</th><th>Bytes</th></tr></thead><tbody id="pkg-rows" data-testid="pkg-rows"></tbody></table>
-<details><summary>Per-package evidence drawer (sample fields)</summary><p class="val">Each sealed package contains: FINAL_STATUS, FINAL_VERDICT.json, Checker + Gate Advisor reports, SHA256SUMS.txt. Reviewer view is read-only; open the local file to inspect.</p></details>
+<p>Bound to the real sealed-package index; drawers open real package manifests + sample text files, <span class="ro">READ-ONLY</span>. No mutation/merge/PR-ready controls.</p>
+<p>Indexed packages: <strong id="pkg-count" data-testid="pkg-count">0</strong> · openable detail drawers: <strong id="detail-count" data-testid="detail-count">0</strong></p>
+<table><thead><tr><th>Package</th><th>SHA-256</th><th>Bytes</th></tr></thead><tbody id="pkg-rows" data-testid="pkg-rows"></tbody></table>
+<h3>Open sealed-package contents (read-only)</h3>
+<div id="drawers" data-testid="drawers"></div>
 </main>
-<footer>Read-only reviewer surface bound to real sealed-package metadata. No mutation/merge/PR-ready controls. Not production.</footer>
+<footer>Read-only reviewer surface. Drawers show real manifests + sample text; no mutation. Not production.</footer>
 <script type="module" src="assets/app.mjs"></script>
 </body></html>

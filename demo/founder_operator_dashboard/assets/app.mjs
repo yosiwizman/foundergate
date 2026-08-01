@@ -1,49 +1,52 @@
-import { runLocalSimulation, assertNeverShips, toExportJSON } from './runner.mjs';
+// Founder dashboard wired to the LOCAL run-server (/api/start, /api/export).
+// Same-origin when served by src/operator_console/run-server.mjs. No provider, no external network.
+import { assertNeverShips } from './runner.mjs';
 let lastRun = null;
 const $ = (id) => document.getElementById(id);
-function render(run, sourceLabel){
+function render(run, source){
   assertNeverShips(run);
-  $('run-status').textContent = (run.status || run.mode) + ' · mode=' + run.mode + ' · source=' + sourceLabel;
-  $('evidence-freshness').textContent = run.commit ? 'FRESH ('+sourceLabel+')' : 'UNKNOWN';
+  $('run-status').textContent = (run.status || run.mode) + ' · source=' + source;
+  $('evidence-freshness').textContent = run.commit ? 'FRESH ('+source+')' : 'UNKNOWN';
   $('commit-val').textContent = run.commit_short || run.commit || '—';
   const t = run.tests;
-  $('tests-val').textContent = t ? ((t.result || (t.demo||'')) + (t.failures!=null?(' · '+t.failures+' failures'):'')) : '—';
+  $('tests-val').textContent = t ? ((t.result||'') + (t.failures!=null?(' · '+t.failures+' failures'):'')) : '—';
   $('checker-val').textContent = run.checker || '—';
   $('advisor-val').textContent = run.advisor || '—';
-  $('decision-val').textContent = run.decision + ' — never SHIP';
+  $('decision-val').textContent = (run.decision||'—') + ' — never SHIP';
   $('limitations-val').textContent = (run.limitations||[]).join('; ');
   $('next-action-val').textContent = run.nextSafeAction || '—';
   $('export-btn').disabled = !(run && run.commit);
 }
-async function loadRealRun(){
-  try {
-    const res = await fetch('./runs/last-run.json', { cache: 'no-store' });
-    if (!res.ok) throw new Error('no real run file');
-    const run = await res.json();
-    if (run.mode !== 'REAL_LOCAL_RUN') throw new Error('not a real run');
-    lastRun = run; render(run, 'REAL_LOCAL_RUN (CLI)');
-    $('start-status').textContent = 'Loaded REAL_LOCAL_RUN produced by the local CLI runner (real commit + real tests).';
-    return true;
-  } catch { return false; }
-}
+async function postJSON(url, body){ const r = await fetch(url, { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(body||{}) }); return r.json(); }
 window.addEventListener('DOMContentLoaded', () => {
   $('start-btn').addEventListener('click', async () => {
-    // prefer a real CLI-produced run; fall back to a clearly-labeled simulation
-    const gotReal = await loadRealRun();
-    if (!gotReal) {
-      lastRun = runLocalSimulation($('objective').value, $('target').value);
-      render(lastRun, 'LOCAL_SIMULATION (no real run file present)');
-      $('start-status').textContent = 'Started (LOCAL_SIMULATION fallback) — run the local CLI runner to get a REAL run.';
+    $('start-status').textContent = 'RUNNING (local run-server)…';
+    try {
+      const res = await postJSON('/api/start', { target: $('target').value, objective: $('objective').value });
+      if (res.status === 'complete' && res.run) {
+        lastRun = res.run; render(res.run, 'REAL_LOCAL_RUN (server)');
+        $('start-status').textContent = 'COMPLETE — real local run via the loopback server (real commit + real tests).';
+      } else if (res.status === 'INSUFFICIENT') {
+        lastRun = null; $('decision-val').textContent = 'INSUFFICIENT — enter an objective'; $('export-btn').disabled = true;
+        $('start-status').textContent = 'INSUFFICIENT — objective was empty.';
+      } else if (res.status === 'REFUSED') {
+        $('start-status').textContent = 'REFUSED — target not in the local allowlist.';
+      } else {
+        $('start-status').textContent = (res.status || 'ERROR') + ' — ' + (res.reason || 'run did not complete');
+      }
+    } catch {
+      $('start-status').textContent = 'LOCAL_SERVER_UNAVAILABLE (UNKNOWN) — start the local run-server, or Start falls back to no data.';
     }
   });
-  $('export-btn').addEventListener('click', () => {
+  $('export-btn').addEventListener('click', async () => {
     if (!lastRun) return;
-    const json = toExportJSON(lastRun);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'local_run_export.json'; a.click();
-    URL.revokeObjectURL(url);
-    $('export-status').textContent = 'LOCAL_EXPORT JSON downloaded. A REAL sealed ZIP is produced by the CLI export tool (src/evidence_viewer/export-package.mjs).';
+    $('export-status').textContent = 'EXPORTING (local run-server)…';
+    try {
+      const res = await postJSON('/api/export', {});
+      if (res.status === 'complete' && res.unzip_ok) $('export-status').textContent = 'SEALED_EXPORT_LOCAL — real ZIP created + unzip -t verified: ' + res.zip;
+      else if (res.status === 'UNKNOWN') $('export-status').textContent = 'UNKNOWN — no run to export yet.';
+      else $('export-status').textContent = 'EXPORT_FAILED — ' + (res.reason || 'sealing did not verify');
+    } catch { $('export-status').textContent = 'LOCAL_SERVER_UNAVAILABLE (UNKNOWN).'; }
   });
-  $('stop-btn').addEventListener('click', () => { $('start-status').textContent = 'Stopped/paused safely (no live process to interrupt).'; });
+  $('stop-btn').addEventListener('click', () => { $('start-status').textContent = 'Stopped/paused safely.'; });
 });

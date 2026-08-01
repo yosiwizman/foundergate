@@ -1,0 +1,2 @@
+# Browser Test Report — Local-Operator Session
+Chromium E2E via the loopback run-server (3 tests): (1) Start -> /api/start -> real run (real 12-hex commit + tests + INTERNAL_DEMO_ONLY) -> Export -> SEALED_EXPORT_LOCAL; screenshot. (2) empty objective -> INSUFFICIENT. (3) reviewer drawer opens real sealed-package contents (SHA-256 + Manifest); screenshot. Result 3/3. Report: evidence/e2e_report.json.

@@ -1,14 +1,14 @@
 {
   "mode": "REAL_LOCAL_RUN",
-  "objective": "post-correction verify 2",
-  "target": "publish_candidates/self_owned_demo_repo/tests/task-ledger.selftest.mjs",
-  "commit": "86fe4577bc4a57750e773a1825ccfe4e03d5d49a",
-  "commit_short": "86fe4577bc4a",
+  "objective": "repeat 2",
+  "target": "fixtures/local_operator_server_session/fixture.selftest.mjs",
+  "commit": "a4763ca6da1059314f1bf54334b2aa801662e40a",
+  "commit_short": "a4763ca6da10",
   "tests": {
-    "passed": 30,
-    "total": 30,
+    "passed": 2,
+    "total": 2,
     "failures": 0,
-    "result": "30/30"
+    "result": "2/2"
   },
   "checker": "not-run (this is the runner; Checker is a separate review)",
   "advisor": "not-run (separate review)",

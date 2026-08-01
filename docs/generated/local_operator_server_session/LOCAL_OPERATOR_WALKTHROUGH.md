@@ -1,0 +1,2 @@
+# Local Operator Walkthrough
+1. Operator (once): `node src/operator_console/run-server.mjs` (loopback, port 4880). 2. Founder: open http://127.0.0.1:4880/demo/founder_operator_dashboard/index.html. 3. Type an objective, click Start -> real local run (real commit + real tests). 4. Click Export -> real sealed ZIP (unzip -t verified). 5. Open the reviewer console for read-only package drawers. 6. Stop/pause anytime. No provider, no network, no deployment.

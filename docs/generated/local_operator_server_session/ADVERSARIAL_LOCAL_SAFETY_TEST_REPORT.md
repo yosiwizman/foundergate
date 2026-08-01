@@ -1,0 +1,2 @@
+# Adversarial Local Safety Test Report (Subwave 6)
+All handled honestly: empty->INSUFFICIENT; too-long->REFUSED; path traversal/absolute/http/private-host/file url target->REFUSED; shell metacharacters/backticks/$()/pipes/newline in objective->INERT (execFile array-args), run completes honestly, never SHIP; corrupt zip->unzip -t fails; missing package->UNKNOWN; SHA mismatch->detectable; repeated starts->fresh complete run, never SHIP. Tests: server-core 17/17 + adversarial 12/12. No injection, no fabricated success.

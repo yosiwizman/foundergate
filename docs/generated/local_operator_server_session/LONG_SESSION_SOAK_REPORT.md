@@ -1,0 +1,2 @@
+# Long Session Soak Report (Subwave 7)
+Ran 12 full cycles across 4 server restart groups (fresh loopback server per group). Each cycle: browser-equivalent Start (real run via server), verify real 12-hex commit + real 30/30, Export (sealed ZIP, unzip -t verified), a REFUSED case (external-url target), and a no-invented-green check (decision INTERNAL_DEMO_ONLY, never SHIP). Results: complete=12/12, export unzip_ok=12/12, refused-correct=12/12, errors/RED=0. Deterministic and stable across restarts. No provider, no network. Detail: RUNTIME_CYCLE_LOG.md / evidence/soak.log.

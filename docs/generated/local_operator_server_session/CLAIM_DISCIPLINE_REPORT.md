@@ -1,0 +1,2 @@
+# Claim Discipline Report — Local-Operator Session
+No production-ready/customer-ready/secure/compliant/SaaS-ready/operational-product claim. The no-terminal UX is "LOCAL_OPERATIONAL_WITH_LIMITS" (browser Start/Export via a loopback server; operator starts the server once) — explicitly not an operational product and not hands-free-from-cold. Decision never SHIP (guarded + tested). Reviewer index/drawer are real read-only. SaaS = non-production gap map. Market validation DEFERRED.

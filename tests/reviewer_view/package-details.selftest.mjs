@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import { PACKAGE_DETAILS } from '../../demo/reviewer_console/package-details.mjs';
+import { CAPABILITIES, assertReadOnly } from '../../demo/reviewer_console/readonly-model.mjs';
+let p=0,f=0; const t=(n,fn)=>{try{fn();p++}catch(e){f++;console.error('FAIL',n,e.message)}};
+t('details is a non-empty array', ()=>{ assert.ok(Array.isArray(PACKAGE_DETAILS)); assert.ok(PACKAGE_DETAILS.length>=1); });
+t('each package has 64-hex sha + a real manifest', ()=>{ for(const d of PACKAGE_DETAILS){ assert.match(d.sha256,/^[0-9a-f]{64}$/); assert.ok(Array.isArray(d.manifest)&&d.manifest.length>=1); } });
+t('at least one package exposes a read-only sample text', ()=>{ assert.ok(PACKAGE_DETAILS.some(d=>d.sample_text && d.sample_text.length>0)); });
+t('reviewer remains read-only (no mutation caps)', ()=>{ assert.equal(assertReadOnly(CAPABILITIES),true); for(const k of ['mutate','merge','mark_pr_ready','edit_files','delete','approve_gate']) assert.equal(CAPABILITIES[k],false); });
+t('session sealed export is inspectable', ()=>{ assert.ok(PACKAGE_DETAILS.some(d=>d.name.includes('local_sealed_evidence_export'))); });
+console.log(f===0?`ALL GREEN: ${p}/${p+f} self-test(s) passed.`:`RED: ${f} failed`);
+process.exit(f===0?0:1);

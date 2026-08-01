@@ -1,0 +1,2 @@
+# Founder Hand-Burden Report — Local-Operator Session
+Yossi was NOT used as prompt courier/terminal/Git operator/SHA reconciler/log reader/code reviewer/bug transporter/checkpoint confirmer. All work by Terminal-0, gate-to-gate, batched heredocs, one master ZIP (no intermediate ZIPs). Two bounded corrections (a heredoc control-char guard; a brittle E2E assertion) were diagnosed and resolved autonomously. Founder decisions accumulated in FOUNDER_DECISION_BUNDLE.md. After an operator starts the loopback server once, the founder operates entirely in the browser.

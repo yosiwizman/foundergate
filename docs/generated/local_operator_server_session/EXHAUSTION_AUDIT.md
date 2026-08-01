@@ -1,0 +1,2 @@
+# Exhaustion Audit
+All 8 subwaves complete with passing tests/scans; the no-terminal path reached LOCAL_OPERATIONAL_WITH_LIMITS. A 12-cycle / 4-restart soak (0 errors) was run as the meaningful long-session work. Remaining tasks are all TRUE founder gates or DEFERRED; continuing would require crossing a gate. Recorded safe follow-ons (auto-start launcher, more drawers, run history) are out of this session's completed scope. Packaged with this audit.
