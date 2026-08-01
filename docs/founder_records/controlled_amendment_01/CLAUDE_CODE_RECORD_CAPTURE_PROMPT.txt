@@ -1,0 +1,111 @@
+FOUNDERGATE — CLAUDE CODE RECORD-CAPTURE ONLY
+
+MACHINE: Yossi Mac Studio — Claude Code / FounderGate
+WHEN: 2026-08-01 16:18 EDT
+OPERATION: Controlled Amendment 01 Record Capture — No Merge / No Wide Build
+
+You are Terminal-0 record-capture operator for FounderGate.
+
+This is NOT a product build.
+This is NOT a wide autonomous run.
+This is NOT merge authority.
+This is NOT publishing authority.
+This is NOT provider/spend authority.
+
+FOUNDER AUTHORIZATION REQUIRED BEFORE STARTING
+
+Do not begin unless the founder has explicitly provided an approval statement for Controlled Amendment 01 and authorized record-capture only.
+
+Required founder authorization phrase:
+
+I APPROVE FounderGate Controlled Amendment 01 as a founder-record clarification for the reviewed artifact SHA-256 34fd416fb4725b3723412121b6fcd1d8ede6961e19fc507bbe7d0259a34b291e, and I AUTHORIZE RECORD-CAPTURE ONLY on a non-main branch. Do not merge, do not publish, do not deploy, do not call provider, do not spend money, do not mark PR ready, do not touch PR #200, do not use private/customer/production data, and do not start the wide build.
+
+INPUTS
+
+Use the files from the package:
+- FounderGate_Controlled_Amendment_01_FOUNDER_APPROVAL_PACKET_PENDING.md
+- FounderGate_Controlled_Amendment_01_DRAFT_FOR_FOUNDER_RECORDS_REVIEW_CANDIDATE_SOURCE.md
+- INDEPENDENT_REVIEW_SUMMARY_CLEAN_WITH_LIMITS.md
+
+Also locate the exact reviewed PDF from the founder's Downloads/Desktop or provided path:
+- FounderGate_Controlled_Amendment_01_DRAFT_FOR_FOUNDER_RECORDS_REVIEW_CANDIDATE.pdf
+
+REQUIRED DIGEST CHECK
+
+Before any record capture, compute SHA-256 of the PDF.
+It must equal:
+34fd416fb4725b3723412121b6fcd1d8ede6961e19fc507bbe7d0259a34b291e
+
+If it does not match, STOP and package HOLD_DIGEST_MISMATCH.
+
+BRANCH
+
+Create a non-main branch:
+record/controlled-amendment-01-founder-record-20260801T1618ET
+
+Do not modify protected main.
+Do not open a PR unless explicitly authorized later.
+Do not mark any PR ready.
+Do not mutate PR #200.
+
+ALLOWED PATHS
+
+docs/founder_records/controlled_amendment_01/
+.foundergate/runs/controlled_amendment_01_record_capture_20260801T1618ET/
+
+FORBIDDEN
+
+- protected main mutation
+- merge
+- PR creation unless separately authorized
+- PR-ready marking
+- PR #200 mutation
+- publishing
+- outreach
+- provider calls
+- spend
+- deployment
+- billing
+- private/customer/production data
+- security/compliance claims
+- wide build start
+
+TASKS
+
+1. Preflight repo state, branch, origin/main, PR #200 state, and no active conflicting operation.
+2. Verify reviewed PDF SHA-256 equals the required digest.
+3. Create a record folder under docs/founder_records/controlled_amendment_01/.
+4. Copy the reviewed PDF, revised source Markdown, founder approval packet, independent review summary, and this record-capture instruction into that folder.
+5. If founder approval statement is provided, create FOUNDER_APPROVAL_RECEIPT.md recording:
+   - exact founder approval text;
+   - date/time;
+   - reviewed artifact filename;
+   - reviewed artifact SHA-256;
+   - approval packet SHA-256;
+   - limits preserved.
+6. Create RECORD_CAPTURE_REPORT.md.
+7. Create PROHIBITED_ACTION_ATTESTATION.md.
+8. Create NEXT_SAFE_ACTION.md.
+9. Create SHA256SUMS.txt for the record folder.
+10. Commit only safe record files to the non-main branch.
+11. Push the non-main branch.
+12. Produce final ZIP:
+    ~/Desktop/FounderGate_Controlled_Amendment_01_Record_Capture_Receipt_ChatGPT_20260801T1618ET.zip
+13. Reveal the ZIP in Finder.
+14. Stop.
+
+FINAL STATUS VALUES
+
+- RECORD_CAPTURE_READY_WITH_LIMITS
+- HOLD_DIGEST_MISMATCH
+- HOLD_MISSING_FOUNDER_APPROVAL
+- HOLD_PREFLIGHT_FAILED
+- HOLD
+
+Do not continue into any build wave.
+Do not create a PR.
+Do not merge.
+Do not publish.
+Do not deploy.
+Do not spend.
+Do not contact anyone.
