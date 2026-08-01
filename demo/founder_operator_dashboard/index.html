@@ -1,30 +1,32 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Founder Operator Dashboard — FounderGate (Local Prototype)</title><link rel="stylesheet" href="assets/style.css"></head><body>
-<div class="banner" data-testid="banner">LOCAL PROTOTYPE · NO TERMINAL · NO DEPLOYMENT · TRUTHFUL STATES ONLY · NOT PRODUCTION</div>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Founder Operator Dashboard — FounderGate (Local)</title><link rel="stylesheet" href="assets/style.css"></head><body>
+<div class="banner" data-testid="banner">LOCAL PROTOTYPE · LOCAL_SIMULATION RUN PATH · NO PROVIDER · NO DEPLOYMENT · TRUTHFUL STATES ONLY · NOT PRODUCTION</div>
 <header><h1>FounderGate — Founder Operator Dashboard</h1><nav aria-label="Primary"><a href="index.html">Run</a><a href="#evidence">Evidence</a><a href="#decision">Decision</a><a href="#export">Export</a></nav></header>
 <main data-testid="main">
 <h2>Run a governed check — without a terminal</h2>
-<p>This local prototype shows the founder journey. Each step declares a truthful state: <span class="badge wired">WIRED</span> means a real local module backs it, <span class="badge notwired">NOT_WIRED</span> means the UI is a placeholder pending safe wiring, <span class="badge unknown">UNKNOWN</span> means no signal yet. Nothing here deploys, spends, or contacts anyone.</p>
-
-<div class="card"><h3>1. Select target</h3><div class="step" data-testid="step-target"><span>Self-owned demo target (public, non-sensitive)</span><span class="badge wired">WIRED</span></div></div>
-<div class="card"><h3>2. Enter objective (plain English)</h3><div class="step"><span>e.g. "Add input validation and prove tests pass"</span><span class="badge wired">WIRED</span></div></div>
-<div class="card"><h3>3. Start governed check</h3><div class="step" data-testid="step-start"><span>Deterministic, no-provider run</span><span class="badge notwired">NOT_WIRED (prototype button; real run is CLI-backed today)</span></div></div>
-<div class="card"><h3>4–6. Truthful status · evidence freshness</h3>
-  <div class="step"><span>Status</span><span class="val" data-testid="status-val">IN_PROGRESS (sample)</span></div>
-  <div class="step"><span>Evidence freshness</span><span class="badge unknown">UNKNOWN until a run writes it</span></div></div>
+<p>Start runs a <strong>deterministic LOCAL_SIMULATION</strong> (no provider, no network). Export downloads a truthful local run summary (not a sealed package). States stay honest: <span class="badge wired">WIRED</span> / <span class="badge notwired">NOT_WIRED</span> / <span class="badge unknown">UNKNOWN</span>.</p>
+<div class="card"><h3>1–3. Target · objective · start</h3>
+  <div class="step"><label for="target">Target</label> <select id="target" data-testid="target"><option>self-owned demo target</option><option>local controlled repo</option></select></div>
+  <div class="step"><label for="objective">Objective</label> <input id="objective" data-testid="objective" type="text" size="42" value="Add input validation and prove tests pass"></div>
+  <div class="step"><button id="start-btn" data-testid="start-btn">Start (LOCAL_SIMULATION)</button> <button id="stop-btn" data-testid="stop-btn">Stop / pause</button> <button id="export-btn" data-testid="export-btn" disabled>Export</button></div>
+  <div class="step"><span>Start status</span><span class="val" id="start-status" data-testid="start-status">not started</span></div></div>
+<div class="card"><h3>4–6. Status &amp; evidence freshness</h3>
+  <div class="step"><span>Run status</span><span class="val" id="run-status" data-testid="status-val">idle</span></div>
+  <div class="step"><span>Evidence freshness</span><span class="val" id="evidence-freshness">UNKNOWN</span></div></div>
 <div class="card" id="evidence"><h3>7–8. Exact commit &amp; tests (no Git, no raw logs)</h3>
-  <div class="step"><span>Exact commit</span><span class="val" data-testid="commit-val">bound from run (sample: 9a88152e…)</span></div>
-  <div class="step"><span>Tests</span><span class="val">30/30 (sample self-owned demo)</span></div>
-  <div class="step"><span>Failures</span><span class="val">0 (sample)</span></div></div>
+  <div class="step"><span>Exact commit</span><span class="val" id="commit-val" data-testid="commit-val">—</span></div>
+  <div class="step"><span>Tests</span><span class="val" id="tests-val">—</span></div></div>
 <div class="card"><h3>9–10. Checker &amp; Gate Advisor</h3>
-  <div class="step"><span>Independent Checker</span><span class="val">CLEAN (sample)</span></div>
-  <div class="step"><span>Separate Gate Advisor</span><span class="val">PASS_WITH_LIMITS (sample)</span></div></div>
-<div class="card" id="decision"><h3>11–12. Limitations &amp; honest decision</h3>
-  <div class="step"><span>Decision</span><span class="val" data-testid="decision-val">INTERNAL_DEMO_ONLY — never SHIP</span></div>
-  <div class="step"><span>Limitations</span><span class="val">local demo; not production/secure/compliant</span></div></div>
+  <div class="step"><span>Independent Checker</span><span class="val" id="checker-val">—</span></div>
+  <div class="step"><span>Separate Gate Advisor</span><span class="val" id="advisor-val">—</span></div></div>
+<div class="card" id="decision"><h3>11–12. Decision &amp; limitations</h3>
+  <div class="step"><span>Decision</span><span class="val" id="decision-val" data-testid="decision-val">— (never SHIP)</span></div>
+  <div class="step"><span>Limitations</span><span class="val" id="limitations-val">—</span></div>
+  <div class="step"><span>Next safe action</span><span class="val" id="next-action-val">—</span></div></div>
 <div class="card" id="export"><h3>13–14. Export &amp; stop safely</h3>
-  <div class="step" data-testid="step-export"><span>Export sealed evidence package</span><span class="badge notwired">NOT_WIRED (prototype; real export is packaging-backed)</span></div>
-  <div class="step"><span>Stop / pause</span><span class="badge wired">WIRED (no live process to interrupt)</span></div></div>
-<p><strong>No raw logs. No terminal commands. No prompt relays.</strong> Where a step is not yet safely wired, it says so rather than showing a fake green.</p>
+  <div class="step"><span>Export</span><span class="val" id="export-status" data-testid="export-status">not exported</span></div>
+  <div class="step"><span>Real sealed-package export</span><span class="badge notwired">NOT_WIRED (browser can't seal a ditto ZIP; sealed export is CLI/packaging-backed)</span></div></div>
+<p><strong>No raw logs. No terminal commands. No prompt relays.</strong> The run path is a LOCAL_SIMULATION and says so; the real sealed-package export remains honestly NOT_WIRED.</p>
 </main>
-<footer>Local prototype for the non-developer founder journey. Truthful states only — no invented green. Not production. No deployment, auth, billing, or provider activation.</footer>
+<footer>Local prototype. Start/Export work locally via LOCAL_SIMULATION; real deterministic-runner + sealed-package export remain declared. Not production. No deployment, auth, billing, or provider.</footer>
+<script type="module" src="assets/app.mjs"></script>
 </body></html>

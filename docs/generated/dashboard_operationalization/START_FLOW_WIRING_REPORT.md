@@ -1,0 +1,2 @@
+# Start Flow Wiring Report
+Start is wired to a pure, deterministic LOCAL_SIMULATION runner (demo/founder_operator_dashboard/assets/runner.mjs) invoked by assets/app.mjs on click. No provider, no network, no shell. Empty objective → INSUFFICIENT. Valid objective → a fixed, honest simulated result (decision INTERNAL_DEMO_ONLY, never SHIP). Clearly labeled LOCAL_SIMULATION in the banner, button text, and status. Tested: runner.selftest 6/6 + browser click test.

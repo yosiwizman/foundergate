@@ -1,0 +1,2 @@
+# Claim Discipline Report — Dashboard Follow-On
+No production-ready/customer-ready/secure/compliant/SaaS-ready/operational claim as a positive assertion. The dashboard is labeled PARTIAL_WITH_LIMITS / LOCAL_SIMULATION; Start/Export are LOCAL_SIMULATION; real sealed export is NOT_WIRED. The run decision is INTERNAL_DEMO_ONLY and never SHIP (asserted). The reviewer index is real read-only metadata. "Operational" is explicitly NOT claimed because the run path is simulated.

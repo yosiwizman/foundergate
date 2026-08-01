@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import { PACKAGES } from '../../demo/reviewer_console/package-index.mjs';
+import { CAPABILITIES, assertReadOnly } from '../../demo/reviewer_console/readonly-model.mjs';
+let pass=0,fail=0; const t=(n,f)=>{try{f();pass++}catch(e){fail++;console.error('FAIL',n,e.message)}};
+t('index is a non-empty array of real packages', ()=>{ assert.ok(Array.isArray(PACKAGES)); assert.ok(PACKAGES.length>=1); });
+t('every package has a 64-hex sha256 and byte size', ()=>{ for(const p of PACKAGES){ assert.match(p.sha256,/^[0-9a-f]{64}$/); assert.ok(Number.isInteger(p.bytes)&&p.bytes>0); assert.ok(p.name.startsWith('FounderGate_')); } });
+t('reviewer surface remains read-only', ()=>{ assert.equal(assertReadOnly(CAPABILITIES),true); for(const k of ['mutate','merge','mark_pr_ready','edit_files','delete','approve_gate']) assert.equal(CAPABILITIES[k],false); });
+t('index binds the corrected max-wide package (present on disk)', ()=>{ assert.ok(PACKAGES.some(p=>p.name.includes('Max_Wide_Autonomous_Build'))); });
+console.log(fail===0?`ALL GREEN: ${pass}/${pass+fail} self-test(s) passed.`:`RED: ${fail} failed`);
+process.exit(fail===0?0:1);

@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import { runLocalSimulation, assertNeverShips, toExportJSON } from '../../demo/founder_operator_dashboard/assets/runner.mjs';
+let pass=0,fail=0; const t=(n,f)=>{try{f();pass++}catch(e){fail++;console.error('FAIL',n,e.message)}};
+t('empty objective -> INSUFFICIENT', ()=>{ const r=runLocalSimulation(''); assert.equal(r.decision,'INSUFFICIENT'); assert.equal(r.commit,null); });
+t('valid objective -> deterministic complete simulation', ()=>{ const r=runLocalSimulation('add validation'); assert.equal(r.mode,'LOCAL_SIMULATION'); assert.equal(r.status,'COMPLETE_SIMULATED'); assert.equal(r.tests.demo,'30/30'); });
+t('decision is INTERNAL_DEMO_ONLY, never SHIP', ()=>{ const r=runLocalSimulation('x'); assert.equal(r.decision,'INTERNAL_DEMO_ONLY'); assert.notEqual(r.decision,'SHIP'); assert.equal(assertNeverShips(r),true); });
+t('deterministic: same input -> same commit', ()=>{ assert.equal(runLocalSimulation('a').commit, runLocalSimulation('a').commit); });
+t('assertNeverShips throws on SHIP', ()=>{ assert.throws(()=>assertNeverShips({decision:'SHIP'})); });
+t('export JSON is labeled LOCAL_EXPORT (not a sealed package)', ()=>{ const j=JSON.parse(toExportJSON(runLocalSimulation('a'))); assert.ok(j._note.includes('LOCAL_EXPORT')); assert.ok(j._note.includes('NOT a sealed')); });
+console.log(fail===0?`ALL GREEN: ${pass}/${pass+fail} self-test(s) passed.`:`RED: ${fail} failed`);
+process.exit(fail===0?0:1);

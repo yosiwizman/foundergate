@@ -1,0 +1,2 @@
+# Export Flow Wiring Report
+Export is wired to `toExportJSON(run)` → a Blob download of `local_run_export.json`, labeled LOCAL_EXPORT and explicitly "NOT a sealed evidence package". Enabled only after a run produces a commit. The REAL sealed-package builder (SHA256SUMS + ditto + unzip -t) requires shell/packaging and remains honestly NOT_WIRED in the browser. No network, no external write beyond the user's own download.
