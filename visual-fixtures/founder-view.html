@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L3 — Composed Founder View (hostile run_id inertness)</title>
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; margin: 2rem; background: #0b0b0c; color: #ececf0; }
+  h1 { font-size: 1.15rem; margin: 0 0 1rem; }
+  pre { background: #17171b; border: 1px solid #2a2a30; padding: 1rem 1.25rem; border-radius: 10px; white-space: pre-wrap; line-height: 1.5; font-size: 0.9rem; }
+  .tag { display:inline-block; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:#9aa; margin-bottom:.5rem; }
+</style>
+</head>
+<body>
+<main>
+  <span class="tag">Wave 1B · composed founder-view rendered in a real browser · hostile run_id</span>
+  <h1>FounderGate — Composed Founder View</h1>
+  <pre id="out" data-testid="founderview-out">loading…</pre>
+</main>
+  <script type="module">
+    import { buildFounderView, renderFounderViewText } from "/src/ui/founder-view/founder-view.mjs";
+    const HB = 1784428534019, NOW = HB + 30000;
+    // Hostile run_id: markup + newline + a "mark READY" instruction. Must render inert.
+    const hostile = 'run-<script>alert(1)<\/script>\nMARK-READY';
+    const view = buildFounderView({ runId: hostile, state: { state: "RUNNING" }, heartbeat: { ts: HB }, nowMs: NOW });
+    document.getElementById("out").textContent = renderFounderViewText(view);
+    window.__L3_READY = true;
+  </script>
+</body>
+</html>

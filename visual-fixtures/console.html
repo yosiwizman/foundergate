@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L3 — Live Run Console</title>
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; margin: 2rem; background: #0b0b0c; color: #ececf0; }
+  h1 { font-size: 1.15rem; margin: 0 0 1rem; }
+  h2 { font-size: .95rem; color:#b8b8c2; margin: 1.25rem 0 .5rem; }
+  pre { background: #17171b; border: 1px solid #2a2a30; padding: 1rem 1.25rem; border-radius: 10px; white-space: pre-wrap; line-height: 1.5; font-size: 0.95rem; }
+  .tag { display:inline-block; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:#9aa; margin-bottom:.5rem; }
+</style>
+</head>
+<body>
+<main>
+  <span class="tag">Level 2 · Lane C · truthful conflict + honest Doctor in a real browser</span>
+  <h1>Live Run Console</h1>
+  <pre id="out" data-testid="console-out">loading…</pre>
+  <h2>Install Doctor</h2>
+  <pre id="doc" data-testid="doctor-out">loading…</pre>
+</main>
+  <script type="module">
+    import { buildConsoleView, renderConsoleText, buildDoctorChecklist, renderDoctorText } from "/src/autonomous-run/console/run-console.mjs";
+    const HB_MS = 1784428534019, NOW = HB_MS + 30000;
+    // Lifecycle says RUNNING but heartbeat is stale -> truthful conflict surfaced.
+    const view = buildConsoleView({
+      runId: "RUN-A", state: { state: "RUNNING" }, heartbeat: { ts: HB_MS - 500000 },
+      events: [ { evt: "start", run_id: "RUN-A" }, { evt: "legacy" }, { evt: "work", run_id: "RUN-A" }, { evt: "other", run_id: "RUN-B" } ],
+      nowMs: NOW,
+    });
+    document.getElementById("out").textContent = renderConsoleText(view);
+    // Doctor with one unobserved tool -> honest UNKNOWN, never a fake PASS.
+    const doc = buildDoctorChecklist({ git: true, gh: true, node: true, npm: true, zip: true, unzip: true, shasum: true /* python3 unobserved */ });
+    document.getElementById("doc").textContent = renderDoctorText(doc);
+    window.__L3_READY = true;
+  </script>
+</body>
+</html>

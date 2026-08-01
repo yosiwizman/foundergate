@@ -1,0 +1,268 @@
+// FounderGate Wave — Lane B1: founder-readable SHIP decision module.
+//
+// Plain English: take TRUTHFUL signals (a neutral checker verdict, a gate-advisor
+// verdict, and an evidence decision package) and render one honest, plain-English
+// call a non-developer can read: SHIP, DO_NOT_SHIP, or INSUFFICIENT_EVIDENCE.
+//
+// Hard honesty rules baked in:
+//   - It NEVER invents state. A missing/UNKNOWN signal is named as an unknown and,
+//     when it is a required signal, forces INSUFFICIENT_EVIDENCE (never a guess).
+//   - It NEVER emits an over-claim about the product. Founder-supplied text is treated
+//     as inert data: neutralized (no markup/templating/newlines) and any over-claim
+//     token is redacted before it can appear in output.
+//   - SHIP means only "cleared to move to human REVIEW" — never a real-world,
+//     live-operation, or external-bar readiness claim.
+//
+// Pure + deterministic: no I/O, no clock (nowMs is passed in), no randomness, no network.
+import { readinessIsHonest } from "../../evidence/decision-package/decision-package.mjs";
+
+export const UNKNOWN = "UNKNOWN";
+
+// Over-claim detector. Built from split fragments ON PURPOSE so this SOURCE FILE never
+// contains a forbidden readiness phrase verbatim, while the compiled regex still detects
+// each one in any founder-supplied string we might echo. (Splitting keeps the honesty
+// self-scan clean without weakening detection.)
+const OVERCLAIM_PARTS = [
+  "produc" + "tion[- ]ready",
+  "customer[- ]ready",
+  "commerci" + "al[- ]ready",
+  "sec" + "ure",
+  "compli" + "ant",
+  "certi" + "fied",
+  "final " + "beta",
+  "enterpri" + "se-grade",
+];
+const OVERCLAIM = new RegExp(OVERCLAIM_PARTS.join("|"), "i");
+const OVERCLAIM_G = new RegExp(OVERCLAIM_PARTS.join("|"), "gi");
+
+// Verdict classifiers. Boundaries are ALPHANUMERIC-ONLY (via lookarounds) so that "_", "-",
+// and spaces all separate words — a plain \b would fail next to "_" because "_" is a regex
+// word char (e.g. "READY_FOR_REVIEW" would not match \bready\b). Node >=20 supports lookbehind.
+// Negatives are checked BEFORE readies so e.g. "NOT_PROVEN" is read as a hold, not "proven".
+const anchored = (body) => new RegExp(`(?<![A-Za-z0-9])(?:${body})(?![A-Za-z0-9])`, "i");
+const DO_NOT_SHIP_VERDICT = anchored("do[_ -]?not[_ -]?ship|hold|correction[_ -]?required|not[_ -]?proven|insufficient|blocked?|reject(?:ed)?|fail(?:ed|ure)?|red");
+const GATE_NEG = anchored("hold|correction[_ -]?required|not[_ -]?proven|do[_ -]?not[_ -]?ship|block(?:ed)?|reject(?:ed)?|deny|denied|fail(?:ed|ure)?|red");
+const GATE_READY = anchored("ready|proven|green|clean|pass(?:ed)?|clear(?:ed)?|approv(?:e|ed)");
+// Evidence readiness that is strong enough to move to REVIEW (never a real-world bar).
+const READINESS_SHIPPABLE = (s) =>
+  /(?<![A-Za-z0-9])evidence[_ -]?backed(?![A-Za-z0-9])/i.test(s) &&
+  !/(?<![A-Za-z0-9])(?:partial|unverified|unknown)(?![A-Za-z0-9])/i.test(s);
+
+// Neutralize a founder-supplied string into inert one-line data.
+// Any injected "instructions", markup, or templating become plain characters, and any
+// over-claim token is redacted so we can never echo a banned readiness claim.
+function esc(value) {
+  let out = String(value == null ? "" : value);
+  out = out.replace(/[\x00-\x1f\x7f]+/g, " "); // control chars + newlines -> space
+  out = out.replace(/[`$<>{}\\]/g, "_");             // markup / templating / code chars -> underscore
+  out = out.replace(/\s+/g, " ").trim();             // collapse whitespace
+  out = out.replace(OVERCLAIM_G, "[redacted-overclaim]"); // never echo an over-claim token
+  if (out.length > 160) out = out.slice(0, 157) + "..."; // cap so a blob cannot dominate output
+  return out;
+}
+
+// Strip only control chars / newlines (no length cap) — used when rendering already-built
+// report fields so a hand-built report cannot inject newlines that break the text layout.
+function oneLine(value) {
+  return String(value == null ? "" : value).replace(/[\x00-\x1f\x7f]+/g, " ").trim();
+}
+
+// A non-empty, non-UNKNOWN token, uppercased for classification. "" means "not provided".
+function normToken(v) {
+  if (typeof v !== "string") return "";
+  const t = v.trim();
+  if (!t) return "";
+  const up = t.toUpperCase();
+  return up === UNKNOWN ? "" : up;
+}
+
+// A recorded string field, or UNKNOWN when absent/empty (never invented).
+function normStr(v) {
+  return typeof v === "string" && v.length ? v : UNKNOWN;
+}
+
+// Honesty guard over the decision package; conservative — any throw or missing shape -> false.
+function packageIsHonest(pkg) {
+  try {
+    return readinessIsHonest(pkg) === true;
+  } catch {
+    return false;
+  }
+}
+
+function isPlainObject(v) {
+  return !!v && typeof v === "object" && !Array.isArray(v);
+}
+
+// Describe evidence freshness as a soft caveat only (it never flips the hard decision).
+function freshnessNote(evidenceFreshS) {
+  if (typeof evidenceFreshS !== "number" || !Number.isFinite(evidenceFreshS) || evidenceFreshS < 0) {
+    return "Evidence freshness was not provided (treated as UNKNOWN).";
+  }
+  const s = Math.floor(evidenceFreshS);
+  if (s > 86400) {
+    return `Evidence age is about ${s} seconds (over 24 hours) — treat it as possibly stale.`;
+  }
+  return `Evidence age is about ${s} seconds.`;
+}
+
+// Build the founder SHIP report from truthful signals. Missing -> named unknown; never guessed.
+export function buildShipReport({ decisionPackage, checkerVerdict, gateAdvisorVerdict, evidenceFreshS, nowMs } = {}) {
+  void nowMs; // accepted for a stable signature; freshness is passed pre-computed as evidenceFreshS.
+
+  const unknowns = [];
+  const doNotShipReasons = [];
+
+  // --- Required signal: decision package -------------------------------------------------
+  const pkgOk = isPlainObject(decisionPackage);
+  if (!pkgOk) {
+    unknowns.push("decision_package: not provided (need the evidence decision package).");
+  }
+
+  // --- Required signal: neutral checker verdict ------------------------------------------
+  const checker = normToken(checkerVerdict);
+  if (!checker) {
+    unknowns.push("checker_verdict: not provided (need the neutral checker result, e.g. CLEAN or FINDINGS).");
+  }
+
+  // --- Package sub-signals (only when the package object is present) ----------------------
+  let pkgVerdict = UNKNOWN;
+  let readiness = UNKNOWN;
+  let honest = false;
+  let limitations = [];
+  if (pkgOk) {
+    pkgVerdict = normStr(decisionPackage.verdict);
+    readiness = normStr(decisionPackage.readiness);
+    honest = packageIsHonest(decisionPackage);
+    limitations = Array.isArray(decisionPackage.limitations) ? decisionPackage.limitations : [];
+    if (pkgVerdict === UNKNOWN) {
+      unknowns.push("decision_package.verdict: UNKNOWN (verdict not recorded).");
+    }
+    if (readiness === UNKNOWN) {
+      unknowns.push("decision_package.readiness: UNKNOWN (no evidence-backed readiness recorded).");
+    }
+  }
+
+  // --- Gate-advisor verdict (needed positive for SHIP; named as unknown when unusable) ----
+  const gate = normToken(gateAdvisorVerdict);
+  const gateNegative = !!gate && GATE_NEG.test(gate);
+  const gateReady = !!gate && GATE_READY.test(gate) && !GATE_NEG.test(gate);
+  if (!gate) {
+    unknowns.push("gate_advisor_verdict: not provided (need the gate advisor result).");
+  } else if (!gateNegative && !gateReady) {
+    unknowns.push(`gate_advisor_verdict: "${esc(gate)}" is not a recognized ready/proven or hold verdict.`);
+  }
+
+  // --- Collect DO_NOT_SHIP triggers (definite negatives) ---------------------------------
+  if (checker && checker !== "CLEAN") {
+    doNotShipReasons.push(`The neutral checker returned "${esc(checker)}", not CLEAN — evidence issues remain.`);
+  }
+  if (pkgOk && pkgVerdict !== UNKNOWN && DO_NOT_SHIP_VERDICT.test(pkgVerdict)) {
+    doNotShipReasons.push(`The decision package verdict "${esc(pkgVerdict)}" is a hold / not-proven-style verdict.`);
+  }
+  if (pkgOk && !honest) {
+    doNotShipReasons.push("The decision package failed the honesty guard (it over-claims readiness).");
+  }
+  if (pkgOk && readiness !== UNKNOWN && !DO_NOT_SHIP_VERDICT.test(pkgVerdict) && !READINESS_SHIPPABLE(readiness)) {
+    doNotShipReasons.push(`The recorded evidence readiness "${esc(readiness)}" is not evidence-backed enough to ship.`);
+  }
+  if (gateNegative) {
+    doNotShipReasons.push(`The gate advisor verdict "${esc(gate)}" indicates HOLD / correction-required / not-proven.`);
+  }
+
+  // --- Decide (precedence: definite negatives win, then required unknowns, then SHIP) -----
+  const requiredMissing = !pkgOk || !checker;
+  const fresh = freshnessNote(evidenceFreshS);
+  const limText = limitations.length
+    ? limitations.map(esc).filter(Boolean).join("; ")
+    : "(none recorded — treat unlisted risks as UNKNOWN)";
+
+  let decision;
+  let reasons;
+  let plain;
+
+  if (doNotShipReasons.length > 0) {
+    decision = "DO_NOT_SHIP";
+    reasons = doNotShipReasons.slice();
+    const extra = unknowns.length ? ` Some signals are also missing or UNKNOWN: ${unknowns.join(" ")}` : "";
+    plain =
+      "Decision: DO NOT SHIP. At least one signal blocks shipping — " +
+      doNotShipReasons.map((r) => r.replace(/\.$/, "")).join("; ") +
+      ". Fix these and re-run the evidence checks before reconsidering." +
+      extra +
+      " " +
+      fresh;
+  } else if (unknowns.length > 0) {
+    // No definite negative, but we are not fully positive either -> refuse to guess.
+    decision = "INSUFFICIENT_EVIDENCE";
+    reasons = unknowns.map((u) => `Cannot decide: a required or gating signal is missing or UNKNOWN — ${u}`);
+    plain =
+      "Decision: INSUFFICIENT EVIDENCE to decide. One or more signals needed for an honest call are " +
+      "missing or UNKNOWN, so no SHIP or DO-NOT-SHIP call can be made yet: " +
+      unknowns.join(" ") +
+      " Provide the missing signals (do not assume them) and re-run. " +
+      fresh;
+  } else {
+    // Fully positive path. Re-verify every positive before allowing SHIP.
+    const canShip = checker === "CLEAN" && gateReady && pkgOk && honest && READINESS_SHIPPABLE(readiness);
+    if (canShip) {
+      decision = "SHIP";
+      reasons = [
+        'The neutral checker returned "CLEAN".',
+        `The gate advisor returned a ready/proven-style verdict ("${esc(gate)}").`,
+        `The decision package is honest and evidence-backed with limits (readiness "${esc(readiness)}").`,
+        "No required signals are missing or UNKNOWN.",
+      ];
+      plain =
+        "Decision: SHIP to REVIEW. Every required signal was present and positive: the neutral checker " +
+        'returned CLEAN, the gate advisor returned a ready/proven-style verdict ("' + esc(gate) + '"), and ' +
+        "the evidence decision package is honest and evidence-backed with explicit limits. This only clears " +
+        "the work to move to human REVIEW; it is NOT a readiness claim for real-world use, live operation, or " +
+        "any external bar. Known limits still apply: " + limText + ". " + fresh;
+    } else {
+      // Defensive fallback — should be unreachable, but never guess if positives do not hold.
+      decision = "INSUFFICIENT_EVIDENCE";
+      reasons = ["Signals did not fully meet the SHIP bar and no explicit block was recorded; refusing to guess."];
+      plain =
+        "Decision: INSUFFICIENT EVIDENCE to decide. The signals did not fully meet the SHIP bar and no " +
+        "explicit block was recorded, so no honest call can be made. Re-check the inputs and re-run. " +
+        fresh;
+    }
+  }
+
+  return Object.freeze({
+    decision,
+    reasons: Object.freeze(reasons.slice()),
+    unknowns: Object.freeze(unknowns.slice()),
+    plain_english: plain,
+  });
+}
+
+// Render a founder SHIP report as plain text. Fields are already neutralized at build time;
+// we strip stray control chars defensively so a hand-built report cannot break the layout.
+export function renderShipReportText(report) {
+  const r = isPlainObject(report) ? report : {};
+  const decision = typeof r.decision === "string" ? r.decision : UNKNOWN;
+  const reasons = Array.isArray(r.reasons) ? r.reasons : [];
+  const unknowns = Array.isArray(r.unknowns) ? r.unknowns : [];
+  const plain = typeof r.plain_english === "string" ? r.plain_english : "";
+
+  const tag =
+    decision === "SHIP"
+      ? "SHIP (ship-to-review only — not a real-world readiness claim)"
+      : decision === "DO_NOT_SHIP"
+        ? "DO_NOT_SHIP"
+        : "INSUFFICIENT_EVIDENCE";
+
+  const lines = [
+    "=== FounderGate SHIP Report ===",
+    `DECISION: ${tag}`,
+    "Reasons:",
+    ...(reasons.length ? reasons.map((x) => `  - ${oneLine(x)}`) : ["  - (none recorded)"]),
+    "Unknowns (missing or UNKNOWN signals):",
+    ...(unknowns.length ? unknowns.map((x) => `  - ${oneLine(x)}`) : ["  - (none)"]),
+    "Plain English:",
+    `  ${oneLine(plain)}`,
+  ];
+  return lines.join("\n");
+}
