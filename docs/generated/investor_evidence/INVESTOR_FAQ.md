@@ -1,0 +1,2 @@
+# Investor FAQ (honest)
+**Do you have customers/revenue?** No — none claimed. **Is it production-ready/secure?** No. **What's proven?** Governed autonomy + honest evidence discipline on local/self-owned targets, with independent review. **What about AKIOR?** Cross-account, founder-controlled, public-repo technical proof — never customer validation. **Why no market validation yet?** Deferred by design (prove the car drives before selling it); its absence stays visible.

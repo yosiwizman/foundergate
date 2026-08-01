@@ -1,0 +1,2 @@
+# Hand-Burden Plan
+Yossi is a non-developer founder with hand pain. This run uses batched Bash/heredoc writes (no per-file Write/Edit permission loops), runs gate-to-gate with no routine continuation questions, and accumulates every founder-needed decision into the final Founder Decision Bundle (NEXT_SAFE_ACTION.md + per-lane TRUE_FOUNDER_GATE items). The founder is never used as prompt courier, terminal/Git operator, SHA reconciler, log reader, bug transporter, code reviewer, or checkpoint confirmer.

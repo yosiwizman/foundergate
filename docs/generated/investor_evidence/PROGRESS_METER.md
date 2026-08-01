@@ -1,0 +1,2 @@
+# Investor Progress Meter (labels only)
+Technical governance/honesty: PROVEN_WITH_LIMITS · endurance: PROVEN_WITH_LIMITS · real-provider (tiny/bounded): PROVEN_WITH_LIMITS · self-owned demo + Safety Check: PROVEN_WITH_LIMITS · public demo candidate: READY_WITH_LIMITS (publish = founder gate) · founder no-terminal UX: PARTIAL · cross-account proof: NOT_STARTED (prep done) · SaaS: NOT_STARTED (foundation brief only) · market validation: DEFERRED.

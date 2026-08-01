@@ -1,0 +1,2 @@
+# Commit-Binding Requirements
+Every cross-account result must bind to: exact commit SHA (pre + post), `git diff --stat`, test pass/fail counts, duration from disk logs, Checker + Gate Advisor verdicts, and a sealed evidence package (SHA256SUMS + unzip -t). The account owner's identity does not weaken the technical evidence (Amendment 01 §3) — but the label stays "cross-account, founder-controlled, public-repo technical proof."

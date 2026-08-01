@@ -1,0 +1,9 @@
+{
+  "name": "demo-tasks",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A tiny, non-sensitive local demo module for tracking task status and evidence notes. Local-only; no network, no secrets, no dependencies.",
+  "license": "MIT",
+  "scripts": { "start": "node cli.mjs", "test": "node tests/task-ledger.selftest.mjs" }
+}

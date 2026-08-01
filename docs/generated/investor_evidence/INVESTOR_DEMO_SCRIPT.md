@@ -1,0 +1,2 @@
+# Investor Demo Script (honest, ~5 min)
+1. Open the local founder dashboard (no terminal). 2. Pick the self-owned demo target. 3. Enter a plain objective. 4. Run the deterministic governed check. 5. Show honest status + exact commit + tests + Checker + Gate Advisor + limitations + next safe action. 6. Export the evidence package. 7. State the limits: internal demo, not production/secure/compliant, market validation deferred.

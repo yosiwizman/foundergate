@@ -1,0 +1,2 @@
+# Exhaustion Criteria
+The run continues while any safe authorized task remains. It ends only when: (a) every safe authorized lane task + discovered safe follow-on is complete or labeled TRUE_FOUNDER_GATE_REQUIRED / DEFERRED; (b) a true founder gate blocks all remaining paths; (c) a hard blocker / unsafe boundary / evidence contradiction requires stop; or (d) the final ZIP is produced after the exhaustion audit proves no further safe authorized task remains. A lane, report, test pass, correction cycle, or subwave finishing does NOT end the run.

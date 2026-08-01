@@ -1,0 +1,2 @@
+# Founder No-Terminal UX — UI Spec (16 steps)
+Open local FounderGate → select self-owned demo/controlled repo → enter plain objective → start deterministic governed check → watch truthful status → see evidence freshness → see exact commit (no Git) → see tests + failures → see Checker → see Gate Advisor → see limitations → see next safe action → export evidence package → stop/pause safely. No raw logs, no terminal commands, no prompt relays. Every state is WIRED/NOT_WIRED/UNKNOWN — never invented green.

@@ -1,0 +1,1 @@
+{ "_note": "SYNTHETIC local fixture standing in for a cross-account public repo. Not real, not fetched.", "repo": "local-fixture/cross-account-demo", "visibility": "public (asserted)", "objective": "add a guard clause and prove tests pass", "secrets": 0, "private_data": false }

@@ -1,0 +1,2 @@
+# Local Simulated Dry-Run Plan (fixture only — no external account)
+To rehearse the flow safely, use a LOCAL fixture repo (see fixtures/cross_account_proof/) that stands in for a cross-account target. Run the deterministic governed check against it, produce the evidence-package shape, and confirm the discipline — all with zero external action. This proves the RUNBOOK mechanics, not cross-account operation itself (which needs a real founder-controlled account = a founder gate).

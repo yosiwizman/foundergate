@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+const here = dirname(fileURLToPath(import.meta.url));
+let pass=0,fail=0; const t=(n,f)=>{try{f();pass++}catch(e){fail++;console.error('FAIL',n,e.message)}};
+const m = JSON.parse(readFileSync(join(here,'../../fixtures/cross_account_proof/fixture-repo-manifest.json'),'utf8'));
+t('fixture is synthetic/public', ()=>{ assert.equal(m.visibility.startsWith('public'),true); });
+t('fixture declares no secrets', ()=>{ assert.equal(m.secrets,0); });
+t('fixture has no private data', ()=>{ assert.equal(m.private_data,false); });
+t('fixture has a bounded objective', ()=>{ assert.ok(m.objective.length>0 && m.objective.length<120); });
+console.log(fail===0?`ALL GREEN: ${pass}/${pass+fail} self-test(s) passed.`:`RED: ${fail} failed`);
+process.exit(fail===0?0:1);

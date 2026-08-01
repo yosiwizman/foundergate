@@ -1,0 +1,6 @@
+{ "_note":"SYNTHETIC local objective library for repeatability rehearsal. No external repos.", "objectives":[
+ {"id":1,"name":"reject empty input","failure_mode":"empty->INSUFFICIENT"},
+ {"id":2,"name":"defensive default bucket","failure_mode":"unknown->other"},
+ {"id":3,"name":"remove op","failure_mode":"unknown id->throw"},
+ {"id":4,"name":"blocked->do-not-ship","failure_mode":"blocked->DO_NOT_SHIP"},
+ {"id":5,"name":"all done","failure_mode":"100%->ALL_DONE_LOCAL_DEMO (never SHIP)"} ] }

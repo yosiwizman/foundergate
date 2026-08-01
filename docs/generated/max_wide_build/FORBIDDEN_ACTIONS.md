@@ -1,0 +1,2 @@
+# Forbidden Actions (this run)
+merge · PR-ready marking · PR #200 mutation · PR creation (unless final Advisor recommends as a later action) · public publishing · outreach · provider activation · claude -p · spend · deployment · billing · private repo access · customer data · production data · founder key enrollment · security/compliance claims · final beta acceptance · commercial SaaS launch · protected-main mutation. Any lane reaching one of these labels its item TRUE_FOUNDER_GATE_REQUIRED and stops there.

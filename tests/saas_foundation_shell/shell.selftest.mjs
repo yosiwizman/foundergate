@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+const here = dirname(fileURLToPath(import.meta.url));
+const html = readFileSync(join(here,'../../demo/saas_foundation_shell/index.html'),'utf8');
+let pass=0,fail=0; const t=(n,f)=>{try{f();pass++}catch(e){fail++;console.error('FAIL',n,e.message)}};
+t('shell carries non-production banner', ()=>assert.ok(html.includes('NON-PRODUCTION SHELL')));
+t('shell declares no auth/billing/deployment', ()=>{assert.ok(html.includes('NO AUTH'));assert.ok(html.includes('NO BILLING'));assert.ok(html.includes('NO DEPLOYMENT'));});
+t('shell has no external refs', ()=>assert.ok(!/https?:\/\/|fetch\(|<script/.test(html)));
+t('shell makes no production/saas-ready claim', ()=>{assert.ok(html.includes('Not SaaS-ready')||html.includes('NOT SAAS-READY'));assert.ok(!/is production-ready|is secure|is compliant/i.test(html));});
+console.log(fail===0?`ALL GREEN: ${pass}/${pass+fail} self-test(s) passed.`:`RED: ${fail} failed`);
+process.exit(fail===0?0:1);
