@@ -32,5 +32,9 @@ t('toJSON is valid JSON with summary+decision', () => { const l = createLedger()
 t('fromData round-trips tasks + notes', () => { const l = fromData({ tasks: [{ title: 'a', status: 'done', notes: ['n'] }] }); assert.equal(l.tasks.length, 1); assert.equal(l.tasks[0].notes[0], 'n'); });
 t('fromData handles empty', () => { const l = fromData({}); assert.equal(l.tasks.length, 0); });
 
+t('summarize has other bucket = 0 for normal data', () => { const l = createLedger(); addTask(l, 'a', { status: 'done' }); const s = summarize(l); assert.equal(s.counts.other, 0); });
+t('summarize counts unknown status under other (defensive)', () => { const l = createLedger(); addTask(l, 'a', { status: 'done' }); l.tasks.push({ id: 99, title: 'raw', status: 'archived', notes: [] }); const s = summarize(l); assert.equal(s.counts.other, 1); });
+t('summarize buckets always sum to total', () => { const l = createLedger(); addTask(l, 'a', { status: 'done' }); addTask(l, 'b', { status: 'todo' }); l.tasks.push({ id: 98, title: 'x', status: 'weird', notes: [] }); const s = summarize(l); const sum = s.counts.todo + s.counts.doing + s.counts.blocked + s.counts.done + s.counts.other; assert.equal(sum, s.total); });
+
 console.log(fail === 0 ? `ALL GREEN: ${pass}/${pass+fail} self-test(s) passed.` : `RED: ${pass}/${pass+fail} passed, ${fail} failed.`);
 process.exit(fail === 0 ? 0 : 1);

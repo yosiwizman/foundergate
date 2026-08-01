@@ -44,7 +44,11 @@ export function addEvidenceNote(ledger, id, note) {
 
 export function summarize(ledger) {
   const counts = Object.fromEntries(STATUSES.map(s => [s, 0]));
-  for (const t of ledger.tasks) counts[t.status]++;
+  counts.other = 0; // defensive: any status outside STATUSES is counted here, never silently dropped
+  for (const t of ledger.tasks) {
+    if (STATUSES.includes(t.status)) counts[t.status]++;
+    else counts.other++;
+  }
   const total = ledger.tasks.length;
   const done = counts.done;
   const pct = total === 0 ? 0 : Math.round((done / total) * 100);
