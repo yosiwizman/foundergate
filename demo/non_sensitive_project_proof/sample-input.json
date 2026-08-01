@@ -1,0 +1,14 @@
+{
+  "project_name": "FounderGate Evidence Note Demo",
+  "objective": "Demonstrate an honest, local evidence-note generator that never fabricates verdicts.",
+  "evaluated_sha": "3871a34",
+  "tests": "Self-test suite: all assertions passed (node evidence-note.selftest.mjs)",
+  "checker_verdict": "PASS - documented behavior matches the code",
+  "advisor_verdict": "PASS - scope is appropriately bounded; no production claims made",
+  "limitations": [
+    "This is a demo tool with a small, fixed set of input fields.",
+    "No independent security review has been performed.",
+    "Not connected to any live FounderGate data or product code."
+  ],
+  "decision": "SAFE_TO_CONTINUE_INTERNAL_ONLY"
+}
