@@ -3,10 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Founder-operated AI development harness — gated, evidence-first autonomous runs.",
+  "description": "Founder-operated AI development harness \u2014 gated, evidence-first autonomous runs.",
   "scripts": {
     "test": "node scripts/run-selftests.mjs",
-    "stranger-test": "node scripts/start-stranger-test.mjs"
+    "stranger-test": "node scripts/start-stranger-test.mjs",
+    "founder-view:live": "node src/ui/founder-view/live/live-server.mjs"
   },
   "engines": {
     "node": ">=20"
