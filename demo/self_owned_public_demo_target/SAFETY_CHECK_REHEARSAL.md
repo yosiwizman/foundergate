@@ -23,3 +23,6 @@ Yossi does not currently have a real design partner or a public-repo prospect. R
 ## Current rehearsal state
 - Demo target built + 24/24 self-test green; CLI runs; full FounderGate suite 117/117.
 - No objective has been *executed* as a change yet — the three objectives are staged for a future run. This document is the rehearsal plan + readiness, not a completed check.
+
+
+> Label note: `SUITABLE_FOR_CONCIERGE_TRIAL_WITH_LIMITS` / `INTERNAL_DEMO_ONLY` are **concierge-process decision labels** an operator assigns to a Safety Check run — they are NOT outputs of this module's `decision()` function (which returns only `INSUFFICIENT` / `DO_NOT_SHIP` / `IN_PROGRESS` / `ALL_DONE_LOCAL_DEMO`, never SHIP).

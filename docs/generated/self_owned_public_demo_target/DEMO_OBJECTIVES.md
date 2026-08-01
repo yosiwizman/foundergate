@@ -18,3 +18,6 @@ Each is a small, bounded objective a FounderGate Safety Check could be run again
 - This exercises FounderGate's evidence-note + honest-decision discipline end to end on a self-owned target.
 
 Each objective is intentionally tiny so an honest "do-not-ship / insufficient" is a valid, low-stakes outcome.
+
+
+> Label note: `SUITABLE_FOR_CONCIERGE_TRIAL_WITH_LIMITS` / `INTERNAL_DEMO_ONLY` are **concierge-process decision labels** an operator assigns to a Safety Check run — they are NOT outputs of this module's `decision()` function (which returns only `INSUFFICIENT` / `DO_NOT_SHIP` / `IN_PROGRESS` / `ALL_DONE_LOCAL_DEMO`, never SHIP).
