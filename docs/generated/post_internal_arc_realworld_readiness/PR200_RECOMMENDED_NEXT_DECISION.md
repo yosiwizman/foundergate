@@ -1,0 +1,2 @@
+# PR #200 — Recommended Next Decision
+Recommendation: PARK (leave OPEN as draft). It is MERGEABLE but explicitly "do not merge" and stale relative to the current proof chain. Before any mutation (a true founder gate): (1) read-only re-preview vs current main; (2) re-run copy-truth/claim-discipline on its 16 files; (3) independent review; (4) then a founder decision to revalidate/supersede/close/merge.

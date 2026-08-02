@@ -1,0 +1,2 @@
+# SaaS NOT-READY Register
+Blocking items before any real SaaS (each a separate true gate): real auth/identity; multi-tenant isolation; durable access-controlled storage; billing/metering; deployment infra + pipeline; data-handling policy + controls for customer data; security audit/threat model/compliance; support/incident operations. Status: none built. SaaS readiness = 0%. No "SaaS ready" claim.

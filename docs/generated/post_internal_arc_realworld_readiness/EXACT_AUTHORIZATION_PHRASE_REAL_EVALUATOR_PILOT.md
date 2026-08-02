@@ -1,0 +1,3 @@
+# Exact Authorization Phrase — Real-Evaluator Pilot (for the founder to paste LATER)
+"I AUTHORIZE a FounderGate real-evaluator pilot session in which one real evaluator I have privately arranged observes the accepted synthetic/self-owned dashboard demo and gives feedback only. No customer/private/production data, no data intake, no billing, no payment, no outreach by FounderGate, no account linking, no deployment, no PR #200 mutation, no security/compliance claims, no SaaS launch, and no commercial-readiness claims."
+Writing this phrase here does NOT authorize anything — the founder must paste it separately later.

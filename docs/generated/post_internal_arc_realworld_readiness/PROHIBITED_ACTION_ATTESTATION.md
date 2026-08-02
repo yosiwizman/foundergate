@@ -1,0 +1,4 @@
+# Prohibited-Action Attestation (Post-Internal Arc Readiness — PREPARATION ONLY)
+Performed: authored planning/decision/readiness docs consolidating the accepted internal arc and defining real-world gate packets; read-only PR #200 metadata; committed to a non-main branch.
+NOT performed (all 0): real-evaluator pilot; outreach/contact/send; prospect list; billing/payment/Stripe/invoice/price-quote; data intake; customer/private/production data; deployment; public/customer beta; provider call ($0 spend); provider-at-scale; PR #200 mutation/comment/close/ready; merge; main mutation; mutation of demo/reviewer/frozen artifacts; key enrollment; account change; security/compliance claims; commercial-readiness claims; SaaS launch/live infra; self-authorization of any gate.
+out-of-path added/modified: 0. Authorization phrases included are TEMPLATES; they authorize nothing until the founder pastes one separately.

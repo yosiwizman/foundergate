@@ -1,0 +1,2 @@
+# Next Safe Action
+Everything real-world is a true founder gate, prepared here and NOT taken. Recommended next: a real-evaluator pilot (synthetic-only) — the highest-value, lowest-risk real-world step — when the founder has privately arranged an evaluator and chooses to paste its exact phrase. Meanwhile the founder can freely use the local dashboard on synthetic/self-owned material. Claude self-authorizes nothing.

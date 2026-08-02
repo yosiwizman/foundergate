@@ -1,0 +1,2 @@
+# Preparation-Only Attestation
+This run produces planning/decision docs ONLY. It takes NO real-world action: no outreach, no billing/payment, no deployment, no customer/private/production data, no provider call/spend, no PR #200 mutation, no merge, no public/customer beta, no SaaS launch, no security/compliance/commercial-readiness claims. No next gate is self-authorized; writing an authorization phrase does not authorize the gate — the founder must paste a phrase separately later.
