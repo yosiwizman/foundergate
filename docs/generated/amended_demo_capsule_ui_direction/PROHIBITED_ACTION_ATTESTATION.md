@@ -1,0 +1,4 @@
+# Prohibited-Action Attestation (Acceptance + Amended Demo Capsule Preparation)
+Performed: recorded the founder acceptance + product correction (deck = canonical UX direction/mock backend today; Founder Mode = live-local temporary proof; converge later); prepared an amended demo capsule (narrative + honest labels + captured screenshots of both surfaces); committed to a non-main branch.
+NOT performed (all 0): third UI; UI code change; rebuild; implying deck has live backend today; implying Founder Mode is the full product; sending/outreach; billing/payment; deployment; provider call ($0 spend); customer/private/production data; PR #200 mutation/ready/close/merge; main mutation; mutation of demo/reviewer/frozen artifacts; production/SaaS/security/compliance/customer/paid/market/commercial claims.
+out-of-path added/modified: 0. Capsule is PREPARATION ONLY; sending it is a separate founder gate.

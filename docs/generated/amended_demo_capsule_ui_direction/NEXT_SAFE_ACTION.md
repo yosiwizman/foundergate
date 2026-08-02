@@ -1,0 +1,2 @@
+# Next Safe Action
+The amended demo capsule is PREPARED (internal). If the founder wants to SHOW/SEND it to anyone, that is a separate outreach gate requiring its own explicit authorization. Future product work = converge the live-local backend into the deck-style Founder operating environment (a separate build gate). No production/SaaS/customer/commercial claims. Claude self-authorizes nothing further.
