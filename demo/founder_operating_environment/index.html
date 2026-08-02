@@ -123,10 +123,10 @@
       <div class="head"><div><h1>Batch runner</h1><div class="sub">Runs several governed safe local checks in a row and summarizes them. Self-owned demo targets only.</div></div></div>
       <div class="card">
         <div class="actions"><button id="batch-run-btn" class="btn primary big" data-testid="batch-run-btn">▶ Run safe batch (local demo targets)</button>
-        <button id="batch-export-btn" class="btn big" data-testid="batch-export-btn" disabled>⬇ Export batch evidence</button></div>
+        <button id="batch-export-btn" class="btn big" data-testid="batch-export-btn" disabled>⬇ Export latest run's evidence</button></div>
         <table class="tbl"><thead><tr><th>#</th><th>Target</th><th>Tests</th><th>Decision</th><th>Status</th></tr></thead>
           <tbody id="batch-body" data-testid="batch-body"><tr><td colspan="5" style="color:var(--dim)">No batch run yet.</td></tr></tbody></table>
-        <p class="honesty" data-testid="batch-note">Each row is a real local governed check on a self-owned demo target. No provider, no network, no customer data, no deploy/bill/send. Batch export seals the latest run's real package; the table is the founder-facing batch summary.</p></div>
+        <p class="honesty" data-testid="batch-note">Each row is a real local governed check on a self-owned demo target. No provider, no network, no customer data, no deploy/bill/send. Export seals the latest run's real package (an aggregated multi-run package is not built yet); the table above is the founder-facing batch summary.</p></div>
     </section>
 
     <!-- ===== EVIDENCE ===== -->
