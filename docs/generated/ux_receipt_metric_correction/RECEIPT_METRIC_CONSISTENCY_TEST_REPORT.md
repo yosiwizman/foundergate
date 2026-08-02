@@ -1,0 +1,2 @@
+# Receipt Metric Consistency Test Report
+tests/evidence_binding/receipt-consistency-guard.selftest.mjs: 3/3 GREEN — a consistent receipt (all metrics 0) passes; an inconsistent receipt (a stale out-of-path of 2 in TEST/SCAN) is CAUGHT (check B fails). CLI on the corrected prior UX receipt (final head 0a3dc27): ALL PASS (A final-head + B no-stale + C1-C4 zero + D counters-zero + E no-stale-simulation).

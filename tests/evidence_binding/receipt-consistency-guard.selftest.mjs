@@ -1,0 +1,26 @@
+import assert from 'node:assert/strict';
+import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { verifyReceiptConsistency } from '../../src/evidence_finalizer/receipt-consistency-guard.mjs';
+let p=0,f=0; const t=(n,fn)=>{try{fn();p++}catch(e){f++;console.error('FAIL',n,e.message)}};
+const HEAD='cccccccccccc333333333333333333333333cccc';
+function mkReceipt(oop){ const d=mkdtempSync(join(tmpdir(),'fg-rc-')); mkdirSync(join(d,'evidence'));
+  writeFileSync(join(d,'FINAL_STATUS.md'), `head \`${HEAD.slice(0,12)}\` out-of-path **${oop}**`);
+  writeFileSync(join(d,'FINAL_VERDICT.json'), JSON.stringify({head:HEAD,final_head:HEAD,scans:{out_of_path:oop,provider:0}}));
+  writeFileSync(join(d,'BACKUP_AND_GITHUB_SYNC_REPORT.md'), `head ${HEAD.slice(0,12)}`);
+  writeFileSync(join(d,'CHANGED_FILES_REPORT.md'), `final head ${HEAD.slice(0,12)}`);
+  writeFileSync(join(d,'TEST_REPORT.md'), `| Out-of-path added/modified | ${oop} |`);
+  writeFileSync(join(d,'SCAN_REPORT.md'), `out-of-path added/modified=${oop}`);
+  writeFileSync(join(d,'PROHIBITED_ACTION_ATTESTATION.md'), `${oop} out-of-path`);
+  writeFileSync(join(d,'evidence','final_head.txt'), HEAD);
+  writeFileSync(join(d,'evidence','verify_summary.txt'), `out_of_path_AM=${oop} provider=0 spend=0 contact=0 publish=0 deploy=0`);
+  return d;
+}
+const good=verifyReceiptConsistency(mkReceipt(0), HEAD);
+t('consistent receipt (all 0) passes', ()=>assert.equal(good.allPass,true));
+const bad=verifyReceiptConsistency(mkReceipt(2), HEAD);
+t('inconsistent receipt (stale 2) is CAUGHT', ()=>assert.equal(bad.allPass,false));
+t('bad flags the stale-metric check B', ()=>assert.equal(bad.checks.find(c=>c.name.startsWith('B')).pass,false));
+console.log(f===0?`ALL GREEN: ${p}/${p+f} self-test(s) passed.`:`RED: ${f} failed`);
+process.exit(f===0?0:1);

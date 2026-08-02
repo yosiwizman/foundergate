@@ -10,4 +10,7 @@
 | Browser (3 surfaces) | 3/3 |
 | Accessibility | 0 serious/critical |
 | Sensitive-runtime modified | 0 (UI copy only) |
-| Out-of-path added/modified | 2 |
+| Out-of-path added/modified | 0 |
+
+
+> Metric note: an earlier draft of this report recorded a stale value of two — those 2 were prior-run docs that leaked in uncommitted and were removed by the final hygiene commit 0a3dc274. The final branch state and this corrected report agree: out-of-path added/modified = 0.
