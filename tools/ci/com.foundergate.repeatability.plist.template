@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TEMPLATE ONLY — NOT INSTALLED, NOT LOADED. Founder must explicitly `launchctl load` this
+     to activate any schedule. FounderGate does not install system jobs autonomously. -->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.foundergate.repeatability</string>
+  <key>ProgramArguments</key><array>
+    <string>/bin/bash</string>
+    <string>REPLACE_WITH_ABSOLUTE_PATH/tools/ci/repeatability-ci-hook.sh</string>
+  </array>
+  <key>StartCalendarInterval</key><dict><key>Hour</key><integer>9</integer><key>Minute</key><integer>0</integer></dict>
+  <key>RunAtLoad</key><false/>
+  <key>StandardOutPath</key><string>/tmp/foundergate-repeatability.log</string>
+</dict></plist>
