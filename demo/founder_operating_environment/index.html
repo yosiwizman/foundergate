@@ -1,62 +1,158 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FounderGate — Founder Operating Environment (Local Convergence Prototype)</title>
+<title>FounderGate — Founder Operating Environment (Local Convergence, Wave 2)</title>
 <link rel="stylesheet" href="assets/fg.css">
 <style>:root{--dim:#93a1b5;--muted:#b4c0d0}
-.nav.on,.btn.primary{background:#1d4ed8;border-color:#1d4ed8}</style>
+.nav.on,.btn.primary{background:#1d4ed8;border-color:#1d4ed8}
+.nav.on .tag{color:#e6ebf2;border-color:rgba(230,235,242,.55)}</style>
 <style>
 .proto-banner{background:#3a2a00;color:#f5b83d;border-bottom:1px solid var(--line);font-weight:800;font-size:12.5px;padding:9px 16px;text-align:center}
 .alive{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px;margin:16px 0 8px}
 .dot{width:12px;height:12px;border-radius:50%;background:var(--dim);flex:none}
 .dot.on{background:var(--green);box-shadow:0 0 10px 2px rgba(34,197,94,.45)}
-.chips{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:14px 0 6px}
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0 6px}
 .chip{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px;min-height:74px}
 .chip small{display:block;color:var(--dim);font-size:11.5px;font-weight:700;letter-spacing:.04em}
 .chip .v{font-weight:800;font-size:14px;line-height:1.3;margin-top:6px}
 .actions{display:flex;gap:14px;flex-wrap:wrap;margin:14px 0}
-.btn.big{font-size:16px;padding:16px 22px;min-width:250px}
+.btn.big{font-size:16px;padding:16px 22px;min-width:240px}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
 .honesty{color:var(--dim);font-size:12.5px;margin:6px 2px 16px}
 .cardh{font-size:14.5px;font-weight:800;margin-bottom:8px}
-details.tech summary{cursor:pointer;color:var(--muted);font-weight:700;font-size:13px;padding:6px}
+.pill{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.03em;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);margin:2px 6px 2px 0}
+.pill.warn{color:#f5b83d;border-color:rgba(245,184,61,.4)}
+.pill.view{color:#a78bfa;border-color:rgba(167,139,250,.4)}
+.pill.live{color:#22c55e;border-color:rgba(34,197,94,.4)}
+.panel{display:none}
+.panel.on{display:block}
+.nav{width:100%;text-align:left;background:transparent;border:0;color:var(--text);font:inherit;cursor:pointer;border-radius:8px}
+.nav:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.filerow{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:8px 0;color:var(--muted);font-size:13px}
+.guide dt{font-weight:800;margin-top:12px}
+.guide dd{margin:4px 0 0;color:var(--muted);font-size:13.5px}
 .techrow{color:var(--muted);font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)}
 </style></head>
 <body>
-<div class="proto-banner" role="region" aria-label="Environment notice" data-testid="proto-banner">LOCAL-ONLY CONVERGENCE PROTOTYPE · Deck-style Founder operating environment wired to the live-local backend (127.0.0.1) · NOT the deck's shipped state · NOT production · Decision never “ship”</div>
+<div class="proto-banner" role="region" aria-label="Environment notice" data-testid="proto-banner">LOCAL-ONLY CONVERGENCE PROTOTYPE (WAVE 2) · Deck-style Founder operating environment wired to the live-local backend (127.0.0.1) · NOT the deck's shipped state · NOT production · Decision never &ldquo;ship&rdquo;</div>
 <div class="shell">
   <aside class="side">
     <div class="brand">FounderGate</div>
-    <div class="nav on">🏠 Truth Dashboard</div>
-    <div class="nav">👁 Preview App <span class="tag">display-only</span></div>
-    <div class="nav">📁 Files <span class="tag">display-only</span></div>
-    <div class="nav">💬 Ask Guide <span class="tag">display-only</span></div>
-    <div class="nav">🚩 Decisions <span class="tag" style="color:var(--purple);border-color:rgba(167,139,250,.4)">view only</span></div>
+    <nav aria-label="Panels">
+      <button class="nav on" data-panel="truth"    data-testid="nav-truth"    aria-current="page">🏠 Truth Dashboard</button>
+      <button class="nav"    data-panel="preview"  data-testid="nav-preview">👁 Preview <span class="tag">local demo</span></button>
+      <button class="nav"    data-panel="evidence" data-testid="nav-evidence">📦 Evidence</button>
+      <button class="nav"    data-panel="decisions"data-testid="nav-decisions">🚩 Decisions <span class="tag">view only</span></button>
+      <button class="nav"    data-panel="guide"    data-testid="nav-guide">💬 Ask Guide <span class="tag">static</span></button>
+      <button class="nav"    data-panel="files"    data-testid="nav-files">📁 Files <span class="tag">display-only</span></button>
+      <button class="nav"    data-panel="tech"     data-testid="nav-tech">🔧 Technical view</button>
+    </nav>
     <div class="robot"><div>Live-local backend</div><div id="server-state" data-testid="server-state" style="color:var(--muted);font-size:12px;margin-top:6px">checking…</div></div>
     <div class="demo">Local convergence prototype · no provider · no deploy</div>
+    <div class="demo" style="margin-top:8px">Fallback: <a href="../founder_operator_dashboard/index.html" style="color:var(--blue)">Founder Mode local runner</a><br><span style="color:var(--dim)">(fallback/proof surface — the deck-style environment is the canonical direction)</span></div>
   </aside>
   <main class="main">
-    <div class="eyebrow">FOUNDER OPERATING ENVIRONMENT (CONVERGENCE PROTOTYPE)</div>
-    <div class="head"><div><h1>Truth Dashboard</h1><div class="sub">Deck-style workspace, wired to the real local evidence runner. Local only.</div></div></div>
-    <div class="alive"><span class="dot" id="alive-dot"></span><b id="alive-text" data-testid="alive-text">Not started — click “Run safe demo check”.</b><span class="demo-note">synthetic / self-owned demo only</span></div>
-    <div class="chips">
-      <div class="chip"><small>TESTS</small><div class="v" id="chip-tests" data-testid="chip-tests">—</div></div>
-      <div class="chip"><small>DECISION</small><div class="v" id="chip-decision" data-testid="chip-decision">— (never SHIP)</div></div>
-      <div class="chip"><small>EVIDENCE FRESHNESS</small><div class="v" id="chip-fresh" data-testid="chip-fresh">UNKNOWN</div></div>
-      <div class="chip"><small>CHECKER</small><div class="v" id="chip-checker">separate review</div></div>
-      <div class="chip"><small>GATE ADVISOR</small><div class="v" id="chip-advisor">separate review</div></div>
-    </div>
-    <div class="actions">
-      <button id="run-btn" class="btn primary big" data-testid="run-btn">▶ Run safe demo check</button>
-      <button id="export-btn" class="btn big" data-testid="export-btn" disabled>⬇ Export evidence package</button>
-    </div>
-    <p class="honesty">What UNKNOWN means: the system does not have enough evidence (e.g., the local backend is not running). UNKNOWN is safer than guessing — it never fakes a green result.</p>
-    <div class="card"><h2 class="cardh">What happened</h2><div id="what" data-testid="what">Nothing yet.</div>
-      <h2 class="cardh" style="margin-top:14px">What should I do next?</h2><div id="next" data-testid="next">Click “Run safe demo check”.</div></div>
-    <details class="tech"><summary>Technical / reviewer view (optional)</summary>
-      <div class="techrow" id="t-status">status: —</div>
-      <div class="techrow" id="t-commit">build: —</div>
-      <div class="techrow" id="t-export">export: not exported</div>
-      <div class="techrow">reviewer console: <a href="../reviewer_console/index.html" style="color:var(--blue)">open (read-only)</a></div>
-    </details>
-    <div class="foot">Deck-style Founder operating environment (canonical product UX direction) wired to the live-local backend as a LOCAL convergence prototype. Not production, not secure, not SaaS, not customer-ready. The deck's shipped state remains display-only; this prototype is local proof of convergence only.</div>
+
+    <!-- ===== TRUTH DASHBOARD ===== -->
+    <section class="panel on" id="panel-truth" role="region" aria-label="Truth Dashboard" data-testid="panel-truth">
+      <div class="eyebrow">FOUNDER OPERATING ENVIRONMENT (CONVERGENCE PROTOTYPE · WAVE 2)</div>
+      <div class="head"><div><h1>Truth Dashboard</h1><div class="sub">Deck-style workspace, wired to the real local evidence runner. Local only.</div></div></div>
+      <div class="alive"><span class="dot" id="alive-dot"></span><b id="alive-text" data-testid="alive-text">Not started — click &ldquo;Run safe demo check&rdquo;.</b><span class="demo-note">synthetic / self-owned demo only</span></div>
+      <div class="chips">
+        <div class="chip"><small>LOCAL BACKEND</small><div class="v" id="chip-status" data-testid="chip-status">checking…</div></div>
+        <div class="chip"><small>TESTS</small><div class="v" id="chip-tests" data-testid="chip-tests">UNKNOWN</div></div>
+        <div class="chip"><small>DECISION</small><div class="v" id="chip-decision" data-testid="chip-decision">UNKNOWN (never SHIP)</div></div>
+        <div class="chip"><small>EVIDENCE</small><div class="v" id="chip-evidence" data-testid="chip-evidence">UNKNOWN</div></div>
+        <div class="chip"><small>CHECKER</small><div class="v" id="chip-checker">separate review (process)</div></div>
+        <div class="chip"><small>GATE ADVISOR</small><div class="v" id="chip-advisor">separate review (process)</div></div>
+      </div>
+      <div class="actions">
+        <button id="run-btn" class="btn primary big" data-testid="run-btn">▶ Run safe demo check</button>
+        <button id="export-btn" class="btn big" data-testid="export-btn" disabled>⬇ Export evidence package</button>
+      </div>
+      <p class="honesty">What UNKNOWN means: the system does not have enough evidence yet (e.g. no run has happened, or the local backend is not running). UNKNOWN is safer than guessing — it never fakes a green result.</p>
+      <div class="card"><h2 class="cardh">What happened</h2><div id="what" data-testid="what">Nothing yet.</div>
+        <h2 class="cardh" style="margin-top:14px">What should I do next?</h2><div id="next" data-testid="next">Click &ldquo;Run safe demo check&rdquo;.</div></div>
+    </section>
+
+    <!-- ===== PREVIEW ===== -->
+    <section class="panel" id="panel-preview" role="region" aria-label="Preview" data-testid="panel-preview">
+      <div class="eyebrow">PREVIEW — LOCAL DEMO ONLY / NO SENDS / NO PAYMENTS / NO DEPLOY</div>
+      <div class="head"><div><h1>Preview</h1><div class="sub">A safe local preview of the synthetic / self-owned demo run. Not a live customer app.</div></div></div>
+      <div>
+        <span class="pill live">LIVE-LOCAL RUN STATE</span><span class="pill warn">NO REAL CUSTOMER DATA</span><span class="pill">NO SENDS</span><span class="pill">NO PAYMENTS</span><span class="pill">NO DEPLOY</span><span class="pill">SYNTHETIC / SELF-OWNED ONLY</span>
+      </div>
+      <div class="card" style="margin-top:14px"><h2 class="cardh">Local demo objective</h2>
+        <div id="preview-objective" data-testid="preview-objective">Add input validation and prove tests pass (self-owned demo target).</div>
+        <h2 class="cardh" style="margin-top:14px">Current run status</h2><div id="preview-status" data-testid="preview-status">Not started.</div>
+        <h2 class="cardh" style="margin-top:14px">Last result</h2><div id="preview-result" data-testid="preview-result">No result yet — run from the Truth Dashboard.</div></div>
+      <p class="honesty">This Preview shares the Truth Dashboard's real local run state. It does not preview a customer application, does not send anything, and uses no external network.</p>
+    </section>
+
+    <!-- ===== EVIDENCE ===== -->
+    <section class="panel" id="panel-evidence" role="region" aria-label="Evidence" data-testid="panel-evidence">
+      <div class="eyebrow">EVIDENCE — LOCAL SEALED PACKAGE</div>
+      <div class="head"><div><h1>Evidence</h1><div class="sub">Real, sealed, local evidence package. Nothing is sent automatically.</div></div></div>
+      <div class="card"><h2 class="cardh">Evidence state</h2><div id="evi-state" data-testid="evi-state">UNKNOWN — no run/export yet.</div>
+        <h2 class="cardh" style="margin-top:14px">Plain-English receipt</h2><div id="evi-receipt" data-testid="evi-receipt">Run a safe demo check, then export. A sealed evidence package will be saved locally.</div>
+        <div class="actions"><button id="export-btn2" class="btn big" data-testid="export-btn2" disabled>⬇ Export evidence package</button></div>
+        <p class="honesty">Send the ZIP to ChatGPT only if asked. No raw ZIP internals or full technical fingerprints are shown here — that is by design.</p></div>
+    </section>
+
+    <!-- ===== DECISIONS ===== -->
+    <section class="panel" id="panel-decisions" role="region" aria-label="Decisions" data-testid="panel-decisions">
+      <div class="eyebrow">DECISIONS — VIEW ONLY</div>
+      <div class="head"><div><h1>Decisions</h1><div class="sub">View-only in this local prototype. No real-world action is authorized here.</div></div></div>
+      <div class="card"><h2 class="cardh">Current decision</h2><div id="dec-current" data-testid="dec-current">UNKNOWN — run first. (After a run: INTERNAL_DEMO_ONLY — never SHIP.)</div>
+        <h2 class="cardh" style="margin-top:14px">Possible next internal statuses</h2>
+        <div><span class="pill">CONTINUE DEMO</span><span class="pill">HOLD</span><span class="pill">REPAIR</span><span class="pill">STOP</span></div>
+        <h2 class="cardh" style="margin-top:14px">Actions</h2>
+        <div class="actions">
+          <button class="btn" data-testid="dec-continue" disabled>Continue demo — VIEW ONLY</button>
+          <button class="btn" data-testid="dec-hold" disabled>Hold — VIEW ONLY</button>
+          <button class="btn" data-testid="dec-stop" disabled>Stop — VIEW ONLY</button>
+        </div>
+        <p class="honesty" data-testid="dec-notice">VIEW ONLY — no action taken. No real-world action is authorized here. This panel cannot approve merge, ship, deploy, send, bill, or release.</p></div>
+    </section>
+
+    <!-- ===== ASK GUIDE ===== -->
+    <section class="panel" id="panel-guide" role="region" aria-label="Ask Guide" data-testid="panel-guide">
+      <div class="eyebrow">ASK GUIDE — STATIC LOCAL GUIDANCE</div>
+      <div class="head"><div><h1>Ask Guide</h1><div class="sub">Plain-English guidance. Not a chatbot — no provider, no external calls.</div></div></div>
+      <div class="card"><dl class="guide">
+        <dt>What is live?</dt><dd>The Truth Dashboard's <b>Run safe demo check</b> and <b>Export evidence package</b> run the real local backend on your machine (127.0.0.1). Preview and Evidence reflect that same real run.</dd>
+        <dt>What is display-only?</dt><dd>Files / Protected Files is display-only (no live enforcement). Decisions is view-only (no real action). Ask Guide is static text.</dd>
+        <dt>What does UNKNOWN mean?</dt><dd>Not enough evidence yet. It is safer than guessing and never fakes a green result.</dd>
+        <dt>What does INTERNAL_DEMO_ONLY mean?</dt><dd>The result is for internal demonstration only. The decision can never say &ldquo;ship&rdquo;.</dd>
+        <dt>What can I do next?</dt><dd>Look at the screen. Optionally click Run, then Export. Then answer the visual gate in ChatGPT.</dd>
+        <dt>What must I not claim?</dt><dd>Not production, not secure/compliant, not SaaS, not customer-ready, not market-validated, not paid proof, not commercial-ready.</dd>
+        <dt>When do I stop and ask ChatGPT?</dt><dd>Any time something is unclear, or before anything that would send, deploy, bill, or touch real/customer data.</dd>
+      </dl></div>
+    </section>
+
+    <!-- ===== FILES ===== -->
+    <section class="panel" id="panel-files" role="region" aria-label="Files and Protected Files" data-testid="panel-files">
+      <div class="eyebrow">FILES / PROTECTED FILES — DISPLAY ONLY</div>
+      <div class="head"><div><h1>Files / Protected Files</h1><div class="sub">DISPLAY_ONLY — the protected-files concept, not live enforcement in this local demo.</div></div></div>
+      <div class="card"><h2 class="cardh">Synthetic sample files (illustrative)</h2>
+        <div class="filerow"><span>demo/task-ledger.selftest.mjs</span><span class="pill live">allowed (sample)</span></div>
+        <div class="filerow"><span>demo/notes/todo.txt</span><span class="pill live">allowed (sample)</span></div>
+        <div class="filerow"><span>secrets/prod.env</span><span class="pill warn">blocked for safety (mock example)</span></div>
+        <div class="filerow"><span>customer/private_data.csv</span><span class="pill warn">blocked for safety (mock example)</span></div>
+        <p class="honesty">These filenames are synthetic. &ldquo;Blocked for safety&rdquo; is a display-only illustration of <i>planned</i> protected-files behavior. No real files are scanned; no secrets are exposed; no customer/private/production files are used.</p></div>
+    </section>
+
+    <!-- ===== TECHNICAL VIEW ===== -->
+    <section class="panel" id="panel-tech" role="region" aria-label="Technical and reviewer view" data-testid="panel-tech">
+      <div class="eyebrow">TECHNICAL / REVIEWER VIEW</div>
+      <div class="head"><div><h1>Technical view</h1><div class="sub">Optional. For a technical reviewer — the founder does not need this.</div></div></div>
+      <div class="card">
+        <div class="techrow" id="t-status">status: —</div>
+        <div class="techrow" id="t-commit">build: —</div>
+        <div class="techrow" id="t-export">export: not exported</div>
+        <div class="techrow">reviewer console: <a href="../reviewer_console/index.html" style="color:var(--blue)">open (read-only)</a></div>
+      </div>
+    </section>
+
+    <div class="foot">Deck-style Founder operating environment (canonical product UX direction) wired to the live-local backend as a LOCAL convergence prototype (Wave 2). Not production, not secure, not SaaS, not customer-ready. The deck's shipped state remains display-only; Founder Mode remains a fallback/proof surface. This prototype is local proof of convergence only.</div>
   </main>
 </div>
 <script type="module" src="assets/app.mjs"></script>
