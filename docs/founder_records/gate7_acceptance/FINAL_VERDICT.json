@@ -1,0 +1,28 @@
+{
+  "operation": "Gate 7 Acceptance Record",
+  "status_token": "GATE7_ACCEPTED_WITH_LIMITS",
+  "gate_accepted": "Gate 7 real provider / cost-controlled proof",
+  "evidence_head": "27c5808994c4",
+  "gate7_proof_zip_sha256": "e419aa0e75911b80941c23fe876fd083a57bda2336b8d8123d9e6c783a86172a",
+  "provider_call": "claude -p claude-haiku-4-5-20251001",
+  "exact_cost_usd": 0.0271348,
+  "under_ceiling_1usd": true,
+  "confers_execution_authority": false,
+  "not_authorized": [
+    "merge",
+    "PR-ready marking",
+    "PR #200 mutation",
+    "deployment",
+    "billing",
+    "outreach",
+    "provider use at scale",
+    "public/customer beta launch",
+    "security/compliance claims",
+    "SaaS launch",
+    "final commercial readiness"
+  ],
+  "protected_main": "65fd01669f80094e7ef9a0fa689c87347ae0c089",
+  "protected_main_unchanged": true,
+  "pr200": "OPEN/draft/untouched",
+  "acceptance_date": "2026-08-02"
+}
