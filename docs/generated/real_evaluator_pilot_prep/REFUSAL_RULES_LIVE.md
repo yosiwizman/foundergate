@@ -1,0 +1,2 @@
+# Refusal Rules (live during the session)
+STOP and convert to a separate founder decision if the evaluator: offers/requests real/customer/private/production data; asks to run FounderGate on their own repo; requests deployment, billing, payment, or account-linking; expects a security/compliance/production/commercial claim; implies outreach to more people. No price quote, no signup, no data collection, no timeline promise.
