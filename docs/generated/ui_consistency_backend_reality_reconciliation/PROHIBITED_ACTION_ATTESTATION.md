@@ -1,0 +1,4 @@
+# Prohibited-Action Attestation (UI Consistency + Backend Reality Reconciliation)
+Performed: docs-only reconciliation of the deck workspace UI vs the current live-local Founder Mode dashboard, with a backend reality matrix; read-only inspection of existing UI surfaces; committed docs to a non-main branch.
+NOT performed (all 0): new/third UI; UI code change (no overclaim required a fix); rebuild; product-surface rename without evidence; faking backend behavior; implying deck==Founder Mode; implying mock features are live; evaluator workflow/feedback; outreach/sales copy; billing/payment; deployment; provider call ($0 spend); customer/private/production data; PR #200 mutation/ready/close/merge; main mutation; mutation of public demo/reviewer/frozen artifacts; production/security/compliance/SaaS/commercial/market/paid/customer claims.
+out-of-path added/modified: 0 (only docs/generated/ui_consistency_backend_reality_reconciliation/).

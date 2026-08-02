@@ -1,0 +1,2 @@
+# Run Contract — UI Consistency + Backend Reality Reconciliation
+Docs-only reconciliation of two UI surfaces (deck workspace UI vs current live-local Founder Mode). No new/third UI. No UI code changes (if a blocking overclaim needs code, STOP -> CORRECTION_REQUIRED). No demo capsule. No evaluator/outreach/billing/deploy/provider/customer-data/PR200/main mutation. Write only under docs/generated/ui_consistency_backend_reality_reconciliation/ (+ one Desktop review folder).
