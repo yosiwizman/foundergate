@@ -1,0 +1,34 @@
+{
+  "operation": "Gate 5/6 Acceptance Record",
+  "status_token": "GATE5_6_ACCEPTED_WITH_LIMITS",
+  "gates_accepted": [
+    "Gate 5 operator dashboard",
+    "Gate 6 repeatability/crash-test"
+  ],
+  "evidence_head": "cb735356bbae",
+  "gate5_6_finish_zip_sha256": "2835e6788fbd1225bfb215b13eb795ba8eb03d3aa2532924e8ab723db714ff0f",
+  "reverified": {
+    "axe_total": 0,
+    "mode_separation": "8/8",
+    "ci_hook": "stable, 0 flake, 0 false-green"
+  },
+  "confers_execution_authority": false,
+  "not_authorized": [
+    "merge",
+    "PR-ready marking",
+    "PR #200 mutation",
+    "provider use",
+    "spend",
+    "deployment",
+    "billing",
+    "customer/private/production data",
+    "public/customer beta launch",
+    "security/compliance claims",
+    "SaaS launch",
+    "final commercial readiness"
+  ],
+  "protected_main": "65fd01669f80094e7ef9a0fa689c87347ae0c089",
+  "protected_main_unchanged": true,
+  "pr200": "OPEN/draft/untouched",
+  "acceptance_date": "2026-08-02"
+}
