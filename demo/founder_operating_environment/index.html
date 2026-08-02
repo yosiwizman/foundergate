@@ -22,6 +22,12 @@
 .pill.warn{color:#f5b83d;border-color:rgba(245,184,61,.4)}
 .pill.view{color:#a78bfa;border-color:rgba(167,139,250,.4)}
 .pill.live{color:#22c55e;border-color:rgba(34,197,94,.4)}
+.pill.hold{color:#f5b83d;border-color:rgba(245,184,61,.5)}
+.pill.refuse{color:#f87171;border-color:rgba(248,113,113,.5)}
+.intake label{display:block;font-size:11.5px;font-weight:700;letter-spacing:.04em;color:var(--dim);margin:12px 0 5px}
+.intake select,.intake input{width:100%;box-sizing:border-box;background:#0d1117;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font:inherit}
+.intake select:focus,.intake input:focus{outline:2px solid var(--blue);outline-offset:1px}
+.clsrow{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding:9px 0;font-size:13px;color:var(--muted)}
 .panel{display:none}
 .panel.on{display:block}
 .nav{width:100%;text-align:left;background:transparent;border:0;color:var(--text);font:inherit;cursor:pointer;border-radius:8px}
@@ -55,7 +61,24 @@
     <section class="panel on" id="panel-truth" role="region" aria-label="Truth Dashboard" data-testid="panel-truth">
       <div class="eyebrow">FOUNDER OPERATING ENVIRONMENT (CONVERGENCE PROTOTYPE · WAVE 3 — HARDENED)</div>
       <div class="head"><div><h1>Truth Dashboard</h1><div class="sub">Deck-style workspace, wired to the real local evidence runner. Local only.</div></div></div>
-      <div class="alive"><span class="dot" id="alive-dot"></span><b id="alive-text" data-testid="alive-text">Not started — click &ldquo;Run safe demo check&rdquo;.</b><span class="demo-note">synthetic / self-owned demo only</span></div>
+      <div class="card intake" id="intake" data-testid="intake">
+        <h2 class="cardh">1 · Choose a safe source &amp; objective</h2>
+        <label for="src-sel">Source (repo / material)</label>
+        <select id="src-sel" data-testid="src-sel">
+          <option value="demo">Safe local demo — self-owned (recommended)</option>
+          <option value="fixture">Local fixture — self-owned</option>
+          <option value="unknown">Other / unknown / private / customer / production repo</option>
+        </select>
+        <label for="src-path">Optional local path (only a known safe demo path is accepted)</label>
+        <input id="src-path" data-testid="src-path" placeholder="leave blank to use the selected source" autocomplete="off">
+        <label for="obj-inp">Objective (a default is filled in — typing is optional)</label>
+        <input id="obj-inp" data-testid="obj-inp" value="Add input validation and prove tests pass" autocomplete="off">
+        <div class="clsrow"><span>Source classification</span><span id="cls-src" data-testid="cls-src" class="pill">—</span></div>
+        <div class="clsrow"><span>Objective classification</span><span id="cls-obj" data-testid="cls-obj" class="pill">—</span></div>
+        <div class="clsrow"><span>Run eligibility</span><span id="cls-elig" data-testid="cls-elig" class="pill">—</span></div>
+        <p class="honesty" data-testid="intake-note">Unknown / private / customer / production sources are held for founder authorization — they are never run here. Objectives that ask to deploy, bill, pay, reach out, merge, touch PR&nbsp;#200, use customer data, spend, or claim security/SaaS are refused. Nothing is faked.</p>
+      </div>
+      <div class="alive"><span class="dot" id="alive-dot"></span><b id="alive-text" data-testid="alive-text">Choose a safe source &amp; objective above, then click &ldquo;Run safe demo check&rdquo;.</b><span class="demo-note">synthetic / self-owned demo only</span></div>
       <div class="chips">
         <div class="chip"><small>LOCAL BACKEND</small><div class="v" id="chip-status" data-testid="chip-status">checking…</div></div>
         <div class="chip"><small>TESTS</small><div class="v" id="chip-tests" data-testid="chip-tests">UNKNOWN</div></div>
