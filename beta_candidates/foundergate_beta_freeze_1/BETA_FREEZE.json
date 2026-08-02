@@ -1,0 +1,10 @@
+{
+  "freeze_label": "foundergate-beta-freeze-1",
+  "freeze_kind": "minimal-scope frozen beta candidate (local, synthetic-data, no-deploy)",
+  "core_artifact": "task-ledger synthetic demo",
+  "core_source": "yosiwizman/task-ledger-demo@0bb2817174c95f121b05de28686f706aeec82dd5",
+  "frozen": true,
+  "mutable_after_freeze": false,
+  "claim_ceiling": "ALL_DONE_LOCAL_DEMO",
+  "never": "SHIP"
+}
