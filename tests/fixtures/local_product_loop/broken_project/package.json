@@ -1,0 +1,1 @@
+{ "name": "broken-demo", "version": "0.0.0", "scripts": { "test": "node index.test.mjs" }, "private": true }

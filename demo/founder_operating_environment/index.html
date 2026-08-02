@@ -52,6 +52,7 @@
       <button class="nav"    data-panel="preview"  data-testid="nav-preview">👁 Preview <span class="tag">local demo</span></button>
       <button class="nav"    data-panel="batch"    data-testid="nav-batch">🧪 Batch <span class="tag">local demo</span></button>
       <button class="nav"    data-panel="evidence" data-testid="nav-evidence">📦 Evidence</button>
+      <button class="nav"    data-panel="viewer"   data-testid="nav-viewer">🔎 Evidence Viewer <span class="tag">replay</span></button>
       <button class="nav"    data-panel="history"  data-testid="nav-history">📊 Run History <span class="tag">local</span></button>
       <button class="nav"    data-panel="decisions"data-testid="nav-decisions">🚩 Decisions <span class="tag">local ledger</span></button>
       <button class="nav"    data-panel="guide"    data-testid="nav-guide">💬 Ask Guide <span class="tag">static</span></button>
@@ -122,11 +123,12 @@
       <div class="eyebrow">BATCH — LOCAL SAFE CHECKS ONLY / NO PROVIDER / NO NETWORK / NO DEPLOY</div>
       <div class="head"><div><h1>Batch runner</h1><div class="sub">Runs several governed safe local checks in a row and summarizes them. Self-owned demo targets only.</div></div></div>
       <div class="card">
-        <div class="actions"><button id="batch-run-btn" class="btn primary big" data-testid="batch-run-btn">▶ Run safe batch (local demo targets)</button>
-        <button id="batch-export-btn" class="btn big" data-testid="batch-export-btn" disabled>⬇ Export latest run's evidence</button></div>
-        <table class="tbl"><thead><tr><th>#</th><th>Target</th><th>Tests</th><th>Decision</th><th>Status</th></tr></thead>
-          <tbody id="batch-body" data-testid="batch-body"><tr><td colspan="5" style="color:var(--dim)">No batch run yet.</td></tr></tbody></table>
-        <p class="honesty" data-testid="batch-note">Each row is a real local governed check on a self-owned demo target. No provider, no network, no customer data, no deploy/bill/send. Export seals the latest run's real package (an aggregated multi-run package is not built yet); the table above is the founder-facing batch summary.</p></div>
+        <div class="actions"><button id="batch-run-btn" class="btn primary big" data-testid="batch-run-btn">▶ Run safe fixture batch</button>
+        <button id="batch-export-btn" class="btn big" data-testid="batch-export-btn" disabled>⬇ Export aggregated batch evidence</button></div>
+        <table class="tbl"><thead><tr><th>#</th><th>Fixture</th><th>Type</th><th>Adapter</th><th>Result</th><th>Next safe action</th></tr></thead>
+          <tbody id="batch-body" data-testid="batch-body"><tr><td colspan="6" style="color:var(--dim)">No batch run yet.</td></tr></tbody></table>
+        <div class="clsrow"><span>Aggregate conclusion</span><span id="batch-aggregate" data-testid="batch-aggregate" class="pill">—</span></div>
+        <p class="honesty" data-testid="batch-note">Each row is a REAL local execution of a synthetic / self-owned fixture (Node pass/fail/no-test, Python, static, broken) plus refusal of unsafe/unknown names. No provider, no network, no customer data, no deploy/bill/send. "Export aggregated batch evidence" seals ONE real ZIP containing every run in this batch (verified with unzip -t). Decisions never SHIP.</p></div>
     </section>
 
     <!-- ===== EVIDENCE ===== -->
@@ -139,14 +141,26 @@
         <p class="honesty">Send the ZIP to ChatGPT only if asked. No raw ZIP internals or full technical fingerprints are shown here — that is by design.</p></div>
     </section>
 
+    <!-- ===== EVIDENCE VIEWER / REPLAY ===== -->
+    <section class="panel" id="panel-viewer" role="region" aria-label="Evidence Viewer" data-testid="panel-viewer">
+      <div class="eyebrow">EVIDENCE VIEWER — REPLAY THE LATEST LOCAL SEALED PACKAGE</div>
+      <div class="head"><div><h1>Evidence Viewer</h1><div class="sub">Reads the latest local sealed package summary produced by FounderGate. Founder-readable only.</div></div></div>
+      <div class="card">
+        <div class="actions"><button id="viewer-load-btn" class="btn primary" data-testid="viewer-load-btn">🔎 Load latest sealed evidence</button></div>
+        <div id="viewer-body" data-testid="viewer-body" style="color:var(--muted);font-size:13.5px;margin-top:8px">Nothing loaded yet. Run a batch and export, then load it here.</div>
+        <p class="honesty">Shows only a founder-readable summary (source, objective, result, decision, freshness, limitations, what was not proven, whether the ZIP verified). No raw logs, no full fingerprints, no secrets, no customer/private/production data.</p></div>
+    </section>
+
     <!-- ===== RUN HISTORY ===== -->
     <section class="panel" id="panel-history" role="region" aria-label="Run history" data-testid="panel-history">
       <div class="eyebrow">RUN HISTORY — LOCAL ONLY (this session)</div>
-      <div class="head"><div><h1>Run History</h1><div class="sub">A local-only list of this session's runs. No real-world action, no ship decision.</div></div></div>
+      <div class="head"><div><h1>Run History</h1><div class="sub">A local-only list of runs. No real-world action, no ship decision. You can clear it any time.</div></div></div>
       <div class="card">
+        <div class="actions"><button id="hist-clear-btn" class="btn" data-testid="hist-clear-btn">Clear local history</button>
+          <span class="pill" id="hist-persist" data-testid="hist-persist">local/browser-only</span></div>
         <table class="tbl"><thead><tr><th>#</th><th>Source</th><th>Objective</th><th>Tests</th><th>Decision</th><th>Exported</th><th>Status</th></tr></thead>
-          <tbody id="hist-body" data-testid="hist-body"><tr><td colspan="7" style="color:var(--dim)">No runs yet this session.</td></tr></tbody></table>
-        <p class="honesty">History is kept in memory for this browser session only. Decisions are never SHIP; nothing here triggers a real-world action. Reloading clears it (nothing is faked or persisted as proof).</p></div>
+          <tbody id="hist-body" data-testid="hist-body"><tr><td colspan="7" style="color:var(--dim)">No runs yet.</td></tr></tbody></table>
+        <p class="honesty">History is stored locally in your browser only (opt-in, clearable). No customer data, no private repo content, no raw logs, no secrets, no full fingerprints. Decisions are never SHIP; nothing here triggers a real-world action.</p></div>
     </section>
 
     <!-- ===== DECISIONS (local ledger) ===== -->
@@ -167,6 +181,7 @@
           <button class="btn" id="led-repair" data-testid="led-repair">REPAIR</button>
           <button class="btn" id="led-stop" data-testid="led-stop">STOP</button>
         </div>
+        <div class="actions" style="margin-top:8px"><button class="btn" id="led-clear-btn" data-testid="led-clear-btn">Clear local ledger</button></div>
         <ul class="ledger" id="dec-ledger" data-testid="dec-ledger"><li style="color:var(--dim)">No local notes yet. These are internal notes only — never SHIP/MERGE/DEPLOY/BILL/SEND, and they trigger no real-world action.</li></ul>
         <p class="honesty" data-testid="dec-notice">Local internal notes only. No real-world action is authorized here. This panel cannot approve merge, ship, deploy, send, bill, or release. Allowed local statuses: CONTINUE_DEMO / HOLD / REPAIR / STOP.</p></div>
     </section>
@@ -195,8 +210,11 @@
           <label for="pf-input">Synthetic file name (nothing on your disk is read)</label>
           <input id="pf-input" data-testid="pf-input" value="demo/notes/todo.txt" autocomplete="off">
         </div>
-        <div class="actions"><button id="pf-check-btn" class="btn primary" data-testid="pf-check-btn">Check against sample allowlist</button></div>
+        <div class="actions"><button id="pf-check-btn" class="btn primary" data-testid="pf-check-btn">Check against sample allowlist</button>
+          <button id="pf-batch-btn" class="btn" data-testid="pf-batch-btn">Batch-classify synthetic manifest</button></div>
         <div class="clsrow"><span>Result</span><span id="pf-result" data-testid="pf-result" class="pill">—</span></div>
+        <table class="tbl" id="pf-batch-tbl" style="display:none"><thead><tr><th>Synthetic name</th><th>Classification</th></tr></thead>
+          <tbody id="pf-batch-body" data-testid="pf-batch-body"></tbody></table>
         <h2 class="cardh" style="margin-top:14px">Sample allowlist &amp; synthetic blocks (illustrative)</h2>
         <div class="filerow"><span>demo/** · notes/** · tests/**</span><span class="pill live">allowed (sample)</span></div>
         <div class="filerow"><span>secrets/** · *.env · customer/** · production/**</span><span class="pill warn">blocked for safety (synthetic)</span></div>

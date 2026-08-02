@@ -114,7 +114,7 @@ function evidenceSummary(run, intake){
 const esc = (s) => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function recordHistory(src, obj, tests, decision, status){
   history.push({ src, obj, tests, decision, exported:false, status });
-  renderHistory();
+  renderHistory(); saveHistory();
 }
 function renderHistory(){
   const body = $('hist-body'); if(!body) return;
@@ -129,7 +129,7 @@ function addLedger(status){
   if(ul.querySelector('[style]')) ul.innerHTML = '';
   const li = document.createElement('li');
   li.textContent = status + ' · local internal note · no real-world action (never SHIP/MERGE/DEPLOY/BILL/SEND)';
-  ul.appendChild(li);
+  ul.appendChild(li); saveLedger();
 }
 // ---- synthetic protected-files enforcement demo (no real filesystem access) ----
 const PF_BLOCK = [/(^|\/)secrets?(\/|$)/i, /\.env$/i, /(^|\/)customer(\/|$)/i, /(^|\/)prod(uction)?(\/|$)/i, /private/i, /credential|password|token|secret/i];
@@ -143,38 +143,85 @@ function pfCheck(){
   else { result='HOLD — not on the sample allowlist'; kind='hold'; }
   setPill($('pf-result'), result, kind);
 }
-// ---- batch runner: several governed safe checks over allowlisted demo targets ----
+// ---- batch runner: REAL per-fixture execution over a safe fixture set (adapters) ----
+const FIXTURE_SET = [
+  { key:'node-pass',    type:'Node',   adapter:'node-test' },
+  { key:'node-fail',    type:'Node',   adapter:'node-test' },
+  { key:'node-no-test', type:'Node',   adapter:'no-test' },
+  { key:'python-pass',  type:'Python', adapter:'python' },
+  { key:'static-web',   type:'Static', adapter:'static' },
+  { key:'broken',       type:'Node',   adapter:'node-test' },
+  { key:'customer_private_repo', type:'unsafe-name', adapter:'(refused)' },
+  { key:'unknown-xyz',  type:'unknown', adapter:'(refused)' },
+];
 async function doBatch(){
-  if(!healthy){ setBatchRow('<tr><td colspan="5">Local backend UNAVAILABLE (UNKNOWN) — nothing run, nothing faked.</td></tr>'); return; }
+  if(!healthy){ setBatchRow('<tr><td colspan="6">Local backend UNAVAILABLE (UNKNOWN) — nothing run, nothing faked.</td></tr>'); return; }
   $('batch-run-btn').disabled = true; $('batch-export-btn').disabled = true; batchReady = false;
-  const targets = [
-    { label:'self-owned demo target', target:'self-owned demo target' },
-    { label:'local fixture (self-owned)', target:'local fixture' },
-  ];
-  const rows = [];
   if(!TOKEN) await loadToken();
-  for(let i=0;i<targets.length;i++){
-    const t = targets[i];
-    try{
-      const res = await post('/api/start', { target:t.target, objective:'Batch: prove tests pass' });
-      if(res.status==='complete' && res.run){
-        lastRun = res.run; lastIntake = { srcCls:t.label, effObj:'Batch: prove tests pass', elig:'READY_LOCAL_DEMO' };
-        const tests = res.run.tests ? res.run.tests.result : '—';
-        rows.push({ target:t.label, tests, decision:(res.run.decision||'—')+' (never SHIP)', status:'COMPLETE' });
-        recordHistory(t.label, 'Batch: prove tests pass', tests, res.run.decision||'—', 'COMPLETE');
-        batchReady = !!res.run.commit;
-      } else {
-        rows.push({ target:t.label, tests:'UNKNOWN', decision:'UNKNOWN', status:(res.status||'ERROR') });
-        recordHistory(t.label, 'Batch: prove tests pass', 'UNKNOWN', 'UNKNOWN', res.status||'ERROR');
-      }
-    }catch{
-      rows.push({ target:t.label, tests:'UNKNOWN', decision:'UNKNOWN', status:'HOLD (backend)' });
-    }
+  try{ await post('/api/batch-reset', {}); }catch{}
+  const rows = [];
+  for(let i=0;i<FIXTURE_SET.length;i++){
+    const f = FIXTURE_SET[i];
+    let r;
+    try{ r = await post('/api/run-fixture', { key:f.key, objective:'Batch: prove tests pass' }); }
+    catch{ r = { status:'UNKNOWN', explanation:'backend unavailable', next_action:'ask ChatGPT' }; }
+    rows.push({ ...f, status:r.status, next:r.next_action||'—' });
+    recordHistory('fixture: '+f.key, 'Batch: prove tests pass', r.status, r.decision||'UNKNOWN', r.status);
+    setBatchRow(rows.map((x,j)=>`<tr><td>${j+1}</td><td>${esc(x.key)}</td><td>${esc(x.type)}</td><td>${esc(x.adapter)}</td><td>${esc(x.status)}</td><td>${esc(x.next)}</td></tr>`).join(''));
   }
-  setBatchRow(rows.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.target)}</td><td>${esc(r.tests)}</td><td>${esc(r.decision)}</td><td>${esc(r.status)}</td></tr>`).join(''));
+  const pass = rows.filter(x=>x.status==='PASS').length, refused = rows.filter(x=>/REFUSED/.test(x.status)).length;
+  setPill($('batch-aggregate'), `${pass}/${rows.length} PASS · ${refused} refused · never SHIP`, pass>0?'live':'hold');
+  batchReady = rows.length>0;
   $('batch-run-btn').disabled = false; $('batch-export-btn').disabled = !batchReady;
 }
 function setBatchRow(html){ $('batch-body').innerHTML = html; }
+async function doBatchExport(){
+  $('evi-state').textContent='Exporting aggregated batch…';
+  try{
+    const res = await post('/api/batch-export', {});
+    if(res.status==='complete' && res.unzip_ok){
+      $('chip-evidence').textContent='SEALED_EXPORT_LOCAL (batch)';
+      $('evi-state').textContent='SEALED_EXPORT_LOCAL — aggregated batch evidence sealed ('+res.entries+' runs). '+(res.aggregate||'');
+      $('evi-receipt').textContent='Aggregated batch package saved locally and integrity-verified. '+(res.aggregate||'')+' Send the ZIP to ChatGPT only if asked.';
+    } else if(res.status==='UNKNOWN'){ $('evi-state').textContent='UNKNOWN — run a batch first.'; }
+    else { $('evi-state').textContent='EXPORT_FAILED (HOLD) — '+(res.reason||'aggregate did not verify')+'. Nothing was faked.'; }
+  }catch{ $('evi-state').textContent='LOCAL BACKEND UNAVAILABLE (UNKNOWN).'; }
+}
+
+// ---- evidence viewer / replay ----
+async function doViewer(){
+  $('viewer-body').textContent='Loading…';
+  try{
+    const res = await fetch('/api/last-evidence'); const d = await res.json();
+    if(d.status==='complete' && d.evidence){
+      const e = d.evidence;
+      const rows = e.kind==='aggregate-batch'
+        ? [['Kind','aggregate batch'],['Aggregate', e.aggregate_conclusion],['Passed', (e.pass+'/'+e.total)],['Refused', String(e.refused)],['Decision ceiling','INTERNAL_DEMO_ONLY (never SHIP)'],['Limitations', e.limitations],['What was NOT proven', e.not_proven],['ZIP verified', e.zip_verified?'yes':'no']]
+        : [['Kind','single run'],['Decision ceiling','INTERNAL_DEMO_ONLY (never SHIP)'],['ZIP verified', e.zip_verified?'yes':'no']];
+      $('viewer-body').innerHTML = '<table class="tbl"><tbody>'+rows.map(([k,v])=>`<tr><td style="width:38%">${esc(k)}</td><td>${esc(String(v))}</td></tr>`).join('')+'</tbody></table>';
+    } else { $('viewer-body').textContent = 'UNKNOWN — no sealed evidence yet. Run a batch and export first.'; }
+  }catch{ $('viewer-body').textContent='LOCAL BACKEND UNAVAILABLE (UNKNOWN).'; }
+}
+
+// ---- persistent local history + ledger (browser localStorage, clearable) ----
+function saveHistory(){ try{ localStorage.setItem('fg_history', JSON.stringify(history.slice(-100))); }catch{} }
+function loadHistory(){ try{ const a=JSON.parse(localStorage.getItem('fg_history')||'[]'); if(Array.isArray(a)){ history.length=0; a.forEach(h=>history.push(h)); } }catch{} }
+function clearHistory(){ history.length=0; try{ localStorage.removeItem('fg_history'); }catch{}; renderHistory(); }
+function saveLedger(){ try{ const items=[...$('dec-ledger').querySelectorAll('li')].filter(li=>!li.getAttribute('style')).map(li=>li.textContent); localStorage.setItem('fg_ledger', JSON.stringify(items)); }catch{} }
+function loadLedger(){ try{ const a=JSON.parse(localStorage.getItem('fg_ledger')||'[]'); if(Array.isArray(a)&&a.length){ const ul=$('dec-ledger'); ul.innerHTML=''; a.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ul.appendChild(li); }); } }catch{} }
+function clearLedger(){ try{ localStorage.removeItem('fg_ledger'); }catch{}; $('dec-ledger').innerHTML='<li style="color:var(--dim)">No local notes yet. These are internal notes only — never SHIP/MERGE/DEPLOY/BILL/SEND, and they trigger no real-world action.</li>'; }
+
+// ---- protected-files: batch-classify a synthetic manifest (client-side only) ----
+const PF_MANIFEST = ['demo/notes/todo.txt','tests/unit/app.test.mjs','secrets/prod.env','customer/private_data.csv','production/config.yaml','src/index.mjs','random/unknown.bin'];
+function pfClassifyName(name){
+  if(PF_BLOCK.some(r=>r.test(name))) return ['BLOCKED for safety (synthetic)','refuse'];
+  if(PF_ALLOW.some(r=>r.test(name))) return ['ALLOWED (sample)','live'];
+  return ['HOLD — not on allowlist','hold'];
+}
+function pfBatch(){
+  const tbl=$('pf-batch-tbl'); tbl.style.display='';
+  $('pf-batch-body').innerHTML = PF_MANIFEST.map(n=>{ const [c]=pfClassifyName(n); return `<tr><td>${esc(n)}</td><td>${esc(c)}</td></tr>`; }).join('');
+}
 
 function applyHealth(ok){
   healthy = ok;
@@ -246,15 +293,21 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('run-btn').addEventListener('click', doRun);
   $('export-btn').addEventListener('click', doExport);
   $('export-btn2').addEventListener('click', doExport);
-  // batch runner
+  // batch runner (real per-fixture) + aggregated export
   $('batch-run-btn').addEventListener('click', doBatch);
-  $('batch-export-btn').addEventListener('click', doExport);
-  // local decision ledger (safe local statuses only)
+  $('batch-export-btn').addEventListener('click', doBatchExport);
+  // evidence viewer / replay
+  $('viewer-load-btn').addEventListener('click', doViewer);
+  // local decision ledger (safe local statuses only) + persistence
   [['led-continue','CONTINUE_DEMO'],['led-hold','HOLD'],['led-repair','REPAIR'],['led-stop','STOP']]
     .forEach(([id,st]) => $(id).addEventListener('click', ()=> addLedger(st)));
+  $('led-clear-btn').addEventListener('click', clearLedger);
+  // run history persistence
+  $('hist-clear-btn').addEventListener('click', clearHistory);
   // synthetic protected-files enforcement demo
   $('pf-check-btn').addEventListener('click', pfCheck);
+  $('pf-batch-btn').addEventListener('click', pfBatch);
   $('pf-input').addEventListener('input', pfCheck);
-  renderHistory(); pfCheck();
+  loadHistory(); loadLedger(); renderHistory(); pfCheck();
   setInterval(async ()=>{ if(!running) applyHealth(await health()); }, 4000);
 });

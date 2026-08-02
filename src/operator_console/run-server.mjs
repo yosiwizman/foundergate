@@ -6,6 +6,8 @@ import { existsSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
 import { handleStart, handleExport, REPO_ROOT } from './server-core.mjs';
 import { newToken, authorize } from './session-token.mjs';
+import { runFixture } from '../local_repo_runner/fixture-runner.mjs';
+import { batchAppend, batchExport, batchReset, batchSummary, getLastEvidence } from '../batch_evidence/batch-core.mjs';
 
 const PORT = Number(process.env.OP_PORT || 4880);
 const HOST = '127.0.0.1'; // loopback only
@@ -22,10 +24,27 @@ const server = createServer(async (req, res) => {
       res.writeHead(200,{'content-type':'application/json'}); return res.end(JSON.stringify({ token: TOKEN }));
     }
     if (req.method === 'GET' && req.url === '/api/health') { res.writeHead(200,{'content-type':'application/json'}); return res.end(JSON.stringify({status:'ok',loopback:true,auth:true})); }
-    if (req.method === 'POST' && (req.url === '/api/start' || req.url === '/api/export')) {
+    // read-only, loopback-only: latest sealed evidence summary (founder-safe; no raw logs / no full SHA)
+    if (req.method === 'GET' && req.url === '/api/last-evidence') {
+      if (!loopbackReq(req)) { res.writeHead(403); return res.end('forbidden'); }
+      res.writeHead(200,{'content-type':'application/json'}); return res.end(JSON.stringify(getLastEvidence()));
+    }
+    if (req.method === 'POST' && (req.url === '/api/start' || req.url === '/api/export'
+        || req.url === '/api/run-fixture' || req.url === '/api/batch-export'
+        || req.url === '/api/batch-reset')) {
       const auth = authorize(req.headers, TOKEN);
       if (!auth.ok) { res.writeHead(403,{'content-type':'application/json'}); return res.end(JSON.stringify({status:'UNAUTHORIZED', reason: auth.reason})); }
-      const out = req.url === '/api/start' ? handleStart(await readJsonBody(req)) : handleExport();
+      let out;
+      if (req.url === '/api/start') out = handleStart(await readJsonBody(req));
+      else if (req.url === '/api/export') out = handleExport();
+      else if (req.url === '/api/batch-export') out = batchExport();
+      else if (req.url === '/api/batch-reset') out = batchReset();
+      else { // /api/run-fixture: execute a vetted fixture and append its real result to the batch buffer
+        const body = await readJsonBody(req);
+        const result = runFixture(body && body.key);
+        batchAppend({ fixture: (body && body.key)||'', objective: (body && body.objective)||'', status: result.status, decision: result.decision, explanation: result.explanation });
+        out = { ...result, batch_size: batchSummary().total };
+      }
       res.writeHead(200,{'content-type':'application/json'}); return res.end(JSON.stringify(out));
     }
     // static
