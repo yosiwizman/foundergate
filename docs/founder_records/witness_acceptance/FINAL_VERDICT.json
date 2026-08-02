@@ -1,0 +1,27 @@
+{
+  "operation": "Founder UI Witness Session Acceptance Record",
+  "status_token": "FOUNDER_UI_WITNESS_ACCEPTED_WITH_LIMITS",
+  "accepted": "founder UI witness session result",
+  "evidence_head": "53ee95d9fafc",
+  "witness_zip_sha256": "79d69bf75e3ab95648d5d5e945b262526de04ae05b9c56865614225fb93f210b",
+  "witnessed": "UI SUCCESS 7/7; 3 clicks + reading; 0 terminal/log/SHA/relay",
+  "confers_execution_authority": false,
+  "not_authorized": [
+    "running a pilot",
+    "outreach",
+    "billing",
+    "data intake",
+    "deployment",
+    "public/customer beta",
+    "provider use at scale",
+    "PR #200 mutation",
+    "merge",
+    "security/compliance claims",
+    "SaaS launch",
+    "commercial-readiness claims"
+  ],
+  "protected_main": "65fd01669f80094e7ef9a0fa689c87347ae0c089",
+  "protected_main_unchanged": true,
+  "pr200": "OPEN/draft/untouched",
+  "acceptance_date": "2026-08-02"
+}
