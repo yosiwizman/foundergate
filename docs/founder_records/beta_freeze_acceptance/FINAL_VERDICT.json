@@ -1,0 +1,26 @@
+{
+  "operation": "Beta-Freeze Acceptance Record",
+  "status_token": "BETA_FREEZE_ACCEPTED_WITH_LIMITS",
+  "accepted_artifact": "foundergate-beta-freeze-1",
+  "freeze_root_hash": "8e7c7db823b514970fe8bcdb3fbe1b2a38c972cee2d739419a76f9ec820d1fd1",
+  "freeze_verify": "OK",
+  "self_test": "30/30",
+  "confers_execution_authority": false,
+  "not_authorized": [
+    "merge",
+    "PR-ready marking",
+    "PR #200 mutation",
+    "provider use",
+    "spend",
+    "deployment",
+    "customer/private/production data",
+    "public/customer beta launch",
+    "security/compliance claims",
+    "SaaS launch",
+    "final commercial readiness"
+  ],
+  "protected_main": "65fd01669f80094e7ef9a0fa689c87347ae0c089",
+  "protected_main_unchanged": true,
+  "pr200": "OPEN/draft/untouched",
+  "acceptance_date": "2026-08-02"
+}
