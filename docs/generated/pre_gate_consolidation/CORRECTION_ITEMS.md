@@ -1,2 +1,0 @@
-# Correction Items
-- 01 (hygiene) — transient dashboard run outputs (last-run.json, sealed_export.zip) were committed as out-of-path artifacts. Untracked them + added demo/founder_operator_dashboard/runs/.gitignore so future runs never re-commit them. Out-of-path now 0. (The "external-action=1" flag was a false positive: a Decision Room card lists "Any live provider/deploy/billing" as a RISK, i.e. what NOT to do — descriptive prose, not an action.)
