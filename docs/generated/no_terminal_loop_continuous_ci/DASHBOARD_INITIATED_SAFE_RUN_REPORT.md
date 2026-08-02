@@ -1,0 +1,2 @@
+# Dashboard-Initiated Safe Run Report
+In a real browser (Lane E), clicking Start on the canonical dashboard issued a live POST /api/start and rendered the completed real local run (tests 30/30, decision INTERNAL_DEMO_ONLY). This moves the founder from "paste into Claude" toward "click Start" for safe local synthetic runs — no terminal used. Only allowlisted synthetic targets run; no provider/deploy/customer action is reachable from the dashboard.

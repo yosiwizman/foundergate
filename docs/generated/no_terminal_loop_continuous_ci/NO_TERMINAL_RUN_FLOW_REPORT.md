@@ -1,0 +1,2 @@
+# No-Terminal Run Flow Report
+Proven end-to-end in a browser against the live server: open dashboard -> (server off? honest UNKNOWN) -> enter objective -> Start -> live status idle->running->COMPLETE with real 30/30 tests and honest decision -> Export -> SEALED_EXPORT_LOCAL naming a real ZIP. The founder needs no terminal, no SHAs, no logs. Remaining for full Gate 5: broader reviewer-mode surfacing + one-click convenience polish.
