@@ -2,6 +2,21 @@
 <div class="banner" role="region" aria-label="Environment notice" data-testid="banner">LOCAL DASHBOARD · Start/Export via LOCAL LOOPBACK RUN-SERVER · REAL runner + REAL sealed export · NO PROVIDER · NOT PRODUCTION</div>
 <header><h1>FounderGate — Founder Operator Dashboard</h1><nav aria-label="Primary"><a href="index.html">Run</a><a href="#evidence">Evidence</a><a href="#decision">Decision</a><a href="#export">Export</a><a href="../reviewer_console/index.html" data-testid="reviewer-link">Reviewer view (technical)</a></nav></header>
 <main data-testid="main">
+<section class="foundermode" aria-labelledby="fm-h" data-testid="founder-mode">
+<h2 id="fm-h">FounderGate — Founder Mode</h2>
+<p class="fm-note">This is a <strong>local demo on your own Mac</strong>. It is <strong>not production, not secure, not a customer product, and it never says &ldquo;ship.&rdquo;</strong></p>
+<div class="fm-actions">
+  <button id="founder-run-btn" class="fbtn primary" data-testid="founder-run-btn">&#9654; Run safe demo check</button>
+  <button id="founder-export-btn" class="fbtn secondary" data-testid="founder-export-btn" disabled>&#11015; Export evidence package</button>
+</div>
+<div class="fm-results">
+  <div class="fm-block"><h3>What happened</h3><p id="fm-what" data-testid="fm-what">Nothing yet &mdash; click &ldquo;Run safe demo check&rdquo;.</p></div>
+  <div class="fm-block"><h3>Can I trust this?</h3><p id="fm-trust" data-testid="fm-trust">&mdash;</p></div>
+  <div class="fm-block"><h3>What should I do next?</h3><p id="fm-next" data-testid="fm-next">Click &ldquo;Run safe demo check&rdquo; to begin.</p></div>
+</div>
+<p class="fm-unknown"><strong>What &ldquo;UNKNOWN&rdquo; means:</strong> the system does not have enough evidence (for example, the local helper is not running). UNKNOWN is safer than guessing &mdash; it never fakes a green result.</p>
+</section>
+<details class="tech" data-testid="tech-details"><summary>Technical / reviewer view (optional &mdash; you can ignore this)</summary>
 <h2>Run a governed check — without a terminal</h2>
 <p><strong>Start</strong> runs a real local check on a self-owned demo project through the local run-server (it computes a real code version and runs the real tests). <strong>Export</strong> creates a real sealed evidence file you can keep. The decision is always <strong>INTERNAL_DEMO_ONLY — it never says “ship.”</strong> If the local run-server is not running, Start honestly says so (UNKNOWN) instead of guessing. This is a local, internal demo — <strong>not production, not secure, not a customer product.</strong></p>
 <div class="card"><h3>1–3. Target · objective · start</h3>
@@ -26,6 +41,7 @@
   <div class="step"><span>Export</span><span class="val" id="export-status" data-testid="export-status">not exported</span></div>
   <div class="step"><span>Real sealed-package export</span><span class="badge wired">SEALED_EXPORT_LOCAL (real ZIP via CLI: src/evidence_viewer/export-package.mjs)</span></div></div>
 <p><strong>No raw logs. No terminal commands.</strong> Start runs a real local check via the run-server; Export creates a real sealed evidence file. If the server is off, the page says UNKNOWN — it never fakes a result.</p>
+</details>
 </main>
 <footer>Local, internal demo. Start/Export run a real local check + real sealed export via the loopback run-server (real code version + real tests, decision never “ship”). Not production, not secure, not compliant, not SaaS-ready. No deployment, billing, or external provider.</footer>
 <script type="module" src="assets/app.mjs"></script>

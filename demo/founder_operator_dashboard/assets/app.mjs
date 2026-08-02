@@ -53,5 +53,20 @@ window.addEventListener('DOMContentLoaded', async () => {
       else $('export-status').textContent = 'EXPORT_FAILED — ' + (res.reason || 'sealing did not verify');
     } catch { $('export-status').textContent = 'LOCAL_SERVER_UNAVAILABLE (UNKNOWN).'; }
   });
+  // ---- Founder Mode (plain-English proxy over the SAME real controls; no fake state) ----
+  const fmWhat=$('fm-what'), fmTrust=$('fm-trust'), fmNext=$('fm-next'), fmRun=$('founder-run-btn'), fmExp=$('founder-export-btn');
+  function setFM(w,t,n){ if(fmWhat)fmWhat.textContent=w; if(fmTrust)fmTrust.textContent=t; if(fmNext)fmNext.textContent=n; }
+  function refreshFounderMode(){
+    const ss=($('start-status').textContent||''), dec=($('decision-val').textContent||''), tests=($('tests-val').textContent||''), exp=($('export-status').textContent||'');
+    if(/SEALED_EXPORT_LOCAL/.test(exp)){ setFM('The local check finished and a sealed evidence package was saved. Tests: '+(tests||'—')+'.','Decision: '+dec+'. Internal demo result only — never “ship”, not production, not secure.','Done. Only send the evidence file to ChatGPT if you are asked to.'); if(fmExp) fmExp.disabled=$('export-btn').disabled; return; }
+    if(/COMPLETE/.test(ss)){ setFM('The local check finished. Tests: '+(tests||'—')+'.','Decision: '+dec+'. This is an internal demo result only — it never means “ship”, and it is not production or secure.','Click “Export evidence package” to save a sealed record. Do not use real/customer data.'); if(fmExp) fmExp.disabled=$('export-btn').disabled; return; }
+    if(/RUNNING/.test(ss)){ setFM('Running a safe local check…','Please wait — it is checking honestly.','Wait until it says COMPLETE.'); return; }
+    if(/INSUFFICIENT/.test(ss)){ setFM('Not enough information (no objective).','UNKNOWN — safer than guessing.','A default objective is already filled in; just click “Run safe demo check” again.'); if(fmExp) fmExp.disabled=true; return; }
+    if(/UNAVAILABLE|UNKNOWN|ERROR|REFUSED|UNAUTHORIZED/.test(ss)){ setFM('The local helper is not available right now (UNKNOWN).','UNKNOWN — the page will not fake a green result. That is the safe behavior.','Close this, re-open using the Desktop launcher, then click “Run safe demo check”.'); if(fmExp) fmExp.disabled=true; return; }
+  }
+  if(fmRun) fmRun.addEventListener('click', ()=>{ $('start-btn').click(); });
+  if(fmExp) fmExp.addEventListener('click', ()=>{ $('export-btn').click(); });
+  try{ const mo=new MutationObserver(refreshFounderMode); ['start-status','export-status','decision-val','tests-val'].forEach(id=>{ const el=$(id); if(el) mo.observe(el,{childList:true,subtree:true,characterData:true}); }); }catch{}
+  refreshFounderMode();
   $('stop-btn').addEventListener('click', () => { $('start-status').textContent = 'Stopped/paused safely.'; });
 });

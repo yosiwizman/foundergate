@@ -1,0 +1,4 @@
+# Prohibited-Action Attestation (Founder Hands-Light UI Usability)
+Performed: additive usability improvements to the canonical dashboard (Founder Mode panel, big buttons, plain-English blocks, collapsed technical view, default objective), updated the Desktop Start Here package, opened the dashboard, ran a real safe demo + export, captured screenshots; committed to a non-main branch.
+NOT performed (all 0): new dashboard/parallel UI; evaluator workflow/feedback; outreach; billing/payment/payment-links; customer/private/production data; deployment; provider call ($0 spend); PR #200 mutation/ready/close/merge; main mutation; mutation of public demo/reviewer/frozen artifacts; production/security/compliance/SaaS/commercial-readiness/market/paid claims.
+out-of-path added/modified: 0 (only demo/founder_operator_dashboard/**, tools, docs/generated/**, local Desktop, run root).

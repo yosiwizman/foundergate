@@ -12,3 +12,20 @@ h2{font-size:22px;margin-top:0} h3{font-size:16px;margin-bottom:6px}
 .val{font-family:ui-monospace,Menlo,monospace;font-size:13px}
 footer{max-width:960px;margin:0 auto;padding:18px 22px;color:#5a6b7b;font-size:13px;border-top:1px solid #dde3ea}
 @media(prefers-color-scheme:dark){body{background:#0e141b;color:#e7edf3}header{background:#0a1626}.card,.step{background:#111a24;border-color:#26333f}nav a{color:#9cc3ff}footer{color:#94a3b2;border-color:#22303e}.val{color:#cfe3ff}}
+/* Founder Mode (hands-light) additions */
+.foundermode{background:#fff;border:2px solid #0a4d2e;border-radius:12px;padding:20px;margin:18px 0}
+.foundermode h2{margin-top:0}
+.fm-note{font-size:15px}
+.fm-actions{display:flex;flex-wrap:wrap;gap:14px;margin:16px 0}
+.fbtn{font-size:20px;font-weight:800;padding:18px 26px;border-radius:12px;border:0;cursor:pointer;min-width:280px;min-height:64px}
+.fbtn.primary{background:#0a5a30;color:#fff}
+.fbtn.secondary{background:#1f4e8a;color:#fff}
+.fbtn:disabled{opacity:.45;cursor:not-allowed}
+.fm-results{display:grid;grid-template-columns:1fr;gap:12px;margin-top:8px}
+.fm-block{border:1px solid #d3dce6;border-radius:8px;padding:12px;background:#fbfdff}
+.fm-block h3{margin:0 0 6px;font-size:15px}
+.fm-block p{margin:0;font-size:16px}
+.fm-unknown{font-size:14px;color:#5a6b7b;margin-top:12px}
+details.tech{margin-top:18px;border:1px solid #d3dce6;border-radius:8px;padding:8px 12px;background:#f0f3f7}
+details.tech summary{cursor:pointer;font-weight:700;font-size:14px;color:#3a4a5a;padding:6px}
+@media(prefers-color-scheme:dark){.foundermode{background:#0f1a12;border-color:#1f7a48}.fm-block{background:#111a24;border-color:#26333f}.fm-unknown{color:#94a3b2}details.tech{background:#0f1620;border-color:#26333f}details.tech summary{color:#9cc3ff}}
