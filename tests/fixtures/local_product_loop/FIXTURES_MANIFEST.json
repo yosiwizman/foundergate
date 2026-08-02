@@ -1,0 +1,12 @@
+{
+  "note": "Synthetic, self-owned local fixtures for the FounderGate local product loop. No real private/customer/production data. Unsafe entries are NAME-ONLY and must be refused/held.",
+  "fixtures": [
+    { "name": "passing_node", "kind": "node", "safe": true, "expected": "PASS" },
+    { "name": "failing_node", "kind": "node", "safe": true, "expected": "FAIL (honest)" },
+    { "name": "no_test_node", "kind": "node", "safe": true, "expected": "NO_TESTS (HOLD/UNKNOWN)" },
+    { "name": "python_style", "kind": "python", "safe": true, "expected": "PASS (if runnable without deps)" },
+    { "name": "customer_private_data_repo", "kind": "unsafe-name", "safe": false, "expected": "REFUSED" },
+    { "name": "production_secrets_repo", "kind": "unsafe-name", "safe": false, "expected": "REFUSED" },
+    { "name": "prod_billing_service", "kind": "unsafe-name", "safe": false, "expected": "REFUSED" }
+  ]
+}

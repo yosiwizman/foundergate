@@ -5,6 +5,7 @@
 // every run resets to UNKNOWN first (no stale green). Unsafe source/objective is HELD/REFUSED, never run.
 const $ = (id) => document.getElementById(id);
 let TOKEN = null, lastRun = null, lastIntake = null, exported = false, healthy = false, running = false;
+const history = []; let batchReady = false;
 const RUN_TIMEOUT_MS = () => (window.__FG_RUN_TIMEOUT_MS || 120000);
 const DEFAULT_OBJ = 'Add input validation and prove tests pass';
 
@@ -109,6 +110,72 @@ function evidenceSummary(run, intake){
   ].join('  ·  ');
 }
 
+// ---- local run history (in-session only) ----
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function recordHistory(src, obj, tests, decision, status){
+  history.push({ src, obj, tests, decision, exported:false, status });
+  renderHistory();
+}
+function renderHistory(){
+  const body = $('hist-body'); if(!body) return;
+  if(!history.length){ body.innerHTML = '<tr><td colspan="7" style="color:var(--dim)">No runs yet this session.</td></tr>'; return; }
+  body.innerHTML = history.map((h,i)=>`<tr><td>${i+1}</td><td>${esc(h.src)}</td><td>${esc(h.obj)}</td><td>${esc(h.tests)}</td><td>${esc(h.decision)}</td><td>${h.exported?'yes':'no'}</td><td>${esc(h.status)}</td></tr>`).join('');
+}
+// ---- local decision ledger (internal notes only; never SHIP/MERGE/DEPLOY/BILL/SEND) ----
+const LEDGER_OK = new Set(['CONTINUE_DEMO','HOLD','REPAIR','STOP']);
+function addLedger(status){
+  if(!LEDGER_OK.has(status)) return; // hard guard: only safe local statuses
+  const ul = $('dec-ledger');
+  if(ul.querySelector('[style]')) ul.innerHTML = '';
+  const li = document.createElement('li');
+  li.textContent = status + ' · local internal note · no real-world action (never SHIP/MERGE/DEPLOY/BILL/SEND)';
+  ul.appendChild(li);
+}
+// ---- synthetic protected-files enforcement demo (no real filesystem access) ----
+const PF_BLOCK = [/(^|\/)secrets?(\/|$)/i, /\.env$/i, /(^|\/)customer(\/|$)/i, /(^|\/)prod(uction)?(\/|$)/i, /private/i, /credential|password|token|secret/i];
+const PF_ALLOW = [/^demo\//i, /^notes\//i, /^tests?\//i, /task-ledger/i];
+function pfCheck(){
+  const name = ($('pf-input').value||'').trim();
+  let result, kind;
+  if(!name){ result='UNKNOWN — type a synthetic name'; kind='hold'; }
+  else if(PF_BLOCK.some(r=>r.test(name))){ result='BLOCKED for safety (synthetic)'; kind='refuse'; }
+  else if(PF_ALLOW.some(r=>r.test(name))){ result='ALLOWED (sample allowlist)'; kind='live'; }
+  else { result='HOLD — not on the sample allowlist'; kind='hold'; }
+  setPill($('pf-result'), result, kind);
+}
+// ---- batch runner: several governed safe checks over allowlisted demo targets ----
+async function doBatch(){
+  if(!healthy){ setBatchRow('<tr><td colspan="5">Local backend UNAVAILABLE (UNKNOWN) — nothing run, nothing faked.</td></tr>'); return; }
+  $('batch-run-btn').disabled = true; $('batch-export-btn').disabled = true; batchReady = false;
+  const targets = [
+    { label:'self-owned demo target', target:'self-owned demo target' },
+    { label:'local fixture (self-owned)', target:'local fixture' },
+  ];
+  const rows = [];
+  if(!TOKEN) await loadToken();
+  for(let i=0;i<targets.length;i++){
+    const t = targets[i];
+    try{
+      const res = await post('/api/start', { target:t.target, objective:'Batch: prove tests pass' });
+      if(res.status==='complete' && res.run){
+        lastRun = res.run; lastIntake = { srcCls:t.label, effObj:'Batch: prove tests pass', elig:'READY_LOCAL_DEMO' };
+        const tests = res.run.tests ? res.run.tests.result : '—';
+        rows.push({ target:t.label, tests, decision:(res.run.decision||'—')+' (never SHIP)', status:'COMPLETE' });
+        recordHistory(t.label, 'Batch: prove tests pass', tests, res.run.decision||'—', 'COMPLETE');
+        batchReady = !!res.run.commit;
+      } else {
+        rows.push({ target:t.label, tests:'UNKNOWN', decision:'UNKNOWN', status:(res.status||'ERROR') });
+        recordHistory(t.label, 'Batch: prove tests pass', 'UNKNOWN', 'UNKNOWN', res.status||'ERROR');
+      }
+    }catch{
+      rows.push({ target:t.label, tests:'UNKNOWN', decision:'UNKNOWN', status:'HOLD (backend)' });
+    }
+  }
+  setBatchRow(rows.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.target)}</td><td>${esc(r.tests)}</td><td>${esc(r.decision)}</td><td>${esc(r.status)}</td></tr>`).join(''));
+  $('batch-run-btn').disabled = false; $('batch-export-btn').disabled = !batchReady;
+}
+function setBatchRow(html){ $('batch-body').innerHTML = html; }
+
 function applyHealth(ok){
   healthy = ok;
   $('server-state').textContent = ok ? 'reachable (127.0.0.1)' : 'not reachable — UNKNOWN';
@@ -132,6 +199,7 @@ async function doExport(){
       $('evi-state').textContent='SEALED_EXPORT_LOCAL — a sealed evidence package was saved locally.';
       $('evi-receipt').textContent = evidenceSummary(lastRun, lastIntake);
       $('next').textContent='Done — a sealed evidence package was saved. Only share it if you choose to (separate decision).';
+      if(history.length){ history[history.length-1].exported = true; renderHistory(); }
     }
     else if(res.status==='UNKNOWN'){ $('t-export').textContent='export: UNKNOWN — no run to export yet.'; $('evi-state').textContent='UNKNOWN — run first.'; }
     else { $('t-export').textContent='export: EXPORT_FAILED — '+(res.reason||'sealing did not verify'); $('evi-state').textContent='EXPORT_FAILED (HOLD) — sealing did not verify. Nothing was faked. Stop and ask ChatGPT.'; }
@@ -155,15 +223,15 @@ async function doRun(){
   try{
     const res = await post('/api/start', { target: intake.target, objective: intake.effObj }, ctrl.signal);
     clearTimeout(timer);
-    if(res.status==='complete' && res.run){ lastRun=res.run; renderRun(res.run, intake); setAlive(true,'Complete — real local run (real commit + real tests).'); }
-    else if(res.status==='INSUFFICIENT'){ setAlive(false,'HOLD — INSUFFICIENT (nothing guessed).'); $('what').textContent='Not enough information. UNKNOWN is safer than guessing. Stop and ask ChatGPT.'; }
-    else if(res.status==='REFUSED'){ setAlive(false,'HOLD — REFUSED (target not on the local allowlist).'); $('what').textContent='The run was refused for safety. Nothing was faked. Stop and ask ChatGPT.'; }
-    else if(res.status==='UNAUTHORIZED'){ setAlive(false,'HOLD — UNAUTHORIZED (session/Origin check failed).'); $('what').textContent='Session check failed. Reload and try once, or ask ChatGPT.'; }
-    else { setAlive(false,'ERROR — '+(res.reason||'run did not complete')+'.'); $('what').textContent='The run did not complete. Nothing was faked; export stays disabled. Stop and ask ChatGPT.'; }
+    if(res.status==='complete' && res.run){ lastRun=res.run; renderRun(res.run, intake); setAlive(true,'Complete — real local run (real commit + real tests).'); recordHistory(intake.srcCls, intake.effObj, res.run.tests?res.run.tests.result:'—', res.run.decision||'—', 'COMPLETE'); }
+    else if(res.status==='INSUFFICIENT'){ setAlive(false,'HOLD — INSUFFICIENT (nothing guessed).'); $('what').textContent='Not enough information. UNKNOWN is safer than guessing. Stop and ask ChatGPT.'; recordHistory(intake.srcCls, intake.effObj, 'UNKNOWN', 'UNKNOWN', 'HOLD (INSUFFICIENT)'); }
+    else if(res.status==='REFUSED'){ setAlive(false,'HOLD — REFUSED (target not on the local allowlist).'); $('what').textContent='The run was refused for safety. Nothing was faked. Stop and ask ChatGPT.'; recordHistory(intake.srcCls, intake.effObj, 'UNKNOWN', 'UNKNOWN', 'HOLD (REFUSED)'); }
+    else if(res.status==='UNAUTHORIZED'){ setAlive(false,'HOLD — UNAUTHORIZED (session/Origin check failed).'); $('what').textContent='Session check failed. Reload and try once, or ask ChatGPT.'; recordHistory(intake.srcCls, intake.effObj, 'UNKNOWN', 'UNKNOWN', 'HOLD (UNAUTHORIZED)'); }
+    else { setAlive(false,'ERROR — '+(res.reason||'run did not complete')+'.'); $('what').textContent='The run did not complete. Nothing was faked; export stays disabled. Stop and ask ChatGPT.'; recordHistory(intake.srcCls, intake.effObj, 'UNKNOWN', 'UNKNOWN', 'ERROR'); }
   }catch(e){
     clearTimeout(timer);
-    if(e && e.name==='AbortError'){ setAlive(false,'HOLD — run took too long and was stopped safely (timeout).'); $('what').textContent='The run took too long and was stopped. Nothing was faked. Stop and ask ChatGPT.'; }
-    else { setAlive(false,'LOCAL BACKEND UNAVAILABLE (UNKNOWN) — it will not fake a green result.'); $('what').textContent='Local backend unavailable. Nothing was run or faked.'; }
+    if(e && e.name==='AbortError'){ setAlive(false,'HOLD — run took too long and was stopped safely (timeout).'); $('what').textContent='The run took too long and was stopped. Nothing was faked. Stop and ask ChatGPT.'; recordHistory(intake.srcCls, intake.effObj, 'UNKNOWN', 'UNKNOWN', 'HOLD (timeout)'); }
+    else { setAlive(false,'LOCAL BACKEND UNAVAILABLE (UNKNOWN) — it will not fake a green result.'); $('what').textContent='Local backend unavailable. Nothing was run or faked.'; recordHistory(intake.srcCls, intake.effObj, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN (backend)'); }
   }finally{
     running = false; classify();
   }
@@ -178,5 +246,15 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('run-btn').addEventListener('click', doRun);
   $('export-btn').addEventListener('click', doExport);
   $('export-btn2').addEventListener('click', doExport);
+  // batch runner
+  $('batch-run-btn').addEventListener('click', doBatch);
+  $('batch-export-btn').addEventListener('click', doExport);
+  // local decision ledger (safe local statuses only)
+  [['led-continue','CONTINUE_DEMO'],['led-hold','HOLD'],['led-repair','REPAIR'],['led-stop','STOP']]
+    .forEach(([id,st]) => $(id).addEventListener('click', ()=> addLedger(st)));
+  // synthetic protected-files enforcement demo
+  $('pf-check-btn').addEventListener('click', pfCheck);
+  $('pf-input').addEventListener('input', pfCheck);
+  renderHistory(); pfCheck();
   setInterval(async ()=>{ if(!running) applyHealth(await health()); }, 4000);
 });

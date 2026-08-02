@@ -159,7 +159,7 @@ const waitTests = (p) => p.waitForFunction(() => /\d+\/\d+/.test(document.queryS
   ok(await p.isDisabled('[data-testid="dec-continue"]') && await p.isDisabled('[data-testid="dec-stop"]'), 'misuse: Decisions buttons remain no-op (disabled)');
   await shot(p, 'w3_08_decisions_view_only.png');
   await p.click('[data-testid="nav-files"]');
-  ok(/DISPLAY_ONLY/.test(await p.textContent('[data-testid="panel-files"]')), 'misuse: Files remains DISPLAY_ONLY');
+  ok(/DISPLAY_ONLY|LOCAL_SYNTHETIC_ENFORCEMENT_DEMO/.test(await p.textContent('[data-testid="panel-files"]')), 'misuse: Files remains DISPLAY_ONLY');
   await shot(p, 'w3_09_files_display_only.png');
   await p.click('[data-testid="nav-guide"]');
   ok(/What is live/.test(await p.textContent('[data-testid="panel-guide"]')), 'misuse: Ask Guide stays static');

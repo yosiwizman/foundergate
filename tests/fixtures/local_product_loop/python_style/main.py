@@ -1,0 +1,4 @@
+# synthetic self-owned fixture (python-style), no external deps
+def add(a, b): return a + b
+assert add(2, 3) == 5
+print("1/1 passing")

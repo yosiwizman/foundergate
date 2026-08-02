@@ -126,7 +126,7 @@ const T = (p, sel) => p.textContent(sel);
   await p.click('[data-testid="nav-decisions"]');
   ok(await p.isDisabled('[data-testid="dec-continue"]') && await p.isDisabled('[data-testid="dec-stop"]'), 'panels: Decisions view-only (disabled)');
   await p.click('[data-testid="nav-files"]');
-  ok(/DISPLAY_ONLY/.test(await T(p,'[data-testid="panel-files"]')), 'panels: Files DISPLAY_ONLY');
+  ok(/DISPLAY_ONLY|LOCAL_SYNTHETIC_ENFORCEMENT_DEMO/.test(await T(p,'[data-testid="panel-files"]')), 'panels: Files DISPLAY_ONLY');
   await p.click('[data-testid="nav-guide"]');
   ok(/What is live/.test(await T(p,'[data-testid="panel-guide"]')), 'panels: Ask Guide static');
   const founderText = await p.evaluate(() => ['truth','preview','evidence','decisions','guide','files'].map(n => document.getElementById('panel-'+n).innerText).join('\n'));

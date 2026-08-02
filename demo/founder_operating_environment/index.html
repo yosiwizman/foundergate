@@ -28,6 +28,11 @@
 .intake select,.intake input{width:100%;box-sizing:border-box;background:#0d1117;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font:inherit}
 .intake select:focus,.intake input:focus{outline:2px solid var(--blue);outline-offset:1px}
 .clsrow{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding:9px 0;font-size:13px;color:var(--muted)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;color:var(--muted);margin-top:8px}
+.tbl th{text-align:left;color:var(--dim);font-size:11px;letter-spacing:.04em;border-bottom:1px solid var(--line);padding:8px 6px}
+.tbl td{border-bottom:1px solid var(--line);padding:8px 6px}
+.ledger{list-style:none;margin:10px 0 0;padding:0}
+.ledger li{border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:6px 0;font-size:13px;color:var(--muted)}
 .panel{display:none}
 .panel.on{display:block}
 .nav{width:100%;text-align:left;background:transparent;border:0;color:var(--text);font:inherit;cursor:pointer;border-radius:8px}
@@ -45,10 +50,12 @@
     <nav aria-label="Panels">
       <button class="nav on" data-panel="truth"    data-testid="nav-truth"    aria-current="page">🏠 Truth Dashboard</button>
       <button class="nav"    data-panel="preview"  data-testid="nav-preview">👁 Preview <span class="tag">local demo</span></button>
+      <button class="nav"    data-panel="batch"    data-testid="nav-batch">🧪 Batch <span class="tag">local demo</span></button>
       <button class="nav"    data-panel="evidence" data-testid="nav-evidence">📦 Evidence</button>
-      <button class="nav"    data-panel="decisions"data-testid="nav-decisions">🚩 Decisions <span class="tag">view only</span></button>
+      <button class="nav"    data-panel="history"  data-testid="nav-history">📊 Run History <span class="tag">local</span></button>
+      <button class="nav"    data-panel="decisions"data-testid="nav-decisions">🚩 Decisions <span class="tag">local ledger</span></button>
       <button class="nav"    data-panel="guide"    data-testid="nav-guide">💬 Ask Guide <span class="tag">static</span></button>
-      <button class="nav"    data-panel="files"    data-testid="nav-files">📁 Files <span class="tag">display-only</span></button>
+      <button class="nav"    data-panel="files"    data-testid="nav-files">📁 Files <span class="tag">synthetic demo</span></button>
       <button class="nav"    data-panel="tech"     data-testid="nav-tech">🔧 Technical view</button>
     </nav>
     <div class="robot"><div>Live-local backend</div><div id="server-state" data-testid="server-state" style="color:var(--muted);font-size:12px;margin-top:6px">checking…</div></div>
@@ -110,6 +117,18 @@
       <p class="honesty">This Preview shares the Truth Dashboard's real local run state. It does not preview a customer application, does not send anything, and uses no external network.</p>
     </section>
 
+    <!-- ===== BATCH RUNNER ===== -->
+    <section class="panel" id="panel-batch" role="region" aria-label="Batch runner" data-testid="panel-batch">
+      <div class="eyebrow">BATCH — LOCAL SAFE CHECKS ONLY / NO PROVIDER / NO NETWORK / NO DEPLOY</div>
+      <div class="head"><div><h1>Batch runner</h1><div class="sub">Runs several governed safe local checks in a row and summarizes them. Self-owned demo targets only.</div></div></div>
+      <div class="card">
+        <div class="actions"><button id="batch-run-btn" class="btn primary big" data-testid="batch-run-btn">▶ Run safe batch (local demo targets)</button>
+        <button id="batch-export-btn" class="btn big" data-testid="batch-export-btn" disabled>⬇ Export batch evidence</button></div>
+        <table class="tbl"><thead><tr><th>#</th><th>Target</th><th>Tests</th><th>Decision</th><th>Status</th></tr></thead>
+          <tbody id="batch-body" data-testid="batch-body"><tr><td colspan="5" style="color:var(--dim)">No batch run yet.</td></tr></tbody></table>
+        <p class="honesty" data-testid="batch-note">Each row is a real local governed check on a self-owned demo target. No provider, no network, no customer data, no deploy/bill/send. Batch export seals the latest run's real package; the table is the founder-facing batch summary.</p></div>
+    </section>
+
     <!-- ===== EVIDENCE ===== -->
     <section class="panel" id="panel-evidence" role="region" aria-label="Evidence" data-testid="panel-evidence">
       <div class="eyebrow">EVIDENCE — LOCAL SEALED PACKAGE</div>
@@ -120,20 +139,36 @@
         <p class="honesty">Send the ZIP to ChatGPT only if asked. No raw ZIP internals or full technical fingerprints are shown here — that is by design.</p></div>
     </section>
 
-    <!-- ===== DECISIONS ===== -->
+    <!-- ===== RUN HISTORY ===== -->
+    <section class="panel" id="panel-history" role="region" aria-label="Run history" data-testid="panel-history">
+      <div class="eyebrow">RUN HISTORY — LOCAL ONLY (this session)</div>
+      <div class="head"><div><h1>Run History</h1><div class="sub">A local-only list of this session's runs. No real-world action, no ship decision.</div></div></div>
+      <div class="card">
+        <table class="tbl"><thead><tr><th>#</th><th>Source</th><th>Objective</th><th>Tests</th><th>Decision</th><th>Exported</th><th>Status</th></tr></thead>
+          <tbody id="hist-body" data-testid="hist-body"><tr><td colspan="7" style="color:var(--dim)">No runs yet this session.</td></tr></tbody></table>
+        <p class="honesty">History is kept in memory for this browser session only. Decisions are never SHIP; nothing here triggers a real-world action. Reloading clears it (nothing is faked or persisted as proof).</p></div>
+    </section>
+
+    <!-- ===== DECISIONS (local ledger) ===== -->
     <section class="panel" id="panel-decisions" role="region" aria-label="Decisions" data-testid="panel-decisions">
-      <div class="eyebrow">DECISIONS — VIEW ONLY</div>
-      <div class="head"><div><h1>Decisions</h1><div class="sub">View-only in this local prototype. No real-world action is authorized here.</div></div></div>
+      <div class="eyebrow">DECISIONS — LOCAL INTERNAL LEDGER (no real-world action)</div>
+      <div class="head"><div><h1>Decisions</h1><div class="sub">A local internal status note only. No real-world action is authorized here.</div></div></div>
       <div class="card"><h2 class="cardh">Current decision</h2><div id="dec-current" data-testid="dec-current">UNKNOWN — run first. (After a run: INTERNAL_DEMO_ONLY — never SHIP.)</div>
-        <h2 class="cardh" style="margin-top:14px">Possible next internal statuses</h2>
-        <div><span class="pill">CONTINUE DEMO</span><span class="pill">HOLD</span><span class="pill">REPAIR</span><span class="pill">STOP</span></div>
-        <h2 class="cardh" style="margin-top:14px">Actions</h2>
+        <h2 class="cardh" style="margin-top:14px">Real-world actions — never available in this local demo</h2>
         <div class="actions">
-          <button class="btn" data-testid="dec-continue" disabled>Continue demo — VIEW ONLY</button>
-          <button class="btn" data-testid="dec-hold" disabled>Hold — VIEW ONLY</button>
-          <button class="btn" data-testid="dec-stop" disabled>Stop — VIEW ONLY</button>
+          <button class="btn" data-testid="dec-continue" disabled>Ship — forbidden</button>
+          <button class="btn" data-testid="dec-hold" disabled>Merge/Deploy — forbidden</button>
+          <button class="btn" data-testid="dec-stop" disabled>Bill/Send — forbidden</button>
         </div>
-        <p class="honesty" data-testid="dec-notice">VIEW ONLY — no action taken. No real-world action is authorized here. This panel cannot approve merge, ship, deploy, send, bill, or release.</p></div>
+        <h2 class="cardh" style="margin-top:14px">Local internal status note (no real-world effect)</h2>
+        <div class="actions">
+          <button class="btn" id="led-continue" data-testid="led-continue">CONTINUE_DEMO</button>
+          <button class="btn" id="led-hold" data-testid="led-hold">HOLD</button>
+          <button class="btn" id="led-repair" data-testid="led-repair">REPAIR</button>
+          <button class="btn" id="led-stop" data-testid="led-stop">STOP</button>
+        </div>
+        <ul class="ledger" id="dec-ledger" data-testid="dec-ledger"><li style="color:var(--dim)">No local notes yet. These are internal notes only — never SHIP/MERGE/DEPLOY/BILL/SEND, and they trigger no real-world action.</li></ul>
+        <p class="honesty" data-testid="dec-notice">Local internal notes only. No real-world action is authorized here. This panel cannot approve merge, ship, deploy, send, bill, or release. Allowed local statuses: CONTINUE_DEMO / HOLD / REPAIR / STOP.</p></div>
     </section>
 
     <!-- ===== ASK GUIDE ===== -->
@@ -142,7 +177,7 @@
       <div class="head"><div><h1>Ask Guide</h1><div class="sub">Plain-English guidance. Not a chatbot — no provider, no external calls.</div></div></div>
       <div class="card"><dl class="guide">
         <dt>What is live?</dt><dd>The Truth Dashboard's <b>Run safe demo check</b> and <b>Export evidence package</b> run the real local backend on your machine (127.0.0.1). Preview and Evidence reflect that same real run.</dd>
-        <dt>What is display-only?</dt><dd>Files / Protected Files is display-only (no live enforcement). Decisions is view-only (no real action). Ask Guide is static text.</dd>
+        <dt>What is display-only / local-only?</dt><dd>Files / Protected Files is a LOCAL_SYNTHETIC_ENFORCEMENT_DEMO (no real files scanned, not production enforcement). Decisions is a local internal ledger (notes only — never ship/merge/deploy/bill/send). Batch runs several safe local checks. Run History is this session only. Ask Guide is static text.</dd>
         <dt>What does UNKNOWN mean?</dt><dd>Not enough evidence yet. It is safer than guessing and never fakes a green result.</dd>
         <dt>What does INTERNAL_DEMO_ONLY mean?</dt><dd>The result is for internal demonstration only. The decision can never say &ldquo;ship&rdquo;.</dd>
         <dt>What can I do next?</dt><dd>Look at the screen. Optionally click Run, then Export. Then answer the visual gate in ChatGPT.</dd>
@@ -151,16 +186,21 @@
       </dl></div>
     </section>
 
-    <!-- ===== FILES ===== -->
+    <!-- ===== FILES (synthetic enforcement demo) ===== -->
     <section class="panel" id="panel-files" role="region" aria-label="Files and Protected Files" data-testid="panel-files">
-      <div class="eyebrow">FILES / PROTECTED FILES — DISPLAY ONLY</div>
-      <div class="head"><div><h1>Files / Protected Files</h1><div class="sub">DISPLAY_ONLY — the protected-files concept, not live enforcement in this local demo.</div></div></div>
-      <div class="card"><h2 class="cardh">Synthetic sample files (illustrative)</h2>
-        <div class="filerow"><span>demo/task-ledger.selftest.mjs</span><span class="pill">sample (allowed)</span></div>
-        <div class="filerow"><span>demo/notes/todo.txt</span><span class="pill">sample (allowed)</span></div>
-        <div class="filerow"><span>secrets/prod.env</span><span class="pill warn">blocked for safety (mock example)</span></div>
-        <div class="filerow"><span>customer/private_data.csv</span><span class="pill warn">blocked for safety (mock example)</span></div>
-        <p class="honesty">These filenames are synthetic. &ldquo;Blocked for safety&rdquo; is a display-only illustration of <i>planned</i> protected-files behavior. No real files are scanned; no secrets are exposed; no customer/private/production files are used.</p></div>
+      <div class="eyebrow">FILES / PROTECTED FILES — LOCAL_SYNTHETIC_ENFORCEMENT_DEMO (not production enforcement)</div>
+      <div class="head"><div><h1>Files / Protected Files</h1><div class="sub">LOCAL_SYNTHETIC_ENFORCEMENT_DEMO — a safe synthetic check against a sample allowlist. No real files are scanned.</div></div></div>
+      <div class="card"><h2 class="cardh">Try a synthetic file name</h2>
+        <div class="intake">
+          <label for="pf-input">Synthetic file name (nothing on your disk is read)</label>
+          <input id="pf-input" data-testid="pf-input" value="demo/notes/todo.txt" autocomplete="off">
+        </div>
+        <div class="actions"><button id="pf-check-btn" class="btn primary" data-testid="pf-check-btn">Check against sample allowlist</button></div>
+        <div class="clsrow"><span>Result</span><span id="pf-result" data-testid="pf-result" class="pill">—</span></div>
+        <h2 class="cardh" style="margin-top:14px">Sample allowlist &amp; synthetic blocks (illustrative)</h2>
+        <div class="filerow"><span>demo/** · notes/** · tests/**</span><span class="pill live">allowed (sample)</span></div>
+        <div class="filerow"><span>secrets/** · *.env · customer/** · production/**</span><span class="pill warn">blocked for safety (synthetic)</span></div>
+        <p class="honesty" data-testid="pf-note">LOCAL_SYNTHETIC_ENFORCEMENT_DEMO only — this classifies a typed name against a sample allowlist in the browser. No real file scanning, no secrets, no customer/private/production files. This is NOT production protected-file enforcement.</p></div>
     </section>
 
     <!-- ===== TECHNICAL VIEW ===== -->

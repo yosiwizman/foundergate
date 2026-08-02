@@ -80,7 +80,7 @@ await shot(p, '09_ask_guide_limits.png');
 
 // files display-only
 await p.click('[data-testid="nav-files"]');
-ok((await p.textContent('[data-testid="panel-files"]')).includes('DISPLAY_ONLY'), 'Files DISPLAY_ONLY labeled (no live enforcement)');
+ok((await p.textContent('[data-testid="panel-files"]')).match(/DISPLAY_ONLY|LOCAL_SYNTHETIC_ENFORCEMENT_DEMO/), 'Files DISPLAY_ONLY labeled (no live enforcement)');
 await shot(p, '10_files_display_only.png');
 
 // no raw logs / no full SHA in founder-facing panels
