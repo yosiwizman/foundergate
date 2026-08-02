@@ -5,7 +5,7 @@ Honest classification of each deck-style panel in the converged local prototype.
 | # | Panel | Classification | Notes |
 | --- | --- | --- | --- |
 | 1 | Truth Dashboard | **LIVE_LOCAL now** | real /api/session, /api/start, /api/export |
-| 2 | Preview | **LIVE_LOCAL after this build** (read-only view of run state) | shows the same real run state; local demo only; no sends/payments/deploy |
+| 2 | Preview | **LIVE_LOCAL (read-only VIEW of the real run state) — local demo only** | shows the same real run state; local demo only; no sends/payments/deploy. "Read-only view of the live run state" and "local demo only" describe the same panel — it displays real state but performs no live customer/app behavior. |
 | 3 | Evidence | **LIVE_LOCAL after this build** | real /api/export → SEALED_EXPORT_LOCAL; plain-English receipt |
 | 4 | Decisions | **VIEW_ONLY** | shows current decision + possible internal statuses; buttons disabled; no real action |
 | 5 | Ask Guide | **DISPLAY_ONLY** (static text) | no provider, no external calls |
