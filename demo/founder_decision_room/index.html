@@ -1,7 +1,14 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FounderGate — Decision Room</title><link rel="stylesheet" href="assets/style.css"></head><body>
 <div class="banner" data-testid="banner">FOUNDER DECISION ROOM · REVIEW ONLY · NO BUTTON ACTS · NOTHING PUBLISHES/MERGES/DEPLOYS/SPENDS · NOT PRODUCTION</div>
 <header><h1>FounderGate — Decision Room / Gate Console</h1></header>
-<main data-testid="main"><div class="card"><h3>Founder Witness UI Review <span class="tag review">REVIEW ONLY (not a gate)</span></h3>
+<main data-testid="main"><div class="card" data-testid="recommendation" style="grid-column:1 / -1;border:2px solid #0a4d2e;background:#eef8f1">
+<h3>⭐ Recommended next gate: <strong>Publish the Demo Repo</strong> <span class="tag review">RECOMMENDATION · NO ACTION HERE</span></h3>
+<div><span class="k">Why this gate first:</span> <span class="v">It is the lowest-risk external step. The demo is a clean, self-owned, non-sensitive project (30/30 tests, MIT license). Publishing it gives you something concrete to show investors or a first contact — without touching anything private, paid, or production.</span></div>
+<div><span class="k">Why not the others yet:</span> <span class="v">AKIOR (cross-account proof) is better <em>after</em> you have a public demo to point at. Beta freeze, PR #200, real local-action, and provider/deploy/SaaS all carry more risk or need the demo/proof path to be clearer first.</span></div>
+<div><span class="k">What publishing proves:</span> <span class="v">That FounderGate produced clean, honest, testable code you can show. Nothing more.</span></div>
+<div><span class="k">What it does NOT prove:</span> <span class="v">No customers, no revenue, no market validation, no production/security/compliance, no SaaS readiness.</span></div>
+<div><span class="k">Exact phrase to use later (a separate step):</span> <span class="v"><code>I AUTHORIZE PUBLISHING the self-owned demo repo under my own account.</code></span></div>
+<div class="na" data-testid="no-action">NO ACTION HAPPENS ON THIS PAGE — this is advice; you publish later, yourself, with the phrase above.</div></div><div class="card"><h3>Founder Witness UI Review <span class="tag review">REVIEW ONLY (not a gate)</span></h3>
 <div><span class="k">Ready:</span> <span class="v">Ready — launcher + dashboard + reviewer drawer; review-only.</span></div>
 <div><span class="k">Not proven:</span> <span class="v">Not approval, not beta acceptance; auth is bounded (not security).</span></div>
 <div><span class="k">Risk:</span> <span class="v">Misread as approval.</span></div>

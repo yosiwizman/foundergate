@@ -1,0 +1,2 @@
+# Decision Room Compression Report (Phase 2)
+Added a founder-facing recommendation panel at the top: Recommended next gate (Publish Demo Repo), why this first, why not the others yet, what it proves, what it does NOT prove, the exact authorization phrase for later, and "NO ACTION HAPPENS ON THIS PAGE". The page remains static — no buttons, forms, fetch, or scripts (no-action test 10/10). The 8 gate cards are unchanged below the panel.

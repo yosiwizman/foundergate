@@ -1,0 +1,2 @@
+# Reviewer Console Founder-Summary Report (Phase 4)
+Added a plain-English founder-summary layer ABOVE the technical package list (the technical detail is preserved): what this page is, why there are many packages, what a sealed package means / does NOT mean, what the founder should look at (that packages + checksums exist), what only a technical reviewer inspects (manifests/text), and "no mutation". Verified: reviewer no-mutation 5/5; still READ-ONLY, no buttons/forms.

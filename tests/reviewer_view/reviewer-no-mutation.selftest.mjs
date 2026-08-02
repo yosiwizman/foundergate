@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+const html = readFileSync('demo/reviewer_console/index.html','utf8');
+let p=0,f=0; const t=(n,fn)=>{try{fn();p++}catch(e){f++;console.error('FAIL',n,e.message)}};
+t('no <button>/<form>', ()=>assert.ok(!/<button|<form/i.test(html)));
+t('founder-summary layer present', ()=>assert.ok(html.includes('data-testid="founder-summary"') && html.includes('For the founder (plain English)')));
+t('summary states no mutation', ()=>assert.ok(/No mutation/i.test(html)));
+t('summary states what a sealed package does NOT mean', ()=>assert.ok(/does NOT mean/i.test(html)));
+t('banner still READ-ONLY / NO MUTATION', ()=>assert.ok(html.includes('READ-ONLY') && html.includes('NO MUTATION')));
+console.log(f===0?`ALL GREEN: ${p}/${p+f} self-test(s) passed.`:`RED: ${f} failed`);
+process.exit(f===0?0:1);

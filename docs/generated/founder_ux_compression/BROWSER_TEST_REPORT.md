@@ -1,0 +1,2 @@
+# Browser Test Report — Founder UX Compression
+Chromium (3 tests): (1) Decision Room — recommendation panel ("Recommended next gate: Publish"), 0 buttons/forms, NO ACTION label. (2) Dashboard — intro says "runs a real local check on a self-owned demo project", NO stale "work locally via LOCAL_SIMULATION"; authed real run COMPLETE + INTERNAL_DEMO_ONLY. (3) Reviewer — founder-summary layer present, 0 buttons, real index. 3/3 pass; a11y 0 serious/critical. Report: evidence/pg_report.json.

@@ -1,7 +1,17 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reviewer Console — FounderGate (Read-Only)</title><link rel="stylesheet" href="assets/style.css"></head><body>
 <div class="banner" data-testid="banner">READ-ONLY REVIEWER · REAL SEALED-PACKAGE INDEX + OPENABLE CONTENTS · NO MUTATION · NOT PRODUCTION</div>
 <header><h1>FounderGate — Reviewer Console (read-only)</h1></header>
-<main data-testid="main">
+<main data-testid="main"><div class="card" data-testid="founder-summary" style="border:2px solid #12233a;background:#f2f6fb;padding:12px;border-radius:8px;margin-bottom:12px">
+<h3>For the founder (plain English)</h3>
+<ul>
+<li><strong>What this page is:</strong> a read-only list of sealed evidence packages — one per work session.</li>
+<li><strong>Why there are many:</strong> each run produced its own sealed record; that is the honesty trail, not clutter.</li>
+<li><strong>What a sealed package means:</strong> a tamper-evident record (a checksum + file list) of what was done and tested.</li>
+<li><strong>What it does NOT mean:</strong> not production, not secure, not certified, not customer-validated.</li>
+<li><strong>What you should look at:</strong> that packages exist and have checksums — proof the work is recorded. You do not need to read the contents.</li>
+<li><strong>What only a technical reviewer inspects:</strong> the file manifests and text below.</li>
+<li><strong>No mutation:</strong> this page changes nothing — there are no buttons that act.</li>
+</ul></div>
 <p>Bound to the real sealed-package index; drawers open real package manifests + sample text files, <span class="ro">READ-ONLY</span>. No mutation/merge/PR-ready controls.</p>
 <p>Indexed packages: <strong id="pkg-count" data-testid="pkg-count">0</strong> · openable detail drawers: <strong id="detail-count" data-testid="detail-count">0</strong></p>
 <table><thead><tr><th>Package</th><th>SHA-256</th><th>Bytes</th></tr></thead><tbody id="pkg-rows" data-testid="pkg-rows"></tbody></table>

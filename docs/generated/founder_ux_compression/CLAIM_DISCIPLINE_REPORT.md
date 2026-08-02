@@ -1,0 +1,2 @@
+# Claim Discipline Report — Founder UX Compression
+No production/customer-ready/secure/compliant/SaaS-ready claim added. The recommendation panel + witness script use plain English and always state what is NOT proven. Auth = local property (not security). Decision never SHIP. Every gate remains "decision-prep only". Stale LOCAL_SIMULATION copy removed so the dashboard is coherent (real run via server; UNKNOWN if server off).

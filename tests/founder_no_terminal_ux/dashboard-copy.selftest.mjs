@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+const html = readFileSync('demo/founder_operator_dashboard/index.html','utf8');
+let p=0,f=0; const t=(n,fn)=>{try{fn();p++}catch(e){f++;console.error('FAIL',n,e.message)}};
+t('no stale "work locally via LOCAL_SIMULATION"', ()=>assert.ok(!/work locally via LOCAL_SIMULATION/.test(html)));
+t('no "falls back to a clearly-labeled LOCAL_SIMULATION"', ()=>assert.ok(!/falls back to a clearly-labeled LOCAL_SIMULATION/.test(html)));
+t('intro says real local check via server', ()=>assert.ok(/runs a real local check on a self-owned demo project/.test(html)));
+t('never ship prominent', ()=>assert.ok(/never says .ship.|never SHIP|never .ship./i.test(html)));
+t('not production/secure visible', ()=>{ assert.ok(/not production/i.test(html)); assert.ok(/not secure/i.test(html)); });
+t('no overclaim (is production-ready/secure/compliant/saas-ready)', ()=>assert.ok(!/\bis (production-ready|secure|compliant|saas-ready)\b/i.test(html)));
+console.log(f===0?`ALL GREEN: ${p}/${p+f} self-test(s) passed.`:`RED: ${f} failed`);
+process.exit(f===0?0:1);

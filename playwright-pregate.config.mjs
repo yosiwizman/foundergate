@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-const PORT = process.env.OP_PORT || 4892;
+const PORT = process.env.OP_PORT || 4893;
 export default defineConfig({
   testDir: './tests/founder_no_terminal_ux', testMatch: 'pregate.spec.mjs',
   reporter: [['json', { outputFile: process.env.PG_REPORT || 'pg_report.json' }], ['list']],

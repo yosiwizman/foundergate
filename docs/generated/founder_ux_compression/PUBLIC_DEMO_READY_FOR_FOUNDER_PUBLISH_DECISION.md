@@ -1,0 +1,2 @@
+# Public Demo Ready For Founder Publish Decision (Phase 7)
+Precheck (no publish): tests=ALL GREEN: 30/30 self-test(s) passed. · secret=0 · internal-refs=0 · license=present · gitignore=present. Clean and ready for your publish DECISION. To publish (a founder gate): create a NEW public repo under your own account; push ONLY publish_candidates/self_owned_demo_repo/; confirm 30/30; never claim production/secure/customer. Nothing published here.
