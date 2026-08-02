@@ -1,0 +1,13 @@
+{
+  "operation": "Post-Publish Public Demo Verification",
+  "when": "2026-08-01T21:40:00-04:00",
+  "role": "Terminal-0 Supervisor / Integration Sheriff",
+  "branch": "run/post-publish-public-demo-verification-20260801T2140ET",
+  "base": "3d1f2f8cc9121746e9bde028f68dee4f726a6c08",
+  "mode": "read-only verification + local docs; commit/push non-main; ONE final ZIP",
+  "public_repo": "yosiwizman/task-ledger-demo",
+  "published_commit": "0bb2817174c95f121b05de28686f706aeec82dd5",
+  "protected_main": "65fd01669f80094e7ef9a0fa689c87347ae0c089",
+  "authorized": ["public repo verification","fresh clone","self-test","secret/ref/overclaim scans","local decision packets","AKIOR next-gate prep","advisor/checker/gate-advisor","commit+push non-main","one final ZIP"],
+  "not_authorized": ["public repo mutation/deletion","release","pages","outreach","provider activation","claude -p","spend","deploy","billing","PR creation","PR200 mutation","merge","PR-ready mark","private/customer/production data","AKIOR external action","security/compliance/SaaS-ready claims"]
+}
