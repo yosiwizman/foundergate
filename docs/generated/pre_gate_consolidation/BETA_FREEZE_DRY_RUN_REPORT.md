@@ -1,0 +1,2 @@
+# Beta Freeze Dry-Run Report (Phase 6)
+Read-only. Freeze candidates: founder no-terminal dashboard (launcher + token auth + real run/export), reviewer read-only console (real drawers), self-owned demo target + Safety Check discipline, repeatability harness, sealed-export tooling, final-head guard. Out of beta: cross-account real run, SaaS hosted mechanics, provider-at-scale, customer surfaces. Freeze procedure (later, founder-gated): pick exact SHAs -> Checker+Advisor -> founder acceptance act -> Terminal-0 merge. NO PR mutation, NO merge here.

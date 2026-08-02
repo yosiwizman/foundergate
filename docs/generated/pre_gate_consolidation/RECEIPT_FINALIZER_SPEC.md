@@ -1,0 +1,2 @@
+# Receipt Finalizer Spec
+Finalization order (enforced): (1) make ALL commits including any follow-up doc/disclosure corrections; (2) capture the ACTUAL git HEAD; (3) re-stamp FINAL_STATUS/FINAL_VERDICT/BACKUP/CHANGED_FILES/evidence/final_head.txt to that HEAD (final_head + earlier_frozen_candidate if a prior freeze existed); (4) run the final-head guard — must ALL PASS; (5) assemble the ZIP; (6) compute the ZIP SHA-256 AFTER all corrections; (7) record it. Any follow-up commit re-triggers steps 2-7. Never record the ZIP SHA before the final commit.

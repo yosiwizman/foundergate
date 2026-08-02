@@ -1,0 +1,54 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FounderGate — Decision Room</title><link rel="stylesheet" href="assets/style.css"></head><body>
+<div class="banner" data-testid="banner">FOUNDER DECISION ROOM · REVIEW ONLY · NO BUTTON ACTS · NOTHING PUBLISHES/MERGES/DEPLOYS/SPENDS · NOT PRODUCTION</div>
+<header><h1>FounderGate — Decision Room / Gate Console</h1></header>
+<main data-testid="main"><div class="card"><h3>Founder Witness UI Review <span class="tag review">REVIEW ONLY (not a gate)</span></h3>
+<div><span class="k">Ready:</span> <span class="v">Ready — launcher + dashboard + reviewer drawer; review-only.</span></div>
+<div><span class="k">Not proven:</span> <span class="v">Not approval, not beta acceptance; auth is bounded (not security).</span></div>
+<div><span class="k">Risk:</span> <span class="v">Misread as approval.</span></div>
+<div><span class="k">Authorization phrase (later):</span> <span class="v"><code>(no phrase — just schedule a look)</code></span></div>
+<div><span class="k">Status:</span> <span class="v">READY_FOR_FOUNDER_REVIEW</span> · <span class="k">Evidence:</span> <span class="v">CTO run + this package</span></div>
+<div class="na" data-testid="no-action">NOT AUTHORIZED HERE — this card has no button that acts.</div></div><div class="card"><h3>Publish Demo Repo <span class="tag gate">TRUE FOUNDER GATE</span></h3>
+<div><span class="k">Ready:</span> <span class="v">Clean candidate, 30/30 tests, LICENSE + .gitignore, neutral README.</span></div>
+<div><span class="k">Not proven:</span> <span class="v">No external demand; not production/secure/compliant.</span></div>
+<div><span class="k">Risk:</span> <span class="v">Publishing under wrong account; overclaim.</span></div>
+<div><span class="k">Authorization phrase (later):</span> <span class="v"><code>I AUTHORIZE PUBLISHING the self-owned demo repo under my own account.</code></span></div>
+<div><span class="k">Status:</span> <span class="v">READY_FOR_DECISION</span> · <span class="k">Evidence:</span> <span class="v">publish_candidates/self_owned_demo_repo</span></div>
+<div class="na" data-testid="no-action">NOT AUTHORIZED HERE — this card has no button that acts.</div></div><div class="card"><h3>Cross-Account AKIOR Proof <span class="tag gate">TRUE FOUNDER GATE</span></h3>
+<div><span class="k">Ready:</span> <span class="v">Runbook + decision form + safe-repo criteria prepared.</span></div>
+<div><span class="k">Not proven:</span> <span class="v">Proves portability, NOT customer validation; needs a founder-controlled account.</span></div>
+<div><span class="k">Risk:</span> <span class="v">Treating it as market validation.</span></div>
+<div><span class="k">Authorization phrase (later):</span> <span class="v"><code>I AUTHORIZE a cross-account technical proof on <account> for repo <url>, cap $<n>.</code></span></div>
+<div><span class="k">Status:</span> <span class="v">PREP_READY</span> · <span class="k">Evidence:</span> <span class="v">AKIOR preflight docs</span></div>
+<div class="na" data-testid="no-action">NOT AUTHORIZED HERE — this card has no button that acts.</div></div><div class="card"><h3>Beta Freeze Slice <span class="tag gate">TRUE FOUNDER GATE</span></h3>
+<div><span class="k">Ready:</span> <span class="v">Freeze-candidate map + out-of-beta register prepared.</span></div>
+<div><span class="k">Not proven:</span> <span class="v">Freeze needs Checker+Advisor+founder acceptance+merge.</span></div>
+<div><span class="k">Risk:</span> <span class="v">Merging without the gate.</span></div>
+<div><span class="k">Authorization phrase (later):</span> <span class="v"><code>I AUTHORIZE freezing <exact SHAs> as a beta-spine slice.</code></span></div>
+<div><span class="k">Status:</span> <span class="v">PREP_READY</span> · <span class="k">Evidence:</span> <span class="v">beta dry-run docs</span></div>
+<div class="na" data-testid="no-action">NOT AUTHORIZED HERE — this card has no button that acts.</div></div><div class="card"><h3>PR #200 Disposition <span class="tag gate">TRUE FOUNDER GATE</span></h3>
+<div><span class="k">Ready:</span> <span class="v">Read-only disposition options prepared; PR #200 OPEN, untouched.</span></div>
+<div><span class="k">Not proven:</span> <span class="v">Any PR mutation is a gate.</span></div>
+<div><span class="k">Risk:</span> <span class="v">Mutating PR #200 prematurely.</span></div>
+<div><span class="k">Authorization phrase (later):</span> <span class="v"><code>I AUTHORIZE <keep-open | supersede | freeze-into-new-PR> for PR #200.</code></span></div>
+<div><span class="k">Status:</span> <span class="v">PREP_READY</span> · <span class="k">Evidence:</span> <span class="v">PR200 read-only report</span></div>
+<div class="na" data-testid="no-action">NOT AUTHORIZED HERE — this card has no button that acts.</div></div><div class="card"><h3>Real Local-Action Path <span class="tag gate">TRUE FOUNDER GATE</span></h3>
+<div><span class="k">Ready:</span> <span class="v">Executor is SIMULATED (DRY_RUN); rollback proven; risk register + allowlist prepared.</span></div>
+<div><span class="k">Not proven:</span> <span class="v">Real execution is irreversible-capable; must have rollback-before-act.</span></div>
+<div><span class="k">Risk:</span> <span class="v">Executing a real action without rollback.</span></div>
+<div><span class="k">Authorization phrase (later):</span> <span class="v"><code>I AUTHORIZE REAL bounded local-action execution for action class <write_note>.</code></span></div>
+<div><span class="k">Status:</span> <span class="v">SIMULATION_ONLY</span> · <span class="k">Evidence:</span> <span class="v">action-gate + rollback sim</span></div>
+<div class="na" data-testid="no-action">NOT AUTHORIZED HERE — this card has no button that acts.</div></div><div class="card"><h3>Provider / Deploy / SaaS <span class="tag gate">TRUE FOUNDER GATE</span></h3>
+<div><span class="k">Ready:</span> <span class="v">Non-production shells + gap maps only.</span></div>
+<div><span class="k">Not proven:</span> <span class="v">No auth-for-external-users/billing/deploy; not SaaS-ready.</span></div>
+<div><span class="k">Risk:</span> <span class="v">Any live provider/deploy/billing.</span></div>
+<div><span class="k">Authorization phrase (later):</span> <span class="v"><code>I AUTHORIZE <provider run cap $<n> | deployment | billing setup>.</code></span></div>
+<div><span class="k">Status:</span> <span class="v">NOT_STARTED / GAP_MAP</span> · <span class="k">Evidence:</span> <span class="v">SaaS gap map</span></div>
+<div class="na" data-testid="no-action">NOT AUTHORIZED HERE — this card has no button that acts.</div></div><div class="card"><h3>Commercial Pilot / Paid Proof <span class="tag deferred">DEFERRED COMMERCIAL GATE</span></h3>
+<div><span class="k">Ready:</span> <span class="v">Concierge/pilot prep + paid-proof definition prepared.</span></div>
+<div><span class="k">Not proven:</span> <span class="v">No customer, no revenue, no willingness-to-pay.</span></div>
+<div><span class="k">Risk:</span> <span class="v">Claiming revenue/customers.</span></div>
+<div><span class="k">Authorization phrase (later):</span> <span class="v"><code>I AUTHORIZE a founder-controlled pilot with <person> (free/cap $<n>).</code></span></div>
+<div><span class="k">Status:</span> <span class="v">DEFERRED</span> · <span class="k">Evidence:</span> <span class="v">pilot prep docs</span></div>
+<div class="na" data-testid="no-action">NOT AUTHORIZED HERE — this card has no button that acts.</div></div></main>
+<footer>Every gate above is presented for your decision. This screen performs NO action — it has no forms, no buttons, no network. Each gate is crossed only later by your explicit authorization phrase. Nothing here is production/secure/compliant/SaaS-ready.</footer>
+</body></html>

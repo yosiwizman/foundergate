@@ -1,0 +1,2 @@
+# CLDH Operating-System Update (Phase 8)
+New standard added this run: the FINAL-HEAD GUARD + receipt-finalizer discipline (re-stamp after every follow-up commit; run the guard before recording the ZIP SHA). Plus the Decision Room pattern (consolidate all gates review-only so the founder decides with zero prep). Combined with prior standards (single-writer sensitive runtime, parallel-safe lanes, one master ZIP, no-back-and-forth), this is the reusable FounderGate operating system.

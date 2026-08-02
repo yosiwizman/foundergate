@@ -1,0 +1,2 @@
+# Evidence Package Consistency Verifier
+Beyond final-head: the verifier also confirms (a) SHA256SUMS.txt inside the package validates (`shasum -c` all OK), (b) the recorded ZIP SHA matches the actual sealed ZIP, (c) the required manifest files are all present, (d) unzip -t is clean. Run as the last gate before "done". The final-head guard is the identifier-binding half; these are the integrity half.

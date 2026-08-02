@@ -1,0 +1,2 @@
+# Decision Room No-Action Attestation
+The Decision Room performs NO action. Verified by test (no-action 7/7): no <button>, no <form>, no fetch/XHR/onclick/addEventListener, no <script>, no external http(s) refs; 8/8 cards carry "NOT AUTHORIZED HERE". It is a read-only presentation of gates; crossing any gate requires the founder's explicit authorization phrase in a LATER, separately-authorized run.

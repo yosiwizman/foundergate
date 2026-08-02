@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+const html = readFileSync('demo/founder_decision_room/index.html','utf8');
+let p=0,f=0; const t=(n,fn)=>{try{fn();p++}catch(e){f++;console.error('FAIL',n,e.message)}};
+t('no <button> elements', ()=>assert.ok(!/<button/i.test(html)));
+t('no <form> elements', ()=>assert.ok(!/<form/i.test(html)));
+t('no fetch/XHR/onclick/on-handlers', ()=>assert.ok(!/fetch\(|XMLHttpRequest|onclick|onsubmit|addEventListener/i.test(html)));
+t('no <script> at all', ()=>assert.ok(!/<script/i.test(html)));
+t('no external http(s) refs', ()=>assert.ok(!/(src|href)="https?:\/\//i.test(html)));
+t('every gate card carries a NOT AUTHORIZED HERE label', ()=>{ const cards=(html.match(/class="card"/g)||[]).length; const nas=(html.match(/NOT AUTHORIZED HERE/g)||[]).length; assert.equal(cards,8); assert.equal(nas,8); });
+t('banner declares review-only + no action', ()=>{ assert.ok(html.includes('REVIEW ONLY')); assert.ok(html.includes('NO BUTTON ACTS')); });
+console.log(f===0?`ALL GREEN: ${p}/${p+f} self-test(s) passed.`:`RED: ${f} failed`);
+process.exit(f===0?0:1);

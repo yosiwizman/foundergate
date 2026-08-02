@@ -1,0 +1,2 @@
+# PR #200 Read-Only Disposition Report
+PR #200: OPEN draft=true | [DRAFT][Wave-1][Safety Copy] Reconcile #194 copy-truth closure onto current main (pre-merge review; do not merge). Read-only; untouched. Options (founder decides): keep OPEN as inventory [recommended]; freeze specific beta pieces via a NEW branch + founder-gated merge; or supersede with a fresh beta PR when authorized. This run mutates nothing.

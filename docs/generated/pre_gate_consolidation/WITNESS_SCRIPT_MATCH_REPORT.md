@@ -1,0 +1,2 @@
+# Witness Script Match Report
+The witness script steps (double-click launcher -> dashboard opens -> Start shows real commit/tests/INTERNAL_DEMO_ONLY -> Export shows SEALED_EXPORT_LOCAL -> reviewer drawer opens read-only) match the actual UI, confirmed by the E2E assertions (start-status COMPLETE, commit 12-hex, decision INTERNAL_DEMO_ONLY, export SEALED_EXPORT_LOCAL). The script does not imply approval.

@@ -1,0 +1,2 @@
+# Sensitive-Runtime Single-Writer Standard (updated)
+Sensitive runtime = executor/gate/rollback/session-token/auth/loopback-server/local-action. One writer per run; one independent read-only sensitive-runtime checker; Terminal-0 integrates. This run modified NO sensitive runtime file (only referenced/simulated), so the rule holds trivially. A single-writer register records authorship + git diff scope whenever sensitive files change.

@@ -1,0 +1,2 @@
+# Founder Witness Dry-Run Report (Phase 3)
+Validated the founder-witness flow WITHOUT the founder. Ran the loopback server + browser E2E: the witness dashboard performed an authed real run (real commit + real tests + INTERNAL_DEMO_ONLY) and a sealed export; screenshots captured. The Decision Room renders review-only (8 gate cards, no buttons/forms). No raw logs shown; no terminal instructions inside the founder browser flow (the one launcher command is an operator action). Classification: **WITNESS_READY_FOR_FOUNDER_REVIEW**.
