@@ -1,0 +1,9 @@
+{"lanes":[
+{"id":"A","name":"Browser E2E + axe dashboard harness"},
+{"id":"B","name":"Repeatability CI N>=3"},
+{"id":"C","name":"Dashboard runner integration hardening"},
+{"id":"D","name":"Evidence export hardening"},
+{"id":"E","name":"Investor evidence refresh"},
+{"id":"F","name":"PR #200 read-only re-preview"},
+{"id":"G","name":"SaaS foundation readiness refresh"},
+{"id":"H","name":"Next-gate decision package"}]}

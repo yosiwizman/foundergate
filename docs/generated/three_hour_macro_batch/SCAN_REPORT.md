@@ -1,2 +1,12 @@
-# Scan Report — Three-Hour Macro-Batch
-Secret 0 · external network refs 0 (browser uses same-origin fetch of ./runs/last-run.json + Blob; no external hosts) · external-action verbs 0 · forbidden-claim 0 · out-of-path files 0 · provider/spend/contact/publish/deploy 0. Note: child_process/ditto/unzip are used ONLY by the real CLI runner (src/live_run_console) and export (src/evidence_viewer) — legitimate local tooling, not in the browser demo.
+# Scan Report — 3-Hour Safe Macro-Batch
+| Check | Value |
+|-------|-------|
+| Secrets in new source | 0 |
+| Positive overclaims in new docs | 0 |
+| Founder-mode SHA leak (browser-verified) | 0 |
+| Provider/spend/deploy/contact actions | 0 |
+| Protected FounderGate main | 65fd01669f80 (unchanged) |
+| PR #200 | OPEN/draft (untouched; read-only re-preview only) · new PRs 0 |
+| Public demo / second-account | 0bb2817174c9 / 3528b622e027 (unchanged) |
+| Accepted frozen artifact root | 8e7c7db823b5… (unchanged) |
+Clean.

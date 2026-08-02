@@ -1,0 +1,2 @@
+# Founder Mode — No SHA Leak (browser-verified)
+The rendered founder page body was scanned in-browser for any 40-hex git SHA or 64-hex sha-256 — NONE present (even though the snapshot carried a real headSha, which the renderer withholds from founder mode and reduces to a short "verified build" label). The developer page, by contrast, DOES display the full head SHA — confirming true mode separation at the rendered-DOM level.

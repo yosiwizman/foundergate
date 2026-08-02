@@ -1,0 +1,2 @@
+# Long-Run Supervisor Setup Report
+tmux is available. This macro-batch executed lanes A–H sequentially under Terminal-0 supervision with durable disk recovery (RECOVERY_STATE.json updated per lane) rather than a detached tmux daemon, because the run completed within the session without needing background detachment. Recovery capsule + resume prompt are written to recovery/ so a session/context limit would not lose progress. No provider/deploy/billing/outreach; no PR #200/main/public-repo mutation at any point.
