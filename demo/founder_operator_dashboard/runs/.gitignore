@@ -1,0 +1,6 @@
+# transient local run outputs — never tracked
+last-run.json
+sealed_export.zip
+*.zip
+*.json
+!.gitignore
