@@ -1,0 +1,29 @@
+{
+  "operation": "Gate 8 Preparation Acceptance Record",
+  "status_token": "GATE8_PREPARATION_ACCEPTED_WITH_LIMITS",
+  "accepted": "Gate 8 commercial pilot PREPARATION package (plan only)",
+  "evidence_head": "bbfaa0246e4b",
+  "gate8_prep_zip_sha256": "51d0a231b25ce1a70c24c8e820977280fa5a6104aba2b17a4f278c2d9394cf11",
+  "confers_execution_authority": false,
+  "pilot_run": false,
+  "gate8_itself_accepted": false,
+  "not_authorized": [
+    "running a pilot",
+    "outreach",
+    "billing",
+    "payment",
+    "data intake",
+    "deployment",
+    "public/customer beta",
+    "provider use at scale",
+    "PR #200 mutation",
+    "merge",
+    "security/compliance claims",
+    "SaaS launch",
+    "commercial-readiness claims"
+  ],
+  "protected_main": "65fd01669f80094e7ef9a0fa689c87347ae0c089",
+  "protected_main_unchanged": true,
+  "pr200": "OPEN/draft/untouched",
+  "acceptance_date": "2026-08-02"
+}
