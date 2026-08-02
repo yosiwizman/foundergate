@@ -1,0 +1,29 @@
+{
+  "operation": "Gate 8 Pilot Session Acceptance Record",
+  "status_token": "GATE8_PILOT_SESSION_ACCEPTED_WITH_LIMITS",
+  "accepted": "Gate 8 solo pilot session result",
+  "evidence_head": "5e0dddcae008",
+  "pilot_session_zip_sha256": "944b3d90bb26d5b4f5cf2a39eb8f9b911c4720dd67e458f0908f9c411d51e126",
+  "confers_execution_authority": false,
+  "real_evaluator_pilot": false,
+  "commercial_validation": false,
+  "not_authorized": [
+    "outreach",
+    "third-party pilot",
+    "billing",
+    "payment",
+    "data intake",
+    "deployment",
+    "public/customer beta",
+    "provider use at scale",
+    "PR #200 mutation",
+    "merge",
+    "security/compliance claims",
+    "SaaS launch",
+    "commercial-readiness claims"
+  ],
+  "protected_main": "65fd01669f80094e7ef9a0fa689c87347ae0c089",
+  "protected_main_unchanged": true,
+  "pr200": "OPEN/draft/untouched",
+  "acceptance_date": "2026-08-02"
+}
