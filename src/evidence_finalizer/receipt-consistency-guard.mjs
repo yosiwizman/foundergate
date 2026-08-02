@@ -33,7 +33,12 @@ export function verifyReceiptConsistency(receiptDir, headSha, opts = {}) {
   const staleHits = [];
   for (const f of files) {
     const s = readIf(f);
-    if (/out[_-]of[_-]path( added\/modified)?\s*[=|:]\s*2\b/i.test(s) || /Out-of-path added\/modified \| 2 \|/.test(s)) staleHits.push(f);
+    // Only STRUCTURED metric assertions count as a stale metric (prose describing a fixed defect must not trip the guard):
+    //   verify_summary key: out_of_path_AM=2 / out_of_path=2 ; JSON: "out_of_path":2 ; SCAN line: out-of-path added/modified=2 ; TEST table: | 2 |
+    if (/out_of_path(_am|_added_modified)?\s*[=:]\s*2\b/i.test(s)
+        || /"out_of_path(_added_modified)?"\s*:\s*2\b/i.test(s)
+        || /out-of-path added\/modified\s*=\s*2\b/i.test(s)
+        || /Out-of-path added\/modified\s*\|\s*2\s*\|/i.test(s)) staleHits.push(f);
   }
   add('B no stale out-of-path=2 metric in any receipt/doc file', staleHits.length === 0, staleHits.join(','));
 
