@@ -1,0 +1,4 @@
+# Prohibited-Action Attestation (Gate 7 Provider Proof)
+Performed: ONE bounded real provider call (claude -p, haiku, --max-budget-usd 0.50) on synthetic/self-owned input; exact cost captured ($0.0271348); output validated; local regression; committed to a non-main branch.
+NOT performed (all confirmed): merge; PR create/ready-mark; PR #200 mutation/comment/close; main mutation; mutation of demo/reviewer/frozen artifacts; deployment; billing; outreach; public/customer beta/publishing; private repo access; customer/private/production data; key enrollment/creation; provider account/subscription change; credential export; security/compliance claims; commercial claims; SaaS launch; self-acceptance of Gate 7; second provider call; provider loop/retry. Total spend $0.0271348 (<= $1.00).
+out-of-path added/modified: 0.

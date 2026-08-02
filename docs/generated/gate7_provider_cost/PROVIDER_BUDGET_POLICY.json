@@ -1,0 +1,13 @@
+{
+  "hard_ceiling_usd": 1.00,
+  "cli_enforced_cap_usd": 0.50,
+  "preferred_calls": 1,
+  "max_calls": 2,
+  "second_call_blocked_if_first_ge_usd": 0.70,
+  "stop_if_accumulated_ge_usd": 1.00,
+  "cost_capture": "claude -p ... --output-format json -> total_cost_usd + usage",
+  "model": "claude-haiku-4-5-20251001 (cheapest, minimize spend)",
+  "no_retry_on_failure": true,
+  "no_loops": true,
+  "no_customer_private_production_data": true
+}
