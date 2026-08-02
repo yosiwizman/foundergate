@@ -9,9 +9,11 @@ commercial claims.
 ## What was built
 - `demo/founder_operating_environment/index.html` — deck-style dark Truth Dashboard shell
   (sidebar + chips + two big buttons), honest environment banner, technical/reviewer disclosure.
-- `demo/founder_operating_environment/assets/fg.css` — a **copy of the deck's** `fg.css` visual
-  language (reuse, not a new style), with a small local contrast override for WCAG AA
-  (white-on-blue active nav + primary button darkened `#3b82f6` → `#1d4ed8`).
+- `demo/founder_operating_environment/assets/fg.css` — a **byte-identical, unmodified copy of the
+  deck's** `fg.css` visual language (reuse, not a new style).
+- The only visual delta is a small **inline** contrast override in `index.html` (`<style>`, not in
+  fg.css) for WCAG AA: the white-on-blue active nav + primary button are darkened `#3b82f6` →
+  `#1d4ed8`. Keeping it inline preserves fg.css as a pure, unmodified reuse.
 - `demo/founder_operating_environment/assets/app.mjs` — **real** wiring to the loopback backend:
   `GET /api/session` (per-process token), `POST /api/start`, `POST /api/export`. No provider,
   no external network, no fabricated state.
