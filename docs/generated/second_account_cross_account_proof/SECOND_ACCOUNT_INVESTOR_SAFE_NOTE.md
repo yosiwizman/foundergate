@@ -1,0 +1,2 @@
+# Second-Account — Investor-Safe Note
+This shows FounderGate can reproduce a clean, honest, self-verifying demo in a second independent GitHub account and prove it from the outside (public clone, exact commit, 30/30, clean scans). It is a credibility signal about engineering discipline and portability — NOT customer traction, market validation, revenue, production readiness, security/compliance, or SaaS readiness. Read it as process evidence only.
