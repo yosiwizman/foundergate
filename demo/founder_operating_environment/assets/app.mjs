@@ -255,6 +255,40 @@ async function doDoctor(){
   }catch{ $('doctor-body').innerHTML='<tr><td colspan="2">LOCAL BACKEND UNAVAILABLE (UNKNOWN).</td></tr>'; setPill($('doctor-summary'),'UNKNOWN','hold'); }
 }
 
+// ---- Idea Builder (local synthetic): classify idea + load build status ----
+const IDEA_GATE = [ // protected-gate requests -> HOLD_PROTECTED_GATE
+  [/\bdeploy|host|publish live|go live\b/i,'deploy'], [/\bmerge\b/i,'merge'], [/pr\s*#?\s*200/i,'PR #200'],
+];
+const IDEA_REFUSE = [ // real-world action requests -> REFUSED_NEEDS_AUTHORIZATION
+  [/calendar|google|gmail|apple|microsoft|outlook|icloud|oauth|account/i,'real calendar/account'],
+  [/email (customers|users|people)|outreach|send (emails|invites)|invite (customers|users)/i,'outreach/email'],
+  [/charge|bill(ing)?|payment|paywall|subscription|invoice/i,'billing/payment'],
+  [/production data|customer data|private data|real user data|prod\b/i,'customer/production data'],
+  [/security|compliance|soc\s?2|hipaa|saas|commercial(ly)? (ready|validated)|market validat/i,'security/SaaS/commercial claim'],
+  [/private repo/i,'private repo'],
+];
+function classifyIdea(text){
+  // strip NEGATED clauses ("no real calendar", "without accounts", "never deploy") so a safe idea
+  // that merely DISCLAIMS unsafe things is not misread as requesting them.
+  const t = String(text||'').replace(/\b(no real|no|not|without|never|avoid|excluding|except)\b[^,.;\n]*/gi, ' ');
+  for(const [re,label] of IDEA_GATE) if(re.test(t)) return { status:'HOLD_PROTECTED_GATE', reason:label+' is a protected founder gate — not done here.' };
+  for(const [re,label] of IDEA_REFUSE) if(re.test(t)) return { status:'REFUSED_NEEDS_AUTHORIZATION', reason:label+' needs a separate founder authorization — refused in the local builder.' };
+  return { status:'SAFE_LOCAL_SYNTHETIC', reason:'Local synthetic app only — safe to build.' };
+}
+function doIdeaClassify(){
+  const c = classifyIdea($('idea-input').value);
+  const kind = c.status==='SAFE_LOCAL_SYNTHETIC'?'live':(c.status==='HOLD_PROTECTED_GATE'?'hold':'refuse');
+  setPill($('idea-class'), c.status + ' · ' + c.reason, kind);
+}
+async function doIdeaLoad(){
+  $('idea-body').innerHTML = '<tr><td colspan="2">Loading…</td></tr>';
+  try{
+    const r = await fetch('assets/idea_builder.json'); const d = await r.json();
+    $('idea-body').innerHTML = (d.steps||[]).map(s=>{ const k=/PASS|DONE|AVAILABLE/.test(s.status)?'live':'hold';
+      return `<tr><td>${esc(s.step)}</td><td><span class="pill ${k}">${esc(s.status)}</span></td></tr>`; }).join('');
+  }catch{ $('idea-body').innerHTML='<tr><td colspan="2">UNKNOWN — could not load build status.</td></tr>'; }
+}
+
 // ---- Real Repo Proof (public self-owned; loads founder-safe results JSON) ----
 async function doRealRepo(){
   $('realrepo-body').innerHTML = '<tr><td colspan="5">Loading…</td></tr>';
@@ -475,6 +509,10 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   // synthetic scenario runner
   $('scn-run-btn').addEventListener('click', doScenario);
   $('scn-sel').addEventListener('change', ()=> setPill($('scn-result'),'—',''));
+  // Wave 9: Idea Builder panel
+  $('idea-classify-btn').addEventListener('click', doIdeaClassify);
+  $('idea-load-btn').addEventListener('click', doIdeaLoad);
+  $('idea-input').addEventListener('input', doIdeaClassify);
   // Wave 8: Real Repo Proof panel
   $('realrepo-btn').addEventListener('click', doRealRepo);
   // Wave 7: Doctor, Live-Gate Simulator, local rehearsal

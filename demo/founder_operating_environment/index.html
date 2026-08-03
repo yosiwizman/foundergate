@@ -57,6 +57,7 @@
       <button class="nav"    data-panel="decisions"data-testid="nav-decisions">🚩 Decisions <span class="tag">local ledger</span></button>
       <button class="nav"    data-panel="guide"    data-testid="nav-guide">💬 Ask Guide <span class="tag">static</span></button>
       <button class="nav"    data-panel="files"    data-testid="nav-files">📁 Files <span class="tag">synthetic demo</span></button>
+      <button class="nav"    data-panel="idea"     data-testid="nav-idea">💡 Idea Builder <span class="tag">local synthetic</span></button>
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
@@ -265,6 +266,24 @@
         <div class="filerow"><span>demo/** · notes/** · tests/**</span><span class="pill live">allowed (sample)</span></div>
         <div class="filerow"><span>secrets/** · *.env · customer/** · production/**</span><span class="pill warn">blocked for safety (synthetic)</span></div>
         <p class="honesty" data-testid="pf-note">LOCAL_SYNTHETIC_ENFORCEMENT_DEMO only — this classifies a typed name against a sample allowlist in the browser. No real file scanning, no secrets, no customer/private/production files. This is NOT production protected-file enforcement.</p></div>
+    </section>
+
+    <!-- ===== IDEA BUILDER (local synthetic) ===== -->
+    <section class="panel" id="panel-idea" role="region" aria-label="Idea Builder" data-testid="panel-idea">
+      <div class="eyebrow">IDEA BUILDER — LOCAL SYNTHETIC · idea → guided spec → local app → tests → preview → evidence</div>
+      <div class="head"><div><h1>Idea Builder</h1><div class="sub">Turn a simple idea into a local synthetic app. No real calendar/account/email, no deploy, no customer data.</div></div></div>
+      <div class="card">
+        <label for="idea-input" style="display:block;font-size:11.5px;font-weight:700;color:var(--dim);margin:2px 0 5px">Your idea (a default is filled in — you can edit it)</label>
+        <textarea id="idea-input" data-testid="idea-input" rows="3" style="width:100%;box-sizing:border-box;background:#0d1117;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font:inherit">Build a simple local appointment/task planner demo with synthetic data only. Add, list, complete, and filter tasks or appointments locally. No real calendar, no account, no email, no reminders, no customer data, no deployment.</textarea>
+        <div class="actions"><button id="idea-classify-btn" class="btn primary" data-testid="idea-classify-btn">Classify idea (safety)</button>
+          <button id="idea-load-btn" class="btn" data-testid="idea-load-btn">Load build status</button>
+          <a class="btn" data-testid="idea-preview-link" href="../../tests/generated_apps/wave9_appointment_task_planner/index.html" target="_blank" rel="noopener">▶ Open generated app preview</a></div>
+        <div class="clsrow"><span>Idea classification</span><span id="idea-class" data-testid="idea-class" class="pill">—</span></div>
+        <p class="honesty" data-testid="idea-warning">Forbidden requests (deploy, connect a real calendar/account, email customers, charge/bill, use production data, merge, edit PR&nbsp;#200, or claim security/SaaS/commercial readiness) are REFUSED or HELD — this builder makes local synthetic apps only.</p>
+        <table class="tbl"><thead><tr><th>Step</th><th>Status</th></tr></thead>
+          <tbody id="idea-body" data-testid="idea-body"><tr><td colspan="2" style="color:var(--dim)">Click &ldquo;Load build status&rdquo;.</td></tr></tbody></table>
+        <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
+      </div>
     </section>
 
     <!-- ===== REAL REPO PROOF (public self-owned) ===== -->

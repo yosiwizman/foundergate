@@ -1,0 +1,18 @@
+{
+  "kind": "WAVE9_IDEA_TO_LOCAL_APP_BUILD",
+  "idea": "Build a simple local appointment/task planner demo with synthetic data only. Add, list, complete, and filter tasks or appointments locally. No real calendar, no account, no email, no reminders, no customer data, no deployment.",
+  "classification": "SAFE_LOCAL_SYNTHETIC",
+  "steps": [
+    { "step": "Idea recorded", "status": "DONE" },
+    { "step": "Guided spec", "status": "DONE" },
+    { "step": "Build plan", "status": "DONE" },
+    { "step": "Local app generated", "status": "DONE (appointment/task planner: index.html + core.mjs)" },
+    { "step": "Tests generated + run", "status": "PASS 13/13" },
+    { "step": "Local preview", "status": "AVAILABLE (local synthetic)" },
+    { "step": "Evidence sealed", "status": "DONE" },
+    { "step": "Decision", "status": "INTERNAL_DEMO_ONLY (never SHIP)" }
+  ],
+  "preview_url": "../../tests/generated_apps/wave9_appointment_task_planner/index.html",
+  "limitations": "In-memory only; no real calendar/account/email/reminders/network/deploy; synthetic data only.",
+  "not_proven": "production readiness, security/compliance, real integrations, customer/market/paid validation."
+}

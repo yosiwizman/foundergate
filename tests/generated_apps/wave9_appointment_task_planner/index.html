@@ -1,0 +1,45 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Appointment / Task Planner — LOCAL SYNTHETIC DEMO</title>
+<style>
+body{font-family:-apple-system,system-ui,sans-serif;background:#0d1117;color:#e6ebf2;margin:0;padding:24px}
+.wrap{max-width:640px;margin:0 auto}
+.banner{background:#3a2a00;color:#f5b83d;border-radius:8px;padding:10px 14px;font-weight:800;font-size:12.5px;margin-bottom:16px}
+h1{font-size:20px;margin:0 0 4px} .sub{color:#93a1b5;font-size:13px;margin-bottom:16px}
+.row{display:flex;gap:8px;margin:10px 0}
+input,select,button{font:inherit;background:#161c26;color:#e6ebf2;border:1px solid #2a3344;border-radius:8px;padding:9px 11px}
+button{cursor:pointer} button.primary{background:#1d4ed8;border-color:#1d4ed8}
+ul{list-style:none;padding:0;margin:12px 0} li{border:1px solid #2a3344;border-radius:8px;padding:10px 12px;margin:6px 0;display:flex;justify-content:space-between;align-items:center}
+li.done{opacity:.55;text-decoration:line-through} .muted{color:#93a1b5;font-size:12px}
+.foot{color:#6b7789;font-size:12px;margin-top:16px}
+</style></head>
+<body><div class="wrap">
+<div class="banner" data-testid="app-banner">LOCAL SYNTHETIC DEMO · no real calendar · no account · no email/reminders · no customer data · no deploy</div>
+<h1>Appointment / Task Planner</h1><div class="sub">A local, synthetic demo built by FounderGate. Everything is in-memory; nothing leaves this page.</div>
+<div class="row">
+  <input id="title" data-testid="title" placeholder="Add a task or appointment (synthetic)" style="flex:1">
+  <input id="when" data-testid="when" placeholder="When (optional)" style="width:150px">
+  <button id="add" class="primary" data-testid="add">Add</button>
+</div>
+<div class="row">
+  <label class="muted">Filter:</label>
+  <select id="filter" data-testid="filter"><option value="all">All</option><option value="active">Active</option><option value="completed">Completed</option></select>
+  <span class="muted" id="count" data-testid="count"></span>
+</div>
+<ul id="list" data-testid="list"></ul>
+<div class="foot">Synthetic / local only. No network, no real accounts, no deploy, no customer data. This is a demo, not production.</div>
+</div>
+<script type="module">
+import { createStore, addItem, listItems, completeItem, filterItems } from './core.mjs';
+let store = createStore([{title:'Welcome to your synthetic planner', when:''}]);
+const $ = id => document.getElementById(id);
+function render(){
+  const mode = $('filter').value; const items = filterItems(store, mode);
+  $('list').innerHTML = items.map(it => `<li class="${it.done?'done':''}" data-id="${it.id}"><span>${it.title}${it.when?` <span class="muted">· ${it.when}</span>`:''}</span>${it.done?'<span class="muted">done</span>':`<button data-complete="${it.id}">Complete</button>`}</li>`).join('') || '<li class="muted">No items.</li>';
+  $('count').textContent = `${filterItems(store,'active').length} active · ${filterItems(store,'completed').length} completed`;
+}
+$('add').addEventListener('click', ()=>{ const r = addItem(store, $('title').value, $('when').value); if(r.ok){ store=r.store; $('title').value=''; $('when').value=''; render(); } else { $('title').setAttribute('placeholder','Please enter a task or appointment'); } });
+$('filter').addEventListener('change', render);
+$('list').addEventListener('click', e=>{ const id = e.target.getAttribute('data-complete'); if(id){ const r=completeItem(store, Number(id)); if(r.ok){ store=r.store; render(); } } });
+render();
+</script>
+</body></html>
