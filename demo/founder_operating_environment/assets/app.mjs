@@ -317,6 +317,28 @@ async function doIdeaLoad(){
   }
 }
 
+// ---- Local App Factory Proof (loads factory_index.json; previews bound per-app manifests) ----
+async function doFactory(){
+  $('factory-body').innerHTML = '<tr><td colspan="6">Loading…</td></tr>';
+  try{
+    const r = await fetch('assets/factory/factory_index.json', {cache:'no-store'});
+    if(!r.ok) throw new Error('factory_index '+r.status);
+    const d = await r.json();
+    $('factory-body').innerHTML = (d.apps||[]).map(a=>{
+      const k = /PASS/.test(a.test_result)?'live':'hold';
+      const done = a.final_status==='BUILT_AND_PASSED';
+      const prev = done
+        ? `<a class="btn" data-testid="factory-preview-${esc(a.template_id)}" href="${esc(a.preview_url)}" target="_blank" rel="noopener">▶ Open</a>`
+        : `<span class="pill hold">no preview</span>`;
+      return `<tr data-app="${esc(a.template_id)}"><td>${esc(a.title)}</td><td><span class="pill">req ${esc(a.request_hash)}</span></td>`+
+             `<td class="muted" style="font-size:11px">${esc(a.generated_app_path)}</td>`+
+             `<td><span class="pill ${k}">${esc(a.test_result)}</span></td>`+
+             `<td><span class="pill ${done?'live':'hold'}">${esc(a.final_status)}</span></td><td>${prev}</td></tr>`;
+    }).join('') || '<tr><td colspan="6" class="muted">No apps in factory index.</td></tr>';
+    if(d.unsupported_example) setPill($('factory-unsupported'), d.unsupported_example.request_text+' → '+d.unsupported_example.expected, 'refuse');
+  }catch(e){ $('factory-body').innerHTML='<tr><td colspan="6">UNKNOWN — could not load factory index (no green).</td></tr>'; }
+}
+
 // ---- Real Repo Proof (public self-owned; loads founder-safe results JSON) ----
 async function doRealRepo(){
   $('realrepo-body').innerHTML = '<tr><td colspan="5">Loading…</td></tr>';
@@ -543,6 +565,8 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('idea-input').addEventListener('input', doIdeaClassify);
   // Wave 8: Real Repo Proof panel
   $('realrepo-btn').addEventListener('click', doRealRepo);
+  // Local App Factory Proof panel
+  $('factory-load-btn')?.addEventListener('click', doFactory);
   // Wave 7: Doctor, Live-Gate Simulator, local rehearsal
   $('doctor-btn').addEventListener('click', doDoctor);
   $('rehearsal-btn').addEventListener('click', doRehearsal);

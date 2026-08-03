@@ -1,0 +1,35 @@
+{
+  "manifest_kind": "FACTORY_APP_MANIFEST",
+  "request_id": "req_4dd98a1c",
+  "request_text": "build a local budget tracker with fake amounts",
+  "request_hash": "4dd98a1c",
+  "selected_template_id": "budget_tracker",
+  "app_spec": {
+    "title": "Budget Tracker (fake amounts)",
+    "archetype": "budget_tracker",
+    "actions": "input + state-change + reset/delete/clear",
+    "local_only": true,
+    "synthetic_only": true
+  },
+  "generated_app_path": "tests/generated_apps/factory_runs/req_4dd98a1c",
+  "generated_files": [
+    "core.mjs",
+    "index.html",
+    "tests/budget.selftest.mjs",
+    "LIMITATIONS.md",
+    "package.json"
+  ],
+  "test_plan": "tests/generated_apps/factory_runs/req_4dd98a1c/tests/budget.selftest.mjs",
+  "test_results": {
+    "tests_run": true,
+    "result": "PASS 5/5",
+    "passed": 5,
+    "total": 5
+  },
+  "preview_url": "../../tests/generated_apps/factory_runs/req_4dd98a1c/index.html",
+  "evidence_manifest": "tests/generated_apps/factory_runs/req_4dd98a1c/manifest.json",
+  "builder_identity": "FounderGate local app factory",
+  "checker_verdict": "CLEAN_WITH_LIMITS",
+  "terminal_advisor_verdict": "LOCAL_APP_FACTORY_PROVEN_WITH_LIMITS",
+  "final_status": "BUILT_AND_PASSED"
+}

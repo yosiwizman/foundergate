@@ -1,0 +1,35 @@
+{
+  "manifest_kind": "FACTORY_APP_MANIFEST",
+  "request_id": "req_48826a22",
+  "request_text": "build a local notes board",
+  "request_hash": "48826a22",
+  "selected_template_id": "notes_board",
+  "app_spec": {
+    "title": "Notes Board",
+    "archetype": "notes_board",
+    "actions": "input + state-change + reset/delete/clear",
+    "local_only": true,
+    "synthetic_only": true
+  },
+  "generated_app_path": "tests/generated_apps/factory_runs/req_48826a22",
+  "generated_files": [
+    "core.mjs",
+    "index.html",
+    "tests/notes.selftest.mjs",
+    "LIMITATIONS.md",
+    "package.json"
+  ],
+  "test_plan": "tests/generated_apps/factory_runs/req_48826a22/tests/notes.selftest.mjs",
+  "test_results": {
+    "tests_run": true,
+    "result": "PASS 5/5",
+    "passed": 5,
+    "total": 5
+  },
+  "preview_url": "../../tests/generated_apps/factory_runs/req_48826a22/index.html",
+  "evidence_manifest": "tests/generated_apps/factory_runs/req_48826a22/manifest.json",
+  "builder_identity": "FounderGate local app factory",
+  "checker_verdict": "CLEAN_WITH_LIMITS",
+  "terminal_advisor_verdict": "LOCAL_APP_FACTORY_PROVEN_WITH_LIMITS",
+  "final_status": "BUILT_AND_PASSED"
+}

@@ -59,6 +59,7 @@
       <button class="nav"    data-panel="guide"    data-testid="nav-guide">💬 Ask Guide <span class="tag">static</span></button>
       <button class="nav"    data-panel="files"    data-testid="nav-files">📁 Files <span class="tag">synthetic demo</span></button>
       <button class="nav"    data-panel="idea"     data-testid="nav-idea">💡 Idea Builder <span class="tag">local synthetic</span></button>
+      <button class="nav"    data-panel="factory"  data-testid="nav-factory">🏭 Factory Proof <span class="tag">local synthetic</span></button>
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
@@ -285,6 +286,20 @@
         <p class="honesty" data-testid="idea-warning">Supported local templates: <b>calculator</b> and <b>task&nbsp;planner</b>. Your idea binds to a template and its real app/tests/preview, or it shows <b>UNSUPPORTED_LOCAL_TEMPLATE</b> — not built (no DONE/PASS, no preview). Real-world actions (deploy, connect a real calendar/account, email customers, charge/bill, use production data, merge, edit PR&nbsp;#200) are HELD/REFUSED. This builder does not generate arbitrary apps.</p>
         <table class="tbl"><thead><tr><th>Step</th><th>Status</th></tr></thead>
           <tbody id="idea-body" data-testid="idea-body"><tr><td colspan="2" style="color:var(--dim)">Click &ldquo;Load build status&rdquo;.</td></tr></tbody></table>
+        <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
+      </div>
+    </section>
+
+    <!-- ===== LOCAL APP FACTORY PROOF (local synthetic) ===== -->
+    <section class="panel" id="panel-factory" role="region" aria-label="Factory Proof" data-testid="panel-factory">
+      <div class="eyebrow">LOCAL APP FACTORY — LOCAL SYNTHETIC · request → generated files → app-specific tests → bound preview → evidence</div>
+      <div class="head"><div><h1>Factory Proof</h1><div class="sub">Small local synthetic apps generated into their own folders, each bound to a request and its own tests. Not production, not SaaS, never &ldquo;ship&rdquo;.</div></div></div>
+      <div class="card">
+        <div class="actions"><button id="factory-load-btn" class="btn primary" data-testid="factory-load-btn">Load factory proof</button></div>
+        <table class="tbl"><thead><tr><th>App</th><th>Request</th><th>Generated path</th><th>Tests</th><th>Status</th><th>Preview</th></tr></thead>
+          <tbody id="factory-body" data-testid="factory-body"><tr><td colspan="6" style="color:var(--dim)">Click &ldquo;Load factory proof&rdquo;.</td></tr></tbody></table>
+        <p class="honesty" data-testid="factory-note">Each row is a real app generated to disk under tests/generated_apps/factory_runs/&lt;request_id&gt;/ with its own tests. Preview links are derived from each app&rsquo;s manifest (not hardcoded). Unsupported/unsafe requests (real calendar/account/email/billing/deploy/PR&nbsp;#200/production data) are HELD/REFUSED — not built, no DONE/PASS, no preview.</p>
+        <div class="clsrow"><span>Unsupported example</span><span id="factory-unsupported" data-testid="factory-unsupported" class="pill refuse">—</span></div>
         <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
       </div>
     </section>

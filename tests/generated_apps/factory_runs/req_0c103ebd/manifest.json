@@ -1,0 +1,35 @@
+{
+  "manifest_kind": "FACTORY_APP_MANIFEST",
+  "request_id": "req_0c103ebd",
+  "request_text": "build a local inventory list",
+  "request_hash": "0c103ebd",
+  "selected_template_id": "inventory_list",
+  "app_spec": {
+    "title": "Inventory List",
+    "archetype": "inventory_list",
+    "actions": "input + state-change + reset/delete/clear",
+    "local_only": true,
+    "synthetic_only": true
+  },
+  "generated_app_path": "tests/generated_apps/factory_runs/req_0c103ebd",
+  "generated_files": [
+    "core.mjs",
+    "index.html",
+    "tests/inventory.selftest.mjs",
+    "LIMITATIONS.md",
+    "package.json"
+  ],
+  "test_plan": "tests/generated_apps/factory_runs/req_0c103ebd/tests/inventory.selftest.mjs",
+  "test_results": {
+    "tests_run": true,
+    "result": "PASS 5/5",
+    "passed": 5,
+    "total": 5
+  },
+  "preview_url": "../../tests/generated_apps/factory_runs/req_0c103ebd/index.html",
+  "evidence_manifest": "tests/generated_apps/factory_runs/req_0c103ebd/manifest.json",
+  "builder_identity": "FounderGate local app factory",
+  "checker_verdict": "CLEAN_WITH_LIMITS",
+  "terminal_advisor_verdict": "LOCAL_APP_FACTORY_PROVEN_WITH_LIMITS",
+  "final_status": "BUILT_AND_PASSED"
+}

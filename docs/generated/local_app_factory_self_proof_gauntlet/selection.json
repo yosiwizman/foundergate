@@ -1,0 +1,17 @@
+{
+  "seed": "20260803T0835ET",
+  "pool": [
+    "habit_tracker",
+    "budget_tracker",
+    "inventory_list",
+    "flashcards",
+    "notes_board",
+    "score_keeper"
+  ],
+  "selected": [
+    "score_keeper",
+    "budget_tracker",
+    "inventory_list",
+    "notes_board"
+  ]
+}

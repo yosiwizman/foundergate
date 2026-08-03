@@ -1,0 +1,55 @@
+{
+  "kind": "FACTORY_INDEX",
+  "seed": "20260803T0835ET",
+  "apps": [
+    {
+      "request_id": "req_f436e095",
+      "request_hash": "f436e095",
+      "request_text": "build a local score keeper",
+      "template_id": "score_keeper",
+      "title": "Score Keeper",
+      "generated_app_path": "tests/generated_apps/factory_runs/req_f436e095",
+      "preview_url": "../../tests/generated_apps/factory_runs/req_f436e095/index.html",
+      "test_result": "PASS 6/6",
+      "final_status": "BUILT_AND_PASSED"
+    },
+    {
+      "request_id": "req_4dd98a1c",
+      "request_hash": "4dd98a1c",
+      "request_text": "build a local budget tracker with fake amounts",
+      "template_id": "budget_tracker",
+      "title": "Budget Tracker (fake amounts)",
+      "generated_app_path": "tests/generated_apps/factory_runs/req_4dd98a1c",
+      "preview_url": "../../tests/generated_apps/factory_runs/req_4dd98a1c/index.html",
+      "test_result": "PASS 5/5",
+      "final_status": "BUILT_AND_PASSED"
+    },
+    {
+      "request_id": "req_0c103ebd",
+      "request_hash": "0c103ebd",
+      "request_text": "build a local inventory list",
+      "template_id": "inventory_list",
+      "title": "Inventory List",
+      "generated_app_path": "tests/generated_apps/factory_runs/req_0c103ebd",
+      "preview_url": "../../tests/generated_apps/factory_runs/req_0c103ebd/index.html",
+      "test_result": "PASS 5/5",
+      "final_status": "BUILT_AND_PASSED"
+    },
+    {
+      "request_id": "req_48826a22",
+      "request_hash": "48826a22",
+      "request_text": "build a local notes board",
+      "template_id": "notes_board",
+      "title": "Notes Board",
+      "generated_app_path": "tests/generated_apps/factory_runs/req_48826a22",
+      "preview_url": "../../tests/generated_apps/factory_runs/req_48826a22/index.html",
+      "test_result": "PASS 5/5",
+      "final_status": "BUILT_AND_PASSED"
+    }
+  ],
+  "unsupported_example": {
+    "request_text": "build an app that emails customers from Google Calendar",
+    "expected": "UNSUPPORTED/HELD — not built, no DONE/PASS, no preview"
+  },
+  "disclaimer": "Local synthetic apps only. No network/accounts/deploy/customer data. Never ship."
+}

@@ -1,0 +1,152 @@
+{
+  "seed": "20260803T0835ET",
+  "selected": [
+    "score_keeper",
+    "budget_tracker",
+    "inventory_list",
+    "notes_board"
+  ],
+  "allPass": true,
+  "manifests": [
+    {
+      "manifest_kind": "FACTORY_APP_MANIFEST",
+      "request_id": "req_f436e095",
+      "request_text": "build a local score keeper",
+      "request_hash": "f436e095",
+      "selected_template_id": "score_keeper",
+      "app_spec": {
+        "title": "Score Keeper",
+        "archetype": "score_keeper",
+        "actions": "input + state-change + reset/delete/clear",
+        "local_only": true,
+        "synthetic_only": true
+      },
+      "generated_app_path": "tests/generated_apps/factory_runs/req_f436e095",
+      "generated_files": [
+        "core.mjs",
+        "index.html",
+        "tests/score.selftest.mjs",
+        "LIMITATIONS.md",
+        "package.json"
+      ],
+      "test_plan": "tests/generated_apps/factory_runs/req_f436e095/tests/score.selftest.mjs",
+      "test_results": {
+        "tests_run": true,
+        "result": "PASS 6/6",
+        "passed": 6,
+        "total": 6
+      },
+      "preview_url": "../../tests/generated_apps/factory_runs/req_f436e095/index.html",
+      "evidence_manifest": "tests/generated_apps/factory_runs/req_f436e095/manifest.json",
+      "builder_identity": "FounderGate local app factory",
+      "checker_verdict": "PENDING_INDEPENDENT_CHECKER",
+      "terminal_advisor_verdict": "PENDING_INDEPENDENT_TERMINAL_ADVISOR",
+      "final_status": "BUILT_AND_PASSED"
+    },
+    {
+      "manifest_kind": "FACTORY_APP_MANIFEST",
+      "request_id": "req_4dd98a1c",
+      "request_text": "build a local budget tracker with fake amounts",
+      "request_hash": "4dd98a1c",
+      "selected_template_id": "budget_tracker",
+      "app_spec": {
+        "title": "Budget Tracker (fake amounts)",
+        "archetype": "budget_tracker",
+        "actions": "input + state-change + reset/delete/clear",
+        "local_only": true,
+        "synthetic_only": true
+      },
+      "generated_app_path": "tests/generated_apps/factory_runs/req_4dd98a1c",
+      "generated_files": [
+        "core.mjs",
+        "index.html",
+        "tests/budget.selftest.mjs",
+        "LIMITATIONS.md",
+        "package.json"
+      ],
+      "test_plan": "tests/generated_apps/factory_runs/req_4dd98a1c/tests/budget.selftest.mjs",
+      "test_results": {
+        "tests_run": true,
+        "result": "PASS 5/5",
+        "passed": 5,
+        "total": 5
+      },
+      "preview_url": "../../tests/generated_apps/factory_runs/req_4dd98a1c/index.html",
+      "evidence_manifest": "tests/generated_apps/factory_runs/req_4dd98a1c/manifest.json",
+      "builder_identity": "FounderGate local app factory",
+      "checker_verdict": "PENDING_INDEPENDENT_CHECKER",
+      "terminal_advisor_verdict": "PENDING_INDEPENDENT_TERMINAL_ADVISOR",
+      "final_status": "BUILT_AND_PASSED"
+    },
+    {
+      "manifest_kind": "FACTORY_APP_MANIFEST",
+      "request_id": "req_0c103ebd",
+      "request_text": "build a local inventory list",
+      "request_hash": "0c103ebd",
+      "selected_template_id": "inventory_list",
+      "app_spec": {
+        "title": "Inventory List",
+        "archetype": "inventory_list",
+        "actions": "input + state-change + reset/delete/clear",
+        "local_only": true,
+        "synthetic_only": true
+      },
+      "generated_app_path": "tests/generated_apps/factory_runs/req_0c103ebd",
+      "generated_files": [
+        "core.mjs",
+        "index.html",
+        "tests/inventory.selftest.mjs",
+        "LIMITATIONS.md",
+        "package.json"
+      ],
+      "test_plan": "tests/generated_apps/factory_runs/req_0c103ebd/tests/inventory.selftest.mjs",
+      "test_results": {
+        "tests_run": true,
+        "result": "PASS 5/5",
+        "passed": 5,
+        "total": 5
+      },
+      "preview_url": "../../tests/generated_apps/factory_runs/req_0c103ebd/index.html",
+      "evidence_manifest": "tests/generated_apps/factory_runs/req_0c103ebd/manifest.json",
+      "builder_identity": "FounderGate local app factory",
+      "checker_verdict": "PENDING_INDEPENDENT_CHECKER",
+      "terminal_advisor_verdict": "PENDING_INDEPENDENT_TERMINAL_ADVISOR",
+      "final_status": "BUILT_AND_PASSED"
+    },
+    {
+      "manifest_kind": "FACTORY_APP_MANIFEST",
+      "request_id": "req_48826a22",
+      "request_text": "build a local notes board",
+      "request_hash": "48826a22",
+      "selected_template_id": "notes_board",
+      "app_spec": {
+        "title": "Notes Board",
+        "archetype": "notes_board",
+        "actions": "input + state-change + reset/delete/clear",
+        "local_only": true,
+        "synthetic_only": true
+      },
+      "generated_app_path": "tests/generated_apps/factory_runs/req_48826a22",
+      "generated_files": [
+        "core.mjs",
+        "index.html",
+        "tests/notes.selftest.mjs",
+        "LIMITATIONS.md",
+        "package.json"
+      ],
+      "test_plan": "tests/generated_apps/factory_runs/req_48826a22/tests/notes.selftest.mjs",
+      "test_results": {
+        "tests_run": true,
+        "result": "PASS 5/5",
+        "passed": 5,
+        "total": 5
+      },
+      "preview_url": "../../tests/generated_apps/factory_runs/req_48826a22/index.html",
+      "evidence_manifest": "tests/generated_apps/factory_runs/req_48826a22/manifest.json",
+      "builder_identity": "FounderGate local app factory",
+      "checker_verdict": "PENDING_INDEPENDENT_CHECKER",
+      "terminal_advisor_verdict": "PENDING_INDEPENDENT_TERMINAL_ADVISOR",
+      "final_status": "BUILT_AND_PASSED"
+    }
+  ]
+}
