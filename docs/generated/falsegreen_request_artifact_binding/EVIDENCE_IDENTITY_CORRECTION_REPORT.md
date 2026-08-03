@@ -10,8 +10,9 @@ parent instead of the tip — an off-by-one evidence-identity defect caught by t
 ## Heads (mechanically verified)
 - **Previously reported final head:** `dc9a2badcbf1` (incorrect — the pre-stamp first commit).
 - **Actual branch head BEFORE this correction:** `d1b18cdc274d57213cab93bf1d1e655599dace89`.
-- **Actual branch head AFTER this correction:** `__AFTER_HEAD__` (this evidence-correction commit; the live tip
-  is `git rev-parse HEAD` on the branch — see note below).
+- **Actual branch head AFTER this correction:** `83174404da51` (the docs-only metadata-correction commit verified by both reviewers). The final
+  ZIP-sealing commit adds the two independent evidence reviewer reports (also docs-only); the live branch tip
+  is `git rev-parse HEAD` and is one commit beyond `83174404da51`.
 - Branch: `run/falsegreen-request-artifact-binding-20260803T0640ET` (non-main).
 
 ## What changed / did not change
@@ -27,5 +28,5 @@ parent instead of the tip — an off-by-one evidence-identity defect caught by t
 
 ## Note on head self-reference
 A commit cannot contain its own SHA. FINAL_STATUS.md therefore names the behavior-complete head
-`d1b18cdc274d` (stable and correct) and defers the live branch tip to `git rev-parse HEAD`. The
-`__AFTER_HEAD__` value below is stamped by a final metadata-only commit; the current tip is that stamp commit.
+`d1b18cdc274d` (stable and correct) and defers the live branch tip to `git rev-parse HEAD`. The verified after-head `83174404da51` is the metadata-correction commit; the ZIP-sealing commit
+(adding the reviewer reports) is a further docs-only commit and is the current tip per git.
