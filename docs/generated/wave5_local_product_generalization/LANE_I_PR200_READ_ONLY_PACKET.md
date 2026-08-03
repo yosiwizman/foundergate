@@ -5,6 +5,7 @@ READ-ONLY. No comment, close, ready-marking, merge, branch edit, push, or label 
 - Relation to current work: the Wave 1–5 local product loop lives entirely on separate non-main
   run/* branches; PR #200 is an older draft and is **stale** relative to the current local product loop.
 - Recommendation: **KEEP PARKED** (do not merge/rebase now). Any disposition (rebase / review / close)
-  is a protected founder gate — see the Founder Action Bundle. Read-only metadata captured in the
-  sealed receipt (evidence/pr200_readonly.json).
+  is a protected founder gate — see the Founder Action Bundle. Read-only metadata is captured in the
+  SEALED RECEIPT ZIP at `receipt/evidence/pr200_readonly.json` (part of the founder's final ZIP;
+  by design it is NOT committed to the git branch — receipts live outside the repo).
 No-mutation proof: only `gh pr view 200 --json …` (read) was used; protected main + PR #200 unchanged.
