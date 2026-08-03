@@ -8,4 +8,4 @@
 - Independent Checker: **CLEAN_WITH_LIMITS**. Independent Terminal Advisor: **REQUEST_ARTIFACT_BINDING_CORRECTED_WITH_LIMITS**.
 - Gate 8 remains **BLOCKED**. No commercial execution. Protected main + PR #200 untouched. Decision never SHIP.
 
-Final head: __FINAL_HEAD__
+Final head: dc9a2badcbf1 (branch tip after sealing commit)
