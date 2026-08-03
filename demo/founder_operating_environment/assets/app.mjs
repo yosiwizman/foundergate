@@ -401,6 +401,33 @@ async function doReviewer(){
   }catch(e){ $('reviewer-timeline').innerHTML='<tr><td colspan="4">UNKNOWN — could not load reviewer data</td></tr>'; }
 }
 
+// ---- Provider / Repo Proof (provider-agnostic; loads provider_index.json; provider claim is never PASS) ----
+async function doProvider(){
+  $('provider-body').innerHTML = '<tr><td colspan="7">Loading…</td></tr>';
+  try{
+    const r = await fetch('assets/provider/provider_index.json', {cache:'no-store'});
+    if(!r.ok) throw new Error('provider_index '+r.status);
+    const d = await r.json();
+    if($('provider-labels')) $('provider-labels').innerHTML = (d.labels||[]).map(l=>`<span class="lbl">${esc(l)}</span>`).join(' ');
+    let pass=0, held=0;
+    $('provider-body').innerHTML = (d.providers||[]).map(p=>{
+      const ok = p.final_status==='PASS_VERIFIED'; if(ok) pass++; else held++;
+      const overclaim = p.claim_vs_verification==='PROVIDER_OVERCLAIMED_CAUGHT';
+      const claimCell = `<span class="pill ${overclaim?'refuse':''}">${esc(String(p.provider_claim_tests||'—'))}${overclaim?' ⚠ overclaim':''}</span>`;
+      return `<tr data-case="${esc(p.case)}"><td class="muted" style="font-size:11px">${esc(p.case)}</td><td>${esc(p.provider_label||p.provider_id)}</td>`+
+             `<td><span class="pill">${esc(p.mode)}</span></td><td>${claimCell}</td>`+
+             `<td><span class="pill ${ok?'live':'hold'}">${esc(p.foundergate_result)}</span></td>`+
+             `<td>${esc(p.verified_tests||'N/A')}</td>`+
+             `<td><span class="pill ${ok?'live':(/REFUSED/.test(p.final_status)?'refuse':'hold')}">${esc(p.final_status)}</span></td></tr>`;
+    }).join('') || '<tr><td colspan="7" class="muted">No provider cases.</td></tr>';
+    $('provider-repo-body').innerHTML = (d.repo_checks||[]).map(c=>{
+      const held2 = /HELD/.test(c.classification);
+      return `<tr><td>${esc(c.name)}</td><td><span class="pill ${held2?'refuse':'live'}">${esc(c.classification)}</span></td><td class="muted">${esc(c.project_type||'-')}</td><td>${esc(String(c.tests))}</td><td class="muted" style="font-size:11px">${esc(c.safe_next_action||'')}</td></tr>`;
+    }).join('') || '<tr><td colspan="5" class="muted">—</td></tr>';
+    setPill($('provider-summary'), `${(d.providers||[]).length} cases · ${pass} PASS_VERIFIED · ${held} held/refused · 0 provider self-certified · Gate 8 blocked`, held>0?'hold':'live');
+  }catch(e){ $('provider-body').innerHTML='<tr><td colspan="7">UNKNOWN — could not load provider index (no green).</td></tr>'; }
+}
+
 // ---- Crash Test (failure-mode / recovery; loads crash_index.json; NEVER green on broken) ----
 async function doCrash(){
   $('crash-body').innerHTML = '<tr><td colspan="6">Loading…</td></tr>';
@@ -655,6 +682,8 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('factory2-load-btn')?.addEventListener('click', doFactory2);
   // Crash Test panel
   $('crash-load-btn')?.addEventListener('click', doCrash);
+  // Provider / Repo Proof panel
+  $('provider-load-btn')?.addEventListener('click', doProvider);
   // Founder Drive Mode + Reviewer Readiness
   $('drive-refresh-btn')?.addEventListener('click', doDrive);
   $('drive-reviewer-btn')?.addEventListener('click', ()=>{ showPanel('reviewer'); doReviewer(); });

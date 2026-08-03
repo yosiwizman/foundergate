@@ -71,7 +71,8 @@ export function generateAndTest(archetypeId, opts = {}) {
     terminal_advisor_verdict: 'PENDING_INDEPENDENT_TERMINAL_ADVISOR',
     // DONE requires files on disk (they exist); PASS requires tests to have passed.
     final_status: (generated_files.length && t.ok) ? 'BUILT_AND_PASSED' : 'HOLD_TESTS_FAILED',
+    ...(opts.extra || {}),   // e.g. { provider_id, run_id, mode } merged in by the provider harness
   };
   writeFileSync(join(absDir, 'manifest.json'), JSON.stringify(manifest, null, 2));
-  return manifest;
+  return { ...manifest, absDir, relDir };
 }

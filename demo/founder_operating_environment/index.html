@@ -72,6 +72,7 @@
       <button class="nav"    data-panel="factory2" data-testid="nav-factory2">🔁 Factory Round 2 <span class="tag">repeatability</span></button>
       <button class="nav"    data-panel="crash"    data-testid="nav-crash">🧯 Crash Test <span class="tag">failure modes</span></button>
       <button class="nav"    data-panel="reviewer" data-testid="nav-reviewer">🔍 Reviewer Readiness <span class="tag">planning</span></button>
+      <button class="nav"    data-panel="provider" data-testid="nav-provider">🔌 Provider / Repo Proof <span class="tag">simulated</span></button>
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
@@ -352,6 +353,25 @@
         <h3 style="font-size:12.5px;color:var(--dim);margin:10px 0 4px">Showroom documents (local files)</h3>
         <div id="reviewer-docs" data-testid="reviewer-docs" class="actions"></div>
         <p class="honesty" data-testid="showroom-note">These links open LOCAL planning documents only. There are no external links, no contact buttons, and no payment/deploy/provider controls. Showing this to a real evaluator is Gate 8 — not authorized here.</p>
+      </div>
+    </section>
+
+    <!-- ===== PROVIDER / REPO PROOF (provider-agnostic; simulated only) ===== -->
+    <section class="panel" id="panel-provider" role="region" aria-label="Provider / Repo Proof" data-testid="panel-provider">
+      <div class="eyebrow">PROVIDER / REPO PROOF — FounderGate is the GATE, the AI/provider is only a WORKER · simulated only</div>
+      <div class="head"><div><h1>Provider / Repo Proof</h1><div class="sub">Claude, OpenAI/Codex, Hermes, and a local shell are all treated as replaceable providers behind one evidence contract. A provider&rsquo;s claim is never enough — FounderGate independently verifies. Local synthetic only.</div></div></div>
+      <div class="card">
+        <div class="fg-labels" id="provider-labels" data-testid="provider-labels"></div>
+        <div class="actions"><button id="provider-load-btn" class="btn primary" data-testid="provider-load-btn">Load provider proof</button></div>
+        <h2 style="font-size:14px;margin:10px 0 4px">Providers (claim → FounderGate verification)</h2>
+        <table class="tbl"><thead><tr><th>Case</th><th>Provider</th><th>Mode</th><th>Provider claim</th><th>FounderGate result</th><th>Verified tests</th><th>Status</th></tr></thead>
+          <tbody id="provider-body" data-testid="provider-body"><tr><td colspan="7" style="color:var(--dim)">Click &ldquo;Load provider proof&rdquo;.</td></tr></tbody></table>
+        <h2 style="font-size:14px;margin:14px 0 4px">Repo evidence checks (local self-owned only)</h2>
+        <table class="tbl"><thead><tr><th>Source</th><th>Classification</th><th>Type</th><th>Tests</th><th>Safe next action</th></tr></thead>
+          <tbody id="provider-repo-body" data-testid="provider-repo-body"><tr><td colspan="5" style="color:var(--dim)">—</td></tr></tbody></table>
+        <p class="honesty" data-testid="provider-note">A provider that CLAIMS success without real files, with the wrong preview, without tests, or that asks for network/keys/deploy/private-repo is HELD/REFUSED — never PASS. Real OpenAI/Codex/Hermes activation and private-repo access each require a separate founder gate.</p>
+        <div class="clsrow"><span>Summary</span><span id="provider-summary" data-testid="provider-summary" class="pill">—</span></div>
+        <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
       </div>
     </section>
 
