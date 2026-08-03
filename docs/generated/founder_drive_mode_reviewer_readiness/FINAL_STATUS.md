@@ -7,4 +7,4 @@
 - protected main (origin/main 65fd01669f80) untouched ✅ · PR #200 untouched ✅ · prior evidence unmodified ✅ · no deploy/bill/provider/customer/private data/contact/merge ✅
 - **Gate 8 remains BLOCKED** (evaluator prep packet is planning-only; needs a separate founder authorization phrase). Local synthetic only; never SHIP.
 
-Base c5dfca39a482. Final head: tip of run/founder-drive-mode-reviewer-readiness-20260803T1145ET (git rev-parse HEAD).
+Base c5dfca39a482. Final head: tip of run/founder-drive-mode-reviewer-readiness-20260803T1145ET (git rev-parse HEAD). Sealing commit: adf88fed1fe0 (+ this stamp).
