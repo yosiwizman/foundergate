@@ -1,0 +1,127 @@
+{
+  "kind": "CRASH_INDEX",
+  "run_id": "crash_20260803T1030ET",
+  "fixtures": [
+    {
+      "fixture_id": "F01_missing_manifest",
+      "fault": "deleted manifest.json",
+      "expected": "HOLD_MISSING_MANIFEST",
+      "actual": "HOLD_MISSING_MANIFEST",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "recovery": "RECOVERED_WITH_LIMITS",
+      "recovery_after": "OK"
+    },
+    {
+      "fixture_id": "F02_corrupted_manifest",
+      "fault": "wrote invalid JSON to manifest",
+      "expected": "HOLD_CORRUPTED_MANIFEST",
+      "actual": "HOLD_CORRUPTED_MANIFEST",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "recovery": "RECOVERED_WITH_LIMITS",
+      "recovery_after": "OK"
+    },
+    {
+      "fixture_id": "F03_hash_mismatch",
+      "fault": "request_text changed, request_id left stale",
+      "expected": "HOLD_REQUEST_HASH_MISMATCH",
+      "actual": "HOLD_REQUEST_HASH_MISMATCH",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "recovery": "n/a",
+      "recovery_after": null
+    },
+    {
+      "fixture_id": "F04_preview_mismatch",
+      "fault": "preview_url points to a different app",
+      "expected": "HOLD_PREVIEW_MISMATCH",
+      "actual": "HOLD_PREVIEW_MISMATCH",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "recovery": "RECOVERED_WITH_LIMITS",
+      "recovery_after": "OK"
+    },
+    {
+      "fixture_id": "F05_test_failure",
+      "fault": "app test replaced with a failing test",
+      "expected": "HOLD_TEST_FAILURE",
+      "actual": "HOLD_TEST_FAILURE",
+      "preview_allowed": false,
+      "test_result": "FAIL",
+      "recovery": "n/a",
+      "recovery_after": null
+    },
+    {
+      "fixture_id": "F06_missing_index",
+      "fault": "deleted index.html",
+      "expected": "HOLD_PARTIAL_GENERATION",
+      "actual": "HOLD_PARTIAL_GENERATION",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "recovery": "RECOVERED_WITH_LIMITS",
+      "recovery_after": "OK"
+    },
+    {
+      "fixture_id": "F07_stale_round1",
+      "fault": "Round 1 app presented as current crash proof",
+      "expected": "HOLD_STALE_EVIDENCE",
+      "actual": "HOLD_STALE_EVIDENCE",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "recovery": "HELD",
+      "recovery_after": "HOLD_STALE_EVIDENCE"
+    },
+    {
+      "fixture_id": "F08_stale_round2",
+      "fault": "Round 2 app presented as current crash proof",
+      "expected": "HOLD_STALE_EVIDENCE",
+      "actual": "HOLD_STALE_EVIDENCE",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "recovery": "HELD",
+      "recovery_after": "HOLD_STALE_EVIDENCE"
+    },
+    {
+      "fixture_id": "F09_unsupported",
+      "fault": "manifest for an unsupported/unsafe request",
+      "expected": "HOLD_UNSUPPORTED_OR_UNSAFE",
+      "actual": "HOLD_UNSUPPORTED_OR_UNSAFE",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "recovery": "n/a",
+      "recovery_after": null
+    },
+    {
+      "fixture_id": "F10_server_unavailable",
+      "fault": "preview server unreachable (dead port)",
+      "expected": "HOLD_SERVER_UNAVAILABLE",
+      "actual": "HOLD_SERVER_UNAVAILABLE",
+      "preview_allowed": false,
+      "test_result": "PASS 5/5",
+      "recovery": "RECOVERED_WITH_LIMITS",
+      "recovery_after": "OK"
+    },
+    {
+      "fixture_id": "F11_partial_generation",
+      "fault": "core.mjs missing (interrupted mid-generation)",
+      "expected": "HOLD_PARTIAL_GENERATION",
+      "actual": "HOLD_PARTIAL_GENERATION",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "recovery": "RECOVERED_WITH_LIMITS",
+      "recovery_after": "OK"
+    },
+    {
+      "fixture_id": "F12_post_checker_mutation",
+      "fault": "app files mutated after checker recorded content hash",
+      "expected": "HOLD_POST_CHECKER_MUTATION",
+      "actual": "HOLD_POST_CHECKER_MUTATION",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "recovery": "n/a",
+      "recovery_after": null
+    }
+  ],
+  "disclaimer": "Local synthetic crash-test fixtures. No broken fixture is ever shown green. Never ship."
+}

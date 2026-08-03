@@ -73,6 +73,17 @@ function stripNegations(text) {
     .replace(/\b(no real|no|not|without|never|avoid|excluding|except)\b[^,.;\n]*/gi, ' ');
 }
 
+// isUnsafeRequest(text) → true only for real-world / protected-gate intent (calendar/account/email/billing/
+// production data/security-SaaS/private repo/CRM, or deploy/merge/PR#200). NOT true merely because no
+// Idea-Builder template matched — that distinction matters for the app factory, whose archetypes are safe
+// local apps the Idea-Builder registry does not list.
+export function isUnsafeRequest(text) {
+  const t = stripNegations(text);
+  for (const [re, label] of GATE) if (re.test(t)) return { unsafe: true, kind: 'HELD_REQUIRES_FOUNDER_GATE', label };
+  for (const [re, label] of REFUSE) if (re.test(t)) return { unsafe: true, kind: 'UNSUPPORTED_LOCAL_TEMPLATE', label };
+  return { unsafe: false, kind: 'SAFE', label: null };
+}
+
 // classifyRequest(text) → the binding decision. kinds:
 //   SUPPORTED                    → template_id set; artifact/tests/preview bind to it
 //   HELD_REQUIRES_FOUNDER_GATE   → protected real-world action; no DONE/PASS, no preview

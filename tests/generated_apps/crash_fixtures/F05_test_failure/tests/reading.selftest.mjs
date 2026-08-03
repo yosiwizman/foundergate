@@ -1,0 +1,1 @@
+console.error("FAIL: injected"); process.exit(1);

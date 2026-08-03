@@ -1,0 +1,216 @@
+{
+  "run_id": "crash_20260803T1030ET",
+  "total": 12,
+  "holds": 12,
+  "recovered": 6,
+  "anyGreenOnBroken": false,
+  "matched": 12,
+  "results": [
+    {
+      "fixture_id": "F01_missing_manifest",
+      "injected_fault": "deleted manifest.json",
+      "expected_classification": "HOLD_MISSING_MANIFEST",
+      "actual_classification": "HOLD_MISSING_MANIFEST",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "reason": "manifest.json not found",
+      "recovery": {
+        "attempted": true,
+        "action": "regenerated manifest+app from archetype (reconstructable)",
+        "after": null,
+        "succeeded": true,
+        "limitations": "recovered only because source archetype is deterministic",
+        "after_classification": "OK",
+        "retested": "PASS 5/5"
+      }
+    },
+    {
+      "fixture_id": "F02_corrupted_manifest",
+      "injected_fault": "wrote invalid JSON to manifest",
+      "expected_classification": "HOLD_CORRUPTED_MANIFEST",
+      "actual_classification": "HOLD_CORRUPTED_MANIFEST",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "reason": "manifest.json is not valid JSON",
+      "recovery": {
+        "attempted": true,
+        "action": "refused corrupted manifest; regenerated from archetype",
+        "after": null,
+        "succeeded": true,
+        "limitations": "source artifact intact",
+        "after_classification": "OK",
+        "retested": "PASS 5/5"
+      }
+    },
+    {
+      "fixture_id": "F03_hash_mismatch",
+      "injected_fault": "request_text changed, request_id left stale",
+      "expected_classification": "HOLD_REQUEST_HASH_MISMATCH",
+      "actual_classification": "HOLD_REQUEST_HASH_MISMATCH",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "reason": "request_id does not match hash(request_text)",
+      "recovery": {
+        "attempted": false,
+        "action": "none",
+        "after": null,
+        "succeeded": false,
+        "limitations": ""
+      }
+    },
+    {
+      "fixture_id": "F04_preview_mismatch",
+      "injected_fault": "preview_url points to a different app",
+      "expected_classification": "HOLD_PREVIEW_MISMATCH",
+      "actual_classification": "HOLD_PREVIEW_MISMATCH",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "reason": "preview_url not bound to this app folder",
+      "recovery": {
+        "attempted": true,
+        "action": "rebound preview_url to own app folder",
+        "after": null,
+        "succeeded": true,
+        "limitations": "mechanically safe rebind",
+        "after_classification": "OK",
+        "retested": "PASS 5/5"
+      }
+    },
+    {
+      "fixture_id": "F05_test_failure",
+      "injected_fault": "app test replaced with a failing test",
+      "expected_classification": "HOLD_TEST_FAILURE",
+      "actual_classification": "HOLD_TEST_FAILURE",
+      "preview_allowed": false,
+      "test_result": "FAIL",
+      "reason": "app test did not pass",
+      "recovery": {
+        "attempted": false,
+        "action": "none",
+        "after": null,
+        "succeeded": false,
+        "limitations": ""
+      }
+    },
+    {
+      "fixture_id": "F06_missing_index",
+      "injected_fault": "deleted index.html",
+      "expected_classification": "HOLD_PARTIAL_GENERATION",
+      "actual_classification": "HOLD_PARTIAL_GENERATION",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "reason": "missing index.html",
+      "recovery": {
+        "attempted": true,
+        "action": "regenerated app from archetype",
+        "after": null,
+        "succeeded": true,
+        "limitations": "",
+        "after_classification": "OK",
+        "retested": "PASS 5/5"
+      }
+    },
+    {
+      "fixture_id": "F07_stale_round1",
+      "injected_fault": "Round 1 app presented as current crash proof",
+      "expected_classification": "HOLD_STALE_EVIDENCE",
+      "actual_classification": "HOLD_STALE_EVIDENCE",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "reason": "manifest run_id (none) != current crash_20260803T1030ET",
+      "recovery": {
+        "attempted": true,
+        "action": "refused reuse; requires current run_id",
+        "after": null,
+        "succeeded": false,
+        "limitations": "stale evidence is never accepted as current",
+        "after_classification": "HOLD_STALE_EVIDENCE"
+      }
+    },
+    {
+      "fixture_id": "F08_stale_round2",
+      "injected_fault": "Round 2 app presented as current crash proof",
+      "expected_classification": "HOLD_STALE_EVIDENCE",
+      "actual_classification": "HOLD_STALE_EVIDENCE",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "reason": "manifest run_id (none) != current crash_20260803T1030ET",
+      "recovery": {
+        "attempted": true,
+        "action": "refused reuse; requires current run_id",
+        "after": null,
+        "succeeded": false,
+        "limitations": "stale evidence is never accepted as current",
+        "after_classification": "HOLD_STALE_EVIDENCE"
+      }
+    },
+    {
+      "fixture_id": "F09_unsupported",
+      "injected_fault": "manifest for an unsupported/unsafe request",
+      "expected_classification": "HOLD_UNSUPPORTED_OR_UNSAFE",
+      "actual_classification": "HOLD_UNSUPPORTED_OR_UNSAFE",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "reason": "unsafe intent: real calendar/account (UNSUPPORTED_LOCAL_TEMPLATE)",
+      "recovery": {
+        "attempted": false,
+        "action": "none",
+        "after": null,
+        "succeeded": false,
+        "limitations": ""
+      }
+    },
+    {
+      "fixture_id": "F10_server_unavailable",
+      "injected_fault": "preview server unreachable (dead port)",
+      "expected_classification": "HOLD_SERVER_UNAVAILABLE",
+      "actual_classification": "HOLD_SERVER_UNAVAILABLE",
+      "preview_allowed": false,
+      "test_result": "PASS 5/5",
+      "reason": "preview server unreachable",
+      "recovery": {
+        "attempted": true,
+        "action": "verified owned local server reachable; re-checked preview",
+        "after": null,
+        "succeeded": true,
+        "limitations": "isolated unreachable-endpoint injection (did not kill the shared demo server)",
+        "after_classification": "OK",
+        "retested": "PASS 5/5"
+      }
+    },
+    {
+      "fixture_id": "F11_partial_generation",
+      "injected_fault": "core.mjs missing (interrupted mid-generation)",
+      "expected_classification": "HOLD_PARTIAL_GENERATION",
+      "actual_classification": "HOLD_PARTIAL_GENERATION",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "reason": "missing core.mjs",
+      "recovery": {
+        "attempted": true,
+        "action": "cleaned isolated partial fixture; regenerated",
+        "after": null,
+        "succeeded": true,
+        "limitations": "",
+        "after_classification": "OK",
+        "retested": "PASS 5/5"
+      }
+    },
+    {
+      "fixture_id": "F12_post_checker_mutation",
+      "injected_fault": "app files mutated after checker recorded content hash",
+      "expected_classification": "HOLD_POST_CHECKER_MUTATION",
+      "actual_classification": "HOLD_POST_CHECKER_MUTATION",
+      "preview_allowed": false,
+      "test_result": "N/A",
+      "reason": "app files changed after checker recorded content hash",
+      "recovery": {
+        "attempted": false,
+        "action": "none",
+        "after": null,
+        "succeeded": false,
+        "limitations": ""
+      }
+    }
+  ]
+}

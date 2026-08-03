@@ -1,0 +1,15 @@
+{
+  "manifest_kind": "CRASH_FIXTURE_APP",
+  "run_id": "crash_20260803T1030ET",
+  "request_id": "req_8b7de6b1",
+  "request_text": "build a local habit tracker",
+  "request_hash": "8b7de6b1",
+  "selected_template_id": "reading_list",
+  "generated_app_path": "tests/generated_apps/crash_fixtures/F03_hash_mismatch",
+  "preview_url": "../../tests/generated_apps/crash_fixtures/F03_hash_mismatch/index.html",
+  "test_plan": "tests/generated_apps/crash_fixtures/F03_hash_mismatch/tests/reading.selftest.mjs",
+  "builder_identity": "FounderGate crash harness",
+  "checker_verdict": "PENDING_INDEPENDENT_CHECKER",
+  "terminal_advisor_verdict": "PENDING_INDEPENDENT_TERMINAL_ADVISOR",
+  "final_status": "BUILT"
+}

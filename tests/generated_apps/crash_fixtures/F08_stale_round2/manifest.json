@@ -1,0 +1,35 @@
+{
+  "manifest_kind": "FACTORY_APP_MANIFEST",
+  "request_id": "req_8b7de6b1",
+  "request_text": "build a local reading list",
+  "request_hash": "8b7de6b1",
+  "selected_template_id": "reading_list",
+  "app_spec": {
+    "title": "Reading List",
+    "archetype": "reading_list",
+    "actions": "input + state-change + reset/delete/clear",
+    "local_only": true,
+    "synthetic_only": true
+  },
+  "generated_app_path": "tests/generated_apps/factory_round2/req_8b7de6b1",
+  "generated_files": [
+    "core.mjs",
+    "index.html",
+    "tests/reading.selftest.mjs",
+    "LIMITATIONS.md",
+    "package.json"
+  ],
+  "test_plan": "tests/generated_apps/factory_round2/req_8b7de6b1/tests/reading.selftest.mjs",
+  "test_results": {
+    "tests_run": true,
+    "result": "PASS 5/5",
+    "passed": 5,
+    "total": 5
+  },
+  "preview_url": "../../tests/generated_apps/factory_round2/req_8b7de6b1/index.html",
+  "evidence_manifest": "tests/generated_apps/factory_round2/req_8b7de6b1/manifest.json",
+  "builder_identity": "FounderGate local app factory",
+  "checker_verdict": "CLEAN_WITH_LIMITS",
+  "terminal_advisor_verdict": "LOCAL_APP_FACTORY_REPEATABILITY_PROVEN_WITH_LIMITS",
+  "final_status": "BUILT_AND_PASSED"
+}

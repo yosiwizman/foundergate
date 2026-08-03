@@ -361,6 +361,28 @@ async function doFactory2(){
   }catch(e){ $('factory2-body').innerHTML='<tr><td colspan="6">UNKNOWN — could not load Round 2 index (no green).</td></tr>'; }
 }
 
+// ---- Crash Test (failure-mode / recovery; loads crash_index.json; NEVER green on broken) ----
+async function doCrash(){
+  $('crash-body').innerHTML = '<tr><td colspan="6">Loading…</td></tr>';
+  try{
+    const r = await fetch('assets/crash/crash_index.json', {cache:'no-store'});
+    if(!r.ok) throw new Error('crash_index '+r.status);
+    const d = await r.json();
+    let holds=0, recovered=0;
+    $('crash-body').innerHTML = (d.fixtures||[]).map(fx=>{
+      const held = String(fx.actual).startsWith('HOLD'); if(held) holds++;
+      const rec = fx.recovery==='RECOVERED_WITH_LIMITS'; if(rec) recovered++;
+      const prevCell = fx.preview_allowed ? '<span class="pill live">allowed</span>' : '<span class="pill hold">BLOCKED</span>';
+      const recCell = fx.recovery==='RECOVERED_WITH_LIMITS' ? '<span class="pill live">RECOVERED_WITH_LIMITS</span>'
+        : (fx.recovery==='HELD' ? '<span class="pill refuse">HELD (no recovery)</span>' : '<span class="pill">n/a</span>');
+      return `<tr data-fixture="${esc(fx.fixture_id)}"><td>${esc(fx.fixture_id)}</td><td class="muted" style="font-size:11px">${esc(fx.fault)}</td>`+
+             `<td><span class="pill hold">${esc(fx.actual)}</span></td><td>${prevCell}</td>`+
+             `<td><span class="pill ${/PASS/.test(fx.test_result)?'live':'hold'}">${esc(fx.test_result)}</span></td><td>${recCell}</td></tr>`;
+    }).join('') || '<tr><td colspan="6" class="muted">No crash fixtures.</td></tr>';
+    setPill($('crash-summary'), `${(d.fixtures||[]).length} fixtures · ${holds} HELD · ${recovered} recovered · 0 shown green`, holds>0?'hold':'');
+  }catch(e){ $('crash-body').innerHTML='<tr><td colspan="6">UNKNOWN — could not load crash index (no green).</td></tr>'; }
+}
+
 // ---- Real Repo Proof (public self-owned; loads founder-safe results JSON) ----
 async function doRealRepo(){
   $('realrepo-body').innerHTML = '<tr><td colspan="5">Loading…</td></tr>';
@@ -591,6 +613,8 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('factory-load-btn')?.addEventListener('click', doFactory);
   // Local App Factory Round 2 panel
   $('factory2-load-btn')?.addEventListener('click', doFactory2);
+  // Crash Test panel
+  $('crash-load-btn')?.addEventListener('click', doCrash);
   // Wave 7: Doctor, Live-Gate Simulator, local rehearsal
   $('doctor-btn').addEventListener('click', doDoctor);
   $('rehearsal-btn').addEventListener('click', doRehearsal);
