@@ -7,4 +7,4 @@
 - protected main (origin/main 65fd01669f80) untouched ✅ · PR #200 untouched ✅ · no deploy/bill/provider/customer data/contact/merge ✅
 - **Gate 8 remains BLOCKED.** Local synthetic only; fixed safe-archetype library; never SHIP.
 
-Base 4faeff688b3c. Final head: tip of run/local-app-factory-repeatability-round2-20260803T0915ET (git rev-parse HEAD).
+Base 4faeff688b3c. Final head: tip of run/local-app-factory-repeatability-round2-20260803T0915ET (git rev-parse HEAD). Sealing commit: 66d2b3a71987 (+ this stamp).
