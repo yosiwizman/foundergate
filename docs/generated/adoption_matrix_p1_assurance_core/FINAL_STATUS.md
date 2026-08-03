@@ -20,4 +20,4 @@ Gate checklist (all satisfied):
 - Real provider activation BLOCKED · private repo access BLOCKED · Gate 8 BLOCKED · deploy/bill/outreach/customer-data/merge BLOCKED — each needs an explicit founder authorization phrase.
 - Recommended next: continue P3 security-trust locally (no gate). Real-world milestone = one real provider adapter proof (founder gate; not authorized here).
 
-Base run/post-provider-harness-roadmap-nextgate-sync @ (see below). Final head: tip of run/adoption-matrix-p1-assurance-core-20260803T1820ET (git rev-parse HEAD).
+Base run/post-provider-harness-roadmap-nextgate-sync @ (see below). Final head: tip of run/adoption-matrix-p1-assurance-core-20260803T1820ET (git rev-parse HEAD). Sealing commit: acb5f13eebdb (+ this stamp).
