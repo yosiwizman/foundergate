@@ -17,4 +17,4 @@ Gate checklist (all satisfied):
 - Real provider activation BLOCKED · private repo access BLOCKED · Gate 8 BLOCKED · deploy/bill/outreach/customer-data/merge BLOCKED — each needs an explicit founder phrase.
 - Recommended next: promote the P0 library into the always-on outer controller (local) and/or continue P3 Security & Trust locally.
 
-Base run/adoption-matrix-p1-assurance-core @ (see below). Final head: tip of run/p0-core-ip-assumption-env-verification-20260803T1915ET (git rev-parse HEAD).
+Base run/adoption-matrix-p1-assurance-core @ (see below). Final head: tip of run/p0-core-ip-assumption-env-verification-20260803T1915ET (git rev-parse HEAD). Sealing commit: 46cc3ec43ad2 (+ this stamp).
