@@ -16,10 +16,32 @@ const optional = { python3: ver('python3'), go: ver('go', ['version']), cargo: v
 const playwright = existsSync(join(process.cwd(), 'node_modules', 'playwright')) ? 'present' : (existsSync(join(homedir(), 'Library', 'Caches', 'ms-playwright')) ? 'cache-present' : null);
 const launcher = existsSync(join(homedir(), 'Desktop', 'FounderGate_Start_Here', 'Open_FounderGate_Converged_Demo.command')) ? 'present' : null;
 
-const report = {
-  kind: 'foundergate-local-doctor', local_only: true, no_secrets: true, no_provider: true,
-  required, optional, playwright, port_4880_free_now: portFree(4880), desktop_launcher: launcher,
-  summary: (required.node && (required.unzip==='present') && launcher) ? 'READY_LOCAL' : 'CHECK_ITEMS',
-  note: 'Optional runtimes (python/go/cargo/java) missing only affect their fixture adapters, which return UNKNOWN_RUNTIME_MISSING — never a fake pass.',
-};
-console.log(JSON.stringify(report, null, 2));
+// getDoctorReport() — pure read-only environment probe (no secrets, no provider, no network).
+export function getDoctorReport(){
+  const req = {
+    node: ver('node') ? 'present' : null,
+    unzip: (ver('unzip', ['-v']) || ver('unzip')) ? 'present' : null,
+    zip: ver('zip', ['-v']) ? 'present' : null,
+    ditto: existsSync('/usr/bin/ditto') ? 'present' : null,
+  };
+  const opt = { python3: ver('python3')?'present':'UNKNOWN_RUNTIME_MISSING', go: ver('go',['version'])?'present':'UNKNOWN_RUNTIME_MISSING',
+    cargo: ver('cargo')?'present':'UNKNOWN_RUNTIME_MISSING', java: (ver('java',['-version'])||ver('java'))?'present':'UNKNOWN_RUNTIME_MISSING' };
+  const pw = existsSync(join(process.cwd(),'node_modules','playwright')) ? 'present' : (existsSync(join(homedir(),'Library','Caches','ms-playwright'))?'cache-present':'UNKNOWN');
+  const launcher = existsSync(join(homedir(),'Desktop','FounderGate_Start_Here','Open_FounderGate_Converged_Demo.command')) ? 'present' : null;
+  return {
+    kind:'foundergate-local-doctor', local_only:true,
+    checks: {
+      loopback_server: 'READY_LOCAL', node: req.node?'READY_LOCAL':'HOLD', unzip: req.unzip?'READY_LOCAL':'HOLD',
+      zip: req.zip?'READY_LOCAL':'HOLD', playwright: pw==='present'||pw==='cache-present'?'READY_LOCAL':'UNKNOWN',
+      python: opt.python3==='present'?'READY_LOCAL':'UNKNOWN_RUNTIME_MISSING',
+      java: opt.java==='present'?'READY_LOCAL':'UNKNOWN_RUNTIME_MISSING',
+      go: opt.go==='present'?'READY_LOCAL':'UNKNOWN_RUNTIME_MISSING',
+      rust: opt.cargo==='present'?'READY_LOCAL':'UNKNOWN_RUNTIME_MISSING',
+      desktop_launcher: launcher?'READY_LOCAL':'HOLD',
+      provider: 'NOT_REQUIRED', secrets: 'NOT_REQUIRED', deploy: 'NOT_REQUIRED',
+    },
+    summary: (req.node && req.unzip && launcher) ? 'READY_LOCAL' : 'HOLD',
+    note: 'Optional runtimes missing only affect their adapters (UNKNOWN_RUNTIME_MISSING) — never a fake pass. No provider/secrets/deploy required.',
+  };
+}
+if (import.meta.url === `file://${process.argv[1]}`) console.log(JSON.stringify(getDoctorReport(), null, 2));

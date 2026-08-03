@@ -8,6 +8,7 @@ import { handleStart, handleExport, REPO_ROOT } from './server-core.mjs';
 import { newToken, authorize } from './session-token.mjs';
 import { runFixture } from '../local_repo_runner/fixture-runner.mjs';
 import { runScenario } from '../scenario_runner/scenario-core.mjs';
+import { getDoctorReport } from '../local_repo_runner/doctor.mjs';
 import { batchAppend, batchExport, batchReset, batchSummary, getLastEvidence } from '../batch_evidence/batch-core.mjs';
 
 const PORT = Number(process.env.OP_PORT || 4880);
@@ -29,6 +30,11 @@ const server = createServer(async (req, res) => {
     if (req.method === 'GET' && req.url === '/api/last-evidence') {
       if (!loopbackReq(req)) { res.writeHead(403); return res.end('forbidden'); }
       res.writeHead(200,{'content-type':'application/json'}); return res.end(JSON.stringify(getLastEvidence()));
+    }
+    // read-only, loopback-only: local Doctor / readiness report (no secrets, no provider, no network)
+    if (req.method === 'GET' && req.url === '/api/doctor') {
+      if (!loopbackReq(req)) { res.writeHead(403); return res.end('forbidden'); }
+      res.writeHead(200,{'content-type':'application/json'}); return res.end(JSON.stringify(getDoctorReport()));
     }
     if (req.method === 'POST' && (req.url === '/api/start' || req.url === '/api/export'
         || req.url === '/api/run-fixture' || req.url === '/api/run-scenario' || req.url === '/api/batch-export'

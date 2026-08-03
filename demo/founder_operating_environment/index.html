@@ -57,6 +57,8 @@
       <button class="nav"    data-panel="decisions"data-testid="nav-decisions">🚩 Decisions <span class="tag">local ledger</span></button>
       <button class="nav"    data-panel="guide"    data-testid="nav-guide">💬 Ask Guide <span class="tag">static</span></button>
       <button class="nav"    data-panel="files"    data-testid="nav-files">📁 Files <span class="tag">synthetic demo</span></button>
+      <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
+      <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
       <button class="nav"    data-panel="tech"     data-testid="nav-tech">🔧 Technical view</button>
     </nav>
     <div class="robot"><div>Live-local backend</div><div id="server-state" data-testid="server-state" style="color:var(--muted);font-size:12px;margin-top:6px">checking…</div></div>
@@ -98,7 +100,9 @@
       <div class="actions">
         <button id="run-btn" class="btn primary big" data-testid="run-btn">▶ Run safe demo check</button>
         <button id="export-btn" class="btn big" data-testid="export-btn" disabled>⬇ Export evidence package</button>
+        <button id="rehearsal-btn" class="btn big" data-testid="rehearsal-btn">🎬 Run Local Rehearsal</button>
       </div>
+      <div class="clsrow"><span>Local rehearsal</span><span id="rehearsal-status" data-testid="rehearsal-status" class="pill">not started</span></div>
       <p class="honesty">What UNKNOWN means: the system does not have enough evidence yet (e.g. no run has happened, or the local backend is not running). UNKNOWN is safer than guessing — it never fakes a green result.</p>
       <div class="card"><h2 class="cardh">What happened</h2><div id="what" data-testid="what">Nothing yet.</div>
         <h2 class="cardh" style="margin-top:14px">What should I do next?</h2><div id="next" data-testid="next">Click &ldquo;Run safe demo check&rdquo;.</div></div>
@@ -260,6 +264,28 @@
         <div class="filerow"><span>demo/** · notes/** · tests/**</span><span class="pill live">allowed (sample)</span></div>
         <div class="filerow"><span>secrets/** · *.env · customer/** · production/**</span><span class="pill warn">blocked for safety (synthetic)</span></div>
         <p class="honesty" data-testid="pf-note">LOCAL_SYNTHETIC_ENFORCEMENT_DEMO only — this classifies a typed name against a sample allowlist in the browser. No real file scanning, no secrets, no customer/private/production files. This is NOT production protected-file enforcement.</p></div>
+    </section>
+
+    <!-- ===== DOCTOR / READINESS ===== -->
+    <section class="panel" id="panel-doctor" role="region" aria-label="Doctor readiness" data-testid="panel-doctor">
+      <div class="eyebrow">DOCTOR — LOCAL READINESS (no secrets · no provider · no deploy required)</div>
+      <div class="head"><div><h1>Doctor</h1><div class="sub">Checks your machine can run the local demo. Read-only. Nothing is installed or sent.</div></div></div>
+      <div class="card">
+        <div class="actions"><button id="doctor-btn" class="btn primary" data-testid="doctor-btn">🩺 Check readiness</button>
+          <span class="pill" id="doctor-summary" data-testid="doctor-summary">—</span></div>
+        <table class="tbl"><thead><tr><th>Check</th><th>Status</th></tr></thead>
+          <tbody id="doctor-body" data-testid="doctor-body"><tr><td colspan="2" style="color:var(--dim)">Click &ldquo;Check readiness&rdquo;.</td></tr></tbody></table>
+        <p class="honesty">Optional runtimes that are missing (e.g. Go/Rust) only affect their adapters (they report UNKNOWN_RUNTIME_MISSING — never a fake pass). No provider, secrets, or deployment are required for the local demo.</p></div>
+    </section>
+
+    <!-- ===== LIVE-GATE SIMULATOR (display-only / planning) ===== -->
+    <section class="panel" id="panel-livegate" role="region" aria-label="Live-Gate Simulator" data-testid="panel-livegate">
+      <div class="eyebrow">LIVE-GATE SIMULATOR — DISPLAY ONLY / PLANNING (no button executes any real-world action)</div>
+      <div class="head"><div><h1>Live-Gate Simulator</h1><div class="sub">The gates that must be authorized before any LIVE use. Planning only — nothing here acts.</div></div></div>
+      <div class="card">
+        <table class="tbl"><thead><tr><th>Gate</th><th>Status</th><th>Evidence needed</th><th>Authorization phrase (inactive)</th></tr></thead>
+          <tbody id="livegate-body" data-testid="livegate-body"></tbody></table>
+        <p class="honesty" data-testid="livegate-note">DISPLAY ONLY. Every gate is REQUIRED and NOT AUTHORIZED. No control on this screen can deploy, bill, send, merge, touch PR&nbsp;#200, or access real accounts/data. Each needs a separate explicit founder authorization phrase.</p></div>
     </section>
 
     <!-- ===== TECHNICAL VIEW ===== -->

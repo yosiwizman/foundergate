@@ -244,6 +244,57 @@ async function doViewer(){
   }catch{ $('viewer-body').textContent='LOCAL BACKEND UNAVAILABLE (UNKNOWN).'; }
 }
 
+// ---- Doctor / readiness (read-only /api/doctor) ----
+async function doDoctor(){
+  $('doctor-body').innerHTML = '<tr><td colspan="2">Checking…</td></tr>';
+  try{
+    const r = await fetch('/api/doctor'); const d = await r.json();
+    const rows = Object.entries(d.checks||{}).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('');
+    $('doctor-body').innerHTML = rows;
+    setPill($('doctor-summary'), d.summary||'—', d.summary==='READY_LOCAL'?'live':'hold');
+  }catch{ $('doctor-body').innerHTML='<tr><td colspan="2">LOCAL BACKEND UNAVAILABLE (UNKNOWN).</td></tr>'; setPill($('doctor-summary'),'UNKNOWN','hold'); }
+}
+
+// ---- Live-Gate Simulator (display-only / planning; nothing acts) ----
+const LIVE_GATES = [
+  ['Real self-owned repo run','a vetted self-owned repo + explicit scope','I AUTHORIZE one real self-owned repo run: <repo>'],
+  ['Real protected-file enforcement','a design + safe test plan','I AUTHORIZE real protected-file enforcement design'],
+  ['Real calendar/account/data integration','a consented account + scope + data policy','I AUTHORIZE real calendar/account integration design'],
+  ['Provider-at-scale','a budget ceiling + cost proof','I AUTHORIZE provider-at-scale planning with a $ ceiling'],
+  ['Deployment architecture','a target + rollback plan','I AUTHORIZE deployment architecture planning'],
+  ['Billing/payment','a compliant setup plan','I AUTHORIZE billing/payment planning'],
+  ['Security/compliance review','a scope + reviewer','I AUTHORIZE a security/compliance review'],
+  ['PR #200 disposition','a review of PR #200','I AUTHORIZE a PR #200 disposition: keep-parked | rebase | review'],
+  ['Merge / final beta','an explicit evidence review','I AUTHORIZE merge/final beta after evidence review'],
+  ['Public/customer beta','real users + consent + support plan','I AUTHORIZE a public/customer beta'],
+];
+function renderLiveGates(){
+  const b = $('livegate-body'); if(!b) return;
+  b.innerHTML = LIVE_GATES.map(([g,ev,ph])=>`<tr><td>${esc(g)}</td><td><span class="pill refuse">REQUIRED · NOT AUTHORIZED</span></td><td>${esc(ev)}</td><td style="color:var(--dim)">${esc(ph)}</td></tr>`).join('');
+}
+
+// ---- one-click local rehearsal (chains real local steps; fakes nothing) ----
+async function doRehearsal(){
+  const set=(t,k)=>setPill($('rehearsal-status'), t, k||'hold');
+  if(!healthy){ set('UNKNOWN — backend unavailable','refuse'); return; }
+  $('rehearsal-btn').disabled = true;
+  try{
+    set('1/5 running synthetic calendar…');
+    $('scn-sel').value = 'calendar-app-pass'; await doScenario();
+    set('2/5 running scenario+fixture matrix…');
+    await doBatch();
+    set('3/5 exporting aggregate evidence…');
+    await doBatchExport();
+    set('4/5 replaying evidence…');
+    await doViewer();
+    set('5/5 recording history/ledger…');
+    addLedger('CONTINUE_DEMO');
+    const ok = /SEALED_EXPORT_LOCAL/.test($('evi-state').textContent);
+    set(ok ? 'COMPLETE — local rehearsal done (never SHIP)' : 'HOLD — export did not verify', ok?'live':'refuse');
+  }catch{ set('HOLD — rehearsal interrupted (nothing faked)','refuse'); }
+  finally{ $('rehearsal-btn').disabled = false; }
+}
+
 // ---- persistent local history + ledger (browser localStorage, clearable) ----
 function saveHistory(){ try{ localStorage.setItem('fg_history', JSON.stringify(history.slice(-100))); }catch{} }
 function loadHistory(){ try{ const a=JSON.parse(localStorage.getItem('fg_history')||'[]'); if(Array.isArray(a)){ history.length=0; a.forEach(h=>history.push(h)); } }catch{} }
@@ -412,6 +463,10 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   // synthetic scenario runner
   $('scn-run-btn').addEventListener('click', doScenario);
   $('scn-sel').addEventListener('change', ()=> setPill($('scn-result'),'—',''));
+  // Wave 7: Doctor, Live-Gate Simulator, local rehearsal
+  $('doctor-btn').addEventListener('click', doDoctor);
+  $('rehearsal-btn').addEventListener('click', doRehearsal);
+  renderLiveGates();
   // evidence viewer / replay + compare
   $('viewer-load-btn').addEventListener('click', doViewer);
   $('viewer-capA-btn').addEventListener('click', ()=> captureEvidence('A'));
