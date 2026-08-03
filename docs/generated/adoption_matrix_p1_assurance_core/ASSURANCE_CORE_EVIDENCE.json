@@ -1,0 +1,276 @@
+{
+  "record_type": "assurance_core_evidence",
+  "run_id": "adoption_p1_assurance_core_20260803T1820ET",
+  "stamp": "2026-08-03T18:20:00-04:00",
+  "config_manifest": {
+    "record_type": "ai_system_configuration_manifest",
+    "model_id": "claude-opus-4-8[1m]",
+    "provider_id": "claude_code_simulated",
+    "mode": "simulated",
+    "real_provider_enabled": false,
+    "tools": [
+      "read_file",
+      "run_local_tests",
+      "write_file"
+    ],
+    "mcp_servers": [
+      "local_fs"
+    ],
+    "threat_model_version": "FG-TM-2026.08.03",
+    "captured_at": "2026-08-03T18:20:00-04:00",
+    "config_fingerprint": "cfg_8ee612a45d26dedc9fd993bb"
+  },
+  "runtime_manifest": {
+    "record_type": "ai_runtime_manifest",
+    "config_fingerprint": "cfg_8ee612a45d26dedc9fd993bb",
+    "provider_id": "claude_code_simulated",
+    "provider_mode": "simulated",
+    "real_provider_enabled": false,
+    "context_snapshot_hash": "a3ee221ceaa49095a993b185458c4a0b2da9e49ccab7159049fd6dea11bc07da",
+    "scan_completeness_state": "COMPLETE",
+    "risk_budget_status": "WITHIN_BUDGET",
+    "evidence_confidence": "HIGH",
+    "threat_model_version": "FG-TM-2026.08.03",
+    "blocked_gates": [
+      "real_provider_activation",
+      "private_repo_access",
+      "gate_8_real_evaluator",
+      "deploy",
+      "billing",
+      "outreach",
+      "customer_data",
+      "protected_main_mutation",
+      "pr_200_mutation",
+      "merge"
+    ],
+    "captured_at": "2026-08-03T18:20:00-04:00",
+    "runtime_fingerprint": "rt_5b6fbdb365f2d79cad58ea01"
+  },
+  "context_provenance": {
+    "record_type": "context_provenance_record",
+    "captured_at": "2026-08-03T18:20:00-04:00",
+    "sources": [
+      {
+        "id": "provider_harness",
+        "kind": "evidence",
+        "local": true,
+        "hash": "cf8ac5875225dc2175ba171512dd93f681e48b7b03e00bcb123ddcbb68599d68"
+      },
+      {
+        "id": "post_provider_sync",
+        "kind": "doc",
+        "local": true,
+        "hash": "d08e9a84b14b8c273528472cf9905e9ca9a5aee7e4567e098fb19cea91469fb2"
+      },
+      {
+        "id": "adoption_matrix",
+        "kind": "doc",
+        "local": true,
+        "hash": "3ac7da1889bb42d3c5056bf68a1c61144c1786bdaa1216056b83a22c119e06f7"
+      }
+    ],
+    "provenance_hash": "b83bdedabf463cfe9816ca1b01e1b49a2f02e29b48c97f677a6e6cd116123fd2"
+  },
+  "immutable_snapshot": {
+    "record_type": "immutable_context_snapshot",
+    "snapshot_hash": "a3ee221ceaa49095a993b185458c4a0b2da9e49ccab7159049fd6dea11bc07da",
+    "captured_at": "2026-08-03T18:20:00-04:00",
+    "byte_length": 93
+  },
+  "scan_completeness": {
+    "record_type": "scan_completeness_state",
+    "scanned": 20,
+    "total": 20,
+    "errors": 0,
+    "state": "COMPLETE"
+  },
+  "risk_budget": {
+    "record_type": "risk_budget_framework",
+    "cap_usd": 0,
+    "spent_usd": 0,
+    "network_calls": 0,
+    "status": "WITHIN_BUDGET",
+    "proceed": true,
+    "reason": "within local zero-spend budget"
+  },
+  "evidence_confidence": {
+    "record_type": "evidence_confidence_model",
+    "signals_present": [
+      "artifact_present",
+      "tests_run",
+      "independent_checker",
+      "context_snapshot",
+      "not_overclaimed"
+    ],
+    "level": "HIGH",
+    "accepted": true,
+    "reason": "evidence present"
+  },
+  "tool_classification": [
+    {
+      "record_type": "tool_capability_classification",
+      "id": "read_file",
+      "kind": "tool",
+      "capability": "READ_ONLY_LOCAL",
+      "network": false,
+      "allowed": true,
+      "reason": "local capability ok"
+    },
+    {
+      "record_type": "tool_capability_classification",
+      "id": "run_local_tests",
+      "kind": "tool",
+      "capability": "WRITE_LOCAL",
+      "network": false,
+      "allowed": true,
+      "reason": "local capability ok"
+    },
+    {
+      "record_type": "tool_capability_classification",
+      "id": "write_file",
+      "kind": "tool",
+      "capability": "WRITE_LOCAL",
+      "network": false,
+      "allowed": true,
+      "reason": "local capability ok"
+    }
+  ],
+  "mcp_classification": [
+    {
+      "record_type": "mcp_capability_classification",
+      "id": "local_fs",
+      "kind": "mcp",
+      "capability": "WRITE_LOCAL",
+      "network": false,
+      "allowed": true,
+      "reason": "local capability ok"
+    }
+  ],
+  "provider_neutral": [
+    {
+      "record_type": "provider_neutral_security_interface",
+      "provider_id": "claude_code_simulated",
+      "mode": "simulated",
+      "real_disabled": true,
+      "can_self_certify": false,
+      "label": "SIMULATED / REAL-DISABLED",
+      "note": "A provider is a replaceable worker; its claim is never proof. Real activation requires a founder gate.",
+      "qualification": "QUALIFIED_SIMULATED"
+    },
+    {
+      "record_type": "provider_neutral_security_interface",
+      "provider_id": "codex_openai_simulated",
+      "mode": "simulated",
+      "real_disabled": true,
+      "can_self_certify": false,
+      "label": "SIMULATED / REAL-DISABLED",
+      "note": "A provider is a replaceable worker; its claim is never proof. Real activation requires a founder gate.",
+      "qualification": "QUALIFIED_SIMULATED"
+    },
+    {
+      "record_type": "provider_neutral_security_interface",
+      "provider_id": "hermes_simulated",
+      "mode": "simulated",
+      "real_disabled": true,
+      "can_self_certify": false,
+      "label": "SIMULATED / REAL-DISABLED",
+      "note": "A provider is a replaceable worker; its claim is never proof. Real activation requires a founder gate.",
+      "qualification": "QUALIFIED_SIMULATED"
+    },
+    {
+      "record_type": "provider_neutral_security_interface",
+      "provider_id": "local_shell_deterministic",
+      "mode": "simulated",
+      "real_disabled": true,
+      "can_self_certify": false,
+      "label": "SIMULATED / REAL-DISABLED",
+      "note": "A provider is a replaceable worker; its claim is never proof. Real activation requires a founder gate.",
+      "qualification": "QUALIFIED_SIMULATED"
+    },
+    {
+      "record_type": "provider_neutral_security_interface",
+      "provider_id": "hostile_provider_simulated",
+      "mode": "simulated",
+      "real_disabled": true,
+      "can_self_certify": false,
+      "label": "SIMULATED / REAL-DISABLED",
+      "note": "A provider is a replaceable worker; its claim is never proof. Real activation requires a founder gate.",
+      "qualification": "QUALIFIED_SIMULATED"
+    }
+  ],
+  "provider_qualification": {
+    "record_type": "model_provider_qualification_record",
+    "provider_id": "claude_code_simulated",
+    "real_provider": false,
+    "qualified_scope": "simulated_local_only",
+    "requires_founder_gate_for_real": true,
+    "status": "QUALIFIED_SIMULATED",
+    "can_self_certify": false
+  },
+  "evaluation_dataset_governance": {
+    "record_type": "evaluation_dataset_governance_stub",
+    "status": "PLANNED_WITH_SCHEMA",
+    "real_dataset_present": false,
+    "schema": {
+      "id": "string",
+      "source": "local_synthetic_only",
+      "labels": "string[]",
+      "splits": [
+        "train?",
+        "eval"
+      ],
+      "provenance_hash": "sha256"
+    },
+    "note": "No real evaluation dataset exists yet; represented as planned schema only. Real/customer data blocked."
+  },
+  "threat_model_version": {
+    "record_type": "threat_model_version",
+    "version": "FG-TM-2026.08.03",
+    "recorded": true
+  },
+  "p1_coverage": {
+    "total": 20,
+    "integrated": 19,
+    "partial": 1,
+    "not_yet": 0,
+    "integrated_items": [
+      "ai_system_configuration_manifest",
+      "context_provenance_record",
+      "security_finding_lifecycle",
+      "function_preservation_verification",
+      "independent_checker_verification",
+      "mutation_falsification_testing",
+      "model_provider_qualification",
+      "tool_capability_classification",
+      "mcp_capability_classification",
+      "agent_action_trace",
+      "evidence_confidence_model",
+      "risk_budget_framework",
+      "scan_completeness_states",
+      "threat_model_versioning",
+      "security_patch_safety_validation",
+      "exact_ai_configuration_fingerprinting",
+      "provider_neutral_security_interface",
+      "immutable_context_snapshot",
+      "ai_runtime_manifest"
+    ],
+    "partial_items": [
+      "evaluation_dataset_governance"
+    ]
+  },
+  "validations": {
+    "config": "OK",
+    "runtime": "OK",
+    "provenance": "OK",
+    "snapshot": "OK"
+  },
+  "blocked": {
+    "real_provider": "BLOCKED",
+    "private_repo": "BLOCKED",
+    "gate_8": "BLOCKED",
+    "deploy": "BLOCKED",
+    "bill": "BLOCKED",
+    "contact": "BLOCKED",
+    "merge": "BLOCKED"
+  }
+}

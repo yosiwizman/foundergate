@@ -73,6 +73,7 @@
       <button class="nav"    data-panel="crash"    data-testid="nav-crash">🧯 Crash Test <span class="tag">failure modes</span></button>
       <button class="nav"    data-panel="reviewer" data-testid="nav-reviewer">🔍 Reviewer Readiness <span class="tag">planning</span></button>
       <button class="nav"    data-panel="provider" data-testid="nav-provider">🔌 Provider / Repo Proof <span class="tag">simulated</span></button>
+      <button class="nav"    data-panel="assurance" data-testid="nav-assurance">🛡️ Assurance Core <span class="tag">P1 local</span></button>
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
@@ -371,6 +372,38 @@
           <tbody id="provider-repo-body" data-testid="provider-repo-body"><tr><td colspan="5" style="color:var(--dim)">—</td></tr></tbody></table>
         <p class="honesty" data-testid="provider-note">A provider that CLAIMS success without real files, with the wrong preview, without tests, or that asks for network/keys/deploy/private-repo is HELD/REFUSED — never PASS. Real OpenAI/Codex/Hermes activation and private-repo access each require a separate founder gate.</p>
         <div class="clsrow"><span>Summary</span><span id="provider-summary" data-testid="provider-summary" class="pill">—</span></div>
+        <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
+      </div>
+    </section>
+
+    <!-- ===== P1 ASSURANCE CORE (local synthetic) ===== -->
+    <section class="panel" id="panel-assurance" role="region" aria-label="Assurance Core" data-testid="panel-assurance">
+      <div class="eyebrow">P1 ASSURANCE CORE — LOCAL SYNTHETIC · runtime manifest · evidence confidence · risk budget · scan completeness · a provider claim is never proof</div>
+      <div class="head"><div><h1>Assurance Core</h1><div class="sub">The highest-priority assurance layer from the 160-item adoption list, implemented locally. Deterministic records only — no real provider, no network, no keys, no spend. Real provider / private repo / Gate&nbsp;8 stay blocked.</div></div></div>
+      <div class="card">
+        <div class="fg-labels" id="assurance-labels" data-testid="assurance-labels"></div>
+        <div class="actions"><button id="assurance-load-btn" class="btn primary" data-testid="assurance-load-btn">Load Assurance Core</button></div>
+
+        <h2 style="font-size:14px;margin:12px 0 4px">P1 coverage</h2>
+        <div class="clsrow"><span>P1 items</span><span id="assurance-coverage" data-testid="assurance-coverage" class="pill">—</span></div>
+
+        <h2 style="font-size:14px;margin:14px 0 4px">AI runtime manifest</h2>
+        <div id="assurance-runtime" data-testid="assurance-runtime" class="muted" style="font-size:12px">—</div>
+
+        <h2 style="font-size:14px;margin:14px 0 4px">Evidence confidence · risk budget · scan completeness · snapshot</h2>
+        <div class="clsrow"><span>Evidence confidence</span><span id="assurance-confidence" data-testid="assurance-confidence" class="pill">—</span></div>
+        <div class="clsrow"><span>Risk budget</span><span id="assurance-riskbudget" data-testid="assurance-riskbudget" class="pill">—</span></div>
+        <div class="clsrow"><span>Scan completeness</span><span id="assurance-scan" data-testid="assurance-scan" class="pill">—</span></div>
+        <div class="clsrow"><span>Immutable context snapshot</span><span id="assurance-snapshot" data-testid="assurance-snapshot" class="pill">—</span></div>
+
+        <h2 style="font-size:14px;margin:14px 0 4px">Provider / tool / MCP capability classification</h2>
+        <table class="tbl"><thead><tr><th>Provider (worker)</th><th>Label</th><th>Self-certify?</th><th>Qualification</th></tr></thead>
+          <tbody id="assurance-providers" data-testid="assurance-providers"><tr><td colspan="4" style="color:var(--dim)">Click &ldquo;Load Assurance Core&rdquo;.</td></tr></tbody></table>
+        <table class="tbl" style="margin-top:8px"><thead><tr><th>Tool / MCP</th><th>Kind</th><th>Capability</th><th>Allowed</th></tr></thead>
+          <tbody id="assurance-tools" data-testid="assurance-tools"><tr><td colspan="4" style="color:var(--dim)">—</td></tr></tbody></table>
+
+        <p class="honesty" data-testid="assurance-note">A provider is a replaceable worker and can NOT self-certify; its claim is never proof. Evaluation Dataset Governance is PLANNED (no real dataset). Hostile inputs (missing manifest, stale snapshot, tampered fingerprint, unknown scan, self-certification, missing preservation, unvalidated patch, exceeded budget, unknown tool/MCP) all fail closed — never PASS.</p>
+        <div class="clsrow"><span>Blocked gates</span><span id="assurance-blocked" data-testid="assurance-blocked" class="pill refuse">—</span></div>
         <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
       </div>
     </section>

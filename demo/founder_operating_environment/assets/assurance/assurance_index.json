@@ -1,0 +1,171 @@
+{
+  "kind": "ASSURANCE_CORE",
+  "run_id": "adoption_p1_assurance_core_20260803T1820ET",
+  "stamp": "2026-08-03T18:20:00-04:00",
+  "p1_coverage": {
+    "total": 20,
+    "integrated": 19,
+    "partial": 1,
+    "not_yet": 0,
+    "integrated_items": [
+      "ai_system_configuration_manifest",
+      "context_provenance_record",
+      "security_finding_lifecycle",
+      "function_preservation_verification",
+      "independent_checker_verification",
+      "mutation_falsification_testing",
+      "model_provider_qualification",
+      "tool_capability_classification",
+      "mcp_capability_classification",
+      "agent_action_trace",
+      "evidence_confidence_model",
+      "risk_budget_framework",
+      "scan_completeness_states",
+      "threat_model_versioning",
+      "security_patch_safety_validation",
+      "exact_ai_configuration_fingerprinting",
+      "provider_neutral_security_interface",
+      "immutable_context_snapshot",
+      "ai_runtime_manifest"
+    ],
+    "partial_items": [
+      "evaluation_dataset_governance"
+    ]
+  },
+  "runtime_manifest": {
+    "config_fingerprint": "cfg_8ee612a45d26dedc9fd993bb",
+    "runtime_fingerprint": "rt_5b6fbdb365f2d79cad58ea01",
+    "provider_id": "claude_code_simulated",
+    "provider_mode": "simulated",
+    "real_provider_enabled": false,
+    "threat_model_version": "FG-TM-2026.08.03",
+    "context_snapshot_hash": "a3ee221ceaa49095a993b185458c4a0b2da9e49ccab7159049fd6dea11bc07da"
+  },
+  "evidence_confidence": {
+    "record_type": "evidence_confidence_model",
+    "signals_present": [
+      "artifact_present",
+      "tests_run",
+      "independent_checker",
+      "context_snapshot",
+      "not_overclaimed"
+    ],
+    "level": "HIGH",
+    "accepted": true,
+    "reason": "evidence present"
+  },
+  "risk_budget": {
+    "record_type": "risk_budget_framework",
+    "cap_usd": 0,
+    "spent_usd": 0,
+    "network_calls": 0,
+    "status": "WITHIN_BUDGET",
+    "proceed": true,
+    "reason": "within local zero-spend budget"
+  },
+  "scan_completeness": {
+    "record_type": "scan_completeness_state",
+    "scanned": 20,
+    "total": 20,
+    "errors": 0,
+    "state": "COMPLETE"
+  },
+  "immutable_snapshot": {
+    "snapshot_hash": "a3ee221ceaa49095a993b185458c4a0b2da9e49ccab7159049fd6dea11bc07da",
+    "status": "FROZEN"
+  },
+  "tool_classification": [
+    {
+      "record_type": "tool_capability_classification",
+      "id": "read_file",
+      "kind": "tool",
+      "capability": "READ_ONLY_LOCAL",
+      "network": false,
+      "allowed": true,
+      "reason": "local capability ok"
+    },
+    {
+      "record_type": "tool_capability_classification",
+      "id": "run_local_tests",
+      "kind": "tool",
+      "capability": "WRITE_LOCAL",
+      "network": false,
+      "allowed": true,
+      "reason": "local capability ok"
+    },
+    {
+      "record_type": "tool_capability_classification",
+      "id": "write_file",
+      "kind": "tool",
+      "capability": "WRITE_LOCAL",
+      "network": false,
+      "allowed": true,
+      "reason": "local capability ok"
+    }
+  ],
+  "mcp_classification": [
+    {
+      "record_type": "mcp_capability_classification",
+      "id": "local_fs",
+      "kind": "mcp",
+      "capability": "WRITE_LOCAL",
+      "network": false,
+      "allowed": true,
+      "reason": "local capability ok"
+    }
+  ],
+  "provider_capability": [
+    {
+      "provider_id": "claude_code_simulated",
+      "label": "SIMULATED / REAL-DISABLED",
+      "can_self_certify": false,
+      "qualification": "QUALIFIED_SIMULATED"
+    },
+    {
+      "provider_id": "codex_openai_simulated",
+      "label": "SIMULATED / REAL-DISABLED",
+      "can_self_certify": false,
+      "qualification": "QUALIFIED_SIMULATED"
+    },
+    {
+      "provider_id": "hermes_simulated",
+      "label": "SIMULATED / REAL-DISABLED",
+      "can_self_certify": false,
+      "qualification": "QUALIFIED_SIMULATED"
+    },
+    {
+      "provider_id": "local_shell_deterministic",
+      "label": "SIMULATED / REAL-DISABLED",
+      "can_self_certify": false,
+      "qualification": "QUALIFIED_SIMULATED"
+    },
+    {
+      "provider_id": "hostile_provider_simulated",
+      "label": "SIMULATED / REAL-DISABLED",
+      "can_self_certify": false,
+      "qualification": "QUALIFIED_SIMULATED"
+    }
+  ],
+  "evaluation_dataset_governance": {
+    "status": "PLANNED_WITH_SCHEMA",
+    "real_dataset_present": false
+  },
+  "blocked": {
+    "real_provider": "BLOCKED",
+    "private_repo": "BLOCKED",
+    "gate_8": "BLOCKED",
+    "deploy": "BLOCKED",
+    "bill": "BLOCKED",
+    "contact": "BLOCKED",
+    "merge": "BLOCKED"
+  },
+  "labels": [
+    "LOCAL_SYNTHETIC_ONLY",
+    "P1 Assurance Core (19 integrated, 1 planned)",
+    "a provider claim is never proof",
+    "real provider activation BLOCKED",
+    "private repo access BLOCKED",
+    "GATE 8 BLOCKED",
+    "NEVER SHIP"
+  ]
+}

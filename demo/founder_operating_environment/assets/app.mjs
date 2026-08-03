@@ -428,6 +428,39 @@ async function doProvider(){
   }catch(e){ $('provider-body').innerHTML='<tr><td colspan="7">UNKNOWN — could not load provider index (no green).</td></tr>'; }
 }
 
+// ---- P1 Assurance Core (loads assurance_index.json; deterministic local records; provider can't self-certify) ----
+async function doAssurance(){
+  if($('assurance-providers')) $('assurance-providers').innerHTML = '<tr><td colspan="4">Loading…</td></tr>';
+  try{
+    const r = await fetch('assets/assurance/assurance_index.json', {cache:'no-store'});
+    if(!r.ok) throw new Error('assurance_index '+r.status);
+    const d = await r.json();
+    if($('assurance-labels')) $('assurance-labels').innerHTML = (d.labels||[]).map(l=>`<span class="lbl">${esc(l)}</span>`).join(' ');
+    const cov = d.p1_coverage||{};
+    setPill($('assurance-coverage'), `${cov.integrated||0} integrated · ${cov.partial||0} planned · ${cov.not_yet||0} not-yet · of ${cov.total||0}`, (cov.not_yet>0)?'hold':'live');
+    const rt = d.runtime_manifest||{};
+    if($('assurance-runtime')) $('assurance-runtime').innerHTML =
+      `provider: <b>${esc(rt.provider_id||'—')}</b> · mode: <span class="pill">${esc(rt.provider_mode||'simulated')}</span> · real provider: <span class="pill hold">DISABLED</span><br>`+
+      `config fingerprint: <code>${esc(rt.config_fingerprint||'—')}</code><br>runtime fingerprint: <code>${esc(rt.runtime_fingerprint||'—')}</code><br>`+
+      `threat model: <span class="pill">${esc(rt.threat_model_version||'—')}</span> · context snapshot: <code>${esc((rt.context_snapshot_hash||'—').slice(0,20))}…</code>`;
+    const conf = d.evidence_confidence||{}, rb = d.risk_budget||{}, scan = d.scan_completeness||{}, snap = d.immutable_snapshot||{};
+    setPill($('assurance-confidence'), `${esc(conf.level||'—')}${conf.accepted===false?' (rejected — missing evidence)':''}`, (conf.level==='HIGH'||conf.level==='MEDIUM')?'live':'hold');
+    setPill($('assurance-riskbudget'), `${esc(rb.status||'—')} · $${rb.spent_usd||0}/${rb.cap_usd||0} · net ${rb.network_calls||0}`, rb.proceed?'live':'refuse');
+    setPill($('assurance-scan'), esc(scan.state||'—'), scan.state==='COMPLETE'?'live':'hold');
+    setPill($('assurance-snapshot'), `${esc(snap.status||'—')} · ${esc((snap.snapshot_hash||'').slice(0,16))}…`, 'live');
+    if($('assurance-providers')) $('assurance-providers').innerHTML = (d.provider_capability||[]).map(p=>
+      `<tr><td>${esc(p.provider_id)}</td><td><span class="pill">${esc(p.label)}</span></td>`+
+      `<td><span class="pill ${p.can_self_certify?'refuse':'hold'}">${p.can_self_certify?'YES ⚠':'NO'}</span></td>`+
+      `<td><span class="pill">${esc(p.qualification)}</span></td></tr>`).join('') || '<tr><td colspan="4" class="muted">—</td></tr>';
+    const rows = [...(d.tool_classification||[]), ...(d.mcp_classification||[])];
+    if($('assurance-tools')) $('assurance-tools').innerHTML = rows.map(t=>
+      `<tr><td>${esc(t.id)}</td><td class="muted">${esc(t.kind)}</td><td><span class="pill">${esc(t.capability)}</span></td>`+
+      `<td><span class="pill ${t.allowed?'live':'hold'}">${t.allowed?'allowed':'blocked'}</span></td></tr>`).join('') || '<tr><td colspan="4" class="muted">—</td></tr>';
+    const b = d.blocked||{};
+    setPill($('assurance-blocked'), `real provider ${b.real_provider||'BLOCKED'} · private repo ${b.private_repo||'BLOCKED'} · Gate 8 ${b.gate_8||'BLOCKED'}`, 'refuse');
+  }catch(e){ if($('assurance-providers')) $('assurance-providers').innerHTML='<tr><td colspan="4">UNKNOWN — could not load assurance index (no green).</td></tr>'; }
+}
+
 // ---- Crash Test (failure-mode / recovery; loads crash_index.json; NEVER green on broken) ----
 async function doCrash(){
   $('crash-body').innerHTML = '<tr><td colspan="6">Loading…</td></tr>';
@@ -684,6 +717,8 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('crash-load-btn')?.addEventListener('click', doCrash);
   // Provider / Repo Proof panel
   $('provider-load-btn')?.addEventListener('click', doProvider);
+  // P1 Assurance Core panel
+  $('assurance-load-btn')?.addEventListener('click', doAssurance);
   // Founder Drive Mode + Reviewer Readiness
   $('drive-refresh-btn')?.addEventListener('click', doDrive);
   $('drive-reviewer-btn')?.addEventListener('click', ()=>{ showPanel('reviewer'); doReviewer(); });
