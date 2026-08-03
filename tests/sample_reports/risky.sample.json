@@ -1,0 +1,17 @@
+{
+  "packet_version": "v1", "sample": true,
+  "task_intent": "Check a synthetic app that declares dependencies but has no tests.",
+  "agent_identity": "FounderGate local Safety Check (Claude Code), read-only",
+  "source_snapshot": { "kind": "local folder", "self_owned": true, "contains_customer_or_production_data": false, "ref": "synthetic app (deps declared, no tests)" },
+  "files_touched": ["(read-only; none modified)"],
+  "protected_files": ["(none — synthetic)"],
+  "sensitivity_ruling": { "ruling": "SAFE_LOCAL_SYNTHETIC — but dependency/test uncertainty" },
+  "checks": ["project-type classification: node with declared dependencies", "node_modules absent -> HOLD_DEPENDENCIES_NOT_INSTALLED (no install)", "no test files found -> NO_TESTS_FOUND"],
+  "risk_findings": ["No tests to prove behavior", "Dependencies not installed; behavior unverified", "Cannot confirm the app works without a test suite"],
+  "checker_verdict": "REPAIR",
+  "owner_gate": { "decision": "REPAIR_BEFORE_SHOWING", "never_ship": true },
+  "next_safe_action": "Add tests and/or provide a runnable state; do not present as verified until repaired.",
+  "limitations": ["Nothing was installed", "No behavior proven without tests", "Local evidence only"],
+  "blocked_actions": ["deploy", "install without authorization", "presenting as verified"],
+  "build_identity": null
+}

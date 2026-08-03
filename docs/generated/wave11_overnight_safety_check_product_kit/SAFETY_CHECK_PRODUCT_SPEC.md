@@ -1,0 +1,14 @@
+# Lane A — Safety Check Product Spec: FounderGate Safety Check for AI-Built MVPs
+- **Buyer:** a non-dev founder / small team who built an app with AI tools and isn't sure it works or is safe to rely on.
+- **Problem:** "I have code/a demo but I don't know if it's real, tested, or safe."
+- **Promise:** a founder-readable, sealed EVIDENCE report on self-owned material — verdict + what's proven + what isn't + the next safe step. (NOT a security audit; NOT production sign-off.)
+- **Input:** a self-owned public repo, a local folder, or a demo. No private/customer/production data.
+- **Output:** an Evidence Packet v1 + a one-page owner report (viewer).
+- **Statuses:** PASS_WITH_LIMITS · HOLD · REPAIR · REFUSED.
+- **Evidence packet:** task intent · agent identity · source snapshot · files touched · protected files · sensitivity ruling · checks · risks · checker verdict · owner gate · next safe action · limitations · blocked actions · build identity.
+- **Owner decision:** CONTINUE_LOCAL_ONLY / REPAIR_BEFORE_SHOWING / STOP_NEEDS_FOUNDER_GATE / EXPERT_REVIEW. Never SHIP.
+- **Exclusions:** private/customer/production data; deploy; billing; real integrations; security certification; production readiness; install without a separate authorization.
+- **Pricing HYPOTHESIS:** $99–$499 (to be validated; nothing charged).
+- **Delivery workflow:** intake → classify → read-only checks (no install) → evidence packet → owner report → deliver.
+- **Claim limits:** local evidence only; not production/secure/SaaS/customer/commercial ready; not paid/market validated.
+- **What is NOT yet proven:** real buyer value, paid demand, production behavior, security, scale.

@@ -1,0 +1,17 @@
+{
+  "packet_version": "v1", "sample": true,
+  "task_intent": "Verify a local synthetic task-ledger demo builds and its existing tests pass.",
+  "agent_identity": "FounderGate local Safety Check (Claude Code), read-only",
+  "source_snapshot": { "kind": "local folder", "self_owned": true, "contains_customer_or_production_data": false, "ref": "tests/generated_apps/wave9_appointment_task_planner (synthetic)" },
+  "files_touched": ["(read-only; none modified)"],
+  "protected_files": ["(none — synthetic demo)"],
+  "sensitivity_ruling": { "ruling": "SAFE_LOCAL_SYNTHETIC — no customer/private/production data" },
+  "checks": ["project-type classification: node-esm zero-dep", "existing tests run (no install): 13/13 pass"],
+  "risk_findings": ["none material for local use"],
+  "checker_verdict": "PASS_WITH_LIMITS",
+  "owner_gate": { "decision": "CONTINUE_LOCAL_ONLY", "never_ship": true },
+  "next_safe_action": "Continue local demo use; do not deploy or use real/customer data.",
+  "limitations": ["Local evidence only", "Not production/secure/SaaS/customer-ready", "Existing tests only; no test coverage judgment"],
+  "blocked_actions": ["deploy", "billing", "real integrations", "private/customer/production data"],
+  "build_identity": "sample-build-0bb2817174c9"
+}

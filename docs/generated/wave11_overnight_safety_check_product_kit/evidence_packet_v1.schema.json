@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FounderGate Evidence Packet v1",
+  "type": "object",
+  "required": ["packet_version","task_intent","agent_identity","source_snapshot","files_touched","protected_files","sensitivity_ruling","checks","risk_findings","checker_verdict","owner_gate","next_safe_action","limitations","blocked_actions"],
+  "properties": {
+    "packet_version": { "const": "v1" },
+    "task_intent": { "type": "string", "minLength": 1 },
+    "agent_identity": { "type": "string", "minLength": 1 },
+    "source_snapshot": { "type": "object", "required": ["kind","self_owned","contains_customer_or_production_data"],
+      "properties": { "kind": {"type":"string"}, "self_owned": {"const": true}, "contains_customer_or_production_data": {"const": false}, "ref": {"type":"string"} } },
+    "files_touched": { "type": "array", "items": {"type":"string"} },
+    "protected_files": { "type": "array", "items": {"type":"string"} },
+    "sensitivity_ruling": { "type": "object", "required": ["ruling"], "properties": { "ruling": {"type":"string"} } },
+    "checks": { "type": "array" },
+    "risk_findings": { "type": "array" },
+    "checker_verdict": { "enum": ["PASS_WITH_LIMITS","HOLD","REPAIR","REFUSED"] },
+    "owner_gate": { "type": "object", "required": ["decision","never_ship"], "properties": { "decision": {"enum":["CONTINUE_LOCAL_ONLY","REPAIR_BEFORE_SHOWING","STOP_NEEDS_FOUNDER_GATE","EXPERT_REVIEW"]}, "never_ship": {"const": true} } },
+    "next_safe_action": { "type": "string", "minLength": 1 },
+    "limitations": { "type": "array", "minItems": 1, "items": {"type":"string"} },
+    "blocked_actions": { "type": "array", "items": {"type":"string"} },
+    "build_identity": { "type": ["string","null"] }
+  }
+}

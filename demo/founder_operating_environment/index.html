@@ -62,6 +62,7 @@
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
       <button class="nav"    data-panel="roadmap"  data-testid="nav-roadmap">🗺 Roadmap / Products <span class="tag">planning</span></button>
+      <button class="nav"    data-panel="safety"   data-testid="nav-safety">🛡 Safety Check <span class="tag">sample kit</span></button>
       <button class="nav"    data-panel="tech"     data-testid="nav-tech">🔧 Technical view</button>
     </nav>
     <div class="robot"><div>Live-local backend</div><div id="server-state" data-testid="server-state" style="color:var(--muted);font-size:12px;margin-top:6px">checking…</div></div>
@@ -336,6 +337,24 @@
         </tbody></table>
         <div class="clsrow"><span>Next recommended commercial step</span><span class="pill" data-testid="roadmap-next">Prepare one Safety Check SAMPLE report (synthetic/self-owned)</span></div>
         <p class="honesty" data-testid="roadmap-note">DISPLAY ONLY. All real commercial gates remain BLOCKED — no outreach, billing, payment, deploy, provider, real integrations, or SaaS. Nothing is production/secure/SaaS/customer/commercial/paid/market ready. Each next step needs a separate explicit founder authorization phrase.</p>
+      </div>
+    </section>
+
+    <!-- ===== SAFETY CHECK (sample kit; display/local-only) ===== -->
+    <section class="panel" id="panel-safety" role="region" aria-label="Safety Check" data-testid="panel-safety">
+      <div class="eyebrow">SAFETY CHECK FOR AI-BUILT MVPs — SAMPLE KIT · local/synthetic · no outreach · no payment · no deploy · no customer data</div>
+      <div class="head"><div><h1>Safety Check</h1><div class="sub">The first product kit — SAMPLE reports on synthetic/self-owned material only. Nothing here sells, deploys, bills, or contacts anyone.</div></div></div>
+      <div class="card">
+        <div class="clsrow"><span>Product</span><span class="pill">Safety Check for AI-built MVPs</span></div>
+        <div class="clsrow"><span>Current status</span><span class="pill hold" data-testid="safety-status">SAMPLE KIT ONLY (not sold)</span></div>
+        <h2 class="cardh" style="margin-top:12px">Sample reports (synthetic)</h2>
+        <table class="tbl" data-testid="safety-samples"><thead><tr><th>Sample</th><th>Verdict</th><th>Owner decision</th></tr></thead><tbody>
+          <tr><td>Safe</td><td><span class="pill live">PASS_WITH_LIMITS</span></td><td>CONTINUE_LOCAL_ONLY</td></tr>
+          <tr><td>Risky</td><td><span class="pill hold">REPAIR</span></td><td>REPAIR_BEFORE_SHOWING</td></tr>
+          <tr><td>Blocked</td><td><span class="pill refuse">REFUSED</span></td><td>STOP_NEEDS_FOUNDER_GATE</td></tr>
+        </tbody></table>
+        <div class="actions"><a class="btn" data-testid="safety-viewer-link" href="../../tests/sample_reports/safety_check_report_viewer/index.html" target="_blank" rel="noopener">▶ Open sample report viewer (local)</a></div>
+        <p class="honesty" data-testid="safety-note">SAMPLE / SYNTHETIC only — these are NOT real customer reports and NOT paid/validated. No outreach, no payment, no deploy, no customer data. Not production/secure/SaaS/customer/commercial ready. Decision never SHIP. Selling requires a separate founder authorization phrase.</p>
       </div>
     </section>
 
