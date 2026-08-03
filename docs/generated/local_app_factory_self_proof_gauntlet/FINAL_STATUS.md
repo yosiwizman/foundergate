@@ -8,4 +8,4 @@
 - protected main (origin/main 65fd01669f80) untouched ✅ · PR #200 untouched ✅ · no deploy/bill/provider/customer data/contact/merge ✅
 - **Gate 8 remains BLOCKED.** Local synthetic only; fixed safe-archetype library; decision never SHIP.
 
-Base: 6d15157677f7. Final head: tip of run/local-app-factory-self-proof-gauntlet-20260803T0835ET (git rev-parse HEAD).
+Base: 6d15157677f7. Final head: tip of run/local-app-factory-self-proof-gauntlet-20260803T0835ET (git rev-parse HEAD). Sealing commit: 4c9a34c415eb (+ this stamp).
