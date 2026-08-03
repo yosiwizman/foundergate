@@ -22,7 +22,7 @@ const waitTests = (p) => p.waitForFunction(() => /\d+\/\d+/.test(document.queryS
 {
   const p = await npage(); await p.goto(URL, { waitUntil: 'domcontentloaded' });
   await p.click('[data-testid="nav-batch"]'); await p.click('[data-testid="batch-run-btn"]');
-  await p.waitForFunction(() => document.querySelectorAll('[data-testid="batch-body"] tr').length >= 8, null, { timeout: 60000 });
+  await p.waitForFunction(() => /never SHIP/.test(document.querySelector('[data-testid="batch-aggregate"]').textContent), null, { timeout: 120000 });
   const text = await T(p,'[data-testid="batch-body"]');
   for (const [fx, st] of [['node-pass','PASS'],['node-fail','FAIL'],['node-no-test','NO_TESTS_FOUND'],['python-pass','PASS'],['static-web','PASS'],['broken','BROKEN_PROJECT'],['customer_private_repo','UNSAFE_SOURCE_REFUSED'],['unknown-xyz','HOLD_REFUSED']]) {
     ok(new RegExp(fx.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '[\\s\\S]*?' + st).test(text) || (text.includes(fx) && text.includes(st)), `adapter: ${fx} -> ${st}`);
@@ -35,7 +35,7 @@ const waitTests = (p) => p.waitForFunction(() => /\d+\/\d+/.test(document.queryS
 {
   const p = await npage(); await p.goto(URL, { waitUntil: 'domcontentloaded' });
   await p.click('[data-testid="nav-batch"]'); await p.click('[data-testid="batch-run-btn"]');
-  await p.waitForFunction(() => document.querySelectorAll('[data-testid="batch-body"] tr').length >= 8, null, { timeout: 60000 });
+  await p.waitForFunction(() => /never SHIP/.test(document.querySelector('[data-testid="batch-aggregate"]').textContent), null, { timeout: 120000 });
   await p.click('[data-testid="batch-export-btn"]');
   await p.waitForFunction(() => /aggregated batch/.test(document.querySelector('[data-testid="evi-state"]').textContent), null, { timeout: 60000 });
   ok(/aggregated batch/.test(await T(p,'[data-testid="evi-state"]')), 'aggregate: real sealed aggregate evidence');

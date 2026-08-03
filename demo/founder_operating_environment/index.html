@@ -146,8 +146,12 @@
       <div class="eyebrow">EVIDENCE VIEWER — REPLAY THE LATEST LOCAL SEALED PACKAGE</div>
       <div class="head"><div><h1>Evidence Viewer</h1><div class="sub">Reads the latest local sealed package summary produced by FounderGate. Founder-readable only.</div></div></div>
       <div class="card">
-        <div class="actions"><button id="viewer-load-btn" class="btn primary" data-testid="viewer-load-btn">🔎 Load latest sealed evidence</button></div>
+        <div class="actions"><button id="viewer-load-btn" class="btn primary" data-testid="viewer-load-btn">🔎 Load latest sealed evidence</button>
+          <button id="viewer-capA-btn" class="btn" data-testid="viewer-capA-btn">Capture as A</button>
+          <button id="viewer-capB-btn" class="btn" data-testid="viewer-capB-btn">Capture as B</button>
+          <button id="viewer-compare-btn" class="btn" data-testid="viewer-compare-btn">Compare A vs B</button></div>
         <div id="viewer-body" data-testid="viewer-body" style="color:var(--muted);font-size:13.5px;margin-top:8px">Nothing loaded yet. Run a batch and export, then load it here.</div>
+        <div id="viewer-compare" data-testid="viewer-compare" style="color:var(--muted);font-size:13.5px;margin-top:8px"></div>
         <p class="honesty">Shows only a founder-readable summary (source, objective, result, decision, freshness, limitations, what was not proven, whether the ZIP verified). No raw logs, no full fingerprints, no secrets, no customer/private/production data.</p></div>
     </section>
 
@@ -156,8 +160,12 @@
       <div class="eyebrow">RUN HISTORY — LOCAL ONLY (this session)</div>
       <div class="head"><div><h1>Run History</h1><div class="sub">A local-only list of runs. No real-world action, no ship decision. You can clear it any time.</div></div></div>
       <div class="card">
-        <div class="actions"><button id="hist-clear-btn" class="btn" data-testid="hist-clear-btn">Clear local history</button>
+        <div class="actions"><button id="hist-export-btn" class="btn" data-testid="hist-export-btn">Export history (JSON)</button>
+          <button id="hist-import-btn" class="btn" data-testid="hist-import-btn">Import history</button>
+          <input id="hist-import-file" data-testid="hist-import-file" type="file" accept="application/json" style="display:none">
+          <button id="hist-clear-btn" class="btn" data-testid="hist-clear-btn">Clear local history</button>
           <span class="pill" id="hist-persist" data-testid="hist-persist">local/browser-only</span></div>
+        <div class="clsrow"><span>Import result</span><span id="hist-import-result" data-testid="hist-import-result" class="pill">—</span></div>
         <table class="tbl"><thead><tr><th>#</th><th>Source</th><th>Objective</th><th>Tests</th><th>Decision</th><th>Exported</th><th>Status</th></tr></thead>
           <tbody id="hist-body" data-testid="hist-body"><tr><td colspan="7" style="color:var(--dim)">No runs yet.</td></tr></tbody></table>
         <p class="honesty">History is stored locally in your browser only (opt-in, clearable). No customer data, no private repo content, no raw logs, no secrets, no full fingerprints. Decisions are never SHIP; nothing here triggers a real-world action.</p></div>
@@ -181,7 +189,11 @@
           <button class="btn" id="led-repair" data-testid="led-repair">REPAIR</button>
           <button class="btn" id="led-stop" data-testid="led-stop">STOP</button>
         </div>
-        <div class="actions" style="margin-top:8px"><button class="btn" id="led-clear-btn" data-testid="led-clear-btn">Clear local ledger</button></div>
+        <div class="actions" style="margin-top:8px"><button class="btn" id="led-export-btn" data-testid="led-export-btn">Export ledger (JSON)</button>
+          <button class="btn" id="led-import-btn" data-testid="led-import-btn">Import ledger</button>
+          <input id="led-import-file" data-testid="led-import-file" type="file" accept="application/json" style="display:none">
+          <button class="btn" id="led-clear-btn" data-testid="led-clear-btn">Clear local ledger</button></div>
+        <div class="clsrow"><span>Import result</span><span id="led-import-result" data-testid="led-import-result" class="pill">—</span></div>
         <ul class="ledger" id="dec-ledger" data-testid="dec-ledger"><li style="color:var(--dim)">No local notes yet. These are internal notes only — never SHIP/MERGE/DEPLOY/BILL/SEND, and they trigger no real-world action.</li></ul>
         <p class="honesty" data-testid="dec-notice">Local internal notes only. No real-world action is authorized here. This panel cannot approve merge, ship, deploy, send, bill, or release. Allowed local statuses: CONTINUE_DEMO / HOLD / REPAIR / STOP.</p></div>
     </section>
@@ -210,8 +222,17 @@
           <label for="pf-input">Synthetic file name (nothing on your disk is read)</label>
           <input id="pf-input" data-testid="pf-input" value="demo/notes/todo.txt" autocomplete="off">
         </div>
-        <div class="actions"><button id="pf-check-btn" class="btn primary" data-testid="pf-check-btn">Check against sample allowlist</button>
-          <button id="pf-batch-btn" class="btn" data-testid="pf-batch-btn">Batch-classify synthetic manifest</button></div>
+        <label for="pf-policy" style="display:block;font-size:11.5px;font-weight:700;color:var(--dim);margin:10px 0 5px">Policy</label>
+        <select id="pf-policy" data-testid="pf-policy" class="intake" style="width:auto;min-width:220px;background:#0d1117;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 10px">
+          <option value="demo-safe">demo-safe</option>
+          <option value="block-secrets">block-secrets</option>
+          <option value="block-customer">block-customer</option>
+          <option value="block-production">block-production</option>
+          <option value="block-private">block-private</option>
+        </select>
+        <div class="actions"><button id="pf-check-btn" class="btn primary" data-testid="pf-check-btn">Check against policy</button>
+          <button id="pf-batch-btn" class="btn" data-testid="pf-batch-btn">Batch-classify synthetic manifest</button>
+          <button id="pf-export-btn" class="btn" data-testid="pf-export-btn">Export classification report</button></div>
         <div class="clsrow"><span>Result</span><span id="pf-result" data-testid="pf-result" class="pill">—</span></div>
         <table class="tbl" id="pf-batch-tbl" style="display:none"><thead><tr><th>Synthetic name</th><th>Classification</th></tr></thead>
           <tbody id="pf-batch-body" data-testid="pf-batch-body"></tbody></table>

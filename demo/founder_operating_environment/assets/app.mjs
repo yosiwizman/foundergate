@@ -136,12 +136,9 @@ const PF_BLOCK = [/(^|\/)secrets?(\/|$)/i, /\.env$/i, /(^|\/)customer(\/|$)/i, /
 const PF_ALLOW = [/^demo\//i, /^notes\//i, /^tests?\//i, /task-ledger/i];
 function pfCheck(){
   const name = ($('pf-input').value||'').trim();
-  let result, kind;
-  if(!name){ result='UNKNOWN — type a synthetic name'; kind='hold'; }
-  else if(PF_BLOCK.some(r=>r.test(name))){ result='BLOCKED for safety (synthetic)'; kind='refuse'; }
-  else if(PF_ALLOW.some(r=>r.test(name))){ result='ALLOWED (sample allowlist)'; kind='live'; }
-  else { result='HOLD — not on the sample allowlist'; kind='hold'; }
-  setPill($('pf-result'), result, kind);
+  if(!name){ setPill($('pf-result'),'UNKNOWN — type a synthetic name','hold'); return; }
+  const pol = pfActivePolicy(); const c = pfClassifyWith(name, pol);
+  setPill($('pf-result'), c + ' · policy: ' + pol.name, /BLOCKED/.test(c)?'refuse':(/ALLOWED/.test(c)?'live':'hold'));
 }
 // ---- batch runner: REAL per-fixture execution over a safe fixture set (adapters) ----
 const FIXTURE_SET = [
@@ -151,6 +148,15 @@ const FIXTURE_SET = [
   { key:'python-pass',  type:'Python', adapter:'python' },
   { key:'static-web',   type:'Static', adapter:'static' },
   { key:'broken',       type:'Node',   adapter:'node-test' },
+  { key:'go-style',     type:'Go',     adapter:'toolchain' },
+  { key:'rust-style',   type:'Rust',   adapter:'toolchain' },
+  { key:'java-style',   type:'Java',   adapter:'java' },
+  { key:'monorepo',     type:'Monorepo',adapter:'monorepo' },
+  { key:'deps-present', type:'Node',   adapter:'node-deps' },
+  { key:'deps-missing', type:'Node',   adapter:'node-deps' },
+  { key:'py-deps-missing', type:'Python', adapter:'py-deps' },
+  { key:'install-requested', type:'Node', adapter:'(refused)' },
+  { key:'unsupported',  type:'unsupported', adapter:'(none)' },
   { key:'customer_private_repo', type:'unsafe-name', adapter:'(refused)' },
   { key:'unknown-xyz',  type:'unknown', adapter:'(refused)' },
 ];
@@ -194,7 +200,7 @@ async function doViewer(){
   try{
     const res = await fetch('/api/last-evidence'); const d = await res.json();
     if(d.status==='complete' && d.evidence){
-      const e = d.evidence;
+      const e = d.evidence; lastEvidenceObj = e;
       const rows = e.kind==='aggregate-batch'
         ? [['Kind','aggregate batch'],['Aggregate', e.aggregate_conclusion],['Passed', (e.pass+'/'+e.total)],['Refused', String(e.refused)],['Decision ceiling','INTERNAL_DEMO_ONLY (never SHIP)'],['Limitations', e.limitations],['What was NOT proven', e.not_proven],['ZIP verified', e.zip_verified?'yes':'no']]
         : [['Kind','single run'],['Decision ceiling','INTERNAL_DEMO_ONLY (never SHIP)'],['ZIP verified', e.zip_verified?'yes':'no']];
@@ -218,9 +224,81 @@ function pfClassifyName(name){
   if(PF_ALLOW.some(r=>r.test(name))) return ['ALLOWED (sample)','live'];
   return ['HOLD — not on allowlist','hold'];
 }
+// named synthetic policies (client-side only)
+const PF_POLICIES = {
+  'demo-safe':       [/(^|\/)secrets?(\/|$)/i,/\.env$/i,/(^|\/)customer(\/|$)/i,/(^|\/)prod(uction)?(\/|$)/i,/private/i,/credential|password|token|secret/i],
+  'block-secrets':   [/\.env$/i,/secret|credential|password|token|key/i],
+  'block-customer':  [/(^|\/)customer(\/|$)|client/i],
+  'block-production':[/(^|\/)prod(uction)?(\/|$)/i],
+  'block-private':   [/private/i],
+};
+function pfActivePolicy(){ const sel=$('pf-policy'); const p=sel?sel.value:'demo-safe'; return { name:p, block: PF_POLICIES[p]||PF_POLICIES['demo-safe'] }; }
+function pfClassifyWith(name, pol){
+  if(pol.block.some(r=>r.test(name))) return 'BLOCKED for safety (synthetic)';
+  if(PF_ALLOW.some(r=>r.test(name))) return 'ALLOWED (sample)';
+  return 'HOLD — not on allowlist';
+}
 function pfBatch(){
-  const tbl=$('pf-batch-tbl'); tbl.style.display='';
-  $('pf-batch-body').innerHTML = PF_MANIFEST.map(n=>{ const [c]=pfClassifyName(n); return `<tr><td>${esc(n)}</td><td>${esc(c)}</td></tr>`; }).join('');
+  const tbl=$('pf-batch-tbl'); tbl.style.display=''; const pol=pfActivePolicy();
+  $('pf-batch-body').innerHTML = PF_MANIFEST.map(n=>`<tr><td>${esc(n)}</td><td>${esc(pfClassifyWith(n,pol))}</td></tr>`).join('');
+}
+function pfExport(){
+  const pol=pfActivePolicy();
+  const report={ kind:'LOCAL_SYNTHETIC_ENFORCEMENT_DEMO', policy:pol.name, note:'Not production enforcement. No real files scanned.', results: PF_MANIFEST.map(n=>({name:n, classification: pfClassifyWith(n,pol)})) };
+  downloadJson('foundergate_protected_files_report.json', report);
+}
+
+// ---- generic local JSON download ----
+function downloadJson(name, obj){
+  try{ const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); }catch{}
+}
+const UNSAFE_CONTENT = /customer|private|prod(uction)?|secret|credential|password|token/i;
+
+// ---- history export / import (schema-checked, rejects unsafe/malformed) ----
+function exportHistory(){ downloadJson('foundergate_history.json', { kind:'foundergate-local-history', local_only:true, runs: history.slice(-100) }); }
+function importHistory(file){
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const d=JSON.parse(rd.result);
+      const runs = Array.isArray(d) ? d : (d && d.runs);
+      if(!Array.isArray(runs)) return setPill($('hist-import-result'),'REJECTED — malformed (not a history file)','refuse');
+      for(const r of runs){ if(typeof r!=='object'||r===null||!('src' in r)||!('status' in r)) return setPill($('hist-import-result'),'REJECTED — schema invalid','refuse');
+        if(UNSAFE_CONTENT.test(JSON.stringify(r))) return setPill($('hist-import-result'),'REJECTED — customer/private/production-looking content','refuse'); }
+      history.length=0; runs.slice(-100).forEach(r=>history.push(r)); renderHistory(); saveHistory();
+      setPill($('hist-import-result'),'IMPORTED '+runs.length+' (local only)','live');
+    }catch{ setPill($('hist-import-result'),'REJECTED — not valid JSON','refuse'); }
+  };
+  rd.readAsText(file);
+}
+
+// ---- ledger export / import (rejects forbidden statuses) ----
+const LEDGER_FORBIDDEN = /SHIP|MERGE|DEPLOY|BILL|SEND|CUSTOMER_READY/;
+function ledgerItems(){ return [...$('dec-ledger').querySelectorAll('li')].filter(li=>!li.getAttribute('style')).map(li=>li.textContent); }
+function exportLedger(){ downloadJson('foundergate_ledger.json', { kind:'foundergate-local-ledger', local_only:true, notes: ledgerItems() }); }
+function importLedger(file){
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const d=JSON.parse(rd.result); const notes = Array.isArray(d)?d:(d&&d.notes);
+      if(!Array.isArray(notes)) return setPill($('led-import-result'),'REJECTED — malformed','refuse');
+      for(const n of notes){ if(typeof n!=='string') return setPill($('led-import-result'),'REJECTED — schema invalid','refuse');
+        const head=n.split(' ')[0]; if(LEDGER_FORBIDDEN.test(head)||!LEDGER_OK.has(head)) return setPill($('led-import-result'),'REJECTED — forbidden/invalid status','refuse'); }
+      const ul=$('dec-ledger'); ul.innerHTML=''; notes.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ul.appendChild(li); }); saveLedger();
+      setPill($('led-import-result'),'IMPORTED '+notes.length+' (notes only)','live');
+    }catch{ setPill($('led-import-result'),'REJECTED — not valid JSON','refuse'); }
+  };
+  rd.readAsText(file);
+}
+
+// ---- evidence viewer compare (two local summaries) ----
+let lastEvidenceObj=null, capA=null, capB=null;
+function captureEvidence(slot){ if(!lastEvidenceObj){ $('viewer-compare').textContent='Load latest sealed evidence first, then capture.'; return; } if(slot==='A') capA=lastEvidenceObj; else capB=lastEvidenceObj; $('viewer-compare').textContent='Captured '+slot+'. '+(capA&&capB?'Ready to compare.':'Capture the other slot to compare.'); }
+function compareAB(){
+  if(!capA||!capB){ $('viewer-compare').textContent='Capture both A and B first (Load latest, Capture as A; run/export again, Load latest, Capture as B).'; return; }
+  const keys=['kind','aggregate_conclusion','pass','total','refused','decision_ceiling','limitations','not_proven','zip_verified'];
+  const rows=keys.map(k=>{ const a=capA[k], bv=capB[k]; const same=String(a)===String(bv); return `<tr><td>${esc(k)}</td><td>${esc(String(a??'—'))}</td><td>${esc(String(bv??'—'))}</td><td>${same?'same':'DIFF'}</td></tr>`; });
+  $('viewer-compare').innerHTML='<table class="tbl"><thead><tr><th>field</th><th>A</th><th>B</th><th></th></tr></thead><tbody>'+rows.join('')+'</tbody></table>';
 }
 
 function applyHealth(ok){
@@ -296,17 +374,28 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   // batch runner (real per-fixture) + aggregated export
   $('batch-run-btn').addEventListener('click', doBatch);
   $('batch-export-btn').addEventListener('click', doBatchExport);
-  // evidence viewer / replay
+  // evidence viewer / replay + compare
   $('viewer-load-btn').addEventListener('click', doViewer);
-  // local decision ledger (safe local statuses only) + persistence
+  $('viewer-capA-btn').addEventListener('click', ()=> captureEvidence('A'));
+  $('viewer-capB-btn').addEventListener('click', ()=> captureEvidence('B'));
+  $('viewer-compare-btn').addEventListener('click', compareAB);
+  // local decision ledger (safe local statuses only) + persistence + export/import
   [['led-continue','CONTINUE_DEMO'],['led-hold','HOLD'],['led-repair','REPAIR'],['led-stop','STOP']]
     .forEach(([id,st]) => $(id).addEventListener('click', ()=> addLedger(st)));
   $('led-clear-btn').addEventListener('click', clearLedger);
-  // run history persistence
+  $('led-export-btn').addEventListener('click', exportLedger);
+  $('led-import-btn').addEventListener('click', ()=> $('led-import-file').click());
+  $('led-import-file').addEventListener('change', e=>{ if(e.target.files[0]) importLedger(e.target.files[0]); });
+  // run history persistence + export/import
   $('hist-clear-btn').addEventListener('click', clearHistory);
-  // synthetic protected-files enforcement demo
+  $('hist-export-btn').addEventListener('click', exportHistory);
+  $('hist-import-btn').addEventListener('click', ()=> $('hist-import-file').click());
+  $('hist-import-file').addEventListener('change', e=>{ if(e.target.files[0]) importHistory(e.target.files[0]); });
+  // synthetic protected-files enforcement demo + policies + export
   $('pf-check-btn').addEventListener('click', pfCheck);
   $('pf-batch-btn').addEventListener('click', pfBatch);
+  $('pf-export-btn').addEventListener('click', pfExport);
+  $('pf-policy').addEventListener('change', ()=>{ pfCheck(); pfBatch(); });
   $('pf-input').addEventListener('input', pfCheck);
   loadHistory(); loadLedger(); renderHistory(); pfCheck();
   setInterval(async ()=>{ if(!running) applyHealth(await health()); }, 4000);

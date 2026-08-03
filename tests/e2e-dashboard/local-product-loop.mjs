@@ -17,14 +17,14 @@ const npage = async () => { const ctx = await b.newContext(); const p = await ct
 const shot = (p, n) => p.screenshot({ path: join(OUT, n), fullPage: true });
 const T = (p, sel) => p.textContent(sel);
 const waitTests = (p) => p.waitForFunction(() => /\d+\/\d+/.test(document.querySelector('[data-testid="chip-tests"]').textContent), null, { timeout: 60000 });
-const OKSTATUS = /PASS|FAIL|NO_TESTS_FOUND|BROKEN_PROJECT|UNSAFE_SOURCE_REFUSED|HOLD_REFUSED|UNKNOWN/;
+const OKSTATUS = /PASS|FAIL|NO_TESTS_FOUND|BROKEN_PROJECT|UNSAFE_SOURCE_REFUSED|HOLD_REFUSED|HOLD_DEPENDENCIES_NOT_INSTALLED|REFUSED_NEEDS_AUTHORIZATION|UNKNOWN_RUNTIME_MISSING|UNKNOWN/;
 
 // 1. BATCH: real per-fixture execution -> aggregate export
 {
   const p = await npage(); await p.goto(URL, { waitUntil: 'domcontentloaded' });
   await p.click('[data-testid="nav-batch"]'); await shot(p, 'lpl_01_batch_before.png');
   await p.click('[data-testid="batch-run-btn"]');
-  await p.waitForFunction(() => document.querySelectorAll('[data-testid="batch-body"] tr').length >= 6, null, { timeout: 60000 });
+  await p.waitForFunction(() => /never SHIP/.test(document.querySelector('[data-testid="batch-aggregate"]').textContent), null, { timeout: 120000 });
   const rows = await p.$$eval('[data-testid="batch-body"] tr', trs => trs.map(t => t.innerText));
   ok(rows.length >= 6, 'batch: ran multiple real fixtures (' + rows.length + ' rows)');
   ok(rows.every(r => OKSTATUS.test(r)), 'batch: each row an honest normalized status');
