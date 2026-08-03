@@ -6,4 +6,4 @@
 - protected main (origin/main 65fd01669f80) untouched ✅ · PR #200 untouched ✅ · prior evidence unmodified ✅ · no deploy/bill/provider/customer/private data/contact/merge ✅
 - **Gate 8 remains BLOCKED.** Reviewer packet is planning-only; a real evaluator session needs a separate explicit founder authorization phrase. Local synthetic only; never SHIP.
 
-Base fb7b4dd8fa41. Final head: tip of run/reviewer-investor-showroom-evidence-20260803T1530ET (git rev-parse HEAD).
+Base fb7b4dd8fa41. Final head: tip of run/reviewer-investor-showroom-evidence-20260803T1530ET (git rev-parse HEAD). Sealing commit: 6da4cdd2db73 (+ this stamp).
