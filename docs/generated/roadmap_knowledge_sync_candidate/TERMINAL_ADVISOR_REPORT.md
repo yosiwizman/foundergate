@@ -1,0 +1,8 @@
+# Terminal Advisor Report — Independent Read-Only (Roadmap/Knowledge Sync)
+1. **Sync complete enough?** Yes, with limits — deliverables present, mutually consistent, honestly labeled; gate columns un-collapsed; local-synthetic/never-ship boundary preserved; reconciliation (Claude) separated from the ChatGPT Project-Knowledge paste (founder-only, via PROJECT_KNOWLEDGE_UPDATE_BUNDLE_V2.md); stale sources flagged for demotion.
+2. **Gate 7 resolved?** Yes — independently verified: commit 27c5808 (bounded `claude -p`, exact $0.0271348 ≤ $1.00) + commit 49efde2 (founder acceptance) + full gate7_provider_cost report set. Prior "MISSING/planned-only" was a genuine underclaim; GATE7_EXECUTED_ACCEPTED_WITH_LIMITS is correct. Limit: single bounded synthetic call — not provider-at-scale/production/commercial.
+3. **Gate 8 blocked?** Yes — only a solo founder-run session accepted; real-evaluator = NOT AUTHORIZED/HELD; needs a founder phrase. Gates 9/10, merge, PR #200, provider-at-scale also blocked.
+4. **Provider-agnostic harness next?** Reconciliation is done, so no more reconciliation needed. The harness is the correct next TECHNICAL build — as a local scaffold with any real provider calls gated Gate-7-style (budget caps + per-call founder authorization) — **approved in principle, pending a founder go-ahead** (a read-only advisor cannot start a build; and the Aug-3 arc is not yet founder-accepted).
+5. **Single safest next action:** the founder pastes PROJECT_KNOWLEDGE_UPDATE_BUNDLE_V2.md into ChatGPT Project Knowledge to lock the corrected source of truth (and optionally accept the Aug-3 arc). Zero-risk; unblocks the drift; defers the harness build to an explicit founder decision.
+
+**TERMINAL_ADVISOR_VERDICT: ROADMAP_KNOWLEDGE_SYNC_READY_WITH_LIMITS**
