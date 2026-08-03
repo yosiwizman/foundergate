@@ -29,13 +29,15 @@ function runSelftest(testPathRel) {
 }
 
 // Generate one app from an archetype and run its tests. Returns the bound manifest.
-export function generateAndTest(archetypeId) {
+// opts.runsDir selects the output subfolder (default 'factory_runs'; Round 2 uses 'factory_round2').
+export function generateAndTest(archetypeId, opts = {}) {
   const a = ARCHETYPES[archetypeId];
   if (!a) throw new Error('unknown archetype ' + archetypeId);
+  const runsDir = opts.runsDir || 'factory_runs';
   const request_text = a.request_text;
   const request_hash = requestHash(request_text);
   const request_id = 'req_' + request_hash;
-  const relDir = `tests/generated_apps/factory_runs/${request_id}`;
+  const relDir = `tests/generated_apps/${runsDir}/${request_id}`;
   const absDir = join(REPO, relDir);
   mkdirSync(join(absDir, 'tests'), { recursive: true });
 
@@ -51,7 +53,7 @@ export function generateAndTest(archetypeId) {
 
   const testRel = `${relDir}/tests/${a.test_name}`;
   const t = runSelftest(testRel);
-  const preview_url = `../../tests/generated_apps/factory_runs/${request_id}/index.html`;
+  const preview_url = `../../tests/generated_apps/${runsDir}/${request_id}/index.html`;
 
   const manifest = {
     manifest_kind: 'FACTORY_APP_MANIFEST',

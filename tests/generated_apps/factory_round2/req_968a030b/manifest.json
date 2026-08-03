@@ -1,0 +1,35 @@
+{
+  "manifest_kind": "FACTORY_APP_MANIFEST",
+  "request_id": "req_968a030b",
+  "request_text": "build a local unit converter",
+  "request_hash": "968a030b",
+  "selected_template_id": "unit_converter",
+  "app_spec": {
+    "title": "Unit Converter",
+    "archetype": "unit_converter",
+    "actions": "input + state-change + reset/delete/clear",
+    "local_only": true,
+    "synthetic_only": true
+  },
+  "generated_app_path": "tests/generated_apps/factory_round2/req_968a030b",
+  "generated_files": [
+    "core.mjs",
+    "index.html",
+    "tests/converter.selftest.mjs",
+    "LIMITATIONS.md",
+    "package.json"
+  ],
+  "test_plan": "tests/generated_apps/factory_round2/req_968a030b/tests/converter.selftest.mjs",
+  "test_results": {
+    "tests_run": true,
+    "result": "PASS 6/6",
+    "passed": 6,
+    "total": 6
+  },
+  "preview_url": "../../tests/generated_apps/factory_round2/req_968a030b/index.html",
+  "evidence_manifest": "tests/generated_apps/factory_round2/req_968a030b/manifest.json",
+  "builder_identity": "FounderGate local app factory",
+  "checker_verdict": "CLEAN_WITH_LIMITS",
+  "terminal_advisor_verdict": "LOCAL_APP_FACTORY_REPEATABILITY_PROVEN_WITH_LIMITS",
+  "final_status": "BUILT_AND_PASSED"
+}

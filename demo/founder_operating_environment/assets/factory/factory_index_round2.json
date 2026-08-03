@@ -1,0 +1,56 @@
+{
+  "kind": "FACTORY_INDEX_ROUND2",
+  "round": 2,
+  "seed": "20260803T0915ET",
+  "apps": [
+    {
+      "request_id": "req_8b7de6b1",
+      "request_hash": "8b7de6b1",
+      "request_text": "build a local reading list",
+      "template_id": "reading_list",
+      "title": "Reading List",
+      "generated_app_path": "tests/generated_apps/factory_round2/req_8b7de6b1",
+      "preview_url": "../../tests/generated_apps/factory_round2/req_8b7de6b1/index.html",
+      "test_result": "PASS 5/5",
+      "final_status": "BUILT_AND_PASSED"
+    },
+    {
+      "request_id": "req_968a030b",
+      "request_hash": "968a030b",
+      "request_text": "build a local unit converter",
+      "template_id": "unit_converter",
+      "title": "Unit Converter",
+      "generated_app_path": "tests/generated_apps/factory_round2/req_968a030b",
+      "preview_url": "../../tests/generated_apps/factory_round2/req_968a030b/index.html",
+      "test_result": "PASS 6/6",
+      "final_status": "BUILT_AND_PASSED"
+    },
+    {
+      "request_id": "req_bf0e3922",
+      "request_hash": "bf0e3922",
+      "request_text": "build a local counter tally app",
+      "template_id": "tally_counter",
+      "title": "Tally Counter",
+      "generated_app_path": "tests/generated_apps/factory_round2/req_bf0e3922",
+      "preview_url": "../../tests/generated_apps/factory_round2/req_bf0e3922/index.html",
+      "test_result": "PASS 5/5",
+      "final_status": "BUILT_AND_PASSED"
+    },
+    {
+      "request_id": "req_848e0a25",
+      "request_hash": "848e0a25",
+      "request_text": "build a local habit tracker",
+      "template_id": "habit_tracker",
+      "title": "Habit Tracker",
+      "generated_app_path": "tests/generated_apps/factory_round2/req_848e0a25",
+      "preview_url": "../../tests/generated_apps/factory_round2/req_848e0a25/index.html",
+      "test_result": "PASS 6/6",
+      "final_status": "BUILT_AND_PASSED"
+    }
+  ],
+  "unsupported_example": {
+    "request_text": "a workout app that emails customers and deploys live",
+    "expected": "UNSUPPORTED/HELD — not built, no DONE/PASS, no preview"
+  },
+  "disclaimer": "Round 2 local synthetic apps only. No network/accounts/deploy/customer data. Never ship."
+}

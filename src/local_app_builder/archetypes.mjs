@@ -233,6 +233,133 @@ ok(leader(s).name==='Ann','leader is Ann');
 s=resetScores(s).state; ok(s.players.every(x=>x.score===0),'reset scores');
 const t=p+f; if(f===0){console.log('ALL GREEN: '+p+'/'+t+' score selftest(s) passed.');process.exit(0);} else {console.error('RED: '+f+'/'+t+' failed.');process.exit(1);}`,
   },
+
+  reading_list: {
+    id: 'reading_list', title: 'Reading List', request_text: 'build a local reading list',
+    test_name: 'reading.selftest.mjs',
+    core: () => `// Reading List core (pure).
+let _id=0;
+export function addBook(s,title){ title=String(title||'').trim(); if(!title) return {ok:false,error:'EMPTY'}; return {ok:true,state:{books:[...s.books,{id:++_id,title,read:false}]}}; }
+export function toggleRead(s,id){ return {ok:true,state:{books:s.books.map(b=>b.id===id?{...b,read:!b.read}:b)}}; }
+export function removeBook(s,id){ return {ok:true,state:{books:s.books.filter(b=>b.id!==id)}}; }
+export function countRead(s){ return s.books.filter(b=>b.read).length; }
+export const initial=()=>({books:[]});
+`,
+    html: () => html('Reading List',
+`<div class="row"><input id="title" data-testid="title" placeholder="Book (synthetic)"><button id="add" class="primary" data-testid="add">Add book</button></div>
+<div id="count" class="muted" data-testid="count">0 read</div><ul id="list" data-testid="list"></ul>`,
+`import { addBook, toggleRead, removeBook, countRead, initial } from './core.mjs';
+let st=initial(); const $=id=>document.getElementById(id);
+function render(){ $('list').innerHTML=st.books.map(b=>\`<li class="\${b.read?'done':''}" data-id="\${b.id}"><span>\${b.title}</span><span><button data-read="\${b.id}">\${b.read?'✓ read':'mark read'}</button> <button data-del="\${b.id}">remove</button></span></li>\`).join('')||'<li class="muted">No books.</li>'; $('count').textContent=countRead(st)+' read'; }
+$('add').onclick=()=>{ const r=addBook(st,$('title').value); if(r.ok){st=r.state;$('title').value='';render();} else $('title').placeholder='Enter a book'; };
+$('list').onclick=e=>{ const rd=e.target.getAttribute('data-read'),del=e.target.getAttribute('data-del'); if(rd){st=toggleRead(st,Number(rd)).state;render();} else if(del){st=removeBook(st,Number(del)).state;render();} };
+render();`),
+    test: () => `import { addBook, toggleRead, removeBook, countRead, initial } from '../core.mjs';
+let p=0,f=0; const ok=(c,m)=>{c?p++:(f++,console.error('FAIL: '+m));};
+let s=initial();
+s=addBook(s,'Dune').state; s=addBook(s,'1984').state; ok(s.books.length===2,'add two books');
+ok(!addBook(s,'  ').ok,'reject empty title');
+s=toggleRead(s,s.books[0].id).state; ok(countRead(s)===1,'mark read -> 1');
+s=toggleRead(s,s.books[0].id).state; ok(countRead(s)===0,'unmark -> 0');
+s=removeBook(s,s.books[0].id).state; ok(s.books.length===1,'remove book');
+const t=p+f; if(f===0){console.log('ALL GREEN: '+p+'/'+t+' reading selftest(s) passed.');process.exit(0);} else {console.error('RED: '+f+'/'+t+' failed.');process.exit(1);}`,
+  },
+
+  unit_converter: {
+    id: 'unit_converter', title: 'Unit Converter', request_text: 'build a local unit converter',
+    test_name: 'converter.selftest.mjs',
+    core: () => `// Unit Converter core (pure). Supported: km<->mi, c<->f, kg<->lb.
+let _id=0;
+export function convert(value, from, to){ value=Number(value); if(!Number.isFinite(value)) return {ok:false,error:'NAN'}; if(from===to) return {ok:true,value}; const key=from+'>'+to; const M={'km>mi':v=>v*0.621371,'mi>km':v=>v*1.60934,'c>f':v=>v*9/5+32,'f>c':v=>(v-32)*5/9,'kg>lb':v=>v*2.20462,'lb>kg':v=>v*0.453592}; if(!M[key]) return {ok:false,error:'UNSUPPORTED_PAIR'}; return {ok:true,value:M[key](value)}; }
+export function addConversion(s,value,from,to){ const r=convert(value,from,to); if(!r.ok) return {ok:false,error:r.error}; return {ok:true,state:{history:[...s.history,{id:++_id,value:Number(value),from,to,result:r.value}]}}; }
+export function clearHistory(s){ return {ok:true,state:{history:[]}}; }
+export const initial=()=>({history:[]});
+`,
+    html: () => html('Unit Converter',
+`<div class="row"><input id="value" data-testid="value" type="number" placeholder="Value"><select id="from" data-testid="from"><option>km</option><option>mi</option><option>c</option><option>f</option><option>kg</option><option>lb</option></select><span>→</span><select id="to" data-testid="to"><option>mi</option><option>km</option><option>f</option><option>c</option><option>lb</option><option>kg</option></select><button id="add" class="primary" data-testid="add">Convert</button><button id="clear" class="warn" data-testid="clear">Clear</button></div>
+<div id="result" class="big" data-testid="result">—</div><ul id="list" data-testid="list"></ul>`,
+`import { convert, addConversion, clearHistory, initial } from './core.mjs';
+let st=initial(); const $=id=>document.getElementById(id);
+function render(){ $('list').innerHTML=st.history.map(h=>\`<li data-id="\${h.id}"><span>\${h.value} \${h.from} → \${h.to}</span><b>\${Math.round(h.result*1000)/1000}</b></li>\`).join('')||'<li class="muted">No conversions.</li>'; }
+$('add').onclick=()=>{ const r=convert($('value').value,$('from').value,$('to').value); if(r.ok){ $('result').textContent=Math.round(r.value*1000)/1000+' '+$('to').value; st=addConversion(st,$('value').value,$('from').value,$('to').value).state; render(); } else { $('result').textContent='Error: '+r.error; } };
+$('clear').onclick=()=>{ st=clearHistory(st).state; $('result').textContent='—'; render(); };
+render();`),
+    test: () => `import { convert, addConversion, clearHistory, initial } from '../core.mjs';
+let p=0,f=0; const ok=(c,m)=>{c?p++:(f++,console.error('FAIL: '+m));};
+ok(convert(100,'c','f').value===212,'100c -> 212f');
+ok(Math.abs(convert(1,'km','mi').value-0.621371)<1e-6,'1km -> ~0.621mi');
+ok(convert(5,'m','x').ok===false,'unsupported pair -> error');
+ok(convert('abc','km','mi').ok===false,'non-number -> error');
+let s=initial(); s=addConversion(s,100,'c','f').state; s=addConversion(s,1,'km','mi').state;
+ok(s.history.length===2,'history records conversions');
+s=clearHistory(s).state; ok(s.history.length===0,'clear history');
+const t=p+f; if(f===0){console.log('ALL GREEN: '+p+'/'+t+' converter selftest(s) passed.');process.exit(0);} else {console.error('RED: '+f+'/'+t+' failed.');process.exit(1);}`,
+  },
+
+  tally_counter: {
+    id: 'tally_counter', title: 'Tally Counter', request_text: 'build a local counter tally app',
+    test_name: 'tally.selftest.mjs',
+    core: () => `// Tally Counter core (pure).
+let _id=0;
+export function addCounter(s,name){ name=String(name||'').trim(); if(!name) return {ok:false,error:'EMPTY'}; return {ok:true,state:{counters:[...s.counters,{id:++_id,name,count:0}]}}; }
+export function changeBy(s,id,delta){ return {ok:true,state:{counters:s.counters.map(c=>c.id===id?{...c,count:Math.max(0,c.count+delta)}:c)}}; }
+export function resetAll(s){ return {ok:true,state:{counters:s.counters.map(c=>({...c,count:0}))}}; }
+export function total(s){ return s.counters.reduce((a,c)=>a+c.count,0); }
+export const initial=()=>({counters:[]});
+`,
+    html: () => html('Tally Counter',
+`<div class="row"><input id="name" data-testid="name" placeholder="Counter (synthetic)"><button id="add" class="primary" data-testid="add">Add counter</button><button id="reset" class="warn" data-testid="reset">Reset all</button></div>
+<div id="total" class="big" data-testid="total">0 total</div><ul id="list" data-testid="list"></ul>`,
+`import { addCounter, changeBy, resetAll, total, initial } from './core.mjs';
+let st=initial(); const $=id=>document.getElementById(id);
+function render(){ $('list').innerHTML=st.counters.map(c=>\`<li data-id="\${c.id}"><span>\${c.name}</span><span><button data-dec="\${c.id}">-</button> <b data-testid="count-\${c.id}">\${c.count}</b> <button data-inc="\${c.id}">+</button></span></li>\`).join('')||'<li class="muted">No counters.</li>'; $('total').textContent=total(st)+' total'; }
+$('add').onclick=()=>{ const r=addCounter(st,$('name').value); if(r.ok){st=r.state;$('name').value='';render();} else $('name').placeholder='Enter a counter'; };
+$('reset').onclick=()=>{ st=resetAll(st).state; render(); };
+$('list').onclick=e=>{ const inc=e.target.getAttribute('data-inc'),dec=e.target.getAttribute('data-dec'); if(inc){st=changeBy(st,Number(inc),1).state;render();} else if(dec){st=changeBy(st,Number(dec),-1).state;render();} };
+render();`),
+    test: () => `import { addCounter, changeBy, resetAll, total, initial } from '../core.mjs';
+let p=0,f=0; const ok=(c,m)=>{c?p++:(f++,console.error('FAIL: '+m));};
+let s=initial();
+s=addCounter(s,'Push-ups').state; ok(s.counters.length===1,'add counter');
+ok(!addCounter(s,'').ok,'reject empty counter');
+const id=s.counters[0].id;
+s=changeBy(s,id,1).state; s=changeBy(s,id,1).state; ok(total(s)===2,'+1 +1 -> total 2');
+s=changeBy(s,id,-5).state; ok(total(s)===0,'decrement clamps at 0');
+s=changeBy(s,id,3).state; s=resetAll(s).state; ok(total(s)===0,'reset all -> 0');
+const t=p+f; if(f===0){console.log('ALL GREEN: '+p+'/'+t+' tally selftest(s) passed.');process.exit(0);} else {console.error('RED: '+f+'/'+t+' failed.');process.exit(1);}`,
+  },
+
+  workout_log: {
+    id: 'workout_log', title: 'Workout Log', request_text: 'build a local workout log',
+    test_name: 'workout.selftest.mjs',
+    core: () => `// Workout Log core (pure).
+let _id=0;
+export function addSet(s,exercise,reps){ exercise=String(exercise||'').trim(); reps=Number(reps); if(!exercise||!Number.isFinite(reps)||reps<0) return {ok:false,error:'INVALID'}; return {ok:true,state:{sets:[...s.sets,{id:++_id,exercise,reps}]}}; }
+export function removeSet(s,id){ return {ok:true,state:{sets:s.sets.filter(x=>x.id!==id)}}; }
+export function clearAll(s){ return {ok:true,state:{sets:[]}}; }
+export function totalReps(s){ return s.sets.reduce((a,x)=>a+x.reps,0); }
+export const initial=()=>({sets:[]});
+`,
+    html: () => html('Workout Log',
+`<div class="row"><input id="exercise" data-testid="exercise" placeholder="Exercise (synthetic)"><input id="reps" data-testid="reps" type="number" placeholder="Reps"><button id="add" class="primary" data-testid="add">Add set</button><button id="clear" class="warn" data-testid="clear">Clear</button></div>
+<div id="total" class="big" data-testid="total">0 reps</div><ul id="list" data-testid="list"></ul>`,
+`import { addSet, removeSet, clearAll, totalReps, initial } from './core.mjs';
+let st=initial(); const $=id=>document.getElementById(id);
+function render(){ $('list').innerHTML=st.sets.map(x=>\`<li data-id="\${x.id}"><span>\${x.exercise}</span><span>\${x.reps} reps <button data-del="\${x.id}">remove</button></span></li>\`).join('')||'<li class="muted">No sets.</li>'; $('total').textContent=totalReps(st)+' reps'; }
+$('add').onclick=()=>{ const r=addSet(st,$('exercise').value,$('reps').value); if(r.ok){st=r.state;$('exercise').value='';$('reps').value='';render();} else $('exercise').placeholder='Enter exercise + reps'; };
+$('clear').onclick=()=>{ st=clearAll(st).state; render(); };
+$('list').onclick=e=>{ const id=e.target.getAttribute('data-del'); if(id){ st=removeSet(st,Number(id)).state; render(); } };
+render();`),
+    test: () => `import { addSet, removeSet, clearAll, totalReps, initial } from '../core.mjs';
+let p=0,f=0; const ok=(c,m)=>{c?p++:(f++,console.error('FAIL: '+m));};
+let s=initial();
+s=addSet(s,'Squats',10).state; s=addSet(s,'Lunges',15).state; ok(totalReps(s)===25,'total reps 10+15=25');
+ok(!addSet(s,'',5).ok,'reject empty exercise');
+ok(!addSet(s,'Curls','x').ok,'reject non-numeric reps');
+s=removeSet(s,s.sets[0].id).state; ok(totalReps(s)===15,'remove set -> 15');
+s=clearAll(s).state; ok(totalReps(s)===0,'clear -> 0');
+const t=p+f; if(f===0){console.log('ALL GREEN: '+p+'/'+t+' workout selftest(s) passed.');process.exit(0);} else {console.error('RED: '+f+'/'+t+' failed.');process.exit(1);}`,
+  },
 };
 
 export const ARCHETYPE_IDS = Object.keys(ARCHETYPES);

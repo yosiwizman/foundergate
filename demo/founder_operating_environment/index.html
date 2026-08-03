@@ -60,6 +60,7 @@
       <button class="nav"    data-panel="files"    data-testid="nav-files">📁 Files <span class="tag">synthetic demo</span></button>
       <button class="nav"    data-panel="idea"     data-testid="nav-idea">💡 Idea Builder <span class="tag">local synthetic</span></button>
       <button class="nav"    data-panel="factory"  data-testid="nav-factory">🏭 Factory Proof <span class="tag">local synthetic</span></button>
+      <button class="nav"    data-panel="factory2" data-testid="nav-factory2">🔁 Factory Round 2 <span class="tag">repeatability</span></button>
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
@@ -300,6 +301,20 @@
           <tbody id="factory-body" data-testid="factory-body"><tr><td colspan="6" style="color:var(--dim)">Click &ldquo;Load factory proof&rdquo;.</td></tr></tbody></table>
         <p class="honesty" data-testid="factory-note">Each row is a real app generated to disk under tests/generated_apps/factory_runs/&lt;request_id&gt;/ with its own tests. Preview links are derived from each app&rsquo;s manifest (not hardcoded). Unsupported/unsafe requests (real calendar/account/email/billing/deploy/PR&nbsp;#200/production data) are HELD/REFUSED — not built, no DONE/PASS, no preview.</p>
         <div class="clsrow"><span>Unsupported example</span><span id="factory-unsupported" data-testid="factory-unsupported" class="pill refuse">—</span></div>
+        <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
+      </div>
+    </section>
+
+    <!-- ===== LOCAL APP FACTORY — ROUND 2 (repeatability) ===== -->
+    <section class="panel" id="panel-factory2" role="region" aria-label="Factory Round 2" data-testid="panel-factory2">
+      <div class="eyebrow">LOCAL APP FACTORY ROUND 2 — REPEATABILITY · fresh seed · 4 apps different from Round 1</div>
+      <div class="head"><div><h1>Factory Round 2</h1><div class="sub">A second independent factory round with different apps, proving the workflow repeats. Local synthetic only; never &ldquo;ship&rdquo;.</div></div></div>
+      <div class="card">
+        <div class="actions"><button id="factory2-load-btn" class="btn primary" data-testid="factory2-load-btn">Load Round 2 proof</button></div>
+        <table class="tbl"><thead><tr><th>App</th><th>Request</th><th>Generated path</th><th>Tests</th><th>Status</th><th>Preview</th></tr></thead>
+          <tbody id="factory2-body" data-testid="factory2-body"><tr><td colspan="6" style="color:var(--dim)">Click &ldquo;Load Round 2 proof&rdquo;.</td></tr></tbody></table>
+        <p class="honesty" data-testid="factory2-note">Round 2 apps are generated to disk under tests/generated_apps/factory_round2/&lt;request_id&gt;/ with their own tests, distinct from Round 1. Previews are derived from each app&rsquo;s manifest. Unsupported/unsafe requests are HELD/REFUSED — no DONE/PASS, no preview.</p>
+        <div class="clsrow"><span>Unsupported example</span><span id="factory2-unsupported" data-testid="factory2-unsupported" class="pill refuse">—</span></div>
         <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
       </div>
     </section>

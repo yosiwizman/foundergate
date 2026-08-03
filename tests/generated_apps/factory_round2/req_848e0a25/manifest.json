@@ -1,0 +1,35 @@
+{
+  "manifest_kind": "FACTORY_APP_MANIFEST",
+  "request_id": "req_848e0a25",
+  "request_text": "build a local habit tracker",
+  "request_hash": "848e0a25",
+  "selected_template_id": "habit_tracker",
+  "app_spec": {
+    "title": "Habit Tracker",
+    "archetype": "habit_tracker",
+    "actions": "input + state-change + reset/delete/clear",
+    "local_only": true,
+    "synthetic_only": true
+  },
+  "generated_app_path": "tests/generated_apps/factory_round2/req_848e0a25",
+  "generated_files": [
+    "core.mjs",
+    "index.html",
+    "tests/habit.selftest.mjs",
+    "LIMITATIONS.md",
+    "package.json"
+  ],
+  "test_plan": "tests/generated_apps/factory_round2/req_848e0a25/tests/habit.selftest.mjs",
+  "test_results": {
+    "tests_run": true,
+    "result": "PASS 6/6",
+    "passed": 6,
+    "total": 6
+  },
+  "preview_url": "../../tests/generated_apps/factory_round2/req_848e0a25/index.html",
+  "evidence_manifest": "tests/generated_apps/factory_round2/req_848e0a25/manifest.json",
+  "builder_identity": "FounderGate local app factory",
+  "checker_verdict": "CLEAN_WITH_LIMITS",
+  "terminal_advisor_verdict": "LOCAL_APP_FACTORY_REPEATABILITY_PROVEN_WITH_LIMITS",
+  "final_status": "BUILT_AND_PASSED"
+}

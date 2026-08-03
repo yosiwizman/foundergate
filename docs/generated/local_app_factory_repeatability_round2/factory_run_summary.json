@@ -1,0 +1,152 @@
+{
+  "seed": "20260803T0915ET",
+  "selected": [
+    "reading_list",
+    "unit_converter",
+    "tally_counter",
+    "habit_tracker"
+  ],
+  "allPass": true,
+  "manifests": [
+    {
+      "manifest_kind": "FACTORY_APP_MANIFEST",
+      "request_id": "req_8b7de6b1",
+      "request_text": "build a local reading list",
+      "request_hash": "8b7de6b1",
+      "selected_template_id": "reading_list",
+      "app_spec": {
+        "title": "Reading List",
+        "archetype": "reading_list",
+        "actions": "input + state-change + reset/delete/clear",
+        "local_only": true,
+        "synthetic_only": true
+      },
+      "generated_app_path": "tests/generated_apps/factory_round2/req_8b7de6b1",
+      "generated_files": [
+        "core.mjs",
+        "index.html",
+        "tests/reading.selftest.mjs",
+        "LIMITATIONS.md",
+        "package.json"
+      ],
+      "test_plan": "tests/generated_apps/factory_round2/req_8b7de6b1/tests/reading.selftest.mjs",
+      "test_results": {
+        "tests_run": true,
+        "result": "PASS 5/5",
+        "passed": 5,
+        "total": 5
+      },
+      "preview_url": "../../tests/generated_apps/factory_round2/req_8b7de6b1/index.html",
+      "evidence_manifest": "tests/generated_apps/factory_round2/req_8b7de6b1/manifest.json",
+      "builder_identity": "FounderGate local app factory",
+      "checker_verdict": "PENDING_INDEPENDENT_CHECKER",
+      "terminal_advisor_verdict": "PENDING_INDEPENDENT_TERMINAL_ADVISOR",
+      "final_status": "BUILT_AND_PASSED"
+    },
+    {
+      "manifest_kind": "FACTORY_APP_MANIFEST",
+      "request_id": "req_968a030b",
+      "request_text": "build a local unit converter",
+      "request_hash": "968a030b",
+      "selected_template_id": "unit_converter",
+      "app_spec": {
+        "title": "Unit Converter",
+        "archetype": "unit_converter",
+        "actions": "input + state-change + reset/delete/clear",
+        "local_only": true,
+        "synthetic_only": true
+      },
+      "generated_app_path": "tests/generated_apps/factory_round2/req_968a030b",
+      "generated_files": [
+        "core.mjs",
+        "index.html",
+        "tests/converter.selftest.mjs",
+        "LIMITATIONS.md",
+        "package.json"
+      ],
+      "test_plan": "tests/generated_apps/factory_round2/req_968a030b/tests/converter.selftest.mjs",
+      "test_results": {
+        "tests_run": true,
+        "result": "PASS 6/6",
+        "passed": 6,
+        "total": 6
+      },
+      "preview_url": "../../tests/generated_apps/factory_round2/req_968a030b/index.html",
+      "evidence_manifest": "tests/generated_apps/factory_round2/req_968a030b/manifest.json",
+      "builder_identity": "FounderGate local app factory",
+      "checker_verdict": "PENDING_INDEPENDENT_CHECKER",
+      "terminal_advisor_verdict": "PENDING_INDEPENDENT_TERMINAL_ADVISOR",
+      "final_status": "BUILT_AND_PASSED"
+    },
+    {
+      "manifest_kind": "FACTORY_APP_MANIFEST",
+      "request_id": "req_bf0e3922",
+      "request_text": "build a local counter tally app",
+      "request_hash": "bf0e3922",
+      "selected_template_id": "tally_counter",
+      "app_spec": {
+        "title": "Tally Counter",
+        "archetype": "tally_counter",
+        "actions": "input + state-change + reset/delete/clear",
+        "local_only": true,
+        "synthetic_only": true
+      },
+      "generated_app_path": "tests/generated_apps/factory_round2/req_bf0e3922",
+      "generated_files": [
+        "core.mjs",
+        "index.html",
+        "tests/tally.selftest.mjs",
+        "LIMITATIONS.md",
+        "package.json"
+      ],
+      "test_plan": "tests/generated_apps/factory_round2/req_bf0e3922/tests/tally.selftest.mjs",
+      "test_results": {
+        "tests_run": true,
+        "result": "PASS 5/5",
+        "passed": 5,
+        "total": 5
+      },
+      "preview_url": "../../tests/generated_apps/factory_round2/req_bf0e3922/index.html",
+      "evidence_manifest": "tests/generated_apps/factory_round2/req_bf0e3922/manifest.json",
+      "builder_identity": "FounderGate local app factory",
+      "checker_verdict": "PENDING_INDEPENDENT_CHECKER",
+      "terminal_advisor_verdict": "PENDING_INDEPENDENT_TERMINAL_ADVISOR",
+      "final_status": "BUILT_AND_PASSED"
+    },
+    {
+      "manifest_kind": "FACTORY_APP_MANIFEST",
+      "request_id": "req_848e0a25",
+      "request_text": "build a local habit tracker",
+      "request_hash": "848e0a25",
+      "selected_template_id": "habit_tracker",
+      "app_spec": {
+        "title": "Habit Tracker",
+        "archetype": "habit_tracker",
+        "actions": "input + state-change + reset/delete/clear",
+        "local_only": true,
+        "synthetic_only": true
+      },
+      "generated_app_path": "tests/generated_apps/factory_round2/req_848e0a25",
+      "generated_files": [
+        "core.mjs",
+        "index.html",
+        "tests/habit.selftest.mjs",
+        "LIMITATIONS.md",
+        "package.json"
+      ],
+      "test_plan": "tests/generated_apps/factory_round2/req_848e0a25/tests/habit.selftest.mjs",
+      "test_results": {
+        "tests_run": true,
+        "result": "PASS 6/6",
+        "passed": 6,
+        "total": 6
+      },
+      "preview_url": "../../tests/generated_apps/factory_round2/req_848e0a25/index.html",
+      "evidence_manifest": "tests/generated_apps/factory_round2/req_848e0a25/manifest.json",
+      "builder_identity": "FounderGate local app factory",
+      "checker_verdict": "PENDING_INDEPENDENT_CHECKER",
+      "terminal_advisor_verdict": "PENDING_INDEPENDENT_TERMINAL_ADVISOR",
+      "final_status": "BUILT_AND_PASSED"
+    }
+  ]
+}
