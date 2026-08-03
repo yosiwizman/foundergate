@@ -61,6 +61,7 @@
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
+      <button class="nav"    data-panel="roadmap"  data-testid="nav-roadmap">🗺 Roadmap / Products <span class="tag">planning</span></button>
       <button class="nav"    data-panel="tech"     data-testid="nav-tech">🔧 Technical view</button>
     </nav>
     <div class="robot"><div>Live-local backend</div><div id="server-state" data-testid="server-state" style="color:var(--muted);font-size:12px;margin-top:6px">checking…</div></div>
@@ -317,6 +318,25 @@
         <table class="tbl"><thead><tr><th>Gate</th><th>Status</th><th>Evidence needed</th><th>Authorization phrase (inactive)</th></tr></thead>
           <tbody id="livegate-body" data-testid="livegate-body"></tbody></table>
         <p class="honesty" data-testid="livegate-note">DISPLAY ONLY. Every gate is REQUIRED and NOT AUTHORIZED. No control on this screen can deploy, bill, send, merge, touch PR&nbsp;#200, or access real accounts/data. Each needs a separate explicit founder authorization phrase.</p></div>
+    </section>
+
+    <!-- ===== ROADMAP / PRODUCTS (display-only / planning) ===== -->
+    <section class="panel" id="panel-roadmap" role="region" aria-label="Roadmap and Products" data-testid="panel-roadmap">
+      <div class="eyebrow">ROADMAP / PRODUCTS — DISPLAY ONLY / PLANNING (no control sells or executes anything)</div>
+      <div class="head"><div><h1>Roadmap / Products</h1><div class="sub">Current phase: post-Wave-9 productization. Planning only — nothing here is sold, deployed, or charged.</div></div></div>
+      <div class="card">
+        <div class="clsrow"><span>Current phase</span><span class="pill">Post-Wave-9 productization (planning)</span></div>
+        <h2 class="cardh" style="margin-top:12px">Product line (proof today = LOCAL, with limits)</h2>
+        <table class="tbl"><thead><tr><th>Product</th><th>Proof today</th></tr></thead><tbody data-testid="roadmap-products">
+          <tr><td>1 · FounderGate Safety Check</td><td><span class="pill live">local, self-owned</span></td></tr>
+          <tr><td>2 · Guided Local MVP Build (Wave 9)</td><td><span class="pill live">built locally, with limits</span></td></tr>
+          <tr><td>3 · Live Readiness Review</td><td><span class="pill hold">design/planning</span></td></tr>
+          <tr><td>4 · Evidence Report / Investor Diligence</td><td><span class="pill live">local evidence</span></td></tr>
+          <tr><td>5 · FounderGate SaaS</td><td><span class="pill refuse">not started (blocked)</span></td></tr>
+        </tbody></table>
+        <div class="clsrow"><span>Next recommended commercial step</span><span class="pill" data-testid="roadmap-next">Prepare one Safety Check SAMPLE report (synthetic/self-owned)</span></div>
+        <p class="honesty" data-testid="roadmap-note">DISPLAY ONLY. All real commercial gates remain BLOCKED — no outreach, billing, payment, deploy, provider, real integrations, or SaaS. Nothing is production/secure/SaaS/customer/commercial/paid/market ready. Each next step needs a separate explicit founder authorization phrase.</p>
+      </div>
     </section>
 
     <!-- ===== TECHNICAL VIEW ===== -->

@@ -1,0 +1,13 @@
+# Lane I — Sample Safety Check Report Template
+- **Project identity:** name · source type (public repo / local folder / demo) · owner confirmation.
+- **Founder objective:** what the founder wants to know.
+- **Input source:** URL/path (self-owned; no private/customer/production data).
+- **Checks run:** structure inspection · project-type classification · existing tests (no install).
+- **Evidence captured:** sealed package + result JSON (reviewer view has fingerprints; founder view does not).
+- **Result:** PASS / HOLD / REFUSED / REPAIR.
+- **What is proven:** the specific tests/behaviors that actually ran.
+- **What is NOT proven:** production readiness, security/compliance, scale, real integrations, market fit.
+- **Risks:** honest list.
+- **Next safe action:** the single recommended step.
+- **Blocked actions:** deploy, billing, real integrations, private repos, customer data (each a gate).
+- **Disclaimer:** NOT a security certification; NOT production readiness; local evidence only; decision never SHIP.
