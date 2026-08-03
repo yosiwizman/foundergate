@@ -31,7 +31,7 @@ export function batchAppend(entry){
 
 export function batchSummary(){
   const total = batch.length;
-  const pass = batch.filter(b=>b.status==='PASS').length;
+  const pass = batch.filter(b=>/^(SCENARIO_)?PASS$/.test(b.status)).length; // counts PASS and SCENARIO_PASS
   const refused = batch.filter(b=>/REFUSED/.test(b.status)).length;
   const other = total - pass - refused;
   return {
