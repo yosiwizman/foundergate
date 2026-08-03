@@ -1,0 +1,19 @@
+{
+  "request_id": "req_1a223b2d",
+  "request_text": "Build a simple calculator app.",
+  "request_hash": "1a223b2d",
+  "supported_template_id": "calculator",
+  "unsupported_reason": null,
+  "generated_artifact_id": "calculator@1a223b2d",
+  "generated_app_path": "tests/generated_apps/calculator",
+  "preview_url": "../../tests/generated_apps/calculator/index.html",
+  "test_plan_id": "calculator.selftest",
+  "test_results_path": "tests/generated_apps/calculator/tests/calculator.selftest.mjs",
+  "tests_run": true,
+  "test_result": "PASS 12/12",
+  "evidence_manifest_path": "demo/founder_operating_environment/assets/binding/calculator_manifest.json",
+  "builder_identity": "FounderGate local template builder",
+  "checker_verdict": "CLEAN_WITH_LIMITS",
+  "terminal_advisor_verdict": "REQUEST_ARTIFACT_BINDING_CORRECTED_WITH_LIMITS",
+  "final_status": "REQUEST_ARTIFACT_BINDING_OK"
+}

@@ -1,0 +1,23 @@
+{
+  "calculator_request_manifest": {
+    "request": "Build a simple calculator app.",
+    "template": "calculator",
+    "preview": "../../tests/generated_apps/calculator/index.html",
+    "test_result": "PASS 12/12",
+    "final_status": "REQUEST_ARTIFACT_BINDING_OK"
+  },
+  "task_planner_request_manifest": {
+    "request": "Build a simple appointment/task planner.",
+    "template": "task_planner",
+    "preview": "../../tests/generated_apps/wave9_appointment_task_planner/index.html",
+    "test_result": "PASS 13/13",
+    "final_status": "REQUEST_ARTIFACT_BINDING_OK"
+  },
+  "unsupported_request_manifest": {
+    "request": "Build a CRM for my sales team with real customer data.",
+    "template": null,
+    "preview": null,
+    "test_result": null,
+    "final_status": "UNSUPPORTED_LOCAL_TEMPLATE"
+  }
+}

@@ -3,6 +3,12 @@
 // (/api/session, /api/start, /api/export). Loopback only. No provider, no external network, no fake state.
 // Honest failure behavior: server-off → UNKNOWN, run/export failure → HOLD/ERROR, timeout → HOLD,
 // every run resets to UNKNOWN first (no stale green). Unsafe source/objective is HELD/REFUSED, never run.
+//
+// Idea Builder request→artifact binding (false-green correction 20260803): a typed idea binds to a
+// supported deterministic template (via src/idea_builder/template-registry.mjs, the SAME module the node
+// evidence generator uses) and loads THAT template's bound manifest; unsupported/held ideas show no
+// DONE/PASS and no preview. No static Wave 9 JSON, no hardcoded preview.
+import { classifyRequest, requestHash } from '../../../src/idea_builder/template-registry.mjs';
 const $ = (id) => document.getElementById(id);
 let TOKEN = null, lastRun = null, lastIntake = null, exported = false, healthy = false, running = false;
 const history = []; let batchReady = false;
@@ -255,38 +261,60 @@ async function doDoctor(){
   }catch{ $('doctor-body').innerHTML='<tr><td colspan="2">LOCAL BACKEND UNAVAILABLE (UNKNOWN).</td></tr>'; setPill($('doctor-summary'),'UNKNOWN','hold'); }
 }
 
-// ---- Idea Builder (local synthetic): classify idea + load build status ----
-const IDEA_GATE = [ // protected-gate requests -> HOLD_PROTECTED_GATE
-  [/\bdeploy|host|publish live|go live\b/i,'deploy'], [/\bmerge\b/i,'merge'], [/pr\s*#?\s*200/i,'PR #200'],
-];
-const IDEA_REFUSE = [ // real-world action requests -> REFUSED_NEEDS_AUTHORIZATION
-  [/calendar|google|gmail|apple|microsoft|outlook|icloud|oauth|account/i,'real calendar/account'],
-  [/email (customers|users|people)|outreach|send (emails|invites)|invite (customers|users)/i,'outreach/email'],
-  [/charge|bill(ing)?|payment|paywall|subscription|invoice/i,'billing/payment'],
-  [/production data|customer data|private data|real user data|prod\b/i,'customer/production data'],
-  [/security|compliance|soc\s?2|hipaa|saas|commercial(ly)? (ready|validated)|market validat/i,'security/SaaS/commercial claim'],
-  [/private repo/i,'private repo'],
-];
-function classifyIdea(text){
-  // strip NEGATED clauses ("no real calendar", "without accounts", "never deploy") so a safe idea
-  // that merely DISCLAIMS unsafe things is not misread as requesting them.
-  const t = String(text||'').replace(/\b(no real|no|not|without|never|avoid|excluding|except)\b[^,.;\n]*/gi, ' ');
-  for(const [re,label] of IDEA_GATE) if(re.test(t)) return { status:'HOLD_PROTECTED_GATE', reason:label+' is a protected founder gate — not done here.' };
-  for(const [re,label] of IDEA_REFUSE) if(re.test(t)) return { status:'REFUSED_NEEDS_AUTHORIZATION', reason:label+' needs a separate founder authorization — refused in the local builder.' };
-  return { status:'SAFE_LOCAL_SYNTHETIC', reason:'Local synthetic app only — safe to build.' };
+// ---- Idea Builder (local synthetic): request → template binding → bound build status + preview ----
+// Reset the status table + preview link to a neutral state so no stale green survives a re-classify.
+function ideaResetStatus(msg){
+  $('idea-body').innerHTML = `<tr><td colspan="2" style="color:var(--dim)">${esc(msg||'Click “Load build status”.')}</td></tr>`;
+  const pl = $('idea-preview-link'); if(pl){ pl.setAttribute('href','#'); pl.setAttribute('aria-disabled','true'); pl.classList.add('disabled'); pl.dataset.bound=''; pl.textContent='▶ Open generated app preview'; }
+}
+function ideaPillKind(kind){ return kind==='SUPPORTED'?'live':(kind==='HELD_REQUIRES_FOUNDER_GATE'?'hold':'refuse'); }
+function ideaPillText(c){
+  if(c.kind==='SUPPORTED') return `Supported local template selected: ${c.template_id} · req ${c.request_hash}`;
+  if(c.kind==='HELD_REQUIRES_FOUNDER_GATE') return `HELD_REQUIRES_FOUNDER_GATE · ${c.reason} · req ${c.request_hash}`;
+  return `UNSUPPORTED_LOCAL_TEMPLATE · ${c.reason} · req ${c.request_hash}`;
 }
 function doIdeaClassify(){
-  const c = classifyIdea($('idea-input').value);
-  const kind = c.status==='SAFE_LOCAL_SYNTHETIC'?'live':(c.status==='HOLD_PROTECTED_GATE'?'hold':'refuse');
-  setPill($('idea-class'), c.status + ' · ' + c.reason, kind);
+  const c = classifyRequest($('idea-input').value);
+  setPill($('idea-class'), ideaPillText(c), ideaPillKind(c.kind));
+  // classification changed → clear any previously loaded status/preview (never keep stale DONE/PASS)
+  ideaResetStatus(c.kind==='SUPPORTED' ? 'Click “Load build status” to load the bound build for this template.' :
+    'Not a supported local template — “Load build status” will show ' + c.kind + ' (no DONE/PASS).');
 }
 async function doIdeaLoad(){
-  $('idea-body').innerHTML = '<tr><td colspan="2">Loading…</td></tr>';
+  const c = classifyRequest($('idea-input').value);           // bind to the CURRENT typed request
+  setPill($('idea-class'), ideaPillText(c), ideaPillKind(c.kind));
+  const reqRow = `<tr><td>Request</td><td><span class="pill">req ${esc(c.request_hash)} → ${esc(c.template_id||c.kind)}</span></td></tr>`;
+  if(c.kind!=='SUPPORTED'){
+    // honest refusal — NO DONE/PASS, NO preview
+    const label = c.kind==='HELD_REQUIRES_FOUNDER_GATE' ? 'HELD_REQUIRES_FOUNDER_GATE' : 'UNSUPPORTED_LOCAL_TEMPLATE';
+    $('idea-body').innerHTML = reqRow +
+      `<tr><td>Local app generated</td><td><span class="pill refuse">${label} — not built</span></td></tr>` +
+      `<tr><td>Tests</td><td><span class="pill hold">NONE — no artifact to test</span></td></tr>` +
+      `<tr><td>Local preview</td><td><span class="pill hold">NONE — nothing to preview</span></td></tr>` +
+      `<tr><td>Reason</td><td>${esc(c.reason)}</td></tr>`;
+    ideaResetStatus.__keep = true; // (preview already reset below)
+    const pl = $('idea-preview-link'); if(pl){ pl.setAttribute('href','#'); pl.setAttribute('aria-disabled','true'); pl.classList.add('disabled'); pl.dataset.bound=''; pl.textContent='▶ Preview (none — not built)'; }
+    return;
+  }
+  // SUPPORTED → load the template's BOUND manifest (real tests already ran to make it)
+  $('idea-body').innerHTML = reqRow + '<tr><td colspan="2">Loading bound build…</td></tr>';
   try{
-    const r = await fetch('assets/idea_builder.json'); const d = await r.json();
-    $('idea-body').innerHTML = (d.steps||[]).map(s=>{ const k=/PASS|DONE|AVAILABLE/.test(s.status)?'live':'hold';
+    const r = await fetch(`assets/binding/${c.template_id}_manifest.json`, {cache:'no-store'});
+    if(!r.ok) throw new Error('manifest '+r.status);
+    const d = await r.json();
+    // preview link is DERIVED from the manifest — never hardcoded
+    const previewUrl = d.preview_url;
+    const rows = (d.steps||[]).map(s=>{ const k=/PASS|DONE|AVAILABLE/.test(s.status)?'live':(/HOLD|HELD|UNSUPPORTED|NONE/.test(s.status)?'hold':'live');
       return `<tr><td>${esc(s.step)}</td><td><span class="pill ${k}">${esc(s.status)}</span></td></tr>`; }).join('');
-  }catch{ $('idea-body').innerHTML='<tr><td colspan="2">UNKNOWN — could not load build status.</td></tr>'; }
+    $('idea-body').innerHTML = reqRow + rows +
+      `<tr><td>Preview binds to</td><td><span class="pill live">${esc(previewUrl)}</span></td></tr>`;
+    const pl = $('idea-preview-link');
+    if(pl){ pl.setAttribute('href', previewUrl); pl.removeAttribute('aria-disabled'); pl.classList.remove('disabled'); pl.dataset.bound=c.template_id; pl.textContent=`▶ Open generated app preview (${c.template_id})`; }
+  }catch(e){
+    // manifest missing/unreadable → UNKNOWN, never green
+    $('idea-body').innerHTML = reqRow + `<tr><td>Build status</td><td><span class="pill hold">UNKNOWN — bound manifest missing (no green)</span></td></tr>`;
+    const pl = $('idea-preview-link'); if(pl){ pl.setAttribute('href','#'); pl.setAttribute('aria-disabled','true'); pl.classList.add('disabled'); pl.dataset.bound=''; }
+  }
 }
 
 // ---- Real Repo Proof (public self-owned; loads founder-safe results JSON) ----

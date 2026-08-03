@@ -50,27 +50,29 @@ const waitTests = (p) => p.waitForFunction(() => /\d+\/\d+/.test(document.queryS
   const p = await npage(); await p.goto(DASH, { waitUntil: 'domcontentloaded' });
   await p.click('[data-testid="nav-idea"]');
   await p.click('[data-testid="idea-classify-btn"]');
-  ok(/SAFE_LOCAL_SYNTHETIC/.test(await T(p,'[data-testid="idea-class"]')), 'idea: default idea classified SAFE_LOCAL_SYNTHETIC');
+  ok(/Supported local template selected: task_planner/.test(await T(p,'[data-testid="idea-class"]')), 'idea: default idea → task_planner template (bound)');
   for (const [text, want] of [
-    ['deploy this app to production','HOLD_PROTECTED_GATE'],
-    ['connect my Google Calendar and sync events','REFUSED_NEEDS_AUTHORIZATION'],
-    ['email customers about their appointments','REFUSED_NEEDS_AUTHORIZATION'],
-    ['charge users a monthly subscription','REFUSED_NEEDS_AUTHORIZATION'],
-    ['use production data from real users','REFUSED_NEEDS_AUTHORIZATION'],
-    ['merge this to main','HOLD_PROTECTED_GATE'],
-    ['edit PR #200','HOLD_PROTECTED_GATE'],
-    ['claim it is SOC2 secure and SaaS ready','REFUSED_NEEDS_AUTHORIZATION'],
+    ['deploy this app to production','HELD_REQUIRES_FOUNDER_GATE'],
+    ['connect my Google Calendar and sync events','UNSUPPORTED_LOCAL_TEMPLATE'],
+    ['email customers about their appointments','UNSUPPORTED_LOCAL_TEMPLATE'],
+    ['charge users a monthly subscription','UNSUPPORTED_LOCAL_TEMPLATE'],
+    ['use production data from real users','UNSUPPORTED_LOCAL_TEMPLATE'],
+    ['merge this to main','HELD_REQUIRES_FOUNDER_GATE'],
+    ['edit PR #200','HELD_REQUIRES_FOUNDER_GATE'],
+    ['claim it is SOC2 secure and SaaS ready','UNSUPPORTED_LOCAL_TEMPLATE'],
   ]) {
     await p.fill('[data-testid="idea-input"]', text);
     await p.waitForFunction(w => document.querySelector('[data-testid="idea-class"]').textContent.includes(w), want, { timeout: 5000 });
     ok((await T(p,'[data-testid="idea-class"]')).includes(want), `idea-refusal: "${text.slice(0,28)}…" -> ${want}`);
   }
+  // reset to a SUPPORTED idea and load its BOUND build (status derives from the template manifest)
+  await p.fill('[data-testid="idea-input"]', 'Build a simple appointment/task planner.');
   await p.click('[data-testid="idea-load-btn"]');
   await p.waitForFunction(() => document.querySelectorAll('[data-testid="idea-body"] tr').length >= 5, null, { timeout: 8000 });
   const body = await T(p,'[data-testid="idea-body"]');
-  ok(/PASS 13\/13/.test(body), 'idea: build status shows generated tests PASS 13/13');
-  ok(/AVAILABLE|local synthetic/i.test(body), 'idea: preview available');
-  ok(!!(await p.getAttribute('[data-testid="idea-preview-link"]','href')), 'idea: preview link present');
+  ok(/PASS 13\/13/.test(body), 'idea: task_planner bound build shows PASS 13/13');
+  ok(/AVAILABLE|binds to/i.test(body), 'idea: preview available (bound)');
+  ok(/wave9_appointment_task_planner/.test(await p.getAttribute('[data-testid="idea-preview-link"]','href')), 'idea: preview link bound to task planner');
   await shot(p, 'w9_03_idea_builder.png');
   await p.close();
 }

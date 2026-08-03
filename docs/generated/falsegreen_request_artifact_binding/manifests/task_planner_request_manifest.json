@@ -1,0 +1,19 @@
+{
+  "request_id": "req_598a7a25",
+  "request_text": "Build a simple appointment/task planner.",
+  "request_hash": "598a7a25",
+  "supported_template_id": "task_planner",
+  "unsupported_reason": null,
+  "generated_artifact_id": "task_planner@598a7a25",
+  "generated_app_path": "tests/generated_apps/wave9_appointment_task_planner",
+  "preview_url": "../../tests/generated_apps/wave9_appointment_task_planner/index.html",
+  "test_plan_id": "task_planner.selftest",
+  "test_results_path": "tests/generated_apps/wave9_appointment_task_planner/tests/planner.selftest.mjs",
+  "tests_run": true,
+  "test_result": "PASS 13/13",
+  "evidence_manifest_path": "demo/founder_operating_environment/assets/binding/task_planner_manifest.json",
+  "builder_identity": "FounderGate local template builder",
+  "checker_verdict": "CLEAN_WITH_LIMITS",
+  "terminal_advisor_verdict": "REQUEST_ARTIFACT_BINDING_CORRECTED_WITH_LIMITS",
+  "final_status": "REQUEST_ARTIFACT_BINDING_OK"
+}

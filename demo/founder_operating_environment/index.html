@@ -3,7 +3,8 @@
 <link rel="stylesheet" href="assets/fg.css">
 <style>:root{--dim:#93a1b5;--muted:#b4c0d0}
 .nav.on,.btn.primary{background:#1d4ed8;border-color:#1d4ed8}
-.nav.on .tag{color:#e6ebf2;border-color:rgba(230,235,242,.55)}</style>
+.nav.on .tag{color:#e6ebf2;border-color:rgba(230,235,242,.55)}
+.actions a.disabled{opacity:.45;pointer-events:none;cursor:not-allowed}</style>
 <style>
 .proto-banner{background:#3a2a00;color:#f5b83d;border-bottom:1px solid var(--line);font-weight:800;font-size:12.5px;padding:9px 16px;text-align:center}
 .alive{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px;margin:16px 0 8px}
@@ -279,9 +280,9 @@
         <textarea id="idea-input" data-testid="idea-input" rows="3" style="width:100%;box-sizing:border-box;background:#0d1117;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font:inherit">Build a simple local appointment/task planner demo with synthetic data only. Add, list, complete, and filter tasks or appointments locally. No real calendar, no account, no email, no reminders, no customer data, no deployment.</textarea>
         <div class="actions"><button id="idea-classify-btn" class="btn primary" data-testid="idea-classify-btn">Classify idea (safety)</button>
           <button id="idea-load-btn" class="btn" data-testid="idea-load-btn">Load build status</button>
-          <a class="btn" data-testid="idea-preview-link" href="../../tests/generated_apps/wave9_appointment_task_planner/index.html" target="_blank" rel="noopener">▶ Open generated app preview</a></div>
+          <a id="idea-preview-link" class="btn disabled" data-testid="idea-preview-link" href="#" aria-disabled="true" data-bound="" target="_blank" rel="noopener">▶ Open generated app preview</a></div>
         <div class="clsrow"><span>Idea classification</span><span id="idea-class" data-testid="idea-class" class="pill">—</span></div>
-        <p class="honesty" data-testid="idea-warning">Forbidden requests (deploy, connect a real calendar/account, email customers, charge/bill, use production data, merge, edit PR&nbsp;#200, or claim security/SaaS/commercial readiness) are REFUSED or HELD — this builder makes local synthetic apps only.</p>
+        <p class="honesty" data-testid="idea-warning">Supported local templates: <b>calculator</b> and <b>task&nbsp;planner</b>. Your idea binds to a template and its real app/tests/preview, or it shows <b>UNSUPPORTED_LOCAL_TEMPLATE</b> — not built (no DONE/PASS, no preview). Real-world actions (deploy, connect a real calendar/account, email customers, charge/bill, use production data, merge, edit PR&nbsp;#200) are HELD/REFUSED. This builder does not generate arbitrary apps.</p>
         <table class="tbl"><thead><tr><th>Step</th><th>Status</th></tr></thead>
           <tbody id="idea-body" data-testid="idea-body"><tr><td colspan="2" style="color:var(--dim)">Click &ldquo;Load build status&rdquo;.</td></tr></tbody></table>
         <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>

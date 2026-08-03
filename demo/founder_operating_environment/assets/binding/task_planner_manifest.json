@@ -1,0 +1,44 @@
+{
+  "manifest_kind": "TEMPLATE_BUILD_MANIFEST",
+  "selected_template": "task_planner",
+  "label": "Appointment / Task Planner",
+  "generated_app_path": "tests/generated_apps/wave9_appointment_task_planner",
+  "preview_url": "../../tests/generated_apps/wave9_appointment_task_planner/index.html",
+  "test_plan_id": "task_planner.selftest",
+  "test_path": "tests/generated_apps/wave9_appointment_task_planner/tests/planner.selftest.mjs",
+  "tests_run": true,
+  "test_result": "PASS 13/13",
+  "final_status": "REQUEST_ARTIFACT_BINDING_OK",
+  "steps": [
+    {
+      "step": "Idea recorded",
+      "status": "DONE"
+    },
+    {
+      "step": "Template selected",
+      "status": "DONE (task_planner)"
+    },
+    {
+      "step": "Local app generated",
+      "status": "DONE (Appointment / Task Planner)"
+    },
+    {
+      "step": "Tests generated + run",
+      "status": "PASS 13/13"
+    },
+    {
+      "step": "Local preview",
+      "status": "AVAILABLE (bound to ../../tests/generated_apps/wave9_appointment_task_planner/index.html)"
+    },
+    {
+      "step": "Evidence manifest",
+      "status": "DONE"
+    },
+    {
+      "step": "Decision",
+      "status": "INTERNAL_DEMO_ONLY (never SHIP)"
+    }
+  ],
+  "builder_identity": "FounderGate local template builder",
+  "limitations": "Local synthetic only; no network/accounts/deploy/customer data. Not production/SaaS/secure/customer-ready."
+}

@@ -1,0 +1,44 @@
+{
+  "manifest_kind": "TEMPLATE_BUILD_MANIFEST",
+  "selected_template": "calculator",
+  "label": "Calculator",
+  "generated_app_path": "tests/generated_apps/calculator",
+  "preview_url": "../../tests/generated_apps/calculator/index.html",
+  "test_plan_id": "calculator.selftest",
+  "test_path": "tests/generated_apps/calculator/tests/calculator.selftest.mjs",
+  "tests_run": true,
+  "test_result": "PASS 12/12",
+  "final_status": "REQUEST_ARTIFACT_BINDING_OK",
+  "steps": [
+    {
+      "step": "Idea recorded",
+      "status": "DONE"
+    },
+    {
+      "step": "Template selected",
+      "status": "DONE (calculator)"
+    },
+    {
+      "step": "Local app generated",
+      "status": "DONE (Calculator)"
+    },
+    {
+      "step": "Tests generated + run",
+      "status": "PASS 12/12"
+    },
+    {
+      "step": "Local preview",
+      "status": "AVAILABLE (bound to ../../tests/generated_apps/calculator/index.html)"
+    },
+    {
+      "step": "Evidence manifest",
+      "status": "DONE"
+    },
+    {
+      "step": "Decision",
+      "status": "INTERNAL_DEMO_ONLY (never SHIP)"
+    }
+  ],
+  "builder_identity": "FounderGate local template builder",
+  "limitations": "Local synthetic only; no network/accounts/deploy/customer data. Not production/SaaS/secure/customer-ready."
+}
