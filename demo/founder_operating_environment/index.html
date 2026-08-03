@@ -74,6 +74,7 @@
       <button class="nav"    data-panel="reviewer" data-testid="nav-reviewer">🔍 Reviewer Readiness <span class="tag">planning</span></button>
       <button class="nav"    data-panel="provider" data-testid="nav-provider">🔌 Provider / Repo Proof <span class="tag">simulated</span></button>
       <button class="nav"    data-panel="assurance" data-testid="nav-assurance">🛡️ Assurance Core <span class="tag">P1 local</span></button>
+      <button class="nav"    data-panel="coreip"   data-testid="nav-coreip">🧬 Core IP / Assumption <span class="tag">P0 local</span></button>
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
@@ -372,6 +373,37 @@
           <tbody id="provider-repo-body" data-testid="provider-repo-body"><tr><td colspan="5" style="color:var(--dim)">—</td></tr></tbody></table>
         <p class="honesty" data-testid="provider-note">A provider that CLAIMS success without real files, with the wrong preview, without tests, or that asks for network/keys/deploy/private-repo is HELD/REFUSED — never PASS. Real OpenAI/Codex/Hermes activation and private-repo access each require a separate founder gate.</p>
         <div class="clsrow"><span>Summary</span><span id="provider-summary" data-testid="provider-summary" class="pill">—</span></div>
+        <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
+      </div>
+    </section>
+
+    <!-- ===== P0 CORE IP / ASSUMPTION VERIFICATION (local synthetic) ===== -->
+    <section class="panel" id="panel-coreip" role="region" aria-label="Core IP / Assumption Verification" data-testid="panel-coreip">
+      <div class="eyebrow">P0 CORE IP — LOCAL SYNTHETIC · evidence over self-report · assumption verification · environment/execution integrity · containment · a provider claim is never proof</div>
+      <div class="head"><div><h1>Core IP / Assumption Verification</h1><div class="sub">FounderGate&rsquo;s deterministic outer controller: it verifies assumptions and environment/execution integrity from evidence, not from what the AI says. Local synthetic only — real provider / private repo / Gate&nbsp;8 stay blocked. Never SHIP.</div></div></div>
+      <div class="card">
+        <div class="fg-labels" id="coreip-labels" data-testid="coreip-labels"></div>
+        <div class="actions"><button id="coreip-load-btn" class="btn primary" data-testid="coreip-load-btn">Load Core IP</button></div>
+
+        <h2 style="font-size:14px;margin:12px 0 4px">P0 Core IP coverage</h2>
+        <div class="clsrow"><span>Core IP primitives</span><span id="coreip-coverage" data-testid="coreip-coverage" class="pill">—</span></div>
+
+        <h2 style="font-size:14px;margin:14px 0 4px">Assumption Verification Engine</h2>
+        <div id="coreip-assumptions" data-testid="coreip-assumptions" class="muted" style="font-size:12px">—</div>
+        <div class="clsrow"><span>Assumption package action</span><span id="coreip-assumption-action" data-testid="coreip-assumption-action" class="pill">—</span></div>
+
+        <h2 style="font-size:14px;margin:14px 0 4px">Environment · Execution · Boundary · Containment</h2>
+        <div class="clsrow"><span>Environment integrity</span><span id="coreip-env" data-testid="coreip-env" class="pill">—</span></div>
+        <div class="clsrow"><span>Execution integrity</span><span id="coreip-exec" data-testid="coreip-exec" class="pill">—</span></div>
+        <div class="clsrow"><span>Boundary monitoring</span><span id="coreip-boundary" data-testid="coreip-boundary" class="pill">—</span></div>
+        <div class="clsrow"><span>Containment decision</span><span id="coreip-containment" data-testid="coreip-containment" class="pill">—</span></div>
+
+        <h2 style="font-size:14px;margin:14px 0 4px">Evidence confidence &amp; AI config manifest</h2>
+        <div class="clsrow"><span>Evidence confidence</span><span id="coreip-confidence" data-testid="coreip-confidence" class="pill">—</span></div>
+        <div id="coreip-manifest" data-testid="coreip-manifest" class="muted" style="font-size:12px">—</div>
+
+        <p class="honesty" data-testid="coreip-note">Evidence confidence is computed from evidence ONLY — never from the AI&rsquo;s own confidence. Environment/execution records are local synthetic evidence; they are NOT a proof of real sandbox, network, or container security. Missing evidence fails closed to UNKNOWN. Hostile inputs (self-report without evidence, stale evidence, out-of-scope diff, duplicate run, exceeded budget, boundary drift, containment without evidence) are all held/refused — never PASS.</p>
+        <div class="clsrow"><span>Blocked gates</span><span id="coreip-blocked" data-testid="coreip-blocked" class="pill refuse">—</span></div>
         <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
       </div>
     </section>

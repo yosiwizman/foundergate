@@ -428,6 +428,34 @@ async function doProvider(){
   }catch(e){ $('provider-body').innerHTML='<tr><td colspan="7">UNKNOWN — could not load provider index (no green).</td></tr>'; }
 }
 
+// ---- P0 Core IP / Assumption Verification (loads core_ip_index.json; evidence over self-report; fails closed) ----
+async function doCoreIp(){
+  if($('coreip-assumptions')) $('coreip-assumptions').textContent = 'Loading…';
+  try{
+    const r = await fetch('assets/core_ip/core_ip_index.json', {cache:'no-store'});
+    if(!r.ok) throw new Error('core_ip_index '+r.status);
+    const d = await r.json();
+    if($('coreip-labels')) $('coreip-labels').innerHTML = (d.labels||[]).map(l=>`<span class="lbl">${esc(l)}</span>`).join(' ');
+    const ci = d.core_ip||{};
+    setPill($('coreip-coverage'), `${ci.implemented||0} / ${ci.total||0} primitives · ${esc(ci.status||'')}`, 'live');
+    const a = d.assumptions||{};
+    if($('coreip-assumptions')) $('coreip-assumptions').innerHTML =
+      `<b>${a.declared||0}</b> declared · <span class="pill live">${a.verified||0} verified</span> · <span class="pill ${a.unknown?'hold':''}">${a.unknown||0} unknown</span> · <span class="pill ${a.stale?'hold':''}">${a.stale||0} stale</span> · <span class="pill ${a.violated?'refuse':''}">${a.violated||0} violated</span><br><span class="muted">${esc(a.summary||'')}</span>`;
+    setPill($('coreip-assumption-action'), esc(a.action||'—'), a.action==='CONTINUE'?'live':(a.action==='QUARANTINE'||a.action==='STOP'?'refuse':'hold'));
+    const env=d.environment_integrity||{}, ex=d.execution_integrity||{}, bd=d.boundary_monitoring||{}, cn=d.containment||{};
+    setPill($('coreip-env'), `${esc(env.status||'—')} · seal ${esc(env.seal||'—')} · ${env.violations||0} viol / ${env.unknown||0} unk`, env.status==='VERIFIED_LOCAL'?'live':'hold');
+    setPill($('coreip-exec'), `${esc(ex.status||'—')} · ${ex.violations||0} viol / ${ex.unknown||0} unk${ex.fails_closed?' · fails-closed':''}`, ex.status==='VERIFIED_LOCAL'?'live':'hold');
+    setPill($('coreip-boundary'), `${esc(bd.status||'—')} · action ${esc(bd.overall_action||'—')} · ${bd.drifts||0} drift / ${bd.unknown||0} unk`, bd.overall_action==='CONTINUE'?'live':'refuse');
+    setPill($('coreip-containment'), `${esc(cn.decision||'—')} · ${esc(cn.status||'')}`, cn.proceed?'live':'refuse');
+    const cf=d.evidence_confidence||{};
+    setPill($('coreip-confidence'), `${esc(cf.level||'—')} · uses AI confidence: ${cf.uses_ai_confidence?'YES ⚠':'NO'} · score ${cf.score}`, (cf.level==='HIGH'||cf.level==='MEDIUM')?'live':'hold');
+    const mf=d.ai_config_manifest||{};
+    if($('coreip-manifest')) $('coreip-manifest').innerHTML = `model: <b>${esc(mf.model_version||'—')}</b> · real provider: <span class="pill hold">DISABLED</span> · manifest: <code>${esc(mf.fingerprint||'—')}</code>`;
+    const b=d.blocked||{};
+    setPill($('coreip-blocked'), `real provider ${b.real_provider||'BLOCKED'} · private repo ${b.private_repo||'BLOCKED'} · Gate 8 ${b.gate_8||'BLOCKED'}`, 'refuse');
+  }catch(e){ if($('coreip-assumptions')) $('coreip-assumptions').textContent='UNKNOWN — could not load core IP index (no green).'; }
+}
+
 // ---- P1 Assurance Core (loads assurance_index.json; deterministic local records; provider can't self-certify) ----
 async function doAssurance(){
   if($('assurance-providers')) $('assurance-providers').innerHTML = '<tr><td colspan="4">Loading…</td></tr>';
@@ -719,6 +747,8 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('provider-load-btn')?.addEventListener('click', doProvider);
   // P1 Assurance Core panel
   $('assurance-load-btn')?.addEventListener('click', doAssurance);
+  // P0 Core IP / Assumption Verification panel
+  $('coreip-load-btn')?.addEventListener('click', doCoreIp);
   // Founder Drive Mode + Reviewer Readiness
   $('drive-refresh-btn')?.addEventListener('click', doDrive);
   $('drive-reviewer-btn')?.addEventListener('click', ()=>{ showPanel('reviewer'); doReviewer(); });

@@ -1,0 +1,106 @@
+{
+  "kind": "CORE_IP",
+  "run_id": "p0_core_ip_assumption_env_verification_20260803T1915ET",
+  "core_ip": {
+    "implemented": 46,
+    "total": 46,
+    "status": "INTEGRATED_LOCAL"
+  },
+  "assumptions": {
+    "declared": 10,
+    "verified": 10,
+    "unknown": 0,
+    "stale": 0,
+    "violated": 0,
+    "action": "CONTINUE",
+    "summary": "10 assumptions declared; 10 verified; 0 violations; evidence package generated."
+  },
+  "environment_integrity": {
+    "status": "VERIFIED_LOCAL",
+    "seal": "SEALED_LOCAL",
+    "violations": 0,
+    "unknown": 0,
+    "checks": [
+      {
+        "name": "network_verification",
+        "classification": "BLOCKED"
+      },
+      {
+        "name": "dns_verification",
+        "classification": "BLOCKED"
+      },
+      {
+        "name": "internet_isolation_verification",
+        "classification": "BLOCKED"
+      },
+      {
+        "name": "tool_availability_verification",
+        "classification": "VERIFIED_LOCAL"
+      },
+      {
+        "name": "environment_drift_detection",
+        "classification": "VERIFIED_LOCAL"
+      },
+      {
+        "name": "boundary_verification",
+        "classification": "VERIFIED_LOCAL"
+      },
+      {
+        "name": "runtime_boundary_monitoring",
+        "classification": "VERIFIED_LOCAL"
+      },
+      {
+        "name": "continuous_environment_integrity",
+        "classification": "VERIFIED_LOCAL"
+      }
+    ]
+  },
+  "execution_integrity": {
+    "status": "VERIFIED_LOCAL",
+    "violations": 0,
+    "unknown": 0,
+    "fails_closed": false,
+    "limit": "local synthetic evidence only; NOT a proof of real sandbox/container enforcement"
+  },
+  "boundary_monitoring": {
+    "status": "STABLE",
+    "overall_action": "CONTINUE",
+    "drifts": 0,
+    "unknown": 0
+  },
+  "containment": {
+    "decision": "CONTINUE",
+    "status": "CONTINUE",
+    "proceed": true
+  },
+  "evidence_confidence": {
+    "level": "HIGH",
+    "uses_ai_confidence": false,
+    "score": 7
+  },
+  "ai_config_manifest": {
+    "fingerprint": "aicfg_45df6b95c233fd1ea60364e4",
+    "real_provider_enabled": false,
+    "model_version": "claude-opus-4-8[1m]"
+  },
+  "blocked": {
+    "real_provider": "BLOCKED",
+    "private_repo": "BLOCKED",
+    "gate_8": "BLOCKED",
+    "deploy": "BLOCKED",
+    "bill": "BLOCKED",
+    "contact": "BLOCKED",
+    "merge": "BLOCKED"
+  },
+  "labels": [
+    "LOCAL_SYNTHETIC_ONLY",
+    "P0 Core IP (46 primitives)",
+    "evidence over self-report",
+    "a provider claim is never proof",
+    "evidence confidence NOT AI confidence",
+    "real provider BLOCKED",
+    "private repo BLOCKED",
+    "GATE 8 BLOCKED",
+    "NEVER SHIP"
+  ]
+}

@@ -1,0 +1,610 @@
+{
+  "record_type": "p0_core_ip_evidence",
+  "run_id": "p0_core_ip_assumption_env_verification_20260803T1915ET",
+  "core_ip": {
+    "implemented_functions": 46,
+    "catalog": [
+      "independentEvidenceRecord",
+      "exactStateBinding",
+      "detectEvidenceStaleness",
+      "verifyArtifactIndependently",
+      "recordProducerVerifierDisagreement",
+      "bindVerificationToImmutableState",
+      "baselineVsCandidateVerification",
+      "discriminatingTestRecord",
+      "acceptancePredicate",
+      "verifyBeforeAcceptance",
+      "verifyAfterMutation",
+      "failureFingerprint",
+      "retryBudgetForFingerprint",
+      "requireMaterialStateChangeBeforeRetry",
+      "detectFailedHypothesis",
+      "classifyFailure",
+      "detectNoProgress",
+      "detectChurn",
+      "durablePlanLedgerEntry",
+      "stableStepId",
+      "stepDependencyRecord",
+      "requiredEvidencePerStep",
+      "selectivePlanInvalidation",
+      "resumeCheckpointRecord",
+      "boundedActionIteration",
+      "admissionGateDecision",
+      "activeRunDetectionRecord",
+      "duplicateDetectionRecord",
+      "budgetReservation",
+      "crossRunBudgetRecord",
+      "wallClockDeadlineRecord",
+      "externalSupervisorOwnership",
+      "scopeDeclaration",
+      "scopeAuthorizationRecord",
+      "scopeVerification",
+      "actualDiffVerificationRecord",
+      "preAcceptanceScopeValidation",
+      "postExecutionScopeValidation",
+      "checkpointPersistenceRecord",
+      "outcomeAwareRetentionDecision",
+      "cancellationPersistenceRecord",
+      "supervisorCancellationRecord",
+      "sideEffectAwareCleanupRecord",
+      "innerOuterLoopRecord",
+      "evidenceDrivenControllerDecision",
+      "humanAuthorityOutsideAiLoopRecord"
+    ]
+  },
+  "assumption_package": {
+    "record_type": "assumption_verification_package",
+    "declared": 10,
+    "verified": 10,
+    "verified_strict": 5,
+    "monitoring_required": 5,
+    "violations": 0,
+    "unknown": 0,
+    "stale": 0,
+    "all_clear": true,
+    "package_action": "CONTINUE",
+    "summary": "10 assumptions declared; 10 verified; 0 violations; evidence package generated.",
+    "package_hash": "e97ac3a616f918ead0037c69612a80181d7c9382695d5e9a1215b217f219b580",
+    "results": [
+      {
+        "record_type": "assumption_verification",
+        "id": "A01",
+        "declared_assumption": "internet is blocked",
+        "verification_method": "local isolation record (no external call made)",
+        "expected_state": "blocked",
+        "observed_state": "blocked",
+        "evidence_ref": "local://assumption/A01",
+        "evidence_hash": "6973dddd3ef9cb6a2932702f31777faad9c9bf3124d147a84f31aadb6d139546",
+        "confidence": "MEDIUM",
+        "expiration_index": null,
+        "now_index": null,
+        "continuous_monitoring_required": true,
+        "status": "MONITORING_REQUIRED",
+        "violation_action": "CONTINUE"
+      },
+      {
+        "record_type": "assumption_verification",
+        "id": "A02",
+        "declared_assumption": "only allowed tools exist",
+        "verification_method": "local_synthetic_observation",
+        "expected_state": "allowlist_only",
+        "observed_state": "allowlist_only",
+        "evidence_ref": "local://assumption/A02",
+        "evidence_hash": "17aa553d0b6ce17bc96cf9a662f4f17d055eb75d9ae9e72e0c28a10b1ce393d9",
+        "confidence": "HIGH",
+        "expiration_index": null,
+        "now_index": null,
+        "continuous_monitoring_required": false,
+        "status": "VERIFIED",
+        "violation_action": "CONTINUE"
+      },
+      {
+        "record_type": "assumption_verification",
+        "id": "A03",
+        "declared_assumption": "credentials absent",
+        "verification_method": "local_synthetic_observation",
+        "expected_state": "absent",
+        "observed_state": "absent",
+        "evidence_ref": "local://assumption/A03",
+        "evidence_hash": "5ad38304b535c2987dbd24657c1a11b884984ff600d9f389deb0d4e634fee792",
+        "confidence": "MEDIUM",
+        "expiration_index": null,
+        "now_index": null,
+        "continuous_monitoring_required": true,
+        "status": "MONITORING_REQUIRED",
+        "violation_action": "CONTINUE"
+      },
+      {
+        "record_type": "assumption_verification",
+        "id": "A04",
+        "declared_assumption": "repo clean",
+        "verification_method": "local_synthetic_observation",
+        "expected_state": "clean",
+        "observed_state": "clean",
+        "evidence_ref": "local://assumption/A04",
+        "evidence_hash": "3b066804f6d1d077173cfe4d06002e6a61e6f21c2b2e648417962115f1afcd8e",
+        "confidence": "HIGH",
+        "expiration_index": null,
+        "now_index": null,
+        "continuous_monitoring_required": false,
+        "status": "VERIFIED",
+        "violation_action": "CONTINUE"
+      },
+      {
+        "record_type": "assumption_verification",
+        "id": "A05",
+        "declared_assumption": "filesystem writable/read-only state known",
+        "verification_method": "local_synthetic_observation",
+        "expected_state": "known",
+        "observed_state": "known",
+        "evidence_ref": "local://assumption/A05",
+        "evidence_hash": "7117fff2d0fd294462b3c802b7cb8753579f23f3946b99cf55f38e873f013f10",
+        "confidence": "HIGH",
+        "expiration_index": null,
+        "now_index": null,
+        "continuous_monitoring_required": false,
+        "status": "VERIFIED",
+        "violation_action": "CONTINUE"
+      },
+      {
+        "record_type": "assumption_verification",
+        "id": "A06",
+        "declared_assumption": "model cannot reach production",
+        "verification_method": "local_synthetic_observation",
+        "expected_state": "no_prod_path",
+        "observed_state": "no_prod_path",
+        "evidence_ref": "local://assumption/A06",
+        "evidence_hash": "317c00bde5f868c00a36b6b82246402ec2efee764f259d82d9ce7d34f86287a3",
+        "confidence": "MEDIUM",
+        "expiration_index": null,
+        "now_index": null,
+        "continuous_monitoring_required": true,
+        "status": "MONITORING_REQUIRED",
+        "violation_action": "CONTINUE"
+      },
+      {
+        "record_type": "assumption_verification",
+        "id": "A07",
+        "declared_assumption": "private repo access blocked",
+        "verification_method": "local_synthetic_observation",
+        "expected_state": "blocked",
+        "observed_state": "blocked",
+        "evidence_ref": "local://assumption/A07",
+        "evidence_hash": "6973dddd3ef9cb6a2932702f31777faad9c9bf3124d147a84f31aadb6d139546",
+        "confidence": "MEDIUM",
+        "expiration_index": null,
+        "now_index": null,
+        "continuous_monitoring_required": true,
+        "status": "MONITORING_REQUIRED",
+        "violation_action": "CONTINUE"
+      },
+      {
+        "record_type": "assumption_verification",
+        "id": "A08",
+        "declared_assumption": "provider keys absent",
+        "verification_method": "local_synthetic_observation",
+        "expected_state": "absent",
+        "observed_state": "absent",
+        "evidence_ref": "local://assumption/A08",
+        "evidence_hash": "5ad38304b535c2987dbd24657c1a11b884984ff600d9f389deb0d4e634fee792",
+        "confidence": "MEDIUM",
+        "expiration_index": null,
+        "now_index": null,
+        "continuous_monitoring_required": true,
+        "status": "MONITORING_REQUIRED",
+        "violation_action": "CONTINUE"
+      },
+      {
+        "record_type": "assumption_verification",
+        "id": "A09",
+        "declared_assumption": "deploy path absent",
+        "verification_method": "local_synthetic_observation",
+        "expected_state": "absent",
+        "observed_state": "absent",
+        "evidence_ref": "local://assumption/A09",
+        "evidence_hash": "5ad38304b535c2987dbd24657c1a11b884984ff600d9f389deb0d4e634fee792",
+        "confidence": "HIGH",
+        "expiration_index": null,
+        "now_index": null,
+        "continuous_monitoring_required": false,
+        "status": "VERIFIED",
+        "violation_action": "CONTINUE"
+      },
+      {
+        "record_type": "assumption_verification",
+        "id": "A10",
+        "declared_assumption": "billing path absent",
+        "verification_method": "local_synthetic_observation",
+        "expected_state": "absent",
+        "observed_state": "absent",
+        "evidence_ref": "local://assumption/A10",
+        "evidence_hash": "5ad38304b535c2987dbd24657c1a11b884984ff600d9f389deb0d4e634fee792",
+        "confidence": "HIGH",
+        "expiration_index": null,
+        "now_index": null,
+        "continuous_monitoring_required": false,
+        "status": "VERIFIED",
+        "violation_action": "CONTINUE"
+      }
+    ]
+  },
+  "environment_integrity": {
+    "record_type": "environment_integrity",
+    "checks": [
+      {
+        "name": "network_verification",
+        "classification": "BLOCKED",
+        "note": "isolation recorded locally (no external call)"
+      },
+      {
+        "name": "dns_verification",
+        "classification": "BLOCKED",
+        "note": "isolation recorded locally (no external call)"
+      },
+      {
+        "name": "internet_isolation_verification",
+        "classification": "BLOCKED",
+        "note": "isolation recorded locally (no external call)"
+      },
+      {
+        "name": "tool_availability_verification",
+        "classification": "VERIFIED_LOCAL",
+        "note": "local observation matches expectation"
+      },
+      {
+        "name": "environment_drift_detection",
+        "classification": "VERIFIED_LOCAL",
+        "note": "local observation matches expectation"
+      },
+      {
+        "name": "boundary_verification",
+        "classification": "VERIFIED_LOCAL",
+        "note": "local observation matches expectation"
+      },
+      {
+        "name": "runtime_boundary_monitoring",
+        "classification": "VERIFIED_LOCAL",
+        "note": "local observation matches expectation"
+      },
+      {
+        "name": "continuous_environment_integrity",
+        "classification": "VERIFIED_LOCAL",
+        "note": "local observation matches expectation"
+      }
+    ],
+    "evidence_package": {
+      "record_type": "environment_evidence_package",
+      "checks": [
+        {
+          "name": "network_verification",
+          "classification": "BLOCKED",
+          "note": "isolation recorded locally (no external call)"
+        },
+        {
+          "name": "dns_verification",
+          "classification": "BLOCKED",
+          "note": "isolation recorded locally (no external call)"
+        },
+        {
+          "name": "internet_isolation_verification",
+          "classification": "BLOCKED",
+          "note": "isolation recorded locally (no external call)"
+        },
+        {
+          "name": "tool_availability_verification",
+          "classification": "VERIFIED_LOCAL",
+          "note": "local observation matches expectation"
+        },
+        {
+          "name": "environment_drift_detection",
+          "classification": "VERIFIED_LOCAL",
+          "note": "local observation matches expectation"
+        },
+        {
+          "name": "boundary_verification",
+          "classification": "VERIFIED_LOCAL",
+          "note": "local observation matches expectation"
+        },
+        {
+          "name": "runtime_boundary_monitoring",
+          "classification": "VERIFIED_LOCAL",
+          "note": "local observation matches expectation"
+        },
+        {
+          "name": "continuous_environment_integrity",
+          "classification": "VERIFIED_LOCAL",
+          "note": "local observation matches expectation"
+        }
+      ],
+      "violations": 0,
+      "unknown": 0,
+      "generated": true,
+      "package_hash": "30f8e39dcacb291d4a0f8d86168ff30ae576dc5afa3317e8eec7cf44fdb22a8d"
+    },
+    "environment_seal": {
+      "record_type": "environment_seal",
+      "sealed": true,
+      "status": "SEALED_LOCAL",
+      "seal_hash": "seal_42aaf54b35317d64a45a",
+      "reason": "all checks VERIFIED_LOCAL/BLOCKED"
+    },
+    "violations": 0,
+    "unknown": 0,
+    "status": "VERIFIED_LOCAL"
+  },
+  "execution_integrity": {
+    "record_type": "execution_integrity",
+    "checks": [
+      {
+        "name": "process_integrity",
+        "classification": "VERIFIED_LOCAL",
+        "fail_closed": false,
+        "note": "evidence matches expectation"
+      },
+      {
+        "name": "process_ownership",
+        "classification": "VERIFIED_LOCAL",
+        "fail_closed": false,
+        "note": "evidence matches expectation"
+      },
+      {
+        "name": "runtime_capability_verification",
+        "classification": "VERIFIED_LOCAL",
+        "fail_closed": false,
+        "note": "evidence matches expectation"
+      },
+      {
+        "name": "runtime_permission_verification",
+        "classification": "VERIFIED_LOCAL",
+        "fail_closed": false,
+        "note": "evidence matches expectation"
+      },
+      {
+        "name": "credential_verification",
+        "classification": "VERIFIED_LOCAL",
+        "fail_closed": false,
+        "note": "evidence matches expectation"
+      },
+      {
+        "name": "secret_absence_verification",
+        "classification": "VERIFIED_LOCAL",
+        "fail_closed": false,
+        "note": "evidence matches expectation"
+      },
+      {
+        "name": "filesystem_integrity",
+        "classification": "VERIFIED_LOCAL",
+        "fail_closed": false,
+        "note": "evidence matches expectation"
+      },
+      {
+        "name": "mount_verification",
+        "classification": "VERIFIED_LOCAL",
+        "fail_closed": false,
+        "note": "evidence matches expectation"
+      },
+      {
+        "name": "container_verification",
+        "classification": "VERIFIED_LOCAL",
+        "fail_closed": false,
+        "note": "evidence matches expectation"
+      },
+      {
+        "name": "sandbox_verification",
+        "classification": "VERIFIED_LOCAL",
+        "fail_closed": false,
+        "note": "evidence matches expectation"
+      }
+    ],
+    "violations": 0,
+    "unknown": 0,
+    "status": "VERIFIED_LOCAL",
+    "fails_closed": false,
+    "limit": "local synthetic evidence only; NOT a proof of real sandbox/container enforcement",
+    "package_hash": "89fd95f59786c4f2a23908b89188a95a3743ade72c6bb54333cf21efe6dfd062"
+  },
+  "boundary_monitoring": {
+    "record_type": "boundary_monitoring",
+    "records": [
+      {
+        "record_type": "boundary_drift",
+        "dimension": "network",
+        "baseline_hash": "6973dddd3ef9cb6a",
+        "current_hash": "6973dddd3ef9cb6a",
+        "known": true,
+        "drift": false,
+        "status": "STABLE",
+        "action": "CONTINUE"
+      },
+      {
+        "record_type": "boundary_drift",
+        "dimension": "process",
+        "baseline_hash": "148de9c5a7a44d19",
+        "current_hash": "148de9c5a7a44d19",
+        "known": true,
+        "drift": false,
+        "status": "STABLE",
+        "action": "CONTINUE"
+      },
+      {
+        "record_type": "boundary_drift",
+        "dimension": "tool",
+        "baseline_hash": "bcd475104a873a42",
+        "current_hash": "bcd475104a873a42",
+        "known": true,
+        "drift": false,
+        "status": "STABLE",
+        "action": "CONTINUE"
+      },
+      {
+        "record_type": "boundary_drift",
+        "dimension": "permission",
+        "baseline_hash": "6bab65a2bddec8af",
+        "current_hash": "6bab65a2bddec8af",
+        "known": true,
+        "drift": false,
+        "status": "STABLE",
+        "action": "CONTINUE"
+      },
+      {
+        "record_type": "boundary_drift",
+        "dimension": "mount",
+        "baseline_hash": "62c66a7a5dd70c31",
+        "current_hash": "62c66a7a5dd70c31",
+        "known": true,
+        "drift": false,
+        "status": "STABLE",
+        "action": "CONTINUE"
+      },
+      {
+        "record_type": "boundary_drift",
+        "dimension": "secret",
+        "baseline_hash": "140bedbf9c3f6d56",
+        "current_hash": "140bedbf9c3f6d56",
+        "known": true,
+        "drift": false,
+        "status": "STABLE",
+        "action": "CONTINUE"
+      },
+      {
+        "record_type": "boundary_drift",
+        "dimension": "environment",
+        "baseline_hash": "3f79bb7b435b0532",
+        "current_hash": "3f79bb7b435b0532",
+        "known": true,
+        "drift": false,
+        "status": "STABLE",
+        "action": "CONTINUE"
+      },
+      {
+        "record_type": "boundary_drift",
+        "dimension": "runtime_policy",
+        "baseline_hash": "796e80c7e5bf8a48",
+        "current_hash": "796e80c7e5bf8a48",
+        "known": true,
+        "drift": false,
+        "status": "STABLE",
+        "action": "CONTINUE"
+      }
+    ],
+    "drifts": 0,
+    "unknown": 0,
+    "overall_action": "CONTINUE",
+    "status": "STABLE"
+  },
+  "containment_decision": {
+    "record_type": "containment_decision",
+    "inputs": {
+      "assumption_action": "CONTINUE",
+      "environment_status": "VERIFIED_LOCAL",
+      "execution_status": "VERIFIED_LOCAL",
+      "boundary_action": "CONTINUE"
+    },
+    "decision": "CONTINUE",
+    "quarantine_mode": false,
+    "safe_shutdown": false,
+    "evidence_before_shutdown": true,
+    "recovery_evidence": false,
+    "status": "CONTINUE",
+    "proceed": true,
+    "reasons": [],
+    "decision_hash": "149e4d160301deb678f127635e92435713556e8966bc8143ed1b7f5010dadc3f"
+  },
+  "evidence_confidence": {
+    "record_type": "evidence_confidence",
+    "level": "HIGH",
+    "uses_ai_confidence": false,
+    "ignored_ai_confidence": false,
+    "inputs": {
+      "verified_assumptions": 10,
+      "stale": 0,
+      "unknown": 0,
+      "violations": 0,
+      "positive_signals": [
+        "artifact_verified",
+        "checker_verified",
+        "runtime_evidence",
+        "environment_seal",
+        "context_snapshot",
+        "exact_state_binding"
+      ]
+    },
+    "score": 7,
+    "reason": "confidence computed from evidence signals only",
+    "fingerprint": "ec_ecb2c29fea73d846"
+  },
+  "ai_assurance": {
+    "record_type": "ai_assurance_bundle",
+    "context_provenance": {
+      "record_type": "context_provenance",
+      "retrieved_documents": [
+        {
+          "id": "p0_map",
+          "hash": "70b12a483ac1551353cf6913bdd363e97a517472f98515f0164d3e2df386623c"
+        }
+      ],
+      "tool_results": [],
+      "memory_sources": [],
+      "context_ordering": [
+        "p0_map"
+      ],
+      "context_freshness_index": null,
+      "context_compression": "none",
+      "context_version": "v1",
+      "provenance_hash": "2adf1201c10309e97c5df3abc847dc82fcef4e23a0f2fec80af396734e95f51b"
+    },
+    "ai_configuration_manifest": {
+      "record_type": "ai_configuration_manifest",
+      "prompt_version": "unspecified",
+      "tool_version": "unspecified",
+      "model_version": "claude-opus-4-8[1m]",
+      "provider_version": "simulated",
+      "guardrail_version": "unspecified",
+      "evaluator_version": "unspecified",
+      "memory_version": "unspecified",
+      "retrieval_version": "unspecified",
+      "real_provider_enabled": false,
+      "manifest_fingerprint": "aicfg_45df6b95c233fd1ea60364e4"
+    },
+    "threat_model_governance": {
+      "record_type": "threat_model_governance",
+      "threat_model_version": "FG-TM-2026.08.03",
+      "approved": true,
+      "stale": false,
+      "evidence_ref": null,
+      "status": "APPROVED"
+    },
+    "evaluation_governance": {
+      "record_type": "evaluation_governance",
+      "eval_version": "v1",
+      "expected_outputs": "schema_only",
+      "scoring_rules": "schema_only",
+      "adversarial_cases": "schema_only",
+      "leakage_detection": "schema_only",
+      "eval_provenance": "local_synthetic",
+      "status": "PLANNED_WITH_SCHEMA",
+      "real_dataset_present": false
+    },
+    "model_qualification": {
+      "record_type": "model_qualification",
+      "provider_comparison": "schema_only",
+      "drift_analysis": "schema_only",
+      "regression_detection": "schema_only",
+      "cost_comparison": "schema_only",
+      "latency_comparison": "schema_only",
+      "rollback_qualification": "schema_only",
+      "real_provider": false,
+      "status": "PLANNED_WITH_SCHEMA",
+      "can_self_certify": false
+    }
+  },
+  "blocked": {
+    "real_provider": "BLOCKED",
+    "private_repo": "BLOCKED",
+    "gate_8": "BLOCKED",
+    "deploy": "BLOCKED",
+    "bill": "BLOCKED",
+    "contact": "BLOCKED",
+    "merge": "BLOCKED"
+  }
+}
