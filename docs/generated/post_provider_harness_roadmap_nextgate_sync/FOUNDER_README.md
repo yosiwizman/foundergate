@@ -1,0 +1,7 @@
+# Founder README — Post-Provider-Harness Roadmap Sync (plain English)
+1. **What did the provider harness prove?** That FounderGate is the *gate*, not just a Claude tool. Claude, OpenAI/Codex, Hermes, and a plain local shell are all treated as swappable "workers," and FounderGate checks their work itself — a worker's claim of success is never accepted on its word. When a fake worker lied ("all passed"), FounderGate caught it every time.
+2. **What did it NOT prove?** It used *stand-ins* for the real AI providers — no real OpenAI/Codex/Hermes was called, no keys, no money spent, no private repos, nothing production or sold.
+3. **Why are real provider / private repo founder gates?** Because they touch the real world — real cost and real code you own privately. FounderGate refuses to do either on its own; each needs your explicit go-ahead (with a budget cap and read-only rules).
+4. **Best next decision?** The smallest, most natural next step is **one real provider call** through the same gate, with a tiny budget cap and your per-call approval — exactly like the Gate 7 test you already accepted. (Private repo read-only or a real evaluator session are also options, whenever you want them.)
+5. **What should you NOT believe yet?** That any real provider is "integrated," that it works on private repos, or that it's production/SaaS/secure/sold. It's all local and honest.
+6. **What to paste into ChatGPT Project Knowledge:** **PROJECT_KNOWLEDGE_UPDATE_BUNDLE_V3.md** (in this packet). Claude can't edit ChatGPT's knowledge directly, so paste that one file in.
