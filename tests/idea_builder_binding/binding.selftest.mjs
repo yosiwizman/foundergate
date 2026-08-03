@@ -33,6 +33,32 @@ ok(requestHash('Build a simple calculator app.') === requestHash('Build a simple
 // 11: request_id derives from hash
 ok(calc.request_id === 'req_' + calc.request_hash, 'request_id binds to request_hash');
 
+// ---- Natural-language task_planner matcher correction (founder-blind gap: "to do app") ----
+const tp2 = (t) => classifyRequest(t);
+// 12: FOUNDER_BLIND_REGRESSION_TO_DO_APP_MUST_BIND_TO_TASK_PLANNER
+ok(tp2('build to do app').kind === 'SUPPORTED' && tp2('build to do app').template_id === 'task_planner',
+  'FOUNDER_BLIND_REGRESSION_TO_DO_APP_MUST_BIND_TO_TASK_PLANNER');
+// 13-16: natural-language variants → task_planner
+ok(tp2('build a to-do app').template_id === 'task_planner', '"to-do app" → task_planner');
+ok(tp2('make a todo app').template_id === 'task_planner', '"todo app" → task_planner');
+ok(tp2('simple task list').template_id === 'task_planner', '"simple task list" → task_planner');
+ok(tp2('checklist app').template_id === 'task_planner', '"checklist app" → task_planner');
+// 17: real reminders + calendar → HELD/REFUSED, NOT task_planner
+{
+  const r = tp2('build a real reminders app connected to Google Calendar');
+  ok(r.template_id !== 'task_planner' && r.kind !== 'SUPPORTED', 'real reminders + Google Calendar → refused (not task_planner)');
+}
+// 18: reminder emails to customers → refused
+ok(tp2('send reminder emails to customers').kind === 'UNSUPPORTED_LOCAL_TEMPLATE', 'reminder emails to customers → UNSUPPORTED (refused)');
+// 19: deploy my todo app → HELD (gate wins over template)
+ok(tp2('deploy my todo app').kind === 'HELD_REQUIRES_FOUNDER_GATE', 'deploy my todo app → HELD');
+// 20: edit PR #200 for todo app → HELD
+ok(tp2('edit PR #200 for this todo app').kind === 'HELD_REQUIRES_FOUNDER_GATE', 'edit PR #200 (todo) → HELD');
+// 21: calculator still calculator
+ok(tp2('Build a simple calculator app.').template_id === 'calculator', 'calculator still → calculator');
+// 22: unrelated idea still unsupported (no false-green)
+ok(tp2('build a social network platform').kind === 'UNSUPPORTED_LOCAL_TEMPLATE', 'unrelated idea → UNSUPPORTED (no false-green)');
+
 const total = pass + fail;
 if (fail === 0) { console.log(`ALL GREEN: ${pass}/${total} binding selftest(s) passed.`); process.exit(0); }
 else { console.error(`RED: ${fail}/${total} failed.`); process.exit(1); }

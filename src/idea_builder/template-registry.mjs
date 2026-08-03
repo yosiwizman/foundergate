@@ -22,7 +22,14 @@ export const TEMPLATES = {
   task_planner: {
     template_id: 'task_planner',
     label: 'Appointment / Task Planner',
-    patterns: [/task planner/i, /appointment planner/i, /appointment/i, /\bto-?do\b/i, /\btasks?\b/i, /\bplanner\b/i],
+    // Founder-natural wording for a local task/list/planner app. NOTE: unsafe integrations (real reminders,
+    // calendar, email, accounts, billing, deploy, merge, PR#200) are caught by GATE/REFUSE BEFORE this match,
+    // so broadening these patterns cannot bypass those guards.
+    patterns: [
+      /task planner/i, /appointment planner/i, /appointment/i, /\bplanner\b/i,
+      /\bto-?do\b/i, /\bto do\b/i, /\btasks?\b/i,
+      /\bchecklist\b/i, /\btask list\b/i, /\bsimple list\b/i, /\bappointment list\b/i, /\bto-?do list\b/i,
+    ],
     generated_app_path: 'tests/generated_apps/wave9_appointment_task_planner',
     preview_url: '../../tests/generated_apps/wave9_appointment_task_planner/index.html',
     test_plan_id: 'task_planner.selftest',
@@ -50,7 +57,8 @@ const GATE = [
 // ---- real-world / integration requests we deliberately DO NOT build locally ----
 const REFUSE = [
   [/calendar|google|gmail|apple|microsoft|outlook|icloud|oauth|account/i, 'real calendar/account'],
-  [/email (customers|users|people)|outreach|send (emails|invites)/i, 'outreach/email'],
+  [/\breal reminders?\b|reminder emails?|email reminders?|push notification|sms|text message/i, 'real reminders/notifications'],
+  [/email (customers|users|people)|outreach|send (emails|invites)|emails? to (customers|users|people|clients)/i, 'outreach/email'],
   [/charge|bill(ing)?|payment|paywall|subscription|invoice/i, 'billing/payment'],
   [/production data|customer data|private data|real user data|\bprod\b/i, 'customer/production data'],
   [/security|compliance|soc\s?2|hipaa|saas|commercial(ly)? (ready|validated)|market validat/i, 'security/SaaS/commercial'],
