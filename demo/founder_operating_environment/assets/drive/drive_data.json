@@ -44,5 +44,24 @@
   "not_proven": ["production readiness", "security/compliance", "SaaS readiness", "customer readiness", "paid demand", "arbitrary app generation", "that any real customer would buy it"],
   "reviewer_may_see": ["the local dashboard + panels", "the generated synthetic apps + their tests", "the crash-test failure/recovery table", "sealed evidence ZIPs + checksums", "Checker + Terminal Advisor reports"],
   "reviewer_may_not_see": ["any customer/private/production data (there is none)", "any real accounts/credentials", "any deployment or billing (there is none)"],
-  "gate8_note": "External evaluator execution is Gate 8 and is NOT authorized here. It requires a separate explicit founder authorization phrase."
+  "gate8_note": "External evaluator execution is Gate 8 and is NOT authorized here. It requires a separate explicit founder authorization phrase.",
+  "next_protected_gate": "Gate 8 — one arranged real-evaluator/buyer feedback session on synthetic/self-owned material (no customer data, no outreach beyond that one person). Requires a separate explicit founder authorization phrase.",
+  "claims_summary": [
+    { "claim": "Local app factory works with fixed local templates", "allowed": "ALLOWED", "gate": "local synthetic" },
+    { "claim": "Request→output binding corrected; false-green class addressed locally", "allowed": "ALLOWED", "gate": "local synthetic" },
+    { "claim": "Local repeatability + crash recovery proven", "allowed": "ALLOWED", "gate": "local synthetic" },
+    { "claim": "Founder Drive Mode passed a non-developer manual retest", "allowed": "ALLOWED", "gate": "local, under qualification" },
+    { "claim": "Customer proof / paid proof", "allowed": "NOT ALLOWED", "gate": "none — blocked" },
+    { "claim": "Production / SaaS / security-compliance readiness", "allowed": "NOT ALLOWED", "gate": "none — blocked" },
+    { "claim": "Gate 8 evaluator session run", "allowed": "NOT ALLOWED", "gate": "Gate 8 — not authorized" }
+  ],
+  "showroom_docs": [
+    { "name": "Master evidence index", "href": "../../docs/generated/reviewer_investor_showroom_evidence/MASTER_EVIDENCE_INDEX.md" },
+    { "name": "Claims matrix", "href": "../../docs/generated/reviewer_investor_showroom_evidence/CLAIMS_MATRIX.md" },
+    { "name": "What is not proven", "href": "../../docs/generated/reviewer_investor_showroom_evidence/WHAT_IS_NOT_PROVEN.md" },
+    { "name": "Investor / showroom one-pager", "href": "../../docs/generated/reviewer_investor_showroom_evidence/INVESTOR_SHOWROOM_ONE_PAGER.md" },
+    { "name": "Local demo script", "href": "../../docs/generated/reviewer_investor_showroom_evidence/LOCAL_DEMO_SCRIPT.md" },
+    { "name": "Founder Q&A / objections", "href": "../../docs/generated/reviewer_investor_showroom_evidence/FOUNDER_QA_OBJECTIONS.md" },
+    { "name": "Gate 8 reviewer packet (PLANNING ONLY)", "href": "../../docs/generated/reviewer_investor_showroom_evidence/GATE8_REVIEWER_PACKET_PLANNING_ONLY.md" }
+  ]
 }

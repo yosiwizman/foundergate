@@ -394,6 +394,10 @@ async function doReviewer(){
     $('reviewer-may-see').textContent = (d.reviewer_may_see||[]).join(' · ');
     $('reviewer-may-not').textContent = (d.reviewer_may_not_see||[]).join(' · ');
     $('reviewer-gate8').textContent = d.gate8_note;
+    // Showroom / Evidence subsection
+    if($('reviewer-claims')) $('reviewer-claims').innerHTML = (d.claims_summary||[]).map(c=>`<tr><td>${esc(c.claim)}</td><td><span class="pill ${/^ALLOWED$/.test(c.allowed)?'live':'refuse'}">${esc(c.allowed)}</span></td><td class="muted" style="font-size:11px">${esc(c.gate)}</td></tr>`).join('') || '<tr><td colspan="3">—</td></tr>';
+    if($('reviewer-next-gate')) $('reviewer-next-gate').textContent = d.next_protected_gate || '—';
+    if($('reviewer-docs')) $('reviewer-docs').innerHTML = (d.showroom_docs||[]).map(x=>`<a class="btn" data-testid="showroom-doc" href="${esc(x.href)}" target="_blank" rel="noopener">${esc(x.name)}</a>`).join('');
   }catch(e){ $('reviewer-timeline').innerHTML='<tr><td colspan="4">UNKNOWN — could not load reviewer data</td></tr>'; }
 }
 

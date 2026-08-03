@@ -1,0 +1,11 @@
+# Founder Q&A / Objection Handling (blunt, evidence-bound)
+- **Is this production ready?** No. It's a local synthetic prototype. Not production, not secure, not SaaS.
+- **Is this SaaS ready?** No. There's no hosted service. It runs locally on one machine.
+- **Did customers use it?** No. Zero customers. Everything is synthetic/self-owned.
+- **Did anyone pay?** No. No paid proof, no billing, no payment links.
+- **What exactly did it prove?** Locally: it generates + tests small apps (twice, different apps), catches its own false-green, survives a 12-way crash test, and shows a non-developer a clear pass/hold/blocked screen — all checked by two independent reviewers and sealed with checksums.
+- **Why is this not just Claude saying it worked?** Because every run is checked by an independent read-only Checker that tries to falsify it, plus a Terminal Advisor, and the artifacts are sealed with SHA-256 checksums you can re-verify. The Builder is explicitly not allowed to certify itself.
+- **What happened when the system failed?** It held. In the crash test, 12 injected faults were all caught and blocked from previewing; only 6 were recovered (safely) and re-tested; 6 stayed held. It also caught a real false-green earlier and fixed it — on the record.
+- **What prevents false-green?** DONE needs real files; PASS needs the app's own tests to actually pass; preview is bound to the artifact; unknown/stale/broken shows UNKNOWN/HOLD, never green.
+- **What is the next commercial test?** Gate 8 — one arranged feedback session with a real person, on synthetic material, no customer data. It's blocked until the founder explicitly authorizes it.
+- **Why should anyone care?** Trust is the bottleneck for AI doing real work. "Prove it or refuse" is the durable need FounderGate builds first.
