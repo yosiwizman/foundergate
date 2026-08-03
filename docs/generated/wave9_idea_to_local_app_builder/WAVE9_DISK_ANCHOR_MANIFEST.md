@@ -12,14 +12,14 @@ Status filled in as created.
 | Generated local app | tests/generated_apps/wave9_appointment_task_planner/** | ✓ |
 | Generated tests | tests/generated_apps/wave9_appointment_task_planner/tests/** | ✓ |
 | App test-run result | .../LOCAL_APP_TEST_RUN_RESULT.md | ✓ |
-| Preview record + screenshots | .../LOCAL_PREVIEW_REPORT.md + receipt/screenshots | ✓ |
-| Evidence report | .../GENERATED_APP_EVIDENCE_REPORT.md + sealed ZIP | ✓ |
-| Decision record | FINAL_STATUS.md / FINAL_VERDICT.json (receipt) | ✓ |
+| Preview record + screenshots | .../LOCAL_PREVIEW_REPORT.md + .../screenshots/ (in-repo) | ✓ |
+| Evidence report | .../GENERATED_APP_EVIDENCE_REPORT.md (in-repo) + sealed ZIP (at finalize) | ✓ / at finalize |
+| Decision record | FINAL_STATUS.md / FINAL_VERDICT.json (sealed receipt/ZIP, created at finalize) | at finalize |
 | Refusal tests | .../UNSAFE_IDEA_REFUSAL_TESTS.md | ✓ |
 | Claim/limits report | .../SCAN_REPORT.md + claim-blocker | ✓ |
 | Updated roadmap | .../UPDATED_ROADMAP_AFTER_WAVE9.md | ✓ |
 | Founder action bundle | .../FOUNDER_ACTION_BUNDLE.md | ✓ |
-| Checker report | .../CHECKER_REPORT.md | ✓ |
-| Gate Advisor report | .../GATE_ADVISOR_REPORT.md | ✓ |
+| Checker report | .../CHECKER_REPORT.md (in-repo) | ✓ |
+| Gate Advisor report | .../GATE_ADVISOR_REPORT.md (in-repo) | ✓ |
 | Disk persistence audit | .../DISK_PERSISTENCE_AUDIT.md | ✓ |
-| Final ZIP | ~/Desktop/FounderGate_Wave9_Idea_To_Local_App_Builder_ChatGPT_20260802T2335ET.zip | ✓ |
+| Final ZIP | ~/Desktop/FounderGate_Wave9_Idea_To_Local_App_Builder_ChatGPT_20260802T2335ET.zip | at finalize |
