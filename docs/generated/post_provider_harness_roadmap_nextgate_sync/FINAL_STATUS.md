@@ -6,4 +6,4 @@
 - **Real provider activation BLOCKED · Private repo access BLOCKED · Gate 8 real-evaluator BLOCKED.** Each needs a separate explicit founder authorization phrase. Local synthetic only; never SHIP.
 - Recommended next founder decision: ONE real provider adapter proof (budget-capped, per-call auth) — a true founder gate, not authorized here.
 
-Base f235ab3cd7a3. Final head: tip of run/post-provider-harness-roadmap-nextgate-sync-20260803T1805ET (git rev-parse HEAD).
+Base f235ab3cd7a3. Final head: tip of run/post-provider-harness-roadmap-nextgate-sync-20260803T1805ET (git rev-parse HEAD). Sealing commit: ddb548d7b80a (+ this stamp).
