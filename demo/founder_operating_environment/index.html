@@ -4,7 +4,15 @@
 <style>:root{--dim:#93a1b5;--muted:#b4c0d0}
 .nav.on,.btn.primary{background:#1d4ed8;border-color:#1d4ed8}
 .nav.on .tag{color:#e6ebf2;border-color:rgba(230,235,242,.55)}
-.actions a.disabled{opacity:.45;pointer-events:none;cursor:not-allowed}</style>
+.actions a.disabled{opacity:.45;pointer-events:none;cursor:not-allowed}
+.fg-labels{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.fg-labels .lbl{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:#3a2f0a;color:#f2d98a;border:1px solid #6b5a1a}
+.fg-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin:10px 0}
+.fg-card{border:1px solid #202838;border-radius:10px;padding:11px 12px;background:#0f1420}
+.fg-card h3{margin:0 0 4px;font-size:13px}.fg-card .st{font-size:12px;font-weight:800}.fg-card .pl{font-size:12px;color:#b4c0d0;margin-top:4px}
+.st.pass{color:#34d399}.st.blocked{color:#f87171}.st.warn{color:#f2d98a}
+.fg-next{border:1px solid #1d4ed8;background:#101a33;border-radius:10px;padding:12px;margin:10px 0}
+.fg-next b{color:#93b4ff}</style>
 <style>
 .proto-banner{background:#3a2a00;color:#f5b83d;border-bottom:1px solid var(--line);font-weight:800;font-size:12.5px;padding:9px 16px;text-align:center}
 .alive{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px;margin:16px 0 8px}
@@ -49,6 +57,7 @@
   <aside class="side">
     <div class="brand">FounderGate</div>
     <nav aria-label="Panels">
+      <button class="nav"    data-panel="drive"    data-testid="nav-drive">🚗 Founder Drive Mode <span class="tag">start here</span></button>
       <button class="nav on" data-panel="truth"    data-testid="nav-truth"    aria-current="page">🏠 Truth Dashboard</button>
       <button class="nav"    data-panel="preview"  data-testid="nav-preview">👁 Preview <span class="tag">local demo</span></button>
       <button class="nav"    data-panel="batch"    data-testid="nav-batch">🧪 Batch <span class="tag">local demo</span></button>
@@ -62,6 +71,7 @@
       <button class="nav"    data-panel="factory"  data-testid="nav-factory">🏭 Factory Proof <span class="tag">local synthetic</span></button>
       <button class="nav"    data-panel="factory2" data-testid="nav-factory2">🔁 Factory Round 2 <span class="tag">repeatability</span></button>
       <button class="nav"    data-panel="crash"    data-testid="nav-crash">🧯 Crash Test <span class="tag">failure modes</span></button>
+      <button class="nav"    data-panel="reviewer" data-testid="nav-reviewer">🔍 Reviewer Readiness <span class="tag">planning</span></button>
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
@@ -289,6 +299,49 @@
         <table class="tbl"><thead><tr><th>Step</th><th>Status</th></tr></thead>
           <tbody id="idea-body" data-testid="idea-body"><tr><td colspan="2" style="color:var(--dim)">Click &ldquo;Load build status&rdquo;.</td></tr></tbody></table>
         <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
+      </div>
+    </section>
+
+    <!-- ===== FOUNDER DRIVE MODE (simple founder start screen) ===== -->
+    <section class="panel" id="panel-drive" role="region" aria-label="Founder Drive Mode" data-testid="panel-drive">
+      <div class="eyebrow">FOUNDER DRIVE MODE — the simple way to see what FounderGate just did, in plain English</div>
+      <div class="head"><div><h1>Founder Drive Mode</h1><div class="sub">Start here. What happened, whether it passed, what&rsquo;s safe, what&rsquo;s blocked, and one next step. Complexity is hidden, not deleted &mdash; the detailed panels are still in the sidebar.</div></div></div>
+      <div class="card">
+        <div id="drive-labels" class="fg-labels" data-testid="drive-labels"></div>
+        <div class="clsrow"><span>Current local proof status</span><span id="drive-status" data-testid="drive-status" class="pill live">—</span></div>
+        <div class="clsrow"><span>Last successful proof</span><span id="drive-last-success" data-testid="drive-last-success" class="pill">—</span></div>
+        <div class="clsrow"><span>Last failure-mode proof</span><span id="drive-last-failure" data-testid="drive-last-failure" class="pill">—</span></div>
+        <div class="fg-cards" id="drive-cards" data-testid="drive-cards"></div>
+        <div class="fg-next" data-testid="drive-next"><b>What should I do next?</b> <span id="drive-next-action">—</span></div>
+        <div class="actions">
+          <button id="drive-refresh-btn" class="btn primary" data-testid="drive-refresh-btn">Load / refresh</button>
+          <button id="drive-reviewer-btn" class="btn" data-testid="drive-reviewer-btn">Open reviewer view</button>
+          <a class="btn" data-testid="drive-export-link" href="assets/drive/drive_data.json" target="_blank" rel="noopener">Export evidence (local index)</a>
+          <button id="drive-tech-btn" class="btn" data-testid="drive-tech-btn">Technical view (reviewers)</button>
+        </div>
+        <p id="drive-crash-summary" class="honesty" data-testid="drive-crash-summary"></p>
+        <div class="clsrow"><span>What is blocked</span><span id="drive-blocked" data-testid="drive-blocked" class="pill refuse">—</span></div>
+        <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
+      </div>
+    </section>
+
+    <!-- ===== REVIEWER READINESS (planning-only; local synthetic) ===== -->
+    <section class="panel" id="panel-reviewer" role="region" aria-label="Reviewer Readiness" data-testid="panel-reviewer">
+      <div class="eyebrow">REVIEWER READINESS — PLANNING ONLY · what an outside evaluator could later see (local synthetic)</div>
+      <div class="head"><div><h1>Reviewer Readiness</h1><div class="sub">A reviewer-facing summary of the proof timeline and the sealed evidence. Still local synthetic. Showing this to a real evaluator is Gate 8 and is not authorized here.</div></div></div>
+      <div class="card">
+        <div class="actions"><button id="reviewer-load-btn" class="btn primary" data-testid="reviewer-load-btn">Load reviewer readiness</button></div>
+        <h2 style="font-size:14px;margin:10px 0 4px">Proof timeline</h2>
+        <table class="tbl"><thead><tr><th>Step</th><th>Result</th><th>Checker</th><th>Terminal Advisor</th></tr></thead>
+          <tbody id="reviewer-timeline" data-testid="reviewer-timeline"><tr><td colspan="4" style="color:var(--dim)">Click &ldquo;Load reviewer readiness&rdquo;.</td></tr></tbody></table>
+        <h2 style="font-size:14px;margin:14px 0 4px">Evidence package index</h2>
+        <table class="tbl"><thead><tr><th>Item</th><th>Status</th><th>Branch/head</th><th>ZIP</th><th>Checker</th><th>Advisor</th><th>Accepted</th></tr></thead>
+          <tbody id="reviewer-evidence" data-testid="reviewer-evidence"><tr><td colspan="7" style="color:var(--dim)">—</td></tr></tbody></table>
+        <p id="reviewer-false-green" class="honesty" data-testid="reviewer-false-green"></p>
+        <div class="clsrow"><span>What is NOT proven</span><span id="reviewer-not-proven" data-testid="reviewer-not-proven" class="pill hold">—</span></div>
+        <div class="clsrow"><span>A reviewer may see</span><span id="reviewer-may-see" data-testid="reviewer-may-see" class="pill">—</span></div>
+        <div class="clsrow"><span>A reviewer may NOT see</span><span id="reviewer-may-not" data-testid="reviewer-may-not" class="pill refuse">—</span></div>
+        <p id="reviewer-gate8" class="honesty" data-testid="reviewer-gate8" style="color:#f2d98a;font-weight:700"></p>
       </div>
     </section>
 

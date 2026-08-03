@@ -1,0 +1,48 @@
+{
+  "kind": "FOUNDER_DRIVE_DATA",
+  "labels": ["LOCAL SYNTHETIC ONLY", "NOT PRODUCTION", "NOT SAAS READY", "NOT CUSTOMER READY", "NOT SECURITY CERTIFIED", "GATE 8 BLOCKED", "DECISION NEVER SHIP"],
+  "current_status": "LOCAL PROOFS PASSING WITH LIMITS",
+  "last_success": "Crash Recovery gauntlet — CRASH_RECOVERY_PROVEN_WITH_LIMITS",
+  "last_failure_mode_proof": "Crash Recovery — 12 faults injected, all held, 6 recovered, 0 shown green",
+  "safe_to_click": ["Founder Drive Mode", "Factory Proof", "Factory Round 2", "Crash Test", "Safety Check samples", "Reviewer Readiness"],
+  "blocked": ["deploy", "billing", "outreach", "provider spend", "real accounts/data", "private repos", "PR #200", "merge", "Gate 8"],
+  "next_action": "Open reviewer view",
+  "cards": [
+    { "key": "engine", "title": "Engine: local app factory", "state": "PASS WITH LIMITS", "plain": "FounderGate generated and tested 4 local synthetic apps, then 4 different ones. Fixed set of safe app types — not arbitrary app generation." },
+    { "key": "brakes", "title": "Brakes: crash recovery", "state": "PASS WITH LIMITS", "plain": "FounderGate intentionally broke 12 local fixtures and refused every broken preview; it recovered 6 safely and kept 6 held." },
+    { "key": "evidence", "title": "Evidence: available", "state": "AVAILABLE", "plain": "Sealed evidence ZIPs exist for each proof, with checksums and independent reviewer reports." },
+    { "key": "checker", "title": "Checker: latest", "state": "CLEAN WITH LIMITS", "plain": "An independent read-only Checker tried to falsify the latest proof and could not." },
+    { "key": "advisor", "title": "Terminal Advisor: latest", "state": "READY WITH LIMITS", "plain": "An independent Terminal Advisor judged the latest proof valid, with limits, and recommended this UI step." },
+    { "key": "gate8", "title": "Gate 8", "state": "BLOCKED", "plain": "Showing this to a real outside evaluator is Gate 8. It is NOT authorized here and needs a separate founder phrase." },
+    { "key": "commercial", "title": "Commercial", "state": "NOT STARTED", "plain": "No selling, outreach, billing, or payment. Nothing has been sold or offered." },
+    { "key": "prodsaas", "title": "Production / SaaS", "state": "NOT READY", "plain": "This is a local synthetic prototype. Not production, not SaaS, not secure, not customer-ready." }
+  ],
+  "crash_summary": [
+    "We broke 12 things on purpose.",
+    "FounderGate refused all broken previews.",
+    "It recovered 6 safely (only where it could rebuild the app and re-test it).",
+    "It kept 6 held on purpose — no faked fixes.",
+    "Nothing was sent, billed, deployed, or merged.",
+    "This proves local failure behavior, not production readiness."
+  ],
+  "timeline": [
+    { "step": "Request→Artifact binding correction", "result": "CORRECTED_WITH_LIMITS", "verdict_checker": "CLEAN_WITH_LIMITS", "verdict_advisor": "REQUEST_ARTIFACT_BINDING_CORRECTED_WITH_LIMITS" },
+    { "step": "Round 1 — local app factory (4 apps)", "result": "LOCAL_APP_FACTORY_PROVEN_WITH_LIMITS", "verdict_checker": "CLEAN_WITH_LIMITS", "verdict_advisor": "LOCAL_APP_FACTORY_PROVEN_WITH_LIMITS" },
+    { "step": "Round 2 — repeatability (4 different apps)", "result": "LOCAL_APP_FACTORY_REPEATABILITY_PROVEN_WITH_LIMITS", "verdict_checker": "CLEAN_WITH_LIMITS", "verdict_advisor": "LOCAL_APP_FACTORY_REPEATABILITY_PROVEN_WITH_LIMITS" },
+    { "step": "Crash Recovery — 12 fault fixtures", "result": "CRASH_RECOVERY_PROVEN_WITH_LIMITS", "verdict_checker": "CLEAN_WITH_LIMITS", "verdict_advisor": "CRASH_RECOVERY_PROVEN_WITH_LIMITS" },
+    { "step": "Founder Drive Mode + Reviewer Readiness (this)", "result": "UNDER QUALIFICATION", "verdict_checker": "pending", "verdict_advisor": "pending" }
+  ],
+  "false_green_history": "A confirmed false-green (a calculator request opened the task planner) was found by founder testing and corrected via request→artifact binding; a natural-language matcher gap ('to do app') was then found by a founder-blind retest and fixed. Both are preserved in evidence, not hidden.",
+  "evidence_index": [
+    { "item": "Request-artifact binding correction", "status": "CORRECTED_WITH_LIMITS", "branch_head": "d1b18cdc274d (+evidence fix)", "zip": "FounderGate_RequestArtifactBinding_Correction_ChatGPT_20260803T0640ET.zip", "checker": "CLEAN_WITH_LIMITS", "advisor": "REQUEST_ARTIFACT_BINDING_CORRECTED_WITH_LIMITS", "limits": "local synthetic; fixed templates", "founder_accepted": false },
+    { "item": "Task-planner NL matcher correction", "status": "CORRECTED_WITH_LIMITS", "branch_head": "6d15157677f7", "zip": "FounderGate_TaskPlanner_NaturalLanguageMatcher_Correction_20260803T0735ET.zip", "checker": "CLEAN_WITH_LIMITS", "advisor": "NATURAL_LANGUAGE_MATCHER_CORRECTED_WITH_LIMITS", "limits": "deterministic matcher, not full NLU", "founder_accepted": false },
+    { "item": "Round 1 — local app factory", "status": "PROVEN_WITH_LIMITS", "branch_head": "4faeff688b3c", "zip": "FounderGate_LocalAppFactory_SelfProof_Gauntlet_20260803T0835ET.zip", "checker": "CLEAN_WITH_LIMITS", "advisor": "LOCAL_APP_FACTORY_PROVEN_WITH_LIMITS", "limits": "fixed archetypes; not arbitrary generation", "founder_accepted": false },
+    { "item": "Round 2 — repeatability", "status": "PROVEN_WITH_LIMITS", "branch_head": "b9aaf0a9a1a8", "zip": "FounderGate_LocalAppFactory_Repeatability_Round2_20260803T0915ET.zip", "checker": "CLEAN_WITH_LIMITS", "advisor": "LOCAL_APP_FACTORY_REPEATABILITY_PROVEN_WITH_LIMITS", "limits": "fixed archetypes", "founder_accepted": false },
+    { "item": "Crash Recovery gauntlet", "status": "PROVEN_WITH_LIMITS", "branch_head": "c5dfca39a482", "zip": "FounderGate_LocalAppFactory_CrashRecovery_Gauntlet_20260803T1030ET.zip", "checker": "CLEAN_WITH_LIMITS", "advisor": "CRASH_RECOVERY_PROVEN_WITH_LIMITS", "limits": "local synthetic; isolated fault injection", "founder_accepted": false },
+    { "item": "Safety Check product kit (Wave 11)", "status": "BUILT_ACCEPTED_WITH_LIMITS", "branch_head": "662c0569f6de", "zip": "FounderGate_Wave11_Overnight_Safety_Check_Product_Kit_ChatGPT_20260803T0000ET.zip", "checker": "CLEAN (7/7)", "advisor": "READY_WITH_LIMITS", "limits": "sample/synthetic only; not sold", "founder_accepted": true }
+  ],
+  "not_proven": ["production readiness", "security/compliance", "SaaS readiness", "customer readiness", "paid demand", "arbitrary app generation", "that any real customer would buy it"],
+  "reviewer_may_see": ["the local dashboard + panels", "the generated synthetic apps + their tests", "the crash-test failure/recovery table", "sealed evidence ZIPs + checksums", "Checker + Terminal Advisor reports"],
+  "reviewer_may_not_see": ["any customer/private/production data (there is none)", "any real accounts/credentials", "any deployment or billing (there is none)"],
+  "gate8_note": "External evaluator execution is Gate 8 and is NOT authorized here. It requires a separate explicit founder authorization phrase."
+}

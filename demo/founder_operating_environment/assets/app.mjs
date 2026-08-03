@@ -361,6 +361,42 @@ async function doFactory2(){
   }catch(e){ $('factory2-body').innerHTML='<tr><td colspan="6">UNKNOWN — could not load Round 2 index (no green).</td></tr>'; }
 }
 
+// ---- Founder Drive Mode + Reviewer Readiness (plain-English; loads drive_data.json) ----
+let _driveData = null;
+async function loadDriveData(){ if(_driveData) return _driveData; const r = await fetch('assets/drive/drive_data.json', {cache:'no-store'}); if(!r.ok) throw new Error('drive_data '+r.status); _driveData = await r.json(); return _driveData; }
+function stateClass(s){ if(/PASS|AVAILABLE|CLEAN|READY/.test(s)) return 'pass'; if(/BLOCKED|NOT READY|NOT STARTED/.test(s)) return 'blocked'; return 'warn'; }
+async function doDrive(){
+  try{
+    const d = await loadDriveData();
+    $('drive-labels').innerHTML = (d.labels||[]).map(l=>`<span class="lbl">${esc(l)}</span>`).join(' ');
+    setPill($('drive-status'), d.current_status, 'live');
+    $('drive-last-success').textContent = d.last_success;
+    $('drive-last-failure').textContent = d.last_failure_mode_proof;
+    $('drive-cards').innerHTML = (d.cards||[]).map(c=>`<div class="fg-card" data-testid="drive-card-${esc(c.key)}"><h3>${esc(c.title)}</h3><div class="st ${stateClass(c.state)}">${esc(c.state)}</div><div class="pl">${esc(c.plain)}</div></div>`).join('');
+    $('drive-next-action').textContent = d.next_action + (/(founder gate|TRUE FOUNDER GATE)/i.test(d.next_action)?'':'');
+    $('drive-crash-summary').textContent = (d.crash_summary||[]).join('  ');
+    $('drive-blocked').textContent = (d.blocked||[]).join(' · ');
+  }catch(e){ $('drive-status').textContent='UNKNOWN — could not load drive data'; }
+}
+async function doReviewer(){
+  $('reviewer-timeline').innerHTML = '<tr><td colspan="4">Loading…</td></tr>';
+  try{
+    const d = await loadDriveData();
+    $('reviewer-timeline').innerHTML = (d.timeline||[]).map(t=>`<tr><td>${esc(t.step)}</td><td><span class="pill ${/PROVEN|CORRECTED/.test(t.result)?'live':'hold'}">${esc(t.result)}</span></td><td>${esc(t.verdict_checker)}</td><td>${esc(t.verdict_advisor)}</td></tr>`).join('');
+    $('reviewer-evidence').innerHTML = (d.evidence_index||[]).map(e=>{
+      const zipOk = e.zip && e.zip!=='MISSING_LOCAL_ARTIFACT';
+      return `<tr><td>${esc(e.item)}</td><td><span class="pill ${/PROVEN|CORRECTED|ACCEPTED/.test(e.status)?'live':'hold'}">${esc(e.status)}</span></td><td class="muted" style="font-size:11px">${esc(e.branch_head)}</td>`+
+        `<td class="muted" style="font-size:10.5px">${zipOk?esc(e.zip):'<span class=\"pill refuse\">MISSING_LOCAL_ARTIFACT</span>'}</td>`+
+        `<td>${esc(e.checker)}</td><td>${esc(e.advisor)}</td><td>${e.founder_accepted?'<span class="pill live">yes</span>':'<span class="pill hold">no</span>'}</td></tr>`;
+    }).join('');
+    $('reviewer-false-green').textContent = 'False-green history (preserved, not hidden): ' + d.false_green_history;
+    $('reviewer-not-proven').textContent = (d.not_proven||[]).join(' · ');
+    $('reviewer-may-see').textContent = (d.reviewer_may_see||[]).join(' · ');
+    $('reviewer-may-not').textContent = (d.reviewer_may_not_see||[]).join(' · ');
+    $('reviewer-gate8').textContent = d.gate8_note;
+  }catch(e){ $('reviewer-timeline').innerHTML='<tr><td colspan="4">UNKNOWN — could not load reviewer data</td></tr>'; }
+}
+
 // ---- Crash Test (failure-mode / recovery; loads crash_index.json; NEVER green on broken) ----
 async function doCrash(){
   $('crash-body').innerHTML = '<tr><td colspan="6">Loading…</td></tr>';
@@ -615,6 +651,13 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('factory2-load-btn')?.addEventListener('click', doFactory2);
   // Crash Test panel
   $('crash-load-btn')?.addEventListener('click', doCrash);
+  // Founder Drive Mode + Reviewer Readiness
+  $('drive-refresh-btn')?.addEventListener('click', doDrive);
+  $('drive-reviewer-btn')?.addEventListener('click', ()=>{ showPanel('reviewer'); doReviewer(); });
+  $('drive-tech-btn')?.addEventListener('click', ()=> showPanel('truth'));
+  $('reviewer-load-btn')?.addEventListener('click', doReviewer);
+  // auto-render Drive Mode content once at startup (panel stays behind Truth until clicked)
+  doDrive();
   // Wave 7: Doctor, Live-Gate Simulator, local rehearsal
   $('doctor-btn').addEventListener('click', doDoctor);
   $('rehearsal-btn').addEventListener('click', doRehearsal);
