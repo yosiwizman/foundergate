@@ -7,4 +7,4 @@
 - Round 1 & Round 2 committed evidence untouched ✅ · no deploy/bill/provider/customer/private data/contact/merge ✅
 - **Gate 8 remains BLOCKED.** Local synthetic only; never SHIP.
 
-Base b9aaf0a9a1a8. Final head: tip of run/local-app-factory-crash-recovery-gauntlet-20260803T1030ET (git rev-parse HEAD).
+Base b9aaf0a9a1a8. Final head: tip of run/local-app-factory-crash-recovery-gauntlet-20260803T1030ET (git rev-parse HEAD). Sealing commit: d93e9117d82c (+ this stamp).
