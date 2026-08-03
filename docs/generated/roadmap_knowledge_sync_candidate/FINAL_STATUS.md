@@ -7,4 +7,4 @@
 - **Gate 8 REAL-EVALUATOR remains NOT AUTHORIZED** (needs an explicit founder phrase). Local synthetic only; never SHIP.
 - Recommended next: PROCEED_PROVIDER_AGNOSTIC_HARNESS_AFTER_SYNC (local scaffold, gated provider calls) — pending founder go-ahead; and founder pastes PROJECT_KNOWLEDGE_UPDATE_BUNDLE_V2.md into ChatGPT Project Knowledge.
 
-Base 9ed1fcdd414a. Final head: tip of run/roadmap-knowledge-sync-candidate-20260803T1710ET (git rev-parse HEAD).
+Base 9ed1fcdd414a. Final head: tip of run/roadmap-knowledge-sync-candidate-20260803T1710ET (git rev-parse HEAD). Sealing commit: 8e82a48e7432 (+ this stamp).
