@@ -1,0 +1,11 @@
+{
+  "kind": "REAL_PUBLIC_SELF_OWNED_MULTI_REPO_PROOF",
+  "note": "Anonymous read-only clone of PUBLIC self-owned repos. No login, no token, no install, no private data, no deploy. Decisions never SHIP.",
+  "repos": [
+    { "repo": "yosiwizman/task-ledger-demo", "type": "node", "result": "PASS 30/30", "build": "0bb2817174c9", "detail": "baseline; zero-dep; existing test ran" },
+    { "repo": "yosiwizman-reviewer/task-ledger-demo-reviewer-proof", "type": "node", "result": "PASS 30/30", "build": "3528b622e027", "detail": "cross-account self-owned; zero-dep; existing test ran" },
+    { "repo": "yosiwizman/akior-health-check", "type": "python", "result": "PASS", "build": "5f021b747eec", "detail": "python; no requirements; existing test ran (no install)" },
+    { "repo": "yosiwizman/officebuddy", "type": "node", "result": "NO_TESTS_FOUND", "build": "2f6c53f36936", "detail": "declares dependencies but has no tests; not run" },
+    { "repo": "yosiwizman/s4a-hello-world", "type": "static", "result": "NO_TESTS_FOUND", "build": "18891dc5c7fd", "detail": "minimal/static; no runnable tests" }
+  ]
+}

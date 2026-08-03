@@ -57,6 +57,7 @@
       <button class="nav"    data-panel="decisions"data-testid="nav-decisions">🚩 Decisions <span class="tag">local ledger</span></button>
       <button class="nav"    data-panel="guide"    data-testid="nav-guide">💬 Ask Guide <span class="tag">static</span></button>
       <button class="nav"    data-panel="files"    data-testid="nav-files">📁 Files <span class="tag">synthetic demo</span></button>
+      <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
       <button class="nav"    data-panel="tech"     data-testid="nav-tech">🔧 Technical view</button>
@@ -264,6 +265,17 @@
         <div class="filerow"><span>demo/** · notes/** · tests/**</span><span class="pill live">allowed (sample)</span></div>
         <div class="filerow"><span>secrets/** · *.env · customer/** · production/**</span><span class="pill warn">blocked for safety (synthetic)</span></div>
         <p class="honesty" data-testid="pf-note">LOCAL_SYNTHETIC_ENFORCEMENT_DEMO only — this classifies a typed name against a sample allowlist in the browser. No real file scanning, no secrets, no customer/private/production files. This is NOT production protected-file enforcement.</p></div>
+    </section>
+
+    <!-- ===== REAL REPO PROOF (public self-owned) ===== -->
+    <section class="panel" id="panel-realrepo" role="region" aria-label="Real Repo Proof" data-testid="panel-realrepo">
+      <div class="eyebrow">REAL REPO PROOF — PUBLIC SELF-OWNED · read-only · no install · no private data · no deploy</div>
+      <div class="head"><div><h1>Real Repo Proof</h1><div class="sub">Real public repos you own, cloned read-only and checked locally. Not production; decisions never &ldquo;ship&rdquo;.</div></div></div>
+      <div class="card">
+        <div class="actions"><button id="realrepo-btn" class="btn primary" data-testid="realrepo-btn">Load real-repo results</button></div>
+        <table class="tbl"><thead><tr><th>Repo (public, self-owned)</th><th>Type</th><th>Result</th><th>Build</th><th>Detail</th></tr></thead>
+          <tbody id="realrepo-body" data-testid="realrepo-body"><tr><td colspan="5" style="color:var(--dim)">Click &ldquo;Load real-repo results&rdquo;.</td></tr></tbody></table>
+        <p class="honesty" data-testid="realrepo-note">Anonymous read-only clone of PUBLIC self-owned repos — no login, no token, no install, no private data, no deploy, no billing, no provider. Repos with dependencies-but-no-tests show NO_TESTS_FOUND (not run). This proves local checking on real repos you own — it is NOT production, SaaS, secure, customer-ready, or commercial.</p></div>
     </section>
 
     <!-- ===== DOCTOR / READINESS ===== -->

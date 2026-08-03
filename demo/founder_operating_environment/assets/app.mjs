@@ -255,6 +255,18 @@ async function doDoctor(){
   }catch{ $('doctor-body').innerHTML='<tr><td colspan="2">LOCAL BACKEND UNAVAILABLE (UNKNOWN).</td></tr>'; setPill($('doctor-summary'),'UNKNOWN','hold'); }
 }
 
+// ---- Real Repo Proof (public self-owned; loads founder-safe results JSON) ----
+async function doRealRepo(){
+  $('realrepo-body').innerHTML = '<tr><td colspan="5">Loading…</td></tr>';
+  try{
+    const r = await fetch('assets/real_repo_proof.json'); const d = await r.json();
+    $('realrepo-body').innerHTML = (d.repos||[]).map(x=>{
+      const kind = /PASS/.test(x.result)?'live':(/FAIL|REFUSED|BROKEN/.test(x.result)?'refuse':'hold');
+      return `<tr><td>${esc(x.repo)}</td><td>${esc(x.type)}</td><td><span class="pill ${kind}">${esc(x.result)}</span></td><td style="color:var(--dim)">${esc(x.build)}</td><td style="color:var(--muted)">${esc(x.detail)}</td></tr>`;
+    }).join('');
+  }catch{ $('realrepo-body').innerHTML='<tr><td colspan="5">UNKNOWN — could not load results.</td></tr>'; }
+}
+
 // ---- Live-Gate Simulator (display-only / planning; nothing acts) ----
 const LIVE_GATES = [
   ['Real self-owned repo run','a vetted self-owned repo + explicit scope','I AUTHORIZE one real self-owned repo run: <repo>'],
@@ -463,6 +475,8 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   // synthetic scenario runner
   $('scn-run-btn').addEventListener('click', doScenario);
   $('scn-sel').addEventListener('change', ()=> setPill($('scn-result'),'—',''));
+  // Wave 8: Real Repo Proof panel
+  $('realrepo-btn').addEventListener('click', doRealRepo);
   // Wave 7: Doctor, Live-Gate Simulator, local rehearsal
   $('doctor-btn').addEventListener('click', doDoctor);
   $('rehearsal-btn').addEventListener('click', doRehearsal);
