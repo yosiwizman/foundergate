@@ -17,7 +17,7 @@ const npage = async () => { const ctx = await b.newContext(); const p = await ct
 const shot = (p, n) => p.screenshot({ path: join(OUT, n), fullPage: true });
 const T = (p, sel) => p.textContent(sel);
 const waitTests = (p) => p.waitForFunction(() => /\d+\/\d+/.test(document.querySelector('[data-testid="chip-tests"]').textContent), null, { timeout: 60000 });
-const OKSTATUS = /PASS|FAIL|NO_TESTS_FOUND|BROKEN_PROJECT|UNSAFE_SOURCE_REFUSED|HOLD_REFUSED|HOLD_DEPENDENCIES_NOT_INSTALLED|REFUSED_NEEDS_AUTHORIZATION|UNKNOWN_RUNTIME_MISSING|UNKNOWN/;
+const OKSTATUS = /PASS|FAIL|NO_TESTS_FOUND|BROKEN_PROJECT|BROKEN_SCENARIO|UNSAFE_SOURCE_REFUSED|UNSAFE_SCENARIO_REFUSED|HOLD_REFUSED|HOLD_DEPENDENCIES_NOT_INSTALLED|REFUSED_NEEDS_AUTHORIZATION|UNKNOWN_RUNTIME_MISSING|SCENARIO_PASS|SCENARIO_FAIL|UNKNOWN/;
 
 // 1. BATCH: real per-fixture execution -> aggregate export
 {

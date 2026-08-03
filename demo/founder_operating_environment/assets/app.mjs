@@ -160,12 +160,47 @@ const FIXTURE_SET = [
   { key:'customer_private_repo', type:'unsafe-name', adapter:'(refused)' },
   { key:'unknown-xyz',  type:'unknown', adapter:'(refused)' },
 ];
+// ---- synthetic scenarios (no real account / data / network) ----
+const SCENARIO_SET = ['calendar-app-pass','calendar-app-fail','task-app-pass','task-app-fail','crud-api-pass','crud-api-fail','static-site-pass','static-site-broken','no-test-scenario','dependency-missing-scenario','unsafe-customer-calendar-scenario','unsafe-production-api-scenario'];
+function renderScenarioPreview(p){
+  const el = $('scn-preview'); if(!el) return;
+  if(!p || p.kind==='NONE'){ el.textContent = 'No preview for this scenario (synthetic).'; return; }
+  let body = '<div class="pill">'+esc(p.kind)+'</div><div class="honesty" style="margin:6px 0">'+esc(p.note||'')+'</div>';
+  if(p.events) body += '<table class="tbl"><thead><tr><th>Synthetic event</th><th>Day</th><th>Time</th></tr></thead><tbody>'+p.events.map(e=>`<tr><td>${esc(e.title)}</td><td>${esc(e.day)}</td><td>${esc(e.time)}</td></tr>`).join('')+'</tbody></table>';
+  else if(p.items) body += '<ul class="ledger">'+p.items.map(i=>`<li>${esc(i)}</li>`).join('')+'</ul>';
+  else if(p.rows) body += '<table class="tbl"><thead><tr><th>id</th><th>name</th></tr></thead><tbody>'+p.rows.map(r=>`<tr><td>${esc(r.id)}</td><td>${esc(r.name)}</td></tr>`).join('')+'</tbody></table>';
+  el.innerHTML = body;
+}
+async function doScenario(){
+  if(!healthy){ setPill($('scn-result'),'UNKNOWN — backend unavailable','hold'); return; }
+  if(!TOKEN) await loadToken();
+  const key = $('scn-sel').value;
+  setPill($('scn-result'),'Running…','hold');
+  try{
+    const r = await post('/api/run-scenario', { key, objective:'scenario: '+key });
+    const kind = /PASS/.test(r.status)?'live':(/REFUSED|FAIL|BROKEN/.test(r.status)?'refuse':'hold');
+    setPill($('scn-result'), r.status + ' · ' + (r.scenario_type||'') , kind);
+    renderScenarioPreview(r.preview);
+    $('preview-status').textContent = 'Scenario: ' + key + ' → ' + r.status + ' (synthetic, never SHIP).';
+    $('preview-result').textContent = r.explanation || '';
+    recordHistory('scenario: '+key, 'scenario: '+key, r.status, r.decision||'UNKNOWN', r.status);
+  }catch{ setPill($('scn-result'),'UNKNOWN — backend unavailable','hold'); }
+}
+
 async function doBatch(){
   if(!healthy){ setBatchRow('<tr><td colspan="6">Local backend UNAVAILABLE (UNKNOWN) — nothing run, nothing faked.</td></tr>'); return; }
-  $('batch-run-btn').disabled = true; $('batch-export-btn').disabled = true; batchReady = false;
+  $('batch-run-btn').disabled = true; $('scn-run-btn').disabled = true; $('batch-export-btn').disabled = true; batchReady = false;
   if(!TOKEN) await loadToken();
   try{ await post('/api/batch-reset', {}); }catch{}
   const rows = [];
+  // scenario matrix first (synthetic scenarios)
+  for(let i=0;i<SCENARIO_SET.length;i++){
+    const key = SCENARIO_SET[i]; let r;
+    try{ r = await post('/api/run-scenario', { key, objective:'scenario: '+key }); }catch{ r={status:'UNKNOWN',explanation:'backend'}; }
+    rows.push({ key:'scenario:'+key, type:(r.scenario_type||'scenario'), adapter:'scenario', status:r.status, next:r.next_action||'—' });
+    recordHistory('scenario: '+key, 'scenario: '+key, r.status, r.decision||'UNKNOWN', r.status);
+    setBatchRow(rows.map((x,j)=>`<tr><td>${j+1}</td><td>${esc(x.key)}</td><td>${esc(x.type)}</td><td>${esc(x.adapter)}</td><td>${esc(x.status)}</td><td>${esc(x.next)}</td></tr>`).join(''));
+  }
   for(let i=0;i<FIXTURE_SET.length;i++){
     const f = FIXTURE_SET[i];
     let r;
@@ -178,7 +213,7 @@ async function doBatch(){
   const pass = rows.filter(x=>x.status==='PASS').length, refused = rows.filter(x=>/REFUSED/.test(x.status)).length;
   setPill($('batch-aggregate'), `${pass}/${rows.length} PASS · ${refused} refused · never SHIP`, pass>0?'live':'hold');
   batchReady = rows.length>0;
-  $('batch-run-btn').disabled = false; $('batch-export-btn').disabled = !batchReady;
+  $('batch-run-btn').disabled = false; $('scn-run-btn').disabled = false; $('batch-export-btn').disabled = !batchReady;
 }
 function setBatchRow(html){ $('batch-body').innerHTML = html; }
 async function doBatchExport(){
@@ -371,9 +406,12 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('run-btn').addEventListener('click', doRun);
   $('export-btn').addEventListener('click', doExport);
   $('export-btn2').addEventListener('click', doExport);
-  // batch runner (real per-fixture) + aggregated export
+  // batch runner (scenarios + per-fixture) + aggregated export
   $('batch-run-btn').addEventListener('click', doBatch);
   $('batch-export-btn').addEventListener('click', doBatchExport);
+  // synthetic scenario runner
+  $('scn-run-btn').addEventListener('click', doScenario);
+  $('scn-sel').addEventListener('change', ()=> setPill($('scn-result'),'—',''));
   // evidence viewer / replay + compare
   $('viewer-load-btn').addEventListener('click', doViewer);
   $('viewer-capA-btn').addEventListener('click', ()=> captureEvidence('A'));

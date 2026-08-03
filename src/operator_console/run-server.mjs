@@ -7,6 +7,7 @@ import { extname, join, normalize } from 'node:path';
 import { handleStart, handleExport, REPO_ROOT } from './server-core.mjs';
 import { newToken, authorize } from './session-token.mjs';
 import { runFixture } from '../local_repo_runner/fixture-runner.mjs';
+import { runScenario } from '../scenario_runner/scenario-core.mjs';
 import { batchAppend, batchExport, batchReset, batchSummary, getLastEvidence } from '../batch_evidence/batch-core.mjs';
 
 const PORT = Number(process.env.OP_PORT || 4880);
@@ -30,7 +31,7 @@ const server = createServer(async (req, res) => {
       res.writeHead(200,{'content-type':'application/json'}); return res.end(JSON.stringify(getLastEvidence()));
     }
     if (req.method === 'POST' && (req.url === '/api/start' || req.url === '/api/export'
-        || req.url === '/api/run-fixture' || req.url === '/api/batch-export'
+        || req.url === '/api/run-fixture' || req.url === '/api/run-scenario' || req.url === '/api/batch-export'
         || req.url === '/api/batch-reset')) {
       const auth = authorize(req.headers, TOKEN);
       if (!auth.ok) { res.writeHead(403,{'content-type':'application/json'}); return res.end(JSON.stringify({status:'UNAUTHORIZED', reason: auth.reason})); }
@@ -39,6 +40,12 @@ const server = createServer(async (req, res) => {
       else if (req.url === '/api/export') out = handleExport();
       else if (req.url === '/api/batch-export') out = batchExport();
       else if (req.url === '/api/batch-reset') out = batchReset();
+      else if (req.url === '/api/run-scenario') { // execute a vetted synthetic scenario; append real result to the batch buffer
+        const body = await readJsonBody(req);
+        const result = runScenario(body && body.key);
+        batchAppend({ fixture: 'scenario:'+((body && body.key)||''), objective: (body && body.objective)||'scenario', status: result.status, decision: result.decision, explanation: result.explanation });
+        out = { ...result, batch_size: batchSummary().total };
+      }
       else { // /api/run-fixture: execute a vetted fixture and append its real result to the batch buffer
         const body = await readJsonBody(req);
         const result = runFixture(body && body.key);

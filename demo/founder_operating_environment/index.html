@@ -114,8 +114,10 @@
       <div class="card" style="margin-top:14px"><h2 class="cardh">Local demo objective</h2>
         <div id="preview-objective" data-testid="preview-objective">Add input validation and prove tests pass (self-owned demo target).</div>
         <h2 class="cardh" style="margin-top:14px">Current run status</h2><div id="preview-status" data-testid="preview-status">Not started.</div>
-        <h2 class="cardh" style="margin-top:14px">Last result</h2><div id="preview-result" data-testid="preview-result">No result yet — run from the Truth Dashboard.</div></div>
-      <p class="honesty">This Preview shares the Truth Dashboard's real local run state. It does not preview a customer application, does not send anything, and uses no external network.</p>
+        <h2 class="cardh" style="margin-top:14px">Last result</h2><div id="preview-result" data-testid="preview-result">No result yet — run from the Truth Dashboard.</div>
+        <h2 class="cardh" style="margin-top:14px">Synthetic scenario preview</h2>
+        <div id="scn-preview" data-testid="scn-preview" style="color:var(--muted);font-size:13.5px">No scenario previewed yet. Pick a scenario in Batch and click &ldquo;Run selected scenario&rdquo;.</div></div>
+      <p class="honesty">This Preview shows synthetic scenario data only (e.g. a synthetic Calendar with made-up events). No real Google/Apple/Microsoft account, no real customer data, no invites, no emails, no reminders, no sends, no external network.</p>
     </section>
 
     <!-- ===== BATCH RUNNER ===== -->
@@ -123,8 +125,26 @@
       <div class="eyebrow">BATCH — LOCAL SAFE CHECKS ONLY / NO PROVIDER / NO NETWORK / NO DEPLOY</div>
       <div class="head"><div><h1>Batch runner</h1><div class="sub">Runs several governed safe local checks in a row and summarizes them. Self-owned demo targets only.</div></div></div>
       <div class="card">
-        <div class="actions"><button id="batch-run-btn" class="btn primary big" data-testid="batch-run-btn">▶ Run safe fixture batch</button>
-        <button id="batch-export-btn" class="btn big" data-testid="batch-export-btn" disabled>⬇ Export aggregated batch evidence</button></div>
+        <label for="scn-sel" style="display:block;font-size:11.5px;font-weight:700;color:var(--dim);margin:2px 0 5px">Synthetic scenario app (no real account · no real data)</label>
+        <select id="scn-sel" data-testid="scn-sel" style="width:auto;min-width:280px;background:#0d1117;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 10px">
+          <option value="calendar-app-pass">Synthetic Calendar app (pass)</option>
+          <option value="calendar-app-fail">Synthetic Calendar app (fail)</option>
+          <option value="task-app-pass">Synthetic Task app (pass)</option>
+          <option value="task-app-fail">Synthetic Task app (fail)</option>
+          <option value="crud-api-pass">Synthetic CRUD API (pass)</option>
+          <option value="crud-api-fail">Synthetic CRUD API (fail)</option>
+          <option value="static-site-pass">Synthetic Static site (pass)</option>
+          <option value="static-site-broken">Synthetic Static site (broken)</option>
+          <option value="no-test-scenario">Synthetic no-test scenario</option>
+          <option value="dependency-missing-scenario">Synthetic dependency-missing scenario</option>
+          <option value="unsafe-customer-calendar-scenario">Unsafe: customer calendar (refused)</option>
+          <option value="unsafe-production-api-scenario">Unsafe: production API (refused)</option>
+        </select>
+        <div><span class="pill">SYNTHETIC_LOCAL_SCENARIO</span><span class="pill">no real account</span><span class="pill">no real customer data</span><span class="pill">no deploy</span><span class="pill">no provider</span><span class="pill">no billing</span></div>
+        <div class="actions"><button id="scn-run-btn" class="btn primary big" data-testid="scn-run-btn">▶ Run selected scenario</button>
+        <button id="batch-run-btn" class="btn big" data-testid="batch-run-btn">▶ Run scenario + fixture matrix</button>
+        <button id="batch-export-btn" class="btn big" data-testid="batch-export-btn" disabled>⬇ Export aggregated evidence</button></div>
+        <div class="clsrow"><span>Selected scenario result</span><span id="scn-result" data-testid="scn-result" class="pill">—</span></div>
         <table class="tbl"><thead><tr><th>#</th><th>Fixture</th><th>Type</th><th>Adapter</th><th>Result</th><th>Next safe action</th></tr></thead>
           <tbody id="batch-body" data-testid="batch-body"><tr><td colspan="6" style="color:var(--dim)">No batch run yet.</td></tr></tbody></table>
         <div class="clsrow"><span>Aggregate conclusion</span><span id="batch-aggregate" data-testid="batch-aggregate" class="pill">—</span></div>
