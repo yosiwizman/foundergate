@@ -2,5 +2,5 @@
   "record_type": "pat_revocation_status",
   "token_present": true,
   "label": "PAT_REVOCATION_REQUIRES_FOUNDER_MANUAL_ACTION",
-  "note": "FounderGate did not create this PAT and its scope is ambiguous; per model it does NOT auto-revoke. The founder should delete/recreate it correctly scoped."
+  "expiry_note": "founder-set 7-day expiration; FounderGate did not create the token and does not auto-revoke it; founder controls revocation/expiry"
 }

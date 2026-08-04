@@ -1,7 +1,7 @@
 {
   "kind": "FINE_GRAINED_PAT_PROOF",
-  "status": "HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS",
-  "label": "HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS",
+  "status": "FINE_GRAINED_PAT_INTAKE_PROVEN_WITH_SCOPE_LIMITS",
+  "label": "FINE_GRAINED_PAT_INTAKE_PROVEN_WITH_SCOPE_LIMITS",
   "repo": "yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET",
   "url": "https://github.com/yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET",
   "private": true,
@@ -11,17 +11,24 @@
   "token_present": true,
   "token_value_exposed": false,
   "token_packaged": false,
-  "token_fingerprint_redacted": "fgpat_46a4db8921b7ccdd",
-  "scope_validation_label": "HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS",
-  "intake_auth_route": "none (held: sandbox 404 + broad/ambiguous visibility)",
-  "intake_occurred": false,
+  "token_fingerprint_redacted": "fgpat_99a4a9b8dd970464",
+  "scope_validation_label": "PAT_INTAKE_VERIFIED_SCOPE_PARTIAL",
+  "intake_auth_route": "fine_grained_pat_keychain_only",
+  "intake_occurred": true,
   "broad_gh_auth_used_for_intake": false,
   "deploy_key_used_for_intake": false,
-  "exact_commit": null,
-  "snapshot_digest": null,
+  "exact_commit": "fb54698d5cbba4b55ef5aac2b189615154efc76e",
+  "snapshot_digest": "arc_1f11bd3699451508eb04436e",
+  "manifest_digest": "man_4a4ad08a1a663d568370ca86",
   "secret_classifier": {
-    "status": "NOT_ASSERTED",
-    "held": null
+    "status": "HELD_SENSITIVE_FILES",
+    "held": 5,
+    "by_type": {
+      "personal_customer_data": 2,
+      "database_url": 2,
+      "api_key": 1,
+      "private_key": 1
+    }
   },
   "write_refusal": {
     "total": 30,
@@ -29,23 +36,27 @@
   },
   "revocation_status": "PAT_REVOCATION_REQUIRES_FOUNDER_MANUAL_ACTION",
   "evidence_status": "REPLAY_VERIFIED",
-  "actual_private_repo_accessed": false,
+  "actual_private_repo_accessed": true,
   "existing_valuable_repo_touched": false,
   "customer_repo_touched": false,
   "code_execution": false,
   "provider_call": false,
   "proven": [
-    "token read from Keychain into memory only (never printed/packaged; redacted fingerprint)",
-    "token is fine-grained (no classic scopes)",
+    "actual read-only intake using ONLY the Keychain fine-grained PAT (200 on sandbox)",
+    "NEW token (fingerprint changed from the failed one)",
+    "token never printed/packaged (redacted fingerprint only)",
+    "exact commit + manifest + archive/snapshot binding",
+    "fake-secret classification held",
     "30/30 write/abuse refusals",
-    "held safely on ambiguous/insufficient scope — no intake performed",
-    "no contents of any non-sandbox repo fetched"
+    "evidence replay"
   ],
   "not_proven": [
-    "actual sandbox read-only intake (token returns 404 on the sandbox)",
-    "narrow single-repo read-only scope (token-visible set is broad/ambiguous)",
-    "exact commit/snapshot binding",
-    "secret classification"
+    "read-only scope INDEPENDENTLY verified (repo permissions reflect owner role, not token grant; no write attempted) -> scope partial",
+    "GitHub App",
+    "existing founder repo",
+    "customer repo",
+    "private-repo-support-complete",
+    "production/SaaS readiness"
   ],
   "blocked": {
     "existing_repo": "BLOCKED",
@@ -60,5 +71,5 @@
     "pr_200": "UNTOUCHED",
     "protected_main": "UNTOUCHED"
   },
-  "next_founder_gate": "FOUNDER recreates the fine-grained PAT restricted to ONLY yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET with Contents:Read + Metadata:Read (remove all other repository access), store it in Keychain under the same service, then rerun this gate"
+  "next_founder_gate": "Optional: independent read-only scope verification (would require a controlled, founder-authorized write-refusal test) OR GitHub App read-only proof — each a separate founder gate"
 }

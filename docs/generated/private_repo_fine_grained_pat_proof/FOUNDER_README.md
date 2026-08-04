@@ -1,7 +1,9 @@
-# Founder README — Fine-Grained PAT Proof (rerun)
+# Founder README — Fine-Grained PAT Proof (it worked)
 
-**In one sentence:** your token is now in the Keychain and FounderGate read it safely (never showing it), but it **stopped** because that token can't actually open the sandbox repo — and it can see a lot of *other* repos — so it's not the narrow, single-repo, read-only key this gate needs.
+**In one sentence:** with your new, correctly-scoped token, FounderGate actually read your private sandbox repo — using only that token straight from your Mac Keychain, never showing it — and proved exactly what it read.
 
-**What happened:** the token is valid and is a fine-grained token (good), but GitHub returned "not found" when FounderGate tried to read the sandbox with it — meaning the sandbox wasn't included in the token's allowed repositories. At the same time, the token could list 100+ of your repositories, which is broader than intended. FounderGate did **not** open any of those other repos, did not read the sandbox, and did not expose your token.
+**What it proved:** the token is new (its fingerprint changed from the one that failed), it now opens the sandbox (GitHub returned "OK" instead of "not found"), and FounderGate read the exact commit, listed all 9 files, held 5 fake-secret files safely, and produced a tamper-checkable record — all with a read-only token it never exposed.
 
-**The fix (2 minutes):** in GitHub, create a **new** fine-grained token whose *Repository access* is set to **only** `foundergate-private-readonly-sandbox-20260804T0105ET`, with permissions **Contents: Read-only** and **Metadata: Read-only** (nothing else). Save it in your Mac Keychain under the same name as before (you can reuse the same paste-into-Keychain command). Then tell FounderGate to rerun this gate. FounderGate never sees the value.
+**The one honest caveat:** FounderGate can prove it *read* the repo read-only (it only ever asked to read), but it can't *independently* prove the token is incapable of writing without trying a write — which it will never do. GitHub shows your owner role on the repo, not the token's limits. So the result is "read-only intake proven, with scope limits." That's the honest ceiling for this kind of token.
+
+**What it did NOT do:** no other repo of yours or anyone's was touched, no code was run, no provider was called, nothing was merged. Your token expires on its own in 7 days.

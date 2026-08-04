@@ -1,12 +1,12 @@
-# Project Knowledge Update Bundle V14 — Fine-Grained PAT Proof (rerun: scope hold)
+# Project Knowledge Update Bundle V14 — Fine-Grained PAT Proof (intake proven, scope limits)
 
 **Status: EVIDENCE SUMMARY (local, with limits). Not accepted governance. Authorizes nothing. Never SHIP.**
 
-## This bundle (V14, rerun)
-A fine-grained PAT is now stored in the Keychain. FounderGate read it into memory only (never exposed), attempted read-only verification, and **held at `HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS`**: the token returns 404 on the sandbox repo (no access) while its `/user/repos` visibility is broad (100+ repos across owners). No intake was performed; no non-sandbox contents were fetched; no token was exposed. Self-tests remain green (13/7/8/7/5/30); the live-intake driver correctly refused to fabricate a result on the 404.
+## This bundle (V14, success)
+With a new correctly-scoped fine-grained PAT (fingerprint changed from the failed one; sandbox now 200), FounderGate performed **actual read-only intake** of the founder-owned private sandbox using ONLY the Keychain PAT (HTTPS Authorization header; token never printed/packaged). Bound exact commit `fb54698d5cbba4b55ef5aac2b189615154efc76e`, 9 files, manifest+snapshot digests; held 5 fake secrets (no content exposed); 30/30 refusals; evidence REPLAY_VERIFIED; UI proof green. **Read-only scope is not independently verified** (repo permissions reflect owner role, and no write was attempted) → label **FINE_GRAINED_PAT_INTAKE_PROVEN_WITH_SCOPE_LIMITS**.
 
-## Correct remediation (founder)
-Recreate the fine-grained PAT restricted to ONLY the sandbox repo with Contents:Read + Metadata:Read (no other repo access, no write/workflow/org-wide), store under the same Keychain service, and rerun.
+## Credential-route progress
+Deploy key (V12.1) and now fine-grained PAT are both demonstrated for read-only sandbox intake — the fine-grained PAT with an explicit scope-verification limit. Both remain sandbox-only, with limits.
 
 ## Still blocked / not claimed
-actual-sandbox-intake · narrow-scope-verified · GitHub-App · existing-founder-repo · customer-repo · private-repo-support-complete · production/SaaS · merge-ready · Gate-8 · Codex. PR #200 + protected main untouched.
+read-only-scope-independently-verified · GitHub-App · existing-founder-repo · customer-repo · private-repo-support-complete · production/SaaS · merge-ready · Gate-8 · Codex. PR #200 + protected main untouched.

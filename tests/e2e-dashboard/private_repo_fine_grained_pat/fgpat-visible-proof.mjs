@@ -19,42 +19,48 @@ const page = await context.newPage();
 await page.goto(DASH, { waitUntil: 'domcontentloaded' });
 
 await page.click('[data-testid="nav-fgpat"]'); await page.click('[data-testid="fgpat-load-btn"]');
-await page.waitForFunction(() => /HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS|TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED|PROOF_READY_WITH_LIMITS|INTAKE_PROVEN|UNKNOWN/.test(document.querySelector('[data-testid="fgpat-status"]')?.textContent || ''), null, { timeout: 8000 });
+await page.waitForFunction(() => /INTAKE_PROVEN_WITH_SCOPE_LIMITS|PROOF_READY_WITH_LIMITS|HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS|TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED|UNKNOWN/.test(document.querySelector('[data-testid="fgpat-status"]')?.textContent || ''), null, { timeout: 8000 });
 await page.screenshot({ path: join(OUT, 'pat_overview.png'), fullPage: true });
 ok(true, 'Fine-Grained PAT Proof panel opened');
 
 const status = await page.textContent('[data-testid="fgpat-status"]');
-ok(/HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS/.test(status), `status HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS (honest scope hold, not green) ("${status.trim()}")`);
-ok(!/SUPPORT_COMPLETE|GITHUB_APP_PROVEN|PRODUCTION_READY|SECURITY_CERTIFIED|MERGE_READY|INTAKE_PROVEN|PROOF_READY_WITH_LIMITS/.test(status), 'no forbidden / success label in status');
+ok(/FINE_GRAINED_PAT_INTAKE_PROVEN_WITH_SCOPE_LIMITS/.test(status), `status FINE_GRAINED_PAT_INTAKE_PROVEN_WITH_SCOPE_LIMITS ("${status.trim()}")`);
+ok(!/SUPPORT_COMPLETE|GITHUB_APP_PROVEN|PRODUCTION_READY|SECURITY_CERTIFIED|MERGE_READY|PROOF_READY_WITH_LIMITS/.test(status), 'no forbidden / over-strong label in status (scope limits, not full READY)');
 
 const keychain = await page.textContent('[data-testid="fgpat-keychain"]');
 ok(/YES/.test(keychain), `Keychain PAT present: YES ("${keychain.trim()}")`);
 await shotEl(page, '[data-testid="fgpat-keychain"]', 'keychain_status.png');
 
 const tokensafe = await page.textContent('[data-testid="fgpat-tokensafe"]');
-ok(/exposed: NO/.test(tokensafe) && /packaged: NO/.test(tokensafe), 'token value exposed: NO · packaged: NO (token present but never exposed)');
+ok(/exposed: NO/.test(tokensafe) && /packaged: NO/.test(tokensafe), 'token value exposed: NO · packaged: NO (token used but never exposed)');
 
 const scope = await page.textContent('[data-testid="fgpat-scope"]');
-ok(/HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS/.test(scope), `scope validation = HOLD (unsafe/ambiguous) ("${scope.trim()}")`);
+ok(/SCOPE_PARTIAL/.test(scope), `scope validation = intake verified, scope partial ("${scope.trim()}")`);
 await shotEl(page, '[data-testid="fgpat-scope"]', 'scope_validation.png');
 
 const route = await page.textContent('[data-testid="fgpat-route"]');
-ok(/broad-auth: NO/.test(route) && /deploy-key: NO/.test(route), 'intake route: no broad-auth, no deploy-key (held; no intake)');
+ok(/fine_grained_pat_keychain_only/.test(route) && /broad-auth: NO/.test(route) && /deploy-key: NO/.test(route), 'intake route: fine-grained PAT (Keychain) only; no broad-auth, no deploy-key');
 
 const repo = await page.textContent('[data-testid="fgpat-repo"]');
 ok(/foundergate-private-readonly-sandbox/.test(repo) && /private: YES/.test(repo), `sandbox repo private ("${repo.trim()}")`);
 await shotEl(page, '[data-testid="fgpat-repo"]', 'repo_identity_commit.png');
+
+const commit = await page.textContent('[data-testid="fgpat-commit"]');
+ok(/fb54698d5cbb/.test(commit), `exact commit bound ("${commit.trim()}")`);
+
+const secrets = await page.textContent('[data-testid="fgpat-secrets"]');
+ok(/HELD_SENSITIVE_FILES/.test(secrets) && /5 held/.test(secrets), `secret classifier holds 5 fake secrets ("${secrets.trim()}")`);
 
 const refusal = await page.textContent('[data-testid="fgpat-refusal"]');
 ok(/30 cases · all held: YES/.test(refusal), `write-attempt refusal 30/30 ("${refusal.trim()}")`);
 await shotEl(page, '[data-testid="fgpat-refusal"]', 'write_refusal_matrix.png');
 
 const revocation = await page.textContent('[data-testid="fgpat-revocation"]');
-ok(/PAT_REVOCATION_REQUIRES_FOUNDER_MANUAL_ACTION/.test(revocation), `revocation honest (founder manual; never auto-revoke ambiguous) ("${revocation.trim()}")`);
+ok(/PAT_REVOCATION_REQUIRES_FOUNDER_MANUAL_ACTION/.test(revocation), `revocation honest (founder-controlled; 7-day expiry) ("${revocation.trim()}")`);
 await shotEl(page, '[data-testid="fgpat-revocation"]', 'revocation_or_expiry.png');
 
 const evidence = await page.textContent('[data-testid="fgpat-evidence"]');
-ok(/REPLAY_VERIFIED/.test(evidence), `evidence replay verified (hold record consistent) ("${evidence.trim()}")`);
+ok(/REPLAY_VERIFIED/.test(evidence), `evidence replay verified ("${evidence.trim()}")`);
 await shotEl(page, '[data-testid="fgpat-evidence"]', 'evidence_replay.png');
 
 const safety = await page.textContent('[data-testid="fgpat-safety"]');

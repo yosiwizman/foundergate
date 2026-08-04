@@ -63,8 +63,13 @@ export async function liveIntake(token) {
   out.repo = repoJson.full_name;
   out.private = repoJson.private;
   out.default_branch = repoJson.default_branch;
-  out.permissions = repoJson.permissions || {}; // {admin, maintain, push, triage, pull}
-  out.effective_read_only = out.permissions.push === false && out.permissions.admin === false && out.permissions.maintain !== true;
+  // NOTE: the repository `permissions` object reflects the AUTHENTICATED USER'S ROLE on the repo
+  // (for the owner this is admin/push=true), NOT the fine-grained token's granted scope. GitHub does not
+  // expose a fine-grained PAT's permission set via a read-only API, and FounderGate will not attempt a write
+  // to test refusal (forbidden). Therefore read-only SCOPE cannot be independently, mechanically verified here.
+  out.repo_role_permissions = repoJson.permissions || {}; // owner-role artifact — NOT the token scope
+  out.read_only_scope_independently_verified = false;
+  out.read_only_scope_note = 'repo permissions object reflects owner role, not token grant; no write attempted (forbidden) — read-only scope asserted by token config but not independently verified -> PARTIAL';
   // 3. exact commit at default branch
   const branch = await ghGet('/repos/' + OWNER_REPO + '/branches/' + out.default_branch, token);
   out.exact_commit = branch.status === 200 ? JSON.parse(branch.buf).commit.sha : null;

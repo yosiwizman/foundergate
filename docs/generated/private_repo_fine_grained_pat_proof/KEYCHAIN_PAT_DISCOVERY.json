@@ -6,6 +6,8 @@
   "token_value_seen_by_log": false,
   "token_printed": false,
   "token_written_to_disk": false,
-  "token_fingerprint_redacted": "fgpat_46a4db8921b7ccdd",
-  "note": "token retrieved into process memory only (Bearer header); never printed/packaged"
+  "token_fingerprint_redacted": "fgpat_99a4a9b8dd970464",
+  "old_failed_fingerprint": "fgpat_46a4db8921b7ccdd",
+  "is_old_failed_fingerprint": false,
+  "note": "NEW token, different fingerprint; retrieved into memory only (Bearer header); never printed/packaged"
 }

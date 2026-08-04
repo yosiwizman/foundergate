@@ -1,9 +1,8 @@
 {
   "record_type": "snapshot_digests",
   "token_present": true,
-  "status": "NOT_ASSERTED",
-  "exact_commit": null,
-  "manifest_digest": null,
-  "snapshot_digest": null,
-  "note": "NOT ASSERTED: no intake (sandbox 404)."
+  "exact_commit": "fb54698d5cbba4b55ef5aac2b189615154efc76e",
+  "manifest_digest": "man_4a4ad08a1a663d568370ca86",
+  "archive_digest": "arc_1f11bd3699451508eb04436e",
+  "snapshot_digest": "arc_1f11bd3699451508eb04436e"
 }

@@ -1,14 +1,13 @@
-# PAT Scope & Identity Validation (N2) — rerun
+# PAT Scope & Identity Validation (N2) — new token
 
-**Label: `HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS`.**
+**Label: `PAT_INTAKE_VERIFIED_SCOPE_PARTIAL`** (read-only intake works; scope not independently verifiable).
 
 | Check | Result |
 | --- | --- |
-| `GET /user` | 200 — authenticates as yosiwizman |
-| Classic OAuth scopes | none (confirmed fine-grained) |
-| `GET /repos/.../sandbox` | **404 — no access to the sandbox repo** |
-| `GET /repos/.../sandbox/contents` | 404 |
-| `GET /user/repos` | 200 — **100+ repositories** across multiple owners |
-| Sandbox in token-visible set | **No** |
+| Fingerprint vs old failed token | **changed** (fgpat_99a4a9b8dd970464 ≠ fgpat_46a4db8921b7ccdd) |
+| `GET /user` | 200 — yosiwizman, fine-grained (no classic scopes) |
+| `GET /repos/.../sandbox` | **200** (private: YES, default: main) |
+| Repo `permissions` object | admin/push=true — **owner-role artifact, NOT token scope** |
+| Read-only scope independently verified | **No** — GitHub doesn't expose fine-grained PAT scope via read API; no write attempted (forbidden) |
 
-**Interpretation:** the token cannot read the intended sandbox (404) yet its visibility is broad/ambiguous (100+ repos). This is not the narrow, single-repo, read-only PAT the gate requires, so FounderGate holds and performs no intake. **No non-sandbox repository contents were fetched.**
+**Interpretation:** the token now grants sandbox access and read-only intake succeeds; the read-only *scope* is asserted by the founder's token config but cannot be independently proven without a forbidden write, so the honest label is scope-partial.

@@ -1,19 +1,25 @@
-# FINAL STATUS — Fine-Grained PAT Read-Only Sandbox Proof (rerun, token present)
+# FINAL STATUS — Fine-Grained PAT Read-Only Sandbox Proof (new token; intake proven)
 
-**STATUS: HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS**
+**STATUS: FINE_GRAINED_PAT_INTAKE_PROVEN_WITH_SCOPE_LIMITS**
 
-A fine-grained PAT is now stored in the Keychain, but FounderGate **held** rather than perform intake, because the token's scope is not the narrow, sandbox-only, read-only grant this gate requires.
+FounderGate performed **actual private-repo read-only intake** of the founder-owned sandbox using **only** the Keychain-stored fine-grained PAT.
 
-## Mechanical observations (token read from Keychain into memory only; never printed)
-- `GET /user` → **200** — the token is valid and authenticates as **yosiwizman**; no classic OAuth scopes (confirmed fine-grained).
-- `GET /repos/yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET` → **404**, and `GET .../contents` → **404**. **The token is NOT granted access to the sandbox repo.**
-- `GET /user/repos` → **200, 100+ repositories** across multiple owners (including real repos and a different owner's repo). The sandbox was **not** in the token-visible set.
+## Gating checks (token in memory only; never printed)
+- Fingerprint **`fgpat_99a4a9b8dd970464`** — **NOT** the old failed `fgpat_46a4db8921b7ccdd` (token was genuinely replaced).
+- `GET /repos/.../sandbox` → **200** (was 404). Private: YES. Default branch: main.
 
-## Why HOLD (not a false green, not intake)
-The token both (a) **cannot read the intended sandbox** (404) and (b) presents a **broad / ambiguous visibility surface** (100+ repos), which is the opposite of the single-repo read-only token this gate requires. FounderGate will not perform intake with a token whose scope it cannot verify as narrow. **No contents of any non-sandbox repository were fetched.** No token was printed, logged, or packaged.
+## Intake (using ONLY the fine-grained PAT; not broad auth, not deploy key)
+- Exact commit: **`fb54698d5cbba4b55ef5aac2b189615154efc76e`**
+- Files: **9** · total bytes: **1104** · manifest + archive/snapshot digests bound (SNAPSHOT_DIGESTS.json).
+- Secret classification: **5 fake secret files held** (fingerprints/counts only; contents never sent to any model).
+- Structural: no path traversal · no symlink escape · no submodules.
+- Evidence replay: **REPLAY_VERIFIED**. Write/abuse refusal matrix: **30/30**.
 
-## Exact founder fix (to advance the gate)
-Recreate the fine-grained PAT restricted to **only** `yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET`, with **Contents: Read** and **Metadata: Read** (and no other repository access, no write, no workflow, no org-wide), then store it in macOS Keychain under service `foundergate-github-fgpat-sandbox-readonly` and rerun this gate. FounderGate never sees the value.
+## Why "with scope limits" (honest)
+The repository `permissions` object reflects the **owner's role** on the repo (admin/push=true for the owner), **not** the fine-grained token's granted scope; GitHub does not expose a fine-grained PAT's permission set via a read-only API, and FounderGate will **not** attempt a write to test refusal (forbidden). So read-only **scope** is asserted by the founder's token configuration (Contents:Read + Metadata:Read, sandbox-only, 7-day expiry) but is **not independently mechanically verified** here. The read-only **intake** itself is proven (only GET requests were made).
+
+## Token safety
+Token read from Keychain into process memory only; used solely in the HTTPS Authorization header; never printed, logged, screenshotted, committed, packaged, or placed in argv/disk. Redacted fingerprint only.
 
 ## Blocked / untouched
 existing repo · customer repo · GitHub App · code exec · write/merge · provider · Gate 8 · deploy · bill — BLOCKED. PR #200 + protected `main` UNTOUCHED. **Never SHIP.**

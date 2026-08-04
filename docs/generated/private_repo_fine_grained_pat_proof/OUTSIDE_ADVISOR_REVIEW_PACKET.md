@@ -1,20 +1,21 @@
-# Outside-Advisor Review Packet — Fine-Grained PAT Proof (rerun; scope hold)
+# Outside-Advisor Review Packet — Fine-Grained PAT Proof (intake proven, scope limits)
 
 ## Scope
-Live rerun with a Keychain-stored fine-grained PAT now present. Outcome: **HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS** — token cannot access the sandbox (404) and shows broad visibility (100+ repos); no intake performed; no token exposed; no non-sandbox contents fetched.
+Live rerun with a NEW correctly-scoped fine-grained PAT. Outcome: **FINE_GRAINED_PAT_INTAKE_PROVEN_WITH_SCOPE_LIMITS** — actual sandbox read-only intake via the Keychain PAT; read-only scope not independently verifiable (no write attempted). No token exposed; no non-sandbox repo touched.
 
 ## Independently checkable
-- Self-tests: authority 13/13 · Keychain loader 7/7 · runner 8/8 · revocation 7/7 · replay 5/5 · refusal matrix 30/30.
-- KEYCHAIN_PAT_DISCOVERY.json — token_present:true, fingerprint only, token_value_seen_by_log:false.
-- PAT_SCOPE_VALIDATION.json — mechanical observations: /user 200, sandbox 404, /user/repos 100+, sandbox_in_visible_set:false, no_nonsandbox_repo_contents_fetched:true.
-- ACTUAL_FINE_GRAINED_PAT_EVIDENCE.json — label HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS, intake_occurred:false, all safety flags false, not_asserted note; replay REPLAY_VERIFIED.
-- Live-intake module (fine_grained_pat_live_intake.mjs) — GET-only; token only in Authorization header; refused to fabricate on 404.
+- KEYCHAIN_PAT_DISCOVERY.json — new fingerprint fgpat_99a4a9b8dd970464 (≠ old fgpat_46a4db8921b7ccdd), token_value_seen_by_log:false.
+- PAT_SCOPE_VALIDATION.json — /user 200, sandbox 200, repo_role_permissions (owner artifact), read_only_scope_independently_verified:false + note.
+- ACTUAL_FINE_GRAINED_PAT_EVIDENCE.json — label FINE_GRAINED_PAT_INTAKE_PROVEN_WITH_SCOPE_LIMITS, intake_occurred:true, exact_commit fb54698d5cbba4b55ef5aac2b189615154efc76e, all safety flags false; replay REPLAY_VERIFIED.
+- PRIVATE_REPO_MANIFEST.json / SNAPSHOT_DIGESTS.json — 9 files, commit + manifest + archive digests.
+- REDACTION_SUMMARY.json — 5 held (fingerprints/counts only). WRITE_REFUSAL_RESULTS.json — 30/30.
+- Live-intake module — GET-only; token only in Authorization header; owner-role caveat documented.
 
 ## Adversarial questions answered
-1. **Was the token exposed?** No — read into memory only, never returned/printed/packaged; no token literal in any file.
-2. **Did FounderGate touch existing/valuable/customer repos?** No repository CONTENTS were fetched other than the (failed) sandbox reads. The broad list came from the token's own `/user/repos` grant enumeration; no named non-sandbox repo was read.
-3. **Is the hold honest?** Yes — the token genuinely 404s on the sandbox and enumerates broadly; FounderGate refused intake rather than force it, and asserted no success.
-4. **Any false green?** No — status is a HOLD; UI shows the hold + remediation; evidence replay verifies the hold record's consistency.
+1. **Token exposed?** No — memory only, header only; redacted fingerprint; no token literal in any file.
+2. **Was it really the sandbox, read-only?** Yes for the sandbox (200, exact commit bound) and read-only in method (only GETs); read-only *scope* is asserted-not-independently-verified (documented, not overclaimed).
+3. **Broad-auth / deploy-key / other repo?** No — fine-grained PAT only; no non-sandbox contents fetched; no broad-auth/deploy-key intake.
+4. **Overclaim?** No — label is INTAKE_PROVEN_WITH_SCOPE_LIMITS, not READY_WITH_LIMITS; scope-verification limit stated plainly.
 
-## Correct remediation
-Founder recreates a sandbox-only, Contents:Read + Metadata:Read fine-grained PAT (no other access) and reruns.
+## Correct next step
+Optional: an independent read-only scope verification would require a controlled, founder-authorized write-refusal test (a separate gate). Otherwise this is the honest ceiling for a fine-grained PAT read.

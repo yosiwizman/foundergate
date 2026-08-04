@@ -1,7 +1,58 @@
 {
   "record_type": "private_repo_manifest",
   "token_present": true,
-  "status": "NOT_ASSERTED",
-  "note": "NOT ASSERTED: token could not access the sandbox repo (404); no manifest generated.",
-  "repo": "yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET"
+  "repo": "yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET",
+  "exact_commit": "fb54698d5cbba4b55ef5aac2b189615154efc76e",
+  "file_count": 9,
+  "total_bytes": 1104,
+  "truncated": false,
+  "no_symlink_escape": true,
+  "no_submodules": true,
+  "manifest": [
+    {
+      "path": "docs/SAFE_FIXTURE.md",
+      "sha": "6719d1edc0e2624184c08f984064a045f0a1a2c7",
+      "size": 99
+    },
+    {
+      "path": "fixtures/customer_like_fake_data.csv",
+      "sha": "7a3fc5c1e627dbd47db8e350aa14be57d00ca76a",
+      "size": 71
+    },
+    {
+      "path": "fixtures/fake_database_url.example",
+      "sha": "fef71f1b0845e143304e0ecaf9f97088f4f76c34",
+      "size": 65
+    },
+    {
+      "path": "fixtures/fake_env.example",
+      "sha": "70d5e3dc8441b8bfc75034237cd97555f610b22b",
+      "size": 142
+    },
+    {
+      "path": "fixtures/fake_private_key.example",
+      "sha": "6b49d2061e88892766337cc9ebc7e3e56e6b25e4",
+      "size": 119
+    },
+    {
+      "path": "package.json",
+      "sha": "5372de92bfa234cb3000e83d091c55bddca9a119",
+      "size": 156
+    },
+    {
+      "path": "README.md",
+      "sha": "08a1f473144be7c605fca9f0797fb2dacbbdc183",
+      "size": 247
+    },
+    {
+      "path": "src/hello.js",
+      "sha": "74b3af487fcc3af54af616f2e03334a746b247ea",
+      "size": 136
+    },
+    {
+      "path": "src/policy.txt",
+      "sha": "1a8265f1e4aeba5659e0dc2e07d474c427943ece",
+      "size": 69
+    }
+  ]
 }
