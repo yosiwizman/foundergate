@@ -26,3 +26,8 @@ Legend: ✅ proven/accepted with limits · 🟡 built/local-synthetic/needs next
 | Protected Main Merge / Beta Acceptance | 🔴 | — | blocked founder gate | founder phrase |
 | Paid Customer Proof | ⚫ | — | not started | requires customers + billing |
 | SaaS / Production / Security Certification | ⚫ | — | not started | requires org + audit |
+
+## Evidence location precision (honest, per reviewer note)
+- In-repo backing for every ✅ is the on-disk evidence DIRECTORY under `docs/generated/<layer>/` (all present and verifiable in the repo). The green checks are bound to those directories + the live provider call/verification records, NOT to the ZIP filenames alone.
+- The sealed WITNESS ZIPs (harvest `FounderGate_Witness_01..08_*.zip` and `FounderGate_RealOpenAIProviderProof_Overnight_20260803T2240ET.zip`) live on the **Desktop**, relocated by the macOS Desktop auto-organizer into `~/Desktop/founder gate over all documents/`. They are present there; the provider ZIP SHA256 (9a45d3a2eaccb6dd48fc74cdf9e66a6a680fbc537e40359db6eb30094b1615b2) was computed from that location this run.
+- Per §13 staleness rule: re-seal/re-verify any ZIP SHA at its current path before external/investor/customer circulation.
