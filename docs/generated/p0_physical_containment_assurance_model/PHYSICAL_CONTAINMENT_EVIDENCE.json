@@ -1,0 +1,167 @@
+{
+  "record_type": "physical_containment_evidence",
+  "run_id": "p0_physical_containment_assurance_model_20260803T2030ET",
+  "levels": {
+    "1": "Software-Isolated Execution",
+    "2": "Hardware-Assisted Containment",
+    "3": "Physically Severed Execution"
+  },
+  "level_classification": {
+    "record_type": "assurance_level_classification",
+    "claimed_level": 3,
+    "supported_level": 3,
+    "level_confusion": false,
+    "status": "OK",
+    "problems": [],
+    "note": "levels are never equivalent; supported_level reflects evidence, not the claim",
+    "hash": "30f9c129e588a7220f7d54c8c571c81a97f7a73bfe105aebb19ad2752d9e8cdc"
+  },
+  "contract_validation": {
+    "record_type": "physical_run_contract_validation",
+    "valid": true,
+    "status": "VERIFIED_WITHIN_DECLARED_BOUNDARIES",
+    "contract_digest": "prc_ce89485717ed00ec9ec2415e"
+  },
+  "supervisor": {
+    "valid": true,
+    "status": "OK",
+    "supervisor_identity": "hwsup_local_synth"
+  },
+  "capability": "VERIFIED_HARDWARE_GATED_CAPABILITY",
+  "path_inventory": {
+    "record_type": "physical_path_inventory",
+    "rows": [
+      {
+        "path": "wifi",
+        "status": "ABSENT",
+        "blocks_isolation": false
+      },
+      {
+        "path": "bluetooth",
+        "status": "ABSENT",
+        "blocks_isolation": false
+      },
+      {
+        "path": "cellular",
+        "status": "ABSENT",
+        "blocks_isolation": false
+      },
+      {
+        "path": "ethernet",
+        "status": "ABSENT",
+        "blocks_isolation": false
+      },
+      {
+        "path": "second_ethernet",
+        "status": "ABSENT",
+        "blocks_isolation": false
+      },
+      {
+        "path": "usb_ethernet",
+        "status": "ABSENT",
+        "blocks_isolation": false
+      },
+      {
+        "path": "thunderbolt_networking",
+        "status": "ABSENT",
+        "blocks_isolation": false
+      },
+      {
+        "path": "host_bridge",
+        "status": "ABSENT",
+        "blocks_isolation": false
+      },
+      {
+        "path": "virtual_proxy",
+        "status": "ABSENT",
+        "blocks_isolation": false
+      },
+      {
+        "path": "package_mirror",
+        "status": "ABSENT",
+        "blocks_isolation": false
+      },
+      {
+        "path": "shared_host_service",
+        "status": "ABSENT",
+        "blocks_isolation": false
+      },
+      {
+        "path": "cloud_metadata_route",
+        "status": "ABSENT",
+        "blocks_isolation": false
+      },
+      {
+        "path": "debug_interface",
+        "status": "ABSENT",
+        "blocks_isolation": false
+      },
+      {
+        "path": "serial_management_network",
+        "status": "ABSENT",
+        "blocks_isolation": false
+      }
+    ],
+    "present_ungoverned": [],
+    "unknown": [],
+    "all_paths_governed": true,
+    "isolation_claim_status": "VERIFIED_PHYSICAL_PATHS_ABSENT",
+    "inventory_hash": "7e89d1b492cd28450adcf9d52ca9e032b1e2e9792c4493b38ccf5a958ca712d1"
+  },
+  "relay": "VERIFIED_WITHIN_DECLARED_BOUNDARIES",
+  "power": "VERIFIED_WITHIN_DECLARED_BOUNDARIES",
+  "evidence_channel": "VERIFIED_WITHIN_DECLARED_BOUNDARIES",
+  "measured_boot": "mbi_ac4c9f0597e00ec5e7e6",
+  "assumption_register": {
+    "declared": 12,
+    "verified": 12,
+    "unknown": 0,
+    "violated": 0,
+    "action": "CONTINUE"
+  },
+  "evidence_package": {
+    "status": "SEALED_WITH_LIMITS",
+    "complete": true,
+    "sections": 20,
+    "missing": 0,
+    "digest": "pep_800039c911e1a4e809d5f124"
+  },
+  "adversarial": {
+    "total": 32,
+    "all_fail_closed": true,
+    "failed": 0,
+    "by_group": {
+      "hardware": 10,
+      "authorization": 9,
+      "monitoring": 5,
+      "stop": 2,
+      "claim": 6
+    }
+  },
+  "allowed_statuses": [
+    "VERIFIED_PHYSICAL_PATHS_ABSENT",
+    "VERIFIED_HARDWARE_GATED_CAPABILITY",
+    "VERIFIED_WITHIN_DECLARED_BOUNDARIES",
+    "BOUNDARY_VIOLATION_DETECTED_AND_STOPPED",
+    "BOUNDARY_VIOLATION_DETECTED_STOP_UNCONFIRMED",
+    "ALTERNATE_PATH_DETECTED",
+    "MONITORING_LOST",
+    "EVIDENCE_INCOMPLETE",
+    "HARDWARE_STATE_MISMATCH",
+    "SUPERVISOR_UNAVAILABLE",
+    "AUTHORIZATION_INVALID",
+    "AUTHORIZATION_EXPIRED",
+    "UNKNOWN",
+    "NOT_PASSED"
+  ],
+  "blocked": {
+    "real_hardware": "BLOCKED",
+    "real_provider": "BLOCKED",
+    "private_repo": "BLOCKED",
+    "gate_8": "BLOCKED",
+    "external_network": "BLOCKED",
+    "deploy": "BLOCKED",
+    "bill": "BLOCKED",
+    "merge": "BLOCKED"
+  }
+}

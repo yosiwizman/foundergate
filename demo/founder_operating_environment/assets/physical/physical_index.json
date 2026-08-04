@@ -1,0 +1,132 @@
+{
+  "kind": "PHYSICAL_CONTAINMENT",
+  "run_id": "p0_physical_containment_assurance_model_20260803T2030ET",
+  "levels": [
+    {
+      "n": 1,
+      "name": "Software-Isolated Execution"
+    },
+    {
+      "n": 2,
+      "name": "Hardware-Assisted Containment"
+    },
+    {
+      "n": 3,
+      "name": "Physically Severed Execution"
+    }
+  ],
+  "selected_level": 3,
+  "supported_level": 3,
+  "level_confusion": false,
+  "contract_status": "VERIFIED_WITHIN_DECLARED_BOUNDARIES",
+  "supervisor_status": "OK",
+  "capability_status": "VERIFIED_HARDWARE_GATED_CAPABILITY",
+  "path_inventory": [
+    {
+      "path": "wifi",
+      "status": "ABSENT"
+    },
+    {
+      "path": "bluetooth",
+      "status": "ABSENT"
+    },
+    {
+      "path": "cellular",
+      "status": "ABSENT"
+    },
+    {
+      "path": "ethernet",
+      "status": "ABSENT"
+    },
+    {
+      "path": "second_ethernet",
+      "status": "ABSENT"
+    },
+    {
+      "path": "usb_ethernet",
+      "status": "ABSENT"
+    },
+    {
+      "path": "thunderbolt_networking",
+      "status": "ABSENT"
+    },
+    {
+      "path": "host_bridge",
+      "status": "ABSENT"
+    },
+    {
+      "path": "virtual_proxy",
+      "status": "ABSENT"
+    },
+    {
+      "path": "package_mirror",
+      "status": "ABSENT"
+    },
+    {
+      "path": "shared_host_service",
+      "status": "ABSENT"
+    },
+    {
+      "path": "cloud_metadata_route",
+      "status": "ABSENT"
+    },
+    {
+      "path": "debug_interface",
+      "status": "ABSENT"
+    },
+    {
+      "path": "serial_management_network",
+      "status": "ABSENT"
+    }
+  ],
+  "isolation_claim": "VERIFIED_PHYSICAL_PATHS_ABSENT",
+  "relay": "VERIFIED_WITHIN_DECLARED_BOUNDARIES",
+  "power": "VERIFIED_WITHIN_DECLARED_BOUNDARIES",
+  "evidence_channel": "VERIFIED_WITHIN_DECLARED_BOUNDARIES",
+  "measured_boot_note": "vulnerability_free_firmware",
+  "assumptions": {
+    "declared": 12,
+    "verified": 12,
+    "unknown": 0,
+    "violated": 0
+  },
+  "evidence_package": {
+    "status": "SEALED_WITH_LIMITS",
+    "complete": true,
+    "sections": 20,
+    "missing": 0,
+    "digest": "pep_800039c911e1a4e809d5f124"
+  },
+  "adversarial": {
+    "total": 32,
+    "all_fail_closed": true,
+    "failed": 0,
+    "by_group": {
+      "hardware": 10,
+      "authorization": 9,
+      "monitoring": 5,
+      "stop": 2,
+      "claim": 6
+    }
+  },
+  "blocked": {
+    "real_hardware": "BLOCKED",
+    "real_provider": "BLOCKED",
+    "private_repo": "BLOCKED",
+    "gate_8": "BLOCKED",
+    "external_network": "BLOCKED",
+    "deploy": "BLOCKED",
+    "bill": "BLOCKED",
+    "merge": "BLOCKED"
+  },
+  "labels": [
+    "LOCAL_SYNTHETIC_ONLY",
+    "Level 1 ≠ Level 2 ≠ Level 3",
+    "NOT real physical containment",
+    "NOT escape-impossible / NOT unhackable",
+    "measured boot ≠ vulnerability-free",
+    "a VM is NOT a physically severed machine",
+    "NOT security certification",
+    "NEVER SHIP"
+  ]
+}

@@ -76,6 +76,7 @@
       <button class="nav"    data-panel="assurance" data-testid="nav-assurance">🛡️ Assurance Core <span class="tag">P1 local</span></button>
       <button class="nav"    data-panel="coreip"   data-testid="nav-coreip">🧬 Core IP / Assumption <span class="tag">P0 local</span></button>
       <button class="nav"    data-panel="boundary" data-testid="nav-boundary">🛰️ Boundary Assurance <span class="tag">flight recorder</span></button>
+      <button class="nav"    data-panel="physical" data-testid="nav-physical">🔌 Physical Containment <span class="tag">model only</span></button>
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
@@ -374,6 +375,44 @@
           <tbody id="provider-repo-body" data-testid="provider-repo-body"><tr><td colspan="5" style="color:var(--dim)">—</td></tr></tbody></table>
         <p class="honesty" data-testid="provider-note">A provider that CLAIMS success without real files, with the wrong preview, without tests, or that asks for network/keys/deploy/private-repo is HELD/REFUSED — never PASS. Real OpenAI/Codex/Hermes activation and private-repo access each require a separate founder gate.</p>
         <div class="clsrow"><span>Summary</span><span id="provider-summary" data-testid="provider-summary" class="pill">—</span></div>
+        <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
+      </div>
+    </section>
+
+    <!-- ===== P0.3 PHYSICAL CONTAINMENT ASSURANCE (local synthetic MODEL only) ===== -->
+    <section class="panel" id="panel-physical" role="region" aria-label="Physical Containment Assurance" data-testid="panel-physical">
+      <div class="eyebrow">P0.3 PHYSICAL CONTAINMENT ASSURANCE — LOCAL SYNTHETIC MODEL ONLY · three assurance levels never equal · claim blocker · capability gate · path inventory · relay/power/evidence-channel schemas · NO real hardware</div>
+      <div class="head"><div><h1>Physical Containment Assurance</h1><div class="sub">A local/synthetic model of software isolation vs hardware-assisted containment vs physically severed execution. <b>NOT real physical containment, NOT real hardware proof, NOT escape-impossible, NOT unhackable, NOT security certification. Never SHIP.</b></div></div></div>
+      <div class="card">
+        <div class="fg-labels" id="physical-labels" data-testid="physical-labels"></div>
+        <div class="actions"><button id="physical-load-btn" class="btn primary" data-testid="physical-load-btn">Load Physical Containment</button></div>
+
+        <h2 style="font-size:14px;margin:12px 0 4px">Assurance levels (never equivalent)</h2>
+        <div id="physical-levels" data-testid="physical-levels" class="muted" style="font-size:12px">—</div>
+        <div class="clsrow"><span>Selected / supported level</span><span id="physical-level-sel" data-testid="physical-level-sel" class="pill">—</span></div>
+
+        <h2 style="font-size:14px;margin:14px 0 4px">Physical path inventory</h2>
+        <table class="tbl"><thead><tr><th>Path</th><th>Status</th></tr></thead>
+          <tbody id="physical-paths" data-testid="physical-paths"><tr><td colspan="2" style="color:var(--dim)">Click &ldquo;Load Physical Containment&rdquo;.</td></tr></tbody></table>
+        <div class="clsrow"><span>Isolation claim</span><span id="physical-isolation" data-testid="physical-isolation" class="pill">—</span></div>
+
+        <h2 style="font-size:14px;margin:14px 0 4px">Relay / power / one-way evidence channel</h2>
+        <div class="clsrow"><span>Relay proof</span><span id="physical-relay" data-testid="physical-relay" class="pill">—</span></div>
+        <div class="clsrow"><span>Power proof</span><span id="physical-power" data-testid="physical-power" class="pill">—</span></div>
+        <div class="clsrow"><span>One-way evidence channel</span><span id="physical-channel" data-testid="physical-channel" class="pill">—</span></div>
+
+        <h2 style="font-size:14px;margin:14px 0 4px">Capability gate · supervisor · measured boot · assumptions · evidence package</h2>
+        <div class="clsrow"><span>Capability gate</span><span id="physical-capability" data-testid="physical-capability" class="pill">—</span></div>
+        <div class="clsrow"><span>Hardware supervisor</span><span id="physical-supervisor" data-testid="physical-supervisor" class="pill">—</span></div>
+        <div class="clsrow"><span>Measured boot</span><span id="physical-boot" data-testid="physical-boot" class="pill">—</span></div>
+        <div class="clsrow"><span>Assumption register</span><span id="physical-assumptions" data-testid="physical-assumptions" class="pill">—</span></div>
+        <div class="clsrow"><span>Evidence package (20 sections)</span><span id="physical-package" data-testid="physical-package" class="pill">—</span></div>
+
+        <h2 style="font-size:14px;margin:14px 0 4px">Adversarial matrix &amp; claim blocker</h2>
+        <div class="clsrow"><span>Adversarial cases fail-closed</span><span id="physical-adversarial" data-testid="physical-adversarial" class="pill">—</span></div>
+
+        <p class="honesty" data-testid="physical-note">Level 1 (software isolation), Level 2 (hardware-assisted), and Level 3 (physically severed) are never treated as equal. This is a LOCAL SYNTHETIC MODEL — no real relay, power, radio, USB, data-diode, or network is controlled. Missing/unknown physical evidence fails closed. Forbidden claims (escape-impossible, unhackable, absolutely-secure, VM=severed, measured-boot-proves-no-vulnerabilities) are blocked. Measured boot records identity/integrity only.</p>
+        <div class="clsrow"><span>Blocked gates</span><span id="physical-blocked" data-testid="physical-blocked" class="pill refuse">—</span></div>
         <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
       </div>
     </section>

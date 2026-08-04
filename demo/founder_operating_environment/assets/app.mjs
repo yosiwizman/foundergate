@@ -428,6 +428,40 @@ async function doProvider(){
   }catch(e){ $('provider-body').innerHTML='<tr><td colspan="7">UNKNOWN — could not load provider index (no green).</td></tr>'; }
 }
 
+// ---- P0.3 Physical Containment Assurance (loads physical_index.json; local synthetic model; levels never equal) ----
+async function doPhysical(){
+  if($('physical-paths')) $('physical-paths').innerHTML = '<tr><td colspan="2">Loading…</td></tr>';
+  try{
+    const r = await fetch('assets/physical/physical_index.json', {cache:'no-store'});
+    if(!r.ok) throw new Error('physical_index '+r.status);
+    const d = await r.json();
+    if($('physical-labels')) $('physical-labels').innerHTML = (d.labels||[]).map(l=>`<span class="lbl">${esc(l)}</span>`).join(' ');
+    if($('physical-levels')) $('physical-levels').innerHTML = (d.levels||[]).map(l=>`<b>Level ${l.n}</b>: ${esc(l.name)}`).join(' &nbsp;·&nbsp; ');
+    setPill($('physical-level-sel'), `selected ${d.selected_level} · supported ${d.supported_level}${d.level_confusion?' · ⚠ LEVEL CONFUSION':' · no inflation'}`, d.level_confusion?'refuse':'live');
+    if($('physical-paths')) $('physical-paths').innerHTML = (d.path_inventory||[]).map(pp=>{
+      const bad = pp.status==='PRESENT_UNGOVERNED'||pp.status==='UNKNOWN';
+      return `<tr><td class="muted" style="font-size:11px">${esc(pp.path)}</td><td><span class="pill ${bad?'refuse':'live'}">${esc(pp.status)}</span></td></tr>`;
+    }).join('') || '<tr><td colspan="2" class="muted">—</td></tr>';
+    const isoOk = d.isolation_claim==='VERIFIED_PHYSICAL_PATHS_ABSENT';
+    setPill($('physical-isolation'), esc(d.isolation_claim||'—'), isoOk?'live':(d.isolation_claim==='ALTERNATE_PATH_DETECTED'?'refuse':'hold'));
+    const okv = s => /VERIFIED/.test(s);
+    setPill($('physical-relay'), esc(d.relay||'—'), okv(d.relay)?'live':'hold');
+    setPill($('physical-power'), esc(d.power||'—'), okv(d.power)?'live':'hold');
+    setPill($('physical-channel'), esc(d.evidence_channel||'—'), okv(d.evidence_channel)?'live':(d.evidence_channel==='MONITORING_LOST'?'refuse':'hold'));
+    setPill($('physical-capability'), esc(d.capability_status||'—'), /VERIFIED/.test(d.capability_status)?'live':'refuse');
+    setPill($('physical-supervisor'), esc(d.supervisor_status||'—'), d.supervisor_status==='OK'?'live':'refuse');
+    setPill($('physical-boot'), `identity/integrity only · ${esc(d.measured_boot_note||'')}`, 'hold');
+    const a=d.assumptions||{};
+    setPill($('physical-assumptions'), `${a.verified||0}/${a.declared||0} verified · ${a.unknown||0} unknown · ${a.violated||0} violated`, (a.violated||a.unknown)?'hold':'live');
+    const pk=d.evidence_package||{};
+    setPill($('physical-package'), `${esc(pk.status||'—')} · ${pk.sections||0}/20 sections`, pk.status==='SEALED_WITH_LIMITS'?'live':'hold');
+    const adv=d.adversarial||{};
+    setPill($('physical-adversarial'), `${adv.all_fail_closed?'ALL FAIL-CLOSED':'FAILURE'} · ${adv.total||0} cases · ${adv.failed||0} not-closed`, adv.all_fail_closed?'live':'refuse');
+    const b=d.blocked||{};
+    setPill($('physical-blocked'), `real hardware ${b.real_hardware||'BLOCKED'} · real provider ${b.real_provider||'BLOCKED'} · private repo ${b.private_repo||'BLOCKED'} · Gate 8 ${b.gate_8||'BLOCKED'}`, 'refuse');
+  }catch(e){ if($('physical-paths')) $('physical-paths').innerHTML='<tr><td colspan="2">UNKNOWN — could not load physical index (no green).</td></tr>'; }
+}
+
 // ---- P0.2 Boundary Assurance / Flight Recorder (loads boundary_index.json; controller verdicts; no false green) ----
 async function doBoundary(){
   if($('boundary-body')) $('boundary-body').innerHTML = '<tr><td colspan="4">Loading…</td></tr>';
@@ -777,6 +811,8 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('coreip-load-btn')?.addEventListener('click', doCoreIp);
   // P0.2 Boundary Assurance / Flight Recorder panel
   $('boundary-load-btn')?.addEventListener('click', doBoundary);
+  // P0.3 Physical Containment Assurance panel
+  $('physical-load-btn')?.addEventListener('click', doPhysical);
   // Founder Drive Mode + Reviewer Readiness
   $('drive-refresh-btn')?.addEventListener('click', doDrive);
   $('drive-reviewer-btn')?.addEventListener('click', ()=>{ showPanel('reviewer'); doReviewer(); });

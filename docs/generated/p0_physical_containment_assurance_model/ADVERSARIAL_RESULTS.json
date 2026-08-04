@@ -1,0 +1,207 @@
+{
+  "record_type": "adversarial_matrix",
+  "total": 32,
+  "all_fail_closed": true,
+  "failed": [],
+  "by_group": {
+    "hardware": 10,
+    "authorization": 9,
+    "monitoring": 5,
+    "stop": 2,
+    "claim": 6
+  },
+  "cases": [
+    {
+      "group": "hardware",
+      "name": "relay commanded open but measured closed",
+      "observed": "HARDWARE_STATE_MISMATCH",
+      "fail_closed": true
+    },
+    {
+      "group": "hardware",
+      "name": "relay commanded closed without authorization",
+      "observed": "AUTHORIZATION_INVALID",
+      "fail_closed": true
+    },
+    {
+      "group": "hardware",
+      "name": "alternate Ethernet adapter attached",
+      "observed": "ALTERNATE_PATH_DETECTED",
+      "fail_closed": true
+    },
+    {
+      "group": "hardware",
+      "name": "Wi-Fi interface appears",
+      "observed": "ALTERNATE_PATH_DETECTED",
+      "fail_closed": true
+    },
+    {
+      "group": "hardware",
+      "name": "Bluetooth interface active",
+      "observed": "ALTERNATE_PATH_DETECTED",
+      "fail_closed": true
+    },
+    {
+      "group": "hardware",
+      "name": "USB network adapter inserted",
+      "observed": "ALTERNATE_PATH_DETECTED",
+      "fail_closed": true
+    },
+    {
+      "group": "hardware",
+      "name": "host bridge available",
+      "observed": "ALTERNATE_PATH_DETECTED",
+      "fail_closed": true
+    },
+    {
+      "group": "hardware",
+      "name": "data-diode channel becomes bidirectional",
+      "observed": "MONITORING_LOST",
+      "fail_closed": true
+    },
+    {
+      "group": "hardware",
+      "name": "execution node gains write to evidence store",
+      "observed": "MONITORING_LOST",
+      "fail_closed": true
+    },
+    {
+      "group": "hardware",
+      "name": "power relay fails to open",
+      "observed": "HARDWARE_STATE_MISMATCH",
+      "fail_closed": true
+    },
+    {
+      "group": "authorization",
+      "name": "replayed signature (nonce reuse)",
+      "observed": "AUTHORIZATION_INVALID",
+      "fail_closed": true
+    },
+    {
+      "group": "authorization",
+      "name": "expired signature",
+      "observed": "AUTHORIZATION_EXPIRED",
+      "fail_closed": true
+    },
+    {
+      "group": "authorization",
+      "name": "signature for wrong machine",
+      "observed": "AUTHORIZATION_INVALID",
+      "fail_closed": true
+    },
+    {
+      "group": "authorization",
+      "name": "signature for wrong image",
+      "observed": "AUTHORIZATION_INVALID",
+      "fail_closed": true
+    },
+    {
+      "group": "authorization",
+      "name": "signature for wrong destination",
+      "observed": "AUTHORIZATION_INVALID",
+      "fail_closed": true
+    },
+    {
+      "group": "authorization",
+      "name": "broadened capability request",
+      "observed": "AUTHORIZATION_INVALID",
+      "fail_closed": true
+    },
+    {
+      "group": "authorization",
+      "name": "duplicate nonce",
+      "observed": "AUTHORIZATION_INVALID",
+      "fail_closed": true
+    },
+    {
+      "group": "authorization",
+      "name": "execution env self-authorizes",
+      "observed": "AUTHORIZATION_INVALID",
+      "fail_closed": true
+    },
+    {
+      "group": "authorization",
+      "name": "hardware supervisor key mismatch (unhealthy)",
+      "observed": "SUPERVISOR_UNAVAILABLE",
+      "fail_closed": true
+    },
+    {
+      "group": "monitoring",
+      "name": "sensor killed",
+      "observed": "UNKNOWN",
+      "fail_closed": true
+    },
+    {
+      "group": "monitoring",
+      "name": "evidence stream interrupted",
+      "observed": "EVIDENCE_INCOMPLETE",
+      "fail_closed": true
+    },
+    {
+      "group": "monitoring",
+      "name": "two sensors disagree (relay mismatch)",
+      "observed": "HARDWARE_STATE_MISMATCH",
+      "fail_closed": true
+    },
+    {
+      "group": "monitoring",
+      "name": "recorder bidirectional drift",
+      "observed": "MONITORING_LOST",
+      "fail_closed": true
+    },
+    {
+      "group": "monitoring",
+      "name": "supervisor restarts (watchdog inactive)",
+      "observed": "SUPERVISOR_UNAVAILABLE",
+      "fail_closed": true
+    },
+    {
+      "group": "stop",
+      "name": "power cut requested but current remains",
+      "observed": "HARDWARE_STATE_MISMATCH",
+      "fail_closed": true
+    },
+    {
+      "group": "stop",
+      "name": "power state unknown (no measurement)",
+      "observed": "UNKNOWN",
+      "fail_closed": true
+    },
+    {
+      "group": "claim",
+      "name": "missing relay evidence never passes",
+      "observed": "UNKNOWN",
+      "fail_closed": true
+    },
+    {
+      "group": "claim",
+      "name": "unknown radio state → no isolation claim",
+      "observed": "UNKNOWN",
+      "fail_closed": true
+    },
+    {
+      "group": "claim",
+      "name": "one path test does not imply all blocked",
+      "observed": "HOLD_LEVEL_NOT_SUPPORTED",
+      "fail_closed": true
+    },
+    {
+      "group": "claim",
+      "name": "measured boot ⇒ vulnerability-free? (must be false)",
+      "observed": "NOT_PASSED",
+      "fail_closed": true
+    },
+    {
+      "group": "claim",
+      "name": "hardware-assisted labeled physically severed",
+      "observed": "HOLD_LEVEL_NOT_SUPPORTED",
+      "fail_closed": true
+    },
+    {
+      "group": "claim",
+      "name": "Level1 claims hardware-assisted",
+      "observed": "HOLD_LEVEL_NOT_SUPPORTED",
+      "fail_closed": true
+    }
+  ]
+}

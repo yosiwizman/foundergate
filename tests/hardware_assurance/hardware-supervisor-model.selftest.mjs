@@ -1,0 +1,10 @@
+import { makeSupervisorState, validateSupervisor, PROHIBITED } from '../../src/hardware_assurance/hardware-supervisor-model.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+ok(validateSupervisor(makeSupervisorState({}),{}).valid===true,'healthy supervisor OK');
+ok(validateSupervisor(makeSupervisorState({supervisor_health:'DEGRADED'})).status==='SUPERVISOR_UNAVAILABLE','unhealthy → SUPERVISOR_UNAVAILABLE (unknown-state refusal)');
+ok(validateSupervisor(makeSupervisorState({}),{flags:['unrestricted_master_unlock']}).status==='AUTHORIZATION_INVALID','prohibits unrestricted master unlock');
+ok(validateSupervisor(makeSupervisorState({}),{authorization_source:'usb_insertion_only'}).status==='AUTHORIZATION_INVALID','USB insertion alone is not authorization');
+ok(validateSupervisor(makeSupervisorState({}),{safety_depends_on_execution_vm:true}).status==='AUTHORIZATION_INVALID','safety must not depend on execution VM');
+ok(PROHIBITED.includes('private_key_export')&&PROHIBITED.includes('reusable_bearer_token'),'prohibits key export + bearer token');
+ok(makeSupervisorState({}).signing_key_placeholder.includes('never exportable'),'signing key is placeholder, never exportable');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);
