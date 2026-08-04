@@ -1,0 +1,76 @@
+{
+  "macro_id": "harvest_autonomous_macro_operation_20260803T2125ET",
+  "lanes": [
+    {
+      "id": "W1",
+      "name": "P3 Security & Trust Pack",
+      "verdict": "P3_SECURITY_TRUST_READY_WITH_LIMITS",
+      "proofs": 11,
+      "coverage": {
+        "total": 20,
+        "implemented": 20
+      }
+    },
+    {
+      "id": "W2",
+      "name": "Persistent Evidence Plane / Replay",
+      "verdict": "PERSISTENT_EVIDENCE_PLANE_READY_WITH_LIMITS",
+      "proofs": 6
+    },
+    {
+      "id": "W3",
+      "name": "Runtime Observability / Operational Ledger",
+      "verdict": "RUNTIME_OBSERVABILITY_READY_WITH_LIMITS",
+      "proofs": 6
+    },
+    {
+      "id": "W4",
+      "name": "Continuous Evaluation Suite",
+      "verdict": "CONTINUOUS_EVALUATION_READY_WITH_LIMITS",
+      "proofs": 7,
+      "coverage": {
+        "total": 14,
+        "implemented": 12,
+        "schema_only": 2
+      }
+    },
+    {
+      "id": "W5",
+      "name": "Context / Memory / Retrieval Governance",
+      "verdict": "CONTEXT_MEMORY_RETRIEVAL_READY_WITH_LIMITS",
+      "proofs": 15
+    },
+    {
+      "id": "W6",
+      "name": "Platform Extensibility / Adapter Frameworks",
+      "verdict": "PLATFORM_EXTENSIBILITY_READY_WITH_LIMITS",
+      "proofs": 7,
+      "coverage": {
+        "frameworks": 7,
+        "libraries": 5
+      }
+    },
+    {
+      "id": "W7",
+      "name": "Commercial Evidence Packaging (docs only)",
+      "verdict": "COMMERCIAL_EVIDENCE_PACKAGING_READY_WITH_LIMITS",
+      "proofs": 0
+    },
+    {
+      "id": "W8",
+      "name": "Local End-to-End Journey Proof",
+      "verdict": "LOCAL_E2E_JOURNEY_READY_WITH_LIMITS",
+      "proofs": 0
+    }
+  ],
+  "smoke": {
+    "W1": true,
+    "W2": true,
+    "W3": true,
+    "W4": true,
+    "W5": true,
+    "W6": true
+  },
+  "smoke_all_fail_closed": true,
+  "aggregate_status": "HARVEST_AUTONOMOUS_MACRO_READY_WITH_LIMITS"
+}

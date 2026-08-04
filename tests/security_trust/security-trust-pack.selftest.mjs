@@ -1,0 +1,14 @@
+import * as S from '../../src/security_trust/security-trust-pack.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+ok(S.RECORD_TYPES.length===20&&S.packCoverage().implemented===20,'20 record types implemented');
+ok(S.sbom({}).status==='HOLD_MISSING_SBOM','missing SBOM cannot pass');
+ok(S.license({license:'UNKNOWN'}).status==='HOLD_UNKNOWN_LICENSE','unknown license cannot pass');
+ok(S.secretDetection({}).status==='HOLD_NO_SECRET_SCAN'&&S.secretDetection({scanned:true,findings:['k']}).status==='HOLD_SECRETS_FOUND','missing secret detection / secrets found cannot pass');
+ok(S.trustedBinary({expected_hash:'a',observed_hash:'b'}).status==='HOLD_UNTRUSTED_BINARY','untrusted binary cannot pass');
+ok(S.hostileRepo({trusted:true}).status==='HELD_UNTRUSTED'&&S.hostileRepo({trusted:true,attestation:'x'}).trusted===true,'hostile repo cannot pass as trusted without attestation');
+ok(S.patchReview({validated:false}).status==='HOLD_PATCH_NOT_VALIDATED','patch accepted without validation cannot pass');
+ok(S.artifactIntegrity({declared_hash:'a',observed_hash:'b'}).status==='HOLD_ARTIFACT_HASH_MISMATCH','artifact hash mismatch cannot pass');
+ok(S.outputIntegrity({}).status==='HOLD_MISSING_OUTPUT_INTEGRITY','output integrity missing cannot pass');
+ok(S.findingLifecycle({acceptance:{},}).status==='HOLD_ACCEPTED_WITHOUT_VALIDATION','finding accepted without validation cannot pass');
+ok(S.sbom({components:[]}).status==='PRESENT'&&S.license({license:'MIT'}).status==='OK'&&S.secretDetection({scanned:true}).status==='OK','valid inputs pass');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

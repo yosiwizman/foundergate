@@ -1,0 +1,10 @@
+import * as E from '../../src/evaluation_suite/continuous-evaluation-suite.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+ok(E.benchmark({}).status==='HOLD_UNVERSIONED_BENCHMARK','benchmark with no version cannot pass');
+ok(E.goldenSet({in_training:true}).status==='HOLD_LEAKED_GOLDEN_SET','leaked golden set cannot pass');
+ok(E.regressionDetection({current_score:1,baseline_score:2}).status==='HOLD_REGRESSION_IGNORED','regression ignored cannot pass');
+ok(E.hallucination({}).status==='HOLD_HALLUCINATION_UNSCORED','hallucination unscored cannot pass');
+ok(E.providerComparison({}).status==='PLANNED_WITH_SCHEMA'&&E.providerComparison({}).real_provider_evidence===false,'provider comparison without real provider = planned/schema');
+ok(E.driftDetection({}).status==='HOLD_DRIFT_UNKNOWN','drift unknown cannot pass as stable');
+ok(E.benchmark({version:'v1'}).status==='OK'&&E.driftDetection({drift_state:'stable'}).status==='STABLE','valid inputs pass');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

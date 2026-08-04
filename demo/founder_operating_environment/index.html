@@ -77,6 +77,7 @@
       <button class="nav"    data-panel="coreip"   data-testid="nav-coreip">🧬 Core IP / Assumption <span class="tag">P0 local</span></button>
       <button class="nav"    data-panel="boundary" data-testid="nav-boundary">🛰️ Boundary Assurance <span class="tag">flight recorder</span></button>
       <button class="nav"    data-panel="physical" data-testid="nav-physical">🔌 Physical Containment <span class="tag">model only</span></button>
+      <button class="nav"    data-panel="harvest"  data-testid="nav-harvest">🌾 Harvest Macro Operation <span class="tag">local batch</span></button>
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
@@ -375,6 +376,25 @@
           <tbody id="provider-repo-body" data-testid="provider-repo-body"><tr><td colspan="5" style="color:var(--dim)">—</td></tr></tbody></table>
         <p class="honesty" data-testid="provider-note">A provider that CLAIMS success without real files, with the wrong preview, without tests, or that asks for network/keys/deploy/private-repo is HELD/REFUSED — never PASS. Real OpenAI/Codex/Hermes activation and private-repo access each require a separate founder gate.</p>
         <div class="clsrow"><span>Summary</span><span id="provider-summary" data-testid="provider-summary" class="pill">—</span></div>
+        <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
+      </div>
+    </section>
+
+    <!-- ===== HARVEST MACRO OPERATION (local batch summary) ===== -->
+    <section class="panel" id="panel-harvest" role="region" aria-label="Harvest Macro Operation" data-testid="panel-harvest">
+      <div class="eyebrow">HARVEST MACRO OPERATION — LOCAL SYNTHETIC · durable Terminal-0 supervised batch · 8 wide-safe lanes · writer leases · rolling integration · independent Checker + separate Gate Advisor · witness ZIPs</div>
+      <div class="head"><div><h1>Harvest Macro Operation</h1><div class="sub">A durable local batch that built and reviewed eight wide-safe FounderGate layers end-to-end. Local synthetic only — no protected action, no provider, no deploy. Never SHIP.</div></div></div>
+      <div class="card">
+        <div class="fg-labels" id="harvest-labels" data-testid="harvest-labels"></div>
+        <div class="actions"><button id="harvest-load-btn" class="btn primary" data-testid="harvest-load-btn">Load Harvest status</button></div>
+        <div class="clsrow"><span>Aggregate status</span><span id="harvest-status" data-testid="harvest-status" class="pill">—</span></div>
+        <div class="clsrow"><span>Lanes completed / active / parked</span><span id="harvest-counts" data-testid="harvest-counts" class="pill">—</span></div>
+        <table class="tbl"><thead><tr><th>Lane</th><th>Layer</th><th>Verdict</th><th>State</th></tr></thead>
+          <tbody id="harvest-body" data-testid="harvest-body"><tr><td colspan="4" style="color:var(--dim)">Click &ldquo;Load Harvest status&rdquo;.</td></tr></tbody></table>
+        <div class="clsrow"><span>Witness ZIPs</span><span id="harvest-zips" data-testid="harvest-zips" class="pill">—</span></div>
+        <div class="clsrow"><span>Next true founder gate</span><span id="harvest-gate" data-testid="harvest-gate" class="pill">—</span></div>
+        <p class="honesty" data-testid="harvest-note">Every lane is local synthetic with limits — hostile/negative cases fail closed, no false green. No protected action occurred: real provider, private repo, Gate 8, real hardware, deploy, bill, merge, and external network all stayed blocked. If a data source is unavailable this panel shows UNKNOWN, never invented state.</p>
+        <div class="clsrow"><span>Blocked gates</span><span id="harvest-blocked" data-testid="harvest-blocked" class="pill refuse">—</span></div>
         <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
       </div>
     </section>

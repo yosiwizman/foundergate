@@ -1,0 +1,10 @@
+import * as P from '../../src/platform_extensibility/platform-extensibility.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+ok(P.adapter({}).status==='HOLD_NO_CAPABILITY_CONTRACT','adapter without capability contract cannot pass');
+ok(P.scannerAdapter({}).status==='HOLD_NO_OUTPUT_SCHEMA','scanner adapter without output schema cannot pass');
+ok(P.mcpAdapter({}).status==='HOLD_NO_AUTHORITY_CLASSIFICATION','MCP adapter without authority classification cannot pass');
+ok(P.pluginGovernance({}).status==='HOLD_PLUGIN_UNVALIDATED','plugin without validation cannot pass');
+ok(P.customerProfile({claims_customer_ready:true}).status==='HOLD_NO_CUSTOMER_READINESS_WITHOUT_EVIDENCE','customer profile cannot claim readiness without evidence');
+ok(P.industryProfile({claims_compliance:true}).status==='HOLD_CANNOT_CLAIM_COMPLIANCE','industry profile cannot claim compliance certification');
+ok(P.adapter({capability_contract:{}}).status==='OK'&&P.FRAMEWORKS.length===7,'valid adapter passes; 7 frameworks');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

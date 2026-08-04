@@ -428,6 +428,27 @@ async function doProvider(){
   }catch(e){ $('provider-body').innerHTML='<tr><td colspan="7">UNKNOWN — could not load provider index (no green).</td></tr>'; }
 }
 
+// ---- Harvest Macro Operation (loads harvest_index.json; local batch summary; never invents state) ----
+async function doHarvest(){
+  if($('harvest-body')) $('harvest-body').innerHTML = '<tr><td colspan="4">Loading…</td></tr>';
+  try{
+    const r = await fetch('assets/harvest/harvest_index.json', {cache:'no-store'});
+    if(!r.ok) throw new Error('harvest_index '+r.status);
+    const d = await r.json();
+    if($('harvest-labels')) $('harvest-labels').innerHTML = (d.labels||[]).map(l=>`<span class="lbl">${esc(l)}</span>`).join(' ');
+    setPill($('harvest-status'), esc(d.aggregate_status||'UNKNOWN'), /READY_WITH_LIMITS/.test(d.aggregate_status)?'live':'hold');
+    setPill($('harvest-counts'), `${d.lanes_completed||0} completed · ${d.lanes_active||0} active · ${d.lanes_parked||0} parked`, (d.lanes_parked>0)?'hold':'live');
+    if($('harvest-body')) $('harvest-body').innerHTML = (d.lanes||[]).map(l=>
+      `<tr data-lane="${esc(l.id)}"><td class="muted" style="font-size:11px">${esc(l.id)}</td><td>${esc(l.name)}</td>`+
+      `<td><span class="pill ${/READY_WITH_LIMITS/.test(l.verdict)?'live':(/PARTIAL/.test(l.verdict)?'hold':'refuse')}">${esc(l.verdict)}</span></td>`+
+      `<td><span class="pill">${esc(l.state)}</span></td></tr>`).join('') || '<tr><td colspan="4" class="muted">UNKNOWN — no lane data.</td></tr>';
+    setPill($('harvest-zips'), `${(d.witness_zips||[]).length} witness ZIPs + 1 aggregate`, 'live');
+    setPill($('harvest-gate'), esc(d.next_true_founder_gate||'—'), 'hold');
+    const b=d.blocked||{};
+    setPill($('harvest-blocked'), `real provider ${b.real_provider||'BLOCKED'} · private repo ${b.private_repo||'BLOCKED'} · Gate 8 ${b.gate_8||'BLOCKED'} · real hardware ${b.real_hardware||'BLOCKED'} · external network ${b.external_network||'BLOCKED'}`, 'refuse');
+  }catch(e){ if($('harvest-body')) $('harvest-body').innerHTML='<tr><td colspan="4">UNKNOWN — could not load harvest index (no invented state).</td></tr>'; if($('harvest-status')) setPill($('harvest-status'),'UNKNOWN / NOT AVAILABLE','hold'); }
+}
+
 // ---- P0.3 Physical Containment Assurance (loads physical_index.json; local synthetic model; levels never equal) ----
 async function doPhysical(){
   if($('physical-paths')) $('physical-paths').innerHTML = '<tr><td colspan="2">Loading…</td></tr>';
@@ -813,6 +834,8 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('boundary-load-btn')?.addEventListener('click', doBoundary);
   // P0.3 Physical Containment Assurance panel
   $('physical-load-btn')?.addEventListener('click', doPhysical);
+  // Harvest Macro Operation panel
+  $('harvest-load-btn')?.addEventListener('click', doHarvest);
   // Founder Drive Mode + Reviewer Readiness
   $('drive-refresh-btn')?.addEventListener('click', doDrive);
   $('drive-reviewer-btn')?.addEventListener('click', ()=>{ showPanel('reviewer'); doReviewer(); });

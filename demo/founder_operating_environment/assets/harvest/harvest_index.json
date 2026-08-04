@@ -1,0 +1,96 @@
+{
+  "kind": "HARVEST_MACRO",
+  "macro_id": "harvest_autonomous_macro_operation_20260803T2125ET",
+  "aggregate_status": "HARVEST_AUTONOMOUS_MACRO_READY_WITH_LIMITS",
+  "lanes": [
+    {
+      "id": "W1",
+      "name": "P3 Security & Trust Pack",
+      "verdict": "P3_SECURITY_TRUST_READY_WITH_LIMITS",
+      "state": "INTEGRATED",
+      "proofs": 11
+    },
+    {
+      "id": "W2",
+      "name": "Persistent Evidence Plane / Replay",
+      "verdict": "PERSISTENT_EVIDENCE_PLANE_READY_WITH_LIMITS",
+      "state": "INTEGRATED",
+      "proofs": 6
+    },
+    {
+      "id": "W3",
+      "name": "Runtime Observability / Operational Ledger",
+      "verdict": "RUNTIME_OBSERVABILITY_READY_WITH_LIMITS",
+      "state": "INTEGRATED",
+      "proofs": 6
+    },
+    {
+      "id": "W4",
+      "name": "Continuous Evaluation Suite",
+      "verdict": "CONTINUOUS_EVALUATION_READY_WITH_LIMITS",
+      "state": "INTEGRATED",
+      "proofs": 7
+    },
+    {
+      "id": "W5",
+      "name": "Context / Memory / Retrieval Governance",
+      "verdict": "CONTEXT_MEMORY_RETRIEVAL_READY_WITH_LIMITS",
+      "state": "INTEGRATED",
+      "proofs": 15
+    },
+    {
+      "id": "W6",
+      "name": "Platform Extensibility / Adapter Frameworks",
+      "verdict": "PLATFORM_EXTENSIBILITY_READY_WITH_LIMITS",
+      "state": "INTEGRATED",
+      "proofs": 7
+    },
+    {
+      "id": "W7",
+      "name": "Commercial Evidence Packaging (docs only)",
+      "verdict": "COMMERCIAL_EVIDENCE_PACKAGING_READY_WITH_LIMITS",
+      "state": "INTEGRATED",
+      "proofs": 0
+    },
+    {
+      "id": "W8",
+      "name": "Local End-to-End Journey Proof",
+      "verdict": "LOCAL_E2E_JOURNEY_READY_WITH_LIMITS",
+      "state": "INTEGRATED",
+      "proofs": 0
+    }
+  ],
+  "lanes_completed": 8,
+  "lanes_active": 0,
+  "lanes_parked": 0,
+  "smoke_all_fail_closed": true,
+  "witness_zips": [
+    "FounderGate_Witness_01_P3_SecurityTrust.zip",
+    "FounderGate_Witness_02_PersistentEvidencePlane.zip",
+    "FounderGate_Witness_03_RuntimeObservability.zip",
+    "FounderGate_Witness_04_ContinuousEvaluation.zip",
+    "FounderGate_Witness_05_ContextMemoryRetrieval.zip",
+    "FounderGate_Witness_06_PlatformExtensibility.zip",
+    "FounderGate_Witness_07_CommercialEvidencePackaging.zip",
+    "FounderGate_Witness_08_LocalE2EJourney.zip"
+  ],
+  "next_true_founder_gate": "one real provider adapter proof (budget-capped, per-call approval) — NOT authorized here",
+  "blocked": {
+    "real_provider": "BLOCKED",
+    "private_repo": "BLOCKED",
+    "gate_8": "BLOCKED",
+    "real_hardware": "BLOCKED",
+    "deploy": "BLOCKED",
+    "bill": "BLOCKED",
+    "merge": "BLOCKED",
+    "external_network": "BLOCKED"
+  },
+  "recommendation": "Adopt local layers with limits; paste PK V7; choose next founder gate.",
+  "labels": [
+    "LOCAL_SYNTHETIC_ONLY",
+    "durable Terminal-0 macro-operation",
+    "8 wide-safe lanes ready with limits",
+    "no protected action",
+    "NEVER SHIP"
+  ]
+}

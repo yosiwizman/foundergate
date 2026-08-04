@@ -1,0 +1,13 @@
+import * as L from '../../src/evidence_plane/persistent-evidence-ledger.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+const l=L.newLedger('t');L.append(l,'a','1','producer');L.append(l,'b','2','verifier');L.append(l,'c','3','producer');
+ok(L.verifyContinuity(l).status==='CONTINUOUS','intact chain continuous');
+const l2=L.newLedger('t');L.append(l2,'a','1','producer');L.append(l2,'b','2','verifier');L.deleteEvent(l2,0);
+ok(L.verifyContinuity(l2).status==='CHAIN_BROKEN','deleted event breaks chain');
+const l3=L.newLedger('t');L.append(l3,'a','1','producer');L.append(l3,'b','2','verifier');L.append(l3,'c','3','producer');L.reorderEvents(l3,0,2);
+ok(L.verifyContinuity(l3).status==='CHAIN_BROKEN','reordered event breaks chain');
+ok(L.classifyCompleteness(l3,{stale:true})==='PARTIAL','stale checkpoint detected');
+const lp=L.newLedger('t');L.append(lp,'a','1','producer');
+ok(L.producerVerifier(lp).status==='HOLD_PRODUCER_ONLY'&&L.classifyCompleteness(lp)==='INCOMPLETE','producer-only cannot pass / missing verifier detected');
+ok(L.replayFromState(l).uses_ai_reasoning===false&&L.replayFromState(l).matches_ledger===true,'replay uses state only, not AI reasoning');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

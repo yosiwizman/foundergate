@@ -1,0 +1,12 @@
+import * as O from '../../src/runtime_observability/runtime-observability.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+const r=O.newRun('x');
+ok(O.operationalLedger(r).status==='HOLD_MISSING_REQUEST_TRACE','missing request trace cannot pass');
+O.trace(r,'request','req');
+ok(O.operationalLedger(r).status==='HOLD_MISSING_DECISION_TIMELINE','missing decision timeline cannot pass');
+O.decision(r,'d1','ev');
+ok(O.operationalLedger(r).status==='OK','with request+decision → OK');
+ok(O.classify({message:'weird'}).classification==='UNKNOWN'&&O.classify({message:'weird'}).first_class_unknown===true,'unknown state first-class, not converted to pass');
+ok(O.reportComplete({partial:true}).status==='HOLD_PARTIAL_REPORTED_COMPLETE','partial cannot be reported complete');
+ok(O.retryRecord({}).status==='HOLD_RETRY_UNCLASSIFIED'&&O.retryRecord({classification:'TIMEOUT'}).status==='OK','retry without classification cannot pass');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);
