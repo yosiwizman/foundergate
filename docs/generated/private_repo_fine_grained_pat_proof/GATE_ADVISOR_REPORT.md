@@ -1,33 +1,33 @@
-# Independent Gate Advisor Report — Fine-Grained PAT Read-Only Sandbox Proof
+# Independent Gate Advisor Report — Fine-Grained PAT Rerun (scope hold)
 
 **Binding**
 - Reviewer: independent read-only Gate Advisor (agent `a818b62b4d41b782c`, "Independent Terminal Advisor"), separate from the Checker.
-- Branch: `run/private-repo-fine-grained-pat-proof-20260804T0735ET`, head `f9b08ea`.
-- Posture: read-only; modified nothing, requested no token, made no provider call.
+- Branch: `run/private-repo-fine-grained-pat-proof-rerun-20260804T0745ET`, head `a7b9d19`.
+- Posture: read-only; modified nothing, exposed no token, made no provider call.
 
-**Verdict: TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED.**
+**Verdict: TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED** (a correctly-scoped sandbox-only PAT is still required; the gate remains honestly uncrossed).
 
 ---
 
-Fully verified. The Keychain-only loader is genuinely safe by design, all local tests pass live, no token exists or leaked, and the hold is principled.
+All confirmed. The sandbox repo genuinely exists and is private under broad auth — so the fine-grained PAT's 404 is a real token-scope gap, not a missing repo. No raw token anywhere in evidence, and the live-intake module has no print/disk/argv sink for the token.
 
-**Gate Advisor Adjudication — Fine-Grained PAT Read-Only Sandbox Proof**
-Head `f9b08ea` · read-only, separate from Checker. Remote `origin/main` = `65fd01669f80…` (unchanged); PR #200 OPEN, untouched; sandbox repo confirmed `.private = true` live.
+**Gate Advisor Adjudication — Fine-Grained PAT Rerun (token present, wrong scope)**
+Head `a7b9d19` · read-only, separate from Checker. `origin/main` = `65fd01669f80…` (unchanged); PR #200 OPEN, untouched.
 
-**1. Correctly a HELD gate, not false-green, not overclaim — YES.** Status `TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED`. Because the macOS Keychain held no safe fine-grained PAT (attributes-only lookup → exit 44), the run declined to assert intake: `token_present:false`, `intake_occurred:false`, `intake_auth_route:none`. It did **not fabricate** downstream evidence — `exact_commit`, `manifest_digest`, `snapshot_digest`, `file_count`, `held_fake_secret_files` all `null`, with an explicit `not_asserted` note. It still built and green-tested the full local path (I ran replay 5/5 and readiness 9/9 live; write-refusal 30/30 `all_held`). Textbook correct hold.
+**1. Is HOLD the correct, safe call — YES, unambiguously.** The token fails on both axes this gate cares about: **404 on the sandbox** (I verified the repo genuinely exists and is private under broad auth, so the 404 is a real token-scope gap — the PAT is not granted the sandbox) **and** its `/user/repos` surface is **100+ repos across multiple owners** (broad/ambiguous). Proceeding would be wrong twice: it could not achieve the intended sandbox intake, and using a broad token would prove "intake with a broad credential" — the opposite of the least-privilege single-repo read-only proof this gate exists to establish. Refusing intake is precisely correct.
 
-**2. Stayed inside founder authorization — YES.** Did **not** ask the founder to paste a token; checked existence attributes-only and held. No live intake, no boundary crossed.
+**2. Hold honest, free of false-green/overclaim — YES.** Label `HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS`; `intake_occurred:false`; all downstream evidence null with an explicit `not_asserted` note. CLAIMS forbids and does not assert "actual-sandbox-intake-proven" or "narrow-single-repo-scope-verified." No fabrication.
 
-**3. Any token exposed — NO.** `token_value_seen_by_log/token_printed/token_packaged` all false; no token existed; scan of the evidence dir for `github_pat_/ghp_/gho_` returned nothing. I read the loader: existence check uses no value flag; the retrieval path passes the secret only to an in-memory callback, returns fingerprint metadata only, scrubs the reference in `finally`, and never returns/logs/packages the raw value (refuses malformed tokens without logging them) — safe even in the future token-present case.
+**3. Any token exposed / safe by design — NO exposure; YES safe.** Only a redacted fingerprint (`fgpat_46a4db8921b7ccdd`, a hash) appears; scan for a raw `github_pat_…` returned nothing. The live-intake module places the token only in the `Authorization` header of node:https GETs — never argv, disk, print, or return — carries no auth to the redirect-followed signed tarball URL, and is read-only by construction. Safe by design.
 
-**4. Existing/customer repos untouched; broad-auth/deploy-key intake avoided — YES.** All corresponding flags false. The PAT authority model refuses classic-PAT/broad-auth/deploy-key/write/org-wide/workflow (13/13), accepting only a repo-scoped read-only fine-grained PAT on the sandbox.
+**4. Stayed inside authorization — YES.** `no_nonsandbox_repo_contents_fetched:true`; the driver is hardcoded to the sandbox and bails on any non-200, so no non-sandbox contents were fetched (the `/user/repos` call is a metadata listing for breadth assessment, not a contents read). All existing/customer/broad-auth/deploy-key/provider/write flags false.
 
-**5. UI honest for a non-developer founder — YES.** Panel shows the "token needed" gate state and UNKNOWN when evidence is missing (headed proof 16/16, 8 screenshots), no forbidden labels; FINAL_STATUS gives plain founder instructions to advance the gate.
+**5. UI honest + blocked gates blocked — YES.** FINAL_STATUS shows the scope-hold plus exact remediation and honest mechanical observations; no forbidden labels. GitHub App, existing/customer repo, write/merge, provider, deploy, bill, Gate 8 all BLOCKED; PR #200 and protected `main` untouched.
 
-**6. Blocked gates still blocked — YES.** GitHub App, existing repo, customer repo, write/merge, provider, deploy, bill, Gate 8 all BLOCKED; no forbidden claim asserted; PR #200 and protected `main` untouched.
+**6. Founder remediation correct and sufficient — YES.** Recreate the fine-grained PAT restricted to ONLY the sandbox with **Contents: Read + Metadata: Read** (no other repo access, no write/workflow/org-wide), store under Keychain service `foundergate-github-fgpat-sandbox-readonly`, rerun. That is exactly the minimal correct scope.
 
-**7. Next recommended founder gate.** The founder creates a repo-scoped, read-only-Contents fine-grained PAT for the sandbox and stores it in macOS Keychain (service `foundergate-github-fgpat-sandbox-readonly`, account `yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET`). This same gate then proves actual read-only intake; FounderGate never sees the value.
+**7. Next recommended founder gate.** Re-run **this same gate** after the founder creates the correctly-scoped PAT and re-stores it in Keychain — then it proves actual verified-narrow read-only intake. FounderGate never sees the token value.
 
-No overclaim, no false-green, no token exposure, no required corrections. This run's discipline — completing the whole local path yet refusing to claim an intake it could not safely perform, and pointedly not asking the founder to paste a secret — is exactly the behavior the gate should exhibit.
+No overclaim, no false-green, no token exposure, no required corrections. A model safety outcome: presented with a real but wrongly-scoped credential, FounderGate refused intake, fetched nothing outside the sandbox, kept the token unexposed, and handed back a precise, minimal remediation.
 
 **GATE_ADVISOR_VERDICT: TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED**
