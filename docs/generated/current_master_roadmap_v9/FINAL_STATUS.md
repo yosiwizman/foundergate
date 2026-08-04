@@ -13,4 +13,4 @@
 - Codex / private repo / Gate 8 / real hardware / protected-main merge remain BLOCKED — each needs an explicit founder phrase.
 - Follow-up: re-seal/re-verify referenced ZIP SHAs at their current Desktop path before any external circulation.
 
-Final head: tip of run/current-master-roadmap-v9-provider-update-20260803T2310ET (git rev-parse HEAD).
+Final head: tip of run/current-master-roadmap-v9-provider-update-20260803T2310ET (git rev-parse HEAD). Sealing commit: 92037ff2f747.
