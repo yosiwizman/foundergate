@@ -80,6 +80,7 @@
       <button class="nav"    data-panel="harvest"  data-testid="nav-harvest">🌾 Harvest Macro Operation <span class="tag">local batch</span></button>
       <button class="nav"    data-panel="realgate" data-testid="nav-realgate">🔑 Real Provider Gate <span class="tag">1 real call</span></button>
       <button class="nav"    data-panel="privrepo" data-testid="nav-privrepo">🔐 Private Repo Read-Only Gate <span class="tag">readiness</span></button>
+      <button class="nav"    data-panel="sandbox"  data-testid="nav-sandbox">🗝️ Private Sandbox Proof <span class="tag">actual repo</span></button>
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
@@ -379,6 +380,31 @@
         <p class="honesty" data-testid="provider-note">A provider that CLAIMS success without real files, with the wrong preview, without tests, or that asks for network/keys/deploy/private-repo is HELD/REFUSED — never PASS. Real OpenAI/Codex/Hermes activation and private-repo access each require a separate founder gate.</p>
         <div class="clsrow"><span>Summary</span><span id="provider-summary" data-testid="provider-summary" class="pill">—</span></div>
         <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
+      </div>
+    </section>
+
+    <!-- ===== PRIVATE SANDBOX PROOF (actual founder-owned private repo, read-only) ===== -->
+    <section class="panel" id="panel-sandbox" role="region" aria-label="Private Repo Actual Sandbox Proof" data-testid="panel-sandbox">
+      <div class="eyebrow">PRIVATE REPO ACTUAL SANDBOX PROOF — one founder-owned PRIVATE GitHub sandbox repo · synthetic contents · read-only intake · NO existing/customer repo · NO code execution · NO provider call</div>
+      <div class="head"><div><h1>Private Repo Actual Sandbox Proof</h1><div class="sub">FounderGate created ONE founder-owned private GitHub sandbox repo (synthetic files only) and proved actual read-only intake against its exact commit. <b>No existing or customer repo was touched, no credential value was exposed, no code was executed, no provider was called. Support is not complete. Never SHIP.</b></div></div></div>
+      <div class="card">
+        <div class="fg-labels" id="sandbox-labels" data-testid="sandbox-labels"></div>
+        <div class="actions"><button id="sandbox-load-btn" class="btn primary" data-testid="sandbox-load-btn">Load Sandbox Proof</button></div>
+        <div class="clsrow"><span>Status</span><span id="sandbox-status" data-testid="sandbox-status" class="pill">—</span></div>
+        <div class="clsrow"><span>Repo (owner/repo) · private</span><span id="sandbox-repo" data-testid="sandbox-repo" class="pill">—</span></div>
+        <div class="clsrow"><span>Exact commit</span><span id="sandbox-commit" data-testid="sandbox-commit" class="pill">—</span></div>
+        <div class="clsrow"><span>Snapshot digest</span><span id="sandbox-snapshot" data-testid="sandbox-snapshot" class="pill">—</span></div>
+        <div class="clsrow"><span>Secret classifier</span><span id="sandbox-secrets" data-testid="sandbox-secrets" class="pill">—</span></div>
+        <div class="clsrow"><span>Write-attempt refusal</span><span id="sandbox-refusal" data-testid="sandbox-refusal" class="pill">—</span></div>
+        <div class="clsrow"><span>Evidence replay</span><span id="sandbox-evidence" data-testid="sandbox-evidence" class="pill">—</span></div>
+        <div class="clsrow"><span>Actual private repo accessed</span><span id="sandbox-accessed" data-testid="sandbox-accessed" class="pill">—</span></div>
+        <div class="clsrow"><span>Existing/customer repo touched · credential exposed · code exec · provider</span><span id="sandbox-safety" data-testid="sandbox-safety" class="pill">—</span></div>
+        <h2 style="font-size:14px;margin:12px 0 4px">What is proven / not proven</h2>
+        <div id="sandbox-proven" data-testid="sandbox-proven" class="muted" style="font-size:12px">—</div>
+        <p class="honesty" data-testid="sandbox-note">One founder-owned PRIVATE sandbox repo with synthetic files only. Actual read-only intake proven against the exact commit. No existing or customer repo was touched; no credential value was exposed; no code executed; no provider called. This used existing GitHub auth (broad scope) — NOT a least-privilege read-only token. This does NOT prove private-repo support complete or customer-repo access.</p>
+        <div class="clsrow"><span>Blocked gates</span><span id="sandbox-blocked" data-testid="sandbox-blocked" class="pill refuse">—</span></div>
+        <div class="clsrow"><span>Next founder decision</span><span id="sandbox-next" data-testid="sandbox-next" class="pill">—</span></div>
+        <div class="clsrow"><span>Decision</span><span class="pill">SANDBOX PROOF ONLY (never SHIP)</span></div>
       </div>
     </section>
 

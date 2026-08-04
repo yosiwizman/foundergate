@@ -1,0 +1,2 @@
+# Write-Attempt Refusal Matrix (W3)
+25 cases (push/commit/issue/comment/workflow-dispatch/branch/tag/settings/collaborator/webhook/secret/deploy-key/install/build/test/exec/provider/second-repo/non-sandbox-repo/broad-scan/public-visibility/deletion/permission-broadening/token-print/secrets-in-evidence). **Result: 25/25 REFUSED** (see WRITE_REFUSAL_RESULTS.json). Refusal is structural — the read-only proof path exposes NO write/mutate/execute/provider capability, so **no real write was ever attempted against GitHub**.

@@ -1,0 +1,105 @@
+{
+  "result": {
+    "status": "ACTUAL_PRIVATE_SANDBOX_REPO_PROOF_READY_WITH_LIMITS"
+  },
+  "evidence": {
+    "record_type": "actual_private_sandbox_evidence",
+    "run_id": "private_repo_actual_sandbox_proof_20260804T0105ET",
+    "label": "ACTUAL_PRIVATE_SANDBOX_REPO_ACCESS_PROVEN_WITH_EXISTING_GH_AUTH",
+    "repo": "yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET",
+    "owner": "yosiwizman",
+    "private": true,
+    "default_branch": "main",
+    "exact_commit": "fb54698d5cbba4b55ef5aac2b189615154efc76e",
+    "tree_sha": "3a357de35df943343db0fb0581eb3271b0cb70da",
+    "archive_digest": "arc_1f11bd3699451508eb04436e",
+    "manifest_digest": "man_484e5491a2ba60248805db34",
+    "file_count": 9,
+    "total_bytes": 1104,
+    "held_fake_secret_files": 5,
+    "redaction_summary": {
+      "personal_customer_data": 2,
+      "database_url": 2,
+      "api_key": 1,
+      "private_key": 1
+    },
+    "actual_private_repo_accessed": true,
+    "repo_is_founder_owned_sandbox": true,
+    "repo_created_this_run": true,
+    "existing_repo_touched": false,
+    "customer_repo_touched": false,
+    "credential_value_seen": false,
+    "code_execution": false,
+    "build_run": false,
+    "tests_run_from_repo": false,
+    "provider_call": false,
+    "write_during_read_proof": false,
+    "least_privilege_token_proven": false,
+    "token_scopes_note": "existing gh auth (gist,read:org,repo) — broad, NOT least-privilege",
+    "evidence_digest": "ase_3e33abef1c6233f3906848f8"
+  },
+  "secrets": {
+    "record_type": "secret_classification",
+    "held_count": 5,
+    "by_type": {
+      "personal_customer_data": 2,
+      "database_url": 2,
+      "api_key": 1,
+      "private_key": 1
+    },
+    "held": [
+      {
+        "path": "README.md",
+        "types": [
+          "personal_customer_data"
+        ],
+        "fingerprint": "sec_b33563055168"
+      },
+      {
+        "path": "fixtures/customer_like_fake_data.csv",
+        "types": [
+          "personal_customer_data"
+        ],
+        "fingerprint": "sec_badc3c72a02e"
+      },
+      {
+        "path": "fixtures/fake_database_url.example",
+        "types": [
+          "database_url"
+        ],
+        "fingerprint": "sec_aa64aa266491"
+      },
+      {
+        "path": "fixtures/fake_env.example",
+        "types": [
+          "api_key",
+          "database_url"
+        ],
+        "fingerprint": "sec_c127bcc8eb3a"
+      },
+      {
+        "path": "fixtures/fake_private_key.example",
+        "types": [
+          "private_key"
+        ],
+        "fingerprint": "sec_5622622f0d8c"
+      }
+    ],
+    "contents_never_sent_to_model": true,
+    "secrets_in_evidence": false,
+    "fail_closed": true,
+    "status": "HELD_SENSITIVE_FILES"
+  },
+  "snapshot": {
+    "commit": "fb54698d5cbba4b55ef5aac2b189615154efc76e",
+    "archive_digest": "arc_6ec9245789a4f3b7d8c84108",
+    "manifest_digest": "man_484e5491a2ba60248805db34",
+    "file_count": 9,
+    "total_bytes": 1104
+  },
+  "write_refusal": {
+    "total": 25,
+    "all_held": true
+  },
+  "replay": "REPLAY_VERIFIED"
+}

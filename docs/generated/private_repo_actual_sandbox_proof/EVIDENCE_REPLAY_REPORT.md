@@ -1,0 +1,2 @@
+# Evidence Replay Report (W4)
+The replay verifier reconstructs the result from sealed evidence ONLY (deterministic; uses_ai_reasoning=false). It confirms: repo identity (yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET) · exact commit (fb54698d5cbba4b55ef5aac2b189615154efc76e) · manifest digest · archive digest · fake-secret files held · no code execution · no write path · no provider call · result label ACTUAL_PRIVATE_SANDBOX_REPO_ACCESS_PROVEN_WITH_EXISTING_GH_AUTH. A tampered safety invariant → HOLD_REPLAY_MISMATCH. Status: **REPLAY_VERIFIED**.

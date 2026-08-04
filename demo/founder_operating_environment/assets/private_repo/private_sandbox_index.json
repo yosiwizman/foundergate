@@ -1,0 +1,69 @@
+{
+  "kind": "PRIVATE_SANDBOX_PROOF",
+  "status": "ACTUAL_PRIVATE_SANDBOX_REPO_PROOF_READY_WITH_LIMITS",
+  "label": "ACTUAL_PRIVATE_SANDBOX_REPO_ACCESS_PROVEN_WITH_EXISTING_GH_AUTH",
+  "repo": "yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET",
+  "url": "https://github.com/yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET",
+  "private": true,
+  "exact_commit": "fb54698d5cbba4b55ef5aac2b189615154efc76e",
+  "snapshot_digest": "arc_6ec9245789a4f3b7d8c84108",
+  "manifest_digest": "man_484e5491a2ba60248805db34",
+  "secret_classifier": {
+    "status": "HELD_SENSITIVE_FILES",
+    "held": 5,
+    "by_type": {
+      "personal_customer_data": 2,
+      "database_url": 2,
+      "api_key": 1,
+      "private_key": 1
+    }
+  },
+  "write_refusal": {
+    "total": 25,
+    "all_held": true
+  },
+  "evidence_status": "REPLAY_VERIFIED",
+  "actual_private_repo_accessed": true,
+  "existing_valuable_repo_touched": false,
+  "customer_repo_touched": false,
+  "credential_value_exposed": false,
+  "code_execution": false,
+  "provider_call": false,
+  "proven": [
+    "founder-owned private sandbox repo created",
+    "actual read-only intake (metadata+commit+archive)",
+    "exact commit/snapshot binding",
+    "fake-secret classification held",
+    "25/25 write-attempt refusals",
+    "evidence replay"
+  ],
+  "not_proven": [
+    "customer/existing private repo support",
+    "private repo support complete",
+    "least-privilege read-only token",
+    "production/SaaS/commercial/security readiness"
+  ],
+  "blocked": {
+    "existing_repo": "BLOCKED",
+    "customer_repo": "BLOCKED",
+    "code_execution": "BLOCKED",
+    "write_merge": "BLOCKED",
+    "provider_call": "BLOCKED",
+    "gate_8": "BLOCKED",
+    "deploy": "BLOCKED",
+    "bill": "BLOCKED",
+    "pr_200": "UNTOUCHED",
+    "protected_main": "UNTOUCHED"
+  },
+  "next_founder_gate": "customer / existing private production repo read-only access (separate founder gate)",
+  "labels": [
+    "ACTUAL private founder-owned SANDBOX repo only",
+    "synthetic contents only",
+    "existing GH auth (broad, NOT least-privilege)",
+    "NO existing/customer repo touched",
+    "NO code executed",
+    "NO provider call",
+    "support NOT complete",
+    "NEVER SHIP"
+  ]
+}

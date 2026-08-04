@@ -1,0 +1,10 @@
+import { runReadOnlyIntake } from '../../../src/repo_intake/private_repo_actual_sandbox/private_repo_actual_sandbox_runner.mjs';
+import { replay } from '../../../src/repo_intake/private_repo_actual_sandbox/private_repo_actual_sandbox_replay.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+const r=runReadOnlyIntake({repo:'yosiwizman/x',private:true,commit:'fb54698d5cbb',archive_digest:'d',files:[{path:'README.md',bytes:10,sample:'x'}]});
+const rep=replay(r.evidence);
+ok(rep.status==='REPLAY_VERIFIED' && rep.uses_ai_reasoning===false && rep.digest_matches===true,'replay verified from sealed evidence (no AI reasoning)');
+ok(rep.repo==='yosiwizman/x' && rep.exact_commit==='fb54698d5cbb','replay reconstructs repo identity + exact commit');
+ok(replay({record_type:'x'}).status==='HOLD_NO_EVIDENCE','no evidence → HOLD');
+ok(replay({...r.evidence,existing_repo_touched:true}).status==='HOLD_REPLAY_MISMATCH','tampered invariant → HOLD_REPLAY_MISMATCH');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

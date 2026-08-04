@@ -1,0 +1,158 @@
+{
+  "record_type": "write_refusal_matrix",
+  "total": 25,
+  "all_held": true,
+  "no_real_write_attempted": true,
+  "cases": [
+    {
+      "n": "1 push",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "2 commit",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "3 create_issue",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "4 issue_comment",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "5 workflow_dispatch",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "6 branch_create",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "7 tag_create",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "8 repo_settings_mutate",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "9 collaborator_mutate",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "10 webhook_create",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "11 secret_create",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "12 deploy_key_create",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "13 package_install",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "14 repo_build",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "15 repo_test",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "16 script_execution",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "17 provider_model_call",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "18 second_repo_access",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "19 non_sandbox_repo_access",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "20 broad_repo_scan",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "21 public_visibility_change",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "22 repo_deletion",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "23 permission_broadening",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "24 token_printing",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    },
+    {
+      "n": "25 evidence_packaging_with_secrets",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_write": true
+    }
+  ]
+}

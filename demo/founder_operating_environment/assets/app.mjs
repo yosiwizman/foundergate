@@ -428,6 +428,32 @@ async function doProvider(){
   }catch(e){ $('provider-body').innerHTML='<tr><td colspan="7">UNKNOWN — could not load provider index (no green).</td></tr>'; }
 }
 
+// ---- Private Repo Actual Sandbox Proof (loads private_sandbox_index.json; actual founder-owned private repo, read-only) ----
+async function doSandbox(){
+  if($('sandbox-proven')) $('sandbox-proven').textContent = 'Loading…';
+  try{
+    const r = await fetch('assets/private_repo/private_sandbox_index.json', {cache:'no-store'});
+    if(!r.ok) throw new Error('private_sandbox_index '+r.status);
+    const d = await r.json();
+    if($('sandbox-labels')) $('sandbox-labels').innerHTML = (d.labels||[]).map(l=>`<span class="lbl">${esc(l)}</span>`).join(' ');
+    setPill($('sandbox-status'), esc(d.status||'UNKNOWN'), /READY_WITH_LIMITS/.test(d.status)?'live':'hold');
+    setPill($('sandbox-repo'), `${esc(d.repo||'—')} · private: ${d.private?'YES':'NO'}`, d.private?'live':'refuse');
+    setPill($('sandbox-commit'), esc(d.exact_commit||'—'), 'live');
+    setPill($('sandbox-snapshot'), esc(d.snapshot_digest||'—'), 'live');
+    const sc=d.secret_classifier||{};
+    setPill($('sandbox-secrets'), `${esc(sc.status||'—')} · ${sc.held||0} held`, sc.held>0?'hold':'live');
+    const wr=d.write_refusal;
+    setPill($('sandbox-refusal'), wr?`${wr.total} cases · all held: ${wr.all_held?'YES':'NO'}`:'UNKNOWN', (wr&&wr.all_held)?'live':'refuse');
+    setPill($('sandbox-evidence'), esc(d.evidence_status||'UNKNOWN'), /VERIFIED/.test(d.evidence_status)?'live':'hold');
+    setPill($('sandbox-accessed'), d.actual_private_repo_accessed?'YES (founder-owned sandbox)':'NO', 'live');
+    setPill($('sandbox-safety'), `existing/customer repo: ${d.existing_valuable_repo_touched||d.customer_repo_touched?'⚠ YES':'NO'} · credential exposed: ${d.credential_value_exposed?'⚠ YES':'NO'} · code exec: ${d.code_execution?'⚠ YES':'NO'} · provider: ${d.provider_call?'⚠ YES':'NO'}`, (d.existing_valuable_repo_touched||d.customer_repo_touched||d.credential_value_exposed||d.code_execution||d.provider_call)?'refuse':'live');
+    if($('sandbox-proven')) $('sandbox-proven').innerHTML = `<b>Proven:</b> ${(d.proven||[]).map(esc).join(' · ')}<br><b>NOT proven:</b> ${(d.not_proven||[]).map(esc).join(' · ')}`;
+    const b=d.blocked||{};
+    setPill($('sandbox-blocked'), `existing repo ${b.existing_repo||'BLOCKED'} · customer repo ${b.customer_repo||'BLOCKED'} · code exec ${b.code_execution||'BLOCKED'} · write/merge ${b.write_merge||'BLOCKED'} · provider ${b.provider_call||'BLOCKED'} · PR#200 ${b.pr_200||'UNTOUCHED'}`, 'refuse');
+    setPill($('sandbox-next'), esc(d.next_founder_gate||'—'), 'hold');
+  }catch(e){ if($('sandbox-proven')) $('sandbox-proven').textContent='UNKNOWN — could not load sandbox proof index (no invented state).'; if($('sandbox-status')) setPill($('sandbox-status'),'UNKNOWN / NOT AVAILABLE','hold'); }
+}
+
 // ---- Private Repo Read-Only Gate (loads private_repo_index.json; readiness only; no real repo/credential) ----
 async function doPrivRepo(){
   if($('privrepo-proven')) $('privrepo-proven').textContent = 'Loading…';
@@ -887,6 +913,8 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('realgate-load-btn')?.addEventListener('click', doRealGate);
   // Private Repo Read-Only Gate panel
   $('privrepo-load-btn')?.addEventListener('click', doPrivRepo);
+  // Private Repo Actual Sandbox Proof panel
+  $('sandbox-load-btn')?.addEventListener('click', doSandbox);
   // Founder Drive Mode + Reviewer Readiness
   $('drive-refresh-btn')?.addEventListener('click', doDrive);
   $('drive-reviewer-btn')?.addEventListener('click', ()=>{ showPanel('reviewer'); doReviewer(); });
