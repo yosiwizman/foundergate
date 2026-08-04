@@ -15,4 +15,4 @@
 ## Next step
 Outside review of this V2 family, then (separately) Terminal-0 disk reconciliation of the PX-CF/PX-CLR provisional entries against the authoritative registers, and founder resolution of the displayed conflicts (X-01..X-16). None authorized here.
 
-Final head: tip of run/enterprise-assurance-v2-docs-integration-20260804T0200ET (git rev-parse HEAD).
+Final head: tip of run/enterprise-assurance-v2-docs-integration-20260804T0200ET (git rev-parse HEAD). Sealing commit: 20e1bb580ae9.
