@@ -1,15 +1,16 @@
-# Checker Report — Real OpenAI Provider Gate (independent, read-only; no provider call made)
+# Checker Report — Overnight Real OpenAI Provider Gate (independent, read-only; no provider call made)
 | # | Check | Result |
 | --- | --- | --- |
-| 1 | Exactly ONE real call (call_count 1, http 200, gpt-5-nano, chat.completions, response_id present) | PASS |
-| 2 | Gate refuses 2nd call / non-openai / tools / files / private / source / non-synthetic (only other adapter is simulated hermes) | PASS |
-| 3 | Budget cap respected ($0.00035445 ≤ $0.25; WITHIN_CAP) | PASS |
+| 1 | Exactly ONE real call (call_count 1, http 200, gpt-5-nano, run_id overnight…2240ET) | PASS |
+| 2 | Gate refuses 2nd/other calls | PASS |
+| 3 | Budget cap respected ($0.00032885 ≤ $0.25) | PASS |
 | 4 | Credential not exposed (repo+evidence+preflight scan empty; only key_last4 KC8A + fingerprint; secret_scan clean) | PASS |
-| 5 | No private/customer/production/repo data (synthetic objective only) | PASS |
+| 5 | No private/customer/production/repo data (synthetic only) | PASS |
 | 6 | No deploy/bill/outreach/merge | PASS |
-| 7 | Response bound to request + run contract (input_fingerprint + run_contract_digest; bound_to_request/run true) | PASS |
-| 8 | Provider did NOT self-certify (VERIFIED_WITH_LIMITS, decided_by foundergate_verifier; acceptance-claim → UNEXPECTED) | PASS |
-| 9 | Pre-call suites offline ALL GREEN (24 proofs: redaction 5, cost_guard 6, adapter 13) — no real call triggered | PASS |
-| 10 | claim-blocker clean (8 files); honest limits; main 65fd01669f80; PR #200 OPEN/draft; 4 screenshots | PASS |
+| 7 | Bound to request + run (input_fingerprint + run_contract_digest; bound_to_request/run true) | PASS |
+| 8 | Provider did NOT self-certify (VERIFIED_WITH_LIMITS, decided_by foundergate_verifier) | PASS |
+| 9 | 4 offline pre-call suites ALL GREEN (redaction 5, cost_guard 6, response_verifier 5, adapter 13 = 29) | PASS |
+| 10 | Local replay matrix without real calls (all_pass true, no_real_call true, 10 cases; independently re-run) | PASS |
+| 11 | claim-blocker clean (15 files); secret scan clean; main 65fd01669f80; PR #200 OPEN/draft; 5 screenshots | PASS |
 
 **CHECKER_VERDICT: CLEAN_WITH_LIMITS**
