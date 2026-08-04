@@ -75,6 +75,7 @@
       <button class="nav"    data-panel="provider" data-testid="nav-provider">🔌 Provider / Repo Proof <span class="tag">simulated</span></button>
       <button class="nav"    data-panel="assurance" data-testid="nav-assurance">🛡️ Assurance Core <span class="tag">P1 local</span></button>
       <button class="nav"    data-panel="coreip"   data-testid="nav-coreip">🧬 Core IP / Assumption <span class="tag">P0 local</span></button>
+      <button class="nav"    data-panel="boundary" data-testid="nav-boundary">🛰️ Boundary Assurance <span class="tag">flight recorder</span></button>
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
@@ -373,6 +374,30 @@
           <tbody id="provider-repo-body" data-testid="provider-repo-body"><tr><td colspan="5" style="color:var(--dim)">—</td></tr></tbody></table>
         <p class="honesty" data-testid="provider-note">A provider that CLAIMS success without real files, with the wrong preview, without tests, or that asks for network/keys/deploy/private-repo is HELD/REFUSED — never PASS. Real OpenAI/Codex/Hermes activation and private-repo access each require a separate founder gate.</p>
         <div class="clsrow"><span>Summary</span><span id="provider-summary" data-testid="provider-summary" class="pill">—</span></div>
+        <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
+      </div>
+    </section>
+
+    <!-- ===== P0.2 BOUNDARY ASSURANCE / FLIGHT RECORDER (local synthetic) ===== -->
+    <section class="panel" id="panel-boundary" role="region" aria-label="Boundary Assurance / Flight Recorder" data-testid="panel-boundary">
+      <div class="eyebrow">P0.2 BOUNDARY ASSURANCE — LOCAL SYNTHETIC · always-on outer controller · run contract → attestation → challenge gauntlet → evidence plane → containment → post-run verification · the worker cannot override the controller</div>
+      <div class="head"><div><h1>Boundary Assurance / Flight Recorder</h1><div class="sub">FounderGate runs a local synthetic worker under a deterministic outer controller and records an independent flight recorder outside the worker. Controlled boundary failures are detected, stopped, and sealed. <b>Local synthetic only — NOT real sandbox security, NOT production isolation, NOT security certification. Never SHIP.</b></div></div></div>
+      <div class="card">
+        <div class="fg-labels" id="boundary-labels" data-testid="boundary-labels"></div>
+        <div class="actions"><button id="boundary-load-btn" class="btn primary" data-testid="boundary-load-btn">Load Boundary Assurance</button></div>
+
+        <h2 style="font-size:14px;margin:12px 0 4px">Environment Run Contract</h2>
+        <div class="clsrow"><span>Contract digest</span><span id="boundary-contract" data-testid="boundary-contract" class="pill">—</span></div>
+
+        <h2 style="font-size:14px;margin:14px 0 4px">Gauntlet summary (16 fixtures)</h2>
+        <div class="clsrow"><span>Good fixture verified · all bad held</span><span id="boundary-summary" data-testid="boundary-summary" class="pill">—</span></div>
+        <div class="clsrow"><span>False-green count · &ldquo;secure&rdquo; verdicts</span><span id="boundary-falsegreen" data-testid="boundary-falsegreen" class="pill">—</span></div>
+
+        <table class="tbl"><thead><tr><th>Fixture</th><th>Outer-controller verdict</th><th>Founder response</th><th>OK</th></tr></thead>
+          <tbody id="boundary-body" data-testid="boundary-body"><tr><td colspan="4" style="color:var(--dim)">Click &ldquo;Load Boundary Assurance&rdquo;.</td></tr></tbody></table>
+
+        <p class="honesty" data-testid="boundary-note">Every fixture is a local synthetic scenario. A boundary failure is only PASSED when the observed behavior shows it was actually blocked — config alone is never enough. Monitoring loss fails closed. The evidence plane is append-only and outside the worker; the worker cannot self-certify or override the controller. No final verdict ever says &ldquo;secure&rdquo;. This is NOT a proof of real sandbox, network, or production security.</p>
+        <div class="clsrow"><span>Blocked gates</span><span id="boundary-blocked" data-testid="boundary-blocked" class="pill refuse">—</span></div>
         <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
       </div>
     </section>

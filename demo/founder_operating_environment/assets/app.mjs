@@ -428,6 +428,32 @@ async function doProvider(){
   }catch(e){ $('provider-body').innerHTML='<tr><td colspan="7">UNKNOWN — could not load provider index (no green).</td></tr>'; }
 }
 
+// ---- P0.2 Boundary Assurance / Flight Recorder (loads boundary_index.json; controller verdicts; no false green) ----
+async function doBoundary(){
+  if($('boundary-body')) $('boundary-body').innerHTML = '<tr><td colspan="4">Loading…</td></tr>';
+  try{
+    const r = await fetch('assets/boundary/boundary_index.json', {cache:'no-store'});
+    if(!r.ok) throw new Error('boundary_index '+r.status);
+    const d = await r.json();
+    if($('boundary-labels')) $('boundary-labels').innerHTML = (d.labels||[]).map(l=>`<span class="lbl">${esc(l)}</span>`).join(' ');
+    setPill($('boundary-contract'), esc(d.contract_digest||'—'), 'live');
+    const g = d.gauntlet||{};
+    setPill($('boundary-summary'), `good verified: ${g.good_verified?'YES':'NO'} · all bad held: ${g.bad_all_held?'YES':'NO'} · ${g.total||0} fixtures`, (g.good_verified&&g.bad_all_held)?'live':'hold');
+    setPill($('boundary-falsegreen'), `false-green: ${g.false_green_count||0} · "secure": ${g.secure_count||0}`, (g.false_green_count===0&&g.secure_count===0)?'live':'refuse');
+    if($('boundary-body')) $('boundary-body').innerHTML = (d.fixtures||[]).map(fx=>{
+      const good = fx.name && fx.name.indexOf('good_')===0;
+      const verified = /VERIFIED_WITHIN_BOUNDARIES/.test(fx.verdict);
+      const cls = verified ? (good?'live':'refuse') : (/STOP_UNCONFIRMED|MONITORING_LOST|UNKNOWN/.test(fx.verdict)?'hold':'refuse');
+      return `<tr data-fixture="${esc(fx.id)}"><td class="muted" style="font-size:11px">${esc(fx.id)} ${esc(fx.name)}</td>`+
+             `<td><span class="pill ${cls}">${esc(fx.verdict)}</span></td>`+
+             `<td><span class="pill ${fx.founder==='continue'?'live':(fx.founder==='quarantine'||fx.founder==='hold'?'hold':'refuse')}">${esc(fx.founder)}</span></td>`+
+             `<td>${fx.ok?'✅':'❌'}</td></tr>`;
+    }).join('') || '<tr><td colspan="4" class="muted">No fixtures.</td></tr>';
+    const b=d.blocked||{};
+    setPill($('boundary-blocked'), `real provider ${b.real_provider||'BLOCKED'} · private repo ${b.private_repo||'BLOCKED'} · Gate 8 ${b.gate_8||'BLOCKED'} · external network ${b.external_network||'BLOCKED'}`, 'refuse');
+  }catch(e){ if($('boundary-body')) $('boundary-body').innerHTML='<tr><td colspan="4">UNKNOWN — could not load boundary index (no green).</td></tr>'; }
+}
+
 // ---- P0 Core IP / Assumption Verification (loads core_ip_index.json; evidence over self-report; fails closed) ----
 async function doCoreIp(){
   if($('coreip-assumptions')) $('coreip-assumptions').textContent = 'Loading…';
@@ -749,6 +775,8 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('assurance-load-btn')?.addEventListener('click', doAssurance);
   // P0 Core IP / Assumption Verification panel
   $('coreip-load-btn')?.addEventListener('click', doCoreIp);
+  // P0.2 Boundary Assurance / Flight Recorder panel
+  $('boundary-load-btn')?.addEventListener('click', doBoundary);
   // Founder Drive Mode + Reviewer Readiness
   $('drive-refresh-btn')?.addEventListener('click', doDrive);
   $('drive-reviewer-btn')?.addEventListener('click', ()=>{ showPanel('reviewer'); doReviewer(); });

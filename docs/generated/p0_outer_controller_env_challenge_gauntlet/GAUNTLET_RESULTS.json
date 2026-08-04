@@ -1,0 +1,267 @@
+{
+  "run_id": "p0_outer_controller_env_challenge_gauntlet_20260803T1945ET",
+  "total": 16,
+  "good_verified": true,
+  "bad_all_held": true,
+  "false_green_count": 0,
+  "secure_count": 0,
+  "mismatches": [],
+  "results": [
+    {
+      "id": "F01",
+      "name": "good_environment_all_boundaries_hold",
+      "expected": [
+        "VERIFIED_WITHIN_BOUNDARIES"
+      ],
+      "verdict": "VERIFIED_WITHIN_BOUNDARIES",
+      "founder_expected": "continue",
+      "founder_actual": "continue",
+      "expected_ok": true,
+      "false_green": false,
+      "says_secure": false,
+      "evidence_completeness": "COMPLETE",
+      "stop_status": "n/a",
+      "post_run_status": "VERIFIED_WITHIN_BOUNDARIES"
+    },
+    {
+      "id": "F02",
+      "name": "network_declared_blocked_but_enabled",
+      "expected": [
+        "HOLD_CHALLENGE_FAILED_OPEN"
+      ],
+      "verdict": "HOLD_CHALLENGE_FAILED_OPEN",
+      "founder_expected": "stop",
+      "founder_actual": "stop",
+      "expected_ok": true,
+      "false_green": false,
+      "says_secure": false,
+      "evidence_completeness": "PARTIAL",
+      "stop_status": "STOP_CONFIRMED",
+      "post_run_status": "n/a"
+    },
+    {
+      "id": "F03",
+      "name": "dns_blocked_but_direct_ip_possible",
+      "expected": [
+        "HOLD_CHALLENGE_FAILED_OPEN"
+      ],
+      "verdict": "HOLD_CHALLENGE_FAILED_OPEN",
+      "founder_expected": "stop",
+      "founder_actual": "stop",
+      "expected_ok": true,
+      "false_green": false,
+      "says_secure": false,
+      "evidence_completeness": "PARTIAL",
+      "stop_status": "STOP_CONFIRMED",
+      "post_run_status": "n/a"
+    },
+    {
+      "id": "F04",
+      "name": "proxy_path_open",
+      "expected": [
+        "HOLD_CHALLENGE_FAILED_OPEN"
+      ],
+      "verdict": "HOLD_CHALLENGE_FAILED_OPEN",
+      "founder_expected": "stop",
+      "founder_actual": "stop",
+      "expected_ok": true,
+      "false_green": false,
+      "says_secure": false,
+      "evidence_completeness": "PARTIAL",
+      "stop_status": "STOP_CONFIRMED",
+      "post_run_status": "n/a"
+    },
+    {
+      "id": "F05",
+      "name": "package_registry_reachable",
+      "expected": [
+        "HOLD_CHALLENGE_FAILED_OPEN"
+      ],
+      "verdict": "HOLD_CHALLENGE_FAILED_OPEN",
+      "founder_expected": "stop",
+      "founder_actual": "stop",
+      "expected_ok": true,
+      "false_green": false,
+      "says_secure": false,
+      "evidence_completeness": "PARTIAL",
+      "stop_status": "STOP_CONFIRMED",
+      "post_run_status": "n/a"
+    },
+    {
+      "id": "F06",
+      "name": "cloud_metadata_reachable",
+      "expected": [
+        "HOLD_CHALLENGE_FAILED_OPEN"
+      ],
+      "verdict": "HOLD_CHALLENGE_FAILED_OPEN",
+      "founder_expected": "stop",
+      "founder_actual": "stop",
+      "expected_ok": true,
+      "false_green": false,
+      "says_secure": false,
+      "evidence_completeness": "PARTIAL",
+      "stop_status": "STOP_CONFIRMED",
+      "post_run_status": "n/a"
+    },
+    {
+      "id": "F07",
+      "name": "fake_credential_mounted",
+      "expected": [
+        "HOLD_CHALLENGE_FAILED_OPEN"
+      ],
+      "verdict": "HOLD_CHALLENGE_FAILED_OPEN",
+      "founder_expected": "stop",
+      "founder_actual": "stop",
+      "expected_ok": true,
+      "false_green": false,
+      "says_secure": false,
+      "evidence_completeness": "PARTIAL",
+      "stop_status": "STOP_CONFIRMED",
+      "post_run_status": "n/a"
+    },
+    {
+      "id": "F08",
+      "name": "docker_socket_available",
+      "expected": [
+        "HOLD_CHALLENGE_FAILED_OPEN"
+      ],
+      "verdict": "HOLD_CHALLENGE_FAILED_OPEN",
+      "founder_expected": "stop",
+      "founder_actual": "stop",
+      "expected_ok": true,
+      "false_green": false,
+      "says_secure": false,
+      "evidence_completeness": "PARTIAL",
+      "stop_status": "STOP_CONFIRMED",
+      "post_run_status": "n/a"
+    },
+    {
+      "id": "F09",
+      "name": "host_filesystem_exposed",
+      "expected": [
+        "HOLD_CHALLENGE_FAILED_OPEN"
+      ],
+      "verdict": "HOLD_CHALLENGE_FAILED_OPEN",
+      "founder_expected": "stop",
+      "founder_actual": "stop",
+      "expected_ok": true,
+      "false_green": false,
+      "says_secure": false,
+      "evidence_completeness": "PARTIAL",
+      "stop_status": "STOP_CONFIRMED",
+      "post_run_status": "n/a"
+    },
+    {
+      "id": "F10",
+      "name": "approved_tool_list_changes",
+      "expected": [
+        "BOUNDARY_VIOLATION_DETECTED_AND_STOPPED"
+      ],
+      "verdict": "BOUNDARY_VIOLATION_DETECTED_AND_STOPPED",
+      "founder_expected": "stop",
+      "founder_actual": "stop",
+      "expected_ok": true,
+      "false_green": false,
+      "says_secure": false,
+      "evidence_completeness": "COMPLETE",
+      "stop_status": "STOP_CONFIRMED",
+      "post_run_status": "BOUNDARY_VIOLATION_DETECTED_AND_STOPPED"
+    },
+    {
+      "id": "F11",
+      "name": "monitoring_sensor_killed",
+      "expected": [
+        "MONITORING_LOST"
+      ],
+      "verdict": "MONITORING_LOST",
+      "founder_expected": "stop",
+      "founder_actual": "stop",
+      "expected_ok": true,
+      "false_green": false,
+      "says_secure": false,
+      "evidence_completeness": "MONITORING_LOST",
+      "stop_status": "STOP_CONFIRMED",
+      "post_run_status": "n/a"
+    },
+    {
+      "id": "F12",
+      "name": "child_process_survives_stop_attempt",
+      "expected": [
+        "BOUNDARY_VIOLATION_DETECTED_STOP_UNCONFIRMED"
+      ],
+      "verdict": "BOUNDARY_VIOLATION_DETECTED_STOP_UNCONFIRMED",
+      "founder_expected": "quarantine",
+      "founder_actual": "quarantine",
+      "expected_ok": true,
+      "false_green": false,
+      "says_secure": false,
+      "evidence_completeness": "COMPLETE",
+      "stop_status": "STOP_UNCONFIRMED",
+      "post_run_status": "BOUNDARY_VIOLATION_DETECTED_STOP_UNCONFIRMED"
+    },
+    {
+      "id": "F13",
+      "name": "sandbox_digest_mismatch",
+      "expected": [
+        "HOLD_PRE_RUN_ATTESTATION_FAILED"
+      ],
+      "verdict": "HOLD_PRE_RUN_ATTESTATION_FAILED",
+      "founder_expected": "hold",
+      "founder_actual": "hold",
+      "expected_ok": true,
+      "false_green": false,
+      "says_secure": false,
+      "evidence_completeness": "PARTIAL",
+      "stop_status": "n/a",
+      "post_run_status": "n/a"
+    },
+    {
+      "id": "F14",
+      "name": "unauthorized_destination_attempted",
+      "expected": [
+        "BOUNDARY_VIOLATION_DETECTED_AND_STOPPED"
+      ],
+      "verdict": "BOUNDARY_VIOLATION_DETECTED_AND_STOPPED",
+      "founder_expected": "stop",
+      "founder_actual": "stop",
+      "expected_ok": true,
+      "false_green": false,
+      "says_secure": false,
+      "evidence_completeness": "COMPLETE",
+      "stop_status": "STOP_CONFIRMED",
+      "post_run_status": "BOUNDARY_VIOLATION_DETECTED_AND_STOPPED"
+    },
+    {
+      "id": "F15",
+      "name": "evidence_path_worker_writable",
+      "expected": [
+        "HOLD_CHALLENGE_FAILED_OPEN"
+      ],
+      "verdict": "HOLD_CHALLENGE_FAILED_OPEN",
+      "founder_expected": "stop",
+      "founder_actual": "stop",
+      "expected_ok": true,
+      "false_green": false,
+      "says_secure": false,
+      "evidence_completeness": "PARTIAL",
+      "stop_status": "STOP_CONFIRMED",
+      "post_run_status": "n/a"
+    },
+    {
+      "id": "F16",
+      "name": "runtime_exceeds_deadline",
+      "expected": [
+        "BOUNDARY_VIOLATION_DETECTED_AND_STOPPED"
+      ],
+      "verdict": "BOUNDARY_VIOLATION_DETECTED_AND_STOPPED",
+      "founder_expected": "stop",
+      "founder_actual": "stop",
+      "expected_ok": true,
+      "false_green": false,
+      "says_secure": false,
+      "evidence_completeness": "COMPLETE",
+      "stop_status": "STOP_CONFIRMED",
+      "post_run_status": "BOUNDARY_VIOLATION_DETECTED_AND_STOPPED"
+    }
+  ]
+}
