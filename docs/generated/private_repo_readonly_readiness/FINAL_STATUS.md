@@ -9,4 +9,4 @@
 - LOCAL / SYNTHETIC only; mock adapter over synthetic fixtures. NOT private-repo-support-complete; NOT actual access; NOT customer/production/SaaS/commercial/paid/security-certified. Never SHIP.
 - Actual private repo read-only access is a separate 🔴 founder gate — exact repo + read-only credential + explicit founder phrase (fully reversible: revoke token / delete snapshot).
 
-Base run/current-master-roadmap-v9 @ (see below). Final head: tip of run/private-repo-readonly-readiness-20260804T0035ET (git rev-parse HEAD).
+Base run/current-master-roadmap-v9 @ (see below). Final head: tip of run/private-repo-readonly-readiness-20260804T0035ET (git rev-parse HEAD). Sealing commit: 191672cb899b.
