@@ -84,6 +84,7 @@
       <button class="nav"    data-panel="leastpriv" data-testid="nav-leastpriv">🔒 Least-Privilege Deploy Key <span class="tag">read-only key</span></button>
       <button class="nav"    data-panel="credroute" data-testid="nav-credroute">🧭 Credential Route Matrix <span class="tag">route separation</span></button>
       <button class="nav"    data-panel="fgpat"     data-testid="nav-fgpat">🎟️ Fine-Grained PAT Proof <span class="tag">Keychain-only</span></button>
+      <button class="nav"    data-panel="ghapp"     data-testid="nav-ghapp">🧩 GitHub App Route <span class="tag">local-only</span></button>
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
@@ -484,6 +485,33 @@
         <div class="clsrow"><span>Blocked gates</span><span id="fgpat-blocked" data-testid="fgpat-blocked" class="pill refuse">—</span></div>
         <div class="clsrow"><span>Next founder decision</span><span id="fgpat-next" data-testid="fgpat-next" class="pill">—</span></div>
         <div class="clsrow"><span>Decision</span><span class="pill">PAT PROOF PATH ONLY (never SHIP)</span></div>
+      </div>
+    </section>
+
+    <!-- ===== GITHUB APP READ-ONLY ROUTE (LOCAL-ONLY preparation; no live app) ===== -->
+    <section class="panel" id="panel-ghapp" role="region" aria-label="GitHub App Read-Only Route" data-testid="panel-ghapp">
+      <div class="eyebrow">GITHUB APP READ-ONLY ROUTE — LOCAL-ONLY PREPARATION · NO live GitHub App created/installed · NO installation token generated · sandbox-only · live proof requires a separate founder gate</div>
+      <div class="head"><div><h1>GitHub App Read-Only Route</h1><div class="sub">FounderGate locally prepared the GitHub App credential route: authority model, secret/key/token guard, a clearly-fake local token simulator, read-only intake contract, refusal matrix, and evidence replay. <b>No live GitHub App was created or installed, no installation token was generated, no existing/customer repo was touched, no provider was called. This does NOT prove GitHub App intake. Live proof needs a true founder gate. Never SHIP.</b></div></div></div>
+      <div class="card">
+        <div class="fg-labels" id="ghapp-labels" data-testid="ghapp-labels"></div>
+        <div class="actions"><button id="ghapp-load-btn" class="btn primary" data-testid="ghapp-load-btn">Load GitHub App Route</button></div>
+        <div class="clsrow"><span>Status</span><span id="ghapp-status" data-testid="ghapp-status" class="pill">—</span></div>
+        <div class="clsrow"><span>Mode (local-only vs live proof)</span><span id="ghapp-mode" data-testid="ghapp-mode" class="pill">—</span></div>
+        <div class="clsrow"><span>Repo (owner/repo) · private</span><span id="ghapp-repo" data-testid="ghapp-repo" class="pill">—</span></div>
+        <div class="clsrow"><span>Permissions required</span><span id="ghapp-perms" data-testid="ghapp-perms" class="pill">—</span></div>
+        <div class="clsrow"><span>App installed</span><span id="ghapp-installed" data-testid="ghapp-installed" class="pill">—</span></div>
+        <div class="clsrow"><span>Private key exposed · installation token exposed</span><span id="ghapp-secrets" data-testid="ghapp-secrets" class="pill">—</span></div>
+        <div class="clsrow"><span>Exact commit</span><span id="ghapp-commit" data-testid="ghapp-commit" class="pill">—</span></div>
+        <div class="clsrow"><span>Refusal matrix</span><span id="ghapp-refusal" data-testid="ghapp-refusal" class="pill">—</span></div>
+        <div class="clsrow"><span>Evidence replay</span><span id="ghapp-evidence" data-testid="ghapp-evidence" class="pill">—</span></div>
+        <div class="clsrow"><span>Existing/customer repo touched · code exec · provider</span><span id="ghapp-safety" data-testid="ghapp-safety" class="pill">—</span></div>
+        <div class="clsrow"><span>Cleanup status</span><span id="ghapp-cleanup" data-testid="ghapp-cleanup" class="pill">—</span></div>
+        <h2 style="font-size:14px;margin:12px 0 4px">What is proven / not proven</h2>
+        <div id="ghapp-proven" data-testid="ghapp-proven" class="muted" style="font-size:12px">—</div>
+        <p class="honesty" data-testid="ghapp-note">Local-only preparation of the GitHub App read-only route. No live GitHub App was created or installed; no installation token was generated; the local token simulator is a clearly-fake non-credential that can never be mistaken for a real proof. No existing or customer repo was touched; no provider was called. This does NOT prove GitHub-App intake, private-repo-support-complete, customer-repo, existing-founder-repo, read-only-scope-independently-verified, or production/SaaS readiness. Live GitHub App proof requires a separate true founder gate.</p>
+        <div class="clsrow"><span>Blocked gates</span><span id="ghapp-blocked" data-testid="ghapp-blocked" class="pill refuse">—</span></div>
+        <div class="clsrow"><span>Next founder decision</span><span id="ghapp-next" data-testid="ghapp-next" class="pill">—</span></div>
+        <div class="clsrow"><span>Decision</span><span class="pill">LOCAL ROUTE PREP ONLY (never SHIP)</span></div>
       </div>
     </section>
 

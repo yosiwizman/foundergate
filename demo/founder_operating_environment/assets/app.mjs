@@ -540,6 +540,33 @@ async function doFgpat(){
   }catch(e){ if($('fgpat-proven')) $('fgpat-proven').textContent='UNKNOWN — could not load fine-grained PAT proof index (no invented state).'; if($('fgpat-status')) setPill($('fgpat-status'),'UNKNOWN / NOT AVAILABLE','hold'); }
 }
 
+// ---- GitHub App Read-Only Route (loads github_app_readonly_index.json; LOCAL-ONLY preparation, no live app) ----
+async function doGhApp(){
+  if($('ghapp-proven')) $('ghapp-proven').textContent = 'Loading…';
+  try{
+    const r = await fetch('assets/private_repo/github_app_readonly_index.json', {cache:'no-store'});
+    if(!r.ok) throw new Error('github_app_readonly_index '+r.status);
+    const d = await r.json();
+    if($('ghapp-labels')) $('ghapp-labels').innerHTML = (d.labels||[]).map(l=>`<span class="lbl">${esc(l)}</span>`).join(' ');
+    setPill($('ghapp-status'), esc(d.status||'UNKNOWN'), /READY_WITH_LIMITS/.test(d.status)?'live':'hold');
+    setPill($('ghapp-mode'), esc(d.local_only_vs_live||d.mode||'—'), 'hold');
+    setPill($('ghapp-repo'), `${esc(d.repo||'—')} · private: ${d.private?'YES':'NO'}`, d.private?'live':'refuse');
+    setPill($('ghapp-perms'), esc(d.permissions_required||'—'), 'live');
+    setPill($('ghapp-installed'), esc(d.github_app_installed||'NO'), /YES/.test(d.github_app_installed||'')?'hold':'live');
+    setPill($('ghapp-secrets'), `private key exposed: ${esc(d.private_key_exposed||'NO')} · installation token exposed: ${esc(d.installation_token_exposed||'NO')}`, (/YES/.test(d.private_key_exposed||'')||/YES/.test(d.installation_token_exposed||''))?'refuse':'live');
+    setPill($('ghapp-commit'), esc(d.exact_commit||'NOT ASSERTED'), /NOT ASSERTED/.test(d.exact_commit||'')?'hold':'live');
+    const rm=d.refusal_matrix;
+    setPill($('ghapp-refusal'), rm?`${rm.total} cases · all held: ${rm.all_held?'YES':'NO'}`:'UNKNOWN', (rm&&rm.all_held)?'live':'refuse');
+    setPill($('ghapp-evidence'), esc(d.evidence_status||'UNKNOWN'), /VERIFIED/.test(d.evidence_status)?'live':'hold');
+    setPill($('ghapp-safety'), `existing/customer repo: ${d.existing_valuable_repo_touched||d.customer_repo_touched?'⚠ YES':'NO'} · code exec: ${d.code_execution?'⚠ YES':'NO'} · provider: ${d.provider_call?'⚠ YES':'NO'}`, (d.existing_valuable_repo_touched||d.customer_repo_touched||d.code_execution||d.provider_call)?'refuse':'live');
+    setPill($('ghapp-cleanup'), esc(d.cleanup_status||'—'), 'hold');
+    if($('ghapp-proven')) $('ghapp-proven').innerHTML = `<b>Proven:</b> ${(d.proven||[]).map(esc).join(' · ')}<br><b>NOT proven:</b> ${(d.not_proven||[]).map(esc).join(' · ')}`;
+    const b=d.blocked||{};
+    setPill($('ghapp-blocked'), `live app create ${b.live_app_create||'TRUE_FOUNDER_GATE'} · live install ${b.live_app_install||'TRUE_FOUNDER_GATE'} · live token ${b.live_token||'TRUE_FOUNDER_GATE'} · existing repo ${b.existing_repo||'BLOCKED'} · customer repo ${b.customer_repo||'BLOCKED'} · write/merge ${b.write_merge||'BLOCKED'} · provider ${b.provider_call||'BLOCKED'} · deploy ${b.deploy||'BLOCKED'} · bill ${b.bill||'BLOCKED'} · PR#200 ${b.pr_200||'UNTOUCHED'} · protected main ${b.protected_main||'UNTOUCHED'}`, 'refuse');
+    setPill($('ghapp-next'), esc(d.next_founder_gate||'—'), 'hold');
+  }catch(e){ if($('ghapp-proven')) $('ghapp-proven').textContent='UNKNOWN — could not load GitHub App route index (no invented state).'; if($('ghapp-status')) setPill($('ghapp-status'),'UNKNOWN / NOT AVAILABLE','hold'); }
+}
+
 // ---- Private Repo Read-Only Gate (loads private_repo_index.json; readiness only; no real repo/credential) ----
 async function doPrivRepo(){
   if($('privrepo-proven')) $('privrepo-proven').textContent = 'Loading…';
@@ -1004,6 +1031,7 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('leastpriv-load-btn')?.addEventListener('click', doLeastPriv);
   $('credroute-load-btn')?.addEventListener('click', doCredRoute);
   $('fgpat-load-btn')?.addEventListener('click', doFgpat);
+  $('ghapp-load-btn')?.addEventListener('click', doGhApp);
   // Founder Drive Mode + Reviewer Readiness
   $('drive-refresh-btn')?.addEventListener('click', doDrive);
   $('drive-reviewer-btn')?.addEventListener('click', ()=>{ showPanel('reviewer'); doReviewer(); });

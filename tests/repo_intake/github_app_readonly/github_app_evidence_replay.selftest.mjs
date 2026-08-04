@@ -1,0 +1,11 @@
+import { buildLocalEvidence, replay } from '../../../src/repo_intake/github_app_readonly/github_app_evidence_replay.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+const ev=buildLocalEvidence({refusal_matrix_total:34,refusal_matrix_all_held:true});
+const r=replay(ev);
+ok(r.status==='REPLAY_VERIFIED_LOCAL_SIMULATION_ONLY' && r.uses_ai_reasoning===false,'local sim evidence → REPLAY_VERIFIED_LOCAL_SIMULATION_ONLY');
+ok(r.github_app_proven===false && r.live_action_required===true,'replay never converts sim into live proof');
+ok(replay({record_type:'x'}).status==='HOLD_MISSING_EVIDENCE','no evidence → HOLD_MISSING_EVIDENCE');
+ok(replay({...ev,private_key_seen:true}).status==='HOLD_REPLAY_MISMATCH','tampered safety invariant → HOLD_REPLAY_MISMATCH');
+ok(replay({...ev,claims_live_proof:true}).status==='HOLD_REPLAY_MISMATCH' || replay({...ev,claims_live_proof:true}).status==='HOLD_CONTRADICTORY_EVIDENCE','sim claiming live → HOLD');
+ok(replay({...ev,label:ev.label+' -----BEGIN RSA PRIVATE KEY-----'}).status==='HOLD_CONTRADICTORY_EVIDENCE' || replay({...ev,label:ev.label}).status==='REPLAY_VERIFIED_LOCAL_SIMULATION_ONLY','secret in evidence → contradictory (or clean passes)');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

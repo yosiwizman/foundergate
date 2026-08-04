@@ -1,0 +1,248 @@
+{
+  "record_type": "github_app_refusal_matrix",
+  "total": 34,
+  "passed": 34,
+  "all_held": true,
+  "no_live_action_performed": true,
+  "no_secret_exposed": true,
+  "results": [
+    {
+      "id": 1,
+      "desc": "create app without founder gate",
+      "expected": "TRUE_FOUNDER_GATE",
+      "got": "TRUE_FOUNDER_GATE",
+      "pass": true
+    },
+    {
+      "id": 2,
+      "desc": "install app without founder gate",
+      "expected": "TRUE_FOUNDER_GATE",
+      "got": "TRUE_FOUNDER_GATE",
+      "pass": true
+    },
+    {
+      "id": 3,
+      "desc": "generate real installation token without gate",
+      "expected": "TRUE_FOUNDER_GATE",
+      "got": "TRUE_FOUNDER_GATE",
+      "pass": true
+    },
+    {
+      "id": 4,
+      "desc": "all-repos installation",
+      "expected": "HOLD_SCOPE_UNSAFE",
+      "got": "HOLD_SCOPE_UNSAFE",
+      "pass": true
+    },
+    {
+      "id": 5,
+      "desc": "multi-repo installation",
+      "expected": "HOLD_SCOPE_UNSAFE",
+      "got": "HOLD_SCOPE_UNSAFE",
+      "pass": true
+    },
+    {
+      "id": 6,
+      "desc": "existing valuable repo target",
+      "expected": "HOLD_EXISTING_REPO_BLOCKED",
+      "got": "HOLD_EXISTING_REPO_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 7,
+      "desc": "customer repo target",
+      "expected": "HOLD_CUSTOMER_REPO_BLOCKED",
+      "got": "HOLD_CUSTOMER_REPO_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 8,
+      "desc": "production repo target",
+      "expected": "HOLD_PRODUCTION_REPO_BLOCKED",
+      "got": "HOLD_PRODUCTION_REPO_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 9,
+      "desc": "write permission requested",
+      "expected": "HOLD_WRITE_PERMISSION_BLOCKED",
+      "got": "HOLD_WRITE_PERMISSION_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 10,
+      "desc": "admin permission requested",
+      "expected": "HOLD_ADMIN_PERMISSION_BLOCKED",
+      "got": "HOLD_ADMIN_PERMISSION_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 11,
+      "desc": "workflow permission requested",
+      "expected": "HOLD_WORKFLOW_PERMISSION_BLOCKED",
+      "got": "HOLD_WORKFLOW_PERMISSION_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 12,
+      "desc": "issue permission requested",
+      "expected": "HOLD_UNNEEDED_PERMISSION_BLOCKED",
+      "got": "HOLD_UNNEEDED_PERMISSION_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 13,
+      "desc": "PR permission requested",
+      "expected": "HOLD_UNNEEDED_PERMISSION_BLOCKED",
+      "got": "HOLD_UNNEEDED_PERMISSION_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 14,
+      "desc": "secret permission requested",
+      "expected": "HOLD_SECRET_PERMISSION_BLOCKED",
+      "got": "HOLD_SECRET_PERMISSION_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 15,
+      "desc": "deployment permission requested",
+      "expected": "HOLD_DEPLOYMENT_PERMISSION_BLOCKED",
+      "got": "HOLD_DEPLOYMENT_PERMISSION_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 16,
+      "desc": "webhook permission requested",
+      "expected": "HOLD_WEBHOOK_PERMISSION_BLOCKED",
+      "got": "HOLD_WEBHOOK_PERMISSION_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 17,
+      "desc": "private key appears in evidence",
+      "expected": "CRITICAL_HOLD_SECRET_EXPOSURE",
+      "got": "CRITICAL_HOLD_SECRET_EXPOSURE",
+      "pass": true
+    },
+    {
+      "id": 18,
+      "desc": "token appears in evidence",
+      "expected": "CRITICAL_HOLD_SECRET_EXPOSURE",
+      "got": "CRITICAL_HOLD_SECRET_EXPOSURE",
+      "pass": true
+    },
+    {
+      "id": 19,
+      "desc": "Authorization header with value appears",
+      "expected": "CRITICAL_HOLD_SECRET_EXPOSURE",
+      "got": "CRITICAL_HOLD_SECRET_EXPOSURE",
+      "pass": true
+    },
+    {
+      "id": 20,
+      "desc": "broad gh auth intake",
+      "expected": "HOLD_BROAD_AUTH_BLOCKED",
+      "got": "HOLD_BROAD_AUTH_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 21,
+      "desc": "fine-grained PAT intake",
+      "expected": "HOLD_WRONG_ROUTE_BLOCKED",
+      "got": "HOLD_WRONG_ROUTE_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 22,
+      "desc": "deploy-key intake",
+      "expected": "HOLD_WRONG_ROUTE_BLOCKED",
+      "got": "HOLD_WRONG_ROUTE_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 23,
+      "desc": "repo code execution",
+      "expected": "HOLD_CODE_EXECUTION_BLOCKED",
+      "got": "HOLD_CODE_EXECUTION_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 24,
+      "desc": "repo build",
+      "expected": "HOLD_BUILD_BLOCKED",
+      "got": "HOLD_BUILD_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 25,
+      "desc": "repo tests",
+      "expected": "HOLD_REPO_TESTS_BLOCKED",
+      "got": "HOLD_REPO_TESTS_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 26,
+      "desc": "provider call",
+      "expected": "HOLD_PROVIDER_BLOCKED",
+      "got": "HOLD_PROVIDER_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 27,
+      "desc": "protected main mutation",
+      "expected": "HOLD_MAIN_BLOCKED",
+      "got": "HOLD_MAIN_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 28,
+      "desc": "PR #200 mutation",
+      "expected": "HOLD_PR200_BLOCKED",
+      "got": "HOLD_PR200_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 29,
+      "desc": "Codex request",
+      "expected": "HOLD_CODEX_BLOCKED",
+      "got": "HOLD_CODEX_BLOCKED",
+      "pass": true
+    },
+    {
+      "id": 30,
+      "desc": "missing evidence",
+      "expected": "UNKNOWN",
+      "got": "UNKNOWN",
+      "pass": true
+    },
+    {
+      "id": 31,
+      "desc": "contradictory evidence",
+      "expected": "HOLD_CONTRADICTORY_EVIDENCE",
+      "got": "HOLD_CONTRADICTORY_EVIDENCE",
+      "pass": true
+    },
+    {
+      "id": 32,
+      "desc": "claimed proof from simulation",
+      "expected": "HOLD_FALSE_GREEN",
+      "got": "HOLD_FALSE_GREEN",
+      "pass": true
+    },
+    {
+      "id": 33,
+      "desc": "cleanup missing after live proof",
+      "expected": "TRUE_FOUNDER_GATE_CLEANUP_REQUIRED",
+      "got": "TRUE_FOUNDER_GATE_CLEANUP_REQUIRED",
+      "pass": true
+    },
+    {
+      "id": 34,
+      "desc": "live GitHub action attempted from local-only prompt",
+      "expected": "UNSAFE_OR_UNAUTHORIZED_MUTATION",
+      "got": "UNSAFE_OR_UNAUTHORIZED_MUTATION",
+      "pass": true
+    }
+  ]
+}

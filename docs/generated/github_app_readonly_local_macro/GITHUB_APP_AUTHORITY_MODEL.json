@@ -1,0 +1,23 @@
+{
+  "route_id": "github_app_readonly",
+  "repository_selection": "selected (only the sandbox)",
+  "sandbox_repo": "yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET",
+  "permissions": {
+    "contents": "read",
+    "metadata": "read"
+  },
+  "forbidden_permissions": [
+    "contents:write",
+    "administration",
+    "workflows",
+    "issues",
+    "pull_requests",
+    "secrets",
+    "deployments",
+    "webhooks:unauthorized"
+  ],
+  "installation": "single-repo only (never all-repos, never multi-repo)",
+  "token_lifetime": "short-lived installation token (~1h)",
+  "removable": "uninstall / revoke installation",
+  "proof_status": "LOCAL_ONLY_PREPARED"
+}

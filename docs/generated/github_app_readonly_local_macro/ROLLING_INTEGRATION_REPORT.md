@@ -1,0 +1,2 @@
+# Rolling Integration Report
+All lanes built by the single Terminal-0 supervisor writer within one worktree (no cross-writer contention; no shared-surface mutation required — new isolated paths only under src/repo_intake/github_app_readonly, tests/**, docs/generated/github_app_readonly_local_macro, and a new dashboard panel). No central router/registry/schema/CI/lockfile touched. Integrated full self-test suite: 13+11+8+7+34+6 green; refusal 34/34; replay verified (local-sim-only); UI proof green. No governance weakened. origin/main + PR #200 untouched.

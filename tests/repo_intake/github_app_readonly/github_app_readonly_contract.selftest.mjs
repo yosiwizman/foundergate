@@ -1,0 +1,12 @@
+import { validate, REQUIRED_FIELDS, CONTRACT } from '../../../src/repo_intake/github_app_readonly/github_app_readonly_contract.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+const SB='yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET';
+ok(validate({}).status==='OVERCLAIM_REFUSED','empty record → overclaim refused');
+ok(validate({repo:SB}).status==='OVERCLAIM_REFUSED' && validate({repo:SB}).missing.length>0,'partial record → overclaim refused (lists missing)');
+const full={repo:SB,repo_private:true,installation_restricted_to_sandbox_only:true,permissions_contents_read:true,permissions_metadata_read:true,no_write_admin_workflow_issue_pr_secret_deploy:true,exact_commit:'abc',manifest_digest:'m',archive_digest:'a',file_count:9,byte_count:1104,secret_classification:{held:5},no_code_execution:true,no_build:true,no_repo_tests:true,no_provider_call:true,cleanup_status:'n/a-local'};
+ok(validate(full).status==='CONTRACT_SATISFIED_WOULD_BE_LIVE_PROOF','complete record → would-be valid live proof');
+ok(validate({...full,repo:'x/other'}).status==='HOLD_TARGET_NOT_SANDBOX','non-sandbox target refused');
+ok(validate({...full,permissions_contents_read:false}).status==='HOLD_MISSING_READ_PERMISSIONS','missing read permission refused');
+ok(validate({...full,no_code_execution:false}).status==='HOLD_UNSAFE_EXECUTION','code execution flag refused');
+ok(REQUIRED_FIELDS.length>=17 && CONTRACT.proof_status==='LOCAL_ONLY_PREPARED','contract requires >=17 fields; status LOCAL_ONLY_PREPARED');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

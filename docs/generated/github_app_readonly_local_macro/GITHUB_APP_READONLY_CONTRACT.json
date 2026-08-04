@@ -1,0 +1,25 @@
+{
+  "route_id": "github_app_readonly",
+  "sandbox_repo": "yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET",
+  "required_fields": [
+    "repo",
+    "repo_private",
+    "installation_restricted_to_sandbox_only",
+    "permissions_contents_read",
+    "permissions_metadata_read",
+    "no_write_admin_workflow_issue_pr_secret_deploy",
+    "exact_commit",
+    "manifest_digest",
+    "archive_digest",
+    "file_count",
+    "byte_count",
+    "secret_classification",
+    "no_code_execution",
+    "no_build",
+    "no_repo_tests",
+    "no_provider_call",
+    "cleanup_status"
+  ],
+  "proof_status": "LOCAL_ONLY_PREPARED",
+  "live_gate": "TRUE_FOUNDER_GATE_GITHUB_APP_LIVE_ACTION_REQUIRED"
+}
