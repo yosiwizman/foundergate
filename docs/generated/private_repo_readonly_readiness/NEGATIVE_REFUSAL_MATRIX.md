@@ -1,0 +1,2 @@
+# Negative / Abuse / Write-Attempt Refusal Matrix (W7)
+25 cases (SSH/embedded-cred/non-github/missing-repo/missing-cred/write-scope; push/issue/workflow/build/npm/test; .env/private-key/api-key/db-url; traversal/symlink/submodule/LFS/large/binary-heavy/customer-data; provider-call; hidden second-stage write). **Result: 25/25 held/refused** (see NEGATIVE_REFUSAL_RESULTS.json). No write path succeeds; no provider call; no code execution.

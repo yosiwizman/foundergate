@@ -428,6 +428,30 @@ async function doProvider(){
   }catch(e){ $('provider-body').innerHTML='<tr><td colspan="7">UNKNOWN — could not load provider index (no green).</td></tr>'; }
 }
 
+// ---- Private Repo Read-Only Gate (loads private_repo_index.json; readiness only; no real repo/credential) ----
+async function doPrivRepo(){
+  if($('privrepo-proven')) $('privrepo-proven').textContent = 'Loading…';
+  try{
+    const r = await fetch('assets/private_repo/private_repo_index.json', {cache:'no-store'});
+    if(!r.ok) throw new Error('private_repo_index '+r.status);
+    const d = await r.json();
+    if($('privrepo-labels')) $('privrepo-labels').innerHTML = (d.labels||[]).map(l=>`<span class="lbl">${esc(l)}</span>`).join(' ');
+    setPill($('privrepo-status'), esc(d.status||'UNKNOWN'), /READY_WITH_LIMITS/.test(d.status)?'live':'hold');
+    setPill($('privrepo-prooftype'), esc(d.proof_type||'—'), 'hold');
+    setPill($('privrepo-fixture'), `${esc(d.synthetic_fixture||'—')} @ ${esc(d.exact_commit||'—')}`, 'live');
+    setPill($('privrepo-snapshot'), esc(d.snapshot_digest||'—'), 'live');
+    const sc=d.secret_classifier||{};
+    setPill($('privrepo-secrets'), `${esc(sc.status||'—')} · ${sc.held||0} held`, sc.held>0?'hold':'live');
+    const rm=d.refusal_matrix;
+    setPill($('privrepo-refusal'), rm?`${rm.total} cases · all held: ${rm.all_held?'YES':'NO'}`:'UNKNOWN', (rm&&rm.all_held)?'live':'refuse');
+    setPill($('privrepo-evidence'), esc(d.evidence_status||'UNKNOWN'), /VERIFIED/.test(d.evidence_status)?'live':'hold');
+    if($('privrepo-proven')) $('privrepo-proven').innerHTML = `<b>Proven:</b> ${(d.proven||[]).map(esc).join(' · ')}<br><b>NOT proven:</b> ${(d.not_proven||[]).map(esc).join(' · ')}`;
+    const b=d.blocked||{};
+    setPill($('privrepo-blocked'), `real private repo ${b.real_private_repo||'BLOCKED'} · real credential ${b.real_credential||'BLOCKED'} · code exec ${b.code_execution||'BLOCKED'} · write/merge ${b.write_merge||'BLOCKED'} · provider ${b.provider_call||'BLOCKED'}`, 'refuse');
+    setPill($('privrepo-next'), esc(d.next_founder_gate||'—'), 'hold');
+  }catch(e){ if($('privrepo-proven')) $('privrepo-proven').textContent='UNKNOWN — could not load private repo index (no invented state).'; if($('privrepo-status')) setPill($('privrepo-status'),'UNKNOWN / NOT AVAILABLE','hold'); }
+}
+
 // ---- Real Provider Gate (loads real_provider_index.json; one real OpenAI call; provider output != acceptance) ----
 async function doRealGate(){
   if($('realgate-output')) $('realgate-output').textContent = 'Loading…';
@@ -861,6 +885,8 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('harvest-load-btn')?.addEventListener('click', doHarvest);
   // Real Provider Gate panel
   $('realgate-load-btn')?.addEventListener('click', doRealGate);
+  // Private Repo Read-Only Gate panel
+  $('privrepo-load-btn')?.addEventListener('click', doPrivRepo);
   // Founder Drive Mode + Reviewer Readiness
   $('drive-refresh-btn')?.addEventListener('click', doDrive);
   $('drive-reviewer-btn')?.addEventListener('click', ()=>{ showPanel('reviewer'); doReviewer(); });

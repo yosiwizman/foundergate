@@ -1,0 +1,12 @@
+import { validateCredential, credentialSecretScan, FUTURE_OPTIONS } from '../../../src/repo_intake/private_repo_readonly/private_repo_credential_gate.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+ok(validateCredential({}).status==='HELD_MISSING_CREDENTIAL','missing credential stops safely');
+ok(validateCredential({present:true,scopes:['contents:write']}).status==='REFUSED_OVERBROAD_OR_WRITE_SCOPE','write-scoped credential refused');
+ok(validateCredential({present:true,scopes:['repo','admin']}).status==='REFUSED_OVERBROAD_OR_WRITE_SCOPE','over-broad credential refused');
+ok(validateCredential({present:true,is_real:true}).status==='HOLD_REAL_CREDENTIAL_DETECTED_WITHOUT_AUTHORITY','real credential without authority → HOLD');
+ok(validateCredential({present:true,scopes:['contents:read'],value:'ghp_'+'r'.repeat(36) /* runtime-built real-looking token; no token literal in source */}).status==='REFUSED_REAL_TOKEN_VALUE','real-looking token value refused');
+ok(validateCredential({present:true,scopes:['contents:read'],value:'ghp_FAKE_TEST_1234567890'}).accepted===true,'fake read-only token accepted (fingerprint only)');
+ok(credentialSecretScan('Authorization: Bearer ghp_realtoken1234567890abcdef').clean===false,'secret scan catches token in text');
+ok(credentialSecretScan('clean readiness doc, fingerprint only').clean===true,'secret scan clean on safe text');
+ok(FUTURE_OPTIONS.length===4,'4 future credential options documented');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

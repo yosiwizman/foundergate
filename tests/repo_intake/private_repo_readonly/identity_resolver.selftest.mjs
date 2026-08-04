@@ -1,0 +1,13 @@
+import { resolveIdentity } from '../../../src/repo_intake/private_repo_readonly/private_repo_identity_resolver.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+ok(resolveIdentity({url:'git@github.com:o/r.git'}).status==='REFUSED_SSH_URL','ssh url refused');
+ok(resolveIdentity({url:'https://ghp_tok@github.com/o/r'}).status==='REFUSED_EMBEDDED_CREDENTIAL','embedded credential refused');
+ok(resolveIdentity({url:'https://evil.example/o/r',commit:'a1b2c3d'}).status==='REFUSED_NON_GITHUB_DOMAIN','non-github domain refused');
+ok(resolveIdentity({url:'https://github.com/o/r/../../x',commit:'a1b2c3d'}).status==='REFUSED_PATH_TRAVERSAL','path traversal refused');
+ok(resolveIdentity({url:'https://github.com/o/r'}).status==='HOLD_AMBIGUOUS_DEFAULT_BRANCH','no commit → hold (branch-only not final)');
+ok(resolveIdentity({url:'https://github.com/o/r',commit:'zzz'}).status==='REFUSED_INVALID_COMMIT','invalid commit refused');
+ok(resolveIdentity({url:'https://github.com/o/r',commit:'a1b2c3d4e5f6',has_unresolved_submodule:true}).status==='HOLD_SUBMODULE_UNRESOLVED','submodule unresolved → hold');
+ok(resolveIdentity({url:'https://github.com/o/r',commit:'a1b2c3d4e5f6',has_unresolved_lfs:true}).status==='HOLD_LFS_UNRESOLVED','lfs unresolved → hold');
+const good=resolveIdentity({url:'https://github.com/synthetic-owner/synthetic-private-repo',commit:'a1b2c3d4e5f6'});
+ok(good.resolved===true && good.full_name==='synthetic-owner/synthetic-private-repo' && good.synthetic===true,'valid https owner/repo + commit → resolved (synthetic)');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

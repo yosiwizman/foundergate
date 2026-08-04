@@ -1,0 +1,11 @@
+import { bindSnapshot, LIMITS } from '../../../src/repo_intake/private_repo_readonly/private_repo_snapshot_binder.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+const good=bindSnapshot({commit:'a1b2c3d4e5f6',files:[{path:'README.md',bytes:100},{path:'src/x.js',bytes:200,binary:false}]});
+ok(good.status==='BOUND_SYNTHETIC' && good.archive_digest && good.manifest_digest && good.no_command_execution===true,'clean snapshot bound (digests, no exec)');
+ok(bindSnapshot({files:[{path:'a',bytes:1}]}).status==='HELD','missing commit → HELD');
+ok(bindSnapshot({commit:'a1b2c3d4e5f6',files:[{path:'../evil',bytes:1}]}).status==='HELD','path traversal → HELD');
+ok(bindSnapshot({commit:'a1b2c3d4e5f6',files:[{path:'link',bytes:0,symlink:true}]}).status==='HELD','symlink → HELD');
+ok(bindSnapshot({commit:'a1b2c3d4e5f6',files:[{path:'m',type:'submodule'}]}).status==='HELD','submodule unresolved → HELD');
+ok(bindSnapshot({commit:'a1b2c3d4e5f6',files:[{path:'big',bytes:LIMITS.max_bytes+1}]}).status==='HELD','over byte limit → HELD');
+ok(bindSnapshot({commit:'a1b2c3d4e5f6',resolve_submodules:true,files:[{path:'m',type:'submodule',bytes:1}]}).status==='BOUND_SYNTHETIC','resolved submodule ok');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

@@ -1,0 +1,202 @@
+{
+  "result": {
+    "record_type": "private_repo_readiness_result",
+    "status": "PRIVATE_REPO_READONLY_READINESS_READY_WITH_LIMITS",
+    "readiness": {
+      "record_type": "private_repo_readiness_proof",
+      "level": "PRIVATE_REPO_READINESS_PROOF",
+      "accesses_real_private": false,
+      "synthetic_only": true,
+      "claims_actual_access": false,
+      "status": "READINESS_WITH_LIMITS"
+    },
+    "adapter_readonly": "READ_ONLY_OK",
+    "credential": "OK_READONLY_FAKE",
+    "identity": "RESOLVED_SYNTHETIC",
+    "snapshot": "BOUND_SYNTHETIC",
+    "secrets": "HELD_SENSITIVE_FILES",
+    "replay": "REPLAY_VERIFIED",
+    "refusal_matrix": {
+      "total": 25,
+      "all_held": true
+    },
+    "evidence_digest": "pev_b34f91005010a2608ec62542",
+    "no_real_private_repo": true,
+    "no_real_credential": true,
+    "no_provider_call": true,
+    "no_code_execution": true
+  },
+  "evidence": {
+    "record_type": "private_repo_readonly_evidence",
+    "run_id": "private_repo_readonly_readiness_20260804T0035ET",
+    "lane_ids": [
+      "W1",
+      "W2",
+      "W3",
+      "W4",
+      "W5",
+      "W6",
+      "W7",
+      "W8"
+    ],
+    "synthetic_fixture_id": "synthetic-private-repo",
+    "resolved_repo_identity": "synthetic-owner/synthetic-private-repo",
+    "exact_commit": "a1b2c3d4e5f6",
+    "archive_digest": "arc_dde928835e6d1d601f51260d",
+    "manifest_digest": "man_484a1297bc6985fdb46d449d",
+    "held_files_count": 5,
+    "redaction_summary": {
+      "dotenv_file": 1,
+      "api_key": 1,
+      "production_config": 1,
+      "private_key": 1,
+      "personal_customer_data": 1,
+      "large_binary": 1
+    },
+    "refusal_matrix": {
+      "total": 25,
+      "all_held": true
+    },
+    "no_real_credential_used": true,
+    "no_real_private_repo_touched": true,
+    "no_write_attempted_succeeded": true,
+    "no_command_execution": true,
+    "no_provider_call": true,
+    "next_true_founder_gate": "real private repo read-only access (exact repo + read-only credential + founder phrase)",
+    "evidence_digest": "pev_b34f91005010a2608ec62542"
+  },
+  "snapshot": {
+    "record_type": "snapshot_binding",
+    "commit": "a1b2c3d4e5f6",
+    "file_count": 7,
+    "total_bytes": 2099412,
+    "archive_digest": "arc_dde928835e6d1d601f51260d",
+    "manifest_digest": "man_484a1297bc6985fdb46d449d",
+    "binary_inventory": [
+      "assets/logo.png"
+    ],
+    "symlinks": [],
+    "traversal": [],
+    "unsafe_names": [],
+    "submodules": 0,
+    "lfs": 0,
+    "no_command_execution": true,
+    "status": "BOUND_SYNTHETIC",
+    "problems": [],
+    "manifest": [
+      {
+        "path": ".env",
+        "bytes": 60,
+        "hash": "928bb76d75c06e446c3e583cda1b86de492696d71e4c580378b55c0de13c09da"
+      },
+      {
+        "path": "README.md",
+        "bytes": 120,
+        "hash": "5aa86d4b5cd7e552d8fe293e9ed7bbdc665ca2c1d47319d454b40329c18f8b5b"
+      },
+      {
+        "path": "assets/logo.png",
+        "bytes": 2097152,
+        "hash": "22706d46e3fdc0f3eeddda81dc8533b173e02301e07318dfc42e916a376a6d40"
+      },
+      {
+        "path": "certs/server.pem",
+        "bytes": 1400,
+        "hash": "fb28cd5b127faf627e1b48d9d8f48eebaeae5e239e436ebea15deb0a598e81ed"
+      },
+      {
+        "path": "config/production.config.json",
+        "bytes": 80,
+        "hash": "904bcfd3b4a6c1e538933507003befb02b0e636f08f1fce90af69c9aa2030dcb"
+      },
+      {
+        "path": "data/customers.csv",
+        "bytes": 400,
+        "hash": "937e9c6471f515cd6902617617ca7b8c7cc35082ed8784008599cac3e6beda05"
+      },
+      {
+        "path": "src/index.js",
+        "bytes": 200,
+        "hash": "26a7f0d5f27b70cbc8a2b2d4a7f68de756fc1ce544718e99e37db3e82d7957c6"
+      }
+    ]
+  },
+  "secrets": {
+    "record_type": "secret_classification",
+    "held_count": 5,
+    "by_type": {
+      "dotenv_file": 1,
+      "api_key": 1,
+      "production_config": 1,
+      "private_key": 1,
+      "personal_customer_data": 1,
+      "large_binary": 1
+    },
+    "held": [
+      {
+        "path": ".env",
+        "types": [
+          "dotenv_file",
+          "api_key"
+        ],
+        "fingerprint": "sec_e9cbb0224c4a"
+      },
+      {
+        "path": "config/production.config.json",
+        "types": [
+          "production_config"
+        ],
+        "fingerprint": "sec_7b26cf3774e9"
+      },
+      {
+        "path": "certs/server.pem",
+        "types": [
+          "private_key"
+        ],
+        "fingerprint": "sec_6699e554872b"
+      },
+      {
+        "path": "data/customers.csv",
+        "types": [
+          "personal_customer_data"
+        ],
+        "fingerprint": "sec_eb51df84c00b"
+      },
+      {
+        "path": "assets/logo.png",
+        "types": [
+          "large_binary"
+        ],
+        "fingerprint": "sec_90580d12fbd0"
+      }
+    ],
+    "contents_never_sent_to_model": true,
+    "secrets_in_evidence": false,
+    "fail_closed": true,
+    "status": "HELD_SENSITIVE_FILES"
+  },
+  "identity": {
+    "record_type": "repo_identity",
+    "status": "RESOLVED_SYNTHETIC",
+    "resolved": true,
+    "owner": "synthetic-owner",
+    "repo": "synthetic-private-repo",
+    "full_name": "synthetic-owner/synthetic-private-repo",
+    "commit": "a1b2c3d4e5f6",
+    "identity_hash": "rid_a78fa1bc241f45c8321f",
+    "synthetic": true
+  },
+  "adapter": {
+    "record_type": "readonly_adapter_contract",
+    "read_methods": [
+      "getRepoMetadata",
+      "getArchiveManifest",
+      "getFileMetadata",
+      "listCommitsReadonly"
+    ],
+    "forbidden_present": [],
+    "has_write_path": false,
+    "is_read_only": true,
+    "status": "READ_ONLY_OK"
+  }
+}

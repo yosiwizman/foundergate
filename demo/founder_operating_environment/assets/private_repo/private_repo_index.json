@@ -1,0 +1,61 @@
+{
+  "kind": "PRIVATE_REPO_GATE",
+  "run_id": "private_repo_readonly_readiness_20260804T0035ET",
+  "status": "PRIVATE_REPO_READONLY_READINESS_READY_WITH_LIMITS",
+  "proof_type": "PRIVATE_REPO_READINESS_PROOF (synthetic)",
+  "synthetic_fixture": "synthetic-owner/synthetic-private-repo",
+  "exact_commit": "a1b2c3d4e5f6",
+  "snapshot_digest": "arc_dde928835e6d1d601f51260d",
+  "secret_classifier": {
+    "status": "HELD_SENSITIVE_FILES",
+    "held": 5,
+    "by_type": {
+      "dotenv_file": 1,
+      "api_key": 1,
+      "production_config": 1,
+      "private_key": 1,
+      "personal_customer_data": 1,
+      "large_binary": 1
+    }
+  },
+  "refusal_matrix": {
+    "total": 25,
+    "all_held": true
+  },
+  "evidence_status": "REPLAY_VERIFIED",
+  "proven": [
+    "read-only adapter contract",
+    "credential gate (fake, read-only)",
+    "exact commit/snapshot binding",
+    "secret classification",
+    "25/25 write-attempt refusals",
+    "evidence replay"
+  ],
+  "not_proven": [
+    "actual private repo access",
+    "private repo support complete",
+    "customer repo support",
+    "production/SaaS/commercial/security readiness"
+  ],
+  "blocked": {
+    "real_private_repo": "BLOCKED",
+    "real_credential": "BLOCKED",
+    "code_execution": "BLOCKED",
+    "write_merge": "BLOCKED",
+    "provider_call": "BLOCKED",
+    "gate_8": "BLOCKED",
+    "deploy": "BLOCKED",
+    "bill": "BLOCKED"
+  },
+  "next_founder_gate": "real private repo read-only access (exact repo + read-only credential + explicit founder phrase)",
+  "labels": [
+    "NO real private repo accessed",
+    "NO real credential used",
+    "NO code executed",
+    "NO write possible",
+    "actual private repo proof requires a separate founder gate",
+    "support NOT complete",
+    "synthetic fixtures only",
+    "NEVER SHIP"
+  ]
+}

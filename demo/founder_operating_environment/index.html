@@ -79,6 +79,7 @@
       <button class="nav"    data-panel="physical" data-testid="nav-physical">🔌 Physical Containment <span class="tag">model only</span></button>
       <button class="nav"    data-panel="harvest"  data-testid="nav-harvest">🌾 Harvest Macro Operation <span class="tag">local batch</span></button>
       <button class="nav"    data-panel="realgate" data-testid="nav-realgate">🔑 Real Provider Gate <span class="tag">1 real call</span></button>
+      <button class="nav"    data-panel="privrepo" data-testid="nav-privrepo">🔐 Private Repo Read-Only Gate <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
@@ -378,6 +379,29 @@
         <p class="honesty" data-testid="provider-note">A provider that CLAIMS success without real files, with the wrong preview, without tests, or that asks for network/keys/deploy/private-repo is HELD/REFUSED — never PASS. Real OpenAI/Codex/Hermes activation and private-repo access each require a separate founder gate.</p>
         <div class="clsrow"><span>Summary</span><span id="provider-summary" data-testid="provider-summary" class="pill">—</span></div>
         <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
+      </div>
+    </section>
+
+    <!-- ===== PRIVATE REPO READ-ONLY GATE (readiness; synthetic fixtures only) ===== -->
+    <section class="panel" id="panel-privrepo" role="region" aria-label="Private Repo Read-Only Gate" data-testid="panel-privrepo">
+      <div class="eyebrow">PRIVATE REPO READ-ONLY GATE — READINESS · synthetic fixtures only · NO real private repo · NO real credential · NO code execution · NO write possible</div>
+      <div class="head"><div><h1>Private Repo Read-Only Gate</h1><div class="sub">A local readiness harness for future private-repo read-only access, proven with synthetic fixtures. <b>No real private repo was accessed, no real credential was used, no code was executed, and no write was possible. Actual private-repo proof requires a separate founder gate. Support is not complete. Never SHIP.</b></div></div></div>
+      <div class="card">
+        <div class="fg-labels" id="privrepo-labels" data-testid="privrepo-labels"></div>
+        <div class="actions"><button id="privrepo-load-btn" class="btn primary" data-testid="privrepo-load-btn">Load Private Repo Gate</button></div>
+        <div class="clsrow"><span>Status</span><span id="privrepo-status" data-testid="privrepo-status" class="pill">—</span></div>
+        <div class="clsrow"><span>Proof type</span><span id="privrepo-prooftype" data-testid="privrepo-prooftype" class="pill">—</span></div>
+        <div class="clsrow"><span>Synthetic fixture · exact commit</span><span id="privrepo-fixture" data-testid="privrepo-fixture" class="pill">—</span></div>
+        <div class="clsrow"><span>Snapshot digest</span><span id="privrepo-snapshot" data-testid="privrepo-snapshot" class="pill">—</span></div>
+        <div class="clsrow"><span>Secret classifier</span><span id="privrepo-secrets" data-testid="privrepo-secrets" class="pill">—</span></div>
+        <div class="clsrow"><span>Write-attempt refusal matrix</span><span id="privrepo-refusal" data-testid="privrepo-refusal" class="pill">—</span></div>
+        <div class="clsrow"><span>Evidence replay</span><span id="privrepo-evidence" data-testid="privrepo-evidence" class="pill">—</span></div>
+        <h2 style="font-size:14px;margin:12px 0 4px">What is proven / not proven</h2>
+        <div id="privrepo-proven" data-testid="privrepo-proven" class="muted" style="font-size:12px">—</div>
+        <p class="honesty" data-testid="privrepo-note">No real private repo was accessed. No real credential was used. No code was executed. No write path exists in the adapter. Secret-like files are held and redacted (fingerprints/counts only — contents never sent to a model). Actual private-repo read-only proof requires a separate founder gate (exact repo + read-only credential + explicit founder phrase). Support is NOT complete.</p>
+        <div class="clsrow"><span>Blocked gates</span><span id="privrepo-blocked" data-testid="privrepo-blocked" class="pill refuse">—</span></div>
+        <div class="clsrow"><span>Next founder decision</span><span id="privrepo-next" data-testid="privrepo-next" class="pill">—</span></div>
+        <div class="clsrow"><span>Decision</span><span class="pill">READINESS ONLY (never SHIP)</span></div>
       </div>
     </section>
 

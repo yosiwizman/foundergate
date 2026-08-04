@@ -1,0 +1,41 @@
+// W7 — 25-case negative/abuse/write-attempt refusal matrix (LOCAL / SYNTHETIC). Every case must be held/refused.
+import { resolveIdentity } from '../../../src/repo_intake/private_repo_readonly/private_repo_identity_resolver.mjs';
+import { validateCredential } from '../../../src/repo_intake/private_repo_readonly/private_repo_credential_gate.mjs';
+import { bindSnapshot } from '../../../src/repo_intake/private_repo_readonly/private_repo_snapshot_binder.mjs';
+import { classifyFiles } from '../../../src/repo_intake/private_repo_readonly/private_repo_secret_classifier.mjs';
+import { assertReadOnly } from '../../../src/repo_intake/private_repo_readonly/private_repo_readonly_adapter_contract.mjs';
+import { writeFileSync } from 'node:fs';
+const HELD=/REFUSED|HELD|HOLD|REFUSE/;
+const cases=[]; const add=(n,observed)=>cases.push({n,observed:String(observed),held:HELD.test(String(observed))});
+add('1 SSH URL refused', resolveIdentity({url:'git@github.com:o/r.git'}).status);
+add('2 embedded credential URL refused', resolveIdentity({url:'https://ghp_x@github.com/o/r'}).status);
+add('3 non-GitHub domain refused', resolveIdentity({url:'https://evil.example/o/r',commit:'a1b2c3d'}).status);
+add('4 missing exact repo refused', resolveIdentity({url:'https://github.com/only',commit:'a1b2c3d'}).status);
+add('5 missing credential held', validateCredential({}).status);
+add('6 write-scoped credential refused', validateCredential({present:true,scopes:['contents:write']}).status);
+// write-attempt refusals via adapter contract (an adapter exposing a write method is held)
+add('7 attempted push refused', assertReadOnly({getRepoMetadata:()=>({}),push:()=>{}}).status);
+add('8 attempted issue/comment write refused', assertReadOnly({getRepoMetadata:()=>({}),createIssue:()=>{}}).status);
+add('9 attempted workflow dispatch refused', assertReadOnly({getRepoMetadata:()=>({}),dispatchWorkflow:()=>{}}).status);
+add('10 attempted repo build refused', assertReadOnly({getRepoMetadata:()=>({}),runBuild:()=>{}}).status);
+add('11 attempted npm install refused', assertReadOnly({getRepoMetadata:()=>({}),installDeps:()=>{}}).status);
+add('12 attempted test command refused', assertReadOnly({getRepoMetadata:()=>({}),runTests:()=>{}}).status);
+add('13 .env held/redacted', classifyFiles([{path:'.env',sample:'API_KEY=sk-FAKE1234567890abcdefghij'}]).status);
+add('14 private key held/redacted', classifyFiles([{path:'k.pem',sample:'-----BEGIN PRIVATE KEY-----'}]).status);
+add('15 API key held/redacted', classifyFiles([{path:'a.js',sample:'sk-FAKE1234567890abcdefghij'}]).status);
+add('16 database URL held/redacted', classifyFiles([{path:'d.js',sample:'postgres://u:p@h/db'}]).status);
+add('17 path traversal refused', bindSnapshot({commit:'a1b2c3d4e5f6',files:[{path:'../evil',bytes:1}]}).status);
+add('18 symlink escape refused', bindSnapshot({commit:'a1b2c3d4e5f6',files:[{path:'l',symlink:true,bytes:0}]}).status);
+add('19 submodule unresolved held', bindSnapshot({commit:'a1b2c3d4e5f6',files:[{path:'m',type:'submodule'}]}).status);
+add('20 git LFS unresolved held', bindSnapshot({commit:'a1b2c3d4e5f6',files:[{path:'big',lfs:true,bytes:1}]}).status);
+add('21 large archive held', bindSnapshot({commit:'a1b2c3d4e5f6',files:[{path:'x',bytes:99*1024*1024}]}).status);
+add('22 binary-heavy repo held', (()=>{ const b=bindSnapshot({commit:'a1b2c3d4e5f6',files:Array.from({length:10},(_,i)=>({path:'b'+i,bytes:6*1024*1024,binary:true}))}); return b.status; })());
+add('23 customer-like data held', classifyFiles([{path:'c.csv',sample:'ssn 123-45-6789 customer'}]).status);
+add('24 provider/model call refused', assertReadOnly({getRepoMetadata:()=>({}),callProvider:()=>{}}).status);
+add('25 second-stage hidden write refused', assertReadOnly({getRepoMetadata:()=>({}),getArchiveManifest:()=>({}),writeFile:()=>{}}).status);
+const failed=cases.filter(c=>!c.held);
+for(const c of cases) console.log((c.held?'OK  ':'BAD ')+c.n+' -> '+c.observed);
+const summary={record_type:'negative_refusal_matrix',total:cases.length,all_held:failed.length===0,failed:failed.map(c=>c.n),cases};
+try{ writeFileSync(new URL('../../../docs/generated/private_repo_readonly_readiness/NEGATIVE_REFUSAL_RESULTS.json', import.meta.url), JSON.stringify(summary,null,2)); }catch(e){}
+console.log(`\n${failed.length===0?'ALL HELD':'RED'}: ${cases.length-failed.length}/${cases.length} refusal-matrix cases held.`);
+process.exit(failed.length===0?0:1);

@@ -1,0 +1,2 @@
+# Investor-Safe Wording
+"FounderGate has a local, tested readiness harness for private-repo read-only intake: it models exact-commit snapshots, gates credentials to read-only, classifies and withholds secrets, and refuses every write/execute path (25/25) — all on synthetic fixtures. It has NOT accessed any real private repository and does not claim private-repo support, customer readiness, production, SaaS, commercial, or security certification. Actual private-repo access remains a separate, explicit founder decision."

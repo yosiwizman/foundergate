@@ -1,0 +1,11 @@
+import { emitEvidence } from '../../../src/repo_intake/private_repo_readonly/private_repo_evidence_emitter.mjs';
+import { replay } from '../../../src/repo_intake/private_repo_readonly/private_repo_replay_verifier.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+const ev=emitEvidence({commit:'a1b2c3d4e5f6',identity:'synthetic-owner/synthetic-private-repo',archive_digest:'arc_x',manifest_digest:'man_x',held_count:4});
+const r=replay(ev);
+ok(r.status==='REPLAY_VERIFIED' && r.uses_ai_reasoning===false && r.digest_matches===true,'replay reconstructs from evidence only (no AI reasoning), digest matches');
+ok(replay({record_type:'x'}).status==='HOLD_NO_EVIDENCE','no evidence → HOLD');
+const tampered={...ev,no_real_credential_used:false};
+ok(replay(tampered).status==='HOLD_REPLAY_MISMATCH','tampered safety invariant → HOLD_REPLAY_MISMATCH');
+ok(ev.no_real_private_repo_touched===true && ev.no_provider_call===true && ev.no_command_execution===true,'evidence asserts no real repo / no provider / no exec');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

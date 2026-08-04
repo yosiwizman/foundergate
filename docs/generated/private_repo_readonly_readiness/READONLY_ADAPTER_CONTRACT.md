@@ -1,0 +1,2 @@
+# Read-Only Adapter Contract (W6)
+Read-only method surface only: getRepoMetadata · getArchiveManifest · getFileMetadata · listCommitsReadonly. **No** push/commit/issue/comment/write/workflow-dispatch/build/test/exec/install/provider/merge methods exist. `assertReadOnly` returns HOLD_WRITE_PATH_PRESENT if any forbidden method is present. The mock fixture simulates private metadata, exact commit, an archive manifest, and safe/unsafe/held files — all synthetic, no network.

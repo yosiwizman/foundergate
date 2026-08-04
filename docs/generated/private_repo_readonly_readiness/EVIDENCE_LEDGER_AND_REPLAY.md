@@ -1,0 +1,2 @@
+# Evidence Ledger & Replay (W8)
+Evidence records run/lane/fixture ids, resolved synthetic identity + exact commit, archive/manifest digests, held-file count, redaction summary, refusal-matrix results, and the safety invariants (no real credential/repo/write/exec/provider). The replay verifier reconstructs the decision from the evidence FILES only (deterministic, `uses_ai_reasoning:false`); a tampered safety invariant → HOLD_REPLAY_MISMATCH.

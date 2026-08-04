@@ -1,0 +1,133 @@
+{
+  "record_type": "negative_refusal_matrix",
+  "total": 25,
+  "all_held": true,
+  "failed": [],
+  "cases": [
+    {
+      "n": "1 SSH URL refused",
+      "observed": "REFUSED_SSH_URL",
+      "held": true
+    },
+    {
+      "n": "2 embedded credential URL refused",
+      "observed": "REFUSED_EMBEDDED_CREDENTIAL",
+      "held": true
+    },
+    {
+      "n": "3 non-GitHub domain refused",
+      "observed": "REFUSED_NON_GITHUB_DOMAIN",
+      "held": true
+    },
+    {
+      "n": "4 missing exact repo refused",
+      "observed": "REFUSED_INVALID_REPO_URL",
+      "held": true
+    },
+    {
+      "n": "5 missing credential held",
+      "observed": "HELD_MISSING_CREDENTIAL",
+      "held": true
+    },
+    {
+      "n": "6 write-scoped credential refused",
+      "observed": "REFUSED_OVERBROAD_OR_WRITE_SCOPE",
+      "held": true
+    },
+    {
+      "n": "7 attempted push refused",
+      "observed": "HOLD_WRITE_PATH_PRESENT",
+      "held": true
+    },
+    {
+      "n": "8 attempted issue/comment write refused",
+      "observed": "HOLD_WRITE_PATH_PRESENT",
+      "held": true
+    },
+    {
+      "n": "9 attempted workflow dispatch refused",
+      "observed": "HOLD_WRITE_PATH_PRESENT",
+      "held": true
+    },
+    {
+      "n": "10 attempted repo build refused",
+      "observed": "HOLD_WRITE_PATH_PRESENT",
+      "held": true
+    },
+    {
+      "n": "11 attempted npm install refused",
+      "observed": "HOLD_WRITE_PATH_PRESENT",
+      "held": true
+    },
+    {
+      "n": "12 attempted test command refused",
+      "observed": "HOLD_WRITE_PATH_PRESENT",
+      "held": true
+    },
+    {
+      "n": "13 .env held/redacted",
+      "observed": "HELD_SENSITIVE_FILES",
+      "held": true
+    },
+    {
+      "n": "14 private key held/redacted",
+      "observed": "HELD_SENSITIVE_FILES",
+      "held": true
+    },
+    {
+      "n": "15 API key held/redacted",
+      "observed": "HELD_SENSITIVE_FILES",
+      "held": true
+    },
+    {
+      "n": "16 database URL held/redacted",
+      "observed": "HELD_SENSITIVE_FILES",
+      "held": true
+    },
+    {
+      "n": "17 path traversal refused",
+      "observed": "HELD",
+      "held": true
+    },
+    {
+      "n": "18 symlink escape refused",
+      "observed": "HELD",
+      "held": true
+    },
+    {
+      "n": "19 submodule unresolved held",
+      "observed": "HELD",
+      "held": true
+    },
+    {
+      "n": "20 git LFS unresolved held",
+      "observed": "HELD",
+      "held": true
+    },
+    {
+      "n": "21 large archive held",
+      "observed": "HELD",
+      "held": true
+    },
+    {
+      "n": "22 binary-heavy repo held",
+      "observed": "HELD",
+      "held": true
+    },
+    {
+      "n": "23 customer-like data held",
+      "observed": "HELD_SENSITIVE_FILES",
+      "held": true
+    },
+    {
+      "n": "24 provider/model call refused",
+      "observed": "HOLD_WRITE_PATH_PRESENT",
+      "held": true
+    },
+    {
+      "n": "25 second-stage hidden write refused",
+      "observed": "HOLD_WRITE_PATH_PRESENT",
+      "held": true
+    }
+  ]
+}
