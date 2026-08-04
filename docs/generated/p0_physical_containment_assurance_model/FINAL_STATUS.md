@@ -15,4 +15,4 @@ Gate checklist (all satisfied):
 - Real provider activation BLOCKED · private repo access BLOCKED · Gate 8 BLOCKED · deploy/bill/outreach/customer-data/merge BLOCKED · external network BLOCKED.
 - Recommended next: P3 Security & Trust locally, or harden the evidence plane, or scope-only a hardware prototype.
 
-Base run/p0-outer-controller-env-challenge-gauntlet @ (see below). Final head: tip of run/p0-physical-containment-assurance-model-20260803T2030ET (git rev-parse HEAD).
+Base run/p0-outer-controller-env-challenge-gauntlet @ (see below). Final head: tip of run/p0-physical-containment-assurance-model-20260803T2030ET (git rev-parse HEAD). Sealing commit: 145602cf9f60 (+ this stamp).
