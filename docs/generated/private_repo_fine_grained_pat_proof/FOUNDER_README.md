@@ -1,9 +1,7 @@
-# Founder README — Fine-Grained PAT Proof
+# Founder README — Fine-Grained PAT Proof (rerun)
 
-**In one sentence:** FounderGate built and tested the *safe machinery* to read your private sandbox using a narrow read-only GitHub token — but it stopped honestly because **no such token is stored yet**, and it will **never** ask you to paste one into chat.
+**In one sentence:** your token is now in the Keychain and FounderGate read it safely (never showing it), but it **stopped** because that token can't actually open the sandbox repo — and it can see a lot of *other* repos — so it's not the narrow, single-repo, read-only key this gate needs.
 
-**What it did:** checked your Mac's Keychain for a token (found none, without ever seeing a value), then proved the surrounding safety: the token would be read from Keychain into memory only, never printed or packaged; 30 "bad-idea" attempts are all refused; and the screen shows an honest **"gate — token needed"** state, never a fake green.
+**What happened:** the token is valid and is a fine-grained token (good), but GitHub returned "not found" when FounderGate tried to read the sandbox with it — meaning the sandbox wasn't included in the token's allowed repositories. At the same time, the token could list 100+ of your repositories, which is broader than intended. FounderGate did **not** open any of those other repos, did not read the sandbox, and did not expose your token.
 
-**What it did NOT do:** it did not read your repo with a token (there wasn't one), touched no real or customer repo, ran no code, called no provider, and merged nothing.
-
-**If you want to open this gate later:** create a **fine-grained, read-only, single-repo** token for the sandbox and save it in your Mac Keychain under the name FounderGate expects. FounderGate reads it straight from Keychain — you never paste it into a chat. Then this same gate proves the real read.
+**The fix (2 minutes):** in GitHub, create a **new** fine-grained token whose *Repository access* is set to **only** `foundergate-private-readonly-sandbox-20260804T0105ET`, with permissions **Contents: Read-only** and **Metadata: Read-only** (nothing else). Save it in your Mac Keychain under the same name as before (you can reuse the same paste-into-Keychain command). Then tell FounderGate to rerun this gate. FounderGate never sees the value.

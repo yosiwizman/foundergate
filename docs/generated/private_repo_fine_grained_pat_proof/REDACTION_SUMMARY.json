@@ -1,7 +1,7 @@
 {
   "record_type": "redaction_summary",
-  "token_present": false,
+  "token_present": true,
   "status": "NOT_ASSERTED",
   "held": null,
-  "note": "NOT ASSERTED: secret classification runs only if PAT intake occurs."
+  "note": "NOT ASSERTED: classification runs only on a successful sandbox snapshot; none obtained."
 }

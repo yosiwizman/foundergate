@@ -1,18 +1,19 @@
 {
   "kind": "FINE_GRAINED_PAT_PROOF",
-  "status": "TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED",
-  "label": "TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED",
+  "status": "HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS",
+  "label": "HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS",
   "repo": "yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET",
   "url": "https://github.com/yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET",
   "private": true,
   "credential_type": "FINE_GRAINED_PAT",
   "token_source": "macOS Keychain",
   "keychain_service": "foundergate-github-fgpat-sandbox-readonly",
-  "token_present": false,
+  "token_present": true,
   "token_value_exposed": false,
   "token_packaged": false,
-  "scope_validation_label": "TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED",
-  "intake_auth_route": "none (no token present)",
+  "token_fingerprint_redacted": "fgpat_46a4db8921b7ccdd",
+  "scope_validation_label": "HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS",
+  "intake_auth_route": "none (held: sandbox 404 + broad/ambiguous visibility)",
   "intake_occurred": false,
   "broad_gh_auth_used_for_intake": false,
   "deploy_key_used_for_intake": false,
@@ -26,29 +27,25 @@
     "total": 30,
     "all_held": true
   },
-  "revocation_status": "TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED",
-  "evidence_status": "REPLAY_VERIFIED_GATE_REQUIRED",
+  "revocation_status": "PAT_REVOCATION_REQUIRES_FOUNDER_MANUAL_ACTION",
+  "evidence_status": "REPLAY_VERIFIED",
   "actual_private_repo_accessed": false,
   "existing_valuable_repo_touched": false,
   "customer_repo_touched": false,
   "code_execution": false,
   "provider_call": false,
   "proven": [
-    "keychain-only loader (token never printed/packaged)",
-    "fine-grained PAT authority + scope model",
+    "token read from Keychain into memory only (never printed/packaged; redacted fingerprint)",
+    "token is fine-grained (no classic scopes)",
     "30/30 write/abuse refusals",
-    "revocation/expiry model",
-    "evidence replay (gate-required path)",
-    "UI honest TRUE_FOUNDER_GATE state"
+    "held safely on ambiguous/insufficient scope — no intake performed",
+    "no contents of any non-sandbox repo fetched"
   ],
   "not_proven": [
-    "actual fine-grained PAT intake (no safe Keychain PAT present)",
-    "fine-grained-PAT scope verified live",
-    "GitHub App",
-    "existing founder repo",
-    "customer repo",
-    "private-repo-support-complete",
-    "production/SaaS readiness"
+    "actual sandbox read-only intake (token returns 404 on the sandbox)",
+    "narrow single-repo read-only scope (token-visible set is broad/ambiguous)",
+    "exact commit/snapshot binding",
+    "secret classification"
   ],
   "blocked": {
     "existing_repo": "BLOCKED",
@@ -63,5 +60,5 @@
     "pr_200": "UNTOUCHED",
     "protected_main": "UNTOUCHED"
   },
-  "next_founder_gate": "FOUNDER creates a repo-scoped read-only fine-grained PAT and stores it in macOS Keychain under service foundergate-github-fgpat-sandbox-readonly (FounderGate never sees the value); then this gate proves actual intake"
+  "next_founder_gate": "FOUNDER recreates the fine-grained PAT restricted to ONLY yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET with Contents:Read + Metadata:Read (remove all other repository access), store it in Keychain under the same service, then rerun this gate"
 }

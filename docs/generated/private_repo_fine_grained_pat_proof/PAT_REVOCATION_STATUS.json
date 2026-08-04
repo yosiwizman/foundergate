@@ -1,6 +1,6 @@
 {
   "record_type": "pat_revocation_status",
-  "token_present": false,
-  "label": "TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED",
-  "note": "no token to revoke; revocation model recorded; founder must create the PAT first"
+  "token_present": true,
+  "label": "PAT_REVOCATION_REQUIRES_FOUNDER_MANUAL_ACTION",
+  "note": "FounderGate did not create this PAT and its scope is ambiguous; per model it does NOT auto-revoke. The founder should delete/recreate it correctly scoped."
 }

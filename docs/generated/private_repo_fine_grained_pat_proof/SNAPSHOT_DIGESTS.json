@@ -1,9 +1,9 @@
 {
   "record_type": "snapshot_digests",
-  "token_present": false,
+  "token_present": true,
   "status": "NOT_ASSERTED",
   "exact_commit": null,
   "manifest_digest": null,
   "snapshot_digest": null,
-  "note": "NOT ASSERTED: no PAT intake occurred."
+  "note": "NOT ASSERTED: no intake (sandbox 404)."
 }

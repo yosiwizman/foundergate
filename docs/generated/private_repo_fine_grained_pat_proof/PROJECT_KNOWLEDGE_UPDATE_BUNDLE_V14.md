@@ -1,15 +1,12 @@
-# Project Knowledge Update Bundle V14 — Fine-Grained PAT Proof (gate held safely)
+# Project Knowledge Update Bundle V14 — Fine-Grained PAT Proof (rerun: scope hold)
 
 **Status: EVIDENCE SUMMARY (local, with limits). Not accepted governance. Authorizes nothing. Never SHIP.**
 
-## New this bundle (V14)
-FounderGate built and tested the **fine-grained-PAT read-only proof path** for the founder-owned private sandbox: a Keychain-only token loader (never prints/packages the value; redacted fingerprint only), a PAT authority+scope model (refuses classic-PAT / broad-auth / deploy-key / write / org-wide / workflow scopes), a 30/30 write-abuse refusal matrix, a revocation/expiry model, evidence replay, and a UI panel. **Actual PAT intake was NOT asserted** — the macOS Keychain held no safe fine-grained PAT (service `foundergate-github-fgpat-sandbox-readonly` not found). **No token was requested from the founder; nothing was exposed.**
+## This bundle (V14, rerun)
+A fine-grained PAT is now stored in the Keychain. FounderGate read it into memory only (never exposed), attempted read-only verification, and **held at `HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS`**: the token returns 404 on the sandbox repo (no access) while its `/user/repos` visibility is broad (100+ repos across owners). No intake was performed; no non-sandbox contents were fetched; no token was exposed. Self-tests remain green (13/7/8/7/5/30); the live-intake driver correctly refused to fabricate a result on the 404.
 
-## Result label
-`TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED` — honest hold. Self-tests: 13/13 + 7/7 + 8/8 + 7/7 + 5/5 + 30/30.
-
-## Relationship to V12.1 / V13
-V12.1 resealed the deploy-key proof; V13 built the credential-route matrix (fine-grained PAT = PLANNED). V14 is the fine-grained-PAT gate itself, held safely pending founder token creation.
+## Correct remediation (founder)
+Recreate the fine-grained PAT restricted to ONLY the sandbox repo with Contents:Read + Metadata:Read (no other repo access, no write/workflow/org-wide), store under the same Keychain service, and rerun.
 
 ## Still blocked / not claimed
-actual-PAT-intake · GitHub-App · existing-founder-repo · customer-repo · private-repo-support-complete · production/SaaS · merge-ready · Gate-8 · Codex. PR #200 + protected main untouched.
+actual-sandbox-intake · narrow-scope-verified · GitHub-App · existing-founder-repo · customer-repo · private-repo-support-complete · production/SaaS · merge-ready · Gate-8 · Codex. PR #200 + protected main untouched.

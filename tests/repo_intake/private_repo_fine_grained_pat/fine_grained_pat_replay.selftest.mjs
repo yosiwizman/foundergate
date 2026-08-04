@@ -3,7 +3,7 @@ import { replay } from '../../../src/repo_intake/private_repo_fine_grained_pat/f
 import { SCOPE } from '../../../src/repo_intake/private_repo_fine_grained_pat/pat_authority_model.mjs';
 let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
 const SB='yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET';
-const live=runPatProof({account:SB});
+const live=runPatProof({account:'nonexistent-owner/definitely-absent-acct'}); // deterministic absent path
 const r=replay(live.evidence);
 ok(r.status==='REPLAY_VERIFIED_GATE_REQUIRED' && r.uses_ai_reasoning===false,'absent-path replay → REPLAY_VERIFIED_GATE_REQUIRED (no AI reasoning)');
 ok(r.result_label==='TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED','absent-path replay result label correct');

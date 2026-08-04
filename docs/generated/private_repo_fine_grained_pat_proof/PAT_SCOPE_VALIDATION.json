@@ -1,9 +1,20 @@
 {
   "record_type": "pat_scope_validation",
-  "token_present": false,
-  "label": "TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED",
-  "authenticated_user_checked": false,
-  "repo_access_checked": false,
-  "write_endpoints_probed": false,
-  "note": "no token present; scope cannot be validated; NOT ASSERTED"
+  "token_present": true,
+  "label": "HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS",
+  "credential_is_fine_grained": true,
+  "classic_oauth_scopes": "(none — confirmed fine-grained)",
+  "mechanical_observations": {
+    "user_endpoint_status": 200,
+    "authenticated_as": "yosiwizman",
+    "sandbox_repo_metadata_status": 404,
+    "sandbox_contents_status": 404,
+    "sandbox_accessible": false,
+    "user_repos_status": 200,
+    "token_visible_repo_count_first_page": 100,
+    "sandbox_in_visible_set": false,
+    "other_owner_repo_seen_example": "smart1llc/Luxury-MIami (different owner present in token-visible list)"
+  },
+  "interpretation": "Token authenticates as the owner and is fine-grained (no classic scopes), but (a) it returns 404 on the sandbox repo — it is NOT granted access to the intended sandbox — and (b) its token-scoped /user/repos enumeration returns 100+ repositories across multiple owners, which is broader/more ambiguous than the single-repo read-only token this gate requires. FounderGate holds: it will not perform intake with a token whose scope it cannot verify as narrow, and it fetched NO contents of any non-sandbox repository.",
+  "no_nonsandbox_repo_contents_fetched": true
 }

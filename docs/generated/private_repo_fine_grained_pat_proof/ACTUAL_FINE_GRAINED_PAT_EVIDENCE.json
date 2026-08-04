@@ -1,16 +1,16 @@
 {
   "record_type": "fine_grained_pat_proof_evidence",
-  "label": "TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED",
-  "token_present": false,
+  "label": "HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS",
+  "token_present": true,
   "credential_type": "FINE_GRAINED_PAT",
   "token_source": "macOS Keychain",
   "intake_occurred": false,
-  "scope_validation_label": "TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED",
+  "scope_validation_label": "HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS",
   "intake_auth_route": "none",
   "token_value_seen_by_log": false,
   "token_printed": false,
   "token_packaged": false,
-  "token_fingerprint_redacted": null,
+  "token_fingerprint_redacted": "fgpat_46a4db8921b7ccdd",
   "broad_gh_auth_used_for_intake": false,
   "deploy_key_used_for_intake": false,
   "existing_valuable_repo_touched": false,
@@ -30,7 +30,7 @@
   "total_bytes": null,
   "held_fake_secret_files": null,
   "redaction_summary": null,
-  "revocation_status": "TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED",
-  "not_asserted": "PAT read-only intake — no safe Keychain PAT was found.",
-  "evidence_digest": "fgp_455dffc84aace8dcccb367bc"
+  "revocation_status": "PAT_REVOCATION_REQUIRES_FOUNDER_MANUAL_ACTION",
+  "not_asserted": "PAT read-only intake — token present but does NOT grant access to the sandbox repo (404), and its visibility surface is broad/ambiguous; intake NOT performed.",
+  "evidence_digest": "fgp_06a8c3784249dd84d9186e3d"
 }

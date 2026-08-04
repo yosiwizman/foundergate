@@ -3,7 +3,7 @@ import { SCOPE } from '../../../src/repo_intake/private_repo_fine_grained_pat/pa
 let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
 const SB='yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET';
 // Live absent path (no Keychain PAT): must be gate-required, read-only by construction
-const live=runPatProof({account:SB});
+const live=runPatProof({account:'nonexistent-owner/definitely-absent-acct'}); // deterministic absent path (bogus account not in Keychain)
 ok(live.status==='TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED' && live.token_present===false,'live: no Keychain PAT → TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED');
 ok(live.evidence.intake_occurred===false && live.evidence.not_asserted && /no safe Keychain PAT/.test(live.evidence.not_asserted),'live: intake NOT asserted (honest not-asserted note)');
 ok(live.evidence.broad_gh_auth_used_for_intake===false && live.evidence.deploy_key_used_for_intake===false && live.evidence.provider_call===false,'live: no broad-auth/deploy-key/provider intake');

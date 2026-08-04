@@ -42,8 +42,8 @@ export function buildEvidence(i = {}) {
     redaction_summary: i.redaction_summary || null,
     // Revocation/expiry
     revocation_status: i.revocation_status || 'TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED',
-    // Non-assertion note for the token-absent path
-    not_asserted: i.token_present ? null : 'PAT read-only intake — no safe Keychain PAT was found.',
+    // Non-assertion note: explicit override wins; else the token-absent default; else null when intake occurred.
+    not_asserted: i.not_asserted !== undefined ? i.not_asserted : (i.token_present ? null : 'PAT read-only intake — no safe Keychain PAT was found.'),
     evidence_digest: undefined,
   };
   ev.evidence_digest = 'fgp_' + sha256({ ...ev, evidence_digest: undefined }).slice(0, 24);

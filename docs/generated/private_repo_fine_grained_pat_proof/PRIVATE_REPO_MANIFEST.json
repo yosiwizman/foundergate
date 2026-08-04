@@ -1,7 +1,7 @@
 {
   "record_type": "private_repo_manifest",
-  "token_present": false,
+  "token_present": true,
   "status": "NOT_ASSERTED",
-  "note": "NOT ASSERTED: PAT read-only intake — no safe Keychain PAT was found.",
+  "note": "NOT ASSERTED: token could not access the sandbox repo (404); no manifest generated.",
   "repo": "yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET"
 }

@@ -1,2 +1,14 @@
-# PAT Scope & Identity Validation (N2)
-**Label: `TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED`.** No token is present, so scope/identity cannot be validated. **NOT ASSERTED:** authenticated user, repo access, write-endpoint refusal, repository-scoping. When a safe Keychain PAT later exists, the authority model (`pat_authority_model`) validates it repo-scoped + read-only-contents or labels the result partial/hold — without ever printing the token.
+# PAT Scope & Identity Validation (N2) — rerun
+
+**Label: `HOLD_PAT_SCOPE_UNSAFE_OR_AMBIGUOUS`.**
+
+| Check | Result |
+| --- | --- |
+| `GET /user` | 200 — authenticates as yosiwizman |
+| Classic OAuth scopes | none (confirmed fine-grained) |
+| `GET /repos/.../sandbox` | **404 — no access to the sandbox repo** |
+| `GET /repos/.../sandbox/contents` | 404 |
+| `GET /user/repos` | 200 — **100+ repositories** across multiple owners |
+| Sandbox in token-visible set | **No** |
+
+**Interpretation:** the token cannot read the intended sandbox (404) yet its visibility is broad/ambiguous (100+ repos). This is not the narrow, single-repo, read-only PAT the gate requires, so FounderGate holds and performs no intake. **No non-sandbox repository contents were fetched.**
