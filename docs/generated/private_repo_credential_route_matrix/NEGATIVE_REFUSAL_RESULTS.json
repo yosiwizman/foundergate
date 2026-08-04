@@ -1,0 +1,150 @@
+{
+  "kind": "CREDENTIAL_ROUTE_NEGATIVE_REFUSAL_RESULTS",
+  "total": 20,
+  "passed": 20,
+  "all_held": true,
+  "no_real_credential_created": true,
+  "no_real_repo_touched": true,
+  "cases": [
+    {
+      "id": 1,
+      "desc": "existing repo access without founder gate",
+      "expected": "REFUSED_SILENT_UPGRADE",
+      "got": "REFUSED_SILENT_UPGRADE",
+      "pass": true
+    },
+    {
+      "id": 2,
+      "desc": "customer repo access without gate",
+      "expected": "REFUSED_SILENT_UPGRADE",
+      "got": "REFUSED_SILENT_UPGRADE",
+      "pass": true
+    },
+    {
+      "id": 3,
+      "desc": "fine-grained PAT value handed in chat",
+      "expected": "REFUSED",
+      "got": "REFUSED",
+      "pass": true
+    },
+    {
+      "id": 4,
+      "desc": "GitHub App install without founder gate (multiple installs)",
+      "expected": "REFUSED",
+      "got": "REFUSED",
+      "pass": true
+    },
+    {
+      "id": 5,
+      "desc": "over-broad PAT (all repos)",
+      "expected": "REFUSED",
+      "got": "REFUSED",
+      "pass": true
+    },
+    {
+      "id": 6,
+      "desc": "write-scoped PAT",
+      "expected": "REFUSED",
+      "got": "REFUSED",
+      "pass": true
+    },
+    {
+      "id": 7,
+      "desc": "org-wide token",
+      "expected": "REFUSED",
+      "got": "REFUSED",
+      "pass": true
+    },
+    {
+      "id": 8,
+      "desc": "workflow permission",
+      "expected": "REFUSED",
+      "got": "REFUSED",
+      "pass": true
+    },
+    {
+      "id": 9,
+      "desc": "deploy key left installed (revocation missing)",
+      "expected": "REFUSED_MISSING_REVOCATION",
+      "got": "REFUSED_MISSING_REVOCATION",
+      "pass": true
+    },
+    {
+      "id": 10,
+      "desc": "missing revocation on any route",
+      "expected": "REFUSED_MISSING_REVOCATION",
+      "got": "REFUSED_MISSING_REVOCATION",
+      "pass": true
+    },
+    {
+      "id": 11,
+      "desc": "code execution on intake",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 12,
+      "desc": "repo build",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 13,
+      "desc": "repo tests",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 14,
+      "desc": "provider call",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 15,
+      "desc": "private key packaging",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 16,
+      "desc": "token logging",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 17,
+      "desc": "unknown credential scope held",
+      "expected": "HELD",
+      "got": "HELD",
+      "pass": true
+    },
+    {
+      "id": 18,
+      "desc": "unsupported Git provider held",
+      "expected": "HELD_UNSUPPORTED_PROVIDER",
+      "got": "HELD_UNSUPPORTED_PROVIDER",
+      "pass": true
+    },
+    {
+      "id": 19,
+      "desc": "missing exact commit held",
+      "expected": "HELD_MISSING_COMMIT",
+      "got": "HELD_MISSING_COMMIT",
+      "pass": true
+    },
+    {
+      "id": 20,
+      "desc": "evidence missing shows UNKNOWN",
+      "expected": "UNKNOWN",
+      "got": "UNKNOWN",
+      "pass": true
+    }
+  ]
+}

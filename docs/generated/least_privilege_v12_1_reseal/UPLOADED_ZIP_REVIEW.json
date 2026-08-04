@@ -1,0 +1,23 @@
+{
+  "zip_path": "/Users/yosiwizman/Desktop/founder gate over all documents /FounderGate_PrivateRepo_LeastPrivilegeDeployKey_20260804T0630ET/FounderGate_PrivateRepo_LeastPrivilegeDeployKey_20260804T0630ET.zip",
+  "zip_sha256": "d46ce5cfa54b25d00ab7d17686241e5844926ca14c277818051f9587497dc476",
+  "unzip_integrity": "OK",
+  "internal_sha256sums": "OK (38 entries)",
+  "entry_count": 49,
+  "present": {
+    "FINAL_STATUS.md": true,
+    "PROJECT_KNOWLEDGE_UPDATE_BUNDLE_V12.md": true,
+    "REVOCATION_PROOF.json": true,
+    "ACTUAL_LEAST_PRIVILEGE_EVIDENCE.json": true,
+    "ui_proof_screenshots": 8,
+    "ui_proof_video": 1
+  },
+  "absent": {
+    "CHECKER_REPORT.md": true,
+    "GATE_ADVISOR_REPORT.md": true
+  },
+  "secret_scan": "CLEAN",
+  "private_key_scan": "CLEAN",
+  "candidate_identity_in_zip_final_status": "19f280e983a786755bcc3411f564e67f2eb1c92f",
+  "classification": "V12_PACKAGE_INCOMPLETE_REVIEW_REPORTS_MISSING"
+}

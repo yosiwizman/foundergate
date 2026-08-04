@@ -1,0 +1,12 @@
+import { evaluatePatConfig, PAT_CONTRACT } from '../../../src/repo_intake/private_repo_credential_route_matrix/fine_grained_pat_readiness.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+ok(PAT_CONTRACT.proof_status==='PLANNED_BLOCKED','PAT contract PLANNED_BLOCKED');
+ok(evaluatePatConfig({permissions:{contents:'read'},repository_selection:'selected',expiry:'2026-09-01'}).status==='READY_PLANNED','read-only selected+expiry → READY_PLANNED');
+ok(evaluatePatConfig({permissions:{contents:'write'},repository_selection:'selected',expiry:'x'}).status==='REFUSED','write scope → REFUSED');
+ok(evaluatePatConfig({permissions:{contents:'read',workflow:true},repository_selection:'selected',expiry:'x'}).status==='REFUSED','workflow scope → REFUSED');
+ok(evaluatePatConfig({permissions:{contents:'read'},repository_selection:'all',expiry:'x'}).status==='REFUSED','all repos → REFUSED');
+ok(evaluatePatConfig({permissions:{contents:'read'},org_wide:true,expiry:'x',repository_selection:'selected'}).status==='REFUSED','org-wide → REFUSED');
+ok(evaluatePatConfig({permissions:{contents:'read'},repository_selection:'selected',token_value:'ghp_'+'x'.repeat(36),expiry:'x'}).status==='REFUSED','token value handed in-band → REFUSED');
+ok(evaluatePatConfig({permissions:{contents:'read'},repository_selection:'selected'}).status==='HELD','missing expiry → HELD (not accepted)');
+ok(evaluatePatConfig({}).status==='HELD','empty config → HELD');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

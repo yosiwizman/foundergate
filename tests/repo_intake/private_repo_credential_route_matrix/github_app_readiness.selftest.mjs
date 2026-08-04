@@ -1,0 +1,11 @@
+import { evaluateAppConfig, APP_CONTRACT } from '../../../src/repo_intake/private_repo_credential_route_matrix/github_app_readiness.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+ok(APP_CONTRACT.proof_status==='PLANNED_BLOCKED','App contract PLANNED_BLOCKED');
+ok(evaluateAppConfig({permissions:{contents:'read'},repository_selection:'selected',installations:1,removable:true}).status==='READY_PLANNED','read-only single install → READY_PLANNED');
+ok(evaluateAppConfig({permissions:{contents:'write'},repository_selection:'selected',installations:1}).status==='REFUSED','write permission → REFUSED');
+ok(evaluateAppConfig({permissions:{contents:'read'},repository_selection:'selected',installations:2}).status==='REFUSED','multiple installations → REFUSED');
+ok(evaluateAppConfig({permissions:{contents:'read'},repository_selection:'all'}).status==='REFUSED','all repos → REFUSED');
+ok(evaluateAppConfig({permissions:{contents:'read'},repository_selection:'selected',webhook:true}).status==='REFUSED','unauthorized webhook → REFUSED');
+ok(evaluateAppConfig({permissions:{contents:'read'},repository_selection:'selected',private_key:'-----BEGIN'}).status==='REFUSED','private key handed in-band → REFUSED');
+ok(evaluateAppConfig({permissions:{metadata:'read'},repository_selection:'selected'}).status==='HELD','no read contents → HELD');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

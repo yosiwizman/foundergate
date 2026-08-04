@@ -484,6 +484,30 @@ async function doLeastPriv(){
   }catch(e){ if($('leastpriv-proven')) $('leastpriv-proven').textContent='UNKNOWN — could not load least-privilege proof index (no invented state).'; if($('leastpriv-status')) setPill($('leastpriv-status'),'UNKNOWN / NOT AVAILABLE','hold'); }
 }
 
+// ---- Private Repo Credential Route Matrix (loads credential_route_matrix_index.json; local/synthetic route separation) ----
+async function doCredRoute(){
+  if($('credroute-rows')) $('credroute-rows').textContent = 'Loading…';
+  try{
+    const r = await fetch('assets/private_repo/credential_route_matrix_index.json', {cache:'no-store'});
+    if(!r.ok) throw new Error('credential_route_matrix_index '+r.status);
+    const d = await r.json();
+    setPill($('credroute-status'), esc(d.status||'UNKNOWN'), /READY_WITH_LIMITS/.test(d.status)?'live':'hold');
+    setPill($('credroute-proven'), (d.proven_with_limits||[]).join(', ')||'—', 'live');
+    setPill($('credroute-invariants'), d.invariants_ok?'YES':'NO', d.invariants_ok?'live':'refuse');
+    const nm=d.negative_matrix||{};
+    setPill($('credroute-negative'), nm.total?`${nm.total} cases · all held: ${nm.all_held?'YES':'NO'}`:'UNKNOWN', (nm&&nm.all_held)?'live':'refuse');
+    const badge=(s)=> s==='PROVEN_WITH_LIMITS'?'live': s==='TRUE_FOUNDER_GATE'?'refuse':'hold';
+    if($('credroute-rows')) $('credroute-rows').innerHTML = (d.rows||[]).map(row=>
+      `<div class="clsrow"><span>${esc(row.title)}</span><span class="pill ${badge(row.proof_status)}">${esc(row.proof_status)}</span></div>`
+      + `<div class="muted" style="font-size:11px;margin:0 0 6px 0">proves: ${esc(row.proves)} · NOT: ${(row.not_proves||[]).map(esc).join(', ')}</div>`
+    ).join('');
+    const ng=d.recommended_next_gate;
+    setPill($('credroute-next'), ng?`${esc(ng.id)} — ${esc(ng.gate)}`:'—', 'hold');
+    const b=d.blocked||{};
+    setPill($('credroute-blocked'), `existing founder repo ${b.existing_founder_repo||'TRUE_FOUNDER_GATE'} · customer repo ${b.customer_repo||'TRUE_FOUNDER_GATE'} · write/merge ${b.write_merge||'BLOCKED'} · provider ${b.provider||'BLOCKED'} · code exec ${b.code_exec||'BLOCKED'} · gate 8 ${b.gate_8||'BLOCKED'} · deploy ${b.deploy||'BLOCKED'} · bill ${b.bill||'BLOCKED'} · PR#200 ${b.pr_200||'UNTOUCHED'} · protected main ${b.protected_main||'UNTOUCHED'}`, 'refuse');
+  }catch(e){ if($('credroute-rows')) $('credroute-rows').textContent='UNKNOWN — could not load credential route matrix index (no invented state).'; if($('credroute-status')) setPill($('credroute-status'),'UNKNOWN / NOT AVAILABLE','hold'); }
+}
+
 // ---- Private Repo Read-Only Gate (loads private_repo_index.json; readiness only; no real repo/credential) ----
 async function doPrivRepo(){
   if($('privrepo-proven')) $('privrepo-proven').textContent = 'Loading…';
@@ -946,6 +970,7 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   // Private Repo Actual Sandbox Proof panel
   $('sandbox-load-btn')?.addEventListener('click', doSandbox);
   $('leastpriv-load-btn')?.addEventListener('click', doLeastPriv);
+  $('credroute-load-btn')?.addEventListener('click', doCredRoute);
   // Founder Drive Mode + Reviewer Readiness
   $('drive-refresh-btn')?.addEventListener('click', doDrive);
   $('drive-reviewer-btn')?.addEventListener('click', ()=>{ showPanel('reviewer'); doReviewer(); });

@@ -1,0 +1,11 @@
+import { classify, attemptUpgrade, REPO_CLASS, invariants } from '../../../src/repo_intake/private_repo_credential_route_matrix/repo_gate_classifier.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+ok(classify({repo_class:REPO_CLASS.FOUNDER_SANDBOX}).gate_status==='PROVEN_WITH_LIMITS','sandbox = PROVEN_WITH_LIMITS');
+ok(classify({repo_class:REPO_CLASS.EXISTING_FOUNDER_PRIVATE}).gate_status==='TRUE_FOUNDER_GATE_BLOCKED','existing founder repo = TRUE_FOUNDER_GATE_BLOCKED');
+ok(classify({repo_class:REPO_CLASS.CUSTOMER_PRODUCTION}).gate_status==='TRUE_FOUNDER_GATE_BLOCKED','customer prod = TRUE_FOUNDER_GATE_BLOCKED');
+ok(classify({repo_class:'MADE_UP'}).status==='HELD_UNKNOWN_CLASS','unknown class → HELD');
+ok(attemptUpgrade(REPO_CLASS.FOUNDER_SANDBOX,REPO_CLASS.CUSTOMER_PRODUCTION,null).allowed===false,'silent sandbox→customer upgrade REFUSED');
+ok(attemptUpgrade(REPO_CLASS.SYNTHETIC_FIXTURE,REPO_CLASS.EXISTING_FOUNDER_PRIVATE,null).reason==='REFUSED_SILENT_UPGRADE','silent fixture→existing-founder upgrade REFUSED');
+ok(attemptUpgrade(REPO_CLASS.SYNTHETIC_FIXTURE,REPO_CLASS.EXISTING_FOUNDER_PRIVATE,'FOUNDER_GATE:'+REPO_CLASS.EXISTING_FOUNDER_PRIVATE).allowed===true,'upgrade allowed only WITH exact founder gate token');
+ok(invariants().ok===true,'classifier invariants hold');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

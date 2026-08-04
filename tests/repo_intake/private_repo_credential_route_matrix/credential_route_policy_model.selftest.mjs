@@ -1,0 +1,16 @@
+import { ROUTES, PROOF_STATUS, provenRoutes, recommendedNextGate, invariantsHold, buildMatrix, getRoute } from '../../../src/repo_intake/private_repo_credential_route_matrix/credential_route_policy_model.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+ok(ROUTES.length===7,'7 routes modeled');
+ok(provenRoutes().length===1 && provenRoutes()[0].id==='deploy_key','exactly ONE proven route = deploy_key');
+ok(getRoute('fine_grained_pat').proof_status===PROOF_STATUS.PLANNED_BLOCKED,'fine-grained PAT = PLANNED_BLOCKED');
+ok(getRoute('github_app').proof_status===PROOF_STATUS.PLANNED_BLOCKED,'GitHub App = PLANNED_BLOCKED');
+ok(getRoute('existing_founder_private_repo').proof_status===PROOF_STATUS.TRUE_FOUNDER_GATE,'existing founder repo = TRUE_FOUNDER_GATE');
+ok(getRoute('customer_private_production_repo').proof_status===PROOF_STATUS.TRUE_FOUNDER_GATE,'customer repo = TRUE_FOUNDER_GATE');
+ok(getRoute('customer_relay').proof_status===PROOF_STATUS.FUTURE_BLOCKED,'customer relay = FUTURE_BLOCKED');
+ok(ROUTES.every(r=>Array.isArray(r.forbidden_claims)&&r.forbidden_claims.length>0),'every route carries forbidden_claims');
+ok(recommendedNextGate() && recommendedNextGate().id==='fine_grained_pat','recommended next gate = fine_grained_pat (most conservative planned)');
+ok(invariantsHold().ok===true,'policy invariants hold (only deploy key proven; both real repos true gates)');
+const m=buildMatrix();
+ok(m.forbidden_program_claims.includes('private-repo-support-complete')&&m.forbidden_program_claims.includes('fine-grained-PAT-proven'),'program forbidden claims present');
+ok(JSON.stringify(m).indexOf('production-ready')===-1 || m.routes.some(r=>r.forbidden_claims.includes('production-ready')),'no bare production-ready assertion (only as forbidden)');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

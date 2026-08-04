@@ -1,0 +1,16 @@
+{
+  "prior_branch": "run/private-repo-least-privilege-deploy-key-20260804T0630ET",
+  "evaluated_sha": "931dd5314f373e22d717561daaf64c25a460f972",
+  "evaluated_tree_sha": "eb0a3559806fa14440597dc0802b2047da272010",
+  "pre_amend_intermediate_sha": "19f280e983a786755bcc3411f564e67f2eb1c92f",
+  "zip_final_status_sealhead": "19f280e983a786755bcc3411f564e67f2eb1c92f",
+  "terminal_reported_sealhead": "931dd5314f373e22d717561daaf64c25a460f972",
+  "reviewers_cited_sealhead": "931dd5314f373e22d717561daaf64c25a460f972",
+  "prior_branch_current_head": "931dd5314f373e22d717561daaf64c25a460f972",
+  "prior_branch_pushed_remote_head": "931dd5314f373e22d717561daaf64c25a460f972",
+  "explanation": "FINAL_STATUS.md was written with the pre-amend HEAD (19f280e), then the commit was amended to stamp the seal head; the amend produced 931dd53 which is the commit that actually contains FINAL_STATUS.md. The stale 19f280e string inside the file is the pre-amend intermediate, not a divergent candidate.",
+  "reconcilable": true,
+  "seal_model": "two-SHA",
+  "evaluated_sha_final": "931dd5314f373e22d717561daaf64c25a460f972",
+  "evidence_commit_sha_final": "PENDING_V12_1_COMMIT"
+}

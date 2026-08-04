@@ -82,6 +82,7 @@
       <button class="nav"    data-panel="privrepo" data-testid="nav-privrepo">🔐 Private Repo Read-Only Gate <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="sandbox"  data-testid="nav-sandbox">🗝️ Private Sandbox Proof <span class="tag">actual repo</span></button>
       <button class="nav"    data-panel="leastpriv" data-testid="nav-leastpriv">🔒 Least-Privilege Deploy Key <span class="tag">read-only key</span></button>
+      <button class="nav"    data-panel="credroute" data-testid="nav-credroute">🧭 Credential Route Matrix <span class="tag">route separation</span></button>
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
@@ -434,6 +435,25 @@
         <div class="clsrow"><span>Blocked gates</span><span id="leastpriv-blocked" data-testid="leastpriv-blocked" class="pill refuse">—</span></div>
         <div class="clsrow"><span>Next founder decision</span><span id="leastpriv-next" data-testid="leastpriv-next" class="pill">—</span></div>
         <div class="clsrow"><span>Decision</span><span class="pill">LEAST-PRIVILEGE PROOF ONLY (never SHIP)</span></div>
+      </div>
+    </section>
+
+    <!-- ===== PRIVATE REPO CREDENTIAL ROUTE MATRIX (local/synthetic route separation; no real credential) ===== -->
+    <section class="panel" id="panel-credroute" role="region" aria-label="Private Repo Credential Route Matrix" data-testid="panel-credroute">
+      <div class="eyebrow">PRIVATE REPO CREDENTIAL ROUTE MATRIX — LOCAL/SYNTHETIC route separation · NO real credential created/used · deploy key PROVEN WITH LIMITS · every other route PLANNED/BLOCKED or a TRUE FOUNDER GATE</div>
+      <div class="head"><div><h1>Private Repo Credential Routes</h1><div class="sub">A local map that separates the one <b>proven-with-limits</b> route (read-only deploy key) from the planned/blocked routes (fine-grained PAT, GitHub App, uploaded archive), the future customer relay, and the two <b>true founder gates</b> (existing founder repo, customer repo). <b>No real credential was created or used, no real/existing/customer repo was touched, no provider was called. Nothing here is proven beyond the deploy-key proof. Never SHIP.</b></div></div></div>
+      <div class="card">
+        <div class="actions"><button id="credroute-load-btn" class="btn primary" data-testid="credroute-load-btn">Load Credential Route Matrix</button></div>
+        <div class="clsrow"><span>Status</span><span id="credroute-status" data-testid="credroute-status" class="pill">—</span></div>
+        <div class="clsrow"><span>Proven with limits</span><span id="credroute-proven" data-testid="credroute-proven" class="pill">—</span></div>
+        <div class="clsrow"><span>Policy invariants hold</span><span id="credroute-invariants" data-testid="credroute-invariants" class="pill">—</span></div>
+        <div class="clsrow"><span>Negative/refusal matrix</span><span id="credroute-negative" data-testid="credroute-negative" class="pill">—</span></div>
+        <h2 style="font-size:14px;margin:12px 0 4px">Routes</h2>
+        <div id="credroute-rows" data-testid="credroute-rows" class="muted" style="font-size:12px">—</div>
+        <div class="clsrow"><span>Recommended next gate</span><span id="credroute-next" data-testid="credroute-next" class="pill">—</span></div>
+        <div class="clsrow"><span>Blocked gates</span><span id="credroute-blocked" data-testid="credroute-blocked" class="pill refuse">—</span></div>
+        <p class="honesty" data-testid="credroute-note">Local/synthetic route separation only. The read-only deploy key is the ONLY route proven (with limits). Fine-grained PAT, GitHub App, and uploaded archive are PLANNED/BLOCKED; the customer relay is FUTURE/BLOCKED; existing founder repo and customer repo are TRUE FOUNDER GATES. No real credential was created or used; no existing/customer repo was touched; no provider was called. This does NOT prove fine-grained-PAT, GitHub-App, existing-founder-repo, customer-repo, private-repo-support-complete, or production/SaaS readiness.</p>
+        <div class="clsrow"><span>Decision</span><span class="pill">ROUTE MATRIX ONLY (never SHIP)</span></div>
       </div>
     </section>
 
