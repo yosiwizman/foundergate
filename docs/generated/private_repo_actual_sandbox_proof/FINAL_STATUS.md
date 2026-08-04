@@ -12,4 +12,4 @@
 - Sandbox repo left private + intact (not deleted) — fully reversible by deleting it.
 - Next gate: least-privilege read-only token proof, then customer/existing private repo (separate 🔴 founder gates). Never SHIP.
 
-Base run/private-repo-readonly-readiness @ (see below). Final head: tip of run/private-repo-actual-sandbox-proof-20260804T0105ET (git rev-parse HEAD).
+Base run/private-repo-readonly-readiness @ (see below). Final head: tip of run/private-repo-actual-sandbox-proof-20260804T0105ET (git rev-parse HEAD). Sealing commit: 310d1530a643.
