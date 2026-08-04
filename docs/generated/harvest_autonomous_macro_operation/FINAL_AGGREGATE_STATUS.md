@@ -13,4 +13,4 @@ Terminal reason: **AUTHORIZED_MACRO_QUEUE_EXHAUSTED** (all wide-safe lanes compl
 ## Limits (honest)
 LOCAL / SYNTHETIC only; deterministic; no external network. Not production/SaaS/commercial/customer/paid ready; not security-certified. Real provider / private repo / Gate 8 / real hardware / deploy / bill / merge blocked — each needs an explicit founder phrase.
 
-Base e51f2b0fd54f. Final head: tip of run/harvest-autonomous-macro-operation-20260803T2125ET (git rev-parse HEAD).
+Base e51f2b0fd54f. Final head: tip of run/harvest-autonomous-macro-operation-20260803T2125ET (git rev-parse HEAD). Sealing commit: 93b1d45e6657 (+ this stamp).
