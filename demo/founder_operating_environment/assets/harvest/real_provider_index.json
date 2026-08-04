@@ -1,25 +1,25 @@
 {
   "kind": "REAL_PROVIDER_GATE",
-  "run_id": "real_openai_provider_gate_20260803T2205ET",
+  "run_id": "overnight_real_openai_provider_queue_20260803T2240ET",
   "provider": "openai",
   "model": "gpt-5-nano",
   "call_count": 1,
   "budget_cap_usd": 0.25,
-  "budget_used_usd": 0.00035445,
+  "budget_used_usd": 0.00032885,
   "response_verification": "PROVIDER_RESPONSE_VERIFIED_WITH_LIMITS",
   "evidence_status": "REAL_CALL_COMPLETED",
   "provider_self_certified": false,
-  "redacted_output_preview": "{\n  \"status\": \"success\",\n  \"summary\": \"This is a synthetic FounderGate provider-gate test.\",\n  \"refusal_rule\": \"provider output alone is not acceptance.\"\n}",
+  "redacted_output_preview": "{\n  \"status\": \"ok\",\n  \"summary\": \"This is a synthetic FounderGate provider-gate test.\",\n  \"refusal_rule\": \"provider output alone is not acceptance.\"\n}",
   "token_usage": {
     "prompt_tokens": 49,
-    "completion_tokens": 880,
-    "total_tokens": 929,
+    "completion_tokens": 816,
+    "total_tokens": 865,
     "prompt_tokens_details": {
       "cached_tokens": 0,
       "audio_tokens": 0
     },
     "completion_tokens_details": {
-      "reasoning_tokens": 832,
+      "reasoning_tokens": 768,
       "audio_tokens": 0,
       "accepted_prediction_tokens": 0,
       "rejected_prediction_tokens": 0
@@ -44,5 +44,64 @@
     "NOT real provider support complete",
     "provider output alone is not acceptance",
     "NEVER SHIP"
-  ]
+  ],
+  "local_replay": {
+    "total": 10,
+    "all_pass": true,
+    "no_real_call": true,
+    "cases": [
+      {
+        "id": "A",
+        "name": "second-call refusal replay",
+        "observed": "REFUSED_SECOND_PROVIDER_CALL"
+      },
+      {
+        "id": "B",
+        "name": "missing-key replay",
+        "observed": "HOLD_PROVIDER_CREDENTIAL_MISSING"
+      },
+      {
+        "id": "C",
+        "name": "cost-cap replay",
+        "observed": "REFUSED_COST_CAP"
+      },
+      {
+        "id": "D1",
+        "name": "private-data input refused",
+        "observed": "REFUSED_PRIVATE_DATA"
+      },
+      {
+        "id": "D2",
+        "name": "source-code input refused",
+        "observed": "REFUSED_SOURCE_CODE_PAYLOAD"
+      },
+      {
+        "id": "D3",
+        "name": "secret-like input refused",
+        "observed": "REFUSED_PRIVATE_DATA"
+      },
+      {
+        "id": "E",
+        "name": "provider-error replay (no auto-retry)",
+        "observed": "NO_RETRY_HOLD"
+      },
+      {
+        "id": "F",
+        "name": "malformed-response replay",
+        "observed": "PROVIDER_RESPONSE_UNEXPECTED"
+      },
+      {
+        "id": "G",
+        "name": "evidence replay from state (deterministic, no AI reasoning)",
+        "observed": "REPLAY_MATCHES_STATE"
+      },
+      {
+        "id": "H",
+        "name": "claim blocker (no forbidden readiness claim)",
+        "observed": "NO_OVERCLAIM"
+      }
+    ]
+  },
+  "checker_status": "PENDING",
+  "gate_advisor_status": "PENDING"
 }

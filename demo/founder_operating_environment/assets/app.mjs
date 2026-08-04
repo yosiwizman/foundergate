@@ -442,6 +442,9 @@ async function doRealGate(){
     setPill($('realgate-verify'), esc(d.response_verification||'—'), /VERIFIED_WITH_LIMITS/.test(d.response_verification)?'live':'hold');
     setPill($('realgate-evidence'), esc(d.evidence_status||'—'), d.evidence_status==='REAL_CALL_COMPLETED'?'live':'hold');
     setPill($('realgate-selfcert'), d.provider_self_certified?'YES ⚠':'NO', d.provider_self_certified?'refuse':'live');
+    const lr=d.local_replay;
+    if(lr) setPill($('realgate-replay'), `${lr.total} cases · all pass: ${lr.all_pass?'YES':'NO'} · no real call: ${lr.no_real_call?'YES':'NO'}`, lr.all_pass?'live':'refuse');
+    else setPill($('realgate-replay'), 'UNKNOWN / NOT AVAILABLE', 'hold');
     if($('realgate-output')) $('realgate-output').textContent = d.redacted_output_preview || '(no output)';
     const b=d.blocked||{};
     setPill($('realgate-blocked'), `private repo ${b.private_repo||'BLOCKED'} · Gate 8 ${b.gate_8||'BLOCKED'} · deploy ${b.deploy||'BLOCKED'} · bill ${b.bill||'BLOCKED'} · merge ${b.merge||'BLOCKED'} · customer data ${b.customer_data||'BLOCKED'} · 2nd call ${b.second_call||'BLOCKED'}`, 'refuse');

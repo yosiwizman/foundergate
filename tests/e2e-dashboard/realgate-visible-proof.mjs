@@ -40,6 +40,10 @@ ok(/cap \$0\.25/.test(budget) && /used \$0\./.test(budget), `budget cap $0.25 + 
 const verify = await page.textContent('[data-testid="realgate-verify"]');
 ok(/PROVIDER_RESPONSE_VERIFIED_WITH_LIMITS/.test(verify), `verification VERIFIED_WITH_LIMITS ("${verify.trim()}")`);
 await shotEl(page, '[data-testid="realgate-verify"]', 'response_verification.png');
+const replay = await page.textContent('[data-testid="realgate-replay"]');
+ok(/all pass: YES/.test(replay) && /no real call: YES/.test(replay), `local replay matrix all-pass, no real call ("${replay.trim()}")`);
+await shotEl(page, '[data-testid="realgate-replay"]', 'local_replay_matrix.png');
+
 
 const selfcert = await page.textContent('[data-testid="realgate-selfcert"]');
 ok(/^NO/.test(selfcert.trim()), `provider did NOT self-certify ("${selfcert.trim()}")`);

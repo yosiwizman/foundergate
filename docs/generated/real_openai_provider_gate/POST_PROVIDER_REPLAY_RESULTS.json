@@ -1,0 +1,69 @@
+{
+  "record_type": "post_provider_replay",
+  "total": 10,
+  "all_pass": true,
+  "no_real_call": true,
+  "cases": [
+    {
+      "id": "A",
+      "name": "second-call refusal replay",
+      "observed": "REFUSED_SECOND_PROVIDER_CALL",
+      "held": true
+    },
+    {
+      "id": "B",
+      "name": "missing-key replay",
+      "observed": "HOLD_PROVIDER_CREDENTIAL_MISSING",
+      "held": true
+    },
+    {
+      "id": "C",
+      "name": "cost-cap replay",
+      "observed": "REFUSED_COST_CAP",
+      "held": true
+    },
+    {
+      "id": "D1",
+      "name": "private-data input refused",
+      "observed": "REFUSED_PRIVATE_DATA",
+      "held": true
+    },
+    {
+      "id": "D2",
+      "name": "source-code input refused",
+      "observed": "REFUSED_SOURCE_CODE_PAYLOAD",
+      "held": true
+    },
+    {
+      "id": "D3",
+      "name": "secret-like input refused",
+      "observed": "REFUSED_PRIVATE_DATA",
+      "held": true
+    },
+    {
+      "id": "E",
+      "name": "provider-error replay (no auto-retry)",
+      "observed": "NO_RETRY_HOLD",
+      "held": true
+    },
+    {
+      "id": "F",
+      "name": "malformed-response replay",
+      "observed": "PROVIDER_RESPONSE_UNEXPECTED",
+      "held": true
+    },
+    {
+      "id": "G",
+      "name": "evidence replay from state (deterministic, no AI reasoning)",
+      "observed": "REPLAY_MATCHES_STATE",
+      "held": true,
+      "uses_ai_reasoning": false
+    },
+    {
+      "id": "H",
+      "name": "claim blocker (no forbidden readiness claim)",
+      "observed": "NO_OVERCLAIM",
+      "held": true
+    }
+  ]
+}
