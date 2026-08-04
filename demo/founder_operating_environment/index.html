@@ -83,6 +83,7 @@
       <button class="nav"    data-panel="sandbox"  data-testid="nav-sandbox">🗝️ Private Sandbox Proof <span class="tag">actual repo</span></button>
       <button class="nav"    data-panel="leastpriv" data-testid="nav-leastpriv">🔒 Least-Privilege Deploy Key <span class="tag">read-only key</span></button>
       <button class="nav"    data-panel="credroute" data-testid="nav-credroute">🧭 Credential Route Matrix <span class="tag">route separation</span></button>
+      <button class="nav"    data-panel="fgpat"     data-testid="nav-fgpat">🎟️ Fine-Grained PAT Proof <span class="tag">Keychain-only</span></button>
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
@@ -454,6 +455,35 @@
         <div class="clsrow"><span>Blocked gates</span><span id="credroute-blocked" data-testid="credroute-blocked" class="pill refuse">—</span></div>
         <p class="honesty" data-testid="credroute-note">Local/synthetic route separation only. The read-only deploy key is the ONLY route proven (with limits). Fine-grained PAT, GitHub App, and uploaded archive are PLANNED/BLOCKED; the customer relay is FUTURE/BLOCKED; existing founder repo and customer repo are TRUE FOUNDER GATES. No real credential was created or used; no existing/customer repo was touched; no provider was called. This does NOT prove fine-grained-PAT, GitHub-App, existing-founder-repo, customer-repo, private-repo-support-complete, or production/SaaS readiness.</p>
         <div class="clsrow"><span>Decision</span><span class="pill">ROUTE MATRIX ONLY (never SHIP)</span></div>
+      </div>
+    </section>
+
+    <!-- ===== FINE-GRAINED PAT READ-ONLY PROOF (Keychain-only; token never exposed) ===== -->
+    <section class="panel" id="panel-fgpat" role="region" aria-label="Private Repo Fine-Grained PAT Proof" data-testid="panel-fgpat">
+      <div class="eyebrow">FINE-GRAINED PAT READ-ONLY PROOF — Keychain-only token handling · token NEVER printed/packaged · sandbox repo only · NO broad-auth intake · NO deploy-key intake · NO code execution · NO provider call</div>
+      <div class="head"><div><h1>Private Repo Fine-Grained PAT Proof</h1><div class="sub">FounderGate proves the safe path to read the founder-owned private sandbox repo with a <b>repo-scoped, read-only fine-grained PAT read only from the macOS Keychain</b> — the token is never printed, never packaged, never pasted. <b>If no safe Keychain PAT exists, this shows a true founder gate (token needed), never a green. No token is ever requested in chat, no existing/customer repo is touched, no code is executed, no provider is called. Never SHIP.</b></div></div></div>
+      <div class="card">
+        <div class="fg-labels" id="fgpat-labels" data-testid="fgpat-labels"></div>
+        <div class="actions"><button id="fgpat-load-btn" class="btn primary" data-testid="fgpat-load-btn">Load Fine-Grained PAT Proof</button></div>
+        <div class="clsrow"><span>Status</span><span id="fgpat-status" data-testid="fgpat-status" class="pill">—</span></div>
+        <div class="clsrow"><span>Repo (owner/repo) · private</span><span id="fgpat-repo" data-testid="fgpat-repo" class="pill">—</span></div>
+        <div class="clsrow"><span>Credential type · token source</span><span id="fgpat-cred" data-testid="fgpat-cred" class="pill">—</span></div>
+        <div class="clsrow"><span>Keychain PAT present</span><span id="fgpat-keychain" data-testid="fgpat-keychain" class="pill">—</span></div>
+        <div class="clsrow"><span>Token value exposed · packaged</span><span id="fgpat-tokensafe" data-testid="fgpat-tokensafe" class="pill">—</span></div>
+        <div class="clsrow"><span>Scope validation</span><span id="fgpat-scope" data-testid="fgpat-scope" class="pill">—</span></div>
+        <div class="clsrow"><span>Intake auth route · broad-auth · deploy-key</span><span id="fgpat-route" data-testid="fgpat-route" class="pill">—</span></div>
+        <div class="clsrow"><span>Exact commit</span><span id="fgpat-commit" data-testid="fgpat-commit" class="pill">—</span></div>
+        <div class="clsrow"><span>Secret classifier</span><span id="fgpat-secrets" data-testid="fgpat-secrets" class="pill">—</span></div>
+        <div class="clsrow"><span>Write-attempt refusal</span><span id="fgpat-refusal" data-testid="fgpat-refusal" class="pill">—</span></div>
+        <div class="clsrow"><span>Revocation / expiry</span><span id="fgpat-revocation" data-testid="fgpat-revocation" class="pill">—</span></div>
+        <div class="clsrow"><span>Evidence replay</span><span id="fgpat-evidence" data-testid="fgpat-evidence" class="pill">—</span></div>
+        <div class="clsrow"><span>Existing/customer repo touched · code exec · provider</span><span id="fgpat-safety" data-testid="fgpat-safety" class="pill">—</span></div>
+        <h2 style="font-size:14px;margin:12px 0 4px">What is proven / not proven</h2>
+        <div id="fgpat-proven" data-testid="fgpat-proven" class="muted" style="font-size:12px">—</div>
+        <p class="honesty" data-testid="fgpat-note">Keychain-only token handling: the token is read from the macOS Keychain into memory only, never printed, never packaged, never pasted into chat. If no safe Keychain PAT exists, this gate stays a TRUE FOUNDER GATE (token needed) and is not green. No token is requested from the founder; no existing or customer repo is touched; no code is executed; no provider is called. This does NOT prove GitHub-App, existing-founder-repo, customer-repo, private-repo-support-complete, or production/SaaS readiness.</p>
+        <div class="clsrow"><span>Blocked gates</span><span id="fgpat-blocked" data-testid="fgpat-blocked" class="pill refuse">—</span></div>
+        <div class="clsrow"><span>Next founder decision</span><span id="fgpat-next" data-testid="fgpat-next" class="pill">—</span></div>
+        <div class="clsrow"><span>Decision</span><span class="pill">PAT PROOF PATH ONLY (never SHIP)</span></div>
       </div>
     </section>
 

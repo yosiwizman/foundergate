@@ -1,0 +1,17 @@
+import { evaluateForPatProof, scopeValidationLabel, CREDENTIAL_TYPE, SCOPE } from '../../../src/repo_intake/private_repo_fine_grained_pat/pat_authority_model.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+const SB='yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET';
+ok(evaluateForPatProof({credential_type:CREDENTIAL_TYPE.CLASSIC_PAT}).decision==='REFUSED','classic PAT refused');
+ok(evaluateForPatProof({credential_type:CREDENTIAL_TYPE.BROAD_GH_AUTH}).decision==='REFUSED','broad gh auth refused for intake');
+ok(evaluateForPatProof({credential_type:CREDENTIAL_TYPE.DEPLOY_KEY}).decision==='REFUSED','deploy key refused for PAT proof');
+ok(evaluateForPatProof({credential_type:CREDENTIAL_TYPE.GITHUB_APP}).decision==='REFUSED','github app not this proof');
+ok(evaluateForPatProof({credential_type:CREDENTIAL_TYPE.FINE_GRAINED_PAT,scope:SCOPE.WRITE_SCOPED}).decision==='REFUSED','write-scoped fgpat refused');
+ok(evaluateForPatProof({credential_type:CREDENTIAL_TYPE.FINE_GRAINED_PAT,scope:SCOPE.ORG_WIDE}).decision==='REFUSED','org-wide fgpat refused');
+ok(evaluateForPatProof({credential_type:CREDENTIAL_TYPE.FINE_GRAINED_PAT,scope:SCOPE.WORKFLOW_CAPABLE}).decision==='REFUSED','workflow fgpat refused');
+ok(evaluateForPatProof({credential_type:CREDENTIAL_TYPE.FINE_GRAINED_PAT,scope:SCOPE.UNKNOWN_AMBIGUOUS}).decision==='HOLD','ambiguous scope held');
+ok(evaluateForPatProof({credential_type:CREDENTIAL_TYPE.FINE_GRAINED_PAT,scope:SCOPE.REPO_SCOPED_READONLY,target_repo:'x/other',sandbox_repo:SB}).decision==='REFUSED','non-sandbox target refused');
+ok(evaluateForPatProof({credential_type:CREDENTIAL_TYPE.FINE_GRAINED_PAT,scope:SCOPE.REPO_SCOPED_READONLY,target_repo:SB,sandbox_repo:SB}).decision==='ACCEPTED_READONLY','repo-scoped read-only accepted');
+ok(scopeValidationLabel({present:false})==='TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED','absent → gate required');
+ok(scopeValidationLabel({present:true,evaluation:{decision:'ACCEPTED_READONLY'},metadata_sufficient:true})==='PAT_SCOPE_READONLY_REPO_SCOPED_VERIFIED','accepted+meta → verified');
+ok(scopeValidationLabel({present:true,evaluation:{decision:'ACCEPTED_READONLY'},metadata_sufficient:false})==='PAT_INTAKE_VERIFIED_SCOPE_PARTIAL','accepted+no meta → partial');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

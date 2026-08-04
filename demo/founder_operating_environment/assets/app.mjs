@@ -508,6 +508,38 @@ async function doCredRoute(){
   }catch(e){ if($('credroute-rows')) $('credroute-rows').textContent='UNKNOWN — could not load credential route matrix index (no invented state).'; if($('credroute-status')) setPill($('credroute-status'),'UNKNOWN / NOT AVAILABLE','hold'); }
 }
 
+// ---- Private Repo Fine-Grained PAT Proof (loads fine_grained_pat_index.json; Keychain-only, token never exposed) ----
+async function doFgpat(){
+  if($('fgpat-proven')) $('fgpat-proven').textContent = 'Loading…';
+  try{
+    const r = await fetch('assets/private_repo/fine_grained_pat_index.json', {cache:'no-store'});
+    if(!r.ok) throw new Error('fine_grained_pat_index '+r.status);
+    const d = await r.json();
+    if($('fgpat-labels')) $('fgpat-labels').innerHTML = (d.labels||[]).map(l=>`<span class="lbl">${esc(l)}</span>`).join(' ');
+    const ready=/PROOF_READY_WITH_LIMITS|INTAKE_PROVEN_WITH_SCOPE_LIMITS/.test(d.status);
+    const gate=/TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED/.test(d.status);
+    setPill($('fgpat-status'), esc(d.status||'UNKNOWN'), ready?'live':(gate?'hold':'refuse'));
+    setPill($('fgpat-repo'), `${esc(d.repo||'—')} · private: ${d.private?'YES':'NO'}`, d.private?'live':'refuse');
+    setPill($('fgpat-cred'), `${esc(d.credential_type||'—')} · ${esc(d.token_source||'—')}`, 'live');
+    setPill($('fgpat-keychain'), d.token_present?'YES':'NO (token needed)', d.token_present?'live':'hold');
+    setPill($('fgpat-tokensafe'), `exposed: ${d.token_value_exposed?'⚠ YES':'NO'} · packaged: ${d.token_packaged?'⚠ YES':'NO'}`, (d.token_value_exposed||d.token_packaged)?'refuse':'live');
+    setPill($('fgpat-scope'), esc(d.scope_validation_label||'—'), /VERIFIED/.test(d.scope_validation_label)?'live':'hold');
+    setPill($('fgpat-route'), `${esc(d.intake_auth_route||'—')} · broad-auth: ${d.broad_gh_auth_used_for_intake?'⚠ YES':'NO'} · deploy-key: ${d.deploy_key_used_for_intake?'⚠ YES':'NO'}`, (d.broad_gh_auth_used_for_intake||d.deploy_key_used_for_intake)?'refuse':'live');
+    setPill($('fgpat-commit'), esc(d.exact_commit||'— (not asserted)'), d.exact_commit?'live':'hold');
+    const sc=d.secret_classifier||{};
+    setPill($('fgpat-secrets'), `${esc(sc.status||'—')}${sc.held?(' · '+sc.held+' held'):''}`, sc.status==='NOT_ASSERTED'?'hold':(sc.held>0?'hold':'live'));
+    const wr=d.write_refusal;
+    setPill($('fgpat-refusal'), wr?`${wr.total} cases · all held: ${wr.all_held?'YES':'NO'}`:'UNKNOWN', (wr&&wr.all_held)?'live':'refuse');
+    setPill($('fgpat-revocation'), esc(d.revocation_status||'—'), /REVOKED_AND_POST/.test(d.revocation_status)?'live':'hold');
+    setPill($('fgpat-evidence'), esc(d.evidence_status||'UNKNOWN'), /VERIFIED/.test(d.evidence_status)?'live':'hold');
+    setPill($('fgpat-safety'), `existing/customer repo: ${d.existing_valuable_repo_touched||d.customer_repo_touched?'⚠ YES':'NO'} · code exec: ${d.code_execution?'⚠ YES':'NO'} · provider: ${d.provider_call?'⚠ YES':'NO'}`, (d.existing_valuable_repo_touched||d.customer_repo_touched||d.code_execution||d.provider_call)?'refuse':'live');
+    if($('fgpat-proven')) $('fgpat-proven').innerHTML = `<b>Proven:</b> ${(d.proven||[]).map(esc).join(' · ')}<br><b>NOT proven:</b> ${(d.not_proven||[]).map(esc).join(' · ')}`;
+    const b=d.blocked||{};
+    setPill($('fgpat-blocked'), `existing repo ${b.existing_repo||'BLOCKED'} · customer repo ${b.customer_repo||'BLOCKED'} · github app ${b.github_app||'BLOCKED'} · code exec ${b.code_execution||'BLOCKED'} · write/merge ${b.write_merge||'BLOCKED'} · provider ${b.provider_call||'BLOCKED'} · gate 8 ${b.gate_8||'BLOCKED'} · deploy ${b.deploy||'BLOCKED'} · bill ${b.bill||'BLOCKED'} · PR#200 ${b.pr_200||'UNTOUCHED'} · protected main ${b.protected_main||'UNTOUCHED'}`, 'refuse');
+    setPill($('fgpat-next'), esc(d.next_founder_gate||'—'), 'hold');
+  }catch(e){ if($('fgpat-proven')) $('fgpat-proven').textContent='UNKNOWN — could not load fine-grained PAT proof index (no invented state).'; if($('fgpat-status')) setPill($('fgpat-status'),'UNKNOWN / NOT AVAILABLE','hold'); }
+}
+
 // ---- Private Repo Read-Only Gate (loads private_repo_index.json; readiness only; no real repo/credential) ----
 async function doPrivRepo(){
   if($('privrepo-proven')) $('privrepo-proven').textContent = 'Loading…';
@@ -971,6 +1003,7 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('sandbox-load-btn')?.addEventListener('click', doSandbox);
   $('leastpriv-load-btn')?.addEventListener('click', doLeastPriv);
   $('credroute-load-btn')?.addEventListener('click', doCredRoute);
+  $('fgpat-load-btn')?.addEventListener('click', doFgpat);
   // Founder Drive Mode + Reviewer Readiness
   $('drive-refresh-btn')?.addEventListener('click', doDrive);
   $('drive-reviewer-btn')?.addEventListener('click', ()=>{ showPanel('reviewer'); doReviewer(); });

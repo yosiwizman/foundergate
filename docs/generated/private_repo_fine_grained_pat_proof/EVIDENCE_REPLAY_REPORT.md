@@ -1,0 +1,2 @@
+# Evidence Replay Report (W7)
+Replay reconstructs the result from sealed evidence ONLY (deterministic; uses_ai_reasoning=false). Current run (token absent): **REPLAY_VERIFIED_GATE_REQUIRED** — token_present=false, intake_occurred=false, result label `TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED`, all safety invariants hold (no token logged/printed/packaged, no broad-auth/deploy-key intake, no code exec, no provider). A tampered safety invariant → `HOLD_REPLAY_MISMATCH`; a present+intake evidence record → `REPLAY_VERIFIED` (proven in tests 5/5).

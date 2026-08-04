@@ -1,0 +1,15 @@
+import { runPatProof } from '../../../src/repo_intake/private_repo_fine_grained_pat/fine_grained_pat_runner.mjs';
+import { replay } from '../../../src/repo_intake/private_repo_fine_grained_pat/fine_grained_pat_replay.mjs';
+import { SCOPE } from '../../../src/repo_intake/private_repo_fine_grained_pat/pat_authority_model.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+const SB='yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET';
+const live=runPatProof({account:SB});
+const r=replay(live.evidence);
+ok(r.status==='REPLAY_VERIFIED_GATE_REQUIRED' && r.uses_ai_reasoning===false,'absent-path replay → REPLAY_VERIFIED_GATE_REQUIRED (no AI reasoning)');
+ok(r.result_label==='TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED','absent-path replay result label correct');
+ok(replay({record_type:'x'}).status==='HOLD_NO_EVIDENCE','no evidence → HOLD_NO_EVIDENCE');
+ok(replay({...live.evidence,code_execution:true}).status==='HOLD_REPLAY_MISMATCH','tampered safety invariant → HOLD_REPLAY_MISMATCH');
+const fakePat='github_pat_'+'C'.repeat(30);
+const sim=runPatProof({account:SB,injectSecret:fakePat,intakeFn:()=>({exact_commit:'fb54698d',manifest_digest:'m',snapshot_digest:'s',file_count:9,total_bytes:1104,held_fake_secret_files:5}),scope:SCOPE.REPO_SCOPED_READONLY,metadata_sufficient:true});
+ok(replay(sim.evidence).status==='REPLAY_VERIFIED','present+intake replay → REPLAY_VERIFIED');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

@@ -1,0 +1,9 @@
+{
+  "record_type": "pat_scope_validation",
+  "token_present": false,
+  "label": "TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED",
+  "authenticated_user_checked": false,
+  "repo_access_checked": false,
+  "write_endpoints_probed": false,
+  "note": "no token present; scope cannot be validated; NOT ASSERTED"
+}

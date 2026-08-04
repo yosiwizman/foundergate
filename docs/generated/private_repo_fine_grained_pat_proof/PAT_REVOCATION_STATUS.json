@@ -1,0 +1,6 @@
+{
+  "record_type": "pat_revocation_status",
+  "token_present": false,
+  "label": "TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED",
+  "note": "no token to revoke; revocation model recorded; founder must create the PAT first"
+}

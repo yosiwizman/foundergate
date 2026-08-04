@@ -1,0 +1,7 @@
+{
+  "record_type": "private_repo_manifest",
+  "token_present": false,
+  "status": "NOT_ASSERTED",
+  "note": "NOT ASSERTED: PAT read-only intake — no safe Keychain PAT was found.",
+  "repo": "yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET"
+}

@@ -1,0 +1,10 @@
+import { revocationLabel, mayAutoRevoke, REVOCATION_LABEL } from '../../../src/repo_intake/private_repo_fine_grained_pat/pat_revocation_model.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+ok(revocationLabel({present:false})===REVOCATION_LABEL.GATE_REQUIRED,'absent → gate required');
+ok(revocationLabel({present:true,clearly_disposable_sandbox_pat:false})===REVOCATION_LABEL.FOUNDER_MANUAL,'ambiguous token → founder manual (never auto-revoke)');
+ok(revocationLabel({present:true,clearly_disposable_sandbox_pat:true,mechanical_revocation_confirmed:true})===REVOCATION_LABEL.REVOKED_AND_DENIED,'disposable + mechanical → revoked+denied');
+ok(revocationLabel({present:true,clearly_disposable_sandbox_pat:true,expiry_recorded:true})===REVOCATION_LABEL.EXPIRY_RECORDED,'disposable + expiry → expiry recorded');
+ok(mayAutoRevoke({clearly_disposable_sandbox_pat:false})===false,'never auto-revoke ambiguous');
+ok(mayAutoRevoke({clearly_disposable_sandbox_pat:true,would_expose_value:true})===false,'never auto-revoke if it would expose value');
+ok(mayAutoRevoke({clearly_disposable_sandbox_pat:true,would_expose_value:false,would_broaden_permission:false})===true,'auto-revoke allowed only for clearly disposable + safe');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

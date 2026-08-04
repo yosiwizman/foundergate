@@ -1,0 +1,2 @@
+# PAT Scope & Identity Validation (N2)
+**Label: `TRUE_FOUNDER_GATE_PAT_CREATION_REQUIRED`.** No token is present, so scope/identity cannot be validated. **NOT ASSERTED:** authenticated user, repo access, write-endpoint refusal, repository-scoping. When a safe Keychain PAT later exists, the authority model (`pat_authority_model`) validates it repo-scoped + read-only-contents or labels the result partial/hold — without ever printing the token.

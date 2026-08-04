@@ -1,0 +1,11 @@
+{
+  "record_type": "keychain_pat_discovery",
+  "service": "foundergate-github-fgpat-sandbox-readonly",
+  "account": "yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET",
+  "token_present": false,
+  "keychain_find_exit": 44,
+  "token_value_seen_by_log": false,
+  "token_printed": false,
+  "token_written_to_disk": false,
+  "note": "attributes-only existence check; no value retrieved"
+}

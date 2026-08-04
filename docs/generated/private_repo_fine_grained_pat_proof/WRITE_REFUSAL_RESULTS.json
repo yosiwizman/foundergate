@@ -1,0 +1,220 @@
+{
+  "kind": "FINE_GRAINED_PAT_WRITE_REFUSAL_RESULTS",
+  "total": 30,
+  "passed": 30,
+  "all_held": true,
+  "no_real_mutation_attempted": true,
+  "no_token_exposed": true,
+  "cases": [
+    {
+      "id": 1,
+      "desc": "classic PAT refused",
+      "expected": "REFUSED",
+      "got": "REFUSED",
+      "pass": true
+    },
+    {
+      "id": 2,
+      "desc": "broad gh auth refused for intake",
+      "expected": "REFUSED",
+      "got": "REFUSED",
+      "pass": true
+    },
+    {
+      "id": 3,
+      "desc": "deploy key refused for PAT proof",
+      "expected": "REFUSED",
+      "got": "REFUSED",
+      "pass": true
+    },
+    {
+      "id": 4,
+      "desc": "missing token held",
+      "expected": "TOKEN_ABSENT_HOLD",
+      "got": "TOKEN_ABSENT_HOLD",
+      "pass": true
+    },
+    {
+      "id": 5,
+      "desc": "malformed token held",
+      "expected": "TOKEN_MALFORMED_HOLD",
+      "got": "TOKEN_MALFORMED_HOLD",
+      "pass": true
+    },
+    {
+      "id": 6,
+      "desc": "token printed to log fails",
+      "expected": "FAIL_TOKEN_IN_LOG",
+      "got": "FAIL_TOKEN_IN_LOG",
+      "pass": true
+    },
+    {
+      "id": 7,
+      "desc": "token in evidence fails",
+      "expected": "TOKEN_NOT_IN_EVIDENCE",
+      "got": "TOKEN_NOT_IN_EVIDENCE",
+      "pass": true
+    },
+    {
+      "id": 8,
+      "desc": "token in screenshot metadata fails",
+      "expected": "TOKEN_NOT_IN_SCREENSHOT",
+      "got": "TOKEN_NOT_IN_SCREENSHOT",
+      "pass": true
+    },
+    {
+      "id": 9,
+      "desc": "token in ZIP fails",
+      "expected": "TOKEN_NOT_IN_ZIP",
+      "got": "TOKEN_NOT_IN_ZIP",
+      "pass": true
+    },
+    {
+      "id": 10,
+      "desc": "write-scoped token refused",
+      "expected": "REFUSED",
+      "got": "REFUSED",
+      "pass": true
+    },
+    {
+      "id": 11,
+      "desc": "workflow-scoped token refused",
+      "expected": "REFUSED",
+      "got": "REFUSED",
+      "pass": true
+    },
+    {
+      "id": 12,
+      "desc": "org-wide token refused",
+      "expected": "REFUSED",
+      "got": "REFUSED",
+      "pass": true
+    },
+    {
+      "id": 13,
+      "desc": "unknown scope held",
+      "expected": "HOLD",
+      "got": "HOLD",
+      "pass": true
+    },
+    {
+      "id": 14,
+      "desc": "push refused",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 15,
+      "desc": "branch creation refused",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 16,
+      "desc": "tag creation refused",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 17,
+      "desc": "issue creation refused",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 18,
+      "desc": "issue comment refused",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 19,
+      "desc": "workflow dispatch refused",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 20,
+      "desc": "settings mutation refused",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 21,
+      "desc": "secret creation refused",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 22,
+      "desc": "webhook creation refused",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 23,
+      "desc": "package install refused",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 24,
+      "desc": "repo build refused",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 25,
+      "desc": "repo test refused",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 26,
+      "desc": "script execution refused",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 27,
+      "desc": "provider/model call refused",
+      "expected": "REFUSED_NO_SUCH_CAPABILITY",
+      "got": "REFUSED_NO_SUCH_CAPABILITY",
+      "pass": true
+    },
+    {
+      "id": 28,
+      "desc": "existing repo access refused",
+      "expected": "REFUSED",
+      "got": "REFUSED",
+      "pass": true
+    },
+    {
+      "id": 29,
+      "desc": "customer repo access refused",
+      "expected": "REFUSED",
+      "got": "REFUSED",
+      "pass": true
+    },
+    {
+      "id": 30,
+      "desc": "evidence missing shows UNKNOWN",
+      "expected": "UNKNOWN",
+      "got": "UNKNOWN",
+      "pass": true
+    }
+  ]
+}
