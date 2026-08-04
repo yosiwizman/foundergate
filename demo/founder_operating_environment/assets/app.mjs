@@ -428,6 +428,26 @@ async function doProvider(){
   }catch(e){ $('provider-body').innerHTML='<tr><td colspan="7">UNKNOWN — could not load provider index (no green).</td></tr>'; }
 }
 
+// ---- Real Provider Gate (loads real_provider_index.json; one real OpenAI call; provider output != acceptance) ----
+async function doRealGate(){
+  if($('realgate-output')) $('realgate-output').textContent = 'Loading…';
+  try{
+    const r = await fetch('assets/harvest/real_provider_index.json', {cache:'no-store'});
+    if(!r.ok) throw new Error('real_provider_index '+r.status);
+    const d = await r.json();
+    if($('realgate-labels')) $('realgate-labels').innerHTML = (d.labels||[]).map(l=>`<span class="lbl">${esc(l)}</span>`).join(' ');
+    setPill($('realgate-provider'), `${esc(d.provider||'—')} · ${esc(d.model||'—')}`, 'live');
+    setPill($('realgate-callcount'), `${d.call_count} (exactly one)`, d.call_count===1?'live':'refuse');
+    setPill($('realgate-budget'), `cap $${d.budget_cap_usd} · used $${d.budget_used_usd}`, (d.budget_used_usd<=d.budget_cap_usd)?'live':'refuse');
+    setPill($('realgate-verify'), esc(d.response_verification||'—'), /VERIFIED_WITH_LIMITS/.test(d.response_verification)?'live':'hold');
+    setPill($('realgate-evidence'), esc(d.evidence_status||'—'), d.evidence_status==='REAL_CALL_COMPLETED'?'live':'hold');
+    setPill($('realgate-selfcert'), d.provider_self_certified?'YES ⚠':'NO', d.provider_self_certified?'refuse':'live');
+    if($('realgate-output')) $('realgate-output').textContent = d.redacted_output_preview || '(no output)';
+    const b=d.blocked||{};
+    setPill($('realgate-blocked'), `private repo ${b.private_repo||'BLOCKED'} · Gate 8 ${b.gate_8||'BLOCKED'} · deploy ${b.deploy||'BLOCKED'} · bill ${b.bill||'BLOCKED'} · merge ${b.merge||'BLOCKED'} · customer data ${b.customer_data||'BLOCKED'} · 2nd call ${b.second_call||'BLOCKED'}`, 'refuse');
+  }catch(e){ if($('realgate-output')) $('realgate-output').textContent='UNKNOWN — could not load real provider gate index (no invented state).'; if($('realgate-verify')) setPill($('realgate-verify'),'UNKNOWN','hold'); }
+}
+
 // ---- Harvest Macro Operation (loads harvest_index.json; local batch summary; never invents state) ----
 async function doHarvest(){
   if($('harvest-body')) $('harvest-body').innerHTML = '<tr><td colspan="4">Loading…</td></tr>';
@@ -836,6 +856,8 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('physical-load-btn')?.addEventListener('click', doPhysical);
   // Harvest Macro Operation panel
   $('harvest-load-btn')?.addEventListener('click', doHarvest);
+  // Real Provider Gate panel
+  $('realgate-load-btn')?.addEventListener('click', doRealGate);
   // Founder Drive Mode + Reviewer Readiness
   $('drive-refresh-btn')?.addEventListener('click', doDrive);
   $('drive-reviewer-btn')?.addEventListener('click', ()=>{ showPanel('reviewer'); doReviewer(); });

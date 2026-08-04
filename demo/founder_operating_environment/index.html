@@ -78,6 +78,7 @@
       <button class="nav"    data-panel="boundary" data-testid="nav-boundary">🛰️ Boundary Assurance <span class="tag">flight recorder</span></button>
       <button class="nav"    data-panel="physical" data-testid="nav-physical">🔌 Physical Containment <span class="tag">model only</span></button>
       <button class="nav"    data-panel="harvest"  data-testid="nav-harvest">🌾 Harvest Macro Operation <span class="tag">local batch</span></button>
+      <button class="nav"    data-panel="realgate" data-testid="nav-realgate">🔑 Real Provider Gate <span class="tag">1 real call</span></button>
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
@@ -377,6 +378,27 @@
         <p class="honesty" data-testid="provider-note">A provider that CLAIMS success without real files, with the wrong preview, without tests, or that asks for network/keys/deploy/private-repo is HELD/REFUSED — never PASS. Real OpenAI/Codex/Hermes activation and private-repo access each require a separate founder gate.</p>
         <div class="clsrow"><span>Summary</span><span id="provider-summary" data-testid="provider-summary" class="pill">—</span></div>
         <div class="clsrow"><span>Decision</span><span class="pill">INTERNAL_DEMO_ONLY (never SHIP)</span></div>
+      </div>
+    </section>
+
+    <!-- ===== REAL PROVIDER GATE (one real OpenAI call, founder-authorized) ===== -->
+    <section class="panel" id="panel-realgate" role="region" aria-label="Real Provider Gate" data-testid="panel-realgate">
+      <div class="eyebrow">REAL PROVIDER GATE — founder-authorized · exactly ONE real OpenAI call · budget-capped · synthetic input only · provider output alone is NOT acceptance</div>
+      <div class="head"><div><h1>Real Provider Gate</h1><div class="sub">FounderGate routed exactly one real OpenAI API call through the deterministic gate with synthetic input, bound it to the run contract, and verified it independently. <b>One real call only · synthetic input only · NOT production · NOT SaaS · NOT customer-ready · NOT real provider support complete. Never SHIP.</b></div></div></div>
+      <div class="card">
+        <div class="fg-labels" id="realgate-labels" data-testid="realgate-labels"></div>
+        <div class="actions"><button id="realgate-load-btn" class="btn primary" data-testid="realgate-load-btn">Load Real Provider Gate</button></div>
+        <div class="clsrow"><span>Provider · model</span><span id="realgate-provider" data-testid="realgate-provider" class="pill">—</span></div>
+        <div class="clsrow"><span>Real call count</span><span id="realgate-callcount" data-testid="realgate-callcount" class="pill">—</span></div>
+        <div class="clsrow"><span>Budget cap · budget used</span><span id="realgate-budget" data-testid="realgate-budget" class="pill">—</span></div>
+        <div class="clsrow"><span>Response verification</span><span id="realgate-verify" data-testid="realgate-verify" class="pill">—</span></div>
+        <div class="clsrow"><span>Evidence status</span><span id="realgate-evidence" data-testid="realgate-evidence" class="pill">—</span></div>
+        <div class="clsrow"><span>Provider self-certified?</span><span id="realgate-selfcert" data-testid="realgate-selfcert" class="pill">—</span></div>
+        <h2 style="font-size:14px;margin:12px 0 4px">Redacted synthetic response</h2>
+        <div id="realgate-output" data-testid="realgate-output" class="muted" style="font-size:12px;white-space:pre-wrap">—</div>
+        <p class="honesty" data-testid="realgate-note">One real budget-capped OpenAI call with synthetic input only. FounderGate — not the model — decided the result: provider output alone is not acceptance. This is NOT production, NOT SaaS, NOT customer-ready, and NOT real provider support complete. The API key is never stored, printed, or placed in evidence.</p>
+        <div class="clsrow"><span>Blocked gates</span><span id="realgate-blocked" data-testid="realgate-blocked" class="pill refuse">—</span></div>
+        <div class="clsrow"><span>Decision</span><span class="pill">ONE-CALL PROOF ONLY (never SHIP)</span></div>
       </div>
     </section>
 

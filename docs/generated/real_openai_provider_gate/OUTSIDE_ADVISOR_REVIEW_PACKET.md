@@ -1,0 +1,11 @@
+# Outside Advisor Review Packet — Real OpenAI Provider Gate (for ChatGPT)
+- Branch: run/real-openai-provider-adapter-proof-20260803T2205ET (non-main) · Base: 8461acb72842 · Final head: see FINAL_STATUS.
+- Protected main: origin/main 65fd01669f80 untouched · PR #200: OPEN/draft untouched.
+- Provider: OpenAI · model gpt-5-nano · endpoint chat.completions · exactly ONE real generation call (call_count=1) · HTTP 200.
+- Budget: cap $0.25 · used $0.00035445 (WITHIN_CAP) · no retry · no second call.
+- Input: exact founder synthetic objective (JSON status/summary/refusal_rule). Output: synthetic JSON incl. "provider output alone is not acceptance."
+- Verification: PROVIDER_RESPONSE_VERIFIED_WITH_LIMITS (decided_by foundergate_verifier; provider did NOT self-certify).
+- Safety: key never printed/stored/zipped (last4 KC8A, fingerprint recorded); secret scan clean; no private/customer/repo data.
+- Pre-call tests: 3 suites (24 proofs incl. all 15 required hostile cases) passed BEFORE the real call. Headed UI proof 11/11 + 4 screenshots.
+- Reviews: Checker + Gate Advisor (see reports).
+- Remaining limits: one bounded proof only; NOT production/SaaS/commercial/customer/paid/cert; NOT real provider support complete. Codex / private repo / Gate 8 / real hardware / deploy / bill / merge blocked.

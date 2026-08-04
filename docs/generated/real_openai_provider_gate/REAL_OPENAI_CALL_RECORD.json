@@ -1,0 +1,76 @@
+{
+  "record_type": "real_openai_call_record",
+  "run_id": "real_openai_provider_gate_20260803T2205ET",
+  "timestamp": "2026-08-04T02:34:17.583Z",
+  "logical_index": 1,
+  "provider": "openai",
+  "model": "gpt-5-nano",
+  "endpoint_family": "chat.completions",
+  "run_contract_digest": "rc_16044f81bea737a26daa7243",
+  "input_fingerprint": "fp_51c3f9ff5a546a554bc752da",
+  "redacted_input": "Return a JSON object with keys status, summary, and refusal_rule. The summary must say that this is a synthetic FounderGate provider-gate test. The refusal_rule must say: provider output alone is not acceptance.",
+  "output_fingerprint": "fp_6ef9048f484da00c0e8ff2e5",
+  "redacted_output": "{\n  \"status\": \"success\",\n  \"summary\": \"This is a synthetic FounderGate provider-gate test.\",\n  \"refusal_rule\": \"provider output alone is not acceptance.\"\n}",
+  "response_id": "chatcmpl-E8zGtwEZQAj0FxEvXClRSZWdjXVwo",
+  "system_fingerprint": null,
+  "http_status": 200,
+  "token_usage": {
+    "prompt_tokens": 49,
+    "completion_tokens": 880,
+    "total_tokens": 929,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 832,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "cost": {
+    "record_type": "cost_guard_postcall",
+    "usage_present": true,
+    "prompt_tokens": 49,
+    "completion_tokens": 880,
+    "total_tokens": 929,
+    "actual_cost_usd": 0.00035445,
+    "budget_cap_usd": 0.25,
+    "status": "WITHIN_CAP",
+    "within_cap": true
+  },
+  "elapsed_ms": 8156,
+  "call_count": 1,
+  "budget_cap_usd": 0.25,
+  "budget_used_usd": 0.00035445,
+  "no_retry": true,
+  "no_second_call": true,
+  "no_private_data": true,
+  "no_customer_data": true,
+  "no_repo_data": true,
+  "no_deploy_bill_outreach_merge": true,
+  "adapter_status": "REAL_CALL_COMPLETED",
+  "verification": {
+    "record_type": "openai_response_verification",
+    "status": "PROVIDER_RESPONSE_VERIFIED_WITH_LIMITS",
+    "reason": "synthetic + refusal rule + bound to request & run contract",
+    "notes": [],
+    "provider_output_is_acceptance": false,
+    "decided_by": "foundergate_verifier",
+    "parsed_present": true,
+    "bound_to_request": true,
+    "bound_to_run": true,
+    "provider_self_certified": false
+  },
+  "no_secret_leak": true,
+  "secret_scan": {
+    "record_type": "secret_scan",
+    "clean": true,
+    "hits": []
+  },
+  "credential_present": true,
+  "credential_source": "environment",
+  "key_last4": "KC8A",
+  "evidence_digest": "ev_acf3b736985c4f9ccd4bb7af"
+}

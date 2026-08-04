@@ -1,0 +1,48 @@
+{
+  "kind": "REAL_PROVIDER_GATE",
+  "run_id": "real_openai_provider_gate_20260803T2205ET",
+  "provider": "openai",
+  "model": "gpt-5-nano",
+  "call_count": 1,
+  "budget_cap_usd": 0.25,
+  "budget_used_usd": 0.00035445,
+  "response_verification": "PROVIDER_RESPONSE_VERIFIED_WITH_LIMITS",
+  "evidence_status": "REAL_CALL_COMPLETED",
+  "provider_self_certified": false,
+  "redacted_output_preview": "{\n  \"status\": \"success\",\n  \"summary\": \"This is a synthetic FounderGate provider-gate test.\",\n  \"refusal_rule\": \"provider output alone is not acceptance.\"\n}",
+  "token_usage": {
+    "prompt_tokens": 49,
+    "completion_tokens": 880,
+    "total_tokens": 929,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 832,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "blocked": {
+    "private_repo": "BLOCKED",
+    "gate_8": "BLOCKED",
+    "deploy": "BLOCKED",
+    "bill": "BLOCKED",
+    "merge": "BLOCKED",
+    "customer_data": "BLOCKED",
+    "codex": "BLOCKED",
+    "second_call": "BLOCKED"
+  },
+  "labels": [
+    "ONE real provider call only",
+    "synthetic input only",
+    "NOT production",
+    "NOT SaaS",
+    "NOT customer-ready",
+    "NOT real provider support complete",
+    "provider output alone is not acceptance",
+    "NEVER SHIP"
+  ]
+}
