@@ -16,4 +16,4 @@ Gate checklist (all satisfied):
 - Real provider activation BLOCKED · private repo access BLOCKED · Gate 8 BLOCKED · deploy/bill/outreach/customer-data/merge BLOCKED · external network BLOCKED — each needs an explicit founder phrase.
 - Recommended next: P3 Security & Trust locally, or deepen the outer controller.
 
-Base run/p0-core-ip-assumption-env-verification @ (see below). Final head: tip of run/p0-outer-controller-env-challenge-gauntlet-20260803T1945ET (git rev-parse HEAD).
+Base run/p0-core-ip-assumption-env-verification @ (see below). Final head: tip of run/p0-outer-controller-env-challenge-gauntlet-20260803T1945ET (git rev-parse HEAD). Sealing commit: 99d932d069fb (+ this stamp).
