@@ -1,0 +1,11 @@
+import { runIntake } from '../../../src/repo_intake/private_repo_least_privilege/least_privilege_deploy_key_runner.mjs';
+import { replay } from '../../../src/repo_intake/private_repo_least_privilege/least_privilege_deploy_key_replay.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+const r=runIntake({repo:'yosiwizman/x',private:true,commit:'fb54698d5cbb',deploy_key_id:1,archive_digest:'d',files:[{path:'README.md',bytes:10,sample:'x'}]},{revoked:true,post_revocation_failed:true,private_key_destroyed:true});
+const rep=replay(r.evidence);
+ok(rep.status==='REPLAY_VERIFIED' && rep.uses_ai_reasoning===false,'replay verified from sealed evidence (no AI reasoning)');
+ok(rep.credential_type==='READ_ONLY_DEPLOY_KEY' && rep.revocation_verified===true && rep.exact_commit==='fb54698d5cbb','replay: read-only deploy key + revocation verified + exact commit');
+ok(replay({record_type:'x'}).status==='HOLD_NO_EVIDENCE','no evidence → HOLD');
+ok(replay({...r.evidence,deploy_key_revoked:false}).status==='HOLD_REPLAY_MISMATCH','un-revoked invariant → HOLD_REPLAY_MISMATCH');
+ok(replay({...r.evidence,broad_gh_auth_used_for_intake:true}).status==='HOLD_REPLAY_MISMATCH','broad-auth-used invariant → HOLD_REPLAY_MISMATCH');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

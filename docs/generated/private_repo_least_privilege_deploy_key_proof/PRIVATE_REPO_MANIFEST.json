@@ -1,0 +1,47 @@
+[
+  {
+    "path": "README.md",
+    "bytes": 247,
+    "hash": "a92e791e188ed19416f52fce4e34a8513d638bf4aa671038a48e591ab7ffe832"
+  },
+  {
+    "path": "docs/SAFE_FIXTURE.md",
+    "bytes": 99,
+    "hash": "a0cd761861b627035d1482574475b34aa454ffbc472b4828bc22ba7e51ccaaf1"
+  },
+  {
+    "path": "fixtures/customer_like_fake_data.csv",
+    "bytes": 71,
+    "hash": "f53aa1717f25bfcf1b5e3d57e02f0c416e25f6afae66ebd63dbe0306d8f1b909"
+  },
+  {
+    "path": "fixtures/fake_database_url.example",
+    "bytes": 65,
+    "hash": "612ad1d105d136a48889a6c4ac9cdd3dec7f6ea152aa2228a6f46173d60fa4fa"
+  },
+  {
+    "path": "fixtures/fake_env.example",
+    "bytes": 142,
+    "hash": "323ecd1b20e0b093562aa6ae085aac671ed3305e78381a9f28e73b86624ae217"
+  },
+  {
+    "path": "fixtures/fake_private_key.example",
+    "bytes": 119,
+    "hash": "794acdb1a67db1bc8aea86eb6fd374eb184225de1d95647a8d6c6d9f938cc41d"
+  },
+  {
+    "path": "package.json",
+    "bytes": 156,
+    "hash": "5169909492601a937e31ef19d6698607c947073be189042b63d5b87b43341517"
+  },
+  {
+    "path": "src/hello.js",
+    "bytes": 136,
+    "hash": "862a1bea8d7cfb5fd05d5cb042bf87a1d82e3e2738e7700b1ee0643d3f61ee2f"
+  },
+  {
+    "path": "src/policy.txt",
+    "bytes": 69,
+    "hash": "31fafa6f5ba1af25506dd68eee2b85a00efdb9224e2de7edf353fb8b747b6f6d"
+  }
+]

@@ -454,6 +454,36 @@ async function doSandbox(){
   }catch(e){ if($('sandbox-proven')) $('sandbox-proven').textContent='UNKNOWN — could not load sandbox proof index (no invented state).'; if($('sandbox-status')) setPill($('sandbox-status'),'UNKNOWN / NOT AVAILABLE','hold'); }
 }
 
+// ---- Private Repo Least-Privilege Credential Proof (loads least_privilege_index.json; ONE temporary repo-scoped read-only deploy key, revoked) ----
+async function doLeastPriv(){
+  if($('leastpriv-proven')) $('leastpriv-proven').textContent = 'Loading…';
+  try{
+    const r = await fetch('assets/private_repo/least_privilege_index.json', {cache:'no-store'});
+    if(!r.ok) throw new Error('least_privilege_index '+r.status);
+    const d = await r.json();
+    if($('leastpriv-labels')) $('leastpriv-labels').innerHTML = (d.labels||[]).map(l=>`<span class="lbl">${esc(l)}</span>`).join(' ');
+    setPill($('leastpriv-status'), esc(d.status||'UNKNOWN'), /READY_WITH_LIMITS/.test(d.status)?'live':'hold');
+    setPill($('leastpriv-repo'), `${esc(d.repo||'—')} · private: ${d.private?'YES':'NO'}`, d.private?'live':'refuse');
+    setPill($('leastpriv-cred'), `${esc(d.credential_type||'—')} · read-only: ${d.deploy_key_read_only?'YES':'NO'}`, d.deploy_key_read_only?'live':'refuse');
+    setPill($('leastpriv-route'), `${esc(d.intake_auth_route||'—')} · deploy-key-only: ${d.intake_used_deploy_key_only?'YES':'NO'} · broad-auth key-create-only: ${d.broad_gh_auth_key_creation_only?'YES':'NO'}`, (d.intake_used_deploy_key_only && d.broad_gh_auth_key_creation_only)?'live':'refuse');
+    setPill($('leastpriv-fingerprint'), esc(d.deploy_key_fingerprint||'—'), 'live');
+    setPill($('leastpriv-commit'), esc(d.exact_commit||'—'), 'live');
+    setPill($('leastpriv-snapshot'), esc(d.snapshot_digest||'—'), 'live');
+    const sc=d.secret_classifier||{};
+    setPill($('leastpriv-secrets'), `${esc(sc.status||'—')} · ${sc.held||0} held`, sc.held>0?'hold':'live');
+    const wr=d.write_refusal;
+    setPill($('leastpriv-refusal'), wr?`${wr.total} cases · all held: ${wr.all_held?'YES':'NO'}`:'UNKNOWN', (wr&&wr.all_held)?'live':'refuse');
+    const rv=d.revocation||{};
+    setPill($('leastpriv-revocation'), `revoked: ${rv.revoked?'YES':'NO'} · post-revocation access denied: ${rv.post_revocation_access_failed?'YES':'NO'} · private key destroyed: ${rv.private_key_destroyed?'YES':'NO'}`, (rv.revoked && rv.post_revocation_access_failed && rv.private_key_destroyed)?'live':'refuse');
+    setPill($('leastpriv-evidence'), esc(d.evidence_status||'UNKNOWN'), /VERIFIED/.test(d.evidence_status)?'live':'hold');
+    setPill($('leastpriv-safety'), `existing/customer repo: ${d.existing_valuable_repo_touched||d.customer_repo_touched?'⚠ YES':'NO'} · credential exposed: ${d.credential_value_exposed?'⚠ YES':'NO'} · private key packaged: ${d.private_key_packaged?'⚠ YES':'NO'} · code exec: ${d.code_execution?'⚠ YES':'NO'} · provider: ${d.provider_call?'⚠ YES':'NO'}`, (d.existing_valuable_repo_touched||d.customer_repo_touched||d.credential_value_exposed||d.private_key_packaged||d.code_execution||d.provider_call)?'refuse':'live');
+    if($('leastpriv-proven')) $('leastpriv-proven').innerHTML = `<b>Proven:</b> ${(d.proven||[]).map(esc).join(' · ')}<br><b>NOT proven:</b> ${(d.not_proven||[]).map(esc).join(' · ')}`;
+    const b=d.blocked||{};
+    setPill($('leastpriv-blocked'), `existing repo ${b.existing_repo||'BLOCKED'} · customer repo ${b.customer_repo||'BLOCKED'} · code exec ${b.code_execution||'BLOCKED'} · write/merge ${b.write_merge||'BLOCKED'} · provider ${b.provider_call||'BLOCKED'} · gate 8 ${b.gate_8||'BLOCKED'} · deploy ${b.deploy||'BLOCKED'} · bill ${b.bill||'BLOCKED'} · PR#200 ${b.pr_200||'UNTOUCHED'} · protected main ${b.protected_main||'UNTOUCHED'}`, 'refuse');
+    setPill($('leastpriv-next'), esc(d.next_founder_gate||'—'), 'hold');
+  }catch(e){ if($('leastpriv-proven')) $('leastpriv-proven').textContent='UNKNOWN — could not load least-privilege proof index (no invented state).'; if($('leastpriv-status')) setPill($('leastpriv-status'),'UNKNOWN / NOT AVAILABLE','hold'); }
+}
+
 // ---- Private Repo Read-Only Gate (loads private_repo_index.json; readiness only; no real repo/credential) ----
 async function doPrivRepo(){
   if($('privrepo-proven')) $('privrepo-proven').textContent = 'Loading…';
@@ -915,6 +945,7 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('privrepo-load-btn')?.addEventListener('click', doPrivRepo);
   // Private Repo Actual Sandbox Proof panel
   $('sandbox-load-btn')?.addEventListener('click', doSandbox);
+  $('leastpriv-load-btn')?.addEventListener('click', doLeastPriv);
   // Founder Drive Mode + Reviewer Readiness
   $('drive-refresh-btn')?.addEventListener('click', doDrive);
   $('drive-reviewer-btn')?.addEventListener('click', ()=>{ showPanel('reviewer'); doReviewer(); });

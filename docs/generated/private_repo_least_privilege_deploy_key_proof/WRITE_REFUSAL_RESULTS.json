@@ -1,0 +1,183 @@
+{
+  "record_type": "write_refusal_matrix",
+  "total": 25,
+  "all_held": true,
+  "no_real_mutation_attempted": true,
+  "cases": [
+    {
+      "n": "1 push",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "read-only deploy key cannot write (read_only=true)"
+    },
+    {
+      "n": "2 commit",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "read-only deploy key cannot write (read_only=true)"
+    },
+    {
+      "n": "3 branch_create",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "4 tag_create",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "5 issue_create",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "6 issue_comment",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "7 workflow_dispatch",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "8 repo_settings_mutate",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "9 collaborator_mutate",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "10 webhook_create",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "11 secret_create",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "12 second_deploy_key_create",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "13 public_visibility_change",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "14 repo_deletion",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "15 package_install",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "16 repo_build",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "17 repo_test",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "18 script_execution",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "19 provider_model_call",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "20 second_repo_access",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "21 non_sandbox_repo_access",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "22 broad_repo_scan",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "23 permission_broadening",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "24 token_printing",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    },
+    {
+      "n": "25 evidence_packaging_with_secrets",
+      "observed": "REFUSED_NO_SUCH_CAPABILITY",
+      "held": true,
+      "no_network_mutation": true,
+      "reason": "no such capability on the read-only proof path"
+    }
+  ]
+}

@@ -81,6 +81,7 @@
       <button class="nav"    data-panel="realgate" data-testid="nav-realgate">🔑 Real Provider Gate <span class="tag">1 real call</span></button>
       <button class="nav"    data-panel="privrepo" data-testid="nav-privrepo">🔐 Private Repo Read-Only Gate <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="sandbox"  data-testid="nav-sandbox">🗝️ Private Sandbox Proof <span class="tag">actual repo</span></button>
+      <button class="nav"    data-panel="leastpriv" data-testid="nav-leastpriv">🔒 Least-Privilege Deploy Key <span class="tag">read-only key</span></button>
       <button class="nav"    data-panel="realrepo" data-testid="nav-realrepo">🗂 Real Repo Proof <span class="tag">public self-owned</span></button>
       <button class="nav"    data-panel="doctor"   data-testid="nav-doctor">🩺 Doctor <span class="tag">readiness</span></button>
       <button class="nav"    data-panel="livegate" data-testid="nav-livegate">🚦 Live-Gate Simulator <span class="tag">planning</span></button>
@@ -405,6 +406,34 @@
         <div class="clsrow"><span>Blocked gates</span><span id="sandbox-blocked" data-testid="sandbox-blocked" class="pill refuse">—</span></div>
         <div class="clsrow"><span>Next founder decision</span><span id="sandbox-next" data-testid="sandbox-next" class="pill">—</span></div>
         <div class="clsrow"><span>Decision</span><span class="pill">SANDBOX PROOF ONLY (never SHIP)</span></div>
+      </div>
+    </section>
+
+    <!-- ===== LEAST-PRIVILEGE READ-ONLY DEPLOY KEY PROOF (one temporary repo-scoped read-only deploy key; revoked) ===== -->
+    <section class="panel" id="panel-leastpriv" role="region" aria-label="Private Repo Least-Privilege Credential Proof" data-testid="panel-leastpriv">
+      <div class="eyebrow">LEAST-PRIVILEGE READ-ONLY DEPLOY KEY PROOF — ONE temporary repo-scoped READ-ONLY deploy key on the founder-owned private sandbox · intake used ONLY that key (SSH IdentitiesOnly) · key REVOKED + post-revocation access denied + private key destroyed · NO existing/customer repo · NO code execution · NO provider call</div>
+      <div class="head"><div><h1>Private Repo Least-Privilege Credential Proof</h1><div class="sub">FounderGate created <b>one temporary repo-scoped read-only deploy key</b> on the founder-owned private sandbox repo and performed actual read-only intake using <b>only that deploy key</b>. The broad GitHub auth was used only to create/delete the key — never for the intake. The key was <b>revoked</b>, post-revocation access <b>failed</b>, and the private key was <b>destroyed</b>. <b>No existing or customer repo was touched, no credential value was exposed, no code was executed, no provider was called. Support is not complete. Never SHIP.</b></div></div></div>
+      <div class="card">
+        <div class="fg-labels" id="leastpriv-labels" data-testid="leastpriv-labels"></div>
+        <div class="actions"><button id="leastpriv-load-btn" class="btn primary" data-testid="leastpriv-load-btn">Load Least-Privilege Proof</button></div>
+        <div class="clsrow"><span>Status</span><span id="leastpriv-status" data-testid="leastpriv-status" class="pill">—</span></div>
+        <div class="clsrow"><span>Repo (owner/repo) · private</span><span id="leastpriv-repo" data-testid="leastpriv-repo" class="pill">—</span></div>
+        <div class="clsrow"><span>Credential type · read-only</span><span id="leastpriv-cred" data-testid="leastpriv-cred" class="pill">—</span></div>
+        <div class="clsrow"><span>Intake auth route (deploy key only)</span><span id="leastpriv-route" data-testid="leastpriv-route" class="pill">—</span></div>
+        <div class="clsrow"><span>Deploy key fingerprint (public)</span><span id="leastpriv-fingerprint" data-testid="leastpriv-fingerprint" class="pill">—</span></div>
+        <div class="clsrow"><span>Exact commit</span><span id="leastpriv-commit" data-testid="leastpriv-commit" class="pill">—</span></div>
+        <div class="clsrow"><span>Snapshot digest</span><span id="leastpriv-snapshot" data-testid="leastpriv-snapshot" class="pill">—</span></div>
+        <div class="clsrow"><span>Secret classifier</span><span id="leastpriv-secrets" data-testid="leastpriv-secrets" class="pill">—</span></div>
+        <div class="clsrow"><span>Write-attempt refusal</span><span id="leastpriv-refusal" data-testid="leastpriv-refusal" class="pill">—</span></div>
+        <div class="clsrow"><span>Credential lifecycle (revocation)</span><span id="leastpriv-revocation" data-testid="leastpriv-revocation" class="pill">—</span></div>
+        <div class="clsrow"><span>Evidence replay</span><span id="leastpriv-evidence" data-testid="leastpriv-evidence" class="pill">—</span></div>
+        <div class="clsrow"><span>Existing/customer repo touched · credential exposed · private key packaged · code exec · provider</span><span id="leastpriv-safety" data-testid="leastpriv-safety" class="pill">—</span></div>
+        <h2 style="font-size:14px;margin:12px 0 4px">What is proven / not proven</h2>
+        <div id="leastpriv-proven" data-testid="leastpriv-proven" class="muted" style="font-size:12px">—</div>
+        <p class="honesty" data-testid="leastpriv-note">One temporary repo-scoped READ-ONLY deploy key on one founder-owned PRIVATE sandbox repo with synthetic files only. Actual read-only intake proven against the exact commit using ONLY that deploy key (SSH IdentitiesOnly — the broad token was not used for intake). The key was revoked, post-revocation access failed, and the private key was destroyed. No existing or customer repo was touched; no credential value was exposed; no private key was packaged; no code executed; no provider called. This does NOT prove fine-grained-PAT, GitHub-App, customer-repo, private-repo-support-complete, or production/SaaS readiness.</p>
+        <div class="clsrow"><span>Blocked gates</span><span id="leastpriv-blocked" data-testid="leastpriv-blocked" class="pill refuse">—</span></div>
+        <div class="clsrow"><span>Next founder decision</span><span id="leastpriv-next" data-testid="leastpriv-next" class="pill">—</span></div>
+        <div class="clsrow"><span>Decision</span><span class="pill">LEAST-PRIVILEGE PROOF ONLY (never SHIP)</span></div>
       </div>
     </section>
 

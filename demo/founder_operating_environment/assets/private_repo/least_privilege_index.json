@@ -1,0 +1,84 @@
+{
+  "kind": "LEAST_PRIVILEGE_PROOF",
+  "status": "LEAST_PRIVILEGE_DEPLOY_KEY_PROOF_READY_WITH_LIMITS",
+  "label": "LEAST_PRIVILEGE_DEPLOY_KEY_PROOF_READY_WITH_LIMITS",
+  "repo": "yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET",
+  "url": "https://github.com/yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET",
+  "private": true,
+  "credential_type": "READ_ONLY_DEPLOY_KEY",
+  "deploy_key_read_only": true,
+  "deploy_key_fingerprint": "SHA256:0u9PdN9W8HfmqUV9UBBmyl9Pd1nVxerQDBFMXIf4QrQ",
+  "broad_gh_auth_key_creation_only": true,
+  "intake_used_deploy_key_only": true,
+  "intake_auth_route": "ssh_deploy_key_identities_only",
+  "exact_commit": "fb54698d5cbba4b55ef5aac2b189615154efc76e",
+  "snapshot_digest": "arc_6ec9245789a4f3b7d8c84108",
+  "secret_classifier": {
+    "status": "HELD_SENSITIVE_FILES",
+    "held": 5,
+    "by_type": {
+      "personal_customer_data": 2,
+      "database_url": 2,
+      "api_key": 1,
+      "private_key": 1
+    }
+  },
+  "write_refusal": {
+    "total": 25,
+    "all_held": true
+  },
+  "revocation": {
+    "revoked": true,
+    "post_revocation_access_failed": true,
+    "private_key_destroyed": true
+  },
+  "evidence_status": "REPLAY_VERIFIED",
+  "actual_private_repo_accessed": true,
+  "existing_valuable_repo_touched": false,
+  "customer_repo_touched": false,
+  "credential_value_exposed": false,
+  "private_key_packaged": false,
+  "code_execution": false,
+  "provider_call": false,
+  "proven": [
+    "one temporary repo-scoped read-only deploy key",
+    "actual read-only intake using deploy key ONLY (SSH IdentitiesOnly)",
+    "exact commit/snapshot binding",
+    "fake-secret classification held",
+    "25/25 write-attempt refusals",
+    "deploy key revoked + post-revocation access denied",
+    "private key destroyed",
+    "evidence replay"
+  ],
+  "not_proven": [
+    "fine-grained PAT proof",
+    "GitHub App proof",
+    "customer/existing valuable repo support",
+    "private repo support complete",
+    "production/SaaS/commercial/security readiness"
+  ],
+  "blocked": {
+    "existing_repo": "BLOCKED",
+    "customer_repo": "BLOCKED",
+    "code_execution": "BLOCKED",
+    "write_merge": "BLOCKED",
+    "provider_call": "BLOCKED",
+    "gate_8": "BLOCKED",
+    "deploy": "BLOCKED",
+    "bill": "BLOCKED",
+    "pr_200": "UNTOUCHED",
+    "protected_main": "UNTOUCHED"
+  },
+  "next_founder_gate": "fine-grained read-only PAT proof OR GitHub App proof OR customer/existing private repo (separate founder gates)",
+  "labels": [
+    "ACTUAL private founder-owned SANDBOX repo only",
+    "repo-scoped READ-ONLY deploy key",
+    "intake used deploy key ONLY",
+    "broad gh auth used only to create+delete the key",
+    "key REVOKED, post-revocation access denied",
+    "private key destroyed, not packaged",
+    "support NOT complete",
+    "NOT least-privilege-PAT / NOT GitHub-App proof",
+    "NEVER SHIP"
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "result": {
+    "status": "LEAST_PRIVILEGE_DEPLOY_KEY_PROOF_READY_WITH_LIMITS"
+  },
+  "evidence": {
+    "record_type": "least_privilege_deploy_key_evidence",
+    "run_id": "private_repo_least_privilege_deploy_key_20260804T0630ET",
+    "label": "LEAST_PRIVILEGE_DEPLOY_KEY_PROOF_READY_WITH_LIMITS",
+    "repo": "yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET",
+    "owner": "yosiwizman",
+    "private": true,
+    "exact_commit": "fb54698d5cbba4b55ef5aac2b189615154efc76e",
+    "credential_type": "READ_ONLY_DEPLOY_KEY",
+    "deploy_key_id": 159240599,
+    "deploy_key_read_only": true,
+    "deploy_key_repo_scoped": true,
+    "deploy_key_fingerprint": "SHA256:0u9PdN9W8HfmqUV9UBBmyl9Pd1nVxerQDBFMXIf4QrQ",
+    "broad_gh_auth_used_for_intake": false,
+    "intake_auth_route": "ssh_deploy_key_identities_only",
+    "archive_digest": "arc_d5e610b0384874c3541bedf7",
+    "manifest_digest": "man_484e5491a2ba60248805db34",
+    "file_count": 9,
+    "total_bytes": 1104,
+    "held_fake_secret_files": 5,
+    "redaction_summary": {
+      "personal_customer_data": 2,
+      "database_url": 2,
+      "api_key": 1,
+      "private_key": 1
+    },
+    "actual_private_repo_accessed": true,
+    "repo_is_founder_owned_sandbox": true,
+    "existing_repo_touched": false,
+    "customer_repo_touched": false,
+    "credential_value_seen": false,
+    "private_key_packaged": false,
+    "code_execution": false,
+    "build_run": false,
+    "tests_run_from_repo": false,
+    "provider_call": false,
+    "write_during_read_proof": false,
+    "deploy_key_revoked": true,
+    "post_revocation_access_failed": true,
+    "private_key_destroyed": true,
+    "evidence_digest": "lpk_1ed95c8d58c8cd6b5ecca4e9"
+  },
+  "secrets": {
+    "status": "HELD_SENSITIVE_FILES",
+    "held": 5,
+    "by_type": {
+      "personal_customer_data": 2,
+      "database_url": 2,
+      "api_key": 1,
+      "private_key": 1
+    }
+  },
+  "snapshot": {
+    "commit": "fb54698d5cbba4b55ef5aac2b189615154efc76e",
+    "archive_digest": "arc_6ec9245789a4f3b7d8c84108",
+    "manifest_digest": "man_484e5491a2ba60248805db34",
+    "file_count": 9
+  },
+  "write_refusal": {
+    "total": 25,
+    "all_held": true
+  },
+  "replay": "REPLAY_VERIFIED"
+}

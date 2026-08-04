@@ -1,0 +1,47 @@
+{
+  "held": [
+    {
+      "path": "README.md",
+      "types": [
+        "personal_customer_data"
+      ],
+      "fingerprint": "sec_b33563055168"
+    },
+    {
+      "path": "fixtures/customer_like_fake_data.csv",
+      "types": [
+        "personal_customer_data"
+      ],
+      "fingerprint": "sec_badc3c72a02e"
+    },
+    {
+      "path": "fixtures/fake_database_url.example",
+      "types": [
+        "database_url"
+      ],
+      "fingerprint": "sec_aa64aa266491"
+    },
+    {
+      "path": "fixtures/fake_env.example",
+      "types": [
+        "api_key",
+        "database_url"
+      ],
+      "fingerprint": "sec_c127bcc8eb3a"
+    },
+    {
+      "path": "fixtures/fake_private_key.example",
+      "types": [
+        "private_key"
+      ],
+      "fingerprint": "sec_5622622f0d8c"
+    }
+  ],
+  "by_type": {
+    "personal_customer_data": 2,
+    "database_url": 2,
+    "api_key": 1,
+    "private_key": 1
+  },
+  "contents_never_sent_to_model": true
+}

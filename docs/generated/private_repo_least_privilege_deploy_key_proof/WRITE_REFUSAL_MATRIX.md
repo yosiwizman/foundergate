@@ -1,0 +1,2 @@
+# Write-Attempt Refusal Matrix (W4)
+25 cases (push/commit/branch/tag/issue/comment/workflow/settings/collaborator/webhook/secret/second-deploy-key/public-visibility/deletion/install/build/test/exec/provider/second-repo/non-sandbox-repo/broad-scan/permission-broadening/token-print/secrets-in-evidence). **Result: 25/25 REFUSED** (WRITE_REFUSAL_RESULTS.json). Structural: a **read-only** deploy key cannot write (read_only=true), and the read-only proof path exposes no write/exec/provider capability. **No real GitHub mutation was attempted.**
