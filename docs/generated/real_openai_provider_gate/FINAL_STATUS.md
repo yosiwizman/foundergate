@@ -16,4 +16,4 @@ Gate checklist (all satisfied):
 - Codex / any second-or-repeat real call / private repo / Gate 8 / real hardware / deploy / bill / merge remain BLOCKED — each needs a separate explicit founder phrase.
 - Night guard (caffeinate) was local + temporary and is terminated at the end.
 
-Base run/real-openai-provider-adapter-proof @ (see below). Final head: tip of run/overnight-real-openai-provider-queue-20260803T2240ET (git rev-parse HEAD).
+Base run/real-openai-provider-adapter-proof @ (see below). Final head: tip of run/overnight-real-openai-provider-queue-20260803T2240ET (git rev-parse HEAD). Sealing commit: bc6ddfe2f1d2 (+ this stamp).
