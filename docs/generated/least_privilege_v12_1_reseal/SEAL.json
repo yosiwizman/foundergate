@@ -1,0 +1,13 @@
+{
+  "kind": "FOUNDERGATE_TWO_SHA_SEAL",
+  "run": "least_privilege_v12_1_reseal_credential_matrix_20260804T0700ET",
+  "evaluated_sha": "931dd5314f373e22d717561daaf64c25a460f972",
+  "evaluated_sha_meaning": "the exact least-privilege source candidate both reviewers verified (branch run/private-repo-least-privilege-deploy-key-20260804T0630ET)",
+  "evidence_commit_sha": "8ea8b330b85fe14f512130d28785d148700d13e7",
+  "evidence_commit_sha_meaning": "the V12.1 reseal + credential-route-matrix evidence commit on run/least-privilege-v12-1-reseal-credential-matrix-20260804T0700ET; points BACKWARD to the evaluated candidate (non-recursive)",
+  "non_recursive": true,
+  "prior_zip_sealhead_stale_value": "19f280e983a786755bcc3411f564e67f2eb1c92f",
+  "prior_zip_sealhead_explanation": "pre-amend intermediate captured too early in FINAL_STATUS.md; reconciled here",
+  "checker_verdict": "CHECK_PASS / CLEAN_WITH_LIMITS",
+  "gate_advisor_verdict": "GATE_READY_WITH_LIMITS"
+}
