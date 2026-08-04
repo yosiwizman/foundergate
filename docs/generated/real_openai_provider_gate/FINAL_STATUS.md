@@ -13,4 +13,4 @@ Gate checklist (all satisfied):
 - NOT production / SaaS / commercial / customer / paid ready; NOT security-certified; NOT "real provider support complete".
 - Codex / any second-or-repeat real call / private repo / Gate 8 / real hardware / deploy / bill / merge remain BLOCKED — each needs a separate explicit founder phrase.
 
-Base run/harvest-autonomous-macro-operation @ (see below). Final head: tip of run/real-openai-provider-adapter-proof-20260803T2205ET (git rev-parse HEAD).
+Base run/harvest-autonomous-macro-operation @ (see below). Final head: tip of run/real-openai-provider-adapter-proof-20260803T2205ET (git rev-parse HEAD). Sealing commit: 680f115140a4 (+ this stamp).
