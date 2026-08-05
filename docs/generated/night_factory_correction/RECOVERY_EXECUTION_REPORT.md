@@ -1,0 +1,2 @@
+# Recovery Execution Report
+Recovery for this bounded correction: the run state (branch/head/completed-phase/next_safe_action) is durable in the run root; a fresh session can reconstruct it from disk and continue. The corrected verifier's own adversarial suite is the resumable safe action (re-runnable from a clean checkout with zero third-party deps). Full multi-lane recovery orchestration is part of the not-yet-completed integration work.

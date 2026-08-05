@@ -1,0 +1,2 @@
+# Authority Scope
+Local-only correction + honest re-scan. NOT authorized: live GitHub App/token/key, PAT/deploy-key/broad-auth, existing/customer/production repos, providers/Codex, deploy/bill, external comms, AKIOR/M1/hardware, protected-main mutation, PR #200, open/merge PR, PK activation, founder-signature language, or production/customer/SaaS/security claims. The corrected verifier must NEVER execute capsule-contained code on the host.

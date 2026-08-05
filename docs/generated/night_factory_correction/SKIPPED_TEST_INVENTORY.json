@@ -1,0 +1,8 @@
+{
+  "scan": "skipped_test_inventory_ACCURATE",
+  "correction_base": "origin/main",
+  "genuine_xit_or_skip_or_todo_or_xdescribe": 0,
+  "finding_3_reassessment": "The prior ~72 figure (in both my night-factory report AND the correction directive) was a GREP FALSE POSITIVE: the pattern xit\\( matched exit( (e.g. process.exit()). A word-boundary scan finds ZERO genuine skip/xit/todo/xdescribe-disabled tests. Therefore there is no large pool of disabled tests to enable; the claimed backlog item does not exist as described.",
+  "classification": "NOT_APPLICABLE — no genuinely-skipped tests found",
+  "next_safe_action": "none for skipped tests; the corrected characterization is the deliverable"
+}

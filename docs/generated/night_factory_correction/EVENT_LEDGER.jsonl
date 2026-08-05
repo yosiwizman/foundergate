@@ -1,0 +1,5 @@
+{"ts":"2026-08-05T08:00ET","event":"run_start","run":"night_factory_correction_safe_verifier"}
+{"ts":"2026-08-05T08:05ET","event":"findings_reproduced","findings":["host_exec","repo_intake_only"]}
+{"ts":"2026-08-05T08:20ET","event":"safe_verifier_rewritten","checks":["no_host_exec","archive_safety","manifest_safety","multi_status"]}
+{"ts":"2026-08-05T08:35ET","event":"adversarial_selftest","result":"18/18 incl non-execution proof"}
+{"ts":"2026-08-05T08:40ET","event":"honest_rescan","skipped_tests_genuine":0,"route_branches_built_not_integrated":117}
