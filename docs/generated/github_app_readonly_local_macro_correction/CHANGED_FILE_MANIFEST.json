@@ -1,0 +1,202 @@
+{
+  "evaluated_sha": "5e97bd5ea638d463536dca53a8e1b55240e81b07",
+  "base_sha": "65fd01669f80094e7ef9a0fa689c87347ae0c089",
+  "changed_file_count": 39,
+  "files": [
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/CLAIMS_AND_LIMITS.md",
+      "blob_sha": "754599744fba8ed4e016951e5e6827ad44360e74",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/CLEAN_EXTRACTION_REPRODUCTION_REPORT.md",
+      "blob_sha": "5425b2e66dbc772a8ae11669d220a0cb07874c12",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/CONTRACT_VALIDATION_REPORT.md",
+      "blob_sha": "eadf51bcfd2ba7cbaffd266a5b3ac9dd77a08160",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/FINAL_STATUS.md",
+      "blob_sha": "e0bb0ce57d3787a1169ce7f0b0ff8af3eba22db0",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/GITHUB_APP_LOCAL_MACRO_EVIDENCE.json",
+      "blob_sha": "461b869240a116569aefc9471284babb117444c7",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/PREFLIGHT_REPORT.md",
+      "blob_sha": "d783bbb9e09b0c7bd863ada916fdfb79de3a512c",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/PREFLIGHT_STATE.json",
+      "blob_sha": "3a437d4b6ebdb15fb0c52c7181822793fa7ce9da",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/PROJECT_KNOWLEDGE_UPDATE_BUNDLE_V15_CANDIDATE.md",
+      "blob_sha": "a520ed751748ff44a10faaedc7a6bfcc4b989a15",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/README_FIRST.md",
+      "blob_sha": "806e281799726e661fae1b8ce38116225c3e6739",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/RECOVERY_EXERCISE_REPORT.md",
+      "blob_sha": "d78c6b06f7ef1f345ff8f7a08b7db02ceb511a0a",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/RECOVERY_RESUME_TRANSCRIPT.json",
+      "blob_sha": "09b88b5a330d7564245f0083bf0f5e401cac16ad",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/RECOVERY_STATE.json",
+      "blob_sha": "05c162cc5cdf259ee896aa4606f5d980541b7e2a",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/REFUSAL_EXECUTION_REPORT.md",
+      "blob_sha": "6fa44368b7f66e8bcc618b8f4b6f68edcf0bc187",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/REPLAY_FALSIFICATION_REPORT.md",
+      "blob_sha": "4889e3e31241712791cede52692f7e2c08eb0997",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/UI_PROOF_REPORT.md",
+      "blob_sha": "acab1f911d6d068b4e86c620fcc76afaace9d937",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/WRITE_AND_ABUSE_REFUSAL_RESULTS.json",
+      "blob_sha": "a862307090c117efe4f9df09d111064fbbfe9ae2",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/packaged_ui/app.js",
+      "blob_sha": "c4e2edde38ad9438a666251d1ccf30c614a5c91a",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/packaged_ui/github_app_readonly_index.json",
+      "blob_sha": "095873686e39f76fc4734e38e8f6c8effa552ae5",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/packaged_ui/index.html",
+      "blob_sha": "107a293469649ad0630b271aa7134890f4bbcc7e",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/screenshots/blocked_customer_repo.png",
+      "blob_sha": "8aef7e54fe35078dd6bedf3f6f4db9cc55f05276",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/screenshots/evidence_replay.png",
+      "blob_sha": "8f3204f4cf1307181ddf008ffff5324324e708c7",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/screenshots/github_app_overview.png",
+      "blob_sha": "5d2a45c2064372b3b399ad1ba5de209392d98b72",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/screenshots/live_action_gate.png",
+      "blob_sha": "76f07340f6754f359a89d9fe2fb65488b117aa49",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/screenshots/page@1a6ec91047ad43aba3637eb2bebdc992.webm",
+      "blob_sha": "80967377c4d1f17b04099958ec3fa4b85671249c",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/screenshots/permission_scope.png",
+      "blob_sha": "844c7174709def96e9c8fb05ed699345189c784b",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/screenshots/refusal_matrix.png",
+      "blob_sha": "6c970d7d5cdb8b90ea000bba573430daabce6c19",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/screenshots/route_status.png",
+      "blob_sha": "3a9b5d1326ac4d178bfd03bb80664ce454c0f1f7",
+      "in_scope": true
+    },
+    {
+      "path": "docs/generated/github_app_readonly_local_macro_correction/screenshots/unknown_missing_source.png",
+      "blob_sha": "b4954885db5014ba14ad0c80aaca199c93abff77",
+      "in_scope": true
+    },
+    {
+      "path": "src/repo_intake/github_app_readonly/github_app_authority_model.mjs",
+      "blob_sha": "bb21a263e978147c98f1c44f72c5bb09015d2b74",
+      "in_scope": true
+    },
+    {
+      "path": "src/repo_intake/github_app_readonly/github_app_evidence_replay.mjs",
+      "blob_sha": "98cbaa48ede040e135af17665e61ef9ec332162a",
+      "in_scope": true
+    },
+    {
+      "path": "src/repo_intake/github_app_readonly/github_app_readonly_contract.mjs",
+      "blob_sha": "a020e229a02c435fd8b492a69032d40a0841d4b9",
+      "in_scope": true
+    },
+    {
+      "path": "src/repo_intake/github_app_readonly/github_app_refusal_matrix.mjs",
+      "blob_sha": "aba6d4aa1f67ce37825c888b87d1b221866f0811",
+      "in_scope": true
+    },
+    {
+      "path": "tests/e2e-dashboard/github_app_readonly/github_app_visible_proof.mjs",
+      "blob_sha": "f87ec3f1eacac559bd353b41510888e13419d4d5",
+      "in_scope": true
+    },
+    {
+      "path": "tests/repo_intake/github_app_readonly/github_app_authority_model.selftest.mjs",
+      "blob_sha": "3620435d6f94c96974bf431714dfd88e46272fc8",
+      "in_scope": true
+    },
+    {
+      "path": "tests/repo_intake/github_app_readonly/github_app_evidence_replay.selftest.mjs",
+      "blob_sha": "5c1e049357aa790b6d2fc52d9b3f88b44c57bbf7",
+      "in_scope": true
+    },
+    {
+      "path": "tests/repo_intake/github_app_readonly/github_app_local_token_simulator.selftest.mjs",
+      "blob_sha": "c8f020096aeb6db32380441adc20257df5eb18af",
+      "in_scope": true
+    },
+    {
+      "path": "tests/repo_intake/github_app_readonly/github_app_readonly_contract.selftest.mjs",
+      "blob_sha": "4510fba9bc063781a88cfff47777764a2d604995",
+      "in_scope": true
+    },
+    {
+      "path": "tests/repo_intake/github_app_readonly/github_app_refusal_matrix.selftest.mjs",
+      "blob_sha": "f97f855caca5ba91ab55a519a0251d2b4b91a381",
+      "in_scope": true
+    },
+    {
+      "path": "tests/repo_intake/github_app_readonly/github_app_secret_guard.selftest.mjs",
+      "blob_sha": "0cf1cc1852ca83b24509e147dfd69bd2070a7ca8",
+      "in_scope": true
+    }
+  ]
+}

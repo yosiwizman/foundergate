@@ -1,0 +1,16 @@
+{
+  "kind":"FOUNDERGATE_NON_RECURSIVE_TWO_SHA_EVIDENCE_SEAL",
+  "run":"github_app_readonly_local_macro_correction_20260805T0126ET",
+  "evaluated_sha":"5e97bd5ea638d463536dca53a8e1b55240e81b07",
+  "evaluated_tree":"6db44d272d9618da17c8cf16d3e9af56789ab17e",
+  "evaluated_meaning":"the frozen implementation+tests+UI+evidence candidate the Checker and Gate Advisor reviewed; contains NO reviewer report and NO seal file",
+  "checker_report_sha256":"7f9e320b12d8c5b0eefe6550c4d738f4e490fc4af07a4377de391ba727de27a0",
+  "checker_verdict":"CLEAN_WITH_LIMITS",
+  "gate_advisor_report_sha256":"62084e05070ec906af147dd4366a541b50007a7e7fe32bb5c94eefa28b32df02",
+  "gate_advisor_verdict":"LOCAL_GITHUB_APP_ROUTE_READY_WITH_LIMITS",
+  "evidence_commit_sha":"RECORDED_IN_WITNESS_ZIP_MANIFEST_AND_FINAL_MESSAGE (this file's own commit; non-recursive)",
+  "evidence_commit_meaning":"the evidence-only sealing commit that adds the reviewer reports + this seal + postflight + ancestry + manifests; changes ONLY docs, no src/tests/UI",
+  "evidence_zip_sha256":"RECORDED_IN_FINAL_MESSAGE (computed after sealing)",
+  "non_recursive":true,
+  "note":"the evidence commit is NOT the candidate evaluated for implementation correctness; the evaluated candidate is 5e97bd5ea638d463536dca53a8e1b55240e81b07"
+}
