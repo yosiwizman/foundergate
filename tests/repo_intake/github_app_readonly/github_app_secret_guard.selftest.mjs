@@ -1,0 +1,15 @@
+import { scanForSecrets, guardEvidence, redactedDescriptor } from '../../../src/repo_intake/github_app_readonly/github_app_secret_guard.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+ok(scanForSecrets('-----BEGIN RSA PRIVATE KEY-----\nMII\n-----END RSA PRIVATE KEY-----').status==='SECRET_EXPOSURE','private key literal fails');
+ok(scanForSecrets('ghs_'+'A'.repeat(36)).status==='SECRET_EXPOSURE','installation token literal fails');
+ok(scanForSecrets('Authorization: bearer '+'A'.repeat(30)).status==='SECRET_EXPOSURE','Authorization header with value fails');
+ok(scanForSecrets('Bearer '+'A'.repeat(30)).status==='SECRET_EXPOSURE','bearer token fails');
+ok(scanForSecrets('github_pat_'+'A'.repeat(40)).status==='SECRET_EXPOSURE','github token fails');
+ok(scanForSecrets('sk-'+'A'.repeat(24)).status==='SECRET_EXPOSURE','openai key fails');
+ok(scanForSecrets('route status: local only, sandbox repo, redacted fingerprint red_abc').clean===true,'clean text passes');
+ok(guardEvidence({a:'ghs_'+'B'.repeat(36)}).allowed===false,'evidence with token is not allowed (fails closed)');
+ok(guardEvidence({a:'red_deadbeef',count:5}).allowed===true,'evidence with only fingerprints/counts allowed');
+const fd=scanForSecrets('ghs_'+'C'.repeat(36)).findings[0];
+ok(fd && fd.fingerprint.startsWith('red_') && !JSON.stringify(fd).includes('ghs_CCCC'),'findings carry redacted fingerprint, never the secret value');
+ok(redactedDescriptor({kind:'installation_token'}).value_recorded===false,'redacted descriptor never records value');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);

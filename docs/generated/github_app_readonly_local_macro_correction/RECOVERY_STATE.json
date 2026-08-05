@@ -1,0 +1,12 @@
+{
+  "run":"github_app_readonly_local_macro_correction_20260805T0126ET",
+  "branch":"run/github-app-readonly-local-macro-correction-20260805T0126ET",
+  "worktree":"/Users/yosiwizman/.foundergate/workspaces/widebuild_wave1b_validation_20260731T1840ET/worktrees/wave1b",
+  "base_sha":"65fd01669f80094e7ef9a0fa689c87347ae0c089",
+  "current_head":"65fd01669f80094e7ef9a0fa689c87347ae0c089",
+  "lane":"correction-single-supervisor",
+  "completed_phase":"MODULES_CORRECTED_AND_SELFTESTED_PACKAGED_UI_PROVEN",
+  "blocker":"none",
+  "next_safe_action":"assemble clean-extraction payload, run reproduction, then freeze evaluated candidate for review",
+  "checkpoint":"pre_freeze"
+}

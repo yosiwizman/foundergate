@@ -1,0 +1,12 @@
+{
+  "run":"github_app_readonly_local_macro_correction_20260805T0126ET",
+  "protected_main_sha":"65fd01669f80094e7ef9a0fa689c87347ae0c089",
+  "correction_base_sha":"65fd01669f80094e7ef9a0fa689c87347ae0c089",
+  "prior_macro_candidate_sha":"5b885fdbc704d5c0d09e98081804735601ed567b",
+  "correction_branch":"run/github-app-readonly-local-macro-correction-20260805T0126ET",
+  "active_authorized_operation":false,"supervisor_qualified":true,
+  "real_secret_material_detected":false,
+  "github_app_privkey_or_token_files":false,
+  "LIVE_GITHUB_APP_ACTION_AUTHORITY":false,
+  "isolation":"clean exact base (origin/main); only github-app route files carried; inherited run history excluded"
+}

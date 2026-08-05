@@ -1,0 +1,28 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>GitHub App Read-Only Route — Local Only</title>
+<style>body{font-family:-apple-system,system-ui,sans-serif;margin:0;background:#0e1116;color:#e6edf3}
+.wrap{max-width:920px;margin:0 auto;padding:24px}h1{font-size:20px}.sub{color:#9aa4b2;font-size:13px;margin:6px 0 16px}
+.card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid #21262d;font-size:13px}
+.k{color:#9aa4b2}.pill{padding:2px 8px;border-radius:20px;font-size:12px;border:1px solid #30363d}
+.live{background:#0f2f1a;border-color:#238636}.hold{background:#3a2f00;border-color:#9e6a03}.refuse{background:#3a1113;border-color:#da3633}
+.muted{color:#9aa4b2;font-size:12px;margin-top:10px}.btn{background:#238636;color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}</style></head>
+<body><div class="wrap">
+<h1>Private Repo Credential Route — GitHub App (Read-Only)</h1>
+<div class="sub">LOCAL-ONLY preparation. No live GitHub App created/installed; no installation token generated. Live proof requires a true founder gate. Never SHIP.</div>
+<div class="card">
+<button class="btn" id="load" data-testid="ghapp-load-btn">Load GitHub App Route</button>
+<div class="row"><span class="k">Status</span><span class="pill" id="ghapp-status" data-testid="ghapp-status">—</span></div>
+<div class="row"><span class="k">Mode</span><span class="pill" id="ghapp-mode" data-testid="ghapp-mode">—</span></div>
+<div class="row"><span class="k">Repo · private</span><span class="pill" id="ghapp-repo" data-testid="ghapp-repo">—</span></div>
+<div class="row"><span class="k">Permissions required</span><span class="pill" id="ghapp-perms" data-testid="ghapp-perms">—</span></div>
+<div class="row"><span class="k">App installed</span><span class="pill" id="ghapp-installed" data-testid="ghapp-installed">—</span></div>
+<div class="row"><span class="k">Private key · installation token exposed</span><span class="pill" id="ghapp-secrets" data-testid="ghapp-secrets">—</span></div>
+<div class="row"><span class="k">Exact commit</span><span class="pill" id="ghapp-commit" data-testid="ghapp-commit">—</span></div>
+<div class="row"><span class="k">Refusal matrix (executable + catalog)</span><span class="pill" id="ghapp-refusal" data-testid="ghapp-refusal">—</span></div>
+<div class="row"><span class="k">Evidence replay</span><span class="pill" id="ghapp-evidence" data-testid="ghapp-evidence">—</span></div>
+<div class="row"><span class="k">Existing/customer repo · code exec · provider</span><span class="pill" id="ghapp-safety" data-testid="ghapp-safety">—</span></div>
+<div class="row"><span class="k">Next founder decision</span><span class="pill" id="ghapp-next" data-testid="ghapp-next">—</span></div>
+<div class="muted" id="ghapp-proven" data-testid="ghapp-proven">—</div>
+<p class="muted" data-testid="ghapp-note">Local-only preparation. No live GitHub App; the token simulator is a clearly-fake non-credential. This does NOT prove GitHub-App intake, private-repo-support-complete, customer-repo, existing-founder-repo, read-only-scope-independently-verified, or production/SaaS readiness. Live proof requires a separate true founder gate.</p>
+</div></div>
+<script src="app.js"></script></body></html>

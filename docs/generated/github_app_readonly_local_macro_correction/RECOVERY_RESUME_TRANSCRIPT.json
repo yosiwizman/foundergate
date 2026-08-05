@@ -1,0 +1,11 @@
+{
+  "resumed_in": "fresh_subprocess_no_prior_context",
+  "reconstructed_branch": "run/github-app-readonly-local-macro-correction-20260805T0126ET",
+  "reconstructed_head": "65fd01669f80094e7ef9a0fa689c87347ae0c089",
+  "matches_recovery_state": true,
+  "completed_phase": "MODULES_CORRECTED_AND_SELFTESTED_PACKAGED_UI_PROVEN",
+  "blocker": "none",
+  "next_safe_action": "assemble clean-extraction payload, run reproduction, then freeze evaluated candidate for review",
+  "founder_involved": false,
+  "terminal0_control_route_intact": true
+}

@@ -1,0 +1,13 @@
+import { simulateInstallationToken, simulateReadonlyFlow, assertNotRealProof, canUseForRealIntake, SIM_LABELS } from '../../../src/repo_intake/github_app_readonly/github_app_local_token_simulator.mjs';
+let p=0,f=0;const ok=(c,m)=>{if(c){p++;console.log('OK   '+m)}else{f++;console.log('BAD  '+m)}};
+const t=simulateInstallationToken();
+ok(t.is_real===false && canUseForRealIntake(t)===false,'simulated token cannot be used for real intake');
+ok(!/^ghs_/.test(t.token) && /NOT-A-CREDENTIAL/.test(t.token),'sim token is an obvious non-credential (not ghs_)');
+ok(t.labels.includes(SIM_LABELS.LOCAL_SIMULATION_ONLY) && t.labels.includes(SIM_LABELS.LIVE_REQUIRED),'sim token carries local-simulation + live-required labels');
+ok(assertNotRealProof('github app proven').verdict==='HOLD_FALSE_GREEN','cannot claim github app proven from simulation');
+ok(assertNotRealProof('private repo support complete').allowed===false,'cannot claim private repo support complete from simulation');
+ok(assertNotRealProof('read-only scope independently verified').allowed===false,'cannot claim scope independently verified from simulation');
+const flow=simulateReadonlyFlow();
+ok(flow.github_app_proven===false && flow.exact_commit===null,'simulated flow asserts nothing a live proof would');
+ok(flow.not_asserted.length>=5 && flow.not_asserted.every(s=>/NOT ASSERTED/.test(s)),'missing live evidence produces NOT ASSERTED statements');
+console.log(f===0?`\nALL GREEN: ${p}/${p}`:`\nRED: ${f}/${p+f}`);process.exit(f===0?0:1);
