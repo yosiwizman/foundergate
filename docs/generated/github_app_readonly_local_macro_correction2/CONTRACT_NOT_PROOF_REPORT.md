@@ -1,0 +1,2 @@
+# Contract — Schema-Valid Is Not Live Proof (Correction 4)
+The contract validator's satisfied status is now `CANDIDATE_LIVE_CONTRACT_SCHEMA_VALID_NOT_PROOF` (no `WOULD_BE_LIVE_PROOF` language remains). Its note states: schema validation is NOT live proof; no app/installation/token/repository-intake/GitHub-response/cleanup was observed; live proof requires a separate founder-gated evidence pipeline; user-supplied fields and Booleans are not independent evidence. Reports, UI text, and the PK V15 candidate use the same non-proof language. Contract selftest 26/26.

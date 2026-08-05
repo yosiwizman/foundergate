@@ -1,0 +1,59 @@
+{
+  "kind": "GITHUB_APP_READONLY_ROUTE",
+  "status": "LOCAL_GITHUB_APP_ROUTE_READY_WITH_LIMITS",
+  "label": "LOCAL_GITHUB_APP_ROUTE_READY_WITH_LIMITS",
+  "mode": "LOCAL_ONLY",
+  "repo": "yosiwizman/foundergate-private-readonly-sandbox-20260804T0105ET",
+  "private": true,
+  "local_only_vs_live": "LOCAL ONLY — no live GitHub App created/installed; live proof requires a founder gate",
+  "permissions_required": "Contents: Read-only + Metadata: Read-only (sandbox-only, single-repo install)",
+  "github_app_installed": "NO (no live evidence)",
+  "private_key_exposed": "NO",
+  "installation_token_exposed": "NO",
+  "exact_commit": "NOT ASSERTED (no live intake)",
+  "existing_valuable_repo_touched": false,
+  "customer_repo_touched": false,
+  "code_execution": false,
+  "provider_call": false,
+  "cleanup_status": "NOT APPLICABLE (local-only)",
+  "refusal_matrix": {
+    "total": 41,
+    "all_held": true,
+    "executable_refusal_paths": 39,
+    "catalog_only_policy_assertions": 2
+  },
+  "evidence_status": "REPLAY_VERIFIED_LOCAL_SIMULATION_ONLY",
+  "proven": [
+    "replay STRUCTURALLY cannot certify live proof (no live-proof path; live modes → HOLD)",
+    "complete-envelope replay validation (schema/label/counts/flags; fail-closed)",
+    "local route recognizes NO caller-supplied live authority (raw boolean ignored)",
+    "contract returns schema-valid-NOT-proof (no live-proof language)",
+    "fail-closed authority + install-spec validator",
+    "secret/key/token guard (fails closed)",
+    "39 executable refusal paths + 2 catalog assertions",
+    "actual recovery resume that executes a bounded safe action"
+  ],
+  "not_proven": [
+    "GitHub App proven (NO live app created/installed)",
+    "live installation-token intake",
+    "read-only GitHub App scope independently verified",
+    "private repo support complete",
+    "existing founder repo / customer repo",
+    "production/SaaS readiness"
+  ],
+  "blocked": {
+    "live_app_create": "TRUE_FOUNDER_GATE",
+    "live_app_install": "TRUE_FOUNDER_GATE",
+    "live_token": "TRUE_FOUNDER_GATE",
+    "existing_repo": "BLOCKED",
+    "customer_repo": "BLOCKED",
+    "write_merge": "BLOCKED",
+    "provider_call": "BLOCKED",
+    "gate_8": "BLOCKED",
+    "deploy": "BLOCKED",
+    "bill": "BLOCKED",
+    "pr_200": "UNTOUCHED",
+    "protected_main": "UNTOUCHED"
+  },
+  "next_founder_gate": "TRUE_FOUNDER_GATE_GITHUB_APP_LIVE_ACTION_REQUIRED — separate six-lock founder signature via a mechanically-verified founder-gate object + live-evidence pipeline that does NOT exist in this local package"
+}

@@ -1,0 +1,16 @@
+{
+  "resumed_in": "fresh_subprocess_no_prior_context",
+  "reconstructed_branch": "run/github-app-readonly-local-macro-correction2-20260805T0157ET",
+  "reconstructed_head": "5e97bd5ea638d463536dca53a8e1b55240e81b07",
+  "reconstructed_tree": "6db44d272d9618da17c8cf16d3e9af56789ab17e",
+  "matches_recovery_state": true,
+  "lane": "correction2-single-supervisor",
+  "completed_phase": "CORRECTIONS_1_TO_4_APPLIED_SELFTESTS_GREEN_UI_PROVEN",
+  "action_started": true,
+  "action_completed": true,
+  "checksum_result": "PASS",
+  "replay_test_result": "PASS",
+  "founder_involved": false,
+  "terminal0_control_route_intact": true,
+  "next_safe_action": "freeze evaluated candidate for fresh review, then non-recursive two-level external seal"
+}

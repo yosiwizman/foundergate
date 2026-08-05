@@ -6,7 +6,11 @@ const ok_spec={target_repo:SB,installation_mode:'selected',permissions:{contents
 ok(evaluateAppAction({action:'create_app'}).decision==='TRUE_FOUNDER_GATE','create app without gate → TRUE_FOUNDER_GATE');
 ok(evaluateAppAction({action:'install_app'}).decision==='TRUE_FOUNDER_GATE','install without gate → TRUE_FOUNDER_GATE');
 ok(evaluateAppAction({action:'generate_installation_token'}).decision==='TRUE_FOUNDER_GATE','token without gate → TRUE_FOUNDER_GATE');
-ok(evaluateAppAction({action:'create_app',live_action_authority:true}).decision==='LIVE_ACTION_AUTHORIZED_ELSEWHERE','create WITH gate flag → authorized-elsewhere (control is the gate)');
+// CORRECTION 3: a raw Boolean must NEVER create live authority — both refuse identically.
+ok(evaluateAppAction({action:'create_app',live_action_authority:true}).decision==='TRUE_FOUNDER_GATE','create WITH raw boolean live_action_authority:true → STILL TRUE_FOUNDER_GATE');
+ok(evaluateAppAction({action:'create_app'}).decision===evaluateAppAction({action:'create_app',live_action_authority:true}).decision,'create_app refuses IDENTICALLY with and without the boolean');
+ok(evaluateAppAction({action:'install_app',live_action_authority:true}).decision==='TRUE_FOUNDER_GATE','install WITH boolean → STILL TRUE_FOUNDER_GATE');
+ok(evaluateAppAction({action:'generate_installation_token',live_action_authority:'yes'}).decision==='TRUE_FOUNDER_GATE','token WITH truthy string → STILL TRUE_FOUNDER_GATE');
 // the accepted read-only spec
 ok(validateInstallSpec(ok_spec).decision==='ACCEPTED_READONLY_SPEC','sandbox + selected + {contents:read,metadata:read} → ACCEPTED_READONLY_SPEC');
 // A negative tests (fail-closed)

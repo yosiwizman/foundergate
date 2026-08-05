@@ -7,7 +7,10 @@ const full={route_identity:'github_app_readonly',repo:SB,repo_private:true,insta
   no_code_execution:true,no_build:true,no_repo_tests:true,no_provider_call:true,
   existing_repo_touched:false,customer_repo_touched:false,production_repo_touched:false,protected_main_touched:false,pr_200_touched:false,
   cleanup_status:'completed',evidence_replay_valid:true,refusal_evidence_valid:true,secret_contents_present:false};
-ok(validate(full).status==='CONTRACT_SATISFIED_WOULD_BE_LIVE_PROOF','complete + semantically valid → would-be live proof');
+// CORRECTION 4: schema-valid is NOT live proof.
+ok(validate(full).status==='CANDIDATE_LIVE_CONTRACT_SCHEMA_VALID_NOT_PROOF','complete + semantically valid → CANDIDATE_LIVE_CONTRACT_SCHEMA_VALID_NOT_PROOF (NOT proof)');
+ok(/NOT LIVE PROOF/i.test(validate(full).note) && /separate founder-gated/i.test(validate(full).note),'satisfied note states schema validation is not live proof + needs separate founder-gated pipeline');
+ok(!/WOULD_BE_LIVE_PROOF/.test(JSON.stringify(validate(full))),'no WOULD_BE_LIVE_PROOF language remains');
 // presence-only insufficiency + C negative tests (semantic)
 ok(validate({}).status==='OVERCLAIM_REFUSED','empty → overclaim refused');
 ok(validate({...full,exact_commit:'a'}).status==='HOLD_INVALID_COMMIT','one-char commit → HOLD_INVALID_COMMIT');

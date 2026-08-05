@@ -30,14 +30,15 @@ const FORBIDDEN_PERMISSION_KEYS = new Set([
   'billing', 'account', 'packages', 'pages', 'statuses', 'checks',
 ]);
 
-// Live actions always require a founder gate.
-export function evaluateAppAction({ action, live_action_authority = false } = {}) {
+// CORRECTION 3: this LOCAL route recognizes NO caller-supplied authority. A live action ALWAYS refuses,
+// regardless of any Boolean the caller passes. Live authority must come from a separate, mechanically-verified
+// founder-gate object and route that does NOT exist in this local package (do not build/simulate it here).
+export function evaluateAppAction(input = {}) {
+  const action = input && input.action;
   const liveActions = ['create_app', 'install_app', 'generate_installation_token'];
-  if (liveActions.includes(action) && !live_action_authority) {
-    return { decision: 'TRUE_FOUNDER_GATE', reason: `${action}_REQUIRES_FOUNDER_GATE` };
-  }
-  if (liveActions.includes(action) && live_action_authority) {
-    return { decision: 'LIVE_ACTION_AUTHORIZED_ELSEWHERE', reason: 'founder_gate_flag_present' };
+  if (liveActions.includes(action)) {
+    // A raw Boolean (e.g. live_action_authority:true) is deliberately ignored — it never changes the result.
+    return { decision: 'TRUE_FOUNDER_GATE', reason: `${action}_REQUIRES_FOUNDER_GATE_local_route_recognizes_no_caller_authority` };
   }
   return { decision: 'UNKNOWN', reason: 'NOT_A_LIVE_ACTION_USE_validateInstallSpec' };
 }
@@ -87,10 +88,11 @@ export const REQUIRED_READONLY_SPEC = {
   proof_status: 'LOCAL_ONLY_PREPARED',
 };
 
-export function routeStatus({ live_action_authority = false } = {}) {
+// The local route has no caller-supplied authority: status is ALWAYS the true-founder-gate.
+export function routeStatus() {
   return {
-    route: 'github_app_readonly', local_only: true, live_action_authority,
-    status: live_action_authority ? 'LIVE_ACTION_AUTHORIZED_ELSEWHERE' : 'TRUE_FOUNDER_GATE_GITHUB_APP_LIVE_ACTION_REQUIRED',
+    route: 'github_app_readonly', local_only: true, caller_authority_recognized: false,
+    status: 'TRUE_FOUNDER_GATE_GITHUB_APP_LIVE_ACTION_REQUIRED',
     proven: false, private_key_seen: false, installation_token_seen: false,
   };
 }

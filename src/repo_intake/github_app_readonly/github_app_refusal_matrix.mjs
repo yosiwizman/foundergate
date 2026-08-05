@@ -74,7 +74,7 @@ export function runRefusalMatrix() {
   add(28, 'PR #200 mutation', EXEC, D('replay', () => via('pr_200_touched')), 'HOLD_REPLAY_MISMATCH');
   add(29, 'Codex request', EXEC, D('replay', () => via('codex_called')), 'HOLD_REPLAY_MISMATCH');
   add(36, 'missing evidence', EXEC, D('replay', () => replay(null).status), 'HOLD_MISSING_EVIDENCE');
-  add(37, 'contradictory evidence (sim claims live)', EXEC, D('replay', () => replay(reseal(Object.assign(buildLocalEvidence(), { claims_live_proof: true }))).status), 'HOLD_CONTRADICTORY_EVIDENCE');
+  add(37, 'local record claims live proof (github_app_proven / live mode)', EXEC, D('replay', () => replay(reseal(Object.assign(buildLocalEvidence(), { github_app_proven: true }))).status), 'HOLD_LIVE_PROOF_REQUIRES_SEPARATE_FOUNDER_GATED_PIPELINE');
 
   // False-green guard (assertNotRealProof) — EXECUTABLE
   add(38, 'claimed proof from simulation', EXEC, D('assertNotRealProof', () => assertNotRealProof('github app proven').verdict), 'HOLD_FALSE_GREEN');

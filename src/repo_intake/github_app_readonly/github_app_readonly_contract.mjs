@@ -23,8 +23,8 @@ export const REQUIRED_FIELDS = [
   'evidence_replay_valid', 'refusal_evidence_valid', 'secret_contents_present',
 ];
 
-// Validate a candidate LIVE proof record. Returns a status; only a fully-semantically-valid record →
-// CONTRACT_SATISFIED_WOULD_BE_LIVE_PROOF.
+// Validate a candidate record's SCHEMA. Returns a status; a fully-semantically-valid record →
+// CANDIDATE_LIVE_CONTRACT_SCHEMA_VALID_NOT_PROOF (schema validity is NOT live proof).
 export function validate(record = {}) {
   if (record === null || typeof record !== 'object') return { status: 'OVERCLAIM_REFUSED', reason: 'NOT_OBJECT' };
   const missing = REQUIRED_FIELDS.filter((f) => record[f] === undefined || record[f] === null);
@@ -68,7 +68,11 @@ export function validate(record = {}) {
   if (record.evidence_replay_valid !== true) return { status: 'HOLD_REPLAY_INVALID', reason: 'REPLAY_NOT_VALID' };
   if (record.refusal_evidence_valid !== true) return { status: 'HOLD_REFUSAL_INVALID', reason: 'REFUSAL_NOT_VALID' };
 
-  return { status: 'CONTRACT_SATISFIED_WOULD_BE_LIVE_PROOF', digest: 'gac_' + sha256(record).slice(0, 24), note: 'a live record matching this would be a valid GitHub App read-only proof; NOT produced by this local macro' };
+  return {
+    status: 'CANDIDATE_LIVE_CONTRACT_SCHEMA_VALID_NOT_PROOF',
+    digest: 'gac_' + sha256(record).slice(0, 24),
+    note: 'SCHEMA VALIDATION IS NOT LIVE PROOF. No app, installation, token, repository intake, GitHub response, or cleanup was observed. Live proof requires a SEPARATE founder-gated evidence pipeline that does not exist in this local package. User-supplied fields and Booleans are not independent evidence.',
+  };
 }
 
 export const CONTRACT = {
