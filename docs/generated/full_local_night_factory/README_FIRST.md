@@ -1,0 +1,2 @@
+# README FIRST — FounderGate Full Local Night Factory
+This package documents a full-repository local night run: a complete A–I backlog discovery + the one eligible WIDE_SAFE deliverable it produced — a **standalone offline capsule verifier** (`tools/evidence/verify_capsule.mjs`). The verifier lets you (or an outside advisor) confirm any FounderGate evidence capsule with one command, offline. No live GitHub App / credential / provider / deploy action occurred. Protected main + PR #200 untouched. Project Knowledge remains an unaccepted candidate. Never SHIP.
