@@ -33,6 +33,7 @@ function buildCapsule(work, { tamper } = {}) {
   const seal = { kind: 'FOUNDERGATE_NON_RECURSIVE_EXTERNAL_EVIDENCE_SEAL', final_local_status: 'LOCAL_TEST_STATUS',
     evaluated_sha: 'deadbeef', inner_payload_zip_filename: innerName + '.zip', inner_payload_zip_sha256: innerHex };
   if (tamper === 'placeholder') seal.evidence_commit_sha = 'RECORDED_IN_FINAL_MESSAGE';
+  if (tamper === 'fake_status') seal.final_local_status = 'GITHUB_APP_PROVEN_PRODUCTION_READY';
   writeFileSync(join(capDir, capName, 'FINAL_EXTERNAL_SEAL.json'), JSON.stringify(seal, null, 2));
   let sealHex = sha(readFileSync(join(capDir, capName, 'FINAL_EXTERNAL_SEAL.json')));
   if (tamper === 'sidecar') sealHex = 'b'.repeat(64);
@@ -52,6 +53,12 @@ try {
   const named = verifyCapsule(buildCapsule(work, {}));
   ok(named.final_local_status === 'LOCAL_TEST_STATUS' && named.evaluated_sha === 'deadbeef', 'surfaces seal status + evaluated_sha');
   ok(named.checks.find(c => c.name === 'seal_has_no_placeholders')?.status === 'PASS', 'no-placeholder check runs and passes on a clean seal');
+  // FIX for Checker HOLD_CORRECTABLE: a CONSISTENTLY re-sealed capsule with a fabricated overclaim status must FAIL.
+  const forged = verifyCapsule(buildCapsule(work, { tamper: 'fake_status' }), { runSelftests: true });
+  ok(forged.overall === 'FAIL', 'consistent re-seal with fabricated overclaim status (GITHUB_APP_PROVEN_PRODUCTION_READY) → FAIL');
+  ok(forged.checks.find(c => c.name === 'status_label_no_forbidden_overclaim')?.status === 'FAIL', 'status_label_no_forbidden_overclaim check fires on the forged status');
+  // authenticity is never asserted: PASS attests integrity + self-tests only.
+  ok(named.status_label_authenticated === false && /not a signature/i.test(named.authenticity_note), 'result carries the authenticity caveat (status label NOT authenticated; sidecar is a checksum, not a signature)');
 } finally { try { rmSync(work, { recursive: true, force: true }); } catch {} }
 console.log(f === 0 ? `\nALL GREEN: ${p}/${p}` : `\nRED: ${f}/${p + f}`);
 process.exit(f === 0 ? 0 : 1);

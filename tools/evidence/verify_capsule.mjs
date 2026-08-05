@@ -74,9 +74,22 @@ export function verifyCapsule(capsuleZip, { runSelftests = false } = {}) {
     result.evaluated_sha = sealObj.evaluated_sha || null;
     result.evidence_commit_sha = sealObj.evidence_commit_sha || null;
 
+    // AUTHENTICITY CAVEAT: the sidecar is a re-computable checksum, NOT a cryptographic signature.
+    // A PASS attests capsule INTEGRITY + consistency + the packaged self-tests — it does NOT authenticate the
+    // seal's `final_local_status` label. Authenticate the status by cross-checking the surfaced `evaluated_sha`
+    // against the committed candidate in git AND the independent Checker + Gate Advisor verdicts.
+    result.status_label_authenticated = false;
+    result.authenticity_note = 'PASS attests capsule integrity + packaged self-tests ONLY. The final_local_status is a checksum-consistent field, not a signature; authenticate it by cross-checking evaluated_sha against the committed candidate + the independent Checker/Gate Advisor verdicts.';
+
     // guard: no placeholder tokens in the seal
     const placeholders = /RECORDED_IN_FINAL_MESSAGE|RECORDED_LATER|\bTBD\b|placeholder|SEE_ZIP_MANIFEST|PENDING_/i;
     add('seal_has_no_placeholders', !placeholders.test(JSON.stringify(sealObj)), null);
+
+    // no-false-green guard: a seal whose surfaced status itself asserts a forbidden overclaim is rejected,
+    // even if the checksums are internally consistent (defends against a consistent re-seal with a fake status).
+    const forbiddenStatus = /GITHUB[_ -]?APP[_ -]?PROVEN|PRODUCTION[_ -]?READY|SUPPORT[_ -]?COMPLETE|MERGE[_ -]?READY|SECURITY[_ -]?CERTIFIED|COMPLIANCE[_ -]?CERTIFIED|SAAS[_ -]?READY|CUSTOMER[_ -]?REPO[_ -]?PROVEN|SCOPE[_ -]?INDEPENDENTLY[_ -]?VERIFIED/i;
+    add('status_label_no_forbidden_overclaim', !forbiddenStatus.test(String(result.final_local_status || '')),
+      { surfaced_status: result.final_local_status });
 
     // 3. inner payload zip vs seal
     const innerName = sealObj.inner_payload_zip_filename;
@@ -125,9 +138,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   if (jsonOut) { console.log(JSON.stringify(r, null, 2)); }
   else {
     console.log(`FounderGate capsule verification: ${basename(capsule)}`);
-    console.log(`  status: ${r.final_local_status || '(no seal status)'}  evaluated_sha: ${r.evaluated_sha || '?'}`);
+    console.log(`  surfaced status (NOT authenticated): ${r.final_local_status || '(no seal status)'}  evaluated_sha: ${r.evaluated_sha || '?'}`);
     for (const c of r.checks) console.log(`  [${c.status}] ${c.name}`);
     console.log(`\nOVERALL: ${r.overall}`);
+    console.log(`\nNOTE: ${r.authenticity_note || 'PASS attests integrity + self-tests only; the status label is not a signature.'}`);
   }
   process.exit(r.overall === 'PASS' ? 0 : 1);
 }
