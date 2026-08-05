@@ -1,0 +1,2 @@
+# POSTFLIGHT — Full Local Night Factory
+Final: AUTHORIZED_MACRO_QUEUE_EXHAUSTED_WITH_FULL_PROGRAM_PROOF. Checker CLEAN_WITH_LIMITS; Gate Advisor LOCAL_NIGHT_FACTORY_EXHAUSTION_CONFIRMED_WITH_LIMITS (both at evaluated_sha `ed5248c462e647a5b148b1df7bcd3c71c481ad2b`, after 2 bounded correction cycles resolving a Checker-found false-green). No live GitHub App/credential/provider/deploy/bill/AKIOR/M1/hardware. origin/main `65fd01669f80094e7ef9a0fa689c87347ae0c089` untouched; PR #200 OPEN/DRAFT untouched. PK V15 unaccepted candidate.

@@ -1,0 +1,19 @@
+{
+  "evaluated_sha": "ed5248c462e647a5b148b1df7bcd3c71c481ad2b",
+  "base": "origin/main",
+  "changed_file_count": 12,
+  "files": [
+    "docs/generated/full_local_night_factory/BACKLOG_DISCOVERY_REPORT.md",
+    "docs/generated/full_local_night_factory/CLAIMS_AND_LIMITS.md",
+    "docs/generated/full_local_night_factory/EXHAUSTION_PROOF.json",
+    "docs/generated/full_local_night_factory/EXHAUSTION_PROOF.md",
+    "docs/generated/full_local_night_factory/FINAL_STATUS.md",
+    "docs/generated/full_local_night_factory/MACRO_QUEUE.md",
+    "docs/generated/full_local_night_factory/PREFLIGHT_REPORT.md",
+    "docs/generated/full_local_night_factory/PREFLIGHT_STATE.json",
+    "docs/generated/full_local_night_factory/README_FIRST.md",
+    "docs/generated/full_local_night_factory/VERIFY_CAPSULE_TOOL.md",
+    "tests/tools/verify_capsule.selftest.mjs",
+    "tools/evidence/verify_capsule.mjs"
+  ]
+}
