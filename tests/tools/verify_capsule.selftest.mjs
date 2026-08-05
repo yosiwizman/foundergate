@@ -11,7 +11,7 @@ let p = 0, f = 0; const ok = (c, m) => { if (c) { p++; console.log('OK   ' + m);
 const sha = (buf) => createHash('sha256').update(buf).digest('hex');
 const zip = (dir, name, out) => execFileSync('ditto', ['-c', '-k', '--sequesterRsrc', '--keepParent', join(dir, name), out]);
 
-function buildCapsule(work, { tamper } = {}) {
+function buildCapsule(work, { tamper, customStatus } = {}) {
   // inner payload with a trivial passing selftest + SHA256SUMS
   const innerName = 'InnerPayload_test';
   const innerDir = join(work, 'i'); mkdirSync(join(innerDir, innerName, 'tests', 'repo_intake'), { recursive: true });
@@ -30,10 +30,11 @@ function buildCapsule(work, { tamper } = {}) {
   const capName = 'Capsule_test';
   const capDir = join(work, 'c'); mkdirSync(join(capDir, capName), { recursive: true });
   execFileSync('cp', [innerZip, join(capDir, capName, innerName + '.zip')]);
-  const seal = { kind: 'FOUNDERGATE_NON_RECURSIVE_EXTERNAL_EVIDENCE_SEAL', final_local_status: 'LOCAL_TEST_STATUS',
+  const seal = { kind: 'FOUNDERGATE_NON_RECURSIVE_EXTERNAL_EVIDENCE_SEAL', final_local_status: 'LOCAL_TEST_ROUTE_READY_WITH_LIMITS',
     evaluated_sha: 'deadbeef', inner_payload_zip_filename: innerName + '.zip', inner_payload_zip_sha256: innerHex };
   if (tamper === 'placeholder') seal.evidence_commit_sha = 'RECORDED_IN_FINAL_MESSAGE';
   if (tamper === 'fake_status') seal.final_local_status = 'GITHUB_APP_PROVEN_PRODUCTION_READY';
+  if (tamper === 'custom_status') seal.final_local_status = customStatus;
   writeFileSync(join(capDir, capName, 'FINAL_EXTERNAL_SEAL.json'), JSON.stringify(seal, null, 2));
   let sealHex = sha(readFileSync(join(capDir, capName, 'FINAL_EXTERNAL_SEAL.json')));
   if (tamper === 'sidecar') sealHex = 'b'.repeat(64);
@@ -51,14 +52,26 @@ try {
   ok(verifyCapsule(buildCapsule(work, { tamper: 'placeholder' })).overall === 'FAIL', 'seal contains a placeholder token → FAIL');
   ok(verifyCapsule('/no/such/capsule.zip').overall === 'FAIL', 'missing capsule → FAIL');
   const named = verifyCapsule(buildCapsule(work, {}));
-  ok(named.final_local_status === 'LOCAL_TEST_STATUS' && named.evaluated_sha === 'deadbeef', 'surfaces seal status + evaluated_sha');
+  ok(named.final_local_status === 'LOCAL_TEST_ROUTE_READY_WITH_LIMITS' && named.evaluated_sha === 'deadbeef', 'surfaces seal status + evaluated_sha');
   ok(named.checks.find(c => c.name === 'seal_has_no_placeholders')?.status === 'PASS', 'no-placeholder check runs and passes on a clean seal');
   // FIX for Checker HOLD_CORRECTABLE: a CONSISTENTLY re-sealed capsule with a fabricated overclaim status must FAIL.
   const forged = verifyCapsule(buildCapsule(work, { tamper: 'fake_status' }), { runSelftests: true });
   ok(forged.overall === 'FAIL', 'consistent re-seal with fabricated overclaim status (GITHUB_APP_PROVEN_PRODUCTION_READY) → FAIL');
-  ok(forged.checks.find(c => c.name === 'status_label_no_forbidden_overclaim')?.status === 'FAIL', 'status_label_no_forbidden_overclaim check fires on the forged status');
+  ok(forged.checks.find(c => c.name === 'status_label_recognized_shape')?.status === 'FAIL', 'status_label_recognized_shape check fires on the forged status');
   // authenticity is never asserted: PASS attests integrity + self-tests only.
   ok(named.status_label_authenticated === false && /not a signature/i.test(named.authenticity_note), 'result carries the authenticity caveat (status label NOT authenticated; sidecar is a checksum, not a signature)');
+  // ALLOWLIST closes the denylist-evasion class the Checker demonstrated: unrecognized status shapes → FAIL.
+  const evasions = ['ALL_GREEN_READY_FOR_PRODUCTION', 'LIVE_GITHUB_APP_INTAKE_PROVED', 'GITHUB_APP_LIVE_ACTION_VERIFIED_AND_ACCEPTED', 'ROUTE_DONE_SHIP_IT', 'fully complete and shippable'];
+  let allEvasionsFail = true;
+  for (const s of evasions) {
+    const cap = buildCapsule(work, { tamper: 'custom_status', customStatus: s });
+    if (verifyCapsule(cap, { runSelftests: true }).overall !== 'FAIL') allEvasionsFail = false;
+  }
+  ok(allEvasionsFail, 'all denylist-evasion overclaim strings (reordered/synonym) → FAIL via recognized-shape allowlist');
+  // known-good shapes are accepted (not over-strict)
+  for (const s of ['FINE_GRAINED_PAT_INTAKE_PROVEN_WITH_SCOPE_LIMITS', 'TRUE_FOUNDER_GATE_GITHUB_APP_LIVE_ACTION_REQUIRED', 'AUTHORIZED_MACRO_QUEUE_EXHAUSTED_WITH_FULL_PROGRAM_PROOF']) {
+    ok(verifyCapsule(buildCapsule(work, { tamper: 'custom_status', customStatus: s }), { runSelftests: true }).overall === 'PASS', `known-good status shape accepted: ${s}`);
+  }
 } finally { try { rmSync(work, { recursive: true, force: true }); } catch {} }
 console.log(f === 0 ? `\nALL GREEN: ${p}/${p}` : `\nRED: ${f}/${p + f}`);
 process.exit(f === 0 ? 0 : 1);

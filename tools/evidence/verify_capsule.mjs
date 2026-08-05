@@ -85,11 +85,24 @@ export function verifyCapsule(capsuleZip, { runSelftests = false } = {}) {
     const placeholders = /RECORDED_IN_FINAL_MESSAGE|RECORDED_LATER|\bTBD\b|placeholder|SEE_ZIP_MANIFEST|PENDING_/i;
     add('seal_has_no_placeholders', !placeholders.test(JSON.stringify(sealObj)), null);
 
-    // no-false-green guard: a seal whose surfaced status itself asserts a forbidden overclaim is rejected,
-    // even if the checksums are internally consistent (defends against a consistent re-seal with a fake status).
-    const forbiddenStatus = /GITHUB[_ -]?APP[_ -]?PROVEN|PRODUCTION[_ -]?READY|SUPPORT[_ -]?COMPLETE|MERGE[_ -]?READY|SECURITY[_ -]?CERTIFIED|COMPLIANCE[_ -]?CERTIFIED|SAAS[_ -]?READY|CUSTOMER[_ -]?REPO[_ -]?PROVEN|SCOPE[_ -]?INDEPENDENTLY[_ -]?VERIFIED/i;
-    add('status_label_no_forbidden_overclaim', !forbiddenStatus.test(String(result.final_local_status || '')),
-      { surfaced_status: result.final_local_status });
+    // no-false-green guard (ALLOWLIST, not denylist): the surfaced status must match a KNOWN-GOOD FounderGate
+    // status shape. Any unrecognized status is treated as unverified and FAILs — this closes the denylist-evasion
+    // class (e.g. reordered/synonym overclaims like ALL_GREEN_READY_FOR_PRODUCTION or ..._PROVED), because such
+    // strings are simply not recognized shapes. Known-good shapes: anything ending in a "…_LIMITS" qualifier
+    // (READY_WITH_LIMITS / PARTIAL_WITH_LIMITS / …_SCOPE_LIMITS), a founder-gate / required label, a HOLD label,
+    // or an authorized-queue-exhausted label. The load-bearing control remains the authenticity caveat above.
+    const KNOWN_GOOD_STATUS = [
+      /_LIMITS$/,                      // *_READY_WITH_LIMITS, *_PARTIAL_WITH_LIMITS, *_SCOPE_LIMITS
+      /^TRUE_FOUNDER_GATE/,            // TRUE_FOUNDER_GATE_*
+      /_REQUIRED$/,                    // *_ACTION_REQUIRED, *_CREATION_REQUIRED
+      /^HOLD/, /^WAIT/, /^FAIL$/,      // hold/wait/fail
+      /_EXHAUSTED(_WITH_FULL_PROGRAM_PROOF)?$/, // authorized-queue-exhausted
+      /^OPERATIONAL_FAILURE_WITH_RECOVERY_SEALED$/,
+    ];
+    const st = String(result.final_local_status || '');
+    const recognized = KNOWN_GOOD_STATUS.some((re) => re.test(st));
+    add('status_label_recognized_shape', recognized,
+      { surfaced_status: result.final_local_status, note: recognized ? null : 'unrecognized status shape — treat status as UNVERIFIED (best-effort allowlist guard; the authenticity caveat is the primary control)' });
 
     // 3. inner payload zip vs seal
     const innerName = sealObj.inner_payload_zip_filename;
