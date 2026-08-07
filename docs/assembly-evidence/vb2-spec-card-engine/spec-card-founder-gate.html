@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spec Card — FounderGate</title>
+  <style>
+    :root{
+      --bg:#0d1117;--panel:#161c26;--panel2:#1b2230;--line:#2a3344;
+      --text:#e6ebf2;--muted:#93a0b4;--dim:#6b7789;
+      --blue:#3b82f6;--green:#22c55e;--amber:#f5b83d;--purple:#a78bfa;--red:#f26d6d;--radius:12px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);
+      font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+    .fg-wrap{max-width:920px;margin:0 auto;padding:32px 20px 56px}
+    .fg-eyebrow{color:var(--purple);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+    h1{font-size:27px;margin:.2em 0 .1em}
+    h2{font-size:16px;margin:0 0 4px}
+    .fg-sub{color:var(--muted);margin:0 0 24px}
+    .fg-note{color:var(--muted);font-size:12.5px;margin:.4em 0 0}
+    .fg-note strong{color:var(--text)}
+    .fg-note.fg-warn,.fg-warn{color:var(--amber)}
+    .fg-note.fg-ok,.fg-ok{color:var(--green)}
+    .fg-meta{color:var(--dim);font-size:12px;margin:.3em 0 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .fg-body{margin:.5em 0 0}
+    section{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+      padding:18px 20px;margin:0 0 20px}
+    .fg-head-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+    .fg-chip{font-size:11.5px;border-radius:999px;padding:1px 9px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+    .fg-tone-ok{color:var(--green);border-color:rgba(34,197,94,.4)}
+    .fg-tone-bad{color:var(--red);border-color:rgba(242,109,109,.5)}
+    .fg-tone-warn{color:var(--amber);border-color:rgba(245,184,61,.45)}
+    .fg-tone-info{color:var(--blue);border-color:rgba(59,130,246,.4)}
+    .fg-tone-muted{color:var(--muted)}
+    .fg-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+    .fg-list li{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 13px}
+    .fg-warn-list li{border-color:rgba(245,184,61,.35)}
+    .fg-switch-list li{background:transparent;border-style:dashed}
+    .fg-empty{color:var(--muted);margin:.5em 0 0}
+    .fg-stages{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+    .fg-stage{display:flex;align-items:center;gap:12px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 13px}
+    .fg-stage-mark{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;width:1.2em;text-align:center}
+    .fg-stage-on{border-color:rgba(34,197,94,.35)}
+    .fg-stage-on .fg-stage-mark{color:var(--green)}
+    .fg-stage-off{opacity:.7}
+    .fg-stage-off .fg-stage-mark{color:var(--amber)}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--text)}
+    .fg-foot{color:var(--dim);font-size:12.5px;margin-top:8px;text-align:center}
+  </style>
+</head>
+<body>
+  <div class="fg-wrap">
+    <div class="fg-eyebrow">READ-ONLY SURFACE</div>
+    <h1>Spec Card</h1>
+    <p class="fg-sub">A plain-English contract for one feature — what the founder asked for, what "done" looks like, what it will <em>not</em> do, and the open questions — read before any lane spawns. A card with no approval record is shown as <em>awaiting founder approval</em>, never assumed approved; a missing part is said out loud, never invented. This surface only shows the card; it approves nothing and spawns no lane.</p>
+    <div class="fg-head-row"><span class="fg-chip fg-tone-muted">Fixture (committed sample — not live)</span></div>
+  <section class="fg-header" aria-readonly="true">
+    <div class="fg-head-row"><h2>Feature-request index</h2><span class="fg-chip fg-tone-warn">awaiting founder approval</span><span class="fg-chip fg-tone-warn">founder/expert gate</span></div>
+    <p class="fg-meta">Card <code>SC-FR-SPEC-2</code> · requirement <code>FR-SPEC-2</code></p>
+    <p class="fg-note fg-warn"><strong>awaiting founder approval — no lane may spawn</strong></p>
+    <p class="fg-note">Gate: <strong>TRUE_FOUNDER_GATE</strong> — Founder gate — the work needs the founder&#39;s explicit go-ahead</p>
+  </section>
+  <section aria-readonly="true">
+    <h2>What the founder asked for</h2>
+    <p class="fg-note">As understood. Shown verbatim; nothing is added.</p>
+    <p class="fg-body">Keep a per-project index of customer feature requests.</p>
+    <p class="fg-meta">Project objective: Produce a plain-English spec card before any major feature so the founder can approve scope before a lane spawns.</p>
+  </section>
+  <section aria-readonly="true">
+    <h2>What &quot;done&quot; looks like</h2>
+    <p class="fg-note">The acceptance criteria bound to this requirement, verbatim. A criterion that declares how it is proven is marked testable.</p>
+    <ul class="fg-list">
+      <li>Customer data is classified before it is stored. <span class="fg-chip fg-tone-ok">testable</span></li>
+    </ul>
+  </section>
+  <section aria-readonly="true">
+    <h2>What it will NOT do</h2>
+    <p class="fg-note">The declared non-goals. An undefined boundary is shown as such, never filled in.</p>
+    <ul class="fg-list">
+      <li>This surface does not approve a card</li>
+      <li>This surface does not spawn a lane</li>
+      <li>This surface does not fire a scope kill-switch</li>
+    </ul>
+  </section>
+  <section aria-readonly="true">
+    <h2>Open questions</h2>
+    <p class="fg-note">Shown as recorded. An empty list is said out loud, never read as “all clear”.</p>
+    <ul class="fg-list">
+      <li>Where should an approval record be stored on disk?</li>
+      <li>Approve the spec-card format before it becomes the default</li>
+    </ul>
+  </section>
+  <section aria-readonly="true">
+    <div class="fg-head-row"><h2>Requirements-to-tests pipeline</h2><span class="fg-chip fg-tone-ok">5 of 5 present</span></div>
+    <p class="fg-note">Each stage is marked present or absent from the card alone; a missing stage is shown, never assumed done.</p>
+    <ul class="fg-stages">
+      <li class="fg-stage fg-stage-on"><span class="fg-stage-mark">✓</span><span>Founder idea — &quot;what was asked&quot;, as understood</span></li>
+      <li class="fg-stage fg-stage-on"><span class="fg-stage-mark">✓</span><span>Plain-English requirement (captured &amp; identified)</span></li>
+      <li class="fg-stage fg-stage-on"><span class="fg-stage-mark">✓</span><span>Acceptance criteria — what &quot;done&quot; looks like</span></li>
+      <li class="fg-stage fg-stage-on"><span class="fg-stage-mark">✓</span><span>Proof / evidence required</span></li>
+      <li class="fg-stage fg-stage-on"><span class="fg-stage-mark">✓</span><span>Gate — founder approval required, or not</span></li>
+    </ul>
+    <p class="fg-meta">Proof required: selftest_green; rendered_page</p>
+  </section>
+  <section aria-readonly="true">
+    <h2>Scope kill-switches</h2>
+    <p class="fg-note">Commands the founder MAY issue elsewhere to bound scope. Shown for reference — this surface fires none of them.</p>
+    <ul class="fg-list fg-switch-list">
+      <li><code>stop building this</code></li>
+      <li><code>freeze scope</code></li>
+      <li><code>defer to later</code></li>
+      <li><code>remove from roadmap</code></li>
+      <li><code>make it a manual process for now</code></li>
+    </ul>
+  </section>
+    <p class="fg-foot">Read-only view · an unapproved card is never assumed approved · a missing "done"/non-goal/gate is never invented · approving a card and spawning its lane is a later, separately-gated act, not wired here.</p>
+  </div>
+</body>
+</html>

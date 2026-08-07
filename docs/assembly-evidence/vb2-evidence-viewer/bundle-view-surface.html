@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Evidence Viewer — foreground-founder-surface-final — FounderGate</title>
+  <style>
+    :root{
+      --bg:#0d1117;--panel:#161c26;--panel2:#1b2230;--line:#2a3344;
+      --text:#e6ebf2;--muted:#93a0b4;--dim:#6b7789;
+      --blue:#3b82f6;--green:#22c55e;--amber:#f5b83d;--purple:#a78bfa;--red:#f26d6d;--radius:12px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);
+      font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+    .fg-wrap{max-width:920px;margin:0 auto;padding:32px 20px 56px}
+    .fg-eyebrow{color:var(--purple);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+    h1{font-size:27px;margin:.2em 0 .1em}
+    h2{font-size:16px;margin:0 0 .4em}
+    h3{font-size:13.5px;margin:16px 0 .3em;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+    .fg-sub{color:var(--muted);margin:0 0 24px}
+    .fg-note{color:var(--muted);font-size:12.5px;margin:.1em 0 14px}
+    section{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+      padding:18px 20px;margin:0 0 20px}
+    .fg-head-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+    .fg-verdict{display:inline-block;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;
+      border-radius:999px;padding:1px 8px}
+    .fg-verdict-pass{color:var(--green);border:1px solid rgba(34,197,94,.4)}
+    .fg-verdict-fail{color:var(--red);border:1px solid rgba(242,109,109,.5)}
+    .fg-verdict-running{color:var(--blue);border:1px solid rgba(59,130,246,.4)}
+    .fg-verdict-unknown{color:var(--purple);border:1px solid rgba(167,139,250,.4)}
+    .fg-bundle-id{font-weight:700;font-size:18px}
+    .fg-surface{color:var(--muted);font-size:12.5px}
+    .fg-path{color:var(--dim);font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;margin-top:2px}
+    .fg-file-list,.fg-shot-list{list-style:none;margin:0;padding:0}
+    .fg-file{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 8px;background:var(--panel2)}
+    .fg-file-ok{border-left:3px solid var(--green)}
+    .fg-file-bad{border-left:3px solid var(--red)}
+    .fg-file-head{display:flex;align-items:baseline;gap:8px}
+    .fg-file-mark{font-weight:700}
+    .fg-file-ok .fg-file-mark{color:var(--green)}
+    .fg-file-bad .fg-file-mark{color:var(--red)}
+    .fg-file-path{font-weight:600;flex:1 1 auto;word-break:break-all}
+    .fg-file-size{color:var(--dim);font-size:12px;white-space:nowrap}
+    .fg-file-hash{color:var(--muted);font-size:11.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;margin-top:4px;word-break:break-all}
+    .fg-file-nohash{color:var(--red);font-size:12px;margin-top:4px}
+    .fg-fact-grid{display:grid;grid-template-columns:minmax(140px,220px) 1fr;gap:6px 14px}
+    .fg-fact{display:contents}
+    .fg-fact-k{color:var(--muted);font-size:12.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .fg-fact-v{font-size:12.5px;word-break:break-word}
+    .fg-timeline{margin:0;padding:0 0 0 4px;list-style:none}
+    .fg-timeline li{margin:0 0 4px}
+    .fg-step-n{display:inline-block;min-width:20px;color:var(--purple);font-weight:600}
+    .fg-shot-list li{color:var(--muted);font-size:12.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .fg-chips{display:flex;flex-wrap:wrap;gap:6px}
+    .fg-chip{font-size:11.5px;border-radius:999px;padding:1px 8px;border:1px solid var(--line);color:var(--muted)}
+    .fg-chip-warn{color:var(--red);border-color:rgba(242,109,109,.5)}
+    .fg-flag{color:var(--red);font-size:13px;margin:0}
+    .fg-ok{color:var(--green);font-size:13px;margin:0}
+    .fg-partial{color:var(--muted);font-size:13px;margin:0}
+    .fg-empty{color:var(--muted)}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--text)}
+    .fg-foot{color:var(--dim);font-size:12.5px;margin-top:8px;text-align:center}
+  </style>
+</head>
+<body>
+  <div class="fg-wrap">
+    <div class="fg-eyebrow">READ-ONLY SURFACE</div>
+    <h1>Evidence Viewer</h1>
+    <p class="fg-sub">One evidence bundle, read in full — its files and the hashes that make them checkable, what the run did, and what it recorded. This surface only reads the bundle; it runs nothing, opens no file, and acts on nothing.</p>
+    <section aria-readonly="true">
+      <div class="fg-head-row">
+        <span class="fg-verdict fg-verdict-pass">Passed</span>
+        <span class="fg-bundle-id">foreground-founder-surface-final</span>
+      </div>
+      <div class="fg-surface">surface: phase7.1-safety-check</div>
+      <div class="fg-path">docs/testing/evidence/foreground-founder-surface-final</div>
+    </section>
+  <section aria-readonly="true"><h2>Can this bundle be trusted?</h2><p class="fg-ok">Self-verifying — every one of the 21 listed file(s) carries a sha256 you can recompute to prove it wasn&#39;t swapped.</p></section>
+  <section aria-readonly="true">
+    <h2>File manifest</h2>
+    <p class="fg-note">21 of 21 file(s) carry a recomputable sha256 · 2.4 MB. Copy any hash and run <code>shasum -a 256 &lt;file&gt;</code> to check it yourself.</p>
+    <ul class="fg-file-list">
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">DOM_ACTIONS.jsonl</span><span class="fg-file-size">179 B</span></div>
+        <div class="fg-file-hash">e8d3bafc3160803d779b9c0cfc84286a097b0976689f091968300991abcc0bcf</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">RESULT.json</span><span class="fg-file-size">1.4 KB</span></div>
+        <div class="fg-file-hash">9f6b00fc37628a01353787396bdd4316f87180d63be961478110fe14350d10d0</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">SCREENSHOT_INDEX.json</span><span class="fg-file-size">368 B</span></div>
+        <div class="fg-file-hash">a69681f336ca96d4a88d32121886655c5aa7c5274975fcf3e5d83fc18850bdf8</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">WINDOW_TIMELINE.jsonl</span><span class="fg-file-size">447 B</span></div>
+        <div class="fg-file-hash">c7d2954334d941de5db00e8c04d95753946b739e5a5daddc613b75248b45deba</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">WINDOW_VISIBILITY.json</span><span class="fg-file-size">352 B</span></div>
+        <div class="fg-file-hash">75116eb6a6a4aed37eda113cf11a1bd876a466e6a36296f74e5c628318d4db55</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">console.jsonl</span><span class="fg-file-size">104 B</span></div>
+        <div class="fg-file-hash">c4d852e14523812ae62a105d54c92320ccdff51970946eabd8c662adab6073c3</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">downloads/evidence-pack-sc-15f0cfc5.zip</span><span class="fg-file-size">91 KB</span></div>
+        <div class="fg-file-hash">472e2ecfcfc901c8c92374056e63395464e076605b0982b636c4ec5aab620f60</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">network.jsonl</span><span class="fg-file-size">909 B</span></div>
+        <div class="fg-file-hash">c88b701e7fdf957b2c70f67f799b2570796ee6b6c10aeb62bbf0e15aa0a73a87</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">page-errors.jsonl</span><span class="fg-file-size">0 B</span></div>
+        <div class="fg-file-hash">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">screenshots/01-before-launcher-desktop.png</span><span class="fg-file-size">4.0 KB</span></div>
+        <div class="fg-file-hash">7da89bef50adc2b84f8669139458998941874ff1dcb0716ab804b1a4f34526d0</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">screenshots/02-chrome-visible-frontmost.png</span><span class="fg-file-size">96 KB</span></div>
+        <div class="fg-file-hash">21a9cf46711da41c753ddfaae04f4e29d93c3ee3a9e610a736786d38fd4f3087</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">screenshots/03-canonical-neutral-page.png</span><span class="fg-file-size">96 KB</span></div>
+        <div class="fg-file-hash">21a9cf46711da41c753ddfaae04f4e29d93c3ee3a9e610a736786d38fd4f3087</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">screenshots/04-existing-run-loaded.png</span><span class="fg-file-size">96 KB</span></div>
+        <div class="fg-file-hash">91da9988e13812df5c6508531b483921c51f9da1b21da0b6bf58dbab66f59900</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">screenshots/05-evidence-pack-state.png</span><span class="fg-file-size">96 KB</span></div>
+        <div class="fg-file-hash">91da9988e13812df5c6508531b483921c51f9da1b21da0b6bf58dbab66f59900</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">screenshots/06-download-control-visible.png</span><span class="fg-file-size">96 KB</span></div>
+        <div class="fg-file-hash">91da9988e13812df5c6508531b483921c51f9da1b21da0b6bf58dbab66f59900</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">screenshots/07-download-completed.png</span><span class="fg-file-size">101 KB</span></div>
+        <div class="fg-file-hash">3a5c6f40e0e1f1f0d559452d9c9c6939fb41f61e387d42cad1dd6b6e6f5ae36d</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">screenshots/08-refreshed-state.png</span><span class="fg-file-size">101 KB</span></div>
+        <div class="fg-file-hash">022385eb1e8f63e9fa3a4705068f97c4d716e85391a1072eef8099b6c4eb91fa</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">screenshots/09-pause-and-get-help.png</span><span class="fg-file-size">111 KB</span></div>
+        <div class="fg-file-hash">f7306a4341e1d6192d1848c5ff25e0a1af2d6184fabf9a1ed7051c7b582b31cd</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">screenshots/10-final-state.png</span><span class="fg-file-size">101 KB</span></div>
+        <div class="fg-file-hash">022385eb1e8f63e9fa3a4705068f97c4d716e85391a1072eef8099b6c4eb91fa</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">trace/trace.zip</span><span class="fg-file-size">1.0 MB</span></div>
+        <div class="fg-file-hash">0138ecb0077662a757e74ca9103a6353f358f868410e017adc52aa6705a54b65</div>
+      </li>
+      <li class="fg-file fg-file-ok">
+        <div class="fg-file-head"><span class="fg-file-mark">✓</span><span class="fg-file-path">video/page@9ed675665ea42e81d7bd316761596c7f.webm</span><span class="fg-file-size">483 KB</span></div>
+        <div class="fg-file-hash">310b5cdda305fbf50606e089aec5f710ae96b8856a3df93881c4d59d9c1808af</div>
+      </li>
+    </ul>
+  </section>
+  <section aria-readonly="true">
+    <h2>Recorded facts</h2>
+    <p class="fg-note">What the bundle reported about itself. These are self-reported claims — the manifest above, not this list, is what makes them checkable.</p>
+    <div class="fg-fact-grid">
+      <div class="fg-fact"><span class="fg-fact-k">foreground_state</span><span class="fg-fact-v">FOREGROUND_TEST_VERIFIED</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">run_id</span><span class="fg-fact-v">sc-15f0cfc5</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">candidate_sha</span><span class="fg-fact-v">a64ebcdc784b2f472d42335b0972683482e330c7</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">ui_contract</span><span class="fg-fact-v">phase7.1-neutral-first-v1</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">browser</span><span class="fg-fact-v">Google Chrome</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">user_agent</span><span class="fg-fact-v">Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">headless</span><span class="fg-fact-v">false</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">real_launcher_used</span><span class="fg-fact-v">true</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">visible_window_count</span><span class="fg-fact-v">1</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">minimized</span><span class="fg-fact-v">false</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">onscreen</span><span class="fg-fact-v">true</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">frontmost</span><span class="fg-fact-v">true</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">active_gui_session</span><span class="fg-fact-v">true</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">pacing_ms</span><span class="fg-fact-v">1200</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">screenshots</span><span class="fg-fact-v">10</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">video</span><span class="fg-fact-v">true</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">trace</span><span class="fg-fact-v">true</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">dom_assertions</span><span class="fg-fact-v">5</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">final_dom_assertions</span><span class="fg-fact-v">true</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">api_substituted_founder_action</span><span class="fg-fact-v">false</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">pack_status_ui</span><span class="fg-fact-v">AVAILABLE.</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">pack_status_after_refresh</span><span class="fg-fact-v">AVAILABLE.</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">pack_state</span><span class="fg-fact-v">AVAILABLE</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">download_verified</span><span class="fg-fact-v">true</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">downloaded_path</span><span class="fg-fact-v">docs/testing/evidence/foreground-founder-surface-final/downloads/evidence-pack-sc-15f0cfc5.zip</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">health_after_stop</span><span class="fg-fact-v">000</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">console_entries</span><span class="fg-fact-v">1</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">network_entries</span><span class="fg-fact-v">15</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">page_errors</span><span class="fg-fact-v">0</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">expected_ui_contract</span><span class="fg-fact-v">phase7.1-neutral-first-v1</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">governed_pack_sha256</span><span class="fg-fact-v">472e2ecfcfc901c8c92374056e63395464e076605b0982b636c4ec5aab620f60</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">completion_state</span><span class="fg-fact-v">COMPLETE_WITH_VERIFIED_EVIDENCE_PACK</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">no_new_run</span><span class="fg-fact-v">true</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">no_new_vm</span><span class="fg-fact-v">true</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">no_post_api_check</span><span class="fg-fact-v">true</span></div>
+      <div class="fg-fact"><span class="fg-fact-k">final_candidate_sha</span><span class="fg-fact-v">a64ebcdc784b2f472d42335b0972683482e330c7</span></div>
+    </div>
+  </section>
+  <section aria-readonly="true">
+    <h2>What the run did</h2>
+    <h3>Steps the run took</h3>
+    <ol class="fg-timeline">
+      <li><span class="fg-step-n">1</span>goto /</li>
+      <li><span class="fg-step-n">2</span>open-existing-run sc-15f0cfc5</li>
+      <li><span class="fg-step-n">3</span>click #pack-dl</li>
+      <li><span class="fg-step-n">4</span>reload</li>
+      <li><span class="fg-step-n">5</span>click #pause</li>
+    </ol>
+    <h3>Screenshots (10)</h3>
+    <p class="fg-note">Names only — the viewer lists what was captured; it does not embed or open images.</p>
+    <ul class="fg-shot-list">
+      <li>01-before-launcher-desktop.png</li>
+      <li>02-chrome-visible-frontmost.png</li>
+      <li>03-canonical-neutral-page.png</li>
+      <li>04-existing-run-loaded.png</li>
+      <li>05-evidence-pack-state.png</li>
+      <li>06-download-control-visible.png</li>
+      <li>07-download-completed.png</li>
+      <li>08-refreshed-state.png</li>
+      <li>09-pause-and-get-help.png</li>
+      <li>10-final-state.png</li>
+    </ul>
+    <h3>Observed counts</h3>
+    <div class="fg-chips"><span class="fg-chip">console 1</span><span class="fg-chip">network 15</span><span class="fg-chip ">page errors 0</span></div>
+  </section>
+    <p class="fg-foot">Read-only view · this viewer never opens a file, recomputes a hash, or re-runs a bundle — it presents only what the evidence generator read from disk. The act edge stays in VB3.</p>
+  </div>
+</body>
+</html>

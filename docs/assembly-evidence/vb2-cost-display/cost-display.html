@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cost Display — FounderGate</title>
+  <style>
+    :root{
+      --bg:#0d1117;--panel:#161c26;--panel2:#1b2230;--line:#2a3344;
+      --text:#e6ebf2;--muted:#93a0b4;--dim:#6b7789;
+      --blue:#3b82f6;--green:#22c55e;--amber:#f5b83d;--purple:#a78bfa;--red:#f26d6d;--radius:12px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);
+      font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+    .fg-wrap{max-width:920px;margin:0 auto;padding:32px 20px 56px}
+    .fg-eyebrow{color:var(--purple);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+    h1{font-size:27px;margin:.2em 0 .1em}
+    h2{font-size:16px;margin:0}
+    h3{font-size:13.5px;margin:16px 0 .3em;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+    .fg-sub{color:var(--muted);margin:0 0 24px}
+    .fg-note{color:var(--muted);font-size:12.5px;margin:.4em 0 0}
+    .fg-note strong{color:var(--text)}
+    section{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+      padding:18px 20px;margin:0 0 20px}
+    .fg-head-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+    .fg-chip{font-size:11.5px;border-radius:999px;padding:1px 9px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+    .fg-tone-ok{color:var(--green);border-color:rgba(34,197,94,.4)}
+    .fg-tone-bad{color:var(--red);border-color:rgba(242,109,109,.5)}
+    .fg-tone-warn{color:var(--amber);border-color:rgba(245,184,61,.45)}
+    .fg-tone-info{color:var(--blue);border-color:rgba(59,130,246,.4)}
+    .fg-tone-muted{color:var(--muted)}
+    .fg-big-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px}
+    .fg-big{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px 20px;display:flex;flex-direction:column;gap:2px}
+    .fg-big-value{font-size:30px;font-weight:700}
+    .fg-big-label{color:var(--muted);font-size:12.5px}
+    .fg-stat-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px}
+    .fg-stat{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 16px;display:flex;flex-direction:column;gap:2px;min-width:150px}
+    .fg-stat-value{font-size:22px;font-weight:700}
+    .fg-stat-label{color:var(--muted);font-size:12.5px}
+    .fg-money{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:700}
+    .fg-unmeasured{color:var(--dim);font-style:italic;font-size:13px}
+    .fg-partial{color:var(--amber);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;margin-left:6px}
+    .fg-run-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+    .fg-run-label{font-weight:700;color:var(--purple);font-size:16px}
+    .fg-run-time{color:var(--dim);font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .fg-run-cost{margin-left:auto;font-size:15px}
+    .fg-pr-table{width:100%;border-collapse:collapse;margin-top:4px;font-size:13.5px}
+    .fg-pr-table th{text-align:left;color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em;padding:4px 8px;border-bottom:1px solid var(--line)}
+    .fg-pr-table td{padding:6px 8px;border-bottom:1px solid var(--line)}
+    .fg-pr-table tr:last-child td{border-bottom:none}
+    .fg-pr-num{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--purple);white-space:nowrap}
+    .fg-num{text-align:right;white-space:nowrap}
+    .fg-empty{color:var(--muted)}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--text)}
+    .fg-foot{color:var(--dim);font-size:12.5px;margin-top:8px;text-align:center}
+  </style>
+</head>
+<body>
+  <div class="fg-wrap">
+    <div class="fg-eyebrow">READ-ONLY SURFACE</div>
+    <h1>Cost Display</h1>
+    <p class="fg-sub">The declared budget (quota), the spend per run, and the cost per PR — one place to read what this project is allowed to spend and what it has actually cost. Unmeasured costs are shown as <em>not measured</em>, never as a zero-dollar amount. This surface only shows cost; it changes no limit, cancels nothing, and spends nothing.</p>
+    <div class="fg-head-row"><span class="fg-chip fg-tone-muted">Fixture (committed sample — not live)</span><span class="fg-run-time">collected 2026-07-04T00:00:00.000Z</span></div>
+  <section class="fg-quota" aria-readonly="true">
+    <div class="fg-head-row"><h2>Quota</h2><span class="fg-chip fg-tone-info">display only — not enforced</span><span class="fg-chip fg-tone-ok">paid services blocked</span></div>
+    <div class="fg-big-row">
+      <div class="fg-big"><span class="fg-big-value">$50.00</span><span class="fg-big-label">Monthly limit</span></div>
+    </div>
+    <p class="fg-note">Same-failure-loop policy: Stop after 3 identical failures; park and raise.</p>
+    <p class="fg-note">The budget is <strong>displayed</strong> here, not enforced. This surface shows cost; it changes no limit and spends nothing.</p>
+  </section>
+  <section class="fg-spend" aria-readonly="true">
+    <div class="fg-head-row"><h2>Spend</h2><span class="fg-chip fg-tone-muted">Spend not measured — cannot compare to the limit</span></div>
+    <p class="fg-note">Spend tracking is not enabled — no run or PR cost has been measured yet. Unmeasured costs are shown as <em>not measured</em>, never as a zero-dollar amount.</p>
+    <div class="fg-stat-row">
+      <div class="fg-stat"><span class="fg-stat-value"><span class="fg-unmeasured">not measured</span></span><span class="fg-stat-label">Measured total (floor)</span></div>
+      <div class="fg-stat"><span class="fg-stat-value">0 / 1</span><span class="fg-stat-label">Runs measured</span></div>
+    </div>
+    <p class="fg-note">The total sums only measured runs, so it is a <strong>floor</strong> — the true spend is at least this much. It is never presented as a complete figure.</p>
+  </section>
+  <section class="fg-run" aria-readonly="true">
+    <div class="fg-run-head">
+      <span class="fg-run-label">owner/example-repo — collector read</span>
+      <span class="fg-run-time">started 2026-07-04T00:00:00.000Z</span>
+      <span class="fg-run-cost"><span class="fg-unmeasured">not measured</span></span>
+    </div>
+    <h3>Cost per PR (0 of 3 measured)</h3>
+      <table class="fg-pr-table"><thead><tr><th>PR</th><th>Title</th><th class="fg-num">Cost</th></tr></thead>
+      <tbody>
+        <tr><td class="fg-pr-num">#139</td><td>Lane 7 — Voice Bucket H (logic-only)</td><td class="fg-num"><span class="fg-unmeasured">not measured</span></td></tr>
+        <tr><td class="fg-pr-num">#140</td><td>Add redaction fixture coverage</td><td class="fg-num"><span class="fg-unmeasured">not measured</span></td></tr>
+        <tr><td class="fg-pr-num">#141</td><td>Docs-only cleanup</td><td class="fg-num"><span class="fg-unmeasured">not measured</span></td></tr>
+      </tbody></table>
+  </section>
+    <p class="fg-foot">Read-only view · unmeasured cost is never rendered as a zero-dollar amount · the budget is displayed, not enforced · the cost guard (runtime enforcement) is not wired here.</p>
+  </div>
+</body>
+</html>
