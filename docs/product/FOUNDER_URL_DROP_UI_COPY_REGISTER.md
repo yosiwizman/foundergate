@@ -10,7 +10,7 @@ Every founder-facing string, with its truth basis. No string may overstate.
 | fixture_note | Evaluation fixture | pypa/sampleproject only |
 | primary_action | Run Safety Check | one primary action |
 | commit_lock | Exact commit locked | resolved commit is the identity |
-| result_pass_named | Compileability observed | compileall exit 0 |
+| result_pass_named | Source parsing observed | compileall exit 0 |
 | build | Build not proven | not run |
 | tests | Tests not proven | not run |
 | security | Security not proven | runc, not hardened |
@@ -23,4 +23,4 @@ Every founder-facing string, with its truth basis. No string may overstate.
 | stale | STALE | run older than evidence |
 | pause | Pause & get help | always visible |
 
-Rules: never show "PASS" alone — always "Compileability observed" with the three NOT-proven badges. Never "safe"/"secure"/"ready". Missing → UNKNOWN. Stale → STALE.
+Rules: never show "PASS" alone — always "Source parsing observed" with the three NOT-proven badges. Never "safe"/"secure"/"ready". Missing → UNKNOWN. Stale → STALE.
