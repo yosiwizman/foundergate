@@ -1,0 +1,1636 @@
+{
+  "run_id": "shadow-sim",
+  "runtime_state": "STOPPED_EXHAUSTED",
+  "stop_reason": "auto-safe queue drained — 19 completed, 1 parked, 3 held (1 founder-gate, 1 human-expert), 1 blocked. Held/blocked jobs are NEVER auto-run.",
+  "gate": null,
+  "jobs": [
+    {
+      "job_id": "safe1",
+      "title": "safe1 task",
+      "objective": "wide-safe synthetic safe1",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/safe1.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-safe1",
+      "worktree": "/wt/sim-safe1",
+      "expected_outputs": [
+        "sim/safe1.mjs"
+      ],
+      "tests": [
+        "sim/safe1.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/safe1.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "safe2",
+      "title": "safe2 task",
+      "objective": "wide-safe synthetic safe2",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/safe2.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-safe2",
+      "worktree": "/wt/sim-safe2",
+      "expected_outputs": [
+        "sim/safe2.mjs"
+      ],
+      "tests": [
+        "sim/safe2.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/safe2.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "safe3",
+      "title": "safe3 task",
+      "objective": "wide-safe synthetic safe3",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/safe3.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-safe3",
+      "worktree": "/wt/sim-safe3",
+      "expected_outputs": [
+        "sim/safe3.mjs"
+      ],
+      "tests": [
+        "sim/safe3.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/safe3.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "safe4",
+      "title": "safe4 task",
+      "objective": "wide-safe synthetic safe4",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/safe4.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-safe4",
+      "worktree": "/wt/sim-safe4",
+      "expected_outputs": [
+        "sim/safe4.mjs"
+      ],
+      "tests": [
+        "sim/safe4.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/safe4.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "safe5",
+      "title": "safe5 task",
+      "objective": "wide-safe synthetic safe5",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/safe5.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-safe5",
+      "worktree": "/wt/sim-safe5",
+      "expected_outputs": [
+        "sim/safe5.mjs"
+      ],
+      "tests": [
+        "sim/safe5.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/safe5.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "safe6",
+      "title": "safe6 task",
+      "objective": "wide-safe synthetic safe6",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/safe6.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-safe6",
+      "worktree": "/wt/sim-safe6",
+      "expected_outputs": [
+        "sim/safe6.mjs"
+      ],
+      "tests": [
+        "sim/safe6.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/safe6.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "safe7",
+      "title": "safe7 task",
+      "objective": "wide-safe synthetic safe7",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/safe7.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-safe7",
+      "worktree": "/wt/sim-safe7",
+      "expected_outputs": [
+        "sim/safe7.mjs"
+      ],
+      "tests": [
+        "sim/safe7.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/safe7.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "safe8",
+      "title": "safe8 task",
+      "objective": "wide-safe synthetic safe8",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/safe8.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-safe8",
+      "worktree": "/wt/sim-safe8",
+      "expected_outputs": [
+        "sim/safe8.mjs"
+      ],
+      "tests": [
+        "sim/safe8.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/safe8.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "safe9",
+      "title": "safe9 task",
+      "objective": "wide-safe synthetic safe9",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/safe9.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-safe9",
+      "worktree": "/wt/sim-safe9",
+      "expected_outputs": [
+        "sim/safe9.mjs"
+      ],
+      "tests": [
+        "sim/safe9.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/safe9.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "safe10",
+      "title": "safe10 task",
+      "objective": "wide-safe synthetic safe10",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/safe10.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-safe10",
+      "worktree": "/wt/sim-safe10",
+      "expected_outputs": [
+        "sim/safe10.mjs"
+      ],
+      "tests": [
+        "sim/safe10.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/safe10.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "safe11",
+      "title": "safe11 task",
+      "objective": "wide-safe synthetic safe11",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/safe11.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-safe11",
+      "worktree": "/wt/sim-safe11",
+      "expected_outputs": [
+        "sim/safe11.mjs"
+      ],
+      "tests": [
+        "sim/safe11.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/safe11.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "safe12",
+      "title": "safe12 task",
+      "objective": "wide-safe synthetic safe12",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/safe12.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-safe12",
+      "worktree": "/wt/sim-safe12",
+      "expected_outputs": [
+        "sim/safe12.mjs"
+      ],
+      "tests": [
+        "sim/safe12.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/safe12.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "safe13",
+      "title": "safe13 task",
+      "objective": "wide-safe synthetic safe13",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/safe13.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-safe13",
+      "worktree": "/wt/sim-safe13",
+      "expected_outputs": [
+        "sim/safe13.mjs"
+      ],
+      "tests": [
+        "sim/safe13.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/safe13.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "chainA",
+      "title": "chainA task",
+      "objective": "wide-safe synthetic chainA",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/chainA.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-chainA",
+      "worktree": "/wt/sim-chainA",
+      "expected_outputs": [
+        "sim/chainA.mjs"
+      ],
+      "tests": [
+        "sim/chainA.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/chainA.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "chainB",
+      "title": "chainB task",
+      "objective": "wide-safe synthetic chainB",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [
+        "chainA"
+      ],
+      "allowed_files": [
+        "sim/chainB.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-chainB",
+      "worktree": "/wt/sim-chainB",
+      "expected_outputs": [
+        "sim/chainB.mjs"
+      ],
+      "tests": [
+        "sim/chainB.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/chainB.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "chainC",
+      "title": "chainC task",
+      "objective": "wide-safe synthetic chainC",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [
+        "chainB"
+      ],
+      "allowed_files": [
+        "sim/chainC.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-chainC",
+      "worktree": "/wt/sim-chainC",
+      "expected_outputs": [
+        "sim/chainC.mjs"
+      ],
+      "tests": [
+        "sim/chainC.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/chainC.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "collX",
+      "title": "collX task",
+      "objective": "wide-safe synthetic collX",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/shared-collision.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-collX",
+      "worktree": "/wt/sim-collX",
+      "expected_outputs": [
+        "sim/collX.mjs"
+      ],
+      "tests": [
+        "sim/collX.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/collX.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "collY",
+      "title": "collY task",
+      "objective": "wide-safe synthetic collY",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/shared-collision.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-collY",
+      "worktree": "/wt/sim-collY",
+      "expected_outputs": [
+        "sim/collY.mjs"
+      ],
+      "tests": [
+        "sim/collY.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/collY.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "COMPLETED",
+      "status_reason": null,
+      "attempts": 1,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "flaky",
+      "title": "flaky task",
+      "objective": "wide-safe synthetic flaky",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/flaky.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-flaky",
+      "worktree": "/wt/sim-flaky",
+      "expected_outputs": [
+        "sim/flaky.mjs"
+      ],
+      "tests": [
+        "sim/flaky.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/flaky.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 1,
+      "status": "COMPLETED",
+      "sim": {
+        "outcome": "fail_once"
+      },
+      "status_reason": null,
+      "attempts": 2,
+      "started_at": 1784521228,
+      "completed_at": 1784521228
+    },
+    {
+      "job_id": "broken",
+      "title": "broken task",
+      "objective": "wide-safe synthetic broken",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/broken.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-broken",
+      "worktree": "/wt/sim-broken",
+      "expected_outputs": [
+        "sim/broken.mjs"
+      ],
+      "tests": [
+        "sim/broken.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/broken.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 3,
+      "status": "PARKED",
+      "sim": {
+        "outcome": "fail_always"
+      },
+      "status_reason": "parked after 3 failed cycles: scripted permanent failure",
+      "attempts": 3,
+      "started_at": 1784521228
+    },
+    {
+      "job_id": "afterBroken",
+      "title": "afterBroken task",
+      "objective": "wide-safe synthetic afterBroken",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [
+        "broken"
+      ],
+      "allowed_files": [
+        "sim/afterBroken.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-afterBroken",
+      "worktree": "/wt/sim-afterBroken",
+      "expected_outputs": [
+        "sim/afterBroken.mjs"
+      ],
+      "tests": [
+        "sim/afterBroken.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/afterBroken.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "BLOCKED",
+      "status_reason": "dependency broken is PARKED",
+      "attempts": 0
+    },
+    {
+      "job_id": "founderReview",
+      "title": "founderReview task",
+      "objective": "wide-safe synthetic founderReview",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/founderReview.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-founderReview",
+      "worktree": "/wt/sim-founderReview",
+      "expected_outputs": [
+        "sim/founderReview.mjs"
+      ],
+      "tests": [
+        "sim/founderReview.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/founderReview.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "FOUNDER_GATE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "HELD",
+      "status_reason": "HELD:gate=FOUNDER_GATE",
+      "attempts": 0
+    },
+    {
+      "job_id": "legalReview",
+      "title": "legalReview task",
+      "objective": "wide-safe synthetic legalReview",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "WIDE_SAFE",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/legalReview.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-legalReview",
+      "worktree": "/wt/sim-legalReview",
+      "expected_outputs": [
+        "sim/legalReview.mjs"
+      ],
+      "tests": [
+        "sim/legalReview.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/legalReview.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "HUMAN_EXPERT_GATE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "HELD",
+      "status_reason": "HELD:gate=HUMAN_EXPERT_GATE",
+      "attempts": 0
+    },
+    {
+      "job_id": "mystery",
+      "title": "mystery task",
+      "objective": "wide-safe synthetic mystery",
+      "done_meaning": "artifact + passing test",
+      "source": "protected-main (synthetic)",
+      "risk_class": "UNKNOWN",
+      "effect_class": "LOCAL_FS",
+      "dependencies": [],
+      "allowed_files": [
+        "sim/mystery.mjs"
+      ],
+      "forbidden_files": [
+        "src/",
+        ".foundergate/governance/",
+        "tools/terminal0/paes/"
+      ],
+      "branch": "lane/sim-mystery",
+      "worktree": "/wt/sim-mystery",
+      "expected_outputs": [
+        "sim/mystery.mjs"
+      ],
+      "tests": [
+        "sim/mystery.selftest.mjs"
+      ],
+      "required_evidence": [
+        "sim/evidence/mystery.json"
+      ],
+      "checker_requirement": "independent-lane-checker",
+      "gate_trigger": "NONE",
+      "estimated_minutes": 12,
+      "max_attempts": 3,
+      "correction_cycle": 0,
+      "status": "HELD",
+      "status_reason": "HELD:risk_class=UNKNOWN",
+      "attempts": 0
+    }
+  ],
+  "events": [
+    {
+      "event_id": "shadow-sim-1",
+      "run_id": "shadow-sim",
+      "job_id": "safe1",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-2",
+      "run_id": "shadow-sim",
+      "job_id": "safe2",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-3",
+      "run_id": "shadow-sim",
+      "job_id": "safe3",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-4",
+      "run_id": "shadow-sim",
+      "job_id": "safe1",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-5",
+      "run_id": "shadow-sim",
+      "job_id": "safe1",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-6",
+      "run_id": "shadow-sim",
+      "job_id": "safe4",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-7",
+      "run_id": "shadow-sim",
+      "job_id": "safe2",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-8",
+      "run_id": "shadow-sim",
+      "job_id": "safe2",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-9",
+      "run_id": "shadow-sim",
+      "job_id": "safe5",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-10",
+      "run_id": "shadow-sim",
+      "job_id": "safe3",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-11",
+      "run_id": "shadow-sim",
+      "job_id": "safe3",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-12",
+      "run_id": "shadow-sim",
+      "job_id": "safe6",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-13",
+      "run_id": "shadow-sim",
+      "job_id": "safe4",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-14",
+      "run_id": "shadow-sim",
+      "job_id": "safe4",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-15",
+      "run_id": "shadow-sim",
+      "job_id": "safe7",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-16",
+      "run_id": "shadow-sim",
+      "job_id": "safe5",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-17",
+      "run_id": "shadow-sim",
+      "job_id": "safe5",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-18",
+      "run_id": "shadow-sim",
+      "job_id": "safe8",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-19",
+      "run_id": "shadow-sim",
+      "job_id": "safe6",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-20",
+      "run_id": "shadow-sim",
+      "job_id": "safe6",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-21",
+      "run_id": "shadow-sim",
+      "job_id": "safe9",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-22",
+      "run_id": "shadow-sim",
+      "job_id": "safe7",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-23",
+      "run_id": "shadow-sim",
+      "job_id": "safe7",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-24",
+      "run_id": "shadow-sim",
+      "job_id": "safe10",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-25",
+      "run_id": "shadow-sim",
+      "job_id": "safe8",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-26",
+      "run_id": "shadow-sim",
+      "job_id": "safe8",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-27",
+      "run_id": "shadow-sim",
+      "job_id": "safe11",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-28",
+      "run_id": "shadow-sim",
+      "job_id": "safe9",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-29",
+      "run_id": "shadow-sim",
+      "job_id": "safe9",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-30",
+      "run_id": "shadow-sim",
+      "job_id": "safe12",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-31",
+      "run_id": "shadow-sim",
+      "job_id": "safe10",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-32",
+      "run_id": "shadow-sim",
+      "job_id": "safe10",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-33",
+      "run_id": "shadow-sim",
+      "job_id": "safe13",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-34",
+      "run_id": "shadow-sim",
+      "job_id": "safe11",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-35",
+      "run_id": "shadow-sim",
+      "job_id": "safe11",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-36",
+      "run_id": "shadow-sim",
+      "job_id": "chainA",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-37",
+      "run_id": "shadow-sim",
+      "job_id": "safe12",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-38",
+      "run_id": "shadow-sim",
+      "job_id": "safe12",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-39",
+      "run_id": "shadow-sim",
+      "job_id": "collX",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-40",
+      "run_id": "shadow-sim",
+      "job_id": "safe13",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-41",
+      "run_id": "shadow-sim",
+      "job_id": "safe13",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-42",
+      "run_id": "shadow-sim",
+      "job_id": "flaky",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-43",
+      "run_id": "shadow-sim",
+      "job_id": "chainA",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-44",
+      "run_id": "shadow-sim",
+      "job_id": "chainA",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-45",
+      "run_id": "shadow-sim",
+      "job_id": "chainB",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-46",
+      "run_id": "shadow-sim",
+      "job_id": "chainB",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-47",
+      "run_id": "shadow-sim",
+      "job_id": "chainB",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-48",
+      "run_id": "shadow-sim",
+      "job_id": "chainC",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-49",
+      "run_id": "shadow-sim",
+      "job_id": "chainC",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-50",
+      "run_id": "shadow-sim",
+      "job_id": "chainC",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-51",
+      "run_id": "shadow-sim",
+      "job_id": "broken",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-52",
+      "run_id": "shadow-sim",
+      "job_id": "collX",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-53",
+      "run_id": "shadow-sim",
+      "job_id": "collX",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-54",
+      "run_id": "shadow-sim",
+      "job_id": "collY",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-55",
+      "run_id": "shadow-sim",
+      "job_id": "collY",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-56",
+      "run_id": "shadow-sim",
+      "job_id": "collY",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-57",
+      "run_id": "shadow-sim",
+      "job_id": "flaky",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_failed",
+      "status": "FAILED",
+      "evidence": "scripted transient failure (attempt 1)"
+    },
+    {
+      "event_id": "shadow-sim-58",
+      "run_id": "shadow-sim",
+      "job_id": "flaky",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-59",
+      "run_id": "shadow-sim",
+      "job_id": "flaky",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "evidence_sealed",
+      "status": "OK",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-60",
+      "run_id": "shadow-sim",
+      "job_id": "flaky",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_completed",
+      "status": "COMPLETED",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-61",
+      "run_id": "shadow-sim",
+      "job_id": "broken",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_failed",
+      "status": "FAILED",
+      "evidence": "scripted permanent failure"
+    },
+    {
+      "event_id": "shadow-sim-62",
+      "run_id": "shadow-sim",
+      "job_id": "broken",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-63",
+      "run_id": "shadow-sim",
+      "job_id": "broken",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_failed",
+      "status": "FAILED",
+      "evidence": "scripted permanent failure"
+    },
+    {
+      "event_id": "shadow-sim-64",
+      "run_id": "shadow-sim",
+      "job_id": "broken",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_started",
+      "status": "RUNNING",
+      "evidence": null
+    },
+    {
+      "event_id": "shadow-sim-65",
+      "run_id": "shadow-sim",
+      "job_id": "broken",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_failed",
+      "status": "FAILED",
+      "evidence": "scripted permanent failure"
+    },
+    {
+      "event_id": "shadow-sim-66",
+      "run_id": "shadow-sim",
+      "job_id": "broken",
+      "timestamp": 1784521228,
+      "source": "controller",
+      "event_type": "job_parked",
+      "status": "PARKED",
+      "evidence": null
+    }
+  ],
+  "mode": "SIMULATION_ONLY",
+  "merged": false,
+  "accepted": false,
+  "max_width": 3,
+  "deadline_epoch": null,
+  "paused": false,
+  "sealed_jobs": [
+    "safe1",
+    "safe2",
+    "safe3",
+    "safe4",
+    "safe5",
+    "safe6",
+    "safe7",
+    "safe8",
+    "safe9",
+    "safe10",
+    "safe11",
+    "safe12",
+    "safe13",
+    "chainA",
+    "chainB",
+    "chainC",
+    "collX",
+    "collY",
+    "flaky"
+  ]
+}

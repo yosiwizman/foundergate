@@ -1,0 +1,212 @@
+{
+  "run_id": "shadow-sim",
+  "evaluated_sha": "UNKNOWN",
+  "evidence_sha": "UNKNOWN",
+  "authorized_start": "UNKNOWN",
+  "hard_deadline": "UNKNOWN",
+  "max_authorization_window_hours": "UNKNOWN",
+  "actual_elapsed_hours": "UNKNOWN",
+  "final_runtime_hours": null,
+  "configured_runtime_ceiling_hours": "UNKNOWN",
+  "configured_cost_ceiling": "none configured",
+  "lifecycle_state": "STOPPED_EXHAUSTED",
+  "lifecycle_display": "COMPLETED (queue exhausted)",
+  "lifecycle_source": "state.json",
+  "historical_launch_marker": null,
+  "is_final": true,
+  "heartbeat_status": "NONE",
+  "heartbeat_age_seconds": null,
+  "heartbeat_unit": null,
+  "current_job": "none",
+  "queue_depth": 24,
+  "eligible_jobs": [],
+  "blocked_dependency_jobs": [
+    "afterBroken"
+  ],
+  "running_jobs": [],
+  "completed_jobs": [
+    "safe1",
+    "safe2",
+    "safe3",
+    "safe4",
+    "safe5",
+    "safe6",
+    "safe7",
+    "safe8",
+    "safe9",
+    "safe10",
+    "safe11",
+    "safe12",
+    "safe13",
+    "chainA",
+    "chainB",
+    "chainC",
+    "collX",
+    "collY",
+    "flaky"
+  ],
+  "failed_jobs": [],
+  "held_jobs": [
+    "founderReview",
+    "legalReview",
+    "mystery"
+  ],
+  "unknown_jobs": [],
+  "parked_jobs": [
+    "broken"
+  ],
+  "pending_jobs": [],
+  "correction_cycle_counts": {
+    "flaky": 1,
+    "broken": 3
+  },
+  "current_events": 66,
+  "historical_events": 0,
+  "legacy_unscoped_events": 0,
+  "stop_reason": "auto-safe queue drained — 19 completed, 1 parked, 3 held (1 founder-gate, 1 human-expert), 1 blocked. Held/blocked jobs are NEVER auto-run.",
+  "next_safe_action": "UNKNOWN",
+  "founder_action_required": true,
+  "held_founder_gate_jobs": [
+    "founderReview"
+  ],
+  "held_human_expert_jobs": [
+    "legalReview"
+  ],
+  "gate_reason": "founder-gate job(s) held: founderReview",
+  "evidence_links": [],
+  "branch_worktree_assignments": [
+    {
+      "job": "safe1",
+      "branch": "lane/sim-safe1",
+      "worktree": "/wt/sim-safe1"
+    },
+    {
+      "job": "safe2",
+      "branch": "lane/sim-safe2",
+      "worktree": "/wt/sim-safe2"
+    },
+    {
+      "job": "safe3",
+      "branch": "lane/sim-safe3",
+      "worktree": "/wt/sim-safe3"
+    },
+    {
+      "job": "safe4",
+      "branch": "lane/sim-safe4",
+      "worktree": "/wt/sim-safe4"
+    },
+    {
+      "job": "safe5",
+      "branch": "lane/sim-safe5",
+      "worktree": "/wt/sim-safe5"
+    },
+    {
+      "job": "safe6",
+      "branch": "lane/sim-safe6",
+      "worktree": "/wt/sim-safe6"
+    },
+    {
+      "job": "safe7",
+      "branch": "lane/sim-safe7",
+      "worktree": "/wt/sim-safe7"
+    },
+    {
+      "job": "safe8",
+      "branch": "lane/sim-safe8",
+      "worktree": "/wt/sim-safe8"
+    },
+    {
+      "job": "safe9",
+      "branch": "lane/sim-safe9",
+      "worktree": "/wt/sim-safe9"
+    },
+    {
+      "job": "safe10",
+      "branch": "lane/sim-safe10",
+      "worktree": "/wt/sim-safe10"
+    },
+    {
+      "job": "safe11",
+      "branch": "lane/sim-safe11",
+      "worktree": "/wt/sim-safe11"
+    },
+    {
+      "job": "safe12",
+      "branch": "lane/sim-safe12",
+      "worktree": "/wt/sim-safe12"
+    },
+    {
+      "job": "safe13",
+      "branch": "lane/sim-safe13",
+      "worktree": "/wt/sim-safe13"
+    },
+    {
+      "job": "chainA",
+      "branch": "lane/sim-chainA",
+      "worktree": "/wt/sim-chainA"
+    },
+    {
+      "job": "chainB",
+      "branch": "lane/sim-chainB",
+      "worktree": "/wt/sim-chainB"
+    },
+    {
+      "job": "chainC",
+      "branch": "lane/sim-chainC",
+      "worktree": "/wt/sim-chainC"
+    },
+    {
+      "job": "collX",
+      "branch": "lane/sim-collX",
+      "worktree": "/wt/sim-collX"
+    },
+    {
+      "job": "collY",
+      "branch": "lane/sim-collY",
+      "worktree": "/wt/sim-collY"
+    },
+    {
+      "job": "flaky",
+      "branch": "lane/sim-flaky",
+      "worktree": "/wt/sim-flaky"
+    },
+    {
+      "job": "broken",
+      "branch": "lane/sim-broken",
+      "worktree": "/wt/sim-broken"
+    },
+    {
+      "job": "afterBroken",
+      "branch": "lane/sim-afterBroken",
+      "worktree": "/wt/sim-afterBroken"
+    },
+    {
+      "job": "founderReview",
+      "branch": "lane/sim-founderReview",
+      "worktree": "/wt/sim-founderReview"
+    },
+    {
+      "job": "legalReview",
+      "branch": "lane/sim-legalReview",
+      "worktree": "/wt/sim-legalReview"
+    },
+    {
+      "job": "mystery",
+      "branch": "lane/sim-mystery",
+      "worktree": "/wt/sim-mystery"
+    }
+  ],
+  "current_cost": "UNKNOWN",
+  "any_output_merged": false,
+  "any_output_accepted": false,
+  "build_vs_accept": "outputs may be BUILT or WORKER-COMPLETED; that is NOT accepted and NOT merged",
+  "branch_activity_is_liveness": false,
+  "acceptance_boundary": [
+    "Worker completion is not feature acceptance.",
+    "Queue exhaustion is not product acceptance.",
+    "Test success is not merge authority.",
+    "UNKNOWN is not green.",
+    "STALE is not current.",
+    "HELD is not accepted."
+  ]
+}

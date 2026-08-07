@@ -1,0 +1,1284 @@
+[
+  {
+    "job_id": "LRCQ-B01",
+    "title": "Live Run Console: refine status-badge and lane-width styling",
+    "objective": "Tighten the Live Run Console CSS so held/collision/panic states are visually distinct without relying on color alone.",
+    "done_meaning": "console.css renders each runtime state with a distinct border+icon treatment; existing console selftest stays green; visual snapshot doc updated.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "src/v8b/lrcq/console/console.css"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b01",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b01",
+    "expected_outputs": [
+      "src/v8b/lrcq/console/console.css"
+    ],
+    "tests": [
+      "node scripts/run-selftests.mjs stays ALL GREEN after CSS change"
+    ],
+    "required_evidence": [
+      "git diff of src/v8b/lrcq/console/console.css",
+      "run-selftests.mjs tail showing ALL GREEN"
+    ],
+    "checker_requirement": "Grep console.css for a non-color affordance (border-style or ::before content) on each state class; fail if any state distinguished by color only.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 14,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Hand console.css diff to console-fixtures job for re-render verification.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": [
+      "LRCQ-B08"
+    ]
+  },
+  {
+    "job_id": "LRCQ-B02",
+    "title": "Live Run Console: guard console.js against missing view fields",
+    "objective": "Make console.js fail safe (render UNKNOWN, never throw) when a fixture omits an expected field.",
+    "done_meaning": "console.js defensively defaults absent fields and the console selftest exercises a malformed view without throwing.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "src/v8b/lrcq/console/console.js"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b02",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b02",
+    "expected_outputs": [
+      "src/v8b/lrcq/console/console.js"
+    ],
+    "tests": [
+      "console selftest loads a field-stripped view and asserts no exception, state shown as UNKNOWN"
+    ],
+    "required_evidence": [
+      "console.js diff",
+      "selftest stdout showing malformed-view case passing"
+    ],
+    "checker_requirement": "Static scan: every view field read in console.js has a `?? ` or explicit default; fail on any bare property access of an optional field.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 18,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Feed defensive-render behavior into browser-coverage matrix job.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B03",
+    "title": "Live Run Console: add ARIA landmarks and heading order to console.html",
+    "objective": "Give the console HTML proper landmark roles (main/nav/status) and a single h1 so screen readers can navigate it.",
+    "done_meaning": "console.html has one h1, ordered headings, and role=status on the live region; markup validates as well-formed.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "src/v8b/lrcq/console/console.html"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b03",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b03",
+    "expected_outputs": [
+      "src/v8b/lrcq/console/console.html"
+    ],
+    "tests": [
+      "a11y markup selftest asserts exactly one h1, presence of role=status, and no skipped heading levels"
+    ],
+    "required_evidence": [
+      "console.html diff",
+      "markup-lint output showing 0 structural warnings"
+    ],
+    "checker_requirement": "Parse console.html; assert exactly one <h1>, a live region with role=status, and landmark roles present.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 16,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Reference landmark structure from the accessibility-notes deliverable.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B04",
+    "title": "Data-adapter: add pure unit tests for projection normalization",
+    "objective": "Cover data-adapter view normalization edge cases (empty queue, all-held, mixed status) with a standalone selftest.",
+    "done_meaning": "New data-adapter.test.mjs exercises the adapter on 3 synthetic states and asserts stable normalized output.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "src/v8b/lrcq/console/data-adapter.test.mjs"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b04",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b04",
+    "expected_outputs": [
+      "src/v8b/lrcq/console/data-adapter.test.mjs"
+    ],
+    "tests": [
+      "node src/v8b/lrcq/console/data-adapter.test.mjs exits 0"
+    ],
+    "required_evidence": [
+      "new test file",
+      "test stdout N/N passed"
+    ],
+    "checker_requirement": "The test imports the real data-adapter (no re-implementation) and covers empty, all-held, and mixed cases.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 15,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Wire the new test path into run-selftests discovery (already automatic via *.selftest naming if renamed).",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B05",
+    "title": "Console fixture: deterministic STOPPED_DEADLINE view",
+    "objective": "Add a canonical fixture capturing a deadline-stop state for the console and browser-coverage suites.",
+    "done_meaning": "deadline-stop.view.json is a valid projected view showing STOPPED_DEADLINE with nothing accepted/merged.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "src/v8b/lrcq/console/fixtures/deadline-stop.view.json"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b05",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b05",
+    "expected_outputs": [
+      "src/v8b/lrcq/console/fixtures/deadline-stop.view.json"
+    ],
+    "tests": [
+      "fixture-shape selftest validates the JSON against the projection view shape"
+    ],
+    "required_evidence": [
+      "new fixture file",
+      "validation stdout"
+    ],
+    "checker_requirement": "JSON parses; runtime_state===STOPPED_DEADLINE; any_output_accepted===false and any_output_merged===false.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 10,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Include fixture in browser-coverage matrix job B09.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B06",
+    "title": "Console fixture: deterministic PANIC view",
+    "objective": "Add a canonical PANIC-state fixture so the console's most severe state has coverage.",
+    "done_meaning": "panic.view.json is a valid view with runtime_state PANIC and a non-empty next_safe_action.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "src/v8b/lrcq/console/fixtures/panic.view.json"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b06",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b06",
+    "expected_outputs": [
+      "src/v8b/lrcq/console/fixtures/panic.view.json"
+    ],
+    "tests": [
+      "fixture-shape selftest validates the JSON"
+    ],
+    "required_evidence": [
+      "new fixture file",
+      "validation stdout"
+    ],
+    "checker_requirement": "JSON parses; runtime_state===PANIC; next_safe_action is a non-empty string.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 10,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Include fixture in browser-coverage matrix job B09.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B07",
+    "title": "Console fixture: deterministic PAUSED view",
+    "objective": "Add a canonical PAUSED-state fixture covering a mid-run pause with lanes idle.",
+    "done_meaning": "paused.view.json is a valid view with runtime_state PAUSED and running_jobs empty.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "src/v8b/lrcq/console/fixtures/paused.view.json"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b07",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b07",
+    "expected_outputs": [
+      "src/v8b/lrcq/console/fixtures/paused.view.json"
+    ],
+    "tests": [
+      "fixture-shape selftest validates the JSON"
+    ],
+    "required_evidence": [
+      "new fixture file",
+      "validation stdout"
+    ],
+    "checker_requirement": "JSON parses; runtime_state===PAUSED; running_jobs is an empty array.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 10,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Include fixture in browser-coverage matrix job B09.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B08",
+    "title": "Accessibility: raise console color-contrast to WCAG AA",
+    "objective": "Adjust console.css palette so text/background pairs meet WCAG AA (4.5:1) and document the ratios.",
+    "done_meaning": "console.css palette meets AA; accessibility-notes.md records each pair's measured ratio.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "src/v8b/lrcq/console/console.css",
+      "docs/lrcq/accessibility-notes.md"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b08",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b08",
+    "expected_outputs": [
+      "src/v8b/lrcq/console/console.css",
+      "docs/lrcq/accessibility-notes.md"
+    ],
+    "tests": [
+      "contrast selftest computes ratio for each documented pair and asserts >=4.5"
+    ],
+    "required_evidence": [
+      "console.css diff",
+      "accessibility-notes.md with ratio table",
+      "contrast selftest stdout"
+    ],
+    "checker_requirement": "For each foreground/background pair listed in accessibility-notes.md, computed contrast ratio >= 4.5:1.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 16,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Cross-check palette against B01 badge styling before both merge (collision-managed).",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": [
+      "LRCQ-B01"
+    ]
+  },
+  {
+    "job_id": "LRCQ-B09",
+    "title": "Browser coverage: author the fixture x browser render matrix",
+    "objective": "Document which console fixtures must render cleanly in which browsers and record the manual-verification protocol.",
+    "done_meaning": "browser-coverage-matrix.md lists every fixture (incl. deadline/panic/paused) against target browsers with a pass/blank grid.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [
+      "LRCQ-B05",
+      "LRCQ-B06",
+      "LRCQ-B07"
+    ],
+    "allowed_files": [
+      "docs/lrcq/browser-coverage-matrix.md"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b09",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b09",
+    "expected_outputs": [
+      "docs/lrcq/browser-coverage-matrix.md"
+    ],
+    "tests": [
+      "matrix-completeness selftest asserts every fixtures/*.view.json appears as a row"
+    ],
+    "required_evidence": [
+      "browser-coverage-matrix.md",
+      "completeness selftest stdout"
+    ],
+    "checker_requirement": "Every file under console/fixtures/ is referenced by name in the matrix; no orphan fixtures.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 20,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Use matrix rows to schedule real browser passes under claude-in-chrome.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B10",
+    "title": "Evidence indexing: define the evidence-index schema",
+    "objective": "Specify the JSON shape for the LRCQ evidence index (run_id, job_id, artifact path, sha, kind).",
+    "done_meaning": "evidence-index.md documents the required/optional fields and a worked example.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "docs/lrcq/evidence-index.md"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b10",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b10",
+    "expected_outputs": [
+      "docs/lrcq/evidence-index.md"
+    ],
+    "tests": [
+      "schema-doc selftest asserts all required fields are documented with types"
+    ],
+    "required_evidence": [
+      "evidence-index.md",
+      "selftest stdout"
+    ],
+    "checker_requirement": "Doc names each required field (run_id, job_id, artifact, sha, kind) with a type; example block parses as JSON.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 15,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Feed schema into the evidence-index generator job B12.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B11",
+    "title": "Claim-register maintenance: reconcile LRCQ claims with current-main proofs",
+    "objective": "Refresh the LRCQ claim register so each capability claim links to a green selftest or is marked UNPROVEN.",
+    "done_meaning": "claim-register.md lists claims with status PROVEN/UNPROVEN and a pointer to the proving selftest.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "docs/lrcq/claim-register.md"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b11",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b11",
+    "expected_outputs": [
+      "docs/lrcq/claim-register.md"
+    ],
+    "tests": [
+      "register-integrity selftest asserts every PROVEN claim cites a selftest file that exists"
+    ],
+    "required_evidence": [
+      "claim-register.md",
+      "integrity selftest stdout"
+    ],
+    "checker_requirement": "Each PROVEN row references an existing *.selftest.mjs path; no claim left without a status.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 14,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Route UNPROVEN claims into the backlog as future proof jobs (no auto-action).",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B12",
+    "title": "Evidence index generator: pure builder + seed index.json",
+    "objective": "Add a pure generator that turns an evidence directory listing into the index shape from B10, and seed an empty index.",
+    "done_meaning": "evidence-index.gen.mjs builds an index object deterministically; index.json seeded as an empty valid index.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [
+      "LRCQ-B10"
+    ],
+    "allowed_files": [
+      ".foundergate/evidence/lrcq/index.json",
+      "src/v8b/lrcq/console/evidence-index.gen.mjs"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b12",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b12",
+    "expected_outputs": [
+      ".foundergate/evidence/lrcq/index.json",
+      "src/v8b/lrcq/console/evidence-index.gen.mjs"
+    ],
+    "tests": [
+      "generator selftest builds an index from synthetic inputs and validates it against the B10 schema"
+    ],
+    "required_evidence": [
+      "evidence-index.gen.mjs",
+      "index.json seed",
+      "generator selftest stdout"
+    ],
+    "checker_requirement": "Generator is pure (no fs writes at import); output conforms to the B10 evidence-index schema.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 22,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Hand the seeded index.json to the presentation job B13 (collision-managed).",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": [
+      "LRCQ-B13"
+    ]
+  },
+  {
+    "job_id": "LRCQ-B13",
+    "title": "Evidence presentation: human-readable index rendering doc",
+    "objective": "Describe how the seeded evidence index is presented to a reviewer (grouping, sha display, artifact links).",
+    "done_meaning": "evidence-presentation.md specifies the rendering; it consumes index.json produced by B12.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [
+      "LRCQ-B12"
+    ],
+    "allowed_files": [
+      ".foundergate/evidence/lrcq/index.json",
+      "docs/lrcq/evidence-presentation.md"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b13",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b13",
+    "expected_outputs": [
+      ".foundergate/evidence/lrcq/index.json",
+      "docs/lrcq/evidence-presentation.md"
+    ],
+    "tests": [
+      "presentation selftest asserts every index entry field has a documented rendering rule"
+    ],
+    "required_evidence": [
+      "evidence-presentation.md",
+      "selftest stdout"
+    ],
+    "checker_requirement": "Doc covers rendering for each index field; references the exact index.json path.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 18,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Preview rendering in the local-CI evidence page job B18.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": [
+      "LRCQ-B12"
+    ]
+  },
+  {
+    "job_id": "LRCQ-B14",
+    "title": "Architecture record: LRCQ controller boundaries (ADR-0001)",
+    "objective": "Record the decision that the LRCQ controller is pure/no-I/O and gates fail closed.",
+    "done_meaning": "adr/0001-lrcq-controller-boundaries.md follows the ADR template (context/decision/consequences).",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "docs/lrcq/adr/0001-lrcq-controller-boundaries.md"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b14",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b14",
+    "expected_outputs": [
+      "docs/lrcq/adr/0001-lrcq-controller-boundaries.md"
+    ],
+    "tests": [
+      "adr-template selftest asserts required ADR sections present"
+    ],
+    "required_evidence": [
+      "ADR file",
+      "template selftest stdout"
+    ],
+    "checker_requirement": "File has Context, Decision, Consequences, and Status headings; Status is one of Proposed/Accepted.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 12,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Chain ADR-0002 (collision policy) off this record.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B15",
+    "title": "Architecture record: one-writer collision policy (ADR-0002)",
+    "objective": "Record the one-writer-per-file collision-serialization decision that jobsCollide enforces.",
+    "done_meaning": "adr/0002-one-writer-collision-policy.md documents the policy and references jobsCollide semantics.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [
+      "LRCQ-B14"
+    ],
+    "allowed_files": [
+      "docs/lrcq/adr/0002-one-writer-collision-policy.md"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b15",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b15",
+    "expected_outputs": [
+      "docs/lrcq/adr/0002-one-writer-collision-policy.md"
+    ],
+    "tests": [
+      "adr-template selftest asserts required ADR sections present"
+    ],
+    "required_evidence": [
+      "ADR file",
+      "template selftest stdout"
+    ],
+    "checker_requirement": "File has the ADR sections and cites controller.mjs jobsCollide as the enforcement point.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 12,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Chain ADR-0003 (runtime state machine) off this record.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B16",
+    "title": "Synthetic negative tests: malformed backlog rejection",
+    "objective": "Add negative-path tests proving validateBacklog rejects duplicate ids, missing deps, and cycles.",
+    "done_meaning": "negative-cases.selftest.mjs asserts validateBacklog(...).ok===false for each malformed input.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "src/v8b/lrcq/negative-cases.selftest.mjs"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b16",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b16",
+    "expected_outputs": [
+      "src/v8b/lrcq/negative-cases.selftest.mjs"
+    ],
+    "tests": [
+      "node src/v8b/lrcq/negative-cases.selftest.mjs exits 0"
+    ],
+    "required_evidence": [
+      "new selftest file",
+      "selftest stdout N/N passed"
+    ],
+    "checker_requirement": "Covers duplicate job_id, missing dependency, and dependency cycle; each asserts ok===false.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 20,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Keep negative cases in the run-selftests sweep as a regression guard.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B17",
+    "title": "Recovery tests: resume from persisted state after simulated crash",
+    "objective": "Prove the projection/persist layer reloads a mid-run state and continues without double-accepting.",
+    "done_meaning": "recovery-scenarios.selftest.mjs round-trips a persisted state and asserts no accepted output appears twice.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "src/v8b/lrcq/recovery-scenarios.selftest.mjs"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b17",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b17",
+    "expected_outputs": [
+      "src/v8b/lrcq/recovery-scenarios.selftest.mjs"
+    ],
+    "tests": [
+      "node src/v8b/lrcq/recovery-scenarios.selftest.mjs exits 0"
+    ],
+    "required_evidence": [
+      "new selftest file",
+      "selftest stdout"
+    ],
+    "checker_requirement": "Test persists then reloads via the real persist.mjs module; asserts idempotent accept set.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 22,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Feed recovery scenarios into the recovery.view.json fixture narrative.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B18",
+    "title": "Local-CI evidence presentation page",
+    "objective": "Document how run-selftests output becomes the single local-CI evidence surface (ALL GREEN gate).",
+    "done_meaning": "local-ci-evidence.md explains the green/red decision and where the evidence index attaches.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [
+      "LRCQ-B13"
+    ],
+    "allowed_files": [
+      "docs/lrcq/local-ci-evidence.md"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b18",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b18",
+    "expected_outputs": [
+      "docs/lrcq/local-ci-evidence.md"
+    ],
+    "tests": [
+      "doc-link selftest asserts referenced evidence paths exist or are marked planned"
+    ],
+    "required_evidence": [
+      "local-ci-evidence.md",
+      "link selftest stdout"
+    ],
+    "checker_requirement": "Doc states the ALL GREEN pass condition and links the evidence-index path from B12.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 14,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Reference this page from the top-level LRCQ readme when integrated.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B19",
+    "title": "Proof-Lab DRAFT: LRCQ proof narrative (clearly marked DRAFT)",
+    "objective": "Draft the end-to-end LRCQ proof narrative for later founder review, unambiguously marked DRAFT/not-accepted.",
+    "done_meaning": "DRAFT-lrcq-proof-narrative.md carries a DRAFT banner and claims nothing as accepted or merged.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "docs/proof-lab/DRAFT-lrcq-proof-narrative.md"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b19",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b19",
+    "expected_outputs": [
+      "docs/proof-lab/DRAFT-lrcq-proof-narrative.md"
+    ],
+    "tests": [
+      "draft-marker selftest asserts the DRAFT banner and absence of 'ACCEPTED'/'MERGED' assertions"
+    ],
+    "required_evidence": [
+      "draft file",
+      "marker selftest stdout"
+    ],
+    "checker_requirement": "First heading contains DRAFT; document makes no claim of acceptance/merge; filename starts with DRAFT-.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 16,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Chain the evidence-chain walkthrough DRAFT off this narrative.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B20",
+    "title": "Proof-Lab DRAFT: evidence-chain walkthrough (clearly marked DRAFT)",
+    "objective": "Draft a step-by-step evidence-chain walkthrough (job -> selftest -> index -> presentation), marked DRAFT.",
+    "done_meaning": "DRAFT-evidence-chain-walkthrough.md carries a DRAFT banner and references only proven selftests.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [
+      "LRCQ-B19"
+    ],
+    "allowed_files": [
+      "docs/proof-lab/DRAFT-evidence-chain-walkthrough.md"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b20",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b20",
+    "expected_outputs": [
+      "docs/proof-lab/DRAFT-evidence-chain-walkthrough.md"
+    ],
+    "tests": [
+      "draft-marker selftest asserts DRAFT banner present"
+    ],
+    "required_evidence": [
+      "draft file",
+      "marker selftest stdout"
+    ],
+    "checker_requirement": "First heading contains DRAFT; every cited selftest path exists; filename starts with DRAFT-.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 16,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Hold for founder review; never auto-promote out of DRAFT.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B21",
+    "title": "Provider-neutral adapter tests",
+    "objective": "Prove realProviderAdapter maps activations to bindings identically regardless of provider identity (no provider named).",
+    "done_meaning": "provider-adapter.selftest.mjs asserts the adapter output is provider-agnostic for two synthetic bindings.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "src/v8b/lrcq/provider-adapter.selftest.mjs"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b21",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b21",
+    "expected_outputs": [
+      "src/v8b/lrcq/provider-adapter.selftest.mjs"
+    ],
+    "tests": [
+      "node src/v8b/lrcq/provider-adapter.selftest.mjs exits 0"
+    ],
+    "required_evidence": [
+      "new selftest file",
+      "selftest stdout"
+    ],
+    "checker_requirement": "Test imports realProviderAdapter from controller.mjs and asserts identical shape across two provider labels.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 20,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Keep adapter test in the sweep so provider-neutrality cannot silently regress.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B22",
+    "title": "Non-sensitive product copy for the console header/footer",
+    "objective": "Write neutral, non-marketing product copy explaining what the Live Run Console shows and does not claim.",
+    "done_meaning": "product-copy-console.md provides header/footer strings emphasizing 'completed != accepted'.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "docs/lrcq/product-copy-console.md"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b22",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b22",
+    "expected_outputs": [
+      "docs/lrcq/product-copy-console.md"
+    ],
+    "tests": [
+      "copy-lint selftest asserts no forbidden marketing superlatives and presence of the honesty disclaimer"
+    ],
+    "required_evidence": [
+      "copy file",
+      "copy-lint stdout"
+    ],
+    "checker_requirement": "Copy contains the 'completed does not mean accepted' disclaimer and no banned superlatives.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 12,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Offer copy to the console.html job for wiring in a later cycle.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B23",
+    "title": "Backlog-quality rubric",
+    "objective": "Document the rubric a WIDE-SAFE backlog must satisfy (disjointness, evidence, gate_trigger NONE, minutes floor).",
+    "done_meaning": "backlog-quality-rubric.md enumerates the checks the backlog-quality selftest enforces.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "docs/lrcq/backlog-quality-rubric.md"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b23",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b23",
+    "expected_outputs": [
+      "docs/lrcq/backlog-quality-rubric.md"
+    ],
+    "tests": [
+      "rubric-parity selftest asserts each documented rule maps to an assertion in backlog-quality.selftest.mjs"
+    ],
+    "required_evidence": [
+      "rubric file",
+      "parity selftest stdout"
+    ],
+    "checker_requirement": "Every rule in the rubric corresponds to a named assertion in the backlog-quality selftest.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 14,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Keep rubric and selftest in lockstep on each backlog revision.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B24",
+    "title": "Architecture record: runtime state machine (ADR-0003)",
+    "objective": "Record the runtime-state set and legal transitions the controller may take.",
+    "done_meaning": "adr/0003-runtime-state-machine.md documents states and transitions consistent with RUNTIME_STATES.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [
+      "LRCQ-B15"
+    ],
+    "allowed_files": [
+      "docs/lrcq/adr/0003-runtime-state-machine.md"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b24",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b24",
+    "expected_outputs": [
+      "docs/lrcq/adr/0003-runtime-state-machine.md"
+    ],
+    "tests": [
+      "adr-template selftest asserts sections; state-parity check vs RUNTIME_STATES"
+    ],
+    "required_evidence": [
+      "ADR file",
+      "template selftest stdout"
+    ],
+    "checker_requirement": "Every state named in the ADR exists in schemas.RUNTIME_STATES; ADR sections present.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 12,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Link ADR-0003 from the LRCQ readme index when integrated.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  },
+  {
+    "job_id": "LRCQ-B25",
+    "title": "LRCQ glossary of terms",
+    "objective": "Provide a single glossary for LRCQ terms (WIDE_SAFE, gate_trigger, one-writer, correction_cycle, accepted vs completed).",
+    "done_meaning": "glossary.md defines each core term in one honest sentence with no capability inflation.",
+    "source": "current-main LRCQ roadmap gap review (2026-07-20); WIDE-SAFE refill backlog",
+    "risk_class": "WIDE_SAFE",
+    "effect_class": "LOCAL_FS",
+    "dependencies": [],
+    "allowed_files": [
+      "docs/lrcq/glossary.md"
+    ],
+    "forbidden_files": [
+      "src/founder_url_drop/",
+      ".foundergate/governance/",
+      "tools/terminal0/paes/",
+      "PR#182 scope",
+      "PR#186 scope",
+      "secrets/",
+      "M1",
+      "AKIOR"
+    ],
+    "branch": "lane/lrcq-b25",
+    "worktree": "/Users/yosiwizman/Projects/foundergate-wt-lrcq-b25",
+    "expected_outputs": [
+      "docs/lrcq/glossary.md"
+    ],
+    "tests": [
+      "glossary-coverage selftest asserts each core term has a definition entry"
+    ],
+    "required_evidence": [
+      "glossary.md",
+      "coverage selftest stdout"
+    ],
+    "checker_requirement": "Glossary defines WIDE_SAFE, gate_trigger, one-writer collision, correction_cycle, accepted-vs-completed.",
+    "gate_trigger": "NONE",
+    "estimated_minutes": 10,
+    "max_attempts": 3,
+    "correction_cycle": 0,
+    "status": "PENDING",
+    "status_reason": null,
+    "created_at": "2026-07-20T00:00:00Z",
+    "started_at": null,
+    "completed_at": null,
+    "evaluated_sha": null,
+    "evidence_sha": null,
+    "next_safe_action": "Cross-link glossary from ADRs and product copy on integration.",
+    "rollback": "Delete/revert the files in allowed_files (all LOCAL_FS, no external effects); git checkout -- the paths to restore prior state. No live actions to undo.",
+    "collision_set": []
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "backlog": "src/v8b/lrcq/backlog/five-hour-backlog.json",
+  "job_count": 25,
+  "total_estimated_minutes": 378,
+  "pairwise_disjoint": 21,
+  "backlog_digest": "sha256:af688d14d0d7bc21db51e992fd08642ecd568fef23639d6d02094d56c8ac4419",
+  "frozen": true
+}

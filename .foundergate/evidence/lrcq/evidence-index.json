@@ -1,0 +1,52 @@
+{
+  "schema": "lrcq-candidate-evidence-index-1",
+  "run_id": "lrcq-prep-1784521228",
+  "protected_main": "ba7d6547c19b2b7cc31e49dfa3ff15ec3f4cb423",
+  "built": [
+    "Live Run Console (console.html/css/js + data-adapter)",
+    "backlog/runtime-state/event/gate schemas + validators",
+    "autonomous controller (SIMULATION_ONLY)",
+    "collision prevention (file/dir/branch/worktree one-writer)",
+    "safe-lane refill",
+    "disk-first idempotent recovery",
+    "deterministic fake provider",
+    "24-job shadow simulation",
+    "10 console view fixtures"
+  ],
+  "proven_by_machine": {
+    "controller_test_matrix": "src/v8b/lrcq/lrcq-controller.selftest.mjs — 63/63 (unit + 10 false-green + 8 recovery)",
+    "shadow_simulation": "src/v8b/lrcq/shadow-sim.selftest.mjs — 19/19 (24 jobs)",
+    "full_repo_suite": "ALL GREEN (105 files incl. LRCQ)",
+    "browser": "console rendered in Chrome; screenshots console-queue-exhausted.png, console-wave2-historical.png",
+    "accessibility": "accessibility.md — landmarks, headings, live regions, skip link, visible focus",
+    "historical_wave2_replay": "shadow-sim-console-view.json + wave2-historical fixture (labeled HISTORICAL, replay-blocked, 0 current events / 46 legacy)"
+  },
+  "not_proven": [
+    "real five-hour Claude-powered productive autonomy",
+    "live run-ID-stamped worker operation",
+    "production readiness",
+    "customer use",
+    "public deployment",
+    "security certification",
+    "feature acceptance",
+    "protected-main integration"
+  ],
+  "held": [
+    "real provider activation",
+    "five-hour run",
+    "protected-main merge",
+    "founder visual acceptance"
+  ],
+  "provider_disabled_default": "controller.mode default SIMULATION_ONLY; realProviderAdapter refuses without a complete non-stale founder activation record and NEVER invokes Claude (test 34-38)",
+  "pr182_non_interference": "no file under PR #182 scope touched; #182 OPEN e31153c",
+  "pr186_non_interference": "no Safety Check / founder_url_drop file touched; #186 OPEN be3209d",
+  "evidence_files": [
+    ".foundergate/evidence/lrcq/shadow-sim-events.jsonl",
+    ".foundergate/evidence/lrcq/shadow-sim-final-snapshot.json",
+    ".foundergate/evidence/lrcq/shadow-sim-console-view.json",
+    ".foundergate/evidence/lrcq/accessibility.md",
+    ".foundergate/evidence/lrcq/screenshots/console-queue-exhausted.png",
+    ".foundergate/evidence/lrcq/screenshots/console-wave2-historical.png"
+  ],
+  "next_safe_action": "Integrate the five-hour backlog lane; freeze candidate; independent checker; separate advisor; open unmerged candidate PR; stop at founder activation gate."
+}
